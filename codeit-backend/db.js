@@ -1,10 +1,10 @@
 const sql = require('mssql');
 
 const config = {
-  user: 'admin_nehal',
+  user: 'sqlserver',
   password: 'Te@m42C@pstone',
-  server: 'elearning-sql-server.database.windows.net',
-  database: 'E_LearningPlatform',
+  server: '34.130.135.90',
+  database: 'elearning',
   options: { encrypt: true, trustServerCertificate: true }
 };
 
