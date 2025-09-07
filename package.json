@@ -1,0 +1,16 @@
+{
+  "packageManager": "yarn@4.9.4",
+  "name": "e-learning",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "start:learning": "yarn workspace @e-learning/gamified-elearning start",
+    "start:backend": "yarn workspace @e-learning/codeit-backend start",
+    "start:puzzle": "yarn workspace @e-learning/robot-puzzle start",
+    "start:game": "yarn workspace @e-learning/starter-game start",
+    "build": "yarn workspaces run build"
+  },
+  "version": "1.0.0"
+}

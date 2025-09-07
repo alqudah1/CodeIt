@@ -1,0 +1,21 @@
+.App {
+  text-align: center;
+  background-color: #fff; /* Set a white background */
+  min-height: 100vh; /* Ensure the div takes up the full viewport height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: black; /* Ensure text is visible */
+}
+
+h1, h2, p {
+  color: black; /* Ensure text is visible */
+}
+
+button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  font-size: 16px;
+}

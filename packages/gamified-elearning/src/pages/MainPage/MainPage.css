@@ -1,0 +1,173 @@
+.main-page {
+    min-height: 100vh;
+    background-image: url('/public/images/MainBackGround.png'); /* ✅ Bring back the background */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: 'Comic Sans MS', 'Comic Neue', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 100px;
+  }
+  
+  .main-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+    position: relative;
+  }
+  
+  /* Logo on the left as a circle */
+  .header-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .top-logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: white;
+    padding: 5px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  }
+  
+  /* Center Home button */
+  .header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .floating-home-button {
+    background-color: #ffe082;
+    border: none;
+    border-radius: 20px;
+    font-size: 30px;
+    padding: 6px 18px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .floating-home-button:hover {
+    background-color: #ffd54f;
+    transform: scale(1.05);
+  }
+  
+  /* Title */
+  .main-title {
+    color: #e53935;
+    font-size: 40px;
+    margin: 20px 0;
+    text-align: center;
+  }
+  
+  /* Sections */
+  .section-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1200px;
+  }
+  
+  .section-card {
+    flex: 1;
+    min-width: 330px;
+    max-width: 380px;
+    padding: 35px 25px;
+    border-radius: 20px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Colors */
+  .lessons-card {
+    background-color: #42a5f5;
+  }
+  .quizzes-card {
+    background-color: #ab47bc;
+  }
+  .games-card {
+    background-color: #f57c00;
+  }
+  
+  .section-card h2 {
+    font-size: 35px;
+    margin-bottom: 10px;
+  }
+  
+  .section-card .tagline {
+    font-size: 25px;
+    font-style: italic;
+    margin-bottom: 20px;
+    color: #fffdd0;
+  }
+  
+  /* Buttons */
+  .lesson-btn,
+  .quiz-btn,
+  .game-btn {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    margin: 10px 0;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+  }
+  
+  .lesson-btn {
+    background-color: #1e88e5;
+  }
+  .lesson-btn:hover {
+    background-color: #1565c0;
+  }
+  
+  .quiz-btn {
+    background-color: #8e24aa;
+  }
+  .quiz-btn:hover {
+    background-color: #6a1b9a;
+  }
+  
+  .game-btn {
+    background-color: #fe6022;
+  }
+  .game-btn:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* Footer */
+  .footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #ffe082;
+    color: #444;
+    text-align: center;
+    padding: 15px 10px;
+    font-size: 14px;
+    z-index: 99;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  }
+  
+  .footer a {
+    color: #1976d2;
+    margin: 0 6px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .footer a:hover {
+    text-decoration: underline;
+  }

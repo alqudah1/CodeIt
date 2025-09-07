@@ -1,0 +1,8 @@
+node_modules/
+.yarn/cache/
+.yarn/unplugged/
+.pnp.*
+*.log
+packages/*/build/
+packages/*/dist/
+.env

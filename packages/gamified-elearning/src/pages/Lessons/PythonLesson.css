@@ -1,0 +1,123 @@
+/* Container for the entire lesson page */
+.python-lesson {
+    max-width: 900px;  
+    margin: 0 auto;  
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;  
+}
+
+/* Styling for the back button */
+.back-button {
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    border-radius: 5px;  
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 30px;
+    transition: background-color 0.3s;  
+}
+
+/* Container for lesson content */
+.lesson-content {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;  
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);  
+}
+
+/* Lesson title */
+.lesson-content h1 {
+    color: #2c3e50;  
+    margin-bottom: 30px;
+    border-bottom: 2px solid #eee; 
+    padding-bottom: 10px;
+}
+
+/* Section titles */
+.lesson-content h2 {
+    color: #2c3e50;
+    margin-top: 25px;
+}
+
+/* Styling for code examples */
+.code-example {
+    background: #282c34;  
+    color: #abb2bf;  
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    overflow-x: auto;  
+}
+
+/* Code block formatting */
+pre {
+    margin: 0;
+    font-family: 'Consolas', 'Monaco', monospace;  
+    line-height: 1.5;
+}
+
+/* Output section styling */
+.output {
+    background: #f5f5f5;  
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    border-left: 4px solid #4CAF50;  
+}
+
+/* "Try It Yourself" section styling */
+.try-it {
+    background: #e8f5e9;  
+    padding: 15px;
+    border-radius: 8px;
+    margin: 25px 0;
+}
+
+/* Title styling within the "Try It Yourself" section */
+.try-it h3 {
+    color: #2e7d32; 
+    margin-top: 0;
+}
+
+/* Container for math-related tables */
+.math-table {
+    overflow-x: auto;  
+    margin: 20px 0;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse; 
+}
+
+/* Table header and cell styling */
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;  
+}
+
+/* Header row styling */
+th {
+    background-color: #4CAF50; 
+    color: white;
+}
+
+/* Alternate row shading for better readability */
+tr:nth-child(even) {
+    background-color: #f2f2f2; 
+}
+
+/* Responsive design adjustments for smaller screens */
+@media (max-width: 768px) {
+    .python-lesson {
+        padding: 15px;
+    }
+    
+    .lesson-content {
+        padding: 15px;
+    }
+}
