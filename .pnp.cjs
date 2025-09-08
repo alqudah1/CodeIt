@@ -3837,6 +3837,7 @@ const RAW_RUNTIME_STATE =
           ["cors", "npm:2.8.5"],\
           ["express", "npm:4.21.2"],\
           ["mssql", "npm:11.0.1"],\
+          ["mysql2", "npm:3.14.4"],\
           ["vm2", "npm:3.9.19"]\
         ],\
         "linkType": "SOFT"\
@@ -6627,6 +6628,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["aws-ssl-profiles", [\
+      ["npm:1.1.2", {\
+        "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/aws-ssl-profiles-npm-1.1.2-aa19a8e15e-10c0.zip/node_modules/aws-ssl-profiles/",\
+        "packageDependencies": [\
+          ["aws-ssl-profiles", "npm:1.1.2"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["axe-core", [\
       ["npm:4.10.3", {\
         "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/axe-core-npm-4.10.3-3534c4324b-10c0.zip/node_modules/axe-core/",\
@@ -8481,6 +8491,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["denque", [\
+      ["npm:2.1.0", {\
+        "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/denque-npm-2.1.0-578d0b6297-10c0.zip/node_modules/denque/",\
+        "packageDependencies": [\
+          ["denque", "npm:2.1.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["depd", [\
       ["npm:1.1.2", {\
         "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/depd-npm-1.1.2-b0c8414da7-10c0.zip/node_modules/depd/",\
@@ -10298,6 +10317,16 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["generate-function", [\
+      ["npm:2.3.1", {\
+        "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/generate-function-npm-2.3.1-c839dc559c-10c0.zip/node_modules/generate-function/",\
+        "packageDependencies": [\
+          ["generate-function", "npm:2.3.1"],\
+          ["is-property", "npm:1.0.2"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["gensync", [\
       ["npm:1.0.0-beta.2", {\
         "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/gensync-npm-1.0.0-beta.2-224666d72f-10c0.zip/node_modules/gensync/",\
@@ -10901,6 +10930,14 @@ const RAW_RUNTIME_STATE =
           ["safer-buffer", "npm:2.1.2"]\
         ],\
         "linkType": "HARD"\
+      }],\
+      ["npm:0.7.0", {\
+        "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/iconv-lite-npm-0.7.0-89105876e3-10c0.zip/node_modules/iconv-lite/",\
+        "packageDependencies": [\
+          ["iconv-lite", "npm:0.7.0"],\
+          ["safer-buffer", "npm:2.1.2"]\
+        ],\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["icss-utils", [\
@@ -11357,6 +11394,15 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/is-potential-custom-element-name-npm-1.0.1-f352f606f8-10c0.zip/node_modules/is-potential-custom-element-name/",\
         "packageDependencies": [\
           ["is-potential-custom-element-name", "npm:1.0.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["is-property", [\
+      ["npm:1.0.2", {\
+        "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/is-property-npm-1.0.2-6eac53b30e-10c0.zip/node_modules/is-property/",\
+        "packageDependencies": [\
+          ["is-property", "npm:1.0.2"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -12844,6 +12890,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["long", [\
+      ["npm:5.3.2", {\
+        "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/long-npm-5.3.2-f80d0f7d39-10c0.zip/node_modules/long/",\
+        "packageDependencies": [\
+          ["long", "npm:5.3.2"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["loose-envify", [\
       ["npm:1.4.0", {\
         "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/loose-envify-npm-1.4.0-6307b72ccf-10c0.zip/node_modules/loose-envify/",\
@@ -12877,6 +12932,22 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["lru-cache", "npm:5.1.1"],\
           ["yallist", "npm:3.1.1"]\
+        ],\
+        "linkType": "HARD"\
+      }],\
+      ["npm:7.18.3", {\
+        "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/lru-cache-npm-7.18.3-e68be5b11c-10c0.zip/node_modules/lru-cache/",\
+        "packageDependencies": [\
+          ["lru-cache", "npm:7.18.3"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["lru.min", [\
+      ["npm:1.1.2", {\
+        "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/lru.min-npm-1.1.2-5e836d0c4f-10c0.zip/node_modules/lru.min/",\
+        "packageDependencies": [\
+          ["lru.min", "npm:1.1.2"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -13299,6 +13370,24 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["mysql2", [\
+      ["npm:3.14.4", {\
+        "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/mysql2-npm-3.14.4-df284cb4e3-10c0.zip/node_modules/mysql2/",\
+        "packageDependencies": [\
+          ["aws-ssl-profiles", "npm:1.1.2"],\
+          ["denque", "npm:2.1.0"],\
+          ["generate-function", "npm:2.3.1"],\
+          ["iconv-lite", "npm:0.7.0"],\
+          ["long", "npm:5.3.2"],\
+          ["lru.min", "npm:1.1.2"],\
+          ["mysql2", "npm:3.14.4"],\
+          ["named-placeholders", "npm:1.1.3"],\
+          ["seq-queue", "npm:0.0.5"],\
+          ["sqlstring", "npm:2.3.3"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["mz", [\
       ["npm:2.7.0", {\
         "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/mz-npm-2.7.0-ec3cef4ec2-10c0.zip/node_modules/mz/",\
@@ -13307,6 +13396,16 @@ const RAW_RUNTIME_STATE =
           ["mz", "npm:2.7.0"],\
           ["object-assign", "npm:4.1.1"],\
           ["thenify-all", "npm:1.6.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["named-placeholders", [\
+      ["npm:1.1.3", {\
+        "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/named-placeholders-npm-1.1.3-1b385febe5-10c0.zip/node_modules/named-placeholders/",\
+        "packageDependencies": [\
+          ["lru-cache", "npm:7.18.3"],\
+          ["named-placeholders", "npm:1.1.3"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -16922,6 +17021,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["seq-queue", [\
+      ["npm:0.0.5", {\
+        "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/seq-queue-npm-0.0.5-d5064d9793-10c0.zip/node_modules/seq-queue/",\
+        "packageDependencies": [\
+          ["seq-queue", "npm:0.0.5"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["serialize-javascript", [\
       ["npm:4.0.0", {\
         "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/serialize-javascript-npm-4.0.0-b4aeff413b-10c0.zip/node_modules/serialize-javascript/",\
@@ -17327,6 +17435,15 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/sprintf-js-npm-1.1.3-b99efd75b2-10c0.zip/node_modules/sprintf-js/",\
         "packageDependencies": [\
           ["sprintf-js", "npm:1.1.3"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["sqlstring", [\
+      ["npm:2.3.3", {\
+        "packageLocation": "../Users/nehal/AppData/Local/Yarn/Berry/cache/sqlstring-npm-2.3.3-2db6939570-10c0.zip/node_modules/sqlstring/",\
+        "packageDependencies": [\
+          ["sqlstring", "npm:2.3.3"]\
         ],\
         "linkType": "HARD"\
       }]\

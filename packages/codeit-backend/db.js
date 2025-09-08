@@ -1,28 +1,24 @@
-const sql = require('mssql');
+const mysql = require('mysql2/promise');
 
-const config = {
-  user: 'sqlserver',
-  password: 'Te@m42C@pstone',
-  server: '34.130.135.90',
-  database: 'elearning',
-  options: { encrypt: true, trustServerCertificate: true }
-};
+const pool = mysql.createPool({
+  host: 'elearning.cqr0so48udnk.us-east-1.rds.amazonaws.com', 
+  user: 'admin',                                
+  password: 'yaan*23AUG',                            
+  database: 'elearning',                      
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
 
-const poolPromise = new sql.ConnectionPool(config)
-  .connect()
-  .then(async pool => {
-    console.log('Connected to SQL Server');
+// Test the connection once at startup
+(async () => {
+  try {
+    const connection = await pool.getConnection();
+    console.log('✅ Connected to MySQL RDS successfully!');
+    connection.release();
+  } catch (err) {
+    console.error('❌ Database connection failed:', err);
+  }
+})();
 
-
-    /*try {
-        const result = await pool.request().query('SELECT * FROM Quiz_questions');
-        console.log('Test Query Successful! Quizzes Data:', result.recordset);
-      } catch (err) {
-        console.error('Test Query Failed:', err);
-      }*/
-
-    return pool;
-  })
-  .catch(err => console.log('Database Connection Failed:', err));
-
-module.exports = { sql, poolPromise };
+module.exports = pool;
