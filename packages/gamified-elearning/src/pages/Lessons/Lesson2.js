@@ -1,49 +1,64 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import './PythonLesson.css';
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import './PythonLesson.css'
 
 const Lesson2 = () => {
-  const navigate = useNavigate();
-  
+  const navigate = useNavigate()
+
+  const goToDashboard = () => navigate('/MainPage')
+  const goToQuiz = () => navigate('/quiz/3')
+
   return (
     <div className="python-lesson">
-      {/* Back Button to navigate to MainPage */}
-      <button className="back-button" onClick={() => navigate('/MainPage')}>Back to Main</button>
-      
-      {/* Lesson Title */}
-      <h1>Lesson 2: Storing Information with Variables</h1>
-      
-      <div className="lesson-content">
-        {/* Introduction to Variables */}
-        <h2>What is a Variable?</h2>
-        <p>A variable is like a box that stores information. You can use it to remember names, numbers, or messages.</p>
-        
-        {/* Code Example Section */}
-        <div className="code-example">
-          <pre>{`name = "Alex"`}</pre>
-          <pre>{`age = 10`}</pre>
-          <pre>{`print(name)`}</pre>
-          <pre>{`print(age)`}</pre>
-        </div>
-        
-        {/* Expected Output Section */}
-        <div className="output">
-          <h3>Output:</h3>
-          <pre>Alex </pre>
-          <pre>10 </pre>
-        </div>
-        
-        {/* Interactive Section - Encouraging users to try modifying the code */}
-        <div className="try-it">
-          <h3>Try it Yourself:</h3>
-          <p>Change "Alex" to your own name and run the code!</p>
-        </div>
-      </div>
-      
-      {/* Button to navigate to Quiz 2 */}
-      <button className="back-button" onClick={() => navigate('/quiz/3')}>Go to Quiz 2</button>
-    </div>
-  );
-};
+      <div className="lesson-wrapper">
+        <button type="button" className="lesson-nav" onClick={goToDashboard}>
+          ← Back to Dashboard
+        </button>
 
-export default Lesson2;
+        <section className="lesson-card">
+          <header className="lesson-header">
+            <span className="lesson-pill">Lesson 2</span>
+            <h1>Lesson 2: Storing Information with Variables</h1>
+            <p className="lesson-subtitle">
+              Discover how to save names, favorite numbers, and secret messages inside magical Python boxes.
+            </p>
+          </header>
+
+          <div className="lesson-content">
+            <h2>What is a Variable?</h2>
+            <p>
+              A variable is like a box that stores information. You can use it to remember names, numbers, or
+              messages.
+            </p>
+
+            <div className="code-example">
+              <pre>{`name = "Alex"`}</pre>
+              <pre>{`age = 10`}</pre>
+              <pre>{`print(name)`}</pre>
+              <pre>{`print(age)`}</pre>
+            </div>
+
+            <div className="output">
+              <h3>What you&apos;ll see:</h3>
+              <pre>Alex</pre>
+              <pre>10</pre>
+            </div>
+
+            <div className="try-it">
+              <h3>Your sunny challenge:</h3>
+              <p>Change &quot;Alex&quot; to your own name and run the code!</p>
+            </div>
+          </div>
+
+          <footer className="lesson-footer">
+            <button type="button" className="quiz-button" onClick={goToQuiz}>
+              Go to Quiz 2 🍓
+            </button>
+          </footer>
+        </section>
+      </div>
+    </div>
+  )
+}
+
+export default Lesson2

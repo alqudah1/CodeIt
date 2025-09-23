@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "echo 'Add start script (e.g., serve for static files)'"
+    "start": "serve . -p 3002"
+  },
+  "dependencies": {
+    "serve": "^14.2.5"
   }
 }

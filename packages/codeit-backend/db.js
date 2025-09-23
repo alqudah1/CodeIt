@@ -15,6 +15,7 @@ const pool = mysql.createPool({
   try {
     const connection = await pool.getConnection();
     console.log('✅ Connected to MySQL RDS successfully!');
+    
     connection.release();
   } catch (err) {
     console.error('❌ Database connection failed:', err);

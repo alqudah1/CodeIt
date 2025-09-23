@@ -24,7 +24,7 @@ const Quiz = ({ quizId }) => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/quiz/${quizId}/questions`);
+        const response = await axios.get(`http://localhost:8080/api/quiz/${quizId}/questions`);
         console.log('API Response:', response);
         console.log('Response Data:', response.data);
 
@@ -89,7 +89,7 @@ const Quiz = ({ quizId }) => {
     }));
 
     try {
-      const response = await axios.post('http://localhost:5000/api/quiz/submit', {
+      const response = await axios.post('http://localhost:8080/api/quiz/submit', {
         studentId,
         questionId: questions[currentQuestion].question_id,
         answer: selectedOption,
