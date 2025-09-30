@@ -6,7 +6,7 @@ import './PythonLesson.css';
 
 const Lesson2 = () => {
   const navigate = useNavigate();
-  const [lessonOutput, setLessonOutput] = useState(''); // Add state for output
+  const [lessonOutput, setLessonOutput] = useState(''); 
 
   const goToDashboard = () => navigate('/MainPage');
   const goToQuiz = () => navigate('/quiz/3');

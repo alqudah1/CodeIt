@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { useAuth } from '../../context/AuthContext'; // Adjust path based on structure
+import { useAuth } from '../../context/AuthContext'; 
 import './Auth.css';
 
 export default function Login() {
@@ -25,10 +25,10 @@ export default function Login() {
       const response = await axios.post('http://localhost:8080/api/login', data, {
         headers: { 'Content-Type': 'application/json' },
       });
-      login({ user: response.data.user, token: response.data.token }); // Match AuthContext structure
+      login({ user: response.data.user, token: response.data.token }); 
       setSuccess(response.data.message || 'Login successful!');
       setError(null);
-      navigate('/'); // Match old behavior
+      navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || err.message || 'Login failed');
       setSuccess(null);

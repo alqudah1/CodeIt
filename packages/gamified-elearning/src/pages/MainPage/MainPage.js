@@ -1,8 +1,7 @@
-// src/components/MainPage.js
 import React, { useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import Header from '../Header/Header'; // Import the Header component
+import Header from '../Header/Header'; 
 import './MainPage.css';
 
 const lessonIds = [1, 2, 3, 4, 5];

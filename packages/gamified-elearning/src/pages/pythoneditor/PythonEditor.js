@@ -1,4 +1,3 @@
-// src/pages/pythoneditor/PythonEditor.js
 import React, { useState, useEffect, useRef } from 'react';
 
 const PythonEditor = ({ initialCode, onOutput }) => {
@@ -14,11 +13,10 @@ const PythonEditor = ({ initialCode, onOutput }) => {
           indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/',
         });
 
-        // Configure stdout to capture print output into window.printOutput
         window.printOutput = '';
         pyodide.setStdout({
           batched: (text) => {
-            // Always add a newline when capturing output
+            // add a newline when capturing output
             window.printOutput += text + "\n";
           },
         });
@@ -39,10 +37,9 @@ const PythonEditor = ({ initialCode, onOutput }) => {
 
     setOutput('');
     try {
-      window.printOutput = ''; // Reset captured output
+      window.printOutput = ''; 
       await window.pyodide.runPythonAsync(code);
 
-      // Show only the actual printed output
       const outputText = window.printOutput.trimEnd();
       setOutput(outputText || '');
 

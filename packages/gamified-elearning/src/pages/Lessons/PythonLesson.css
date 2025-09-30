@@ -366,21 +366,21 @@ pre {
 .python-lesson {
   display: flex;
   flex-direction: column;
-  align-items: center; /* center content horizontally */
+  align-items: center; 
   padding: 20px;
   background: linear-gradient(120deg, #ffeaa7, #fab1a0);
 }
 
 .lesson-wrapper {
   width: 100%;
-  max-width: 900px; /* controls content width */
+  max-width: 900px; 
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
 .lesson-card {
-  background: #ffffffcc; /* slightly transparent white */
+  background: #ffffffcc; 
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);

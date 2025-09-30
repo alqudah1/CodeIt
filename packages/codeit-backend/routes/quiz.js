@@ -1,8 +1,8 @@
 const express = require('express');
-const pool = require('../db'); // import the MySQL pool
+const pool = require('../db'); 
 const router = express.Router();
 
-// ✅ Get quiz questions for a quiz (MCQs only)
+//Get quiz questions for a quiz
 router.get('/:quizId/questions', async (req, res) => {
   const { quizId } = req.params;
   try {
@@ -22,7 +22,7 @@ router.get('/:quizId/questions', async (req, res) => {
   }
 });
 
-// ✅ Submit an MCQ answer
+//Submit an MCQ answer
 router.post('/submit', async (req, res) => {
   console.log('📩 Received POST request to /api/quiz/submit');
   console.log('Request Body:', req.body);
@@ -34,7 +34,7 @@ router.post('/submit', async (req, res) => {
   }
 
   try {
-    // Fetch the question details
+    // Fetching the question details
     const [questionRows] = await pool.query(
       'SELECT quiz_id, correct_answer FROM Quiz_Questions WHERE question_id = ?',
       [questionId]
@@ -50,7 +50,7 @@ router.post('/submit', async (req, res) => {
     const isCorrect = answer === correct_answer;
     const xp = isCorrect ? 10 : 0;
 
-    // Log the quiz attempt (no question_id column here)
+    // Log the quiz attempt
     await pool.query(
       'INSERT INTO Student_Quiz_Attempt (student_id, quiz_id, score, attempt_date) VALUES (?, ?, ?, NOW())',
       [studentId, quiz_id, xp]

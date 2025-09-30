@@ -1,4 +1,3 @@
-// src/components/Header/Header.js
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
@@ -9,8 +8,8 @@ const Header = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();           // clears user from AuthContext
-    navigate('/login'); // redirects to login page
+    logout();           // clear AuthContext
+    navigate('/login'); 
   };
 
   return (

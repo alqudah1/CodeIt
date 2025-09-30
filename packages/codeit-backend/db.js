@@ -10,7 +10,7 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Test the connection once at startup
+// Test the connection
 (async () => {
   try {
     const connection = await pool.getConnection();

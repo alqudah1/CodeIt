@@ -1,4 +1,3 @@
-// gamified-elearning/src/context/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export const AuthContext = createContext();
@@ -30,7 +29,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     setUser(null);
-    // No navigation here - let the component handle it
+   
   };
 
   console.log('AuthContext render - user:', user, 'loading:', loading);
@@ -41,7 +40,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Add useAuth hook
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

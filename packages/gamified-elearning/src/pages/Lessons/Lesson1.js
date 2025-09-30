@@ -1,4 +1,3 @@
-// src/components/lesson1/Lesson1.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PythonEditor from '../pythoneditor/PythonEditor';
@@ -14,7 +13,7 @@ const Lesson1 = () => {
 
   return (
     <div className="python-lesson">
-      {/* Header now uses AuthContext internally, no props needed */}
+     
       <Header />
 
       <div className="lesson-wrapper">
