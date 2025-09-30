@@ -1,6 +1,8 @@
+// src/components/MainPage.js
 import React, { useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import Header from '../Header/Header'; // Import the Header component
 import './MainPage.css';
 
 const lessonIds = [1, 2, 3, 4, 5];
@@ -28,6 +30,8 @@ const MainPage = () => {
   const navigateToQuiz = (num) => navigate(`/quiz/${quizIdMap[num]}`);
   const navigateToGame = (num) => navigate(`/game/${num}`);
   const navigateHome = () => navigate('/');
+  const navigateToLogin = () => navigate('/login');
+  const navigateToRegister = () => navigate('/register');
 
   const handleLogout = () => {
     logout();
@@ -39,37 +43,7 @@ const MainPage = () => {
 
   return (
     <div className="main-page">
-      <header className="header">
-        <div className="logo-area">
-          <img src="/images/CodeItLogo.png" alt="Logo" className="logo-img" />
-          <span className="logo-text">CodeIt</span>
-        </div>
-        <nav className="nav-links">
-          <Link to="/">Home</Link>
-          <Link to="/MainPage">Dashboard</Link>
-          <Link to="/lesson/1">Lessons</Link>
-          <Link to="/quiz/2">Quizzes</Link>
-          <Link to="/game/1">Games</Link>
-        </nav>
-        <div className="auth-links">
-          {user ? (
-            <>
-              <span className="user-name">{user.name}</span>
-              <Link to="#" onClick={handleLogout} className="logout-link">
-                Logout
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link to="/login">Login</Link>
-              <Link to="/register" className="register-pill">
-                Get Started
-              </Link>
-            </>
-          )}
-        </div>
-      </header>
-
+      <Header user={user} logout={logout} navigateToLogin={navigateToLogin} navigateToRegister={navigateToRegister} />
       <main className="main-content">
         <section className="overview-card">
           <h2>Keep the sunshine streak going</h2>

@@ -1,15 +1,19 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import './PythonLesson.css'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import PythonEditor from '../pythoneditor/PythonEditor';
+import Header from '../Header/Header'; 
+import './PythonLesson.css';
 
 const Lesson2 = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [lessonOutput, setLessonOutput] = useState(''); // Add state for output
 
-  const goToDashboard = () => navigate('/MainPage')
-  const goToQuiz = () => navigate('/quiz/3')
+  const goToDashboard = () => navigate('/MainPage');
+  const goToQuiz = () => navigate('/quiz/3');
 
   return (
     <div className="python-lesson">
+      <Header />
       <div className="lesson-wrapper">
         <button type="button" className="lesson-nav" onClick={goToDashboard}>
           ← Back to Dashboard
@@ -38,16 +42,12 @@ const Lesson2 = () => {
               <pre>{`print(age)`}</pre>
             </div>
 
-            <div className="output">
-              <h3>What you&apos;ll see:</h3>
-              <pre>Alex</pre>
-              <pre>10</pre>
-            </div>
-
             <div className="try-it">
               <h3>Your sunny challenge:</h3>
               <p>Change &quot;Alex&quot; to your own name and run the code!</p>
             </div>
+            <PythonEditor initialCode='name = "Alex"\nage = 10\nprint(name)\nprint(age)' onOutput={setLessonOutput} />
+            
           </div>
 
           <footer className="lesson-footer">
@@ -58,7 +58,7 @@ const Lesson2 = () => {
         </section>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Lesson2
+export default Lesson2;

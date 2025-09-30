@@ -1,15 +1,19 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import './PythonLesson.css'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import PythonEditor from '../pythoneditor/PythonEditor';
+import Header from '../Header/Header'; 
+import './PythonLesson.css';
 
 const Lesson4 = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [lessonOutput, setLessonOutput] = useState(''); // Add state for output
 
-  const goToDashboard = () => navigate('/MainPage')
-  const goToQuiz = () => navigate('/quiz/5')
+  const goToDashboard = () => navigate('/MainPage');
+  const goToQuiz = () => navigate('/quiz/5');
 
   return (
     <div className="python-lesson">
+      <Header />
       <div className="lesson-wrapper">
         <button type="button" className="lesson-nav" onClick={goToDashboard}>
           ← Back to Dashboard
@@ -58,6 +62,8 @@ if password == "python123":
               <p>Change the password variable and see what happens.</p>
               <p>Use if and else to check if a number is even or odd.</p>
             </div>
+            <PythonEditor initialCode='age = 10\nif age > 5:\n  print("You are older than 5!")' onOutput={setLessonOutput} />
+            
           </div>
 
           <footer className="lesson-footer">
@@ -68,7 +74,7 @@ if password == "python123":
         </section>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Lesson4
+export default Lesson4;

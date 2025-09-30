@@ -1,15 +1,19 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import './PythonLesson.css'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import PythonEditor from '../pythoneditor/PythonEditor';
+import Header from '../Header/Header'; 
+import './PythonLesson.css';
 
 const Lesson3 = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [lessonOutput, setLessonOutput] = useState(''); // Add state for output
 
-  const goToDashboard = () => navigate('/MainPage')
-  const goToQuiz = () => navigate('/quiz/4')
+  const goToDashboard = () => navigate('/MainPage');
+  const goToQuiz = () => navigate('/quiz/4');
 
   return (
     <div className="python-lesson">
+      <Header />
       <div className="lesson-wrapper">
         <button type="button" className="lesson-nav" onClick={goToDashboard}>
           ← Back to Dashboard
@@ -90,6 +94,8 @@ const Lesson3 = () => {
               <p>Change the numbers in the examples and see what happens!</p>
               <p>Try using **, %, and // in different ways.</p>
             </div>
+            <PythonEditor initialCode='print(5 + 3)\nprint(10 - 2)\nprint(4 * 2)\nprint(16 / 4)' onOutput={setLessonOutput} />
+           
           </div>
 
           <footer className="lesson-footer">
@@ -100,7 +106,7 @@ const Lesson3 = () => {
         </section>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Lesson3
+export default Lesson3;

@@ -1,15 +1,22 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import './PythonLesson.css'
+// src/components/lesson1/Lesson1.js
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import PythonEditor from '../pythoneditor/PythonEditor';
+import Header from '../Header/Header'; 
+import './PythonLesson.css';
 
 const Lesson1 = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [lessonOutput, setLessonOutput] = useState('');
 
-  const goToDashboard = () => navigate('/MainPage')
-  const goToQuiz = () => navigate('/quiz/2')
+  const goToDashboard = () => navigate('/MainPage');
+  const goToQuiz = () => navigate('/quiz/2');
 
   return (
     <div className="python-lesson">
+      {/* Header now uses AuthContext internally, no props needed */}
+      <Header />
+
       <div className="lesson-wrapper">
         <button type="button" className="lesson-nav" onClick={goToDashboard}>
           ← Back to Dashboard
@@ -41,17 +48,13 @@ const Lesson1 = () => {
               <pre>{`print("Hello, Python!")`}</pre>
               <pre>{`print("I love coding!")`}</pre>
             </div>
-
-            <div className="output">
-              <h3>What you&apos;ll see:</h3>
-              <pre>Hello, Python!</pre>
-              <pre>I love coding!</pre>
-            </div>
-
+            
             <div className="try-it">
               <h3>Your sunny challenge:</h3>
               <p>Change &quot;Hello, Python!&quot; to your own message and see what happens!</p>
             </div>
+
+            <PythonEditor initialCode='print("Hello, Python!")' onOutput={setLessonOutput} />
           </div>
 
           <footer className="lesson-footer">
@@ -62,7 +65,7 @@ const Lesson1 = () => {
         </section>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Lesson1
+export default Lesson1;

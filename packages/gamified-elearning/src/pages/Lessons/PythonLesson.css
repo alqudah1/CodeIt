@@ -1,123 +1,405 @@
-/* Container for the entire lesson page */
+/* Page canvas */
 .python-lesson {
-    max-width: 900px;  
-    margin: 0 auto;  
-    padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;  
+  min-height: 100vh;
+  padding: 4rem 1.5rem 5rem;
+  background: linear-gradient(135deg, #fff5a5 0%, #ffd6a5 30%, #ffabab 60%, #9bf6ff 100%);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  font-family: 'Poppins', sans-serif;
+  color: #041638;
 }
 
-/* Styling for the back button */
-.back-button {
-    padding: 10px 20px;
-    color: white;
-    border: none;
-    border-radius: 5px;  
-    cursor: pointer;
-    font-size: 16px;
-    margin-bottom: 30px;
-    transition: background-color 0.3s;  
+.lesson-wrapper {
+  width: min(950px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-/* Container for lesson content */
+.lesson-nav {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.75);
+  border: 2px solid rgba(255, 159, 28, 0.45);
+  color: #0f172a;
+  font-weight: 700;
+  padding: 0.65rem 1.4rem;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 16px 28px rgba(4, 22, 56, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.lesson-nav:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 22px 36px rgba(4, 22, 56, 0.16);
+}
+
+.lesson-card {
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 28px;
+  border: 2px solid rgba(255, 183, 3, 0.28);
+  box-shadow: 0 38px 70px rgba(4, 22, 56, 0.18);
+  backdrop-filter: blur(16px);
+  padding: 2.5rem clamp(1.5rem, 4vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+.lesson-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.lesson-pill {
+  align-self: flex-start;
+  padding: 0.4rem 1.1rem;
+  border-radius: 999px;
+  background: linear-gradient(120deg, #ff9f1c, #ffd166);
+  color: #fff7ed;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lesson-header h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+  color: #041638;
+  line-height: 1.15;
+}
+
+.lesson-subtitle {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #0b3d66;
+  line-height: 1.6;
+}
+
 .lesson-content {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;  
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);  
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
 }
 
-/* Lesson title */
-.lesson-content h1 {
-    color: #2c3e50;  
-    margin-bottom: 30px;
-    border-bottom: 2px solid #eee; 
-    padding-bottom: 10px;
-}
-
-/* Section titles */
 .lesson-content h2 {
-    color: #2c3e50;
-    margin-top: 25px;
+  margin: 0;
+  font-size: 1.4rem;
+  color: #0b3d66;
 }
 
-/* Styling for code examples */
+.lesson-content p {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: #134063;
+}
+
+.lesson-content code {
+  background: rgba(255, 231, 171, 0.65);
+  padding: 0.15rem 0.4rem;
+  border-radius: 8px;
+  font-weight: 700;
+  color: #c2410c;
+}
+
 .code-example {
-    background: #282c34;  
-    color: #abb2bf;  
-    padding: 15px;
-    border-radius: 8px;
-    margin: 15px 0;
-    overflow-x: auto;  
+  background: linear-gradient(135deg, #0f172a, #1e3a8a);
+  color: #f8fafc;
+  border-radius: 20px;
+  padding: 1.4rem;
+  box-shadow: 0 26px 40px rgba(15, 23, 42, 0.35);
+  border: 2px solid rgba(148, 163, 184, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-/* Code block formatting */
-pre {
-    margin: 0;
-    font-family: 'Consolas', 'Monaco', monospace;  
-    line-height: 1.5;
+.code-example h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #facc15;
 }
 
-/* Output section styling */
+.code-example pre {
+  margin: 0;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
 .output {
-    background: #f5f5f5;  
-    padding: 15px;
-    border-radius: 8px;
-    margin: 15px 0;
-    border-left: 4px solid #4CAF50;  
+  background: rgba(255, 255, 255, 0.85);
+  color: #0b3d66;
+  border-radius: 16px;
+  padding: 1.1rem;
+  border: 2px solid rgba(155, 246, 255, 0.5);
+  box-shadow: 0 18px 28px rgba(96, 165, 250, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
-/* "Try It Yourself" section styling */
+.output h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #0b3d66;
+}
+
+.output pre {
+  margin: 0;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
 .try-it {
-    background: #e8f5e9;  
-    padding: 15px;
-    border-radius: 8px;
-    margin: 25px 0;
+  background: linear-gradient(135deg, rgba(155, 246, 255, 0.45), rgba(160, 255, 159, 0.45));
+  border: 2px solid rgba(160, 255, 159, 0.55);
+  border-radius: 18px;
+  padding: 1.2rem;
+  box-shadow: 0 20px 32px rgba(11, 116, 106, 0.18);
 }
 
-/* Title styling within the "Try It Yourself" section */
 .try-it h3 {
-    color: #2e7d32; 
-    margin-top: 0;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.05rem;
+  color: #047857;
 }
 
-/* Container for math-related tables */
 .math-table {
-    overflow-x: auto;  
-    margin: 20px 0;
+  overflow-x: auto;
+  border-radius: 18px;
+  border: 2px solid rgba(255, 183, 3, 0.35);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 22px 36px rgba(4, 22, 56, 0.15);
 }
 
-/* Table styling */
-table {
-    width: 100%;
-    border-collapse: collapse; 
+.math-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.98rem;
 }
 
-/* Table header and cell styling */
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;  
+.math-table th,
+.math-table td {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+  color: #0b3d66;
 }
 
-/* Header row styling */
-th {
-    background-color: #4CAF50; 
-    color: white;
+.math-table th {
+  background: linear-gradient(135deg, #ff9f1c, #ff6f91);
+  color: #fff;
+  font-weight: 700;
 }
 
-/* Alternate row shading for better readability */
-tr:nth-child(even) {
-    background-color: #f2f2f2; 
+.math-table tr:nth-child(even) {
+  background-color: rgba(255, 245, 165, 0.45);
 }
 
-/* Responsive design adjustments for smaller screens */
+.lesson-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.quiz-button {
+  background: linear-gradient(120deg, #ff85a1, #ff9f1c);
+  color: #fff;
+  border: none;
+  padding: 0.9rem 1.8rem;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 20px 34px rgba(255, 133, 161, 0.32);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quiz-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 26px 40px rgba(255, 159, 28, 0.32);
+}
+
+/* Code font fallback */
+pre {
+  font-family: 'Fira Code', 'Consolas', monospace;
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .python-lesson {
-        padding: 15px;
-    }
-    
-    .lesson-content {
-        padding: 15px;
-    }
+  .python-lesson {
+    padding: 3rem 1rem 4rem;
+  }
+
+  .lesson-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .lesson-footer {
+    justify-content: center;
+  }
+
+  .lesson-nav {
+    align-self: stretch;
+    text-align: center;
+  }
+}
+
+/* Add to src/PythonLesson.css */
+.python-editor {
+  background: linear-gradient(135deg, rgba(155, 246, 255, 0.45), rgba(160, 255, 159, 0.45));
+  border: 2px solid rgba(160, 255, 159, 0.55);
+  border-radius: 18px;
+  padding: 1.2rem;
+  box-shadow: 0 20px 32px rgba(11, 116, 106, 0.18);
+  margin-bottom: 1.5rem;
+}
+
+.python-editor h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.05rem;
+  color: #047857;
+}
+
+.code-editor {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 0.8rem;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 8px;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.9);
+  resize: vertical;
+}
+
+.run-button {
+  background: linear-gradient(120deg, #ff85a1, #ff9f1c);
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 16px 28px rgba(255, 133, 161, 0.32);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.run-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 36px rgba(255, 159, 28, 0.32);
+}
+
+.run-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.editor-output {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.85);
+  color: #0b3d66;
+  border-radius: 16px;
+  border: 2px solid rgba(155, 246, 255, 0.5);
+  box-shadow: 0 18px 28px rgba(96, 165, 250, 0.18);
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-y: auto;
+  max-height: 150px;
+}
+
+.input-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.input-box {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.input-box input {
+  padding: 8px;
+  width: 200px;
+  margin-top: 10px;
+  margin-right: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.input-box button {
+  padding: 8px 12px;
+  border: none;
+  background: #4cafef;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.input-box button:hover {
+  background: #2196f3;
+}
+
+
+.python-lesson {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center content horizontally */
+  padding: 20px;
+  background: linear-gradient(120deg, #ffeaa7, #fab1a0);
+}
+
+.lesson-wrapper {
+  width: 100%;
+  max-width: 900px; /* controls content width */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.lesson-card {
+  background: #ffffffcc; /* slightly transparent white */
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.lesson-nav {
+  align-self: flex-start;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #f1f2f6;
+  border: none;
+  cursor: pointer;
+}
+
+.lesson-content pre {
+  background: #1e2a4d;
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
 }

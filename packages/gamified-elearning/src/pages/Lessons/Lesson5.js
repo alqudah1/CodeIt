@@ -1,15 +1,19 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import './PythonLesson.css'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import PythonEditor from '../pythoneditor/PythonEditor';
+import Header from '../Header/Header'; 
+import './PythonLesson.css';
 
 const Lesson5 = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [lessonOutput, setLessonOutput] = useState(''); // Add state for output
 
-  const goToDashboard = () => navigate('/MainPage')
-  const goToQuiz = () => navigate('/quiz/6')
+  const goToDashboard = () => navigate('/MainPage');
+  const goToQuiz = () => navigate('/quiz/6');
 
   return (
     <div className="python-lesson">
+      <Header />
       <div className="lesson-wrapper">
         <button type="button" className="lesson-nav" onClick={goToDashboard}>
           ← Back to Dashboard
@@ -65,6 +69,13 @@ This is loop number 3
                 </pre>
               </div>
             </div>
+
+            <div className="try-it">
+              <h3>Your sunny challenge:</h3>
+              <p>Change the range or condition and see what happens!</p>
+            </div>
+            <PythonEditor initialCode='for i in range(5):\n    print("I love Python!")' onOutput={setLessonOutput} />
+           
           </div>
 
           <footer className="lesson-footer">
@@ -75,7 +86,7 @@ This is loop number 3
         </section>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Lesson5
+export default Lesson5;
