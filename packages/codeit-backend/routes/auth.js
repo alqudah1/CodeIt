@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../db');
 
-const JWT_SECRET = 'your-jwt-secret-key'; 
+const JWT_SECRET = 'yaan*23AUG'; 
 
 router.post('/signup', async (req, res) => {
   console.log('Signup endpoint reached. Body:', req.body);
@@ -101,7 +101,12 @@ router.post('/login', async (req, res) => {
     if (!isPasswordValid) return res.status(400).json({ error: 'Invalid password' });
 
     const token = jwt.sign({ user_id: user.user_id, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '1h' });
-    res.json({ message: 'Login successful', token, user: { name: user.name, role: user.role } });
+    console.log('Generated token payload:', { user_id: user.user_id, role: user.role, name: user.name });
+    res.json({
+      message: 'Login successful',
+      token,
+      user: { id: user.user_id, name: user.name, role: user.role } 
+    });
   } catch (err) {
     console.error('Unexpected error:', err.code, err.message);
     res.status(500).json({ error: err.message });
@@ -109,5 +114,4 @@ router.post('/login', async (req, res) => {
     if (connection) connection.release();
   }
 });
-
 module.exports = router;

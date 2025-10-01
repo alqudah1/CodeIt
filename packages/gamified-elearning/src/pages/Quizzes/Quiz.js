@@ -2,16 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Quiz.css';
+import { useAuth } from '../../context/AuthContext'; 
 
 const Quiz = ({ quizId }) => {
   const navigate = useNavigate();
+  const { user, loading } = useAuth(); 
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
   const [feedback, setFeedback] = useState('');
   const [xp, setXp] = useState(0);
-  const studentId = 3;
+
+ 
+  useEffect(() => {
+    console.log('Quiz.js - AuthContext user:', user);
+  }, [user]);
+
+ 
+  const studentId = user?.id;
 
   const quizIdMap = {
     '2': 1,
@@ -22,9 +31,16 @@ const Quiz = ({ quizId }) => {
   };
 
   useEffect(() => {
+    if (loading || !studentId) {
+      setFeedback(loading ? 'Loading...' : 'Please log in to take the quiz.');
+      return;
+    }
+
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/quiz/${quizId}/questions`);
+        const response = await axios.get(`http://localhost:8080/api/quiz/${quizId}/questions`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
         console.log('API Response:', response);
         console.log('Response Data:', response.data);
 
@@ -40,29 +56,18 @@ const Quiz = ({ quizId }) => {
           return;
         }
 
-        console.log('Response is an array with length:', response.data.length);
-
         if (response.data.length === 0) {
           console.log('No questions found');
           setFeedback('No questions found for this quiz.');
           return;
         }
 
-        console.log('Transforming questions...');
-        const transformedQuestions = response.data.map((q, index) => {
-          console.log(`Processing question ${index + 1}:`, q);
-          return {
-            question_id: q.question_id,
-            question: q.question_text || 'Question text missing',
-            options: [
-              q.option_a || '',
-              q.option_b || '',
-              q.option_c || '',
-              q.option_d || ''
-            ].filter(opt => opt !== ''),
-            answer: q.correct_answer || 'Answer missing'
-          };
-        });
+        const transformedQuestions = response.data.map((q, index) => ({
+          question_id: q.question_id,
+          question: q.question_text || 'Question text missing',
+          options: [q.option_a, q.option_b, q.option_c, q.option_d].filter(opt => opt),
+          answer: q.correct_answer || 'Answer missing',
+        }));
         console.log('Transformed Questions:', transformedQuestions);
         setQuestions(transformedQuestions);
       } catch (error) {
@@ -80,23 +85,34 @@ const Quiz = ({ quizId }) => {
       }
     };
     fetchQuestions();
-  }, [quizId]);
+  }, [quizId, studentId, loading]); 
 
   const handleAnswerChange = async (selectedOption) => {
+    if (loading || !studentId) {
+      setFeedback(loading ? 'Loading...' : 'Please log in to submit answers.');
+      return;
+    }
+
     setAnswers((prev) => ({
       ...prev,
-      [currentQuestion]: selectedOption
+      [currentQuestion]: selectedOption,
     }));
 
     try {
-      const response = await axios.post('http://localhost:8080/api/quiz/submit', {
-        studentId,
-        questionId: questions[currentQuestion].question_id,
-        answer: selectedOption,
-      });
+      const response = await axios.post(
+        'http://localhost:8080/api/quiz/submit',
+        {
+          studentId,
+          questionId: questions[currentQuestion].question_id,
+          answer: selectedOption,
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }
+      );
 
       setFeedback(response.data.isCorrect ? '✅ Correct!' : `❌ Incorrect. Correct answer: ${response.data.answer || 'not provided'}`);
-      setXp(prevXp => prevXp + (response.data.xpEarned || 0));
+      setXp((prevXp) => prevXp + (response.data.xpEarned || 0));
     } catch (error) {
       console.error('Error submitting answer:', error);
       if (error.response) {
@@ -118,26 +134,26 @@ const Quiz = ({ quizId }) => {
   };
 
   const checkScore = () => {
-    const newScore = xp / 10;
+    const newScore = xp / 10; 
     setScore(newScore);
   };
 
   const goToNext = () => {
-    // Redirect to the single puzzle in Robot-puzzle app without query parameters
-    //window.location.href = `http://localhost:3001/puzzle`;
     if (quizId === '2') {
-      // Redirect to Robot Puzzle after Quiz 1
       window.location.href = `http://localhost:3001/puzzle`;
     } else if (quizId === '3') {
-      // Redirect to Apple Game after Quiz 2
       window.location.href = `http://localhost:3001/apple-game`;
     } else {
-      console.warn("Quiz ID not mapped for redirection.");
+      console.warn('Quiz ID not mapped for redirection.');
     }
   };
 
+  if (loading || !studentId) {
+    return <div className="quiz-container">{feedback || 'Loading...'}</div>;
+  }
+
   if (questions.length === 0 && !feedback) {
-    return <div className="quiz-container">Loading...</div>;
+    return <div className="quiz-container">Loading questions...</div>;
   }
 
   if (feedback && questions.length === 0) {

@@ -1,8 +1,28 @@
 const express = require('express');
 const pool = require('../db'); 
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = 'yaan*23AUG'; 
 
-//Get quiz questions for a quiz
+// Middleware to verify JWT and set req.user
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; 
+
+  if (!token) return res.status(401).json({ error: 'Access denied. No token provided.' });
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ error: 'Invalid token' });
+    req.user = user; 
+    console.log('Decoded User from Token:', req.user); 
+    next();
+  });
+};
+
+// Apply JWT middleware to all quiz routes
+router.use(authenticateToken);
+
+// Get quiz questions for a quiz
 router.get('/:quizId/questions', async (req, res) => {
   const { quizId } = req.params;
   try {
@@ -22,19 +42,22 @@ router.get('/:quizId/questions', async (req, res) => {
   }
 });
 
-//Submit an MCQ answer
+// Submit an MCQ answer
 router.post('/submit', async (req, res) => {
   console.log('📩 Received POST request to /api/quiz/submit');
   console.log('Request Body:', req.body);
+  console.log('Authenticated User:', req.user); 
 
-  const { studentId, questionId, answer } = req.body;
+  //Use authenticated user_id as default
+  const studentId = req.body.studentId || req.user.user_id; // Use user_id from token
+  const { questionId, answer } = req.body;
 
   if (!studentId || !questionId || !answer) {
     return res.status(400).json({ error: 'Missing required fields: studentId, questionId, answer' });
   }
 
   try {
-    // Fetching the question details
+    //Fetching the question details
     const [questionRows] = await pool.query(
       'SELECT quiz_id, correct_answer FROM Quiz_Questions WHERE question_id = ?',
       [questionId]
@@ -46,11 +69,11 @@ router.post('/submit', async (req, res) => {
 
     const { quiz_id, correct_answer } = questionRows[0];
 
-    // Check if the answer is correct
+    //Check if the answer is correct
     const isCorrect = answer === correct_answer;
     const xp = isCorrect ? 10 : 0;
 
-    // Log the quiz attempt
+    //Log the quiz attempt
     await pool.query(
       'INSERT INTO Student_Quiz_Attempt (student_id, quiz_id, score, attempt_date) VALUES (?, ?, ?, NOW())',
       [studentId, quiz_id, xp]
@@ -62,7 +85,7 @@ router.post('/submit', async (req, res) => {
       [xp, studentId]
     );
 
-    // ✅ Check if the quiz is completed (based on number of attempts vs total questions)
+    // Check if the quiz is completed
     const [[{ count: totalQuestions }]] = await pool.query(
       'SELECT COUNT(*) AS count FROM Quiz_Questions WHERE quiz_id = ?',
       [quiz_id]

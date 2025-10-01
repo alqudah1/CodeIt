@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
     const { user, token } = userData;
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('token', token);
-    setUser(user);
+    setUser(user); // user now includes { id, name, role }
   };
 
   const logout = () => {
@@ -29,7 +29,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     setUser(null);
-   
   };
 
   console.log('AuthContext render - user:', user, 'loading:', loading);
