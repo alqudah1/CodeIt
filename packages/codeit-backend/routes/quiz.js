@@ -2,7 +2,7 @@ const express = require('express');
 const pool = require('../db'); 
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'yaan*23AUG'; 
+const JWT_SECRET = 'yaan*23AUG';
 
 // Middleware to verify JWT and set req.user
 const authenticateToken = (req, res, next) => {
@@ -19,7 +19,7 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-// Apply JWT middleware to all quiz routes
+
 router.use(authenticateToken);
 
 // Get quiz questions for a quiz
@@ -48,7 +48,7 @@ router.post('/submit', async (req, res) => {
   console.log('Request Body:', req.body);
   console.log('Authenticated User:', req.user); 
 
-  //Use authenticated user_id as default
+  
   const studentId = req.body.studentId || req.user.user_id; // Use user_id from token
   const { questionId, answer } = req.body;
 
@@ -79,13 +79,13 @@ router.post('/submit', async (req, res) => {
       [studentId, quiz_id, xp]
     );
 
-    // Update student's XP
+    //Update student's XP
     await pool.query(
       'UPDATE Students SET total_xp = total_xp + ? WHERE user_id = ?',
       [xp, studentId]
     );
 
-    // Check if the quiz is completed
+    //Check if the quiz is completed
     const [[{ count: totalQuestions }]] = await pool.query(
       'SELECT COUNT(*) AS count FROM Quiz_Questions WHERE quiz_id = ?',
       [quiz_id]

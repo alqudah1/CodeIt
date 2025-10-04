@@ -72,6 +72,7 @@ const Quiz = ({ quizId }) => {
         setQuestions(transformedQuestions);
       } catch (error) {
         console.error('Error fetching questions:', error);
+        
         if (error.response) {
           console.error('Error Response:', error.response.data);
           setFeedback(`Failed to load quiz questions: ${error.response.data.error || 'Unknown error'}`);
@@ -143,7 +144,14 @@ const Quiz = ({ quizId }) => {
       window.location.href = `http://localhost:3001/puzzle`;
     } else if (quizId === '3') {
       window.location.href = `http://localhost:3001/apple-game`;
-    } else {
+    }else if (quizId === '4') {
+      window.location.href = `http://localhost:3001/math-game`;
+    }else if (quizId === '5') {
+      window.location.href = `http://localhost:3001/condition-game`;
+    } else if (quizId === '6') {
+      window.location.href = `http://localhost:3001/loop-game`;
+    }
+    else {
       console.warn('Quiz ID not mapped for redirection.');
     }
   };
