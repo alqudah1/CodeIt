@@ -1,11 +1,14 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import './RobotAnimation.css';
+import { trackPuzzleGameCompletion, showXPNotification, initializeTimeTracker } from '../utils/progressTracker';
 
 const TalkingRobot = ({ onUnlock }) => {
   const [codeInput, setCodeInput] = useState('');
   const [isActive, setIsActive] = useState(false);
   const [showSpeech, setShowSpeech] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [timeTracker] = useState(() => initializeTimeTracker());
+  const [gameCompleted, setGameCompleted] = useState(false);
 
   // Memoized regex pattern with case insensitivity
   const correctPattern = useMemo(() => 
@@ -28,9 +31,35 @@ const TalkingRobot = ({ onUnlock }) => {
 
   // Activation effect
   useEffect(() => {
-    if (correctPattern.test(codeInput)) {
+    if (correctPattern.test(codeInput) && !gameCompleted) {
       setIsActive(true);
       setShowSpeech(true);
+      setGameCompleted(true);
+      
+      // Track game completion with XP
+      const completeGame = async () => {
+        try {
+          const timeSpent = timeTracker.getTimeSpent();
+          const score = 100; // Perfect score for correct code
+          const isHighScore = true; // First completion is always high score
+          
+          const result = await trackPuzzleGameCompletion(
+            1, // lessonNumber (Lesson 1)
+            'robot-puzzle', // gameType
+            score,
+            timeSpent
+          );
+          
+          // Show XP notification
+          showXPNotification(result.xpEarned, result.baseXP, result.bonusXP);
+          
+          console.log('Robot puzzle completed:', result);
+        } catch (error) {
+          console.error('Error tracking game completion:', error);
+        }
+      };
+      
+      completeGame();
       
       if (typeof onUnlock === 'function') {
         onUnlock();  // Call only if it's a function
@@ -43,7 +72,7 @@ const TalkingRobot = ({ onUnlock }) => {
     } else {
       setIsActive(false);
     }
-  }, [codeInput, onUnlock, correctPattern]);
+  }, [codeInput, onUnlock, correctPattern, gameCompleted, timeTracker]);
 
   // Calculate eye movement based on mouse position
   const eyeMovement = {
@@ -112,12 +141,34 @@ const TalkingRobot = ({ onUnlock }) => {
   />
   
   {showSpeech && (
-    <button 
-      className="gamified-btn" 
-      onClick={() => window.location.href = "http://localhost:3000/MainPage"}
-    >
-      🎮 Back to Gamified Learning!
-    </button>
+    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+      <div style={{ 
+        backgroundColor: '#4ecca3', 
+        color: 'white', 
+        padding: '15px', 
+        borderRadius: '8px', 
+        marginBottom: '15px',
+        fontWeight: 'bold'
+      }}>
+        🎉 Puzzle Solved! +75 XP Earned!
+      </div>
+      <button 
+        className="gamified-btn" 
+        onClick={() => window.location.href = "http://localhost:3000/MainPage"}
+        style={{
+          backgroundColor: '#2e9c81',
+          color: 'white',
+          padding: '12px 24px',
+          border: 'none',
+          borderRadius: '6px',
+          fontSize: '16px',
+          fontWeight: 'bold',
+          cursor: 'pointer'
+        }}
+      >
+        🎮 Back to Gamified Learning!
+      </button>
+    </div>
   )}
 </div>
 

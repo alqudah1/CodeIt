@@ -23,12 +23,17 @@ router.post('/signup', async (req, res) => {
   let connection;
   try {
     connection = await db.getConnection();
+    
+    // Start transaction BEFORE any database operations
+    await connection.beginTransaction();
+    
     console.time('User exists check');
     const [results] = await connection.query('SELECT * FROM Users WHERE email = ?', [email]);
     console.timeEnd('User exists check');
 
     if (results.length) {
       console.log('User already exists:', email);
+      await connection.rollback();
       return res.status(400).json({ error: 'User exists' });
     }
 
@@ -46,12 +51,10 @@ router.post('/signup', async (req, res) => {
     const user_id = result.insertId;
     console.log('User inserted, user_id:', user_id);
 
-    await connection.beginTransaction();
-
     if (role === 'Student') {
       console.time('Students insert');
       await connection.query(
-        'INSERT INTO Students (user_id, level_id, parent_id, total_xp) VALUES (?, 1, NULL, 0)',
+        'INSERT INTO Students (user_id, level_id, total_xp, weekly_xp, monthly_xp, last_activity) VALUES (?, 1, 0, 0, 0, NOW())',
         [user_id]
       );
       console.timeEnd('Students insert');
@@ -75,14 +78,23 @@ router.post('/signup', async (req, res) => {
       console.log('Admin creation successful for user_id:', user_id);
     }
 
+    // Commit the entire transaction
     await connection.commit();
+    console.log('✅ Transaction committed successfully');
     res.json({ message: `${role} created`, user_id });
   } catch (err) {
-    if (connection) await connection.rollback();
-    console.error('Unexpected error:', err.code, err.message, err.stack);
-    res.status(500).json({ error: `Server error: ${err.message}` });
+    if (connection) {
+      console.log('🔄 Rolling back transaction due to error');
+      await connection.rollback();
+    }
+    console.error('❌ Registration error:', err.code, err.message);
+    console.error('Stack trace:', err.stack);
+    res.status(500).json({ error: `Registration failed: ${err.message}` });
   } finally {
-    if (connection) connection.release();
+    if (connection) {
+      connection.release();
+      console.log('🔌 Database connection released');
+    }
   }
 });
 

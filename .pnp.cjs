@@ -3884,6 +3884,7 @@ const RAW_RUNTIME_STATE =
           ["@testing-library/jest-dom", "npm:6.8.0"],\
           ["@testing-library/react", "virtual:106810703f2abf458fab62b81ac93b4fb346af8c2c193a13ff5ad1920579974d7e5154bacb0341e97155457e5e0e0a02ab1f20212fb5ac03c8218126fc0f98ee#npm:16.3.0"],\
           ["@testing-library/user-event", "virtual:106810703f2abf458fab62b81ac93b4fb346af8c2c193a13ff5ad1920579974d7e5154bacb0341e97155457e5e0e0a02ab1f20212fb5ac03c8218126fc0f98ee#npm:13.5.0"],\
+          ["axios", "npm:1.12.2"],\
           ["react", "npm:18.2.0"],\
           ["react-dom", "virtual:106810703f2abf458fab62b81ac93b4fb346af8c2c193a13ff5ad1920579974d7e5154bacb0341e97155457e5e0e0a02ab1f20212fb5ac03c8218126fc0f98ee#npm:18.2.0"],\
           ["react-router-dom", "virtual:106810703f2abf458fab62b81ac93b4fb346af8c2c193a13ff5ad1920579974d7e5154bacb0341e97155457e5e0e0a02ab1f20212fb5ac03c8218126fc0f98ee#npm:7.8.2"],\

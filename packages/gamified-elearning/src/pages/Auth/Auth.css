@@ -38,6 +38,28 @@
   gap: 1.8rem;
 }
 
+.auth-back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(4, 22, 56, 0.12);
+  background: rgba(255, 255, 255, 0.72);
+  color: #0b3d66;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-back:hover {
+  background: rgba(255, 183, 3, 0.15);
+  box-shadow: 0 10px 18px rgba(255, 183, 3, 0.18);
+  transform: translateY(-1px);
+}
+
 .auth-header {
   display: flex;
   flex-direction: column;

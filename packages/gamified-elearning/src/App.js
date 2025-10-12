@@ -5,7 +5,8 @@ import MainPage from './pages/MainPage/MainPage';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
 import { AuthProvider } from './context/AuthContext';
-import { Lesson1, Lesson2, Lesson3, Lesson4, Lesson5 } from './pages/Lessons';
+import { ProgressProvider } from './context/ProgressContext';
+import { Lesson1, Lesson1Interactive, Lesson2, Lesson2Interactive, Lesson3, Lesson3Interactive, Lesson4, Lesson5 } from './pages/Lessons';
 import Quiz from './pages/Quizzes/Quiz';
 import { Game1, Game2, Game3, Game4, Game5 } from './pages/Games';
 import { AuthContext } from './context/AuthContext';
@@ -14,7 +15,7 @@ import './App.css';
 // Quiz Wrapper Component
 const QuizWrapper = () => {
   const { quizId } = useParams();
-  if (!['2', '3', '4', '5', '6'].includes(quizId)) {
+  if (!['1', '2', '3', '4', '5'].includes(quizId)) {
     return <div>Invalid Quiz ID</div>;
   }
   return <Quiz quizId={quizId} />;
@@ -33,10 +34,11 @@ const RouteLogger = () => {
 const App = () => {
   return (
     <AuthProvider>
-      <Router>
-        {/* Place RouteLogger here, outside Routes but inside Router */}
-        <RouteLogger />
-        <Routes>
+      <ProgressProvider>
+        <Router>
+          {/* Place RouteLogger here, outside Routes but inside Router */}
+          <RouteLogger />
+          <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/MainPage" element={<MainPage />} />
           <Route path="/register" element={<Register />} />
@@ -48,7 +50,9 @@ const App = () => {
           <Route path="/lesson/3" element={<Lesson3 />} />
           <Route path="/lesson/4" element={<Lesson4 />} />
           <Route path="/lesson/5" element={<Lesson5 />} />
-          
+          <Route path="/lesson/1interactive" element={<Lesson1Interactive />} />
+          <Route path="/lesson/2interactive" element={<Lesson2Interactive />} />
+          <Route path="/lesson/3interactive" element={<Lesson3Interactive />} />
           {/* Quiz Routes */}
           <Route path="/quiz/:quizId" element={<QuizWrapper />} />
           
@@ -61,8 +65,9 @@ const App = () => {
           
           {/* 404 Route */}
           <Route path="*" element={<Navigate to="/" replace />} /> {/* Now works with import */}
-        </Routes>
-      </Router>
+          </Routes>
+        </Router>
+      </ProgressProvider>
     </AuthProvider>
   );
 };

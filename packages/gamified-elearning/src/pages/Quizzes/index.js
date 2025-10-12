@@ -10,10 +10,10 @@ export default Quiz;
 
 import Quiz from './Quiz';
 
-const Quiz1 = () => <Quiz quizId="2" />;
-const Quiz2 = () => <Quiz quizId="3" />;
-const Quiz3 = () => <Quiz quizId="4" />;
-const Quiz4 = () => <Quiz quizId="5" />;
-const Quiz5 = () => <Quiz quizId="6" />;
+const Quiz1 = () => <Quiz quizId="1" />;
+const Quiz2 = () => <Quiz quizId="2" />;
+const Quiz3 = () => <Quiz quizId="3" />;
+const Quiz4 = () => <Quiz quizId="4" />;
+const Quiz5 = () => <Quiz quizId="5" />;
 
 export { Quiz1, Quiz2, Quiz3, Quiz4, Quiz5 };

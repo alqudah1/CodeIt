@@ -5,13 +5,6 @@ import Header from '../Header/Header';
 import './MainPage.css';
 
 const lessonIds = [1, 2, 3, 4, 5];
-const quizIdMap = {
-  1: 2,
-  2: 3,
-  3: 4,
-  4: 5,
-  5: 6,
-};
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -26,7 +19,7 @@ const MainPage = () => {
   }, [user, loading, navigate]);
 
   const navigateToLesson = (num) => navigate(`/lesson/${num}`);
-  const navigateToQuiz = (num) => navigate(`/quiz/${quizIdMap[num]}`);
+  const navigateToQuiz = (num) => navigate(`/quiz/${num}`);
   const navigateToGame = (num) => navigate(`/game/${num}`);
   const navigateHome = () => navigate('/');
   const navigateToLogin = () => navigate('/login');

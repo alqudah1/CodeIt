@@ -3,5 +3,8 @@ import Lesson2 from './Lesson2';
 import Lesson3 from './Lesson3';
 import Lesson4 from './Lesson4';
 import Lesson5 from './Lesson5';
+import Lesson1Interactive from './Lesson1Interactive';
+import Lesson2Interactive from './Lesson2Interactive';
+import Lesson3Interactive from './Lesson3Interactive';
 
-export { Lesson1, Lesson2, Lesson3, Lesson4, Lesson5 };
+export { Lesson1, Lesson2, Lesson3, Lesson4, Lesson5, Lesson1Interactive, Lesson2Interactive, Lesson3Interactive };

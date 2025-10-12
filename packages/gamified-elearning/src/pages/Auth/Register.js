@@ -43,6 +43,13 @@ export default function Register() {
         </div>
       ))}
       <div className="auth-card">
+      <button
+          type="button"
+          className="auth-back"
+          onClick={() => navigate('/')}
+        >
+          ← Back to Home
+        </button>
         <header className="auth-header">
           <span className="auth-pill">Join the fun</span>
           <h1>Create your CodeIt adventure</h1>

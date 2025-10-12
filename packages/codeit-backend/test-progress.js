@@ -20,5 +20,7 @@ app.use('/api/rewards', rewardsRoutes);
 
 const PORT = 8080;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log('📊 Progress API endpoint: http://localhost:8080/api/rewards/progress-percentages');
+  console.log('🔑 Make sure to include Authorization header with Bearer token');
 });

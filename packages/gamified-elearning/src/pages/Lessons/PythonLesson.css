@@ -4,17 +4,22 @@
   padding: 4rem 1.5rem 5rem;
   background: linear-gradient(135deg, #fff5a5 0%, #ffd6a5 30%, #ffabab 60%, #9bf6ff 100%);
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   font-family: 'Poppins', sans-serif;
   color: #041638;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .lesson-wrapper {
-  width: min(950px, 100%);
+  width: min(1200px, 92%);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
 }
 
 .lesson-nav {
@@ -46,6 +51,8 @@
   display: flex;
   flex-direction: column;
   gap: 2.25rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .lesson-header {
@@ -363,43 +370,429 @@ pre {
 }
 
 
+/* Enhanced Gamification Styles */
+
+/* Reset any potential layout conflicts */
+.python-lesson * {
+  box-sizing: border-box;
+}
+
 .python-lesson {
-  display: flex;
-  flex-direction: column;
-  align-items: center; 
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Achievement Notification */
+.achievement-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #ff6b6b, #feca57);
+  color: white;
   padding: 20px;
-  background: linear-gradient(120deg, #ffeaa7, #fab1a0);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+  z-index: 1000;
+  animation: slideInRight 0.5s ease-out;
+  max-width: 300px;
 }
 
-.lesson-wrapper {
-  width: 100%;
-  max-width: 900px; 
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.achievement-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
-.lesson-card {
-  background: #ffffffcc; 
+.achievement-content p {
+  margin: 0 0 8px 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.achievement-xp {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 8px;
   border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  font-weight: bold;
+  font-size: 0.9rem;
 }
 
-.lesson-nav {
-  align-self: flex-start;
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Progress Header */
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 15px 20px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.xp-display, .streak-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.xp-icon, .streak-icon {
+  font-size: 1.2rem;
+}
+
+.xp-text, .streak-text {
+  font-size: 1rem;
+}
+
+/* Lesson Progress Container */
+.lesson-progress-container {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 15px 20px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
-  padding: 8px 12px;
-  border-radius: 6px;
-  background: #f1f2f6;
-  border: none;
-  cursor: pointer;
+  font-weight: bold;
+  color: #2c3e50;
 }
 
-.lesson-content pre {
-  background: #1e2a4d;
-  color: #fff;
-  padding: 12px;
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4ecdc4, #44a08d);
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+/* Lesson Steps */
+.lesson-step {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.lesson-step.completed {
+  border-color: #4ecdc4;
+  background: rgba(78, 205, 196, 0.1);
+}
+
+.lesson-step.completed::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  background: #4ecdc4;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.step-header:hover {
+  transform: translateX(5px);
+}
+
+.step-number {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.lesson-step.completed .step-number {
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+}
+
+.step-header h2 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.3rem;
+}
+
+.step-check {
+  font-size: 1.5rem;
+  margin-left: auto;
+}
+
+/* Challenge Feedback */
+.challenge-feedback {
+  background: linear-gradient(135deg, #a8edea, #fed6e3);
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+  border: 2px solid #4ecdc4;
+  animation: bounceIn 0.5s ease;
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Achievements Section */
+.achievements-section {
+  background: linear-gradient(135deg, #ffecd2, #fcb69f);
+  padding: 20px;
+  border-radius: 15px;
+  margin: 20px 0;
+  border: 2px solid #ff9a9e;
+}
+
+.achievements-section h3 {
+  margin: 0 0 15px 0;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.achievement-badge {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 15px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.achievement-badge:hover {
+  transform: translateY(-2px);
+}
+
+.achievement-icon {
+  font-size: 1.5rem;
+}
+
+.achievement-title {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+/* Enhanced Python Editor Styles */
+.python-editor {
+  background: linear-gradient(135deg, rgba(155, 246, 255, 0.45), rgba(160, 255, 159, 0.45));
+  border: 2px solid rgba(160, 255, 159, 0.55);
+  border-radius: 18px;
+  padding: 1.2rem;
+  box-shadow: 0 20px 32px rgba(11, 116, 106, 0.18);
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.python-editor::before {
+  content: '🎯';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 1.5rem;
+  background: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.python-editor h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.05rem;
+  color: #047857;
+}
+
+.code-editor {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 0.8rem;
+  border: 1px solid rgba(148, 163, 184, 0.3);
   border-radius: 8px;
-  overflow-x: auto;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.9);
+  resize: vertical;
+  transition: border-color 0.3s ease;
+}
+
+.code-editor:focus {
+  outline: none;
+  border-color: #4ecdc4;
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+}
+
+.run-button {
+  background: linear-gradient(120deg, #ff85a1, #ff9f1c);
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 16px 28px rgba(255, 133, 161, 0.32);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.run-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.run-button:hover::before {
+  left: 100%;
+}
+
+.run-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 36px rgba(255, 159, 28, 0.32);
+}
+
+.run-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.editor-output {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.85);
+  color: #0b3d66;
+  border-radius: 16px;
+  border: 2px solid rgba(155, 246, 255, 0.5);
+  box-shadow: 0 18px 28px rgba(96, 165, 250, 0.18);
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-y: auto;
+  max-height: 150px;
+  position: relative;
+}
+
+.editor-output::before {
+  content: '📺 Output';
+  position: absolute;
+  top: -8px;
+  left: 10px;
+  background: white;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  color: #666;
+  border-radius: 4px;
+}
+
+/* Hide scrollbar while keeping scroll functionality */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .progress-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  
+  .achievements-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .achievement-notification {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .step-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .step-number {
+    align-self: flex-start;
+  }
 }

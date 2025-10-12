@@ -2,22 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Quiz.css';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext'; 
 import { useProgress } from '../../context/ProgressContext';
-import { showXPNotification, initializeTimeTracker } from '../../utils/progressTracker'; 
 
 const Quiz = ({ quizId }) => {
   const navigate = useNavigate();
   const { user, loading } = useAuth(); 
-  const { isQuizUnlocked, isPuzzleUnlocked, markQuizComplete } = useProgress();
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
   const [feedback, setFeedback] = useState('');
   const [xp, setXp] = useState(0);
-  const [timeTracker] = useState(() => initializeTimeTracker());
-  const [isQuizCompleted, setIsQuizCompleted] = useState(false);
+  const { isQuizUnlocked, isPuzzleUnlocked, markQuizComplete } = useProgress();
 
  
   useEffect(() => {
@@ -76,7 +73,6 @@ const Quiz = ({ quizId }) => {
         setQuestions(transformedQuestions);
       } catch (error) {
         console.error('Error fetching questions:', error);
-        
         if (error.response) {
           console.error('Error Response:', error.response.data);
           setFeedback(`Failed to load quiz questions: ${error.response.data.error || 'Unknown error'}`);
@@ -117,13 +113,7 @@ const Quiz = ({ quizId }) => {
       );
 
       setFeedback(response.data.isCorrect ? '✅ Correct!' : `❌ Incorrect. Correct answer: ${response.data.answer || 'not provided'}`);
-      const xpEarned = response.data.xpEarned || 0;
-      setXp((prevXp) => prevXp + xpEarned);
-      
-      // Show XP notification for each correct answer
-      if (response.data.isCorrect && xpEarned > 0) {
-        showXPNotification(xpEarned, xpEarned, 0);
-      }
+      setXp((prevXp) => prevXp + (response.data.xpEarned || 0));
     } catch (error) {
       console.error('Error submitting answer:', error);
       if (error.response) {
@@ -144,46 +134,25 @@ const Quiz = ({ quizId }) => {
     setFeedback('');
   };
 
-  const checkScore = async () => {
+  const checkScore = () => {
     const newScore = xp / 10; 
     setScore(newScore);
-    setIsQuizCompleted(true);
-    
-    // Mark quiz as complete
     if (quizNumber) {
       markQuizComplete(quizNumber);
     }
-    
-    // Show final quiz completion XP notification
-    const timeSpent = timeTracker.getTimeSpent();
-    const perfectScore = newScore === questions.length;
-    
-    // Calculate final XP (base + bonus for perfect score)
-    const baseXP = 75; // Base quiz completion XP
-    const bonusXP = perfectScore ? 50 : 0; // Perfect score bonus
-    const totalXP = baseXP + bonusXP;
-    
-    // Show completion notification
-    showXPNotification(totalXP, baseXP, bonusXP);
-    
-    console.log(`Quiz completed! Score: ${newScore}/${questions.length}, XP: ${totalXP}`);
   };
 
   const goToNext = () => {
-    if (quizId === '1') {
-      window.location.href = `http://localhost:3001/puzzle`;
-    } else if (quizId === '2') {
-      window.location.href = `http://localhost:3001/apple-game`;
-    }else if (quizId === '3') {
-      window.location.href = `http://localhost:3001/math-game`;
-    }else if (quizId === '4') {
-      window.location.href = `http://localhost:3001/condition-game`;
-    } else if (quizId === '5') {
-      window.location.href = `http://localhost:3001/loop-game`;
+    if (!quizNumber) {
+      console.warn('Quiz ID not mapped for puzzle navigation.');
+      return;
     }
-    else {
-      console.warn('Quiz ID not mapped for redirection.');
+
+    if (!isPuzzleUnlocked(quizNumber)) {
+      markQuizComplete(quizNumber);
     }
+
+    navigate(`/puzzle/${quizNumber}`);
   };
 
   const renderShell = (content) => (
@@ -205,17 +174,6 @@ const Quiz = ({ quizId }) => {
       </div>
     </div>
   );
-
-  if (!quizNumber) {
-    return renderShell(
-      <div className="quiz-locked">
-        <p>We couldn&apos;t find that quiz. Try heading back to your lessons.</p>
-        <button type="button" className="quiz-cta" onClick={() => navigate('/lesson/1')}>
-          Go to Lessons
-        </button>
-      </div>
-    );
-  }
 
   if (!quizNumber) {
     return renderShell(
@@ -299,16 +257,11 @@ const Quiz = ({ quizId }) => {
         </article>
       ) : (
         <article className="quiz-results">
-          <h2>🎉 Great job!</h2>
+          <h2>Great job!</h2>
           <p>Your score: <strong>{score}</strong> out of <strong>{questions.length}</strong></p>
           <p>Total XP Earned: <strong>{xp}</strong></p>
-          {score === questions.length && (
-            <p style={{color: '#4ecca3', fontWeight: 'bold'}}>
-              🏆 Perfect Score! +50 bonus XP earned!
-            </p>
-          )}
           <button type="button" className="quiz-primary" onClick={goToNext}>
-            🎮 Continue to Puzzle Game!
+            Continue to Puzzle {quizNumber}
           </button>
         </article>
       )}
