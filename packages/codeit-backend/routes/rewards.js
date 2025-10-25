@@ -732,4 +732,115 @@ router.get('/progress-percentages', async (req, res) => {
   }
 });
 
+// Get user's personal rank for a specific leaderboard type
+router.get('/my-rank/:type', async (req, res) => {
+  try {
+    const studentId = req.user.user_id;
+    const { type } = req.params;
+
+    let query = '';
+    
+    switch (type) {
+      case 'weekly_xp':
+        query = `
+          SELECT rank_position FROM (
+            SELECT user_id, 
+                   ROW_NUMBER() OVER (ORDER BY weekly_xp DESC) as rank_position
+            FROM Students 
+            WHERE weekly_xp > 0
+          ) ranked 
+          WHERE user_id = ?
+        `;
+        break;
+        
+      case 'monthly_badges':
+        query = `
+          SELECT rank_position FROM (
+            SELECT s.user_id,
+                   ROW_NUMBER() OVER (ORDER BY COUNT(sb.badge_id) DESC) as rank_position
+            FROM Students s 
+            LEFT JOIN Student_Badges sb ON s.user_id = sb.student_id 
+            WHERE sb.earned_at >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+            GROUP BY s.user_id
+            HAVING COUNT(sb.badge_id) > 0
+          ) ranked 
+          WHERE user_id = ?
+        `;
+        break;
+        
+      case 'streak':
+        query = `
+          SELECT rank_position FROM (
+            SELECT s.user_id,
+                   ROW_NUMBER() OVER (ORDER BY ds.current_streak DESC) as rank_position
+            FROM Students s 
+            JOIN Daily_Streaks ds ON s.user_id = ds.student_id 
+            WHERE ds.current_streak > 0
+          ) ranked 
+          WHERE user_id = ?
+        `;
+        break;
+        
+      case 'all_time':
+        query = `
+          SELECT rank_position FROM (
+            SELECT user_id, 
+                   ROW_NUMBER() OVER (ORDER BY total_xp DESC) as rank_position
+            FROM Students 
+            WHERE total_xp > 0
+          ) ranked 
+          WHERE user_id = ?
+        `;
+        break;
+        
+      default:
+        return res.status(400).json({ error: 'Invalid leaderboard type' });
+    }
+
+    const [result] = await pool.query(query, [studentId]);
+    res.json({ 
+      success: true, 
+      rank: result[0]?.rank_position || null,
+      message: result[0] ? 'Rank found' : 'Not ranked yet' 
+    });
+
+  } catch (error) {
+    console.error('Error getting user rank:', error);
+    res.status(500).json({ error: 'Failed to get rank' });
+  }
+});
+
+// Get recent achievers (latest badges/XP gains)
+router.get('/recent-achievers', async (req, res) => {
+  try {
+    const [recentXP] = await pool.query(`
+      SELECT u.name, xt.activity_type, xt.xp_earned, xt.earned_at
+      FROM XP_Transactions xt
+      JOIN Students s ON xt.student_id = s.user_id
+      JOIN Users u ON s.user_id = u.user_id
+      ORDER BY xt.earned_at DESC
+      LIMIT 10
+    `);
+
+    const [recentBadges] = await pool.query(`
+      SELECT u.name, b.badge_name, b.icon_url, sb.earned_at
+      FROM Student_Badges sb
+      JOIN Students s ON sb.student_id = s.user_id
+      JOIN Users u ON s.user_id = u.user_id
+      JOIN Badges b ON sb.badge_id = b.badge_id
+      ORDER BY sb.earned_at DESC
+      LIMIT 10
+    `);
+
+    res.json({ 
+      success: true, 
+      recentXP,
+      recentBadges 
+    });
+  } catch (error) {
+    console.error('Error getting recent achievers:', error);
+    res.status(500).json({ error: 'Failed to get recent achievers' });
+  }
+});
+
 module.exports = router;

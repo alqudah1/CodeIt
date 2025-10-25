@@ -9,6 +9,7 @@ import { ProgressProvider } from './context/ProgressContext';
 import { Lesson1, Lesson1Interactive, Lesson2, Lesson2Interactive, Lesson3, Lesson3Interactive, Lesson4, Lesson5 } from './pages/Lessons';
 import Quiz from './pages/Quizzes/Quiz';
 import { Game1, Game2, Game3, Game4, Game5 } from './pages/Games';
+import Leaderboard from './pages/Leaderboard';
 import { AuthContext } from './context/AuthContext';
 import './App.css';
 
@@ -62,6 +63,9 @@ const App = () => {
           <Route path="/game/3" element={<Game3 />} />
           <Route path="/game/4" element={<Game4 />} />
           <Route path="/game/5" element={<Game5 />} />
+          
+          {/* Leaderboard Route */}
+          <Route path="/leaderboard" element={<Leaderboard />} />
           
           {/* 404 Route */}
           <Route path="*" element={<Navigate to="/" replace />} /> {/* Now works with import */}

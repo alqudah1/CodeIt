@@ -250,9 +250,6 @@ const Lesson1 = () => {
       )}
 
       <div className="lesson-wrapper">
-        <button type="button" className="lesson-nav" onClick={goToDashboard}>
-          ← Back to Dashboard
-        </button>
 
         {/* Progress Header */}
         <div className="progress-header">

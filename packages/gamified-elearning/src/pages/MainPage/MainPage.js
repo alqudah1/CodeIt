@@ -40,7 +40,7 @@ const MainPage = () => {
         <section className="overview-card">
           <h2>Keep the sunshine streak going</h2>
           <p>
-            Dive into lessons, quizzes, or games to unlock fresh badges and keep your skills glowing brighter
+            Dive into lessons, quizzes, or Puzzles to unlock fresh badges and keep your skills glowing brighter
             every day.
           </p>
           <div className="overview-stats">
@@ -108,7 +108,7 @@ const MainPage = () => {
             <header className="track-header">
               <span className="track-icon games">🎮</span>
               <div>
-                <h2>Games</h2>
+                <h2>Puzzles</h2>
                 <p>Play story-driven missions that turn code into colorful worlds.</p>
               </div>
             </header>
@@ -120,7 +120,7 @@ const MainPage = () => {
                   className="track-button"
                   onClick={() => navigateToGame(num)}
                 >
-                  Game {num}
+                  Puzzle {num}
                 </button>
               ))}
             </div>

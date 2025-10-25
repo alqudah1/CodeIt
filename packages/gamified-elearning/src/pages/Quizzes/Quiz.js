@@ -4,7 +4,8 @@ import axios from 'axios';
 import './Quiz.css';
 import { useAuth } from '../../context/AuthContext';
 import { useProgress } from '../../context/ProgressContext';
-import { showXPNotification, initializeTimeTracker } from '../../utils/progressTracker'; 
+import { showXPNotification, initializeTimeTracker } from '../../utils/progressTracker';
+import ProgressBar from '../ProgressBar/progressBar'; 
 
 const Quiz = ({ quizId }) => {
   const navigate = useNavigate();
@@ -196,6 +197,10 @@ const Quiz = ({ quizId }) => {
         >
           ← Back to Dashboard
         </button>
+        
+        {/* Learning Progress Tracker */}
+        <ProgressBar currentStep="quiz" />
+        
         <header className="quiz-hero">
           <span className="quiz-pill">Quiz {quizNumber || quizId}</span>
           <h1>Rainbow Challenge {quizNumber || quizId}</h1>

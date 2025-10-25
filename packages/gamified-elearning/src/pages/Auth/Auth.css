@@ -5,7 +5,7 @@
   justify-content: center;
   padding: 3rem 1.5rem;
   background: linear-gradient(135deg, #fff5a5 0%, #ffd6a5 30%, #ffabab 60%, #9bf6ff 100%);
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Arvo', serif;
   color: #041638;
   position: relative;
   overflow: hidden;
@@ -116,7 +116,7 @@
   border-radius: 14px;
   padding: 0.85rem 1rem;
   font-size: 1rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Arvo', serif;
   color: #041638;
   background: rgba(255, 255, 255, 0.9);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;

@@ -108,9 +108,6 @@ const Lesson4 = () => {
     <div className="python-lesson">
       <Header />
       <div className="lesson-wrapper">
-        <button type="button" className="lesson-nav" onClick={goToDashboard}>
-          ← Back to Dashboard
-        </button>
 
         <section className="lesson-card">
           <header className="lesson-header">

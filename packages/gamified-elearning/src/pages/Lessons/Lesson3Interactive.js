@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PythonEditor from '../pythoneditor/PythonEditor';
 import Header from '../Header/Header';
+import ProgressBar from '../ProgressBar/progressBar';
 import './PythonLesson.css';
 import {
   trackStaticLessonCompletion,
@@ -752,9 +753,14 @@ const Lesson3Interactive = () => {
   };
 
   return (
-    <div className="python-lesson">
+    <div className="python-lesson" style={{ padding: 0, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', background: 'linear-gradient(135deg, rgba(255, 245, 165, 0.95) 0%, rgba(255, 214, 165, 0.95) 30%, rgba(255, 171, 171, 0.95) 60%, rgba(155, 246, 255, 0.95) 100%)' }}>
       <canvas ref={confettiCanvasRef} style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 9999 }} />
-      <Header />
+      
+      {/* Fixed Header with Progress Bar */}
+      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, backdropFilter: 'blur(10px)' }}>
+        <Header />
+        <ProgressBar currentStep="lesson" />
+      </div>
 
       {/* Achievement Notification */}
       {showAchievement && (
@@ -767,13 +773,20 @@ const Lesson3Interactive = () => {
         </div>
       )}
 
-      <div className="lesson-wrapper">
-        <button type="button" className="lesson-nav" onClick={goToDashboard}>
-          ← Back to Dashboard
-        </button>
+      {/* Scrollable Content */}
+      <div style={{ 
+        marginTop: '170px', 
+        overflowY: 'auto', 
+        flex: 1, 
+        padding: '2rem 1.5rem 5rem',
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
+        WebkitOverflowScrolling: 'touch'
+      }} className="hide-scrollbar">
+        <div className="lesson-wrapper" style={{ margin: '0 auto' }}>
 
         {/* Header */}
-        <div className="progress-header">
+        <div className="progress-header" style={{ marginTop: '20px' }}>
           <div className="xp-display">
             <span className="xp-icon">⭐</span>
             <span className="xp-text" style={{ textShadow: showXPGlow ? '0 0 12px #ffd166' : 'none' }}>{currentXP} XP</span>
@@ -1289,6 +1302,7 @@ const Lesson3Interactive = () => {
             </button>
           </footer>
         </section>
+        </div>
       </div>
     </div>
   );

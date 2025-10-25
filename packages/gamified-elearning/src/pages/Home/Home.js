@@ -125,7 +125,7 @@ export default function Home() {
           <Link to="/MainPage">Dashboard</Link>
           <Link to="/lesson/1">Lessons</Link>
           <Link to="/quiz/1">Quizzes</Link>
-          <Link to="/game/1">Games</Link>
+          <Link to="/game/1">Puzzles</Link>
         </nav>
         <div className="auth-links">
           {user ? (
@@ -155,7 +155,7 @@ export default function Home() {
               Sunshine, Snacks, and Supercharged Coding Skills
             </h2>
             <p>
-              Dive into sunny lessons, beachy quizzes, and adventurous games that
+              Dive into sunny lessons, beachy quizzes, and adventurous Puzzles that
               turn every coding session into a summer quest.
             </p>
             <div className="hero-actions">
@@ -174,7 +174,7 @@ export default function Home() {
                 <strong>{loading ? '...' : `${quiz}%`}</strong> Quiz accuracy
               </span>
               <span className="metric-chip">
-                <strong>{loading ? '...' : `${game}%`}</strong> Game streak
+                <strong>{loading ? '...' : `${game}%`}</strong> Puzzles streak
               </span>
             </div>
           </div>
@@ -213,7 +213,7 @@ export default function Home() {
                 🪁
               </span>
               <div>
-                <h3>Playful Games</h3>
+                <h3>Playful Puzzles</h3>
                 <p>Unlock new levels and build creations in colorful worlds.</p>
               </div>
             </button>
@@ -244,7 +244,7 @@ export default function Home() {
 
             <article className="card">
               <header className="card-header">
-                <span>Game Progress</span>
+                <span>Puzzles Progress</span>
                 <span>{loading ? '...' : `${game}%`}</span>
               </header>
               <ProgressBar value={game} color="game" loading={loading} />

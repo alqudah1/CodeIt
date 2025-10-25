@@ -24,7 +24,8 @@ const Header = () => {
         <Link to="/MainPage">Dashboard</Link>
         <Link to="/lesson/1">Lessons</Link>
         <Link to="/quiz/1">Quizzes</Link>
-        <Link to="/game/1">Games</Link>
+        <Link to="/game/1">Puzzles</Link>
+        <Link to="/leaderboard">🏆 Leaderboard</Link>
       </nav>
 
       <div className="auth-links">
