@@ -1,0 +1,142 @@
+/* ProgressBar.css */
+.learning-progress-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 20px auto;
+  padding: 20px 20px 10px 20px;
+}
+
+.progress-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.step-circle {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Upcoming step */
+.progress-step.upcoming .step-circle {
+  background: #e9ecef;
+  border: 3px solid #dee2e6;
+  color: #6c757d;
+}
+
+/* Current step */
+.progress-step.current .step-circle {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 3px solid #667eea;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  animation: pulse 2s infinite;
+}
+
+/* Completed step */
+.progress-step.completed .step-circle {
+  background: linear-gradient(135deg, #4ecca3 0%, #2e9c81 100%);
+  border: 3px solid #4ecca3;
+  color: white;
+}
+
+.check-icon {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.step-icon {
+  font-size: 20px;
+}
+
+.step-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #041638;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.progress-step.current .step-label {
+  color: #667eea;
+  font-size: 12px;
+}
+
+.progress-step.completed .step-label {
+  color: #4ecca3;
+}
+
+.progress-step.upcoming .step-label {
+  color: #6c757d;
+}
+
+/* Connector line between steps */
+.progress-connector {
+  flex: 1;
+  height: 3px;
+  background: #e9ecef;
+  margin: 0 6px;
+  position: relative;
+  top: -22px;
+  transition: background 0.3s ease;
+}
+
+.progress-connector.completed {
+  background: linear-gradient(90deg, #4ecca3 0%, #2e9c81 100%);
+}
+
+/* Pulse animation for current step */
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .step-circle {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .step-label {
+    font-size: 10px;
+  }
+  
+  .progress-step.current .step-label {
+    font-size: 11px;
+  }
+  
+  .progress-connector {
+    margin: 0 5px;
+    top: -20px;
+  }
+  
+  .learning-progress-container {
+    padding: 5px 15px;
+  }
+}
+

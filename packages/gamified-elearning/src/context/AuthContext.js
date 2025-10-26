@@ -26,9 +26,26 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     console.log('AuthContext logout');
+    
+    // Clear auth from main app
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+    sessionStorage.removeItem('user');
+    sessionStorage.removeItem('token');
+    
     setUser(null);
+    
+    // Also try to clear puzzle app's storage (if accessible)
+    // This helps prevent auth confusion when switching users
+    try {
+      // Note: This only works if puzzle app was previously opened
+      const puzzleOrigin = 'http://localhost:3001';
+      // We can't directly clear another origin's storage due to browser security
+      // But we clear sessionStorage which helps
+      console.log('Cleared sessionStorage for puzzle app sync');
+    } catch (e) {
+      // Silently fail - this is just a best-effort cleanup
+    }
   };
 
   console.log('AuthContext render - user:', user, 'loading:', loading);

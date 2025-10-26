@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './MathGame.module.css';
+import './MathGame.css';
+import ProgressBar from './ProgressBar';
+import { trackPuzzleGameCompletion, showXPNotification, initializeTimeTracker } from '../utils/progressTracker';
 
 const MathGame = () => {
   const [codeInput, setCodeInput] = useState('');
@@ -13,6 +15,8 @@ const MathGame = () => {
   const [showGameEnd, setShowGameEnd] = useState(false);
   const [finalScore, setFinalScore] = useState(0);
   const [finalMessage, setFinalMessage] = useState('');
+  const [timeTracker] = useState(() => initializeTimeTracker());
+  const [isCompleted, setIsCompleted] = useState(false);
 
   const gameCanvasRef = useRef(null);
   const timerIntervalRef = useRef(null);
@@ -227,6 +231,37 @@ const MathGame = () => {
     setShowGameEnd(true);
   };
 
+  const handleComplete = async () => {
+    try {
+      const timeSpent = timeTracker.getTimeSpent();
+      const finalGameScore = gameActive ? score : finalScore;
+      
+      const result = await trackPuzzleGameCompletion(
+        3, // lessonNumber (Lesson 3)
+        'math-game', // gameType
+        finalGameScore,
+        timeSpent
+      );
+      
+      // Show XP notification
+      showXPNotification(result.xpEarned, result.baseXP, result.bonusXP);
+      
+      console.log('Math game completed:', result);
+      setIsCompleted(true);
+      
+      // Navigate back to dashboard after a short delay
+      setTimeout(() => {
+        window.location.href = "http://localhost:3000/MainPage";
+      }, 1500);
+    } catch (error) {
+      console.error('Error tracking game completion:', error);
+      // Still allow navigation even if tracking fails
+      setTimeout(() => {
+        window.location.href = "http://localhost:3000/MainPage";
+      }, 1000);
+    }
+  };
+
   // Handle key press for Enter key
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
@@ -248,81 +283,181 @@ const MathGame = () => {
   const progressWidth = ((45 - timeLeft) / 45) * 100;
 
   return (
-    <div className="game-container">
-      <div className="game-header">
-        <h1>Lesson 3 Game</h1>
-        <p>Write math expressions to catch the orange numbers!</p>
-      </div>
+    <div className="math-game-page">
+      {/* Progress Bar */}
+      <ProgressBar currentStep="puzzle" />
       
-      <div className="game-stats">
-        <div className="stat">
-          <div>Score</div>
-          <div className="stat-value">{score}</div>
-        </div>
-        <div className="stat">
-          <div>Time</div>
-          <div className="stat-value">{timeLeft}</div>
-        </div>
-        <div className="stat">
-          <div>Numbers</div>
-          <div className="stat-value">{numbersCaught}/{totalNumbers}</div>
-        </div>
-      </div>
-      
-      <div className="progress-bar">
-        <div 
-          className="progress" 
-          style={{ width: `${progressWidth}%` }}
-        ></div>
-      </div>
-      
-      <div className="game-content">
-        <div className="coding-section">
-          <h2>Your Math Expression</h2>
-          <textarea 
-            className="code-input"
-            value={codeInput}
-            onChange={(e) => setCodeInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Example: 5 + 3"
-          />
-          <button className="submit-btn" onClick={evaluateExpression}>
-            Check Answer!
-          </button>
-          <div className={`feedback ${feedbackClass}`}>
-            {feedback}
+      {/* Main Content */}
+      <div className="math-main-container">
+        <div className="math-layout-wrapper">
+          {/* Left Side - Game Controls */}
+          <div className="math-control-section">
+            <div className="math-header">
+              <h2 className="math-title">➕ Math Expression Challenge</h2>
+              <p className="math-description">
+                Solve math problems by creating expressions that match the target numbers!
+              </p>
+            </div>
+            
+            {/* Game Stats */}
+            <div className="math-stats-grid">
+              <div className="math-stat-card score">
+                <div className="stat-icon">⭐</div>
+                <div className="stat-info">
+                  <div className="stat-label">Score</div>
+                  <div className="stat-value">{score}</div>
+                </div>
+              </div>
+              <div className="math-stat-card time">
+                <div className="stat-icon">⏱️</div>
+                <div className="stat-info">
+                  <div className="stat-label">Time</div>
+                  <div className="stat-value">{timeLeft}s</div>
+                </div>
+              </div>
+              <div className="math-stat-card numbers">
+                <div className="stat-icon">🎯</div>
+                <div className="stat-info">
+                  <div className="stat-label">Caught</div>
+                  <div className="stat-value">{numbersCaught}/{totalNumbers}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="math-progress-container">
+              <div className="math-progress-label">
+                <span>Game Progress</span>
+                <span>{Math.round(progressWidth)}%</span>
+              </div>
+              <div className="math-progress-bar">
+                <div 
+                  className="math-progress-fill" 
+                  style={{ width: `${progressWidth}%` }}
+                ></div>
+              </div>
+            </div>
+            
+            {/* Code Editor */}
+            <div className="math-hint-box">
+              <span className="math-hint-icon">💡</span>
+              <div className="math-hint-text">
+                <p>Type a math expression that equals the <strong>orange number</strong>!</p>
+                <p className="math-hint-example">
+                  Try: <code>3 + 2</code>, <code>10 - 4</code>, <code>2 * 3</code>, <code>8 / 2</code>
+                </p>
+              </div>
+            </div>
+
+            <div className="math-code-editor-wrapper">
+              <div className="math-code-editor-header">
+                <span className="math-editor-label">Math Expression</span>
+                <span className={`math-editor-indicator ${gameActive ? 'active' : ''}`}></span>
+              </div>
+              <textarea 
+                className="math-code-textarea"
+                value={codeInput}
+                onChange={(e) => setCodeInput(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Example: 5 + 3"
+                disabled={!gameActive}
+              />
+              <button 
+                className="math-submit-button" 
+                onClick={evaluateExpression}
+                disabled={!gameActive}
+              >
+                <span className="submit-icon">🚀</span>
+                Check Answer!
+              </button>
+            </div>
+
+            {/* Feedback */}
+            <div className={`math-feedback ${feedbackClass}`}>
+              <span className="feedback-icon">
+                {feedbackClass.includes('correct') ? '✅' : 
+                 feedbackClass.includes('incorrect') ? '❌' : 'ℹ️'}
+              </span>
+              {feedback}
+            </div>
+
+            {/* Operators Info */}
+            <div className="math-operators-box">
+              <h3>Available Operators</h3>
+              <div className="math-operators-list">
+                <span className="math-operator">+</span>
+                <span className="math-operator">-</span>
+                <span className="math-operator">*</span>
+                <span className="math-operator">/</span>
+                <span className="math-operator">( )</span>
+              </div>
+            </div>
           </div>
-          <div className="example">
-            <p>Try these: <code>3 + 2</code>, <code>10 - 4</code>, <code>2 * 3</code>, <code>8 / 2</code></p>
+
+          {/* Right Side - Game Canvas */}
+          <div className="math-canvas-section">
+            <div className="math-canvas-header">
+              <h3 className="math-canvas-title">Game Area</h3>
+              <div className={`math-status-badge ${gameActive ? 'active' : 'inactive'}`}>
+                <span className="math-status-dot"></span>
+                {gameActive ? 'Playing' : 'Paused'}
+              </div>
+            </div>
+            
+            <div className="math-canvas-display" ref={gameCanvasRef}>
+              {!gameActive && !showGameEnd && (
+                <div className="math-canvas-overlay">
+                  <div className="overlay-content">
+                    <span className="overlay-icon">🎮</span>
+                    <p>Game Ready!</p>
+                    <button className="start-game-btn" onClick={initGame}>
+                      Start Game
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        
-        <div className="game-canvas" ref={gameCanvasRef}>
-          {/* Falling numbers are created dynamically */}
-        </div>
+
+        {/* Game End Modal */}
+        {showGameEnd && !isCompleted && (
+          <div className="math-game-end-modal">
+            <div className="math-game-end-content">
+              <h2>🎉 Great Job!</h2>
+              <div className="final-score-display">
+                <span className="final-score-label">Final Score</span>
+                <span className="final-score-value">{finalScore}</span>
+              </div>
+              <p className="final-message">{finalMessage}</p>
+              <div className="game-end-actions">
+                <button className="math-restart-btn" onClick={initGame}>
+                  🔄 Play Again
+                </button>
+                <button className="math-complete-btn" onClick={handleComplete}>
+                  🎯 Complete & Continue
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Completion Modal */}
+        {isCompleted && (
+          <div className="math-game-end-modal">
+            <div className="math-completion-panel">
+              <div className="completion-message">
+                <span className="completion-icon">🎉</span>
+                <div className="completion-content">
+                  <h3>Puzzle Completed!</h3>
+                  <p className="xp-reward">+75 XP Earned</p>
+                </div>
+              </div>
+              <p className="redirect-text">Redirecting to dashboard...</p>
+            </div>
+          </div>
+        )}
       </div>
-      
-      <div className="game-info">
-        <h3>Math Operators You Can Use</h3>
-        <div className="operators-list">
-          <span className="operator">+</span>
-          <span className="operator">-</span>
-          <span className="operator">*</span>
-          <span className="operator">/</span>
-          <span className="operator">( )</span>
-        </div>
-      </div>
-      
-      {showGameEnd && (
-        <div className="game-end">
-          <h2>Great Job! 🎉</h2>
-          <p>Your final score: <strong>{finalScore}</strong></p>
-          <p>{finalMessage}</p>
-          <button className="restart-btn" onClick={initGame}>
-            Play Again
-          </button>
-        </div>
-      )}
     </div>
   );
 };

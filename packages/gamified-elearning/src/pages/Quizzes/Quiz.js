@@ -5,7 +5,8 @@ import './Quiz.css';
 import { useAuth } from '../../context/AuthContext';
 import { useProgress } from '../../context/ProgressContext';
 import { showXPNotification, initializeTimeTracker } from '../../utils/progressTracker';
-import ProgressBar from '../ProgressBar/progressBar'; 
+import ProgressBar from '../ProgressBar/progressBar';
+import { navigateToPuzzle } from '../../utils/puzzleNavigation'; 
 
 const Quiz = ({ quizId }) => {
   const navigate = useNavigate();
@@ -171,18 +172,21 @@ const Quiz = ({ quizId }) => {
   };
 
   const goToNext = () => {
-    if (quizId === '1') {
-      window.location.href = `http://localhost:3001/puzzle`;
-    } else if (quizId === '2') {
-      window.location.href = `http://localhost:3001/apple-game`;
-    }else if (quizId === '3') {
-      window.location.href = `http://localhost:3001/math-game`;
-    }else if (quizId === '4') {
-      window.location.href = `http://localhost:3001/condition-game`;
-    } else if (quizId === '5') {
-      window.location.href = `http://localhost:3001/loop-game`;
-    }
-    else {
+    // Map quiz IDs to puzzle names
+    const puzzleMap = {
+      '1': 'talking-robot',
+      '2': 'apple-game',
+      '3': 'math-game',
+      '4': 'condition-game',
+      '5': 'loop-game'
+    };
+    
+    const puzzleName = puzzleMap[quizId];
+    
+    if (puzzleName) {
+      // Use the navigateToPuzzle utility to properly pass authentication
+      navigateToPuzzle(puzzleName);
+    } else {
       console.warn('Quiz ID not mapped for redirection.');
     }
   };

@@ -7,9 +7,10 @@ const rewardsRoutes = require('./routes/rewards');
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'http://localhost:3001'], // Allow both main app and puzzle app
   methods: ['GET', 'POST', 'PUT', 'DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 }));
 
 app.use(express.json());

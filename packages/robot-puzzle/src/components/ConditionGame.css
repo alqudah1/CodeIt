@@ -1,4 +1,4 @@
-/* Modern Styles for Apple Game */
+/* Modern Styles for Condition Game */
 :root {
   --primary-color: #667eea;
   --primary-dark: #5568d3;
@@ -18,18 +18,18 @@
 }
 
 /* Main Page Container */
-.apple-game-page {
+.condition-game-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #fff5a5 0%, #ffd6a5 30%, #ffabab 60%, #9bf6ff 100%);
   padding: 20px;
 }
 
-.apple-main-container {
+.condition-main-container {
   max-width: 1400px;
   margin: 0 auto;
 }
 
-.apple-layout-wrapper {
+.condition-layout-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 30px;
@@ -37,7 +37,7 @@
 }
 
 /* Code Section (Left Side) */
-.apple-code-section {
+.condition-code-section {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 245, 235, 0.95) 100%);
   border-radius: 16px;
   padding: 30px;
@@ -48,11 +48,11 @@
   border: 2px solid rgba(255, 183, 3, 0.3);
 }
 
-.apple-code-header {
+.condition-code-header {
   text-align: left;
 }
 
-.apple-code-title {
+.condition-code-title {
   font-size: 28px;
   font-weight: 700;
   color: var(--text-primary);
@@ -62,7 +62,7 @@
   gap: 10px;
 }
 
-.apple-code-description {
+.condition-code-description {
   font-size: 16px;
   color: var(--text-secondary);
   margin: 0;
@@ -70,7 +70,7 @@
 }
 
 /* Hint Box */
-.apple-hint-box {
+.condition-hint-box {
   background: linear-gradient(135deg, rgba(255, 245, 165, 0.45) 0%, rgba(255, 214, 102, 0.35) 100%);
   border-left: 4px solid var(--warning-color);
   border-radius: 12px;
@@ -81,26 +81,26 @@
   border: 1px solid rgba(255, 193, 7, 0.3);
 }
 
-.apple-hint-icon {
+.condition-hint-icon {
   font-size: 24px;
   flex-shrink: 0;
 }
 
-.apple-hint-text {
+.condition-hint-text {
   font-size: 14px;
   color: var(--text-primary);
   line-height: 1.6;
 }
 
-.apple-hint-text p {
+.condition-hint-text p {
   margin: 0 0 8px 0;
 }
 
-.apple-hint-text p:last-child {
+.condition-hint-text p:last-child {
   margin-bottom: 0;
 }
 
-.apple-hint-text code {
+.condition-hint-text code {
   background: rgba(102, 126, 234, 0.1);
   padding: 2px 6px;
   border-radius: 4px;
@@ -110,13 +110,13 @@
   font-weight: 600;
 }
 
-.apple-hint-example {
+.condition-hint-example {
   font-size: 13px;
   opacity: 0.9;
 }
 
 /* Code Editor */
-.apple-code-editor-wrapper {
+.condition-code-editor-wrapper {
   background: #1e1e1e;
   border-radius: 12px;
   overflow: hidden;
@@ -124,7 +124,7 @@
   border: 2px solid #2d2d2d;
 }
 
-.apple-code-editor-header {
+.condition-code-editor-header {
   background: #2d2d2d;
   padding: 12px 16px;
   display: flex;
@@ -133,7 +133,7 @@
   border-bottom: 1px solid #3d3d3d;
 }
 
-.apple-editor-label {
+.condition-editor-label {
   color: #9ca3af;
   font-size: 13px;
   font-weight: 600;
@@ -141,7 +141,7 @@
   letter-spacing: 0.5px;
 }
 
-.apple-editor-indicator {
+.condition-editor-indicator {
   width: 8px;
   height: 8px;
   background: #ef4444;
@@ -150,7 +150,7 @@
   animation: blink-indicator 2s infinite;
 }
 
-.apple-editor-indicator.valid {
+.condition-editor-indicator.valid {
   background: #4ade80;
   box-shadow: 0 0 8px #4ade80;
   animation: none;
@@ -161,9 +161,9 @@
   50% { opacity: 0.5; }
 }
 
-.apple-code-textarea {
+.condition-code-textarea {
   width: 100%;
-  min-height: 200px;
+  min-height: 180px;
   padding: 20px;
   background: #1e1e1e;
   color: #d4d4d4;
@@ -175,12 +175,12 @@
   outline: none;
 }
 
-.apple-code-textarea::placeholder {
+.condition-code-textarea::placeholder {
   color: #6b7280;
 }
 
 /* Error Message */
-.apple-error-message {
+.condition-error-message {
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 8px;
@@ -211,7 +211,7 @@
 }
 
 /* Success Hint */
-.apple-success-hint {
+.condition-success-hint {
   background: linear-gradient(135deg, rgba(78, 204, 163, 0.15) 0%, rgba(46, 156, 129, 0.1) 100%);
   border: 2px solid rgba(78, 204, 163, 0.3);
   border-radius: 12px;
@@ -240,24 +240,61 @@
   }
 }
 
-/* Complete Section */
-.apple-complete-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 20px;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+/* Examples Box */
+.condition-examples-box {
+  background: rgba(255, 255, 255, 0.6);
   border-radius: 12px;
-  border: 2px solid rgba(102, 126, 234, 0.2);
-  animation: slideIn 0.5s ease-out;
+  padding: 16px;
+  border: 1px solid rgba(102, 126, 234, 0.2);
 }
 
-.apple-complete-button {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-  color: white;
+.condition-examples-box h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.condition-examples-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.condition-example {
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  transition: all 0.2s ease;
+}
+
+.condition-example:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.condition-example code {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Action Buttons */
+.condition-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.condition-reset-button,
+.condition-complete-button {
+  flex: 1;
+  padding: 14px 24px;
   border: none;
-  padding: 14px 32px;
   border-radius: 8px;
   font-size: 16px;
   font-weight: 700;
@@ -265,45 +302,39 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-  width: 100%;
-  max-width: 250px;
 }
 
-.apple-complete-button:hover {
+.condition-reset-button {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+}
+
+.condition-reset-button:hover {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  color: white;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
-.apple-complete-button:active {
-  transform: translateY(0);
+.condition-complete-button {
+  background: linear-gradient(135deg, var(--success-color) 0%, var(--success-dark) 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(78, 204, 163, 0.3);
 }
 
-.complete-button-icon {
-  font-size: 20px;
-  animation: bounce-icon 1s ease-in-out infinite;
+.condition-complete-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(78, 204, 163, 0.4);
 }
 
-@keyframes bounce-icon {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-4px);
-  }
-}
-
-.complete-hint {
-  margin: 0;
-  font-size: 13px;
-  color: var(--text-secondary);
-  font-style: italic;
+.button-icon {
+  font-size: 18px;
 }
 
 /* Completion Panel */
-.apple-completion-panel {
+.condition-completion-panel {
   background: linear-gradient(135deg, var(--success-color) 0%, var(--success-dark) 100%);
   border-radius: 12px;
   padding: 24px;
@@ -359,16 +390,12 @@
 }
 
 @keyframes pulse-text {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
 /* Preview Section (Right Side) */
-.apple-preview-section {
+.condition-preview-section {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(235, 245, 255, 0.95) 100%);
   border-radius: 16px;
   padding: 30px;
@@ -381,7 +408,7 @@
   border: 2px solid rgba(155, 246, 255, 0.4);
 }
 
-.apple-preview-header {
+.condition-preview-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -389,14 +416,14 @@
   border-bottom: 2px solid var(--border-color);
 }
 
-.apple-preview-title {
+.condition-preview-title {
   font-size: 20px;
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
 }
 
-.apple-status-badge {
+.condition-status-badge {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -409,19 +436,19 @@
   transition: all 0.3s ease;
 }
 
-.apple-status-badge.inactive {
+.condition-status-badge.inactive {
   background: linear-gradient(135deg, #fee 0%, #fecaca 100%);
   color: #c53030;
   border: 1px solid rgba(197, 48, 48, 0.2);
 }
 
-.apple-status-badge.active {
+.condition-status-badge.active {
   background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
   color: #047857;
   border: 1px solid rgba(4, 120, 87, 0.2);
 }
 
-.apple-status-dot {
+.condition-status-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -440,140 +467,164 @@
   }
 }
 
-.apple-canvas-display {
+.condition-canvas-display {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 400px;
   background: linear-gradient(135deg, rgba(155, 246, 255, 0.25) 0%, rgba(160, 255, 159, 0.25) 100%);
   border-radius: 12px;
-  padding: 20px;
   border: 2px solid rgba(155, 246, 255, 0.35);
 }
 
-.apple-canvas {
+.condition-canvas {
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  cursor: grab;
 }
 
-.apple-canvas:active {
-  cursor: grabbing;
-}
-
-/* Preview Placeholder */
-.apple-preview-placeholder {
-  width: 100%;
-  height: 100%;
+/* Canvas Overlay */
+.condition-canvas-overlay {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px;
-}
-
-.placeholder-content {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  padding: 20px;
   text-align: center;
-  color: var(--text-secondary);
 }
 
-.placeholder-icon {
+.overlay-content {
+  max-width: 300px;
+}
+
+.overlay-icon {
   font-size: 64px;
   display: block;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   animation: float 3s ease-in-out infinite;
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-.placeholder-content p {
+.overlay-content p {
   margin: 0 0 8px 0;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
-.placeholder-hint {
+.overlay-hint {
   font-size: 14px !important;
   color: var(--text-secondary) !important;
   font-weight: 400 !important;
   font-style: italic;
 }
 
-/* Responsive Adjustments */
+.overlay-content code {
+  background: rgba(102, 126, 234, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  color: var(--primary-color);
+}
+
+/* Condition Status Display */
+.condition-status-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.condition-status-display.false {
+  background: rgba(239, 68, 68, 0.1);
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  color: var(--error-color);
+}
+
+.condition-status-display.true {
+  background: rgba(78, 204, 163, 0.15);
+  border: 2px solid rgba(78, 204, 163, 0.4);
+  color: var(--success-dark);
+  animation: success-pulse 0.5s ease;
+}
+
+@keyframes success-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.status-icon {
+  font-size: 24px;
+}
+
+.status-text {
+  letter-spacing: 0.5px;
+}
+
+/* Responsive */
 @media (max-width: 1024px) {
-  .apple-layout-wrapper {
+  .condition-layout-wrapper {
     grid-template-columns: 1fr;
     gap: 20px;
   }
 
-  .apple-preview-section {
+  .condition-preview-section {
     position: relative;
     top: 0;
-  }
-
-  .apple-canvas-display {
-    min-height: 450px;
   }
 }
 
 @media (max-width: 768px) {
-  .apple-game-page {
+  .condition-game-page {
     padding: 15px;
   }
 
-  .apple-code-section,
-  .apple-preview-section {
+  .condition-code-section,
+  .condition-preview-section {
     padding: 20px;
   }
 
-  .apple-code-title {
+  .condition-code-title {
     font-size: 24px;
   }
 
-  .apple-code-description {
+  .condition-code-description {
     font-size: 14px;
   }
 
-  .apple-code-textarea {
-    min-height: 180px;
-    font-size: 14px;
-  }
-
-  .apple-canvas-display {
-    min-height: 420px;
+  .condition-examples-grid {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 480px) {
-  .apple-code-title {
+  .condition-code-title {
     font-size: 20px;
   }
 
-  .apple-hint-box {
+  .condition-actions {
+    flex-direction: column;
+  }
+
+  .condition-hint-box {
     padding: 12px;
   }
 
-  .apple-hint-text {
-    font-size: 13px;
-  }
-
-  .placeholder-icon {
+  .overlay-icon {
     font-size: 48px;
   }
-
-  .placeholder-content p {
-    font-size: 14px;
-  }
-
-  .apple-canvas {
-    max-width: 100%;
-    height: auto;
-  }
 }
+

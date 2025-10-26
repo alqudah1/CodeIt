@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import './RobotAnimation.css';
 import { trackPuzzleGameCompletion, showXPNotification, initializeTimeTracker } from '../utils/progressTracker';
+import ProgressBar from './ProgressBar';
 
 const TalkingRobot = ({ onUnlock }) => {
   const [codeInput, setCodeInput] = useState('');
@@ -69,9 +70,11 @@ const TalkingRobot = ({ onUnlock }) => {
   
       const timeout = setTimeout(() => setShowSpeech(false), 30000);
       return () => clearTimeout(timeout);
-    } else {
+    } else if (!gameCompleted) {
+      // Only set inactive if game is NOT completed yet
       setIsActive(false);
     }
+    // If gameCompleted is true, keep isActive as true
   }, [codeInput, onUnlock, correctPattern, gameCompleted, timeTracker]);
 
   // Calculate eye movement based on mouse position
@@ -83,95 +86,111 @@ const TalkingRobot = ({ onUnlock }) => {
   };
 
   return (
-    <div className="robot-container">
-      {/* Centered Robot Wrapper */}
-      <div className="robot-container">
-      <div className="game-instruction">
-        <h2>Fix the Robot! 🤖</h2>
-        <p className="hint">
-          Hint: Use <code>print</code> command to make the robot say 
-          "Hello! My name is Robo."
-        </p>
-      </div>
-  </div>
-      <div className="robot-wrapper">
-        <div className={`robot ${isActive ? 'active' : ''}`}>
-          <div className="robot-head">
-            <div className="antenna">
-              <div className="antenna-light"></div>
+    <div className="robot-page">
+      {/* Progress Bar */}
+      <ProgressBar currentStep="puzzle" />
+      
+      {/* Main Content */}
+      <div className="robot-main-container">
+        <div className="layout-wrapper">
+          {/* Left Side - Code Editor */}
+          <div className="code-section">
+            <div className="code-header">
+              <h2 className="code-title">🤖 Fix the Robot!</h2>
+              <p className="code-description">
+                Write Python code to make the robot introduce itself
+              </p>
             </div>
-            <div className="face-plate">
-              <div className="eyes">
-                <div className="eye left">
-                  <div className="pupil" style={eyeMovement}></div>
-                  <div className="eyelid"></div>
+            
+            <div className="hint-box">
+              <span className="hint-icon">💡</span>
+              <p className="hint-text">
+                Use the <code>print()</code> function to make Robo say: 
+                <strong>"Hello! My name is Robo."</strong>
+              </p>
+            </div>
+
+            <div className="code-editor-wrapper">
+              <div className="code-editor-header">
+                <span className="editor-label">Python Editor</span>
+                <span className="editor-indicator"></span>
+              </div>
+              <textarea
+                value={codeInput}
+                onChange={(e) => setCodeInput(e.target.value)}
+                placeholder="# Type your Python code here...\nprint('Hello! My name is Robo.')"
+                spellCheck="false"
+                autoFocus
+                className="modern-code-textarea"
+              />
+            </div>
+
+            {showSpeech && (
+              <div className="success-panel">
+                <div className="success-message">
+                  <span className="success-icon">🎉</span>
+                  <div className="success-content">
+                    <h3>Puzzle Solved!</h3>
+                    <p className="xp-reward">+75 XP Earned</p>
+                  </div>
                 </div>
-                <div className="eye right">
-                  <div className="pupil" style={eyeMovement}></div>
-                  <div className="eyelid"></div>
+                <button 
+                  className="return-button" 
+                  onClick={() => window.location.href = "http://localhost:3000/MainPage"}
+                >
+                  <span className="button-icon">🎮</span>
+                  Back to Dashboard
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Right Side - Robot Preview */}
+          <div className="robot-section">
+            <div className="robot-preview-header">
+              <h3 className="preview-title">Robot Preview</h3>
+              <div className={`status-badge ${isActive ? 'active' : 'inactive'}`}>
+                <span className="status-dot"></span>
+                {isActive ? 'Active' : 'Inactive'}
+              </div>
+            </div>
+            
+            <div className="robot-display">
+              <div className={`robot ${isActive ? 'active' : ''}`}>
+                <div className="robot-head">
+                  <div className="antenna">
+                    <div className="antenna-light"></div>
+                  </div>
+                  <div className="face-plate">
+                    <div className="eyes">
+                      <div className="eye left">
+                        <div className="pupil" style={eyeMovement}></div>
+                        <div className="eyelid"></div>
+                      </div>
+                      <div className="eye right">
+                        <div className="pupil" style={eyeMovement}></div>
+                        <div className="eyelid"></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
+                <div className="robot-body">
+                  <div className="torso">
+                    <div className="status-light"></div>
+                  </div>
+                </div>
+
+                {showSpeech && (
+                  <div className="speech-bubble">
+                    <div className="speech-text">Hello! My name is Robo.</div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
-
-          <div className="robot-body">
-            <div className="torso">
-              {/* Simplified Status Light without container */}
-              <div className="status-light"></div>
-            </div>
-          </div>
-
-          {showSpeech && (
-            <div className="speech-bubble">
-              <div className="speech-text">Hello! My name is Robo.</div>
-            </div>
-          )}
         </div>
       </div>
-
-      <div className="code-input">
-  <h3>Fix the robot by entering the correct Python command:</h3>
-  <textarea
-    value={codeInput}
-    onChange={(e) => setCodeInput(e.target.value)}
-    placeholder="Enter your Python code here..."
-    spellCheck="false"
-    autoFocus
-    className="code-textarea"
-  />
-  
-  {showSpeech && (
-    <div style={{ textAlign: 'center', marginTop: '20px' }}>
-      <div style={{ 
-        backgroundColor: '#4ecca3', 
-        color: 'white', 
-        padding: '15px', 
-        borderRadius: '8px', 
-        marginBottom: '15px',
-        fontWeight: 'bold'
-      }}>
-        🎉 Puzzle Solved! +75 XP Earned!
-      </div>
-      <button 
-        className="gamified-btn" 
-        onClick={() => window.location.href = "http://localhost:3000/MainPage"}
-        style={{
-          backgroundColor: '#2e9c81',
-          color: 'white',
-          padding: '12px 24px',
-          border: 'none',
-          borderRadius: '6px',
-          fontSize: '16px',
-          fontWeight: 'bold',
-          cursor: 'pointer'
-        }}
-      >
-        🎮 Back to Gamified Learning!
-      </button>
-    </div>
-  )}
-</div>
-
     </div>
   );
 };

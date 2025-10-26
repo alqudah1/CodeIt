@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './LoopGame.css';
+import ProgressBar from './ProgressBar';
+import { trackPuzzleGameCompletion, showXPNotification, initializeTimeTracker } from '../utils/progressTracker';
 
 const LoopGame = () => {
   const canvasRef = useRef(null);
@@ -7,6 +10,9 @@ const LoopGame = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [loopResult, setLoopResult] = useState([]);
+  const [timeTracker] = useState(() => initializeTimeTracker());
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [completedChallenges, setCompletedChallenges] = useState([]);
 
   const challenges = [
     {
@@ -14,7 +20,14 @@ const LoopGame = () => {
       title: "For Loop: Collect Stars",
       description: "Use a for loop to collect 3 stars!",
       hint: "Use: for i in range(3):",
+      steps: [
+        "Type: for i in range(3):",
+        "Press Enter and add 4 spaces",
+        "Type: print(\"Collect star\")"
+      ],
+      starter: `for i in range(3):\n    `,
       example: `for i in range(3):\n    print("Collect star")`,
+      expectedOutput: ["Collect star", "Collect star", "Collect star"],
       variables: "",
       test: (code) => {
         try {
@@ -53,7 +66,14 @@ const LoopGame = () => {
       title: "For Loop: Counting Steps",
       description: "Use a for loop to take 5 steps forward!",
       hint: "Use: for step in range(5):",
+      steps: [
+        "Type: for step in range(5):",
+        "Press Enter and add 4 spaces",
+        "Type: print(\"Step forward\")"
+      ],
+      starter: `for step in range(5):\n    `,
       example: `for step in range(5):\n    print("Step forward")`,
+      expectedOutput: ["Step forward", "Step forward", "Step forward", "Step forward", "Step forward"],
       variables: "",
       test: (code) => {
         try {
@@ -84,7 +104,15 @@ const LoopGame = () => {
       title: "While Loop: Until Treasure",
       description: "Use a while loop to move until you reach the treasure!",
       hint: "Use: while distance > 0:",
+      steps: [
+        "Type: distance = 3",
+        "Type: while distance > 0:",
+        "Add 4 spaces and type: print(\"Move closer\")",
+        "Add 4 spaces and type: distance -= 1"
+      ],
+      starter: `distance = 3\nwhile distance > 0:\n    \n    `,
       example: `distance = 3\nwhile distance > 0:\n    print("Move closer")\n    distance -= 1`,
+      expectedOutput: ["Move closer", "Move closer", "Move closer"],
       variables: "let distance = 3;",
       test: (code) => {
         try {
@@ -120,7 +148,15 @@ const LoopGame = () => {
       title: "While Loop: Countdown",
       description: "Use a while loop to count down from 3!",
       hint: "Use: while count > 0:",
+      steps: [
+        "Type: count = 3",
+        "Type: while count > 0:",
+        "Add 4 spaces and type: print(\"Count:\", count)",
+        "Add 4 spaces and type: count -= 1"
+      ],
+      starter: `count = 3\nwhile count > 0:\n    \n    `,
       example: `count = 3\nwhile count > 0:\n    print("Count:", count)\n    count -= 1`,
+      expectedOutput: ["Count: 3", "Count: 2", "Count: 1"],
       variables: "let count = 3;",
       test: (code) => {
         try {
@@ -340,6 +376,11 @@ const LoopGame = () => {
 
   const handleNextChallenge = () => {
     if (currentChallenge < challenges.length - 1) {
+      // Mark current challenge as completed
+      if (isCodeValid && !completedChallenges.includes(currentChallenge)) {
+        setCompletedChallenges([...completedChallenges, currentChallenge]);
+      }
+      
       setCurrentChallenge(currentChallenge + 1);
       setCodeInput('');
       setIsCodeValid(false);
@@ -365,121 +406,254 @@ const LoopGame = () => {
     setLoopResult([]);
   };
 
+  const handleUseStarter = () => {
+    setCodeInput(challenges[currentChallenge].starter);
+  };
+
+  const handleShowSolution = () => {
+    setCodeInput(challenges[currentChallenge].example);
+  };
+
+  const handleComplete = async () => {
+    // Mark current challenge as completed if valid
+    if (isCodeValid && !completedChallenges.includes(currentChallenge)) {
+      setCompletedChallenges([...completedChallenges, currentChallenge]);
+    }
+
+    const finalCompletedCount = completedChallenges.includes(currentChallenge) 
+      ? completedChallenges.length 
+      : completedChallenges.length + 1;
+
+    try {
+      const timeSpent = timeTracker.getTimeSpent();
+      // Score based on challenges completed (25 points per challenge)
+      const score = finalCompletedCount * 25;
+      
+      const result = await trackPuzzleGameCompletion(
+        5, // lessonNumber (Lesson 5)
+        'loop-game', // gameType
+        score,
+        timeSpent
+      );
+      
+      // Show XP notification
+      showXPNotification(result.xpEarned, result.baseXP, result.bonusXP);
+      
+      console.log('Loop game completed:', result);
+      setIsCompleted(true);
+      
+      // Navigate back to dashboard after a short delay
+      setTimeout(() => {
+        window.location.href = "http://localhost:3000/MainPage";
+      }, 1500);
+    } catch (error) {
+      console.error('Error tracking game completion:', error);
+      // Still allow navigation even if tracking fails
+      setTimeout(() => {
+        window.location.href = "http://localhost:3000/MainPage";
+      }, 1000);
+    }
+  };
+
   return (
-    <div className="game-container">
-      <div className="layout-container">
-        {/* Code Input Section */}
-        <div className="coding-challenge">
-          <h2>🔄 Loop Adventure</h2>
-          
-          <div className="challenge-progress">
-            <span>Challenge {currentChallenge + 1} of {challenges.length}</span>
-            <div className="progress-bar">
-              <div 
-                className="progress-fill" 
-                style={{width: `${((currentChallenge + 1) / challenges.length) * 100}%`}}
-              ></div>
+    <div className="loop-game-page">
+      {/* Progress Bar */}
+      <ProgressBar currentStep="puzzle" />
+      
+      {/* Main Content */}
+      <div className="loop-main-container">
+        <div className="loop-layout-wrapper">
+          {/* Left Side - Code Editor */}
+          <div className="loop-code-section">
+            <div className="loop-code-header">
+              <h2 className="loop-code-title">🔄 Loop Adventure</h2>
+              <p className="loop-code-description">
+                Master Python loops by completing all challenges!
+              </p>
             </div>
-          </div>
-
-          <div className="code-instruction">
-            <h3>{challenges[currentChallenge].title}</h3>
-            <p>{challenges[currentChallenge].description}</p>
-            {challenges[currentChallenge].variables && (
-              <p><strong>Variables:</strong> <code>{challenges[currentChallenge].variables.replace('let ', '')}</code></p>
-            )}
-          </div>
-
-          <div className="code-editor">
-            <textarea
-              value={codeInput}
-              onChange={(e) => setCodeInput(e.target.value)}
-              placeholder={challenges[currentChallenge].example}
-              className={`code-input ${errorMessage ? 'error' : ''} ${isCodeValid ? 'success' : ''}`}
-              spellCheck="false"
-              rows={6}
-            />
-            {errorMessage && <div className="error-message">{errorMessage}</div>}
-            {isCodeValid && (
-              <div className="success-message">
-                ✅ Great! Your loop is working perfectly!
+            
+            {/* Challenge Progress */}
+            <div className="loop-challenge-progress">
+              <div className="challenge-info">
+                <span className="challenge-number">Challenge {currentChallenge + 1} of {challenges.length}</span>
+                <span className="challenge-completed">{completedChallenges.length + (isCodeValid && !completedChallenges.includes(currentChallenge) ? 1 : 0)}/{challenges.length} Completed</span>
               </div>
-            )}
-          </div>
+              <div className="challenge-progress-bar">
+                <div 
+                  className="challenge-progress-fill" 
+                  style={{width: `${((completedChallenges.length + (isCodeValid && !completedChallenges.includes(currentChallenge) ? 1 : 0)) / challenges.length) * 100}%`}}
+                ></div>
+              </div>
+            </div>
 
-          {loopResult.length > 0 && (
-            <div className="loop-output">
-              <h4>Loop Output:</h4>
-              <div className="output-box">
-                {loopResult.map((line, index) => (
-                  <div key={index} className="output-line">{line}</div>
+            {/* Current Challenge Info */}
+            <div className="loop-challenge-card">
+              <div className="challenge-header">
+                <span className="challenge-type-badge">{challenges[currentChallenge].type} loop</span>
+                <h3>{challenges[currentChallenge].title}</h3>
+              </div>
+              <p className="challenge-description">{challenges[currentChallenge].description}</p>
+            </div>
+            
+            {/* Step-by-Step Instructions */}
+            <div className="loop-steps-box">
+              <h4>📝 Follow These Steps:</h4>
+              <ol className="loop-steps-list">
+                {challenges[currentChallenge].steps.map((step, index) => (
+                  <li key={index}>{step}</li>
+                ))}
+              </ol>
+            </div>
+
+            {/* Expected Output */}
+            <div className="loop-expected-output">
+              <h4>🎯 What You Should See:</h4>
+              <div className="expected-output-content">
+                {challenges[currentChallenge].expectedOutput.map((line, index) => (
+                  <div key={index} className="expected-line">{line}</div>
                 ))}
               </div>
             </div>
-          )}
 
-          <div className="hint-box">
-            <p>💡 <strong>Hint:</strong> {challenges[currentChallenge].hint}</p>
-          </div>
+            {/* Code Editor */}
+            <div className="loop-code-editor-wrapper">
+              <div className="loop-code-editor-header">
+                <span className="loop-editor-label">Python Editor</span>
+                <div className="editor-actions">
+                  <button onClick={handleUseStarter} className="helper-btn starter-btn" title="Get code starter">
+                    📋 Code Starter
+                  </button>
+                  <button onClick={handleShowSolution} className="helper-btn solution-btn" title="Show complete solution">
+                    👀 Show Solution
+                  </button>
+                </div>
+              </div>
+              <textarea
+                value={codeInput}
+                onChange={(e) => setCodeInput(e.target.value)}
+                placeholder="Click 'Code Starter' to begin, or type your code here..."
+                spellCheck="false"
+                className="loop-code-textarea"
+                rows={7}
+              />
+              {errorMessage && (
+                <div className="loop-error-message">
+                  <span className="error-icon">⚠️</span>
+                  {errorMessage}
+                </div>
+              )}
+            </div>
 
-          <div className="game-controls">
-            <button onClick={handleReset} className="control-btn reset-btn">
-              Reset
-            </button>
-            <div className="navigation-buttons">
+            {isCodeValid && !isCompleted && (
+              <div className="loop-success-hint">
+                <span className="success-hint-icon">✅</span>
+                <span>Great! Your loop is working perfectly!</span>
+              </div>
+            )}
+
+            {/* Loop Output */}
+            {loopResult.length > 0 && (
+              <div className="loop-output-box">
+                <h4>Loop Output:</h4>
+                <div className="output-content">
+                  {loopResult.map((line, index) => (
+                    <div key={index} className="output-line">
+                      <span className="line-number">{index + 1}</span>
+                      <span className="line-content">{line}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Navigation Controls */}
+            <div className="loop-navigation">
               <button 
                 onClick={handlePreviousChallenge} 
                 disabled={currentChallenge === 0}
-                className="control-btn nav-btn"
+                className="loop-nav-button prev"
               >
-                ← Previous
+                <span className="button-icon">←</span>
+                Previous
               </button>
-              <button 
-                onClick={handleNextChallenge} 
-                disabled={currentChallenge === challenges.length - 1 || !isCodeValid}
-                className="control-btn nav-btn"
-              >
-                Next →
+              
+              <button onClick={handleReset} className="loop-reset-button">
+                <span className="button-icon">🔄</span>
+                Reset
               </button>
+
+              {currentChallenge < challenges.length - 1 ? (
+                <button 
+                  onClick={handleNextChallenge} 
+                  disabled={!isCodeValid}
+                  className="loop-nav-button next"
+                >
+                  Next
+                  <span className="button-icon">→</span>
+                </button>
+              ) : (
+                <button 
+                  onClick={handleComplete} 
+                  disabled={isCompleted}
+                  className="loop-complete-button"
+                >
+                  <span className="button-icon">🎉</span>
+                  Complete
+                </button>
+              )}
             </div>
+
+
+            {isCompleted && (
+              <div className="loop-completion-panel">
+                <div className="completion-message">
+                  <span className="completion-icon">🎉</span>
+                  <div className="completion-content">
+                    <h3>All Challenges Completed!</h3>
+                    <p className="xp-reward">+75 XP Earned</p>
+                  </div>
+                </div>
+                <p className="redirect-text">Redirecting to dashboard...</p>
+              </div>
+            )}
           </div>
 
-          <div className="loop-examples">
-            <h4>Loop Examples:</h4>
-            <div className="examples-grid">
-              <div className="example">
-                <code>for i in range(5):</code><br/>
-                <code>&nbsp;&nbsp;print("Hello")</code>
-              </div>
-              <div className="example">
-                <code>count = 1</code><br/>
-                <code>while count {'<='} 3:</code><br/>
-                <code>&nbsp;&nbsp;print(count)</code><br/>
-                <code>&nbsp;&nbsp;count += 1</code>
+          {/* Right Side - Canvas Preview */}
+          <div className="loop-preview-section">
+            <div className="loop-preview-header">
+              <h3 className="loop-preview-title">Game Simulation</h3>
+              <div className={`loop-status-badge ${isCodeValid ? 'active' : 'inactive'}`}>
+                <span className="loop-status-dot"></span>
+                {isCodeValid ? 'Running' : 'Waiting'}
               </div>
             </div>
-          </div>
-        </div>
+            
+            <div className="loop-canvas-display">
+              <canvas
+                ref={canvasRef}
+                width={400}
+                height={400}
+                className="loop-canvas"
+              />
+              {!isCodeValid && (
+                <div className="loop-canvas-overlay">
+                  <div className="overlay-content">
+                    <span className="overlay-icon">🔄</span>
+                    <p>Write a {challenges[currentChallenge].type} loop!</p>
+                    <p className="overlay-hint">Check the hint for guidance</p>
+                  </div>
+                </div>
+              )}
+            </div>
 
-        {/* Game Preview Section */}
-        <div className="game-preview">
-          <canvas
-            ref={canvasRef}
-            width={400}
-            height={400}
-          />
-          {!isCodeValid && (
-            <div className="preview-placeholder">
-              <p>✨ Write a {challenges[currentChallenge].type} loop to complete the challenge!</p>
-              <p>Check the hint for help!</p>
-            </div>
-          )}
-          {isCodeValid && currentChallenge === challenges.length - 1 && (
-            <div className="completion-message">
-              <h3>🎉 Congratulations!</h3>
-              <p>You've mastered Python loops!</p>
-            </div>
-          )}
+            {/* Challenge Completion Status */}
+            {currentChallenge === challenges.length - 1 && isCodeValid && !isCompleted && (
+              <div className="final-challenge-banner">
+                <span className="banner-icon">🏆</span>
+                <span className="banner-text">Final Challenge Complete! Click "Complete" to finish.</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
