@@ -6,9 +6,11 @@ import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
 import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
+import { CharacterProvider } from './context/CharacterContext';
 import { Lesson1, Lesson1Interactive, Lesson2, Lesson2Interactive, Lesson3, Lesson3Interactive, Lesson4, Lesson5 } from './pages/Lessons';
 import Quiz from './pages/Quizzes/Quiz';
-import { Game1, Game2, Game3, Game4, Game5 } from './pages/Games';
+import { Game1, Game2, Game3, Game4, Game5, GameHub } from './pages/Games';
+import CharacterLab from './pages/CharacterLab/CharacterLab';
 import Leaderboard from './pages/Leaderboard';
 import { AuthContext } from './context/AuthContext';
 import './App.css';
@@ -36,33 +38,35 @@ const App = () => {
   return (
     <AuthProvider>
       <ProgressProvider>
-        <Router>
-          {/* Place RouteLogger here, outside Routes but inside Router */}
-          <RouteLogger />
-          <Routes>
+        <CharacterProvider>
+          <Router>
+            {/* Place RouteLogger here, outside Routes but inside Router */}
+            <RouteLogger />
+            <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/MainPage" element={<MainPage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           
-          {/* Lesson Routes */}
-          <Route path="/lesson/1" element={<Lesson1 />} />
-          <Route path="/lesson/2" element={<Lesson2 />} />
-          <Route path="/lesson/3" element={<Lesson3 />} />
+          {/* Lesson Routes - Now using Interactive versions for Lessons 1-3 */}
+          <Route path="/lesson/1" element={<Lesson1Interactive />} />
+          <Route path="/lesson/2" element={<Lesson2Interactive />} />
+          <Route path="/lesson/3" element={<Lesson3Interactive />} />
           <Route path="/lesson/4" element={<Lesson4 />} />
           <Route path="/lesson/5" element={<Lesson5 />} />
-          <Route path="/lesson/1interactive" element={<Lesson1Interactive />} />
-          <Route path="/lesson/2interactive" element={<Lesson2Interactive />} />
-          <Route path="/lesson/3interactive" element={<Lesson3Interactive />} />
           {/* Quiz Routes */}
           <Route path="/quiz/:quizId" element={<QuizWrapper />} />
           
           {/* Game Routes */}
+          <Route path="/games" element={<GameHub />} />
           <Route path="/game/1" element={<Game1 />} />
           <Route path="/game/2" element={<Game2 />} />
           <Route path="/game/3" element={<Game3 />} />
           <Route path="/game/4" element={<Game4 />} />
           <Route path="/game/5" element={<Game5 />} />
+          
+          {/* Character Lab Route */}
+          <Route path="/character" element={<CharacterLab />} />
           
           {/* Leaderboard Route */}
           <Route path="/leaderboard" element={<Leaderboard />} />
@@ -71,6 +75,7 @@ const App = () => {
           <Route path="*" element={<Navigate to="/" replace />} /> {/* Now works with import */}
           </Routes>
         </Router>
+        </CharacterProvider>
       </ProgressProvider>
     </AuthProvider>
   );

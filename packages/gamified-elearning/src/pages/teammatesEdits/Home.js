@@ -1,58 +1,34 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useProgress } from "../../context/ProgressContext";
 import CharacterSpotlight from "../../components/CharacterSpotlight/CharacterSpotlight";
 import "./Home.css";
 
 export default function Home() {
-  const [lesson, setLesson] = useState(0);
-  const [quiz, setQuiz] = useState(0);
-  const [game, setGame] = useState(0);
   const [sparkles, setSparkles] = useState([]);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { progress, refreshProgress, isLoading: progressLoading } = useProgress();
 
-  // Fetch progress data from backend
-  const fetchProgressData = async () => {
-    if (!user) {
-      setLoading(false);
-      return;
+  const computePercent = (section) => {
+    const entries = Object.values(progress?.[section] || {});
+    if (!entries.length) {
+      return 0;
     }
-
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8080/api/rewards/progress-percentages', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setLesson(data.progress.lesson);
-          setQuiz(data.progress.quiz);
-          setGame(data.progress.game);
-          console.log('Progress data fetched:', data.progress);
-        }
-      } else {
-        console.error('Failed to fetch progress data. Status:', response.status);
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-      }
-    } catch (error) {
-      console.error('Error fetching progress data:', error);
-    } finally {
-      setLoading(false);
-    }
+    const completed = entries.filter(Boolean).length;
+    return Math.round((completed / entries.length) * 100);
   };
 
+  const lessonPercent = computePercent("lessons");
+  const quizPercent = computePercent("quizzes");
+  const puzzlePercent = computePercent("puzzles");
+
   useEffect(() => {
-    fetchProgressData();
-  }, [user]);
+    if (user) {
+      refreshProgress();
+    }
+  }, [user, refreshProgress]);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -67,20 +43,17 @@ export default function Home() {
 
   const goToLesson = () => navigate("/lesson/1");
   const goToQuiz = () => navigate("/quiz/1");
-  const goToGame = () => navigate("/games");
+  const goToPuzzle = () => navigate("/puzzles");
   const goToDashboard = () => navigate("/MainPage");
 
   const bumpLesson = () => {
-    setLoading(true);
-    fetchProgressData();
+    refreshProgress();
   };
   const bumpQuiz = () => {
-    setLoading(true);
-    fetchProgressData();
+    refreshProgress();
   };
-  const bumpGame = () => {
-    setLoading(true);
-    fetchProgressData();
+  const bumpPuzzle = () => {
+    refreshProgress();
   };
 
   function ProgressBar({ value, color, loading }) {
@@ -126,7 +99,7 @@ export default function Home() {
           <Link to="/MainPage">Dashboard</Link>
           <Link to="/lesson/1">Lessons</Link>
           <Link to="/quiz/1">Quizzes</Link>
-          <Link to="/games">Puzzles</Link>
+          <Link to="/puzzles">Puzzles</Link>
           <Link to="/character">Character Lab</Link>
         </nav>
         <div className="auth-links">
@@ -157,7 +130,7 @@ export default function Home() {
               Sunshine, Snacks, and Supercharged Coding Skills
             </h2>
             <p>
-              Dive into sunny lessons, beachy quizzes, and adventurous Puzzles that
+              Dive into sunny lessons, beachy quizzes, and brainy puzzles that
               turn every coding session into a summer quest.
             </p>
             <div className="hero-actions">
@@ -170,13 +143,13 @@ export default function Home() {
             </div>
             <div className="hero-metrics">
               <span className="metric-chip">
-                <strong>{loading ? '...' : `${lesson}%`}</strong> Lesson mastery
+                <strong>{progressLoading ? '...' : `${lessonPercent}%`}</strong> Lesson mastery
               </span>
               <span className="metric-chip">
-                <strong>{loading ? '...' : `${quiz}%`}</strong> Quiz accuracy
+                <strong>{progressLoading ? '...' : `${quizPercent}%`}</strong> Quiz accuracy
               </span>
               <span className="metric-chip">
-                <strong>{loading ? '...' : `${game}%`}</strong> Puzzles streak
+                <strong>{progressLoading ? '...' : `${puzzlePercent}%`}</strong> Puzzle streak
               </span>
             </div>
           </div>
@@ -212,13 +185,13 @@ export default function Home() {
               </div>
             </button>
 
-            <button type="button" className="cta-card games" onClick={goToGame}>
+            <button type="button" className="cta-card puzzles" onClick={goToPuzzle}>
               <span className="cta-icon" aria-hidden="true">
-                🪁
+                🧩
               </span>
               <div>
-                <h3>Playful Puzzles</h3>
-                <p>Unlock new levels and build creations in colorful worlds.</p>
+                <h3>Brainy Puzzles</h3>
+                <p>Unlock logic quests and discover patterns with every win.</p>
               </div>
             </button>
           </div>
@@ -227,33 +200,33 @@ export default function Home() {
             <article className="card">
               <header className="card-header">
                 <span>Lesson Progress</span>
-                <span>{loading ? '...' : `${lesson}%`}</span>
+                <span>{progressLoading ? '...' : `${lessonPercent}%`}</span>
               </header>
-              <ProgressBar value={lesson} color="lesson" loading={loading} />
+              <ProgressBar value={lessonPercent} color="lesson" loading={progressLoading} />
               <button type="button" className="card-link" onClick={bumpLesson}>
-                {loading ? 'Loading...' : 'Refresh Progress ☀️'}
+                {progressLoading ? 'Loading...' : 'Refresh Progress ☀️'}
               </button>
             </article>
 
             <article className="card">
               <header className="card-header">
                 <span>Quiz Progress</span>
-                <span>{loading ? '...' : `${quiz}%`}</span>
+                <span>{progressLoading ? '...' : `${quizPercent}%`}</span>
               </header>
-              <ProgressBar value={quiz} color="quiz" loading={loading} />
+              <ProgressBar value={quizPercent} color="quiz" loading={progressLoading} />
               <button type="button" className="card-link" onClick={bumpQuiz}>
-                {loading ? 'Loading...' : 'Refresh Progress 🍍'}
+                {progressLoading ? 'Loading...' : 'Refresh Progress 🍍'}
               </button>
             </article>
 
             <article className="card">
               <header className="card-header">
-                <span>Puzzles Progress</span>
-                <span>{loading ? '...' : `${game}%`}</span>
+                <span>Puzzle Progress</span>
+                <span>{progressLoading ? '...' : `${puzzlePercent}%`}</span>
               </header>
-              <ProgressBar value={game} color="game" loading={loading} />
-              <button type="button" className="card-link" onClick={bumpGame}>
-                {loading ? 'Loading...' : 'Refresh Progress 🍧'}
+              <ProgressBar value={puzzlePercent} color="puzzle" loading={progressLoading} />
+              <button type="button" className="card-link" onClick={bumpPuzzle}>
+                {progressLoading ? 'Loading...' : 'Refresh Progress 🧊'}
               </button>
             </article>
 

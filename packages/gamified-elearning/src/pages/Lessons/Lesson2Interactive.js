@@ -413,7 +413,7 @@ const Lesson2Interactive = () => {
         msOverflowStyle: 'none',
         WebkitOverflowScrolling: 'touch'
       }} className="hide-scrollbar">
-        <div className="lesson-wrapper" style={{ margin: '0 auto' }}>
+        <div className="lesson-wrapper" style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}>
 
         <div className="progress-header" style={{ marginTop: '20px' }}>
           <div className="xp-display">

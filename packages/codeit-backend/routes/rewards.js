@@ -254,6 +254,21 @@ router.post('/game-complete', async (req, res) => {
       return res.status(400).json({ error: 'Lesson ID and game type are required' });
     }
 
+    // Check if student exists, create if not
+    const [studentCheck] = await pool.query(
+      'SELECT user_id FROM Students WHERE user_id = ?',
+      [studentId]
+    );
+
+    if (studentCheck.length === 0) {
+      console.log('Student not found, creating student record for user_id:', studentId);
+      await pool.query(
+        'INSERT INTO Students (user_id, level_id, total_xp, weekly_xp, monthly_xp, last_activity) VALUES (?, 1, 0, 0, 0, NOW())',
+        [studentId]
+      );
+      console.log('Student record created successfully');
+    }
+
     // Calculate XP
     const xpData = calculateXP('game', { isHighScore });
     

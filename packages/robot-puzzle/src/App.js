@@ -8,13 +8,18 @@ import LoopGame from './components/LoopGame';
 import AuthGuard from './components/AuthGuard';
 
 function App() {
+  // Empty onUnlock function (not needed but prevents warnings)
+  const handleUnlock = () => {
+    console.log('Game unlocked');
+  };
+
   return (
     <AuthProvider>
       <Router>
         <div className="App">
           <Routes>
             <Route path="/" element={<Navigate to="/puzzle" />} />
-            <Route path="/puzzle" element={<AuthGuard><TalkingRobot /></AuthGuard>} />
+            <Route path="/puzzle" element={<AuthGuard><TalkingRobot onUnlock={handleUnlock} /></AuthGuard>} />
             <Route path="/apple-game" element={<AuthGuard><AppleGame /></AuthGuard>} />
             <Route path="/math-game" element={<AuthGuard><MathGame /></AuthGuard>} />
             <Route path="/condition-game" element={<AuthGuard><ConditionGame /></AuthGuard>} />
