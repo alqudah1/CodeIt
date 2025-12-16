@@ -1,7 +1,7 @@
 // Progress tracking utilities for the frontend
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api/rewards';
+const API_BASE_URL = '';
 
 // Get auth token from localStorage or context
 const getAuthToken = () => {
@@ -61,16 +61,7 @@ export const trackGameCompletion = async (lessonId, gameType, performance = {}) 
   }
 };
 
-// Track daily login
-export const trackDailyLogin = async () => {
-  try {
-    const response = await apiClient.post('/daily-login');
-    return response.data;
-  } catch (error) {
-    console.error('Error tracking daily login:', error);
-    throw error;
-  }
-};
+
 
 // Get student progress
 export const getStudentProgress = async () => {
@@ -83,17 +74,6 @@ export const getStudentProgress = async () => {
   }
 };
 
-// Get leaderboard
-export const getLeaderboard = async (type = 'all_time', period = null) => {
-  try {
-    const params = period ? { period } : {};
-    const response = await apiClient.get(`/leaderboard/${type}`, { params });
-    return response.data;
-  } catch (error) {
-    console.error('Error getting leaderboard:', error);
-    throw error;
-  }
-};
 
 // Helper function to track lesson completion from static pages
 export const trackStaticLessonCompletion = async (lessonNumber, timeSpent) => {
@@ -216,44 +196,3 @@ export class TimeTracker {
     this.startTime = Date.now();
   }
 }
-
-// Auto-track daily login on page load
-export const autoTrackDailyLogin = async () => {
-  const today = new Date().toDateString();
-  const lastLogin = localStorage.getItem('last_daily_login');
-  
-  if (lastLogin !== today) {
-    try {
-      const result = await trackDailyLogin();
-      localStorage.setItem('last_daily_login', today);
-      
-      if (result.xpEarned > 0) {
-        showXPNotification(result.xpEarned, result.xpEarned, 0);
-      }
-      
-      return result;
-    } catch (error) {
-      console.error('Auto daily login tracking failed:', error);
-    }
-  }
-};
-
-// Initialize time tracker for current page
-export const initializeTimeTracker = () => {
-  return new TimeTracker();
-};
-
-export default {
-  trackLessonCompletion,
-  trackGameCompletion,
-  trackDailyLogin,
-  getStudentProgress,
-  getLeaderboard,
-  trackStaticLessonCompletion,
-  trackPuzzleGameCompletion,
-  showXPNotification,
-  TimeTracker,
-  autoTrackDailyLogin,
-  initializeTimeTracker,
-};
-

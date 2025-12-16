@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../db');
 
-const JWT_SECRET = 'yaan*23AUG'; 
+const JWT_SECRET = 'Team42*'; 
 
 router.post('/signup', async (req, res) => {
   console.log('Signup endpoint reached. Body:', req.body);

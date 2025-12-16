@@ -50,9 +50,8 @@ const App = () => {
           
           {/* Lesson Routes - Now using Interactive versions for Lessons 1-3 */}
           <Route path="/lesson/1" element={<Lesson1Interactive />} />
-          <Route path="/lesson/2" element={<Lesson2Interactive />} />
-          <Route path="/lesson/3" element={<Lesson3Interactive />} />
-          <Route path="/lesson/4" element={<Lesson4 />} />
+          <Route path="/lesson/2" element={<Lesson2 />} />
+          <Route path="/lesson/3" element={<Lesson3 />} />
           <Route path="/lesson/5" element={<Lesson5 />} />
           {/* Quiz Routes */}
           <Route path="/quiz/:quizId" element={<QuizWrapper />} />

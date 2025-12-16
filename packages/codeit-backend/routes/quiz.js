@@ -2,7 +2,7 @@ const express = require('express');
 const pool = require('../db'); 
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'yaan*23AUG';
+const JWT_SECRET = 'Team42*';
 
 // Middleware to verify JWT and set req.user
 const authenticateToken = (req, res, next) => {
@@ -107,7 +107,7 @@ router.post('/submit', async (req, res) => {
     try {
       //Log the quiz attempt
       await pool.query(
-        'INSERT INTO Student_Quiz_Attempt (student_id, quiz_id, score, attempt_date) VALUES (?, ?, ?, NOW())',
+        '',
         [studentId, quiz_id, xp]
       );
       console.log('✅ Quiz attempt logged for student');

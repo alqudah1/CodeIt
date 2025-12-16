@@ -113,29 +113,3 @@
     box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
   }
 }
-
-/* Responsive design */
-@media (max-width: 600px) {
-  .step-circle {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
-  }
-  
-  .step-label {
-    font-size: 10px;
-  }
-  
-  .progress-step.current .step-label {
-    font-size: 11px;
-  }
-  
-  .progress-connector {
-    margin: 0 5px;
-    top: -20px;
-  }
-  
-  .learning-progress-container {
-    padding: 5px 15px;
-  }
-}

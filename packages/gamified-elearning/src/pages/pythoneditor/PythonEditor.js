@@ -10,7 +10,7 @@ const PythonEditor = ({ initialCode, onOutput }) => {
     const setupPyodide = async () => {
       try {
         const pyodide = await loadPyodide({
-          indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/',
+          indexURL: '',
         });
 
         window.printOutput = '';
