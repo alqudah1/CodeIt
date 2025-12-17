@@ -1,9 +1,9 @@
 const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '',
+  host: 'ls-44f538763910ead9dcd8cb51164a1961379d7f1b.cf06qk4sweo5.ca-central-1.rds.amazonaws.com',
+  user: 'elearning',
+  password: 'YOUR_DB_PASSWORD',
   database: 'elearning',
   port: 3306,
   waitForConnections: true,
@@ -24,3 +24,4 @@ const pool = mysql.createPool({
 })();
 
 module.exports = pool;
+
