@@ -5,7 +5,9 @@ const authRoutes = require('./routes/auth');
 // const rewardsRoutes = require('./routes/rewards');
 
 const app = express();
-
+app.get('/health', (req, res) => {
+  res.json({ ok: true });
+});
 app.use(cors({
   origin: ['http://localhost:3000', 'http://localhost:3001'], // Allow both main app and puzzle app
   methods: ['GET', 'POST', 'PUT', 'DELETE','OPTIONS'],

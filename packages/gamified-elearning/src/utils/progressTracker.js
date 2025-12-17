@@ -196,3 +196,15 @@ export class TimeTracker {
     this.startTime = Date.now();
   }
 }
+export const initializeTimeTracker = () => new TimeTracker();
+
+export const autoTrackDailyLogin = async () => {
+  // Simple daily login tracker (client-side). Safe no-op for backend.
+  const key = "daily_login_tracked_date";
+  const today = new Date().toISOString().slice(0, 10);
+
+  if (localStorage.getItem(key) === today) return { alreadyTracked: true };
+
+  localStorage.setItem(key, today);
+  return { tracked: true };
+};

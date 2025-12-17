@@ -1,3 +1,4 @@
+/* global loadPyodide */
 import React, { useState, useEffect, useRef } from 'react';
 
 const PythonEditor = ({ initialCode, onOutput }) => {
