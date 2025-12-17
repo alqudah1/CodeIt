@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const quizRoutes = require('./routes/quiz');
 const authRoutes = require('./routes/auth');
-const rewardsRoutes = require('./routes/rewards');
+// const rewardsRoutes = require('./routes/rewards');
 
 const app = express();
 
@@ -17,7 +17,7 @@ app.use(express.json());
 
 app.use('/api/quiz', quizRoutes);
 app.use('/api', authRoutes);
-app.use('/api/rewards', rewardsRoutes);
+// app.use('/api/rewards', rewardsRoutes); // enable when rewards routes are added
 
 const PORT = 8080;
 app.listen(PORT, () => {
