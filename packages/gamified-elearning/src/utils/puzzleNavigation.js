@@ -29,8 +29,7 @@ export const navigateToPuzzle = (puzzleName) => {
   const route = puzzleRoutes[puzzleName.toLowerCase()] || '/puzzle';
   
   // Navigate to puzzle app (assuming it runs on port 3001)
-  const puzzleAppUrl = `http://localhost:3001${route}`;
-  
+const puzzleAppUrl = `${window.location.origin}${route}`;
   // Pass auth data via URL params as backup
   const encodedUser = encodeURIComponent(user);
   const urlWithAuth = `${puzzleAppUrl}?token=${token}&user=${encodedUser}`;

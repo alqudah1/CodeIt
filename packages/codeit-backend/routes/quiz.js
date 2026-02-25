@@ -1,5 +1,5 @@
 const express = require('express');
-const pool = require('../db'); 
+const pool = require('../db');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = 'Team42*';
@@ -7,27 +7,36 @@ const JWT_SECRET = 'Team42*';
 // Middleware to verify JWT and set req.user
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; 
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) return res.status(401).json({ error: 'Access denied. No token provided.' });
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) return res.status(403).json({ error: 'Invalid token' });
-    req.user = user; 
-    console.log('Decoded User from Token:', req.user); 
+    req.user = user;
     next();
   });
 };
 
-
 router.use(authenticateToken);
 
-// Get quiz questions for a quiz
+// Helper: map correct_option letter to text value
+function correctText(row) {
+  const map = {
+    A: row.option_a,
+    B: row.option_b,
+    C: row.option_c,
+    D: row.option_d,
+  };
+  return map[(row.correct_option || '').toUpperCase()] || null;
+}
+
+// GET /:quizId/questions — does NOT expose correct answer to client
 router.get('/:quizId/questions', async (req, res) => {
   const { quizId } = req.params;
   try {
     const [rows] = await pool.query(
-      'SELECT question_id, question_text, option_a, option_b, option_c, option_d, correct_answer FROM Quiz_Questions WHERE quiz_id = ?',
+      'SELECT question_id, question_text, option_a, option_b, option_c, option_d FROM Quiz_Questions WHERE quiz_id = ? LIMIT 10',
       [quizId]
     );
 
@@ -35,115 +44,111 @@ router.get('/:quizId/questions', async (req, res) => {
       return res.status(404).json({ error: 'No questions found for this quiz' });
     }
 
-    res.json(rows);
+    const questions = rows.map((row) => ({
+      id: row.question_id,
+      question: row.question_text,
+      options: [row.option_a, row.option_b, row.option_c, row.option_d].filter(Boolean),
+    }));
+
+    res.json(questions);
   } catch (err) {
     console.error('❌ Error fetching questions:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Submit an MCQ answer
-router.post('/submit', async (req, res) => {
-  console.log('📩 Received POST request to /api/quiz/submit');
-  console.log('Request Body:', req.body);
-  console.log('Authenticated User:', req.user); 
-
-  
-  const studentId = req.body.studentId || req.user.user_id; // Use user_id from token
+// POST /check — validate a single answer; returns correct + correctAnswerText
+// Called after the user picks an option, so the answer is only revealed post-selection.
+router.post('/check', async (req, res) => {
   const { questionId, answer } = req.body;
+  if (!questionId || answer === undefined) {
+    return res.status(400).json({ error: 'Missing questionId or answer' });
+  }
+  try {
+    const [rows] = await pool.query(
+      'SELECT option_a, option_b, option_c, option_d, correct_option FROM Quiz_Questions WHERE question_id = ?',
+      [questionId]
+    );
+    if (!rows.length) {
+      return res.status(404).json({ error: 'Question not found' });
+    }
+    const row = rows[0];
+    const ct = correctText(row);
+    res.json({ correct: answer === ct, correctAnswerText: ct });
+  } catch (err) {
+    console.error('❌ Error checking answer:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
-  console.log('🔍 Debug Info:');
-  console.log('  - studentId from body:', req.body.studentId);
-  console.log('  - studentId from token:', req.user.user_id);
-  console.log('  - final studentId:', studentId);
-  console.log('  - studentId type:', typeof studentId);
+// POST /submit — batch submit; validate all answers server-side
+router.post('/submit', async (req, res) => {
+  console.log('📩 POST /api/quiz/submit');
+  const studentId = req.user.user_id;
+  const { quizId, answers } = req.body;
 
-  if (!studentId || !questionId || !answer) {
-    return res.status(400).json({ error: 'Missing required fields: studentId, questionId, answer' });
+  if (!quizId || !answers || typeof answers !== 'object') {
+    return res.status(400).json({ error: 'Missing required fields: quizId, answers' });
   }
 
   try {
-    // Check if student exists
-    console.log('🔍 Checking if student exists for user_id:', studentId);
+    // Check if user is a student
     const [studentCheck] = await pool.query(
       'SELECT user_id FROM Students WHERE user_id = ?',
       [studentId]
     );
+    const isStudent = studentCheck.length > 0;
 
-    console.log('🔍 Student check result:', studentCheck);
-    console.log('🔍 Student check length:', studentCheck.length);
-
-    //Fetching the question details first
+    // Fetch all questions + correct_option for this quiz
     const [questionRows] = await pool.query(
-      'SELECT quiz_id, correct_answer FROM Quiz_Questions WHERE question_id = ?',
-      [questionId]
+      'SELECT question_id, option_a, option_b, option_c, option_d, correct_option FROM Quiz_Questions WHERE quiz_id = ? LIMIT 10',
+      [quizId]
     );
 
     if (questionRows.length === 0) {
-      return res.status(404).json({ error: 'Question not found' });
+      return res.status(404).json({ error: 'No questions found for this quiz' });
     }
 
-    const { quiz_id, correct_answer } = questionRows[0];
+    let totalXp = 0;
+    let correctCount = 0;
 
-    if (studentCheck.length === 0) {
-      console.log('ℹ️ User is not a student - will skip attempt logging and XP updates');
-      // Return early for non-students - don't proceed with database operations
-      return res.json({
-        isCorrect: answer === correct_answer,
-        feedback: answer === correct_answer ? 'Correct!' : 'Try again',
-        xpEarned: 0,
-        quizCompleted: true
-      });
-    } else {
-      console.log('✅ Student record found - proceeding with full tracking');
+    for (const row of questionRows) {
+      const qId = String(row.question_id);
+      const submitted = answers[qId];
+      const ct = correctText(row);
+      const isCorrect = submitted !== undefined && ct !== null && submitted === ct;
+      if (isCorrect) {
+        correctCount++;
+        totalXp += 10;
+      }
     }
 
-    //Check if the answer is correct
-    const isCorrect = answer === correct_answer;
-    const xp = isCorrect ? 10 : 0;
-
-    // Log quiz attempt and update XP (we know user is a student at this point)
-    console.log('✅ User is a student - proceeding with attempt logging');
-    try {
-      //Log the quiz attempt
+    if (isStudent) {
+      // Record the attempt
       await pool.query(
-        '',
-        [studentId, quiz_id, xp]
+        'INSERT INTO Student_Quiz_Attempt (student_id, quiz_id, correct_count, total_questions, xp_earned) VALUES (?, ?, ?, ?, ?)',
+        [studentId, quizId, correctCount, questionRows.length, totalXp]
       );
-      console.log('✅ Quiz attempt logged for student');
-
-      //Update student's XP
+      // Award XP
       await pool.query(
         'UPDATE Students SET total_xp = total_xp + ? WHERE user_id = ?',
-        [xp, studentId]
+        [totalXp, studentId]
       );
-      console.log('✅ Student XP updated');
-    } catch (dbError) {
-      console.error('❌ Database error during student operations:', dbError);
-      throw dbError;
+      console.log(`✅ Student ${studentId}: +${totalXp} XP for quiz ${quizId} (${correctCount}/${questionRows.length})`);
     }
 
-    //Check if the quiz is completed
-    const [[{ count: totalQuestions }]] = await pool.query(
-      'SELECT COUNT(*) AS count FROM Quiz_Questions WHERE quiz_id = ?',
-      [quiz_id]
-    );
-
-    const [[{ count: answeredQuestions }]] = await pool.query(
-      'SELECT COUNT(*) AS count FROM Student_Quiz_Attempt WHERE student_id = ? AND quiz_id = ?',
-      [studentId, quiz_id]
-    );
-
-    const completed = totalQuestions === answeredQuestions;
+    const totalQuestions = questionRows.length;
+    const percentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
 
     res.json({
-      isCorrect,
-      feedback: isCorrect ? 'Correct!' : 'Try again',
-      xpEarned: xp,
-      quizCompleted: completed
+      message: 'Quiz submitted!',
+      correctCount,
+      totalQuestions,
+      percentage,
+      xpEarned: totalXp,
     });
   } catch (err) {
-    console.error('❌ Error submitting answer:', err);
+    console.error('❌ Error submitting quiz:', err);
     res.status(500).json({ error: err.message });
   }
 });

@@ -136,7 +136,7 @@ const TalkingRobot = ({ onUnlock }) => {
                 </div>
                 <button 
                   className="return-button" 
-                  onClick={() => window.location.href = "http://localhost:3000/MainPage"}
+                  onClick={() => window.location.href = "/MainPage"}
                 >
                   <span className="button-icon">🎮</span>
                   Back to Dashboard

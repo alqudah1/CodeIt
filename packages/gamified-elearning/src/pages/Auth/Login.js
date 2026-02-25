@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext'; 
 import './Auth.css';
+import { API_BASE_URL } from '../../config/api';
 
 export default function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -22,7 +23,7 @@ export default function Login() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/login', data, {
+      const response = await axios.post(`${API_BASE_URL}/api/login`, data, {
         headers: { 'Content-Type': 'application/json' },
       });
       login({ user: response.data.user, token: response.data.token }); 

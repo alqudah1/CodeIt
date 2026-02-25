@@ -7,9 +7,9 @@ import Login from './pages/Auth/Login';
 import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { CharacterProvider } from './context/CharacterContext';
-import { Lesson1, Lesson1Interactive, Lesson2, Lesson2Interactive, Lesson3, Lesson3Interactive, Lesson4, Lesson5 } from './pages/Lessons';
+import { Lesson1, Lesson1Interactive, Lesson2, Lesson2Interactive, Lesson3, Lesson3Interactive, Lesson4, Lesson5, Lesson6, Lesson7, Lesson8, Lesson9, Lesson10 } from './pages/Lessons';
 import Quiz from './pages/Quizzes/Quiz';
-import { Game1, Game2, Game3, Game4, Game5, GameHub } from './pages/Games';
+import { Game1, Game2, Game3, Game4, Game5, Game6, Game7, Game8, Game9, Game10, GameHub } from './pages/Games';
 import CharacterLab from './pages/CharacterLab/CharacterLab';
 import Leaderboard from './pages/Leaderboard';
 import { AuthContext } from './context/AuthContext';
@@ -18,7 +18,7 @@ import './App.css';
 // Quiz Wrapper Component
 const QuizWrapper = () => {
   const { quizId } = useParams();
-  if (!['1', '2', '3', '4', '5'].includes(quizId)) {
+  if (!['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].includes(quizId)) {
     return <div>Invalid Quiz ID</div>;
   }
   return <Quiz quizId={quizId} />;
@@ -52,17 +52,28 @@ const App = () => {
           <Route path="/lesson/1" element={<Lesson1Interactive />} />
           <Route path="/lesson/2" element={<Lesson2 />} />
           <Route path="/lesson/3" element={<Lesson3 />} />
+          <Route path="/lesson/4" element={<Lesson4 />} />
           <Route path="/lesson/5" element={<Lesson5 />} />
+          <Route path="/lesson/6" element={<Lesson6 />} />
+          <Route path="/lesson/7" element={<Lesson7 />} />
+          <Route path="/lesson/8" element={<Lesson8 />} />
+          <Route path="/lesson/9" element={<Lesson9 />} />
+          <Route path="/lesson/10" element={<Lesson10 />} />
           {/* Quiz Routes */}
           <Route path="/quiz/:quizId" element={<QuizWrapper />} />
           
           {/* Game Routes */}
           <Route path="/games" element={<GameHub />} />
-          <Route path="/game/1" element={<Game1 />} />
-          <Route path="/game/2" element={<Game2 />} />
-          <Route path="/game/3" element={<Game3 />} />
-          <Route path="/game/4" element={<Game4 />} />
-          <Route path="/game/5" element={<Game5 />} />
+          <Route path="/game/1"  element={<Game1  />} />
+          <Route path="/game/2"  element={<Game2  />} />
+          <Route path="/game/3"  element={<Game3  />} />
+          <Route path="/game/4"  element={<Game4  />} />
+          <Route path="/game/5"  element={<Game5  />} />
+          <Route path="/game/6"  element={<Game6  />} />
+          <Route path="/game/7"  element={<Game7  />} />
+          <Route path="/game/8"  element={<Game8  />} />
+          <Route path="/game/9"  element={<Game9  />} />
+          <Route path="/game/10" element={<Game10 />} />
           
           {/* Character Lab Route */}
           <Route path="/character" element={<CharacterLab />} />

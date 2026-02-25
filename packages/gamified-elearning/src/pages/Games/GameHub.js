@@ -11,6 +11,8 @@ const GameHub = () => {
       <button type="button" className="game-back" onClick={() => window.history.back()}>
         ← Back
       </button>
+
+      {/* Hero section — unchanged */}
       <section className="game-hero">
         <div className="game-hero__copy">
           <span className="game-hero__pill">Game Arcade</span>
@@ -41,11 +43,12 @@ const GameHub = () => {
         <CharacterSpotlight headline="Cheer squad" cta="Update your buddy" size={220} />
       </section>
 
+      {/* All 10 cards */}
       <section className="game-grid">
         {games.map((game) => (
           <article
             key={game.id}
-            className="game-card"
+            className={`game-card${game.comingSoon ? ' game-card--coming-soon' : ''}`}
             style={{ background: game.gradient }}
           >
             <div className="game-card__meta">
@@ -54,27 +57,35 @@ const GameHub = () => {
               </span>
               <span className="game-card__difficulty">{game.difficulty}</span>
             </div>
+
             <h2>{game.title}</h2>
             <p>{game.summary}</p>
+
             <ul className="game-card__tags">
               {game.focus.map((topic) => (
                 <li key={topic}>{topic}</li>
               ))}
             </ul>
+
             <div className="game-card__footer">
               <div className="game-card__xp">
                 <span className="label">XP reward</span>
                 <strong>{game.xpReward}</strong>
               </div>
+
               <div className="game-card__actions">
-                <a
-                  href={getGameLaunchUrl(game, true)}
-                  className="game-card__launch"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Play ↗
-                </a>
+                {game.comingSoon ? (
+                  <span className="game-card__soon-badge">🔒 Coming Soon</span>
+                ) : (
+                  <a
+                    href={getGameLaunchUrl(game, true)}
+                    className="game-card__launch"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Play ↗
+                  </a>
+                )}
               </div>
             </div>
           </article>
@@ -85,4 +96,3 @@ const GameHub = () => {
 };
 
 export default GameHub;
-

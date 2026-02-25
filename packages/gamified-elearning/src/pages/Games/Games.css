@@ -229,6 +229,33 @@
   background: #fff;
 }
 
+/* ── Coming-soon card variant ───────────────────────────── */
+.game-card--coming-soon {
+  opacity: 0.72;
+  filter: saturate(0.65);
+  position: relative;
+  cursor: default;
+}
+
+.game-card--coming-soon:hover {
+  transform: none;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.game-card__soon-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.35);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  user-select: none;
+}
+
 @media (max-width: 1024px) {
   .game-hero {
     grid-template-columns: 1fr;

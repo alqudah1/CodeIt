@@ -1,328 +1,327 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import './Quiz.css';
-import { useAuth } from '../../context/AuthContext';
-import { useProgress } from '../../context/ProgressContext';
-import { showXPNotification, initializeTimeTracker } from '../../utils/progressTracker';
-import ProgressBar from '../ProgressBar/progressBar';
-import { navigateToPuzzle } from '../../utils/puzzleNavigation'; 
+import React, { useEffect, useMemo, useState } from "react";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import { API_BASE_URL } from "../../config/api";
+import { useAuth } from "../../context/AuthContext";
+import "./Quiz.css";
 
-const Quiz = ({ quizId }) => {
+export default function Quiz() {
   const navigate = useNavigate();
-  const { user, loading } = useAuth(); 
-  const { isQuizUnlocked, isPuzzleUnlocked, markQuizComplete } = useProgress();
+  const { quizId: routeId } = useParams(); // route: /quiz/:quizId
+  const quizId = useMemo(() => (routeId ? String(routeId) : "1"), [routeId]);
+
+  const { user, loading: authLoading } = useAuth();
+  const token = useMemo(() => localStorage.getItem("token"), []);
+
   const [questions, setQuestions] = useState([]);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [score, setScore] = useState(null);
-  const [feedback, setFeedback] = useState('');
-  const [xp, setXp] = useState(0);
-  const [timeTracker] = useState(() => initializeTimeTracker());
-  const [isQuizCompleted, setIsQuizCompleted] = useState(false);
+  const [loadErr, setLoadErr] = useState("");
+  const [loading, setLoading] = useState(true);
 
- 
+  // one-at-a-time state
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [selected, setSelected] = useState(null);   // option value the user picked
+  const [revealed, setRevealed] = useState(false);  // true after picking
+  const [allAnswers, setAllAnswers] = useState({}); // { [qId]: value }
+
+  // per-question check result from backend { correct, correctAnswerText }
+  const [checkResult, setCheckResult] = useState(null);
+  const [checking, setChecking] = useState(false);
+
+  // results
+  const [done, setDone] = useState(false);
+  const [results, setResults] = useState(null);
+  const [submitErr, setSubmitErr] = useState("");
+
+  const quizQuestionsUrl = useMemo(
+    () => `${API_BASE_URL}/api/quiz/${quizId}/questions`,
+    [quizId]
+  );
+
   useEffect(() => {
-    console.log('Quiz.js - AuthContext user:', user);
-  }, [user]);
-
- 
-  const studentId = user?.id;
-
-  const quizNumber = parseInt(quizId);
-  const quizUnlocked = typeof quizNumber === 'number' && isQuizUnlocked(quizNumber);
-
-  useEffect(() => {
-    if (!quizUnlocked) {
-      return;
-    }
-
-    if (loading || !studentId) {
-      setFeedback(loading ? 'Loading...' : 'Please log in to take the quiz.');
-      return;
-    }
-
     const fetchQuestions = async () => {
+      setLoading(true);
+      setLoadErr("");
+      if (authLoading) return;
+      if (!user) {
+        setLoading(false);
+        setLoadErr("Please log in to take the quiz.");
+        return;
+      }
+      if (!token) {
+        setLoading(false);
+        setLoadErr("Missing token. Please logout/login again.");
+        return;
+      }
       try {
-        const response = await axios.get(`http://localhost:8080/api/quiz/${quizId}/questions`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        const res = await axios.get(quizQuestionsUrl, {
+          headers: { Authorization: `Bearer ${token}` },
         });
-        console.log('API Response:', response);
-        console.log('Response Data:', response.data);
-
-        if (response.data.error) {
-          console.log('Error in response:', response.data.error);
-          setFeedback(response.data.error);
+        const payload = res.data;
+        const list = Array.isArray(payload)
+          ? payload
+          : payload?.questions || payload?.data || [];
+        if (!list.length) {
+          setLoadErr("No questions available for this quiz.");
+          setLoading(false);
           return;
         }
-
-        if (!Array.isArray(response.data)) {
-          console.log('Response is not an array:', response.data);
-          setFeedback('Invalid response from server: Expected an array');
-          return;
-        }
-
-        if (response.data.length === 0) {
-          console.log('No questions found');
-          setFeedback('No questions found for this quiz.');
-          return;
-        }
-
-        const transformedQuestions = response.data.map((q, index) => ({
-          question_id: q.question_id,
-          question: q.question_text || 'Question text missing',
-          options: [q.option_a, q.option_b, q.option_c, q.option_d].filter(opt => opt),
-          answer: q.correct_answer || 'Answer missing',
-        }));
-        console.log('Transformed Questions:', transformedQuestions);
-        setQuestions(transformedQuestions);
-      } catch (error) {
-        console.error('Error fetching questions:', error);
-        
-        if (error.response) {
-          console.error('Error Response:', error.response.data);
-          setFeedback(`Failed to load quiz questions: ${error.response.data.error || 'Unknown error'}`);
-        } else if (error.request) {
-          console.error('No response received:', error.request);
-          setFeedback('Failed to load quiz questions: Server did not respond (CORS issue?)');
-        } else {
-          console.error('Error setting up request:', error.message);
-          setFeedback(`Failed to load quiz questions: ${error.message}`);
-        }
+        setQuestions(list.slice(0, 10)); // enforce max 10
+        setLoading(false);
+      } catch (err) {
+        const status = err?.response?.status;
+        const msg =
+          err?.response?.data?.error ||
+          err?.response?.data?.message ||
+          err?.message ||
+          "Failed to load quiz questions.";
+        setLoadErr(
+          status === 401 || status === 403
+            ? "Session expired. Please logout/login again."
+            : msg
+        );
+        setLoading(false);
       }
     };
     fetchQuestions();
-  }, [quizId, studentId, loading, quizUnlocked]); 
+  }, [quizQuestionsUrl, user, authLoading, token]);
 
-  const handleAnswerChange = async (selectedOption) => {
-    if (loading || !studentId) {
-      setFeedback(loading ? 'Loading...' : 'Please log in to submit answers.');
-      return;
-    }
+  // current question helpers
+  const q = questions[currentIdx];
+  const qId = q ? (q.id ?? q.questionId ?? currentIdx) : null;
+  const questionText = q
+    ? q.question ?? q.text ?? q.title ?? `Question ${currentIdx + 1}`
+    : "";
+  const options = q ? q.options || q.choices || q.answers || [] : [];
+  const total = questions.length;
 
-    setAnswers((prev) => ({
-      ...prev,
-      [currentQuestion]: selectedOption,
-    }));
+  const handleSelect = async (optVal) => {
+    if (revealed || checking) return;
+    setSelected(optVal);
+    setRevealed(true);
+    setAllAnswers((prev) => ({ ...prev, [String(qId)]: optVal }));
 
+    // Ask backend if the answer is correct (no correct answer pre-loaded)
+    setChecking(true);
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/quiz/submit',
-        {
-          studentId,
-          questionId: questions[currentQuestion].question_id,
-          answer: selectedOption,
-        },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
+      const res = await axios.post(
+        `${API_BASE_URL}/api/quiz/check`,
+        { questionId: qId, answer: optVal },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      setFeedback(response.data.isCorrect ? '✅ Correct!' : `❌ Incorrect. Correct answer: ${response.data.answer || 'not provided'}`);
-      const xpEarned = response.data.xpEarned || 0;
-      setXp((prevXp) => prevXp + xpEarned);
-      
-      // Show XP notification for each correct answer
-      if (response.data.isCorrect && xpEarned > 0) {
-        showXPNotification(xpEarned, xpEarned, 0);
-      }
-    } catch (error) {
-      console.error('Error submitting answer:', error);
-      if (error.response) {
-        console.error('Error Response:', error.response.data);
-        setFeedback(`Error submitting answer: ${error.response.data.error || 'Unknown error'}`);
-      } else if (error.request) {
-        console.error('No response received:', error.request);
-        setFeedback('Error submitting answer: Server did not respond');
-      } else {
-        console.error('Error setting up request:', error.message);
-        setFeedback(`Error submitting answer: ${error.message}`);
-      }
+      setCheckResult(res.data); // { correct, correctAnswerText }
+    } catch {
+      // If check fails, show no highlighting but still allow progress
+      setCheckResult({ correct: false, correctAnswerText: null });
+    } finally {
+      setChecking(false);
     }
   };
 
-  const nextQuestion = () => {
-    setCurrentQuestion((prev) => prev + 1);
-    setFeedback('');
-  };
-
-  const checkScore = async () => {
-    const newScore = xp / 10; 
-    setScore(newScore);
-    setIsQuizCompleted(true);
-    
-    // Mark quiz as complete
-    if (quizNumber) {
-      markQuizComplete(quizNumber);
-    }
-    
-    // Show final quiz completion XP notification
-    const timeSpent = timeTracker.getTimeSpent();
-    const perfectScore = newScore === questions.length;
-    
-    // Calculate final XP (base + bonus for perfect score)
-    const baseXP = 75; // Base quiz completion XP
-    const bonusXP = perfectScore ? 50 : 0; // Perfect score bonus
-    const totalXP = baseXP + bonusXP;
-    
-    // Show completion notification
-    showXPNotification(totalXP, baseXP, bonusXP);
-    
-    console.log(`Quiz completed! Score: ${newScore}/${questions.length}, XP: ${totalXP}`);
-  };
-
-  const goToNext = () => {
-    // Map quiz IDs to puzzle names
-    const puzzleMap = {
-      '1': 'talking-robot',
-      '2': 'apple-game',
-      '3': 'math-game',
-      '4': 'condition-game',
-      '5': 'loop-game'
-    };
-    
-    const puzzleName = puzzleMap[quizId];
-    
-    if (puzzleName) {
-      // Use the navigateToPuzzle utility to properly pass authentication
-      navigateToPuzzle(puzzleName);
+  const handleNext = async () => {
+    if (currentIdx < total - 1) {
+      setCurrentIdx((i) => i + 1);
+      setSelected(null);
+      setRevealed(false);
+      setCheckResult(null);
     } else {
-      console.warn('Quiz ID not mapped for redirection.');
+      // last question — submit all answers to backend for final score
+      const finalAnswers = { ...allAnswers, [String(qId)]: selected };
+      try {
+        const res = await axios.post(
+          `${API_BASE_URL}/api/quiz/submit`,
+          { quizId: Number(quizId), answers: finalAnswers },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setResults(res.data);
+      } catch (err) {
+        const msg =
+          err?.response?.data?.error || err?.message || "Submit failed";
+        setSubmitErr(msg);
+        setResults({ correctCount: 0, totalQuestions: total, percentage: 0, xpEarned: 0 });
+      }
+      setDone(true);
     }
   };
 
-  const renderShell = (content) => (
-    <div className="quiz-page">
-      <div className="quiz-card">
-        <button
-          type="button"
-          className="quiz-back"
-          onClick={() => navigate('/MainPage')}
-        >
-          ← Back to Dashboard
-        </button>
-        
-        {/* Learning Progress Tracker */}
-        <ProgressBar currentStep="quiz" />
-        
-        <header className="quiz-hero">
-          <span className="quiz-pill">Quiz {quizNumber || quizId}</span>
-          <h1>Rainbow Challenge {quizNumber || quizId}</h1>
-          <p>Answer the sunny questions below to boost your XP and unlock puzzles.</p>
-        </header>
-        {content}
+  const correctAnswerText = checkResult?.correctAnswerText ?? null;
+
+  const getOptClass = (optVal) => {
+    if (!revealed) return "qz-opt";
+    if (correctAnswerText && optVal === correctAnswerText) return "qz-opt qz-opt--correct";
+    if (optVal === selected && optVal !== correctAnswerText) return "qz-opt qz-opt--wrong";
+    return "qz-opt qz-opt--dim";
+  };
+
+  const isCorrect = revealed && checkResult?.correct === true;
+
+  const handleRetry = () => {
+    // Reset all quiz state to start fresh
+    setCurrentIdx(0);
+    setSelected(null);
+    setRevealed(false);
+    setCheckResult(null);
+    setAllAnswers({});
+    setDone(false);
+    setResults(null);
+    setSubmitErr("");
+  };
+
+  // ── loading ──
+  if (loading || authLoading) {
+    return (
+      <div className="qz-page">
+        <div className="qz-loader">
+          <div className="qz-spinner" />
+          <p>Loading quiz...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ── error ──
+  if (loadErr) {
+    return (
+      <div className="qz-page">
+        <div className="qz-error-card">
+          <span className="qz-error-icon">😕</span>
+          <p>{loadErr}</p>
+          <button className="qz-btn-back" onClick={() => navigate(-1)}>
+            ← Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── results screen ──
+  if (done) {
+    const correct = results?.correctCount ?? 0;
+    const tot = results?.totalQuestions ?? total;
+    const xp = results?.xpEarned ?? 0;
+    const pct = results?.percentage ?? (tot > 0 ? Math.round((correct / tot) * 100) : 0);
+    return (
+      <div className="qz-page">
+        <div className="qz-results-card">
+          <div className="qz-results-trophy">
+            {pct === 100 ? "🏆" : pct >= 60 ? "⭐" : "💪"}
+          </div>
+          <h1 className="qz-results-title">
+            {pct === 100
+              ? "Perfect Score!"
+              : pct >= 60
+              ? "Great Job!"
+              : "Keep Trying!"}
+          </h1>
+          <div className="qz-score-wrap">
+            <span className="qz-score-big">{correct}</span>
+            <span className="qz-score-slash"> / </span>
+            <span className="qz-score-total">{tot}</span>
+          </div>
+          <div className="qz-xp-pill">+{xp} XP earned! 🎉</div>
+          {submitErr && <p className="qz-submit-err">{submitErr}</p>}
+          <div className="qz-results-actions">
+            <button className="qz-btn-retry" onClick={handleRetry}>
+              🔄 Retry
+            </button>
+            <button className="qz-btn-home" onClick={() => navigate(-1)}>
+              ← Back
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── main quiz ──
+  return (
+    <div className="qz-page">
+      <div className="qz-card">
+        {/* header */}
+        <div className="qz-header">
+          <button className="qz-btn-back" onClick={() => navigate(-1)}>
+            ← Back
+          </button>
+          <span className="qz-quiz-label">Quiz {quizId}</span>
+        </div>
+
+        {/* progress bar */}
+        <div className="qz-progress-wrap">
+          <div className="qz-progress-track">
+            <div
+              className="qz-progress-fill"
+              style={{
+                width: `${((currentIdx + (revealed ? 1 : 0)) / total) * 100}%`,
+              }}
+            />
+          </div>
+          <span className="qz-progress-text">
+            {currentIdx + 1} / {total}
+          </span>
+        </div>
+
+        {/* question */}
+        <div className="qz-question-card">
+          <span className="qz-q-badge">Q{currentIdx + 1}</span>
+          <h2 className="qz-question-text">{questionText}</h2>
+        </div>
+
+        {/* options */}
+        <div className="qz-options">
+          {options.map((opt, oi) => {
+            const val = opt?.value ?? opt?.text ?? opt ?? String(oi);
+            const label = opt?.text ?? opt?.label ?? opt ?? String(val);
+            return (
+              <button
+                key={`${qId}-${oi}`}
+                className={getOptClass(val)}
+                onClick={() => handleSelect(val)}
+                disabled={revealed || checking}
+              >
+                <span className="qz-opt-letter">
+                  {String.fromCharCode(65 + oi)}
+                </span>
+                <span className="qz-opt-label">{label}</span>
+                {revealed && correctAnswerText && val === correctAnswerText && (
+                  <span className="qz-opt-icon">✓</span>
+                )}
+                {revealed && val === selected && val !== correctAnswerText && (
+                  <span className="qz-opt-icon">✗</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* feedback + next button */}
+        {revealed && !checking && (
+          <div className="qz-bottom">
+            <div
+              className={`qz-feedback ${
+                isCorrect ? "qz-feedback--correct" : "qz-feedback--wrong"
+              }`}
+            >
+              <span className="qz-feedback-icon">
+                {isCorrect ? "🎉" : "💡"}
+              </span>
+              <span>
+                {isCorrect
+                  ? "Correct! Great job!"
+                  : "Not quite — the correct answer is highlighted in green."}
+              </span>
+            </div>
+            <button className="qz-btn-next" onClick={handleNext}>
+              {currentIdx < total - 1 ? "Next Question →" : "Finish Quiz 🎉"}
+            </button>
+          </div>
+        )}
+        {checking && (
+          <div className="qz-bottom">
+            <div className="qz-feedback qz-feedback--checking">
+              <span>Checking...</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
-
-  if (!quizNumber) {
-    return renderShell(
-      <div className="quiz-locked">
-        <p>We couldn&apos;t find that quiz. Try heading back to your lessons.</p>
-        <button type="button" className="quiz-cta" onClick={() => navigate('/lesson/1')}>
-          Go to Lessons
-        </button>
-      </div>
-    );
-  }
-
-  if (!quizNumber) {
-    return renderShell(
-      <div className="quiz-locked">
-        <p>We couldn&apos;t find that quiz. Try heading back to your lessons.</p>
-        <button type="button" className="quiz-cta" onClick={() => navigate('/lesson/1')}>
-          Go to Lessons
-        </button>
-      </div>
-    );
-  }
-
-  if (!quizUnlocked) {
-    return renderShell(
-      <div className="quiz-locked">
-        <p>Finish Lesson {quizNumber} to unlock this quiz.</p>
-        <button type="button" className="quiz-cta" onClick={() => navigate(`/lesson/${quizNumber}`)}>
-          Back to Lesson {quizNumber}
-        </button>
-      </div>
-    );
-  }
-
-  if (loading || !studentId) {
-    return renderShell(
-      <div className="quiz-status">{feedback || 'Loading...'}</div>
-    );
-  }
-
-  if (questions.length === 0 && !feedback) {
-    return renderShell(<div className="quiz-status">Loading questions...</div>);
-  }
-
-  if (feedback && questions.length === 0) {
-    return renderShell(<div className="quiz-status">{feedback}</div>);
-  }
-
-  return renderShell(
-    <section className="quiz-body">
-      <div className="quiz-meta">
-        <span className="quiz-xp">Total XP: {xp}</span>
-        <span className="quiz-progress">Question {currentQuestion + 1} of {questions.length}</span>
-      </div>
-
-      {score === null ? (
-        <article className="quiz-question">
-          <h2>{questions[currentQuestion].question}</h2>
-          <div className="quiz-options">
-            {questions[currentQuestion].options.map((option, i) => (
-              <label key={i} className={`quiz-option ${answers[currentQuestion] === option ? 'is-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name={`q${currentQuestion}`}
-                  value={option}
-                  onChange={() => handleAnswerChange(option)}
-                  checked={answers[currentQuestion] === option}
-                />
-                <span>{option}</span>
-              </label>
-            ))}
-          </div>
-
-          {feedback && <p className="quiz-feedback">{feedback}</p>}
-
-          <div className="quiz-actions">
-            {currentQuestion > 0 && (
-              <button type="button" className="quiz-tertiary" onClick={() => setCurrentQuestion(currentQuestion - 1)}>
-                ← Previous
-              </button>
-            )}
-            {currentQuestion < questions.length - 1 ? (
-              <button type="button" className="quiz-secondary" onClick={nextQuestion}>
-                Next →
-              </button>
-            ) : (
-              <button type="button" className="quiz-primary" onClick={checkScore}>
-                Submit Quiz
-              </button>
-            )}
-          </div>
-        </article>
-      ) : (
-        <article className="quiz-results">
-          <h2>🎉 Great job!</h2>
-          <p>Your score: <strong>{score}</strong> out of <strong>{questions.length}</strong></p>
-          <p>Total XP Earned: <strong>{xp}</strong></p>
-          {score === questions.length && (
-            <p style={{color: '#4ecca3', fontWeight: 'bold'}}>
-              🏆 Perfect Score! +50 bonus XP earned!
-            </p>
-          )}
-          <button type="button" className="quiz-primary" onClick={goToNext}>
-            🎮 Continue to Puzzle Game!
-          </button>
-        </article>
-      )}
-    </section>
-  );
-};
-
-export default Quiz;
+}

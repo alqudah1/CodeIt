@@ -8,16 +8,13 @@ const JWT_SECRET = 'Team42*';
 
 router.post('/signup', async (req, res) => {
   console.log('Signup endpoint reached. Body:', req.body);
-  const { name, email, password, role, dob, parent_email } = req.body;
+  const { name, email, password, dob, parent_email } = req.body;
+  // Default to Student — the register form is student-facing; admins are created separately
+  const role = 'Student';
 
-  if (!name || !email || !password || !role || !dob) {
+  if (!name || !email || !password || !dob) {
     console.log('Validation failed: Missing required fields');
     return res.status(400).json({ error: 'Missing required fields' });
-  }
-
-  if (role !== 'Student' && role !== 'Admin') {
-    console.log('Validation failed: Invalid role');
-    return res.status(400).json({ error: 'Invalid role. Must be Student or Admin' });
   }
 
   let connection;
@@ -51,37 +48,31 @@ router.post('/signup', async (req, res) => {
     const user_id = result.insertId;
     console.log('User inserted, user_id:', user_id);
 
-    if (role === 'Student') {
-      console.time('Students insert');
-      await connection.query(
-        'INSERT INTO Students (user_id, level_id, total_xp, weekly_xp, monthly_xp, last_activity) VALUES (?, 1, 0, 0, 0, NOW())',
-        [user_id]
-      );
-      console.timeEnd('Students insert');
-
-      console.time('Leaderboards insert');
-      await connection.query(
-        'INSERT INTO Leaderboards (student_id, rank_position, xp_points) VALUES (?, 0, 0)',
-        [user_id]
-      );
-      console.timeEnd('Leaderboards insert');
-
-      console.log('Student creation successful for user_id:', user_id);
-    } else if (role === 'Admin') {
-      console.time('Admins insert');
-      await connection.query(
-        'INSERT INTO Admins (user_id, permissions) VALUES (?, ?)',
-        [user_id, 'default']
-      );
-      console.timeEnd('Admins insert');
-
-      console.log('Admin creation successful for user_id:', user_id);
-    }
+    // Create Student record (role is always Student from the public form)
+    console.time('Students insert');
+    await connection.query(
+      'INSERT INTO Students (user_id, level_id, total_xp, weekly_xp) VALUES (?, 1, 0, 0)',
+      [user_id]
+    );
+    console.timeEnd('Students insert');
+    console.log('Student creation successful for user_id:', user_id);
 
     // Commit the entire transaction
     await connection.commit();
     console.log('✅ Transaction committed successfully');
-    res.json({ message: `${role} created`, user_id });
+
+    // Issue a JWT so the client can auto-login immediately after signup
+    const token = jwt.sign(
+      { user_id, role, name },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.json({
+      message: 'Student created',
+      token,
+      user: { id: user_id, name, role },
+    });
   } catch (err) {
     if (connection) {
       console.log('🔄 Rolling back transaction due to error');

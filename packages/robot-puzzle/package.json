@@ -1,5 +1,6 @@
 {
   "name": "@e-learning/robot-puzzle",
+  "homepage": "/puzzle",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
