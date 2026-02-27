@@ -7,7 +7,8 @@ import {
   trackStaticLessonCompletion,
   showXPNotification,
   initializeTimeTracker,
-  autoTrackDailyLogin
+  autoTrackDailyLogin,
+  showLessonLockedToast
 } from '../../utils/progressTracker';
 import { useProgress } from '../../context/ProgressContext';
 
@@ -26,183 +27,135 @@ const Lesson10 = () => {
     hasCompletedChallenge: false
   });
 
-  useEffect(() => {
-    autoTrackDailyLogin();
-  }, []);
+  useEffect(() => { autoTrackDailyLogin(); }, []);
 
-  const isLessonEligibleForCompletion = () => {
-    return (
-      lessonProgress.hasRunCode ||
-      lessonProgress.hasModifiedCode ||
-      lessonProgress.hasSeenOutput ||
-      lessonProgress.hasCompletedChallenge
-    );
-  };
+  const isLessonEligibleForCompletion = () =>
+    lessonProgress.hasRunCode || lessonProgress.hasModifiedCode ||
+    lessonProgress.hasSeenOutput || lessonProgress.hasCompletedChallenge;
 
   const handleCodeOutput = (output) => {
     setLessonOutput(output);
-
+    const defaultOutput = '3.141592653589793\n4.0';
     const newProgress = {
       ...lessonProgress,
       hasRunCode: true,
       hasSeenOutput: output.length > 0,
+      hasModifiedCode: output !== defaultOutput && output.length > 0,
+      hasCompletedChallenge: output.length > 0 && output !== defaultOutput,
     };
-
-    const defaultOutput = 'Buddy says: Woof!';
-    const isModified = output !== defaultOutput && output.length > 0;
-    if (isModified) {
-      newProgress.hasModifiedCode = true;
-    }
-
-    if (output.length > 0 && output !== defaultOutput) {
-      newProgress.hasCompletedChallenge = true;
-    }
-
     setLessonProgress(newProgress);
-
-    if (isLessonEligibleForCompletion() && !isCompleted && !hasMarkedComplete) {
+    if ((newProgress.hasRunCode || newProgress.hasModifiedCode) && !isCompleted && !hasMarkedComplete) {
       markLessonComplete(10);
       setHasMarkedComplete(true);
     }
   };
 
   const goToQuiz = async () => {
-    if (!isLessonEligibleForCompletion()) {
-      alert('🎯 Almost there! Complete any one of these activities to unlock the quiz:\n\n• Run some code in the editor\n• Modify the code and see the output\n• Complete the challenge\n\nYou only need to do ONE of these to proceed!');
-      return;
-    }
-
+    if (!isLessonEligibleForCompletion()) { showLessonLockedToast(10); return; }
     if (!isCompleted) {
       try {
-        const timeSpent = timeTracker.getTimeSpent();
-        const result = await trackStaticLessonCompletion(10, timeSpent);
+        const result = await trackStaticLessonCompletion(10);
         showXPNotification(result.xpEarned, result.baseXP, result.bonusXP);
         markLessonComplete(10);
         setIsCompleted(true);
-      } catch (error) {
-        console.error('Error tracking lesson completion:', error);
-      }
+      } catch (error) { console.error('Error tracking lesson completion:', error); }
     }
-    navigate('/quiz/10');
+    navigate('/quiz/10', { state: { source: 'lesson', lessonId: 10 } });
   };
 
   return (
     <div className="python-lesson">
       <Header />
       <div className="lesson-wrapper">
-
         <section className="lesson-card">
           <header className="lesson-header">
             <span className="lesson-pill">Lesson 10</span>
-            <h1>Lesson 10: Classes and Objects</h1>
+            <h1>Lesson 10: Modules &amp; Libraries</h1>
             <p className="lesson-subtitle">
-              Learn how to build your own custom Python blueprints — like designing your very own game character!
+              Unlock Python's superpowers by importing ready-made tools — like opening a toolbox full of amazing gadgets!
             </p>
           </header>
 
           <div className="lesson-content">
-            <h2>What is a Class?</h2>
+            <h2>What is a Module?</h2>
             <p>
-              A <strong>class</strong> is like a blueprint or a recipe. It describes what something
-              looks like and what it can do.
+              A <strong>module</strong> is a file containing Python code that you can reuse in your programs.
+              Python comes with hundreds of built-in modules, plus millions more you can install.
             </p>
             <p>
-              An <strong>object</strong> is something you create from a class — like baking a
-              cookie using a cookie cutter!
+              Use the <code>import</code> keyword to bring a module into your program.
             </p>
 
             <div className="code-example">
-              <h3>Example 1: Creating a Class</h3>
-              <pre>{`# Define the blueprint
-class Dog:
-    def __init__(self, name):  # Set up the dog's name
-        self.name = name
+              <h3>Example 1: The math Module</h3>
+              <pre>{`import math
 
-    def bark(self):            # What the dog can do
-        print(self.name + " says: Woof!")
-
-# Create an object (a real dog!) from the class
-my_dog = Dog("Buddy")
-my_dog.bark()`}</pre>
+print(math.pi)          # The value of π
+print(math.sqrt(16))    # Square root of 16`}</pre>
               <div className="output">
-                <h3>What you&apos;ll see:</h3>
-                <pre>Buddy says: Woof!</pre>
+                <h3>What you'll see:</h3>
+                <pre>{`3.141592653589793\n4.0`}</pre>
               </div>
             </div>
 
             <div className="code-example">
-              <h3>Example 2: Two Objects from One Class</h3>
-              <pre>{`class Dog:
-    def __init__(self, name):
-        self.name = name
+              <h3>Example 2: The random Module</h3>
+              <pre>{`import random
 
-    def bark(self):
-        print(self.name + " says: Woof!")
+# Pick a random number between 1 and 10
+number = random.randint(1, 10)
+print("Random number:", number)
 
-dog1 = Dog("Rex")
-dog2 = Dog("Luna")
-dog1.bark()
-dog2.bark()`}</pre>
+# Pick a random item from a list
+fruits = ["apple", "banana", "cherry"]
+print("Random fruit:", random.choice(fruits))`}</pre>
               <div className="output">
-                <h3>What you&apos;ll see:</h3>
-                <pre>{`Rex says: Woof!
-Luna says: Woof!`}</pre>
+                <h3>What you'll see (example):</h3>
+                <pre>{`Random number: 7\nRandom fruit: banana`}</pre>
+              </div>
+            </div>
+
+            <div className="code-example">
+              <h3>Example 3: Import Just What You Need</h3>
+              <pre>{`from math import sqrt, pi
+
+# No need to write "math." now
+print(sqrt(25))
+print(round(pi, 2))`}</pre>
+              <div className="output">
+                <h3>What you'll see:</h3>
+                <pre>{`5.0\n3.14`}</pre>
               </div>
             </div>
 
             <div className="try-it">
-              <h3>Your sunny challenge:</h3>
-              <p>Change <code>&quot;Buddy&quot;</code> to your own pet name — or invent one!</p>
-              <p>Try adding a second method like <code>def sit(self):</code> that prints your dog sitting.</p>
+              <h3>Your sunny challenge 🌟</h3>
+              <p>Use <code>math.sqrt()</code> to find the square root of 144. Then use <code>random.randint()</code> to roll a virtual dice (1–6)!</p>
+              <p>Try <code>from math import ceil, floor</code> and use them on <code>3.7</code>.</p>
             </div>
+
             <PythonEditor
-              initialCode={`class Dog:\n    def __init__(self, name):\n        self.name = name\n\n    def bark(self):\n        print(self.name + " says: Woof!")\n\nmy_dog = Dog("Buddy")\nmy_dog.bark()`}
+              initialCode={`import math\n\nprint(math.pi)\nprint(math.sqrt(16))`}
               onOutput={handleCodeOutput}
             />
           </div>
 
-          {/* Progress Indicator */}
-          <div className="progress-indicator" style={{
-            background: '#f8f9fa',
-            border: '2px solid #e9ecef',
-            borderRadius: '10px',
-            padding: '20px',
-            margin: '20px 0',
-            textAlign: 'center'
-          }}>
+          <div className="progress-indicator" style={{ background: '#f8f9fa', border: '2px solid #e9ecef', borderRadius: '10px', padding: '20px', margin: '20px 0', textAlign: 'center' }}>
             <h3 style={{ margin: '0 0 15px 0', color: '#495057' }}>📊 Your Progress</h3>
             <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '10px' }}>
-              <div style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress.hasRunCode ? '#4ecca3' : '#e9ecef', color: lessonProgress.hasRunCode ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
-                {lessonProgress.hasRunCode ? '✅' : '⭕'} Run Code
-              </div>
-              <div style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress.hasModifiedCode ? '#4ecca3' : '#e9ecef', color: lessonProgress.hasModifiedCode ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
-                {lessonProgress.hasModifiedCode ? '✅' : '⭕'} Modify Code
-              </div>
-              <div style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress.hasSeenOutput ? '#4ecca3' : '#e9ecef', color: lessonProgress.hasSeenOutput ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
-                {lessonProgress.hasSeenOutput ? '✅' : '⭕'} See Output
-              </div>
-              <div style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress.hasCompletedChallenge ? '#4ecca3' : '#e9ecef', color: lessonProgress.hasCompletedChallenge ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
-                {lessonProgress.hasCompletedChallenge ? '✅' : '⭕'} Challenge
-              </div>
+              {[['Run Code', 'hasRunCode'], ['Modify Code', 'hasModifiedCode'], ['See Output', 'hasSeenOutput'], ['Challenge', 'hasCompletedChallenge']].map(([label, key]) => (
+                <div key={key} style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress[key] ? '#4ecca3' : '#e9ecef', color: lessonProgress[key] ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
+                  {lessonProgress[key] ? '✅' : '⭕'} {label}
+                </div>
+              ))}
             </div>
-            <p style={{ margin: '15px 0 0 0', fontSize: '14px', color: '#6c757d' }}>
-              Complete any one activity above to unlock the quiz!
-            </p>
+            <p style={{ margin: '15px 0 0 0', fontSize: '14px', color: '#6c757d' }}>Complete any one activity above to unlock the quiz!</p>
           </div>
 
-          {/* Lesson Completion Status */}
           {isLessonEligibleForCompletion() && !isCompleted && (
-            <div className="completion-status" style={{
-              background: 'linear-gradient(135deg, #4ecca3, #2e9c81)',
-              color: 'white',
-              padding: '15px',
-              borderRadius: '10px',
-              margin: '20px 0',
-              textAlign: 'center',
-              boxShadow: '0 4px 15px rgba(78, 204, 163, 0.3)'
-            }}>
-              <h3>🎉 Great Progress!</h3>
-              <p>You&apos;ve completed enough activities to proceed to the quiz!</p>
+            <div className="completion-status" style={{ background: 'linear-gradient(135deg, #4ecca3, #2e9c81)', color: 'white', padding: '15px', borderRadius: '10px', margin: '20px 0', textAlign: 'center', boxShadow: '0 4px 15px rgba(78, 204, 163, 0.3)' }}>
+              <h3>🎉 Congratulations! You made it to the last lesson!</h3>
+              <p>You're ready for the final quiz!</p>
             </div>
           )}
 
@@ -211,15 +164,9 @@ Luna says: Woof!`}</pre>
               type="button"
               className="quiz-button"
               onClick={goToQuiz}
-              style={{
-                backgroundColor: isCompleted ? '#2e9c81' : isLessonEligibleForCompletion() ? '#4ecca3' : '#cccccc',
-                opacity: isCompleted ? 0.8 : 1,
-                cursor: isLessonEligibleForCompletion() ? 'pointer' : 'not-allowed'
-              }}
+              style={{ backgroundColor: isCompleted ? '#2e9c81' : isLessonEligibleForCompletion() ? '#4ecca3' : '#cccccc', opacity: isCompleted ? 0.8 : 1, cursor: isLessonEligibleForCompletion() ? 'pointer' : 'not-allowed' }}
             >
-              {isCompleted ? '✅ Lesson Completed - Go to Quiz 10 🌟' :
-               isLessonEligibleForCompletion() ? 'Ready for Quiz 10 🌟' :
-               'Complete at least one activity to unlock quiz'}
+              {isCompleted ? '✅ All Done! — Final Quiz 10 🧩' : isLessonEligibleForCompletion() ? 'Take Final Quiz 10 — Modules & Libraries 🧩' : 'Complete an activity to unlock quiz'}
             </button>
           </footer>
         </section>

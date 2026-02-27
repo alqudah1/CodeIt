@@ -1,17 +1,24 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { API_BASE_URL } from "../../config/api";
 import { useAuth } from "../../context/AuthContext";
 import "./Quiz.css";
 
 export default function Quiz() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { quizId: routeId } = useParams(); // route: /quiz/:quizId
   const quizId = useMemo(() => (routeId ? String(routeId) : "1"), [routeId]);
 
   const { user, loading: authLoading } = useAuth();
   const token = useMemo(() => localStorage.getItem("token"), []);
+
+  // Quiz gating: only block when navigated from a lesson page
+  const fromLesson = location.state?.source === 'lesson';
+  const sourceLessonId = location.state?.lessonId ? Number(location.state.lessonId) : null;
+  const [gateBlocked, setGateBlocked] = useState(false);
+  const [gateChecking, setGateChecking] = useState(fromLesson);
 
   const [questions, setQuestions] = useState([]);
   const [loadErr, setLoadErr] = useState("");
@@ -36,6 +43,38 @@ export default function Quiz() {
     () => `${API_BASE_URL}/api/quiz/${quizId}/questions`,
     [quizId]
   );
+
+  // Lesson gating check — only runs when arriving from a lesson flow
+  useEffect(() => {
+    if (!fromLesson || !sourceLessonId) {
+      setGateChecking(false);
+      return;
+    }
+    if (authLoading) return;
+    if (!user || !token) {
+      setGateChecking(false);
+      return;
+    }
+    const checkGate = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/lessons/progress`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const completed = (data.completedLessons || []).map(Number);
+          if (!completed.includes(sourceLessonId)) {
+            setGateBlocked(true);
+          }
+        }
+      } catch (_) {
+        // If gate check fails, don't block the user
+      } finally {
+        setGateChecking(false);
+      }
+    };
+    checkGate();
+  }, [fromLesson, sourceLessonId, user, token, authLoading]);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -165,6 +204,38 @@ export default function Quiz() {
     setResults(null);
     setSubmitErr("");
   };
+
+  // ── gate checking (lesson flow only) ──
+  if (gateChecking) {
+    return (
+      <div className="qz-page">
+        <div className="qz-loader">
+          <div className="qz-spinner" />
+          <p>Checking lesson progress…</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ── gate blocked ──
+  if (gateBlocked) {
+    return (
+      <div className="qz-page">
+        <div className="qz-error-card">
+          <span className="qz-error-icon">🔒</span>
+          <p>
+            Complete <strong>Lesson {sourceLessonId}</strong> first to unlock this quiz!
+          </p>
+          <button
+            className="qz-btn-back"
+            onClick={() => navigate(`/lesson/${sourceLessonId}`)}
+          >
+            ← Back to Lesson {sourceLessonId}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // ── loading ──
   if (loading || authLoading) {

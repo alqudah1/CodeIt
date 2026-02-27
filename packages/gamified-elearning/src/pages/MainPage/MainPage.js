@@ -4,6 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { ENDPOINTS } from '../../config/api';
 import { games as puzzleCatalog } from '../Games/gameCatalog';
 import Header from '../Header/Header';
+import LeaderboardPreview from '../../components/LeaderboardPreview';
 import './MainPage.css';
 
 const TOTAL = 10;
@@ -52,6 +53,7 @@ const MainPage = () => {
     fetchProgress();
   }, [user]);
 
+  const navigateToLessonMap = () => navigate('/lessons');
   const navigateToLesson = (num) => navigate(`/lesson/${num}`);
   const navigateToQuiz   = (num) => navigate(`/quiz/${num}`);
   const navigateToGame   = (num) => navigate(`/game/${num}`);
@@ -60,6 +62,9 @@ const MainPage = () => {
 
   if (loading) return <div>Loading...</div>;
   if (!user || !user.name) return <div>Please log in to access the dashboard.</div>;
+
+  // eslint-disable-next-line no-console
+  console.log('BUILD_VERSION: 20260226-LB-HEADER');
 
   const countLabel = (done, total) => {
     if (done === null) return `${total}`;
@@ -75,48 +80,58 @@ const MainPage = () => {
         navigateToRegister={navigateToRegister}
       />
       <main className="main-content">
-        <section className="overview-card">
-          <h2>Keep the sunshine streak going</h2>
-          <p>
-            Dive into lessons, quizzes, or Puzzles to unlock fresh badges and keep your skills glowing brighter
-            every day.
-          </p>
-          <div className="overview-stats">
-            <div className="stat-chip stat-chip--lessons">
-              <small>📘 Lessons</small>
-              <strong>{progressLoading ? '…' : countLabel(completedLessons, TOTAL)}</strong>
-              {!progressLoading && completedLessons !== null && (
-                <div className="stat-chip__bar">
-                  <div
-                    className="stat-chip__bar-fill stat-chip__bar-fill--lessons"
-                    style={{ width: `${(completedLessons / TOTAL) * 100}%` }}
-                  />
+        <section className="overview-row">
+          <div className="overview-split">
+            {/* Left: welcome + stats */}
+            <div className="overview-card">
+              <h2>Keep the sunshine streak going</h2>
+              <p>
+                Dive into lessons, quizzes, or Puzzles to unlock fresh badges and keep your skills glowing brighter
+                every day.
+              </p>
+              <div className="overview-stats">
+                <div className="stat-chip stat-chip--lessons">
+                  <small>📘 Lessons</small>
+                  <strong>{progressLoading ? '…' : countLabel(completedLessons, TOTAL)}</strong>
+                  {!progressLoading && completedLessons !== null && (
+                    <div className="stat-chip__bar">
+                      <div
+                        className="stat-chip__bar-fill stat-chip__bar-fill--lessons"
+                        style={{ width: `${(completedLessons / TOTAL) * 100}%` }}
+                      />
+                    </div>
+                  )}
                 </div>
-              )}
+                <div className="stat-chip stat-chip--quizzes">
+                  <small>⚡ Quizzes</small>
+                  <strong>{progressLoading ? '…' : countLabel(completedQuizzes, TOTAL)}</strong>
+                  {!progressLoading && completedQuizzes !== null && (
+                    <div className="stat-chip__bar">
+                      <div
+                        className="stat-chip__bar-fill stat-chip__bar-fill--quizzes"
+                        style={{ width: `${(completedQuizzes / TOTAL) * 100}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+                <div className="stat-chip stat-chip--puzzles">
+                  <small>🎮 Puzzles</small>
+                  <strong>{progressLoading ? '…' : countLabel(completedPuzzles, TOTAL)}</strong>
+                  {!progressLoading && completedPuzzles !== null && (
+                    <div className="stat-chip__bar">
+                      <div
+                        className="stat-chip__bar-fill stat-chip__bar-fill--puzzles"
+                        style={{ width: `${(completedPuzzles / TOTAL) * 100}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-            <div className="stat-chip stat-chip--quizzes">
-              <small>⚡ Quizzes</small>
-              <strong>{progressLoading ? '…' : countLabel(completedQuizzes, TOTAL)}</strong>
-              {!progressLoading && completedQuizzes !== null && (
-                <div className="stat-chip__bar">
-                  <div
-                    className="stat-chip__bar-fill stat-chip__bar-fill--quizzes"
-                    style={{ width: `${(completedQuizzes / TOTAL) * 100}%` }}
-                  />
-                </div>
-              )}
-            </div>
-            <div className="stat-chip stat-chip--puzzles">
-              <small>🎮 Puzzles</small>
-              <strong>{progressLoading ? '…' : countLabel(completedPuzzles, TOTAL)}</strong>
-              {!progressLoading && completedPuzzles !== null && (
-                <div className="stat-chip__bar">
-                  <div
-                    className="stat-chip__bar-fill stat-chip__bar-fill--puzzles"
-                    style={{ width: `${(completedPuzzles / TOTAL) * 100}%` }}
-                  />
-                </div>
-              )}
+
+            {/* Right: leaderboard preview */}
+            <div className="overview-lb-panel">
+              <LeaderboardPreview />
             </div>
           </div>
         </section>
@@ -134,6 +149,15 @@ const MainPage = () => {
                 <p>Surf through step-by-step adventures that build real coding powers.</p>
               </div>
             </header>
+            <div className="track-map-cta">
+              <button
+                type="button"
+                className="track-map-btn"
+                onClick={navigateToLessonMap}
+              >
+                📍 View Lessons Map
+              </button>
+            </div>
             <div className="track-buttons">
               {allIds.map((num) => (
                 <button

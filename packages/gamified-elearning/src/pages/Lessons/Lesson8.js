@@ -7,7 +7,8 @@ import {
   trackStaticLessonCompletion,
   showXPNotification,
   initializeTimeTracker,
-  autoTrackDailyLogin
+  autoTrackDailyLogin,
+  showLessonLockedToast
 } from '../../utils/progressTracker';
 import { useProgress } from '../../context/ProgressContext';
 
@@ -26,176 +27,131 @@ const Lesson8 = () => {
     hasCompletedChallenge: false
   });
 
-  useEffect(() => {
-    autoTrackDailyLogin();
-  }, []);
+  useEffect(() => { autoTrackDailyLogin(); }, []);
 
-  const isLessonEligibleForCompletion = () => {
-    return (
-      lessonProgress.hasRunCode ||
-      lessonProgress.hasModifiedCode ||
-      lessonProgress.hasSeenOutput ||
-      lessonProgress.hasCompletedChallenge
-    );
-  };
+  const isLessonEligibleForCompletion = () =>
+    lessonProgress.hasRunCode || lessonProgress.hasModifiedCode ||
+    lessonProgress.hasSeenOutput || lessonProgress.hasCompletedChallenge;
 
   const handleCodeOutput = (output) => {
     setLessonOutput(output);
-
+    const defaultOutput = "Oops! Can't divide by zero.";
     const newProgress = {
       ...lessonProgress,
       hasRunCode: true,
       hasSeenOutput: output.length > 0,
+      hasModifiedCode: output !== defaultOutput && output.length > 0,
+      hasCompletedChallenge: output.length > 0 && output !== defaultOutput,
     };
-
-    const defaultOutput = 'Hello from Python!\nLearning is fun!\n';
-    const isModified = output !== defaultOutput && output.length > 0;
-    if (isModified) {
-      newProgress.hasModifiedCode = true;
-    }
-
-    if (output.length > 0 && output !== defaultOutput) {
-      newProgress.hasCompletedChallenge = true;
-    }
-
     setLessonProgress(newProgress);
-
-    if (isLessonEligibleForCompletion() && !isCompleted && !hasMarkedComplete) {
+    if ((newProgress.hasRunCode || newProgress.hasModifiedCode) && !isCompleted && !hasMarkedComplete) {
       markLessonComplete(8);
       setHasMarkedComplete(true);
     }
   };
 
   const goToQuiz = async () => {
-    if (!isLessonEligibleForCompletion()) {
-      alert('🎯 Almost there! Complete any one of these activities to unlock the quiz:\n\n• Run some code in the editor\n• Modify the code and see the output\n• Complete the challenge\n\nYou only need to do ONE of these to proceed!');
-      return;
-    }
-
+    if (!isLessonEligibleForCompletion()) { showLessonLockedToast(8); return; }
     if (!isCompleted) {
       try {
-        const timeSpent = timeTracker.getTimeSpent();
-        const result = await trackStaticLessonCompletion(8, timeSpent);
+        const result = await trackStaticLessonCompletion(8);
         showXPNotification(result.xpEarned, result.baseXP, result.bonusXP);
         markLessonComplete(8);
         setIsCompleted(true);
-      } catch (error) {
-        console.error('Error tracking lesson completion:', error);
-      }
+      } catch (error) { console.error('Error tracking lesson completion:', error); }
     }
-    navigate('/quiz/8');
+    navigate('/quiz/8', { state: { source: 'lesson', lessonId: 8 } });
   };
 
   return (
     <div className="python-lesson">
       <Header />
       <div className="lesson-wrapper">
-
         <section className="lesson-card">
           <header className="lesson-header">
             <span className="lesson-pill">Lesson 8</span>
-            <h1>Lesson 8: File Input and Output</h1>
+            <h1>Lesson 8: Exception Handling</h1>
             <p className="lesson-subtitle">
-              Learn how Python saves and reads information — like writing in a diary and reading it back!
+              Learn how Python handles mistakes gracefully — like catching a ball before it hits the floor!
             </p>
           </header>
 
           <div className="lesson-content">
-            <h2>Writing and Reading Files</h2>
+            <h2>What are Exceptions?</h2>
             <p>
-              Python can <strong>write</strong> text into a file and <strong>read</strong> it back later.
-              This is great for saving your work, high scores, or notes!
+              Sometimes code goes wrong — dividing by zero, opening a missing file, or converting bad input.
+              Instead of crashing, Python lets you <strong>catch</strong> these errors and handle them nicely.
             </p>
             <p>
-              We use <code>open()</code> with a <strong>mode</strong>:
-              <strong> &quot;w&quot;</strong> to write, and <strong>&quot;r&quot;</strong> to read.
+              We use <code>try</code> and <code>except</code> to do this.
             </p>
 
             <div className="code-example">
-              <h3>Example 1: Writing to a File</h3>
-              <pre>{`# "w" means write mode
-with open("notes.txt", "w") as f:
-    f.write("Hello from Python!\\n")
-    f.write("Learning is fun!\\n")
-
-print("File saved!")`}</pre>
+              <h3>Example 1: Catching a Division Error</h3>
+              <pre>{`try:
+    result = 10 / 0
+except ZeroDivisionError:
+    print("Oops! Can't divide by zero.")`}</pre>
               <div className="output">
-                <h3>What you&apos;ll see:</h3>
-                <pre>File saved!</pre>
+                <h3>What you'll see:</h3>
+                <pre>{`Oops! Can't divide by zero.`}</pre>
               </div>
             </div>
 
             <div className="code-example">
-              <h3>Example 2: Reading from a File</h3>
-              <pre>{`# Write first, then read it back
-with open("notes.txt", "w") as f:
-    f.write("Hello from Python!\\n")
-    f.write("Learning is fun!\\n")
-
-# "r" means read mode
-with open("notes.txt", "r") as f:
-    content = f.read()
-    print(content)`}</pre>
+              <h3>Example 2: Handling Any Error + Finally</h3>
+              <pre>{`try:
+    number = int("hello")  # This will fail!
+except ValueError as e:
+    print("Error:", e)
+finally:
+    print("This always runs!")`}</pre>
               <div className="output">
-                <h3>What you&apos;ll see:</h3>
-                <pre>{`Hello from Python!
-Learning is fun!`}</pre>
+                <h3>What you'll see:</h3>
+                <pre>{`Error: invalid literal for int() with base 10: 'hello'\nThis always runs!`}</pre>
+              </div>
+            </div>
+
+            <div className="code-example">
+              <h3>Example 3: Raising Your Own Error</h3>
+              <pre>{`age = -5
+if age < 0:
+    raise ValueError("Age cannot be negative!")
+print("Age is:", age)`}</pre>
+              <div className="output">
+                <h3>What you'll see:</h3>
+                <pre>{`ValueError: Age cannot be negative!`}</pre>
               </div>
             </div>
 
             <div className="try-it">
-              <h3>Your sunny challenge:</h3>
-              <p>Change the messages inside the file and read them back!</p>
-              <p>Try adding a third line with your name.</p>
+              <h3>Your sunny challenge 🌟</h3>
+              <p>Change <code>10 / 0</code> to <code>10 / 2</code> — what happens now?</p>
+              <p>Try wrapping <code>int("abc")</code> in a try/except and printing a friendly message.</p>
             </div>
+
             <PythonEditor
-              initialCode={`with open("notes.txt", "w") as f:\n    f.write("Hello from Python!\\n")\n    f.write("Learning is fun!\\n")\n\nwith open("notes.txt", "r") as f:\n    content = f.read()\n    print(content)`}
+              initialCode={`try:\n    result = 10 / 0\nexcept ZeroDivisionError:\n    print("Oops! Can't divide by zero.")`}
               onOutput={handleCodeOutput}
             />
           </div>
 
-          {/* Progress Indicator */}
-          <div className="progress-indicator" style={{
-            background: '#f8f9fa',
-            border: '2px solid #e9ecef',
-            borderRadius: '10px',
-            padding: '20px',
-            margin: '20px 0',
-            textAlign: 'center'
-          }}>
+          <div className="progress-indicator" style={{ background: '#f8f9fa', border: '2px solid #e9ecef', borderRadius: '10px', padding: '20px', margin: '20px 0', textAlign: 'center' }}>
             <h3 style={{ margin: '0 0 15px 0', color: '#495057' }}>📊 Your Progress</h3>
             <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '10px' }}>
-              <div style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress.hasRunCode ? '#4ecca3' : '#e9ecef', color: lessonProgress.hasRunCode ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
-                {lessonProgress.hasRunCode ? '✅' : '⭕'} Run Code
-              </div>
-              <div style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress.hasModifiedCode ? '#4ecca3' : '#e9ecef', color: lessonProgress.hasModifiedCode ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
-                {lessonProgress.hasModifiedCode ? '✅' : '⭕'} Modify Code
-              </div>
-              <div style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress.hasSeenOutput ? '#4ecca3' : '#e9ecef', color: lessonProgress.hasSeenOutput ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
-                {lessonProgress.hasSeenOutput ? '✅' : '⭕'} See Output
-              </div>
-              <div style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress.hasCompletedChallenge ? '#4ecca3' : '#e9ecef', color: lessonProgress.hasCompletedChallenge ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
-                {lessonProgress.hasCompletedChallenge ? '✅' : '⭕'} Challenge
-              </div>
+              {[['Run Code', 'hasRunCode'], ['Modify Code', 'hasModifiedCode'], ['See Output', 'hasSeenOutput'], ['Challenge', 'hasCompletedChallenge']].map(([label, key]) => (
+                <div key={key} style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress[key] ? '#4ecca3' : '#e9ecef', color: lessonProgress[key] ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
+                  {lessonProgress[key] ? '✅' : '⭕'} {label}
+                </div>
+              ))}
             </div>
-            <p style={{ margin: '15px 0 0 0', fontSize: '14px', color: '#6c757d' }}>
-              Complete any one activity above to unlock the quiz!
-            </p>
+            <p style={{ margin: '15px 0 0 0', fontSize: '14px', color: '#6c757d' }}>Complete any one activity above to unlock the quiz!</p>
           </div>
 
-          {/* Lesson Completion Status */}
           {isLessonEligibleForCompletion() && !isCompleted && (
-            <div className="completion-status" style={{
-              background: 'linear-gradient(135deg, #4ecca3, #2e9c81)',
-              color: 'white',
-              padding: '15px',
-              borderRadius: '10px',
-              margin: '20px 0',
-              textAlign: 'center',
-              boxShadow: '0 4px 15px rgba(78, 204, 163, 0.3)'
-            }}>
+            <div className="completion-status" style={{ background: 'linear-gradient(135deg, #4ecca3, #2e9c81)', color: 'white', padding: '15px', borderRadius: '10px', margin: '20px 0', textAlign: 'center', boxShadow: '0 4px 15px rgba(78, 204, 163, 0.3)' }}>
               <h3>🎉 Great Progress!</h3>
-              <p>You&apos;ve completed enough activities to proceed to the quiz!</p>
+              <p>You've completed enough activities to proceed to the quiz!</p>
             </div>
           )}
 
@@ -204,15 +160,9 @@ Learning is fun!`}</pre>
               type="button"
               className="quiz-button"
               onClick={goToQuiz}
-              style={{
-                backgroundColor: isCompleted ? '#2e9c81' : isLessonEligibleForCompletion() ? '#4ecca3' : '#cccccc',
-                opacity: isCompleted ? 0.8 : 1,
-                cursor: isLessonEligibleForCompletion() ? 'pointer' : 'not-allowed'
-              }}
+              style={{ backgroundColor: isCompleted ? '#2e9c81' : isLessonEligibleForCompletion() ? '#4ecca3' : '#cccccc', opacity: isCompleted ? 0.8 : 1, cursor: isLessonEligibleForCompletion() ? 'pointer' : 'not-allowed' }}
             >
-              {isCompleted ? '✅ Lesson Completed - Go to Quiz 8 🍑' :
-               isLessonEligibleForCompletion() ? 'Ready for Quiz 8 🍑' :
-               'Complete at least one activity to unlock quiz'}
+              {isCompleted ? '✅ Lesson Completed — Quiz 8 🛡️' : isLessonEligibleForCompletion() ? 'Take Quiz 8 — Exception Handling 🛡️' : 'Complete an activity to unlock quiz'}
             </button>
           </footer>
         </section>

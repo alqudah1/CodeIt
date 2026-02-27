@@ -234,6 +234,18 @@
   gap: 2.75rem;
 }
 
+/* ── Overview row: side-by-side card + leaderboard ── */
+.overview-row {
+  width: 100%;
+}
+
+.overview-split {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2rem;
+  align-items: start;
+}
+
 .overview-card {
   background: rgba(255, 255, 255, 0.88);
   border-radius: 26px;
@@ -244,6 +256,11 @@
   display: flex;
   flex-direction: column;
   gap: 1.6rem;
+}
+
+.overview-lb-panel {
+  position: sticky;
+  top: 1.5rem;
 }
 
 .overview-card h2 {
@@ -350,6 +367,40 @@
   color: #0b3d66;
 }
 
+/* Lesson map CTA button inside track card */
+.track-map-cta {
+  margin-bottom: 0.2rem;
+}
+
+.track-map-btn {
+  width: 100%;
+  background: linear-gradient(120deg, rgba(255, 159, 28, 0.86), rgba(255, 209, 100, 0.86));
+  border: 1.5px solid rgba(255, 159, 28, 0.42);
+  border-radius: 14px;
+  padding: 0.9rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e1208;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(255, 159, 28, 0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  font-family: 'Arvo', serif;
+  letter-spacing: 0.02em;
+}
+
+.track-map-btn:hover {
+  background: linear-gradient(120deg, rgba(255, 159, 28, 0.98), rgba(255, 209, 100, 0.98));
+  transform: translateY(-3px);
+  box-shadow: 0 18px 36px rgba(255, 159, 28, 0.38);
+}
+
+.track-map-btn:focus-visible {
+  outline: 2.5px solid rgba(255, 159, 28, 0.7);
+  outline-offset: 2px;
+}
+
 .track-buttons {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -357,16 +408,19 @@
 }
 
 .track-button {
-  background: rgba(255, 255, 255, 0.88);
-  border: 2px solid rgba(255, 159, 28, 0.3);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1.5px solid rgba(255, 255, 255, 0.32);
   border-radius: 14px;
   padding: 0.85rem 1rem;
   font-size: 0.95rem;
   font-weight: 700;
   color: #0b3d66;
   cursor: pointer;
-  box-shadow: 0 14px 24px rgba(4, 22, 56, 0.12);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 8px 20px rgba(4, 22, 56, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  font-family: 'Arvo', serif;
 }
 
 .track-card.quizzes .track-button {
@@ -379,8 +433,13 @@
 
 .track-button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 20px 32px rgba(4, 22, 56, 0.16);
-  border-color: rgba(255, 133, 161, 0.55);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 32px rgba(4, 22, 56, 0.15);
+}
+
+.track-button:focus-visible {
+  outline: 2.5px solid rgba(255, 159, 28, 0.65);
+  outline-offset: 2px;
 }
 
 /* Puzzle button: emoji + label two-line layout */
@@ -437,6 +496,16 @@
 
 .main-footer a:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 960px) {
+  .overview-split {
+    grid-template-columns: 1fr;
+  }
+
+  .overview-lb-panel {
+    position: static;
+  }
 }
 
 @media (max-width: 900px) {

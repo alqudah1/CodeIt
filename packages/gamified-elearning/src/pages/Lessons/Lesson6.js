@@ -7,7 +7,8 @@ import {
   trackStaticLessonCompletion,
   showXPNotification,
   initializeTimeTracker,
-  autoTrackDailyLogin
+  autoTrackDailyLogin,
+  showLessonLockedToast
 } from '../../utils/progressTracker';
 import { useProgress } from '../../context/ProgressContext';
 
@@ -19,7 +20,6 @@ const Lesson6 = () => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [hasMarkedComplete, setHasMarkedComplete] = useState(false);
 
-  // Progress tracking states
   const [lessonProgress, setLessonProgress] = useState({
     hasRunCode: false,
     hasModifiedCode: false,
@@ -27,177 +27,135 @@ const Lesson6 = () => {
     hasCompletedChallenge: false
   });
 
-  // Auto-track daily login and initialize time tracking
-  useEffect(() => {
-    autoTrackDailyLogin();
-  }, []);
+  useEffect(() => { autoTrackDailyLogin(); }, []);
 
-  // Check if lesson can be considered complete (any one criteria is enough)
-  const isLessonEligibleForCompletion = () => {
-    return (
-      lessonProgress.hasRunCode ||
-      lessonProgress.hasModifiedCode ||
-      lessonProgress.hasSeenOutput ||
-      lessonProgress.hasCompletedChallenge
-    );
-  };
+  const isLessonEligibleForCompletion = () =>
+    lessonProgress.hasRunCode || lessonProgress.hasModifiedCode ||
+    lessonProgress.hasSeenOutput || lessonProgress.hasCompletedChallenge;
 
-  // Update progress when code is run
   const handleCodeOutput = (output) => {
     setLessonOutput(output);
-
+    const defaultOutput = 'Alex\nA';
     const newProgress = {
       ...lessonProgress,
       hasRunCode: true,
       hasSeenOutput: output.length > 0,
+      hasModifiedCode: output !== defaultOutput && output.length > 0,
+      hasCompletedChallenge: output.length > 0 && output !== defaultOutput,
     };
-
-    // Check if code was modified (not just the default)
-    const defaultOutput = 'apple\nbanana\n3';
-    const isModified = output !== defaultOutput && output.length > 0;
-    if (isModified) {
-      newProgress.hasModifiedCode = true;
-    }
-
-    // Check if challenge is completed
-    if (output.length > 0 && output !== defaultOutput) {
-      newProgress.hasCompletedChallenge = true;
-    }
-
     setLessonProgress(newProgress);
-
-    if (isLessonEligibleForCompletion() && !isCompleted && !hasMarkedComplete) {
+    if ((newProgress.hasRunCode || newProgress.hasModifiedCode) && !isCompleted && !hasMarkedComplete) {
       markLessonComplete(6);
       setHasMarkedComplete(true);
     }
   };
 
   const goToQuiz = async () => {
-    if (!isLessonEligibleForCompletion()) {
-      alert('🎯 Almost there! Complete any one of these activities to unlock the quiz:\n\n• Run some code in the editor\n• Modify the code and see the output\n• Complete the challenge\n\nYou only need to do ONE of these to proceed!');
-      return;
-    }
-
+    if (!isLessonEligibleForCompletion()) { showLessonLockedToast(6); return; }
     if (!isCompleted) {
       try {
-        const timeSpent = timeTracker.getTimeSpent();
-        const result = await trackStaticLessonCompletion(6, timeSpent);
+        const result = await trackStaticLessonCompletion(6);
         showXPNotification(result.xpEarned, result.baseXP, result.bonusXP);
         markLessonComplete(6);
         setIsCompleted(true);
-      } catch (error) {
-        console.error('Error tracking lesson completion:', error);
-      }
+      } catch (error) { console.error('Error tracking lesson completion:', error); }
     }
-    navigate('/quiz/6');
+    navigate('/quiz/6', { state: { source: 'lesson', lessonId: 6 } });
   };
 
   return (
     <div className="python-lesson">
       <Header />
       <div className="lesson-wrapper">
-
         <section className="lesson-card">
           <header className="lesson-header">
             <span className="lesson-pill">Lesson 6</span>
-            <h1>Lesson 6: Lists and Tuples</h1>
+            <h1>Lesson 6: Dictionaries &amp; Sets</h1>
             <p className="lesson-subtitle">
-              Learn how Python keeps groups of things together — like a bag of your favourite snacks!
+              Learn how Python stores labelled information — like a contact book — and keeps collections unique with sets!
             </p>
           </header>
 
           <div className="lesson-content">
-            <h2>What is a List?</h2>
+            <h2>What is a Dictionary?</h2>
             <p>
-              A <strong>list</strong> is like a shopping bag — it holds many items in one place.
-              You can add, remove, or change items inside it.
+              A <strong>dictionary</strong> stores information as <strong>key: value</strong> pairs.
+              Think of it like a real dictionary — the word (key) tells you where to find the meaning (value).
             </p>
             <p>
-              A <strong>tuple</strong> is like a sealed envelope — it also holds items, but once
-              you create it, you cannot change what is inside.
+              Dictionaries use <code>{'{}'}</code> curly braces and each entry looks like <code>key: value</code>.
             </p>
 
             <div className="code-example">
-              <h3>Example 1: Creating a List</h3>
-              <pre>{`# A list uses square brackets []
-fruits = ["apple", "banana", "cherry"]
-print(fruits[0])   # First item
-print(fruits[1])   # Second item
-print(len(fruits)) # How many items?`}</pre>
+              <h3>Example 1: Creating and Using a Dictionary</h3>
+              <pre>{`# Create a dictionary
+student = {"name": "Alex", "age": 10, "grade": "A"}
+
+# Look up values using keys
+print(student["name"])   # Alex
+print(student["grade"])  # A`}</pre>
               <div className="output">
-                <h3>What you&apos;ll see:</h3>
-                <pre>{`apple
-banana
-3`}</pre>
+                <h3>What you'll see:</h3>
+                <pre>{`Alex\nA`}</pre>
               </div>
             </div>
 
             <div className="code-example">
-              <h3>Example 2: Creating a Tuple</h3>
-              <pre>{`# A tuple uses round brackets ()
-colours = ("red", "green", "blue")
-print(colours[0])  # First colour
-print(colours[2])  # Third colour`}</pre>
+              <h3>Example 2: Adding and Updating Values</h3>
+              <pre>{`pet = {"name": "Buddy", "type": "dog"}
+pet["age"] = 3          # Add a new key
+pet["type"] = "puppy"   # Update existing key
+print(pet)`}</pre>
               <div className="output">
-                <h3>What you&apos;ll see:</h3>
-                <pre>{`red
-blue`}</pre>
+                <h3>What you'll see:</h3>
+                <pre>{`{'name': 'Buddy', 'type': 'puppy', 'age': 3}`}</pre>
+              </div>
+            </div>
+
+            <h2>What is a Set?</h2>
+            <p>
+              A <strong>set</strong> is a collection of <strong>unique</strong> items — no duplicates allowed!
+              Sets use <code>{'{}'}</code> too, but without key-value pairs.
+            </p>
+
+            <div className="code-example">
+              <h3>Example 3: Sets Remove Duplicates</h3>
+              <pre>{`colours = {"red", "blue", "red", "green", "blue"}
+print(colours)  # Duplicates removed automatically`}</pre>
+              <div className="output">
+                <h3>What you'll see:</h3>
+                <pre>{`{'red', 'blue', 'green'}`}</pre>
               </div>
             </div>
 
             <div className="try-it">
-              <h3>Your sunny challenge:</h3>
-              <p>Change the fruit names to your favourites and add a fourth item to the list!</p>
-              <p>Try printing <code>fruits[-1]</code> — what do you think it shows?</p>
+              <h3>Your sunny challenge 🌟</h3>
+              <p>Change "Alex" to your own name. Add a new key <code>"favourite_colour"</code> with your favourite colour.</p>
+              <p>Then print <code>student["age"]</code> — what does it show?</p>
             </div>
+
             <PythonEditor
-              initialCode={`fruits = ["apple", "banana", "cherry"]\nprint(fruits[0])\nprint(fruits[1])\nprint(len(fruits))`}
+              initialCode={`student = {"name": "Alex", "age": 10, "grade": "A"}\nprint(student["name"])\nprint(student["grade"])`}
               onOutput={handleCodeOutput}
             />
           </div>
 
-          {/* Progress Indicator */}
-          <div className="progress-indicator" style={{
-            background: '#f8f9fa',
-            border: '2px solid #e9ecef',
-            borderRadius: '10px',
-            padding: '20px',
-            margin: '20px 0',
-            textAlign: 'center'
-          }}>
+          <div className="progress-indicator" style={{ background: '#f8f9fa', border: '2px solid #e9ecef', borderRadius: '10px', padding: '20px', margin: '20px 0', textAlign: 'center' }}>
             <h3 style={{ margin: '0 0 15px 0', color: '#495057' }}>📊 Your Progress</h3>
             <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '10px' }}>
-              <div style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress.hasRunCode ? '#4ecca3' : '#e9ecef', color: lessonProgress.hasRunCode ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
-                {lessonProgress.hasRunCode ? '✅' : '⭕'} Run Code
-              </div>
-              <div style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress.hasModifiedCode ? '#4ecca3' : '#e9ecef', color: lessonProgress.hasModifiedCode ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
-                {lessonProgress.hasModifiedCode ? '✅' : '⭕'} Modify Code
-              </div>
-              <div style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress.hasSeenOutput ? '#4ecca3' : '#e9ecef', color: lessonProgress.hasSeenOutput ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
-                {lessonProgress.hasSeenOutput ? '✅' : '⭕'} See Output
-              </div>
-              <div style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress.hasCompletedChallenge ? '#4ecca3' : '#e9ecef', color: lessonProgress.hasCompletedChallenge ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
-                {lessonProgress.hasCompletedChallenge ? '✅' : '⭕'} Challenge
-              </div>
+              {[['Run Code', 'hasRunCode'], ['Modify Code', 'hasModifiedCode'], ['See Output', 'hasSeenOutput'], ['Challenge', 'hasCompletedChallenge']].map(([label, key]) => (
+                <div key={key} style={{ padding: '8px 12px', borderRadius: '20px', backgroundColor: lessonProgress[key] ? '#4ecca3' : '#e9ecef', color: lessonProgress[key] ? 'white' : '#6c757d', fontSize: '14px', fontWeight: 'bold' }}>
+                  {lessonProgress[key] ? '✅' : '⭕'} {label}
+                </div>
+              ))}
             </div>
-            <p style={{ margin: '15px 0 0 0', fontSize: '14px', color: '#6c757d' }}>
-              Complete any one activity above to unlock the quiz!
-            </p>
+            <p style={{ margin: '15px 0 0 0', fontSize: '14px', color: '#6c757d' }}>Complete any one activity above to unlock the quiz!</p>
           </div>
 
-          {/* Lesson Completion Status */}
           {isLessonEligibleForCompletion() && !isCompleted && (
-            <div className="completion-status" style={{
-              background: 'linear-gradient(135deg, #4ecca3, #2e9c81)',
-              color: 'white',
-              padding: '15px',
-              borderRadius: '10px',
-              margin: '20px 0',
-              textAlign: 'center',
-              boxShadow: '0 4px 15px rgba(78, 204, 163, 0.3)'
-            }}>
+            <div className="completion-status" style={{ background: 'linear-gradient(135deg, #4ecca3, #2e9c81)', color: 'white', padding: '15px', borderRadius: '10px', margin: '20px 0', textAlign: 'center', boxShadow: '0 4px 15px rgba(78, 204, 163, 0.3)' }}>
               <h3>🎉 Great Progress!</h3>
-              <p>You&apos;ve completed enough activities to proceed to the quiz!</p>
+              <p>You've completed enough activities to proceed to the quiz!</p>
             </div>
           )}
 
@@ -206,15 +164,9 @@ blue`}</pre>
               type="button"
               className="quiz-button"
               onClick={goToQuiz}
-              style={{
-                backgroundColor: isCompleted ? '#2e9c81' : isLessonEligibleForCompletion() ? '#4ecca3' : '#cccccc',
-                opacity: isCompleted ? 0.8 : 1,
-                cursor: isLessonEligibleForCompletion() ? 'pointer' : 'not-allowed'
-              }}
+              style={{ backgroundColor: isCompleted ? '#2e9c81' : isLessonEligibleForCompletion() ? '#4ecca3' : '#cccccc', opacity: isCompleted ? 0.8 : 1, cursor: isLessonEligibleForCompletion() ? 'pointer' : 'not-allowed' }}
             >
-              {isCompleted ? '✅ Lesson Completed - Go to Quiz 6 🍇' :
-               isLessonEligibleForCompletion() ? 'Ready for Quiz 6 🍇' :
-               'Complete at least one activity to unlock quiz'}
+              {isCompleted ? '✅ Lesson Completed — Quiz 6 🗂️' : isLessonEligibleForCompletion() ? 'Take Quiz 6 — Dictionaries & Sets 🗂️' : 'Complete an activity to unlock quiz'}
             </button>
           </footer>
         </section>

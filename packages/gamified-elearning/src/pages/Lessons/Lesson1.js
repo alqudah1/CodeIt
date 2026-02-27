@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import PythonEditor from '../pythoneditor/PythonEditor';
 import Header from '../Header/Header'; 
 import './PythonLesson.css';
-import { 
-  trackStaticLessonCompletion, 
-  showXPNotification, 
+import {
+  trackStaticLessonCompletion,
+  showXPNotification,
   initializeTimeTracker,
-  autoTrackDailyLogin 
+  autoTrackDailyLogin,
+  showLessonLockedToast
 } from '../../utils/progressTracker';
 import { useProgress } from '../../context/ProgressContext';
 
@@ -209,7 +210,7 @@ const Lesson1 = () => {
   const goToQuiz = async () => {
     // Check if lesson is eligible for completion (any one criteria is enough)
     if (!isLessonEligibleForCompletion()) {
-      alert('🎯 Almost there! Complete any one of these activities to unlock the quiz:\n\n• Click on any step to mark it complete\n• Run some code in the editor\n• Modify the code and see the output\n• Complete the challenge\n\nYou only need to do ONE of these to proceed!');
+      showLessonLockedToast(1);
       return;
     }
 
@@ -231,7 +232,7 @@ const Lesson1 = () => {
         // Continue to quiz even if tracking fails
       }
     }
-    navigate('/quiz/1');
+    navigate('/quiz/1', { state: { source: 'lesson', lessonId: 1 } });
   };
 
   return (

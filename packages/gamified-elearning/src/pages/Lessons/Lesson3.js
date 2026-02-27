@@ -7,7 +7,8 @@ import {
   trackStaticLessonCompletion, 
   showXPNotification, 
   initializeTimeTracker,
-  autoTrackDailyLogin 
+  autoTrackDailyLogin,
+  showLessonLockedToast
 } from '../../utils/progressTracker';
 import { useProgress } from '../../context/ProgressContext';
 
@@ -79,14 +80,13 @@ const Lesson3 = () => {
   const goToQuiz = async () => {
     // Check if lesson is eligible for completion (any one criteria is enough)
     if (!isLessonEligibleForCompletion()) {
-      alert('🎯 Almost there! Complete any one of these activities to unlock the quiz:\n\n• Run some code in the editor\n• Modify the code and see the output\n• Complete the challenge\n\nYou only need to do ONE of these to proceed!');
+      showLessonLockedToast(3);
       return;
     }
 
     if (!isCompleted) {
       try {
-        const timeSpent = timeTracker.getTimeSpent();
-        const result = await trackStaticLessonCompletion(3, timeSpent);
+        const result = await trackStaticLessonCompletion(3);
         
         // Show XP notification
         showXPNotification(result.xpEarned, result.baseXP, result.bonusXP);
@@ -101,7 +101,7 @@ const Lesson3 = () => {
         // Continue to quiz even if tracking fails
       }
     }
-    navigate('/quiz/3');
+    navigate('/quiz/3', { state: { source: 'lesson', lessonId: 3 } });
   };
 
   return (

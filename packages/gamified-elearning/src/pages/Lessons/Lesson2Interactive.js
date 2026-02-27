@@ -8,7 +8,8 @@ import {
   trackStaticLessonCompletion,
   showXPNotification,
   initializeTimeTracker,
-  autoTrackDailyLogin
+  autoTrackDailyLogin,
+  showLessonLockedToast
 } from '../../utils/progressTracker';
 import { useProgress } from '../../context/ProgressContext';
 import { AuthContext } from '../../context/AuthContext';
@@ -366,7 +367,7 @@ const Lesson2Interactive = () => {
 
   const goToQuiz = async () => {
     if (!isLessonEligibleForCompletion()) {
-      alert('🎯 Almost there! Complete any one activity to unlock the quiz!');
+      showLessonLockedToast(2);
       return;
     }
     if (!isCompleted) {
@@ -380,7 +381,7 @@ const Lesson2Interactive = () => {
         console.error('Error tracking lesson completion:', error);
       }
     }
-    navigate('/quiz/2');
+    navigate('/quiz/2', { state: { source: 'lesson', lessonId: 2 } });
   };
 
   return (
