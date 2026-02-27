@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { ENDPOINTS } from "../../config/api";
 import CharacterSpotlight from "../../components/CharacterSpotlight/CharacterSpotlight";
 import "./Home.css";
 
@@ -22,7 +23,7 @@ export default function Home() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8080/api/rewards/progress-percentages', {
+      const response = await fetch(ENDPOINTS.rewards.progress, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -124,7 +125,7 @@ export default function Home() {
         <nav className="nav-links">
           <Link to="/">Home</Link>
           <Link to="/MainPage">Dashboard</Link>
-          <Link to="/lesson/1">Lessons</Link>
+          <Link to="/lessons">Lessons</Link>
           <Link to="/quiz/1">Quizzes</Link>
           <Link to="/games">Puzzles</Link>
           <Link to="/character">Character Lab</Link>

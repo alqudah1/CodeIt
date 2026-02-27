@@ -62,7 +62,7 @@ export const openPuzzleInNewTab = (puzzleName) => {
   };
   
   const route = puzzleRoutes[puzzleName.toLowerCase()] || '/puzzle';
-  const puzzleAppUrl = `http://localhost:3001${route}`;
+  const puzzleAppUrl = `${window.location.origin}${route}`;
   const encodedUser = encodeURIComponent(user);
   const urlWithAuth = `${puzzleAppUrl}?token=${token}&user=${encodedUser}`;
   
