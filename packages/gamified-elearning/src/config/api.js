@@ -12,8 +12,8 @@ export const PUZZLE_BASE_URL = process.env.REACT_APP_PUZZLE_URL || SITE_ORIGIN;
 // API endpoints
 export const ENDPOINTS = {
   auth: {
-    login: `${API_BASE_URL}/api/auth/login`,
-    register: `${API_BASE_URL}/api/auth/register`,
+    login: `${API_BASE_URL}/api/login`,
+    register: `${API_BASE_URL}/api/signup`,
   },
   rewards: {
     progress:    `${API_BASE_URL}/api/rewards/progress-percentages`,
@@ -23,7 +23,16 @@ export const ENDPOINTS = {
     base: `${API_BASE_URL}/api/quiz`,
   },
   leaderboard: {
-    base: `${API_BASE_URL}/api/leaderboard`, // we’ll implement backend route
+    base: `${API_BASE_URL}/api/leaderboard`,
+  },
+  lessons: {
+    list:     `${API_BASE_URL}/api/lessons`,
+    progress: `${API_BASE_URL}/api/lessons/progress`,
+    complete: (id) => `${API_BASE_URL}/api/lessons/${id}/complete`,
+  },
+  puzzles: {
+    list:     `${API_BASE_URL}/api/puzzles`,
+    complete: (id) => `${API_BASE_URL}/api/puzzles/${id}/complete`,
   },
 };
 
