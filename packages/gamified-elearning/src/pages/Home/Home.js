@@ -1,269 +1,263 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { ENDPOINTS } from "../../config/api";
+import Header from "../Header/Header";
+import LeaderboardPreview from "../../components/LeaderboardPreview";
 import CharacterSpotlight from "../../components/CharacterSpotlight/CharacterSpotlight";
 import "./Home.css";
+
+const LESSON_TITLES = [
+  null,
+  "Intro to Python",
+  "Variables & Types",
+  "Control Flow",
+  "Functions",
+  "Lists & Strings",
+  "Dictionaries & Sets",
+  "File Handling",
+  "Exception Handling",
+  "OOP Basics",
+  "Modules & Libraries",
+];
 
 export default function Home() {
   const [lesson, setLesson] = useState(0);
   const [quiz, setQuiz] = useState(0);
   const [game, setGame] = useState(0);
+  const [completedLessons, setCompletedLessons] = useState([]);
   const [sparkles, setSparkles] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
-  // Fetch progress data from backend
-  const fetchProgressData = async () => {
-    if (!user) {
-      setLoading(false);
-      return;
+  // Derive next unlocked lesson
+  const nextLesson = (() => {
+    for (let i = 1; i <= 10; i++) {
+      if (!completedLessons.includes(i)) return i;
     }
+    return null;
+  })();
 
+  const fetchData = async () => {
+    if (!user) { setLoading(false); return; }
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(ENDPOINTS.rewards.progress, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
+      const headers = { Authorization: `Bearer ${token}` };
+      const [progressRes, lessonsRes] = await Promise.all([
+        fetch(ENDPOINTS.rewards.progress, { headers }),
+        fetch(ENDPOINTS.lessons.progress, { headers }),
+      ]);
+      if (progressRes.ok) {
+        const data = await progressRes.json();
         if (data.success) {
-          setLesson(data.progress.lesson);
-          setQuiz(data.progress.quiz);
-          setGame(data.progress.game);
-          console.log('Progress data fetched:', data.progress);
+          setLesson(data.progress.lesson || 0);
+          setQuiz(data.progress.quiz || 0);
+          setGame(data.progress.game || 0);
         }
-      } else {
-        console.error('Failed to fetch progress data. Status:', response.status);
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
       }
-    } catch (error) {
-      console.error('Error fetching progress data:', error);
+      if (lessonsRes.ok) {
+        const data = await lessonsRes.json();
+        if (data.success) setCompletedLessons(data.completedLessons || []);
+      }
+    } catch (e) {
+      console.error('Home fetch error:', e);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchProgressData();
-  }, [user]);
+  useEffect(() => { fetchData(); }, [user]);
 
   useEffect(() => {
     const id = setInterval(() => {
       setSparkles((prev) => [
-        ...prev.slice(-12),
+        ...prev.slice(-14),
         { id: Date.now(), x: Math.random() * 100, y: Math.random() * 100 },
       ]);
-    }, 2800);
-
+    }, 2600);
     return () => clearInterval(id);
   }, []);
 
-  const goToLesson = () => navigate("/lesson/1");
-  const goToQuiz = () => navigate("/quiz/1");
-  const goToGame = () => navigate("/games");
-  const goToDashboard = () => navigate("/MainPage");
-
-  const bumpLesson = () => {
-    setLoading(true);
-    fetchProgressData();
-  };
-  const bumpQuiz = () => {
-    setLoading(true);
-    fetchProgressData();
-  };
-  const bumpGame = () => {
-    setLoading(true);
-    fetchProgressData();
-  };
-
-  function ProgressBar({ value, color, loading }) {
-    return (
-      <div className="progress-bar">
-        <div 
-          className={`progress-fill ${color}`} 
-          style={{ width: `${loading ? 0 : value}%` }} 
-        />
-      </div>
-    );
-  }
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
-
-  // Debug log to check user object
-  useEffect(() => {
-    console.log("User object:", user);
-  }, [user]);
-
   return (
-    <div className="homepage">
-      {sparkles.map((s) => (
-        <div
-          key={s.id}
-          className="sparkle"
-          style={{ left: `${s.x}%`, top: `${s.y}%` }}
-        >
-          ✨
-        </div>
-      ))}
+    <>
+      <Header />
+      <div className="homepage">
+        {sparkles.map((s) => (
+          <div key={s.id} className="sparkle" style={{ left: `${s.x}%`, top: `${s.y}%` }}>✨</div>
+        ))}
 
-      <header className="header">
-        <div className="logo-area">
-          <img src="/logo192.png" alt="Logo" className="logo-img" />
-          <span className="logo-text">CodeIt</span>
-        </div>
-        <nav className="nav-links">
-          <Link to="/">Home</Link>
-          <Link to="/MainPage">Dashboard</Link>
-          <Link to="/lessons">Lessons</Link>
-          <Link to="/quiz/1">Quizzes</Link>
-          <Link to="/games">Puzzles</Link>
-          <Link to="/character">Character Lab</Link>
-        </nav>
-        <div className="auth-links">
-          {user ? (
-            <>
-              <span className="user-name">{user.name || user.email || "Unknown User"}</span>
-              <Link to="#" onClick={handleLogout} className="logout-link">
-                Logout
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link to="/login">Login</Link>
-              <Link to="/register" className="register-pill">
-                Get Started
-              </Link>
-            </>
-          )}
-        </div>
-      </header>
+        <main className="hp-content">
 
-      <main className="content">
-        <section className="hero">
-          <div className="hero-copy">
-            <p className="eyebrow">Summer of code fun</p>
-            <h2>
-              {user && <span className="welcome-text">Welcome {user.name || user.email || "Guest"}! </span>}
-              Sunshine, Snacks, and Supercharged Coding Skills
-            </h2>
-            <p>
-              Dive into sunny lessons, beachy quizzes, and adventurous Puzzles that
-              turn every coding session into a summer quest.
-            </p>
-            <div className="hero-actions">
-              <button type="button" className="primary-action" onClick={goToLesson}>
-                🏖️ Start Learning
-              </button>
-              <button type="button" className="secondary-action" onClick={goToDashboard}>
-                🍉 Explore Dashboard
-              </button>
-            </div>
-            <div className="hero-metrics">
-              <span className="metric-chip">
-                <strong>{loading ? '...' : `${lesson}%`}</strong> Lesson mastery
-              </span>
-              <span className="metric-chip">
-                <strong>{loading ? '...' : `${quiz}%`}</strong> Quiz accuracy
-              </span>
-              <span className="metric-chip">
-                <strong>{loading ? '...' : `${game}%`}</strong> Puzzles streak
-              </span>
-            </div>
-          </div>
-          <div className="hero-visual">
-            <img src="/logo192.png" alt="CodeIt mascot" className="hero-illustration" />
-            <div className="hero-badge">
-              <span>☀️ 1,200 sunny achievements this week</span>
-            </div>
-          </div>
-        </section>
-
-        <CharacterSpotlight headline="Meet your sidekick" cta="Customize your buddy" />
-
-        <section className="dashboard-grid">
-          <div className="cta-panel">
-            <button type="button" className="cta-card start" onClick={goToLesson}>
-              <span className="cta-icon" aria-hidden="true">
-                🏄
-              </span>
-              <div>
-                <h3>Surf the Lessons</h3>
-                <p>Ride the wave of new concepts with splashy mini projects.</p>
+          {/* ── HERO ────────────────────────────────────────── */}
+          <section className="hp-hero">
+            <div className="hp-hero__copy">
+              <p className="hp-eyebrow">🚀 Your Python adventure starts here</p>
+              <h1 className="hp-h1">
+                {user
+                  ? <><span className="hp-welcome">Hey {user.name || 'Coder'}!</span><br /></>
+                  : null}
+                Learn Python.<br />
+                <span className="hp-h1-accent">Play. Compete. Level Up.</span>
+              </h1>
+              <p className="hp-sub">
+                Interactive lessons, skill-testing quizzes, and coding puzzles — all in one
+                colourful place built for young developers.
+              </p>
+              <div className="hp-actions">
+                <button className="btn-glass btn-glass--primary" onClick={() => navigate('/lesson/1')}>
+                  🏄 Start Learning
+                </button>
+                <button className="btn-glass btn-glass--secondary" onClick={() => navigate('/MainPage')}>
+                  📊 My Dashboard
+                </button>
               </div>
-            </button>
+            </div>
 
-            <button type="button" className="cta-card quiz" onClick={goToQuiz}>
-              <span className="cta-icon" aria-hidden="true">
-                🌈
-              </span>
-              <div>
-                <h3>Rainbow Quizzes</h3>
-                <p>Beat the buzzer and collect juicy fruit badges for accuracy.</p>
+            <div className="hp-hero__visual">
+              <div className="hp-hero__glow" />
+              <img src="/images/CodeItLogo.png" alt="CodeIt mascot" className="hp-hero__img" />
+              <div className="hp-hero__badge">☀️ 1,200+ achievements this week</div>
+            </div>
+          </section>
+
+          {/* ── STATS STRIP ─────────────────────────────────── */}
+          <section className="hp-stats">
+            {[
+              { emoji: "📚", total: 10, label: "Lessons",  pct: lesson, cls: "lesson", nav: "/lessons"  },
+              { emoji: "🎯", total: 10, label: "Quizzes",  pct: quiz,   cls: "quiz",   nav: "/quiz/1"  },
+              { emoji: "🧩", total: 10, label: "Puzzles",  pct: game,   cls: "puzzle", nav: "/games"   },
+            ].map(({ emoji, total, label, pct, cls, nav }) => (
+              <button key={label} className={`hp-stat hp-stat--${cls}`} onClick={() => navigate(nav)}>
+                <span className="hp-stat__emoji">{emoji}</span>
+                <div className="hp-stat__info">
+                  <span className="hp-stat__num">{total}</span>
+                  <span className="hp-stat__label">{label}</span>
+                </div>
+                {user && (
+                  <div className="hp-stat__right">
+                    <span className="hp-stat__pct">{loading ? '…' : `${pct}%`}</span>
+                    <div className="hp-stat__bar">
+                      <div className={`hp-stat__fill hp-stat__fill--${cls}`} style={{ width: loading ? '0%' : `${pct}%` }} />
+                    </div>
+                  </div>
+                )}
+              </button>
+            ))}
+          </section>
+
+          {/* ── FEATURE CARDS ───────────────────────────────── */}
+          <section className="hp-features">
+            {[
+              { emoji: "🏄", title: "Lessons",       sub: "Interactive Python lessons with live code editors",  cls: "lesson",  nav: "/lessons"    },
+              { emoji: "🌈", title: "Quizzes",        sub: "Test your knowledge and earn XP badges",             cls: "quiz",    nav: "/quiz/1"     },
+              { emoji: "🧩", title: "Puzzles",        sub: "Solve coding challenges in fun game worlds",         cls: "puzzle",  nav: "/games"      },
+              { emoji: "🎨", title: "Character Lab",  sub: "Customise your coding avatar",                       cls: "lab",     nav: "/character"  },
+            ].map(({ emoji, title, sub, cls, nav }) => (
+              <button key={title} className={`hp-feat hp-feat--${cls}`} onClick={() => navigate(nav)}>
+                <span className="hp-feat__icon">{emoji}</span>
+                <div className="hp-feat__text">
+                  <h3 className="hp-feat__title">{title}</h3>
+                  <p className="hp-feat__sub">{sub}</p>
+                </div>
+                <span className="hp-feat__arrow">→</span>
+              </button>
+            ))}
+          </section>
+
+          {/* ── LOWER GRID: Continue + Leaderboard ──────────── */}
+          <section className="hp-lower">
+
+            <div className="hp-lower__left">
+
+              {/* Continue Learning */}
+              {user && nextLesson && (
+                <div className="hp-continue glass-card">
+                  <span className="hp-continue__badge">📍 Continue Learning</span>
+                  <h3 className="hp-continue__title">
+                    Lesson {nextLesson}: {LESSON_TITLES[nextLesson]}
+                  </h3>
+                  <p className="hp-continue__sub">
+                    {completedLessons.length} of 10 lessons completed · Keep the streak going!
+                  </p>
+                  <button
+                    className="btn-glass btn-glass--primary"
+                    onClick={() => navigate(`/lesson/${nextLesson}`)}
+                  >
+                    Resume Lesson →
+                  </button>
+                </div>
+              )}
+
+              {user && !nextLesson && !loading && (
+                <div className="hp-continue glass-card">
+                  <span className="hp-continue__badge">🏆 All Complete!</span>
+                  <h3 className="hp-continue__title">You've finished all 10 lessons!</h3>
+                  <p className="hp-continue__sub">Now master the quizzes and puzzles to top the leaderboard.</p>
+                  <button className="btn-glass btn-glass--primary" onClick={() => navigate('/quiz/1')}>
+                    Take a Quiz →
+                  </button>
+                </div>
+              )}
+
+              {!user && (
+                <div className="hp-continue glass-card">
+                  <span className="hp-continue__badge">🔓 Get Started Free</span>
+                  <h3 className="hp-continue__title">Begin Your Python Journey</h3>
+                  <p className="hp-continue__sub">
+                    Create a free account to track progress, earn XP, and compete on the leaderboard.
+                  </p>
+                  <div className="hp-actions" style={{ marginTop: '1.2rem' }}>
+                    <button className="btn-glass btn-glass--primary" onClick={() => navigate('/register')}>
+                      🚀 Sign Up Free
+                    </button>
+                    <button className="btn-glass btn-glass--secondary" onClick={() => navigate('/login')}>
+                      Login
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Progress stack */}
+              <div className="hp-progress-stack">
+                {[
+                  { label: 'Lesson Progress',  value: lesson, cls: 'lesson', emoji: '📚', nav: '/lessons'  },
+                  { label: 'Quiz Progress',    value: quiz,   cls: 'quiz',   emoji: '🎯', nav: '/quiz/1'  },
+                  { label: 'Puzzle Progress',  value: game,   cls: 'puzzle', emoji: '🧩', nav: '/games'   },
+                ].map(({ label, value, cls, emoji, nav }) => (
+                  <article key={label} className="hp-prog-card glass-card">
+                    <div className="hp-prog-card__header">
+                      <span>{emoji} {label}</span>
+                      <span className="hp-prog-card__pct">
+                        {user ? (loading ? '…' : `${value}%`) : '—'}
+                      </span>
+                    </div>
+                    <div className="hp-prog-bar">
+                      <div
+                        className={`hp-prog-fill hp-prog-fill--${cls}`}
+                        style={{ width: user && !loading ? `${value}%` : '0%' }}
+                      />
+                    </div>
+                    <button className="btn-glass btn-glass--sm" onClick={() => navigate(nav)}>
+                      {label.split(' ')[0]}s →
+                    </button>
+                  </article>
+                ))}
               </div>
-            </button>
+            </div>
 
-            <button type="button" className="cta-card games" onClick={goToGame}>
-              <span className="cta-icon" aria-hidden="true">
-                🪁
-              </span>
-              <div>
-                <h3>Playful Puzzles</h3>
-                <p>Unlock new levels and build creations in colorful worlds.</p>
-              </div>
-            </button>
-          </div>
+            <div className="hp-lower__right">
+              <LeaderboardPreview />
+            </div>
+          </section>
 
-          <div className="progress-panel">
-            <article className="card">
-              <header className="card-header">
-                <span>Lesson Progress</span>
-                <span>{loading ? '...' : `${lesson}%`}</span>
-              </header>
-              <ProgressBar value={lesson} color="lesson" loading={loading} />
-              <button type="button" className="card-link" onClick={bumpLesson}>
-                {loading ? 'Loading...' : 'Refresh Progress ☀️'}
-              </button>
-            </article>
+          {/* ── CHARACTER SPOTLIGHT ─────────────────────────── */}
+          <section className="hp-character">
+            <CharacterSpotlight headline="Meet your sidekick" cta="Customise your buddy" />
+          </section>
 
-            <article className="card">
-              <header className="card-header">
-                <span>Quiz Progress</span>
-                <span>{loading ? '...' : `${quiz}%`}</span>
-              </header>
-              <ProgressBar value={quiz} color="quiz" loading={loading} />
-              <button type="button" className="card-link" onClick={bumpQuiz}>
-                {loading ? 'Loading...' : 'Refresh Progress 🍍'}
-              </button>
-            </article>
-
-            <article className="card">
-              <header className="card-header">
-                <span>Puzzles Progress</span>
-                <span>{loading ? '...' : `${game}%`}</span>
-              </header>
-              <ProgressBar value={game} color="game" loading={loading} />
-              <button type="button" className="card-link" onClick={bumpGame}>
-                {loading ? 'Loading...' : 'Refresh Progress 🍧'}
-              </button>
-            </article>
-
-            <button type="button" className="journey-btn" onClick={goToDashboard}>
-              See the full summer roadmap
-            </button>
-          </div>
-        </section>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
