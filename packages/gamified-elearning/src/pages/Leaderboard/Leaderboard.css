@@ -1,13 +1,15 @@
 /* ============================================================
-   Leaderboard page — matches site's warm gradient / card style
+   Leaderboard page — brand-aligned
+   Palette: #FF8A3D primary · #4CC9F0 secondary · #FFD166 accent
+            #1F2A44 text   · #FFF7ED background
    ============================================================ */
 
 .lb-page {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #fff5a5 0%, #ffd6a5 30%, #ffabab 65%, #9bf6ff 100%);
+  background: #FFF7ED;
   font-family: 'Arvo', serif;
-  color: #041638;
+  color: #1F2A44;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -16,15 +18,15 @@
   position: relative;
 }
 
-/* Subtle radial bokeh — same as MainPage */
+/* Subtle brand radial bokeh */
 .lb-page::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.52), transparent 60%),
-    radial-gradient(circle at 82% 10%, rgba(255, 221, 103, 0.55), transparent 58%),
-    radial-gradient(circle at 50% 90%, rgba(155, 246, 255, 0.48), transparent 62%);
+    radial-gradient(circle at 12% 18%, rgba(255, 138, 61,  0.10), transparent 58%),
+    radial-gradient(circle at 85% 8%,  rgba(255, 209, 102, 0.13), transparent 55%),
+    radial-gradient(circle at 50% 92%, rgba(76,  201, 240, 0.09), transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
@@ -48,29 +50,29 @@
 
 .lb-back-btn {
   align-self: flex-start;
-  background: rgba(255, 255, 255, 0.82);
-  border: 2px solid rgba(255, 159, 28, 0.4);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1.5px solid rgba(255, 138, 61, 0.28);
   border-radius: 999px;
   padding: 0.5rem 1.2rem;
   font-size: 0.92rem;
   font-weight: 700;
-  color: #0b3d66;
+  color: #1F2A44;
   cursor: pointer;
-  box-shadow: 0 12px 24px rgba(4, 22, 56, 0.12);
+  box-shadow: 0 8px 20px rgba(31, 42, 68, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   font-family: inherit;
 }
 
 .lb-back-btn:hover {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 18px 32px rgba(4, 22, 56, 0.16);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 14px 28px rgba(31, 42, 68, 0.12);
 }
 
 .lb-title {
   margin: 0.4rem 0 0;
   font-size: clamp(2rem, 4vw, 2.6rem);
-  color: #041638;
+  color: #1F2A44;
   line-height: 1.1;
 }
 
@@ -78,19 +80,19 @@
   margin: 0;
   font-size: 1rem;
   line-height: 1.6;
-  color: #0b3d66;
+  color: rgba(31, 42, 68, 0.68);
 }
 
 .lb-count-badge {
   align-self: flex-start;
   display: inline-block;
-  background: rgba(255, 255, 255, 0.82);
-  border: 2px solid rgba(255, 159, 28, 0.35);
+  background: rgba(255, 255, 255, 0.80);
+  border: 1.5px solid rgba(255, 138, 61, 0.28);
   border-radius: 999px;
   padding: 0.3rem 0.95rem;
   font-size: 0.82rem;
   font-weight: 700;
-  color: #8a5c00;
+  color: #FF8A3D;
   letter-spacing: 0.03em;
 }
 
@@ -99,12 +101,13 @@
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  background: linear-gradient(135deg, rgba(255, 159, 28, 0.18), rgba(255, 133, 161, 0.18));
-  border: 2px solid rgba(255, 133, 161, 0.42);
+  background: rgba(255, 255, 255, 0.70);
+  border: 1.5px solid rgba(255, 138, 61, 0.28);
   border-radius: 18px;
   padding: 1rem 1.4rem;
-  box-shadow: 0 16px 30px rgba(255, 122, 89, 0.15);
+  box-shadow: 0 12px 28px rgba(255, 138, 61, 0.10);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .lb-my-rank-icon {
@@ -115,33 +118,34 @@
 
 .lb-my-rank-text {
   font-size: 0.98rem;
-  color: #0b3d66;
+  color: rgba(31, 42, 68, 0.80);
   line-height: 1.5;
 }
 
 .lb-my-rank-text strong {
-  color: #041638;
+  color: #1F2A44;
 }
 
 /* ── State cards (loading / error / empty) ────────────────── */
 .lb-state-card {
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.78);
   border-radius: 22px;
-  border: 2px solid rgba(255, 183, 3, 0.25);
-  box-shadow: 0 28px 50px rgba(4, 22, 56, 0.12);
+  border: 1.5px solid rgba(255, 138, 61, 0.16);
+  box-shadow: 0 20px 42px rgba(31, 42, 68, 0.08);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 3rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.9rem;
   text-align: center;
-  color: #0b3d66;
+  color: #1F2A44;
   font-size: 1.05rem;
 }
 
 .lb-state-error {
-  border-color: rgba(255, 100, 100, 0.35);
+  border-color: rgba(192, 57, 43, 0.28);
 }
 
 .lb-state-icon {
@@ -154,8 +158,8 @@
   display: block;
   width: 40px;
   height: 40px;
-  border: 4px solid rgba(255, 159, 28, 0.25);
-  border-top-color: #ff9f1c;
+  border: 4px solid rgba(255, 138, 61, 0.18);
+  border-top-color: #FF8A3D;
   border-radius: 50%;
   animation: lb-spin 0.85s linear infinite;
 }
@@ -166,22 +170,22 @@
 
 .lb-retry-btn {
   margin-top: 0.4rem;
-  background: linear-gradient(120deg, #ff7a59, #ffaf40);
+  background: linear-gradient(120deg, #FF8A3D, #FFD166);
   border: none;
   border-radius: 999px;
   padding: 0.5rem 1.4rem;
   font-size: 0.92rem;
   font-weight: 700;
-  color: #fff;
+  color: #1F2A44;
   cursor: pointer;
-  box-shadow: 0 12px 22px rgba(255, 122, 89, 0.3);
+  box-shadow: 0 10px 20px rgba(255, 138, 61, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   font-family: inherit;
 }
 
 .lb-retry-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 18px 30px rgba(255, 122, 89, 0.38);
+  box-shadow: 0 16px 28px rgba(255, 138, 61, 0.35);
 }
 
 /* ── Rankings list ────────────────────────────────────────── */
@@ -196,14 +200,8 @@
 
 /* Row entrance animation */
 @keyframes lb-row-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* Base row */
@@ -212,42 +210,43 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem 1.4rem;
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.78);
   border-radius: 18px;
-  border: 2px solid rgba(148, 163, 184, 0.2);
-  box-shadow: 0 14px 28px rgba(4, 22, 56, 0.1);
+  border: 1.5px solid rgba(31, 42, 68, 0.07);
+  box-shadow: 0 8px 22px rgba(31, 42, 68, 0.06);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   animation: lb-row-in 0.35s ease both;
 }
 
 .lb-row:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 36px rgba(4, 22, 56, 0.14);
+  box-shadow: 0 16px 32px rgba(31, 42, 68, 0.10);
 }
 
 /* Top 3 rows */
 .lb-top1 {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.28), rgba(255, 243, 160, 0.55));
-  border-color: rgba(255, 200, 0, 0.55);
-  box-shadow: 0 20px 40px rgba(255, 196, 0, 0.22);
+  background: rgba(255, 247, 220, 0.88);
+  border-color: rgba(255, 209, 102, 0.55);
+  box-shadow: 0 16px 36px rgba(255, 209, 102, 0.18);
 }
 
 .lb-top2 {
-  background: linear-gradient(135deg, rgba(192, 192, 192, 0.28), rgba(230, 230, 230, 0.5));
-  border-color: rgba(180, 180, 180, 0.5);
+  background: rgba(245, 245, 245, 0.88);
+  border-color: rgba(192, 192, 192, 0.45);
 }
 
 .lb-top3 {
-  background: linear-gradient(135deg, rgba(205, 127, 50, 0.2), rgba(230, 185, 140, 0.4));
-  border-color: rgba(205, 127, 50, 0.45);
+  background: rgba(255, 240, 225, 0.88);
+  border-color: rgba(255, 138, 61, 0.32);
 }
 
 /* Current user highlight */
 .lb-me {
-  background: linear-gradient(135deg, rgba(255, 159, 28, 0.22), rgba(255, 133, 161, 0.22)) !important;
-  border-color: rgba(255, 133, 161, 0.5) !important;
-  box-shadow: 0 18px 36px rgba(255, 122, 89, 0.2) !important;
+  background: rgba(255, 247, 220, 0.78) !important;
+  border-color: rgba(255, 138, 61, 0.40) !important;
+  box-shadow: 0 14px 30px rgba(255, 138, 61, 0.14) !important;
 }
 
 /* Rank cell */
@@ -256,7 +255,7 @@
   font-weight: 700;
   min-width: 2.2rem;
   text-align: center;
-  color: #ff9f1c;
+  color: #FF8A3D;
   flex-shrink: 0;
 }
 
@@ -286,7 +285,7 @@
 .lb-name {
   font-size: 1rem;
   font-weight: 600;
-  color: #041638;
+  color: #1F2A44;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -295,8 +294,8 @@
 
 .lb-you-badge {
   display: inline-block;
-  background: linear-gradient(120deg, #ff7a59, #ffaf40);
-  color: #fff;
+  background: linear-gradient(120deg, #FF8A3D, #FFD166);
+  color: #1F2A44;
   font-size: 0.72rem;
   font-weight: 700;
   border-radius: 999px;
@@ -318,70 +317,63 @@
   font-size: 1rem;
   font-weight: 800;
   color: #fff;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.20);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
   letter-spacing: 0;
   line-height: 1;
 }
 
-/* "Not ranked yet" callout — softer teal variant */
+/* "Not ranked yet" callout */
 .lb-not-ranked-card {
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  background: linear-gradient(135deg, rgba(155, 246, 255, 0.28), rgba(84, 160, 255, 0.18));
-  border: 2px solid rgba(84, 160, 255, 0.35);
+  background: rgba(76, 201, 240, 0.10);
+  border: 1.5px solid rgba(76, 201, 240, 0.30);
   border-radius: 18px;
   padding: 1rem 1.4rem;
-  box-shadow: 0 16px 30px rgba(84, 160, 255, 0.12);
+  box-shadow: 0 12px 26px rgba(76, 201, 240, 0.10);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 /* XP bar */
 .lb-bar-track {
   width: 100%;
   height: 8px;
-  background: rgba(4, 22, 56, 0.10);
+  background: rgba(31, 42, 68, 0.08);
   border-radius: 999px;
   overflow: hidden;
 }
 
 .lb-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ff9f1c, #ff6f91);
+  background: linear-gradient(90deg, #FF8A3D, #FFD166);
   border-radius: 999px;
   transition: width 0.5s ease;
 }
 
-.lb-top1 .lb-bar-fill {
-  background: linear-gradient(90deg, #f5c400, #ffb700);
-}
-
-.lb-top2 .lb-bar-fill {
-  background: linear-gradient(90deg, #b0b0b0, #d8d8d8);
-}
-
-.lb-top3 .lb-bar-fill {
-  background: linear-gradient(90deg, #cd7f32, #e8a870);
-}
+.lb-top1 .lb-bar-fill { background: linear-gradient(90deg, #FFD166, #ffc84e); }
+.lb-top2 .lb-bar-fill { background: linear-gradient(90deg, #b0b0b0, #d8d8d8); }
+.lb-top3 .lb-bar-fill { background: linear-gradient(90deg, #FF8A3D, #FFD166); }
 
 /* XP cell */
 .lb-xp {
   font-size: 1rem;
-  color: #0b3d66;
+  color: rgba(31, 42, 68, 0.68);
   text-align: right;
   flex-shrink: 0;
 }
 
 .lb-xp strong {
   font-size: 1.15rem;
-  color: #041638;
+  color: #1F2A44;
 }
 
 .lb-xp small {
   font-size: 0.82rem;
   font-weight: 600;
-  color: #ff9f1c;
+  color: #FF8A3D;
 }
 
 /* ── Responsive ───────────────────────────────────────────── */

@@ -15,8 +15,6 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-router.use(authenticateToken);
-
 // GET /api/puzzles — list all puzzles
 router.get('/', async (req, res) => {
   try {
@@ -41,8 +39,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /api/puzzles/:id/complete — mark puzzle complete, award XP (once per user)
-router.post('/:id/complete', async (req, res) => {
+// POST /api/puzzles/:id/complete — mark puzzle complete, award XP (once per user, auth required)
+router.post('/:id/complete', authenticateToken, async (req, res) => {
   const userId = req.user.user_id;
   const puzzleId = req.params.id;
 

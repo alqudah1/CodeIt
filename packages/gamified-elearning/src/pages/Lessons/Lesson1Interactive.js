@@ -487,12 +487,13 @@ const Lesson1Interactive = () => {
       earned.push({ id: 'emoji_wizard', title: '🪄 Emoji Wizard', description: 'Printed with emojis!', xp: 10 });
     }
 
-    // Check if lesson is now eligible for completion
-    if (isLessonEligibleForCompletion() && !isCompleted && !hasMarkedComplete) {
-      console.log('Lesson 1 (Interactive) is now eligible for completion!');
-      // Mark lesson as complete in the progress context (still lesson 1 for testing)
-      markLessonComplete(1);
+    // Persist completion to DB as soon as user engages (fix: use newProgress, not stale closure)
+    const nowEligible = newProgress.hasRunCode || newProgress.hasModifiedCode ||
+      newProgress.hasSeenOutput || newProgress.hasCompletedChallenge || newProgress.stepsCompleted >= 1;
+    if (nowEligible && !hasMarkedComplete) {
       setHasMarkedComplete(true);
+      markLessonComplete(1);
+      trackStaticLessonCompletion(1).catch(err => console.error('Lesson 1 completion error:', err));
     }
 
     // Check for new achievements
@@ -517,12 +518,11 @@ const Lesson1Interactive = () => {
     const merged = mergeBadges(newProgress, achievements);
     saveProgress(merged);
 
-    // Check if lesson is now eligible for completion
-    if (isLessonEligibleForCompletion() && !isCompleted && !hasMarkedComplete) {
-      console.log('Lesson 1 (Interactive) is now eligible for completion!');
-      // Mark lesson as complete in the progress context
-      markLessonComplete(1);
+    // Persist completion to DB as soon as user completes a step (fix: use merged.stepsCompleted)
+    if (merged.stepsCompleted >= 1 && !hasMarkedComplete) {
       setHasMarkedComplete(true);
+      markLessonComplete(1);
+      trackStaticLessonCompletion(1).catch(err => console.error('Lesson 1 completion error:', err));
     }
 
     // Check for achievements

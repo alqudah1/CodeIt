@@ -65,13 +65,14 @@ const Lesson3 = () => {
     }
     
     setLessonProgress(newProgress);
-    
-    // Check if lesson is now eligible for completion
-    if (isLessonEligibleForCompletion() && !isCompleted && !hasMarkedComplete) {
-      console.log('Lesson 3 is now eligible for completion!');
-      // Mark lesson as complete in the progress context
-      markLessonComplete(3);
+
+    // Persist completion to DB immediately (fix: use newProgress, not stale closure)
+    const nowEligible = newProgress.hasRunCode || newProgress.hasModifiedCode ||
+      newProgress.hasSeenOutput || newProgress.hasCompletedChallenge;
+    if (nowEligible && !hasMarkedComplete) {
       setHasMarkedComplete(true);
+      markLessonComplete(3);
+      trackStaticLessonCompletion(3).catch(err => console.error('Lesson 3 completion error:', err));
     }
   };
 

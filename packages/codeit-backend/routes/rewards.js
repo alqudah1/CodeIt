@@ -20,10 +20,8 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-router.use(authenticateToken);
-
-// GET /api/rewards/progress-percentages
-router.get('/progress-percentages', async (req, res) => {
+// GET /api/rewards/progress-percentages  (requires auth — user-specific data)
+router.get('/progress-percentages', authenticateToken, async (req, res) => {
   const userId = req.user.user_id;
   try {
     // Quizzes attempted (distinct)
@@ -64,8 +62,8 @@ router.get('/progress-percentages', async (req, res) => {
   }
 });
 
-// GET /api/rewards/leaderboard
-// XP = quiz XP + lesson XP + puzzle XP (computed live, not from rewards cache table)
+// GET /api/rewards/leaderboard  (public — no auth required)
+// XP = quiz XP + lesson XP + puzzle XP (computed live)
 router.get('/leaderboard', async (req, res) => {
   try {
     const [rows] = await pool.query(`

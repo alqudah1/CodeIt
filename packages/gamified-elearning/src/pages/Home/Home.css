@@ -1,5 +1,7 @@
 /* ================================================================
-   CodeIt — Home Page  (glassmorphism redesign)
+   CodeIt — Home Page  (brand-aligned redesign)
+   Palette: #FF8A3D primary · #4CC9F0 secondary · #FFD166 accent
+            #1F2A44 text   · #FFF7ED background
    ================================================================ */
 
 /* ── Page shell ──────────────────────────────────────────────── */
@@ -7,31 +9,21 @@
   position: relative;
   min-height: 100vh;
   padding-bottom: 5rem;
-  /* Vibrant multi-stop gradient background */
-  background:
-    linear-gradient(135deg,
-      #f093fb 0%,
-      #f5576c 15%,
-      #ff8c42 30%,
-      #ffd166 45%,
-      #06d6a0 65%,
-      #4cc9f0 80%,
-      #7209b7 100%
-    );
+  background: #FFF7ED;
   font-family: 'Arvo', serif;
-  color: #fff;
+  color: #1F2A44;
   overflow-x: hidden;
 }
 
-/* Subtle noise + radial overlays */
+/* Subtle brand-tinted radial overlays */
 .homepage::before {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 15% 15%, rgba(255,255,255,0.18) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 10%, rgba(255,220,80,0.22)  0%, transparent 50%),
-    radial-gradient(ellipse at 50% 90%, rgba(76,201,240,0.25)  0%, transparent 55%);
+    radial-gradient(ellipse at 10% 8%,  rgba(255, 138, 61, 0.12) 0%, transparent 52%),
+    radial-gradient(ellipse at 88% 6%,  rgba(255, 209, 102, 0.14) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 92%, rgba(76, 201, 240, 0.10) 0%, transparent 55%);
   pointer-events: none;
   z-index: 0;
 }
@@ -40,7 +32,7 @@
 .sparkle {
   position: absolute;
   font-size: 1.4rem;
-  opacity: 0.65;
+  opacity: 0.55;
   animation: sparkle-bob 3.2s ease-in-out infinite;
   z-index: 1;
   pointer-events: none;
@@ -63,20 +55,20 @@
 }
 
 /* ================================================================
-   Shared glass primitives
+   Shared glass primitives  (light-background version)
    ================================================================ */
 .glass-card {
-  background: rgba(255, 255, 255, 0.18);
-  border: 1.5px solid rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1.5px solid rgba(255, 138, 61, 0.14);
   border-radius: 24px;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    0 8px 32px rgba(31, 42, 68, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
-/* ── Glass buttons ───────────────────────────────────────────── */
+/* ── Glass buttons (home-scoped aliases for .btn-glass) ─────── */
 .btn-glass {
   display: inline-flex;
   align-items: center;
@@ -84,50 +76,55 @@
   font-family: 'Arvo', serif;
   font-weight: 700;
   border-radius: 999px;
-  border: 2px solid rgba(255, 255, 255, 0.45);
+  border: 1.5px solid rgba(255, 138, 61, 0.28);
+  background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  color: #1F2A44;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   white-space: nowrap;
 }
 .btn-glass:hover  { transform: translateY(-3px); }
 .btn-glass:active { transform: translateY(0px) scale(0.97); }
+.btn-glass:focus-visible { outline: 2.5px solid #FF8A3D; outline-offset: 3px; }
 
 .btn-glass--primary {
-  background: linear-gradient(120deg, rgba(255,122,89,0.88), rgba(255,175,64,0.88));
-  color: #fff;
+  background: linear-gradient(120deg, #FF8A3D, #FFD166);
+  border-color: rgba(255, 138, 61, 0.35);
+  color: #1F2A44;
   padding: 0.85rem 2rem;
   font-size: 1rem;
-  box-shadow: 0 14px 28px rgba(255,122,89,0.40);
+  box-shadow: 0 10px 28px rgba(255, 138, 61, 0.30);
 }
 .btn-glass--primary:hover {
-  box-shadow: 0 20px 36px rgba(255,122,89,0.50);
-  background: linear-gradient(120deg, rgba(255,90,60,0.96), rgba(255,155,20,0.96));
+  background: linear-gradient(120deg, #ff7a2e, #ffc84e);
+  box-shadow: 0 18px 36px rgba(255, 138, 61, 0.40);
 }
 
 .btn-glass--secondary {
-  background: rgba(255,255,255,0.22);
-  color: #fff;
+  background: rgba(76, 201, 240, 0.12);
+  border-color: rgba(76, 201, 240, 0.35);
+  color: #1F2A44;
   padding: 0.85rem 2rem;
   font-size: 1rem;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 18px rgba(76, 201, 240, 0.15);
 }
 .btn-glass--secondary:hover {
-  background: rgba(255,255,255,0.32);
-  box-shadow: 0 14px 28px rgba(0,0,0,0.20);
+  background: rgba(76, 201, 240, 0.22);
+  box-shadow: 0 12px 26px rgba(76, 201, 240, 0.22);
 }
 
 .btn-glass--sm {
-  background: rgba(255,255,255,0.2);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(255, 138, 61, 0.2);
+  color: #1F2A44;
   padding: 0.5rem 1.2rem;
   font-size: 0.88rem;
-  border-color: rgba(255,255,255,0.35);
-  box-shadow: none;
+  box-shadow: 0 4px 12px rgba(31, 42, 68, 0.08);
 }
 .btn-glass--sm:hover {
-  background: rgba(255,255,255,0.3);
+  background: rgba(255, 255, 255, 0.88);
 }
 
 /* ================================================================
@@ -140,13 +137,13 @@
   align-items: center;
   padding: 3rem 3.5rem;
   border-radius: 32px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1.5px solid rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.70);
+  border: 1.5px solid rgba(255, 138, 61, 0.14);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   box-shadow:
-    0 16px 48px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    0 12px 40px rgba(31, 42, 68, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .hp-hero__copy {
@@ -159,7 +156,7 @@
   font-size: 0.84rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.9);
+  color: #FF8A3D;
   font-weight: 700;
   margin: 0;
 }
@@ -168,17 +165,16 @@
   margin: 0;
   font-size: clamp(2.2rem, 3.5vw, 3.4rem);
   line-height: 1.1;
-  color: #fff;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  color: #1F2A44;
 }
 
 .hp-welcome {
-  color: #ffd166;
+  color: #FF8A3D;
   font-weight: 800;
 }
 
 .hp-h1-accent {
-  background: linear-gradient(90deg, #ffd166, #ff6f91, #a78bfa);
+  background: linear-gradient(90deg, #FF8A3D, #4CC9F0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -188,7 +184,7 @@
   margin: 0;
   font-size: 1.06rem;
   line-height: 1.75;
-  color: rgba(255,255,255,0.88);
+  color: rgba(31, 42, 68, 0.72);
 }
 
 .hp-actions {
@@ -210,7 +206,7 @@
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,209,102,0.45) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 209, 102, 0.35) 0%, transparent 70%);
   filter: blur(28px);
   pointer-events: none;
 }
@@ -218,7 +214,7 @@
 .hp-hero__img {
   position: relative;
   width: min(320px, 85%);
-  filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 20px 40px rgba(255, 138, 61, 0.20));
   animation: hero-float 4s ease-in-out infinite;
 }
 @keyframes hero-float {
@@ -231,15 +227,15 @@
   bottom: 0.5rem;
   right: 0;
   padding: 0.6rem 1.1rem;
-  background: rgba(255,255,255,0.22);
-  border: 1.5px solid rgba(255,255,255,0.38);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1.5px solid rgba(255, 138, 61, 0.22);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-radius: 16px;
   font-size: 0.86rem;
   font-weight: 700;
-  color: #fff;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  color: #1F2A44;
+  box-shadow: 0 6px 18px rgba(31, 42, 68, 0.10);
 }
 
 /* ================================================================
@@ -257,19 +253,19 @@
   gap: 1rem;
   padding: 1.4rem 1.6rem;
   border-radius: 22px;
-  border: none;
   cursor: pointer;
   text-align: left;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   font-family: 'Arvo', serif;
 
-  background: rgba(255, 255, 255, 0.18);
-  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1.5px solid rgba(255, 138, 61, 0.14);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+  box-shadow: 0 6px 20px rgba(31, 42, 68, 0.07);
 }
-.hp-stat:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(0,0,0,0.22); }
+.hp-stat:hover { transform: translateY(-4px); box-shadow: 0 14px 32px rgba(31, 42, 68, 0.12); }
+.hp-stat:focus-visible { outline: 2.5px solid #FF8A3D; outline-offset: 2px; }
 
 .hp-stat__emoji { font-size: 2rem; flex-shrink: 0; }
 
@@ -278,8 +274,8 @@
   flex-direction: column;
   gap: 0.15rem;
 }
-.hp-stat__num   { font-size: 2rem; font-weight: 800; color: #fff; line-height: 1; }
-.hp-stat__label { font-size: 0.88rem; color: rgba(255,255,255,0.8); font-weight: 600; }
+.hp-stat__num   { font-size: 2rem; font-weight: 800; color: #1F2A44; line-height: 1; }
+.hp-stat__label { font-size: 0.88rem; color: rgba(31, 42, 68, 0.62); font-weight: 600; }
 
 .hp-stat__right {
   margin-left: auto;
@@ -288,26 +284,26 @@
   align-items: flex-end;
   gap: 0.4rem;
 }
-.hp-stat__pct { font-size: 1.1rem; font-weight: 800; color: #ffd166; }
+.hp-stat__pct { font-size: 1.1rem; font-weight: 800; color: #FF8A3D; }
 .hp-stat__bar {
   width: 80px;
   height: 8px;
-  background: rgba(255,255,255,0.2);
+  background: rgba(31, 42, 68, 0.08);
   border-radius: 999px;
   overflow: hidden;
 }
 .hp-stat__fill { height: 100%; border-radius: 999px; transition: width 0.4s ease; }
-.hp-stat__fill--lesson { background: linear-gradient(90deg, #ff9f1c, #ffd166); }
-.hp-stat__fill--quiz   { background: linear-gradient(90deg, #ff6f91, #a78bfa); }
-.hp-stat__fill--puzzle { background: linear-gradient(90deg, #06d6a0, #4cc9f0); }
+.hp-stat__fill--lesson { background: linear-gradient(90deg, #FF8A3D, #FFD166); }
+.hp-stat__fill--quiz   { background: linear-gradient(90deg, #4CC9F0, #FF8A3D); }
+.hp-stat__fill--puzzle { background: linear-gradient(90deg, #4CC9F0, #FFD166); }
 
-/* Coloured accents per stat */
-.hp-stat--lesson { border-color: rgba(255,175,28,0.5); }
-.hp-stat--quiz   { border-color: rgba(255,111,145,0.5); }
-.hp-stat--puzzle { border-color: rgba(6,214,160,0.5);   }
+/* Coloured border accents per stat */
+.hp-stat--lesson { border-color: rgba(255, 138, 61,  0.28); }
+.hp-stat--quiz   { border-color: rgba(76,  201, 240, 0.28); }
+.hp-stat--puzzle { border-color: rgba(255, 209, 102, 0.28); }
 
 /* ================================================================
-   FEATURE CARDS  (4-column)
+   FEATURE CARDS  (4-column) — vivid brand-colour gradients
    ================================================================ */
 .hp-features {
   display: grid;
@@ -324,30 +320,40 @@
   border: none;
   cursor: pointer;
   text-align: left;
-  color: #fff;
   font-family: 'Arvo', serif;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
   overflow: hidden;
 }
-.hp-feat::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: inherit;
-  border-radius: inherit;
-}
 .hp-feat:hover { transform: translateY(-6px); }
+.hp-feat:focus-visible { outline: 2.5px solid #1F2A44; outline-offset: 3px; }
 
 .hp-feat__icon  { font-size: 2.2rem; line-height: 1; }
 .hp-feat__title { font-size: 1.1rem; font-weight: 800; margin: 0; }
-.hp-feat__sub   { font-size: 0.88rem; color: rgba(255,255,255,0.85); margin: 0; line-height: 1.5; }
-.hp-feat__arrow { font-size: 1.3rem; margin-top: auto; opacity: 0.8; }
+.hp-feat__sub   { font-size: 0.88rem; margin: 0; line-height: 1.5; opacity: 0.85; }
+.hp-feat__arrow { font-size: 1.3rem; margin-top: auto; opacity: 0.75; }
 
-.hp-feat--lesson { background: linear-gradient(135deg, #ff9a3c, #ffd166); box-shadow: 0 14px 28px rgba(255,154,60,0.38); }
-.hp-feat--quiz   { background: linear-gradient(135deg, #ff6f91, #a78bfa); box-shadow: 0 14px 28px rgba(255,111,145,0.38); }
-.hp-feat--puzzle { background: linear-gradient(135deg, #06d6a0, #4cc9f0); box-shadow: 0 14px 28px rgba(6,214,160,0.38); color: #0a3d2e; }
-.hp-feat--lab    { background: linear-gradient(135deg, #667eea, #764ba2); box-shadow: 0 14px 28px rgba(102,126,234,0.38); }
+/* Brand-only card gradients */
+.hp-feat--lesson {
+  background: linear-gradient(135deg, #FF8A3D, #FFD166);
+  box-shadow: 0 14px 28px rgba(255, 138, 61, 0.32);
+  color: #1F2A44;
+}
+.hp-feat--quiz {
+  background: linear-gradient(135deg, #4CC9F0, #FF8A3D);
+  box-shadow: 0 14px 28px rgba(76, 201, 240, 0.32);
+  color: #fff;
+}
+.hp-feat--puzzle {
+  background: linear-gradient(135deg, #4CC9F0, #FFD166);
+  box-shadow: 0 14px 28px rgba(76, 201, 240, 0.28);
+  color: #1F2A44;
+}
+.hp-feat--lab {
+  background: linear-gradient(135deg, #FFD166, #FF8A3D);
+  box-shadow: 0 14px 28px rgba(255, 209, 102, 0.32);
+  color: #1F2A44;
+}
 
 /* ================================================================
    LOWER GRID  (2-column: progress + leaderboard)
@@ -376,12 +382,12 @@
 .hp-continue__badge {
   display: inline-block;
   padding: 0.3rem 0.9rem;
-  background: rgba(255,255,255,0.25);
-  border: 1px solid rgba(255,255,255,0.4);
+  background: rgba(255, 138, 61, 0.12);
+  border: 1px solid rgba(255, 138, 61, 0.28);
   border-radius: 999px;
   font-size: 0.82rem;
   font-weight: 700;
-  color: #fff;
+  color: #FF8A3D;
   width: fit-content;
 }
 
@@ -389,14 +395,14 @@
   margin: 0;
   font-size: 1.45rem;
   font-weight: 800;
-  color: #fff;
+  color: #1F2A44;
   line-height: 1.25;
 }
 
 .hp-continue__sub {
   margin: 0;
   font-size: 0.95rem;
-  color: rgba(255,255,255,0.82);
+  color: rgba(31, 42, 68, 0.68);
   line-height: 1.6;
 }
 
@@ -418,18 +424,18 @@
   margin-bottom: 0.75rem;
   font-weight: 700;
   font-size: 0.94rem;
-  color: #fff;
+  color: #1F2A44;
 }
 .hp-prog-card__pct {
   font-size: 1rem;
   font-weight: 800;
-  color: #ffd166;
+  color: #FF8A3D;
 }
 
 .hp-prog-bar {
   width: 100%;
   height: 10px;
-  background: rgba(255,255,255,0.18);
+  background: rgba(31, 42, 68, 0.07);
   border-radius: 999px;
   overflow: hidden;
   margin-bottom: 0.9rem;
@@ -439,32 +445,17 @@
   border-radius: 999px;
   transition: width 0.4s ease;
 }
-.hp-prog-fill--lesson { background: linear-gradient(90deg, #ff9f1c, #ffd166); }
-.hp-prog-fill--quiz   { background: linear-gradient(90deg, #ff6f91, #a78bfa); }
-.hp-prog-fill--puzzle { background: linear-gradient(90deg, #06d6a0, #4cc9f0); }
+.hp-prog-fill--lesson { background: linear-gradient(90deg, #FF8A3D, #FFD166); }
+.hp-prog-fill--quiz   { background: linear-gradient(90deg, #4CC9F0, #FF8A3D); }
+.hp-prog-fill--puzzle { background: linear-gradient(90deg, #4CC9F0, #FFD166); }
 
-/* ── Leaderboard column ─────────────────────────────────────── */
+/* ── Leaderboard column (light bg — no overrides needed) ─────── */
+/* The LeaderboardPreview component already uses a white/light glass style
+   that looks correct on the new cream background. We only provide
+   box-shadow consistency. */
 .hp-lower__right .lb-prev {
-  /* Override LeaderboardPreview's default white bg to glass */
-  background: rgba(255, 255, 255, 0.18) !important;
-  border-color: rgba(255, 255, 255, 0.32) !important;
-  color: #fff;
+  box-shadow: 0 8px 32px rgba(31, 42, 68, 0.08);
 }
-.hp-lower__right .lb-prev-h2,
-.hp-lower__right .lb-prev-tagline,
-.hp-lower__right .lb-prev-name,
-.hp-lower__right .lb-prev-state {
-  color: #fff !important;
-}
-.hp-lower__right .lb-prev-xp { color: rgba(255,255,255,0.8) !important; }
-.hp-lower__right .lb-prev-xp strong { color: #ffd166 !important; }
-.hp-lower__right .lb-prev-row {
-  background: rgba(255,255,255,0.12) !important;
-  border-color: rgba(255,255,255,0.2) !important;
-}
-.hp-lower__right .lb-prev-top1 { background: rgba(255,215,0,0.2)  !important; border-color: rgba(255,215,0,0.4) !important; }
-.hp-lower__right .lb-prev-top2 { background: rgba(200,200,200,0.15) !important; }
-.hp-lower__right .lb-prev-top3 { background: rgba(205,127,50,0.18) !important; }
 
 /* ── Character Spotlight wrapper ─────────────────────────────── */
 .hp-character {

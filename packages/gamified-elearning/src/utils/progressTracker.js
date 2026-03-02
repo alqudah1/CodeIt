@@ -25,17 +25,11 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-// Track lesson completion
-export const trackLessonCompletion = async (lessonId, performance = {}) => {
+// Track lesson completion — calls the real backend endpoint
+export const trackLessonCompletion = async (lessonId) => {
   try {
-    const response = await apiClient.post('/lesson-complete', {
-      lessonId,
-      isFirstAttempt: performance.isFirstAttempt || true,
-      isPerfect: performance.isPerfect || false,
-      completionTime: performance.completionTime || 0, // in seconds
-    });
-    
-    return response.data;
+    const response = await apiClient.post(`/api/lessons/${lessonId}/complete`);
+    return response.data; // { success, alreadyCompleted, xpEarned }
   } catch (error) {
     console.error('Error tracking lesson completion:', error);
     throw error;
@@ -76,24 +70,12 @@ export const getStudentProgress = async () => {
 
 
 // Helper function to track lesson completion from static pages
-export const trackStaticLessonCompletion = async (lessonNumber, timeSpent) => {
-  const lessonId = lessonNumber; // Since lessons are static, use lesson number as ID
-  
-  // Check if this is first attempt (you might want to store this in localStorage)
-  const lessonKey = `lesson_${lessonNumber}_attempted`;
-  const isFirstAttempt = !localStorage.getItem(lessonKey);
-  
-  // Mark as attempted
-  localStorage.setItem(lessonKey, 'true');
-  
-  // Track completion
-  const result = await trackLessonCompletion(lessonId, {
-    isFirstAttempt,
-    isPerfect: true, // Assume perfect for static lessons
-    completionTime: timeSpent,
-  });
-  
-  return result;
+export const trackStaticLessonCompletion = async (lessonNumber) => {
+  // Mark attempted in localStorage for UX state restoration
+  localStorage.setItem(`lesson_${lessonNumber}_attempted`, 'true');
+  // Call the real backend endpoint
+  const result = await trackLessonCompletion(lessonNumber);
+  return result; // { success, alreadyCompleted, xpEarned }
 };
 
 // Helper function to track game completion from puzzle games
@@ -170,6 +152,51 @@ export const showXPNotification = (xpEarned, baseXP, bonusXP) => {
         notification.parentNode.removeChild(notification);
       }
     }, 300);
+  }, 3000);
+};
+
+// Helper function to show a "lesson locked" toast instead of alert()
+export const showLessonLockedToast = (lessonNum) => {
+  // Remove any existing locked toast to avoid stacking
+  const existing = document.getElementById('lesson-locked-toast');
+  if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+
+  const toast = document.createElement('div');
+  toast.id = 'lesson-locked-toast';
+  toast.style.cssText = `
+    position: fixed;
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    background: rgba(255, 90, 90, 0.93);
+    backdrop-filter: blur(12px);
+    color: white;
+    padding: 14px 28px;
+    border-radius: 999px;
+    box-shadow: 0 14px 32px rgba(0,0,0,0.22);
+    z-index: 99999;
+    font-family: 'Arvo', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    animation: llt-in 0.3s ease;
+  `;
+  toast.textContent = `🔒 Complete this lesson to unlock Quiz ${lessonNum}`;
+
+  if (!document.getElementById('lesson-locked-toast-style')) {
+    const style = document.createElement('style');
+    style.id = 'lesson-locked-toast-style';
+    style.textContent = `
+      @keyframes llt-in  { from { opacity:0; transform:translateX(-50%) translateY(-14px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+      @keyframes llt-out { from { opacity:1; transform:translateX(-50%) translateY(0); } to { opacity:0; transform:translateX(-50%) translateY(-14px); } }
+    `;
+    document.head.appendChild(style);
+  }
+
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.style.animation = 'llt-out 0.3s ease';
+    setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
   }, 3000);
 };
 

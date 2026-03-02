@@ -1,7 +1,7 @@
 import React from 'react';
-import Lesson3 from './Lesson3';
+import InteractiveLessonTemplate from '../../components/InteractiveLessonTemplate/InteractiveLessonTemplate';
+import lessonData from './lessonData/lesson3';
 
-// Simple wrapper to reuse Lesson3 content for interactive route parity
-const Lesson3Interactive = () => <Lesson3 />;
+const Lesson3Interactive = () => <InteractiveLessonTemplate lessonData={lessonData} />;
 
 export default Lesson3Interactive;

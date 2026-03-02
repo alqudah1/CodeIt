@@ -9,3 +9,84 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* ─────────────────────────────────────────────────────────
+   Shared glass-button utility classes  (brand-aligned)
+   Usage:
+     className="glass-btn"                    — neutral glass
+     className="glass-btn glass-btn--primary" — orange CTA
+     className="glass-btn glass-btn--pill"    — round ends
+     className="glass-btn glass-btn--sm"      — compact size
+   ───────────────────────────────────────────────────────── */
+
+.glass-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1.5px solid rgba(255, 138, 61, 0.22);
+  border-radius: 14px;
+  padding: 0.75rem 1.4rem;
+  font-family: 'Arvo', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1F2A44;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 6px 20px rgba(31, 42, 68, 0.10);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  text-decoration: none;
+}
+
+.glass-btn:hover {
+  background: rgba(255, 255, 255, 0.88);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(31, 42, 68, 0.14);
+}
+
+.glass-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(31, 42, 68, 0.10);
+}
+
+.glass-btn:focus-visible {
+  outline: 2.5px solid #FF8A3D;
+  outline-offset: 3px;
+}
+
+/* Primary variant — brand orange → yellow */
+.glass-btn--primary {
+  background: linear-gradient(120deg, #FF8A3D, #FFD166);
+  border-color: rgba(255, 138, 61, 0.35);
+  color: #1F2A44;
+  box-shadow: 0 8px 24px rgba(255, 138, 61, 0.30);
+}
+
+.glass-btn--primary:hover {
+  background: linear-gradient(120deg, #ff7a2e, #ffc84e);
+  box-shadow: 0 14px 32px rgba(255, 138, 61, 0.40);
+}
+
+/* Small variant */
+.glass-btn--sm {
+  padding: 0.42rem 0.95rem;
+  font-size: 0.85rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(31, 42, 68, 0.08);
+}
+
+/* Pill variant (round ends) */
+.glass-btn--pill {
+  border-radius: 999px;
+}
+
+/* Disabled state */
+.glass-btn:disabled,
+.glass-btn[aria-disabled="true"] {
+  opacity: 0.48;
+  cursor: not-allowed;
+  transform: none;
+  pointer-events: none;
+}

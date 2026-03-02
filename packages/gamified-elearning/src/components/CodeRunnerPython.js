@@ -1,0 +1,168 @@
+/* global loadPyodide */
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import CodeMirror from '@uiw/react-codemirror';
+import { python } from '@codemirror/lang-python';
+import './CodeRunnerPython.css';
+
+// Starter code per lesson id
+const LESSON_STARTER = {
+  1:  `# 🐍 Hello Python!\nprint("Hello, World!")\nprint("I am learning Python!")`,
+  2:  `# 📦 Variables\nname = "Alex"\nage = 10\nfavorite_color = "blue"\n\nprint(name)\nprint(age)\nprint(favorite_color)`,
+  3:  `# 🔄 Functions & Loops\ndef greet(name):\n    print("Hello, " + name + "!")\n\nfor i in range(3):\n    greet("Coder")\n\nprint("Done!")`,
+  4:  `# 🔀 Conditionals\ntemperature = 25\n\nif temperature > 30:\n    print("It's hot outside!")\nelif temperature > 20:\n    print("It's a nice day!")\nelse:\n    print("It's a bit cold.")`,
+  5:  `# 📋 Lists\nfruits = ["apple", "banana", "cherry"]\n\nfor fruit in fruits:\n    print("I like " + fruit)\n\nprint("Total:", len(fruits))`,
+  6:  `# 📚 Dictionaries\nstudent = {\n    "name": "Alex",\n    "age": 10,\n    "grade": "A"\n}\n\nfor key, value in student.items():\n    print(key + ":", value)`,
+  7:  `# 📁 File Handling (simulated)\nlines = ["Line 1: Hello", "Line 2: World", "Line 3: Python"]\n\nfor line in lines:\n    print(line)`,
+  8:  `# 🛡️ Exception Handling\ntry:\n    number = int("hello")\nexcept ValueError as e:\n    print("Caught an error:", e)\n\nprint("Program continues!")`,
+  9:  `# 🏗️ Classes & Objects\nclass Dog:\n    def __init__(self, name, breed):\n        self.name = name\n        self.breed = breed\n\n    def bark(self):\n        print(self.name + " says: Woof!")\n\nmy_dog = Dog("Buddy", "Labrador")\nmy_dog.bark()\nprint("Breed:", my_dog.breed)`,
+  10: `# 🧩 Modules\nimport math\nimport random\n\nprint("Pi =", round(math.pi, 4))\nprint("Sqrt of 16 =", math.sqrt(16))\nprint("Random 1-10:", random.randint(1, 10))`,
+};
+
+const DEFAULT_CODE = `# Write your Python code here\nprint("Hello, Python!")`;
+
+/**
+ * CodeRunnerPython
+ *
+ * Props:
+ *   lessonId   {number}   — picks starter code from LESSON_STARTER map
+ *   starterCode {string}  — override starter code directly
+ *   title       {string}  — panel title (default: "🐍 Python Playground")
+ *   onOutput    {fn}      — called with output string after each run
+ */
+const CodeRunnerPython = ({ lessonId, starterCode, title, onOutput }) => {
+  const initialCode = starterCode || LESSON_STARTER[lessonId] || DEFAULT_CODE;
+
+  const [code, setCode]       = useState(initialCode);
+  const [output, setOutput]   = useState('');
+  const [pyReady, setPyReady] = useState(false);
+  const [running, setRunning] = useState(false);
+  const outputRef             = useRef(null);
+  const mountedRef            = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
+
+  // Initialise Pyodide (reuse if already loaded by PythonEditor or index.html)
+  useEffect(() => {
+    if (window.pyodide) {
+      setPyReady(true);
+      return;
+    }
+
+    let cancelled = false;
+    const init = async () => {
+      try {
+        if (typeof loadPyodide === 'undefined') return; // CDN not loaded yet — poll
+        const py = await loadPyodide({ indexURL: '' });
+        window.printOutput = '';
+        py.setStdout({ batched: (t) => { window.printOutput += t + '\n'; } });
+        window.pyodide = py;
+        if (!cancelled && mountedRef.current) setPyReady(true);
+      } catch (err) {
+        console.error('CodeRunnerPython: Pyodide error', err);
+      }
+    };
+
+    // If Pyodide CDN script is loaded async, poll until loadPyodide is available
+    const poll = setInterval(() => {
+      if (window.pyodide) {
+        clearInterval(poll);
+        if (mountedRef.current) setPyReady(true);
+      } else if (typeof loadPyodide !== 'undefined') {
+        clearInterval(poll);
+        init();
+      }
+    }, 400);
+
+    return () => { cancelled = true; clearInterval(poll); };
+  }, []);
+
+  const runCode = useCallback(async () => {
+    if (!window.pyodide || running) return;
+    setRunning(true);
+    setOutput('');
+
+    try {
+      window.printOutput = '';
+      const timeout = new Promise((_, rej) =>
+        setTimeout(() => rej(new Error('⏱ Execution timed out (10 s limit)')), 10_000)
+      );
+      await Promise.race([window.pyodide.runPythonAsync(code), timeout]);
+
+      const result = (window.printOutput || '').trimEnd();
+      if (mountedRef.current) setOutput(result || '(no output)');
+      if (onOutput) onOutput(result || '');
+    } catch (err) {
+      const msg = err.message || 'An error occurred';
+      if (mountedRef.current) setOutput('❌ ' + msg);
+      if (onOutput) onOutput(msg);
+    } finally {
+      if (mountedRef.current) setRunning(false);
+      if (outputRef.current) outputRef.current.scrollTop = outputRef.current.scrollHeight;
+    }
+  }, [code, running, onOutput]);
+
+  const resetCode = useCallback(() => {
+    setCode(initialCode);
+    setOutput('');
+  }, [initialCode]);
+
+  return (
+    <div className="cr-wrap">
+      {/* ── Header bar ─────────────────────────────── */}
+      <div className="cr-header">
+        <span className="cr-title">{title || '🐍 Python Playground'}</span>
+        <div className="cr-actions">
+          <button
+            className="cr-btn cr-btn--reset"
+            onClick={resetCode}
+            title="Reset to starter code"
+          >
+            ↺ Reset
+          </button>
+          <button
+            className={`cr-btn cr-btn--run${running ? ' cr-btn--busy' : ''}`}
+            onClick={runCode}
+            disabled={!pyReady || running}
+            title={pyReady ? 'Run your Python code (Ctrl+Enter)' : 'Loading Python interpreter…'}
+          >
+            {running ? '⏳ Running…' : pyReady ? '▶ Run' : '⏳ Loading…'}
+          </button>
+        </div>
+      </div>
+
+      {/* ── Editor ─────────────────────────────────── */}
+      <div className="cr-editor">
+        <CodeMirror
+          value={code}
+          height="220px"
+          theme="dark"
+          extensions={[python()]}
+          onChange={(val) => setCode(val)}
+          basicSetup={{
+            lineNumbers: true,
+            highlightActiveLine: true,
+            tabSize: 4,
+            indentOnInput: true,
+            bracketMatching: true,
+            autocompletion: false,
+          }}
+        />
+      </div>
+
+      {/* ── Output panel ───────────────────────────── */}
+      <div className="cr-output-wrap" ref={outputRef}>
+        <span className="cr-output-label">Output</span>
+        <pre
+          className={`cr-output${output.startsWith('❌') ? ' cr-output--error' : ''}`}
+        >
+          {output || '— run your code to see output here —'}
+        </pre>
+      </div>
+    </div>
+  );
+};
+
+export default CodeRunnerPython;

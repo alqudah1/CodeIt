@@ -1,0 +1,386 @@
+/* ============================================================
+   InteractiveLessonTemplate.css
+   Brand colours:
+     Primary  #667eea  (purple-blue)
+     Accent   #4ecca3  (teal)
+     Warm     #ffd93d  (yellow)
+     Alert    #ff6b9d  (pink)
+   ============================================================ */
+
+/* ── Root layout ────────────────────────────────────────────── */
+.il-lesson {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 245, 165, 0.95) 0%,
+    rgba(255, 214, 165, 0.95) 30%,
+    rgba(255, 171, 171, 0.95) 60%,
+    rgba(155, 246, 255, 0.95) 100%
+  );
+}
+
+/* ── Confetti overlay ───────────────────────────────────────── */
+.il-confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── Fixed header wrapper ───────────────────────────────────── */
+.il-fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+/* ── Scrollable body ────────────────────────────────────────── */
+.il-scroll-body {
+  margin-top: 170px;
+  overflow-y: auto;
+  flex: 1;
+  padding: 2rem 1.5rem 5rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+.il-scroll-body::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Content wrapper ────────────────────────────────────────── */
+.il-lesson-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ── Hero ───────────────────────────────────────────────────── */
+.il-hero {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.il-emoji {
+  font-size: 3.5rem;
+  line-height: 1;
+}
+
+.il-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.il-title {
+  margin: 0 0 4px 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #2d3748;
+  line-height: 1.2;
+}
+
+.il-subtitle {
+  margin: 0;
+  color: #495057;
+  font-size: 1rem;
+}
+
+.il-calm-toggle {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #495057;
+  white-space: nowrap;
+}
+.il-calm-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ── Story card ─────────────────────────────────────────────── */
+.il-story-card {
+  background: #fff;
+  border: 2px solid #e9ecef;
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+  margin-bottom: 1.5rem;
+}
+
+.il-story-text {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.05rem;
+  color: #343a40;
+  line-height: 1.6;
+}
+
+.il-story-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.il-story-nav button {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #343a40;
+  font-size: 0.9rem;
+  transition: opacity 0.15s;
+}
+
+.il-story-nav button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.il-story-nav button:not(:disabled):hover {
+  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+}
+
+.il-story-counter {
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-weight: 600;
+}
+
+/* ── Concept cards ──────────────────────────────────────────── */
+.il-concepts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.il-concept-card {
+  background: #fff;
+  border: 2px solid #e9ecef;
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.il-concept-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.12);
+}
+
+.il-concept-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.il-concept-title {
+  margin: 0 0 0.4rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.il-concept-body {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #495057;
+  line-height: 1.5;
+}
+
+/* ── Progress strip ─────────────────────────────────────────── */
+.il-progress-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.il-progress-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #495057;
+}
+
+.il-cp-dot {
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: transform 0.2s;
+}
+
+.il-cp-dot--done {
+  transform: scale(1.1);
+}
+
+/* ── Checkpoint card ────────────────────────────────────────── */
+.il-checkpoint {
+  background: #fff;
+  border: 2px solid #e9ecef;
+  border-radius: 16px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.il-checkpoint--done {
+  border-color: #4ecca3;
+  box-shadow: 0 4px 18px rgba(78, 204, 163, 0.25);
+}
+
+.il-cp-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.il-cp-num {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.il-cp-title {
+  margin: 0 0 2px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.il-cp-desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #495057;
+  line-height: 1.5;
+}
+
+.il-cp-check {
+  margin-left: auto;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.il-cp-xp {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  padding: 2px 10px;
+  background: linear-gradient(135deg, #ffd93d, #ffb800);
+  color: #5a3e00;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* ── Hint box ───────────────────────────────────────────────── */
+.il-hint {
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #fff3bf;
+  border: 1px solid #ffe066;
+  border-radius: 8px;
+  color: #79520a;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.il-footer {
+  text-align: center;
+  padding: 1rem 0 2rem;
+}
+
+.il-footer-greeting {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.il-footer-hint {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.il-quiz-btn {
+  padding: 0.875rem 2rem;
+  border: none;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(135deg, #4ecca3, #2e9c81);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(78, 204, 163, 0.4);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.il-quiz-btn:disabled {
+  background: #ccc;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.il-quiz-btn:not(:disabled):hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 22px rgba(78, 204, 163, 0.5);
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .il-concepts {
+    grid-template-columns: 1fr;
+  }
+
+  .il-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .il-calm-toggle {
+    margin-left: 0;
+  }
+
+  .il-title {
+    font-size: 1.3rem;
+  }
+
+  .il-scroll-body {
+    padding: 1.25rem 1rem 4rem;
+  }
+}

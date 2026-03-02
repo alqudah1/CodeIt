@@ -44,9 +44,10 @@ const Lesson8 = () => {
       hasCompletedChallenge: output.length > 0 && output !== defaultOutput,
     };
     setLessonProgress(newProgress);
-    if ((newProgress.hasRunCode || newProgress.hasModifiedCode) && !isCompleted && !hasMarkedComplete) {
-      markLessonComplete(8);
+    if ((newProgress.hasRunCode || newProgress.hasModifiedCode) && !hasMarkedComplete) {
       setHasMarkedComplete(true);
+      markLessonComplete(8);
+      trackStaticLessonCompletion(8).catch(err => console.error('Lesson 8 completion error:', err));
     }
   };
 

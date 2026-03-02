@@ -11,5 +11,18 @@ import Lesson10 from './Lesson10';
 import Lesson1Interactive from './Lesson1Interactive';
 import Lesson2Interactive from './Lesson2Interactive';
 import Lesson3Interactive from './Lesson3Interactive';
+import Lesson4Interactive from './Lesson4Interactive';
+import Lesson5Interactive from './Lesson5Interactive';
+import Lesson6Interactive from './Lesson6Interactive';
+import Lesson7Interactive from './Lesson7Interactive';
+import Lesson8Interactive from './Lesson8Interactive';
+import Lesson9Interactive from './Lesson9Interactive';
+import Lesson10Interactive from './Lesson10Interactive';
+import LessonMap from './LessonMap';
 
-export { Lesson1, Lesson2, Lesson3, Lesson4, Lesson5, Lesson6, Lesson7, Lesson8, Lesson9, Lesson10, Lesson1Interactive, Lesson2Interactive, Lesson3Interactive };
+export {
+  Lesson1, Lesson2, Lesson3, Lesson4, Lesson5, Lesson6, Lesson7, Lesson8, Lesson9, Lesson10,
+  Lesson1Interactive, Lesson2Interactive, Lesson3Interactive, Lesson4Interactive, Lesson5Interactive,
+  Lesson6Interactive, Lesson7Interactive, Lesson8Interactive, Lesson9Interactive, Lesson10Interactive,
+  LessonMap
+};

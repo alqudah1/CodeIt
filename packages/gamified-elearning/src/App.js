@@ -7,7 +7,7 @@ import Login from './pages/Auth/Login';
 import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { CharacterProvider } from './context/CharacterContext';
-import { Lesson1, Lesson1Interactive, Lesson2, Lesson2Interactive, Lesson3, Lesson3Interactive, Lesson4, Lesson5, Lesson6, Lesson7, Lesson8, Lesson9, Lesson10 } from './pages/Lessons';
+import { Lesson1, Lesson1Interactive, Lesson2, Lesson2Interactive, Lesson3, Lesson3Interactive, Lesson4, Lesson4Interactive, Lesson5, Lesson5Interactive, Lesson6, Lesson6Interactive, Lesson7, Lesson7Interactive, Lesson8, Lesson8Interactive, Lesson9, Lesson9Interactive, Lesson10, Lesson10Interactive, LessonMap } from './pages/Lessons';
 import Quiz from './pages/Quizzes/Quiz';
 import { Game1, Game2, Game3, Game4, Game5, Game6, Game7, Game8, Game9, Game10, GameHub } from './pages/Games';
 import CharacterLab from './pages/CharacterLab/CharacterLab';
@@ -48,17 +48,20 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           
-          {/* Lesson Routes - Now using Interactive versions for Lessons 1-3 */}
+          {/* Lesson Map route */}
+          <Route path="/lessons" element={<LessonMap />} />
+
+          {/* Lesson Routes - All using Interactive versions */}
           <Route path="/lesson/1" element={<Lesson1Interactive />} />
-          <Route path="/lesson/2" element={<Lesson2 />} />
-          <Route path="/lesson/3" element={<Lesson3 />} />
-          <Route path="/lesson/4" element={<Lesson4 />} />
-          <Route path="/lesson/5" element={<Lesson5 />} />
-          <Route path="/lesson/6" element={<Lesson6 />} />
-          <Route path="/lesson/7" element={<Lesson7 />} />
-          <Route path="/lesson/8" element={<Lesson8 />} />
-          <Route path="/lesson/9" element={<Lesson9 />} />
-          <Route path="/lesson/10" element={<Lesson10 />} />
+          <Route path="/lesson/2" element={<Lesson2Interactive />} />
+          <Route path="/lesson/3" element={<Lesson3Interactive />} />
+          <Route path="/lesson/4" element={<Lesson4Interactive />} />
+          <Route path="/lesson/5" element={<Lesson5Interactive />} />
+          <Route path="/lesson/6" element={<Lesson6Interactive />} />
+          <Route path="/lesson/7" element={<Lesson7Interactive />} />
+          <Route path="/lesson/8" element={<Lesson8Interactive />} />
+          <Route path="/lesson/9" element={<Lesson9Interactive />} />
+          <Route path="/lesson/10" element={<Lesson10Interactive />} />
           {/* Quiz Routes */}
           <Route path="/quiz/:quizId" element={<QuizWrapper />} />
           

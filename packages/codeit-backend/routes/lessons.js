@@ -15,8 +15,6 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-router.use(authenticateToken);
-
 // GET /api/lessons — list all lessons
 router.get('/', async (req, res) => {
   try {
@@ -24,6 +22,22 @@ router.get('/', async (req, res) => {
     res.json({ lessons: rows });
   } catch (err) {
     console.error('❌ Error fetching lessons:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/lessons/progress — list completed lesson IDs for this user (auth required)
+router.get('/progress', authenticateToken, async (req, res) => {
+  const userId = req.user.user_id;
+  try {
+    const [rows] = await pool.query(
+      'SELECT lesson_id FROM Student_Lesson_Progress WHERE user_id = ? ORDER BY lesson_id',
+      [userId]
+    );
+    const completedLessons = rows.map(r => r.lesson_id);
+    res.json({ success: true, completedLessons });
+  } catch (err) {
+    console.error('❌ Error fetching lesson progress:', err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -41,8 +55,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /api/lessons/:id/complete — mark lesson complete, award XP (once per user)
-router.post('/:id/complete', async (req, res) => {
+// POST /api/lessons/:id/complete — mark lesson complete, award XP (once per user, auth required)
+router.post('/:id/complete', authenticateToken, async (req, res) => {
   const userId = req.user.user_id;
   const lessonId = req.params.id;
 
