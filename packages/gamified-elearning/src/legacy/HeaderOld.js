@@ -1,8 +1,8 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
-import LeaderboardPreview from '../../components/LeaderboardPreview';
-import './Header.css';
+import { AuthContext } from '../context/AuthContext';
+import LeaderboardPreview from '../components/LeaderboardPreview';
+import './HeaderOld.css';
 
 const NAV_LINKS = [
   { to: '/',           label: 'Home'          },

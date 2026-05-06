@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation, useParams, Navigat
 import { USE_ARTISTIC_HOMEPAGE } from './featureFlags';
 import HomeOld from './legacy/HomeOld';
 import Home from './pages/Home/Home';
-const ActiveHome = USE_ARTISTIC_HOMEPAGE ? Home : HomeOld;
 import MainPage from './pages/MainPage/MainPage';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
@@ -17,6 +16,8 @@ import CharacterLab from './pages/CharacterLab/CharacterLab';
 import Leaderboard from './pages/Leaderboard';
 import { AuthContext } from './context/AuthContext';
 import './App.css';
+
+const ActiveHome = USE_ARTISTIC_HOMEPAGE ? Home : HomeOld;
 
 // Quiz Wrapper Component
 const QuizWrapper = () => {

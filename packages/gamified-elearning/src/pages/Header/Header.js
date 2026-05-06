@@ -1,109 +1,88 @@
-import React, { useContext, useState, useRef, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import LeaderboardPreview from '../../components/LeaderboardPreview';
 import './Header.css';
 
 const NAV_LINKS = [
-  { to: '/',           label: 'Home'          },
-  { to: '/MainPage',   label: 'Dashboard'     },
-  { to: '/lessons',    label: 'Lessons'       },
-  { to: '/quiz/1',     label: 'Quizzes'       },
-  { to: '/games',      label: 'Puzzles'       },
-  { to: '/character',  label: 'Character Lab' },
-  { to: '/leaderboard', label: 'Leaderboard'  },
+  { to: '/journey',   label: 'Build'       },
+  { to: '/lessons',   label: 'Lessons'     },
+  { to: '/playground', label: 'Playground' },
+  { to: '/character', label: 'Avatar'      },
 ];
 
 const Header = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const [lbOpen, setLbOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const lbRef = useRef(null);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handler = (e) => {
-      if (lbRef.current && !lbRef.current.contains(e.target)) setLbOpen(false);
-    };
-    if (lbOpen) document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [lbOpen]);
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-  // Close mobile menu on route change
-  useEffect(() => { setMenuOpen(false); setLbOpen(false); }, [location.pathname]);
+  useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  const handleLogout = () => { logout(); navigate('/login'); };
 
   return (
-    <header className="site-header">
-      <div className="site-header__inner">
+    <header className={`ci-header${scrolled ? ' ci-header--scrolled' : ''}`}>
+      <div className="ci-header__inner">
 
         {/* Logo */}
-        <Link to="/" className="site-header__logo">
-          <img src="/images/CodeItLogo.png" alt="CodeIt logo" className="site-header__logo-img" />
-          <span className="site-header__logo-text">CodeIt</span>
+        <Link to="/" className="ci-header__logo" aria-label="CodeIt home">
+          <img
+            src="/brand/CodeItRG.svg"
+            alt="CodeIt"
+            className="ci-header__logo-img"
+          />
         </Link>
 
-        {/* Hamburger (mobile) */}
+        {/* Hamburger */}
         <button
-          className={`site-header__burger${menuOpen ? ' is-open' : ''}`}
-          onClick={() => setMenuOpen((o) => !o)}
+          className={`ci-header__burger${menuOpen ? ' is-open' : ''}`}
+          onClick={() => setMenuOpen(o => !o)}
           aria-label="Toggle navigation"
+          aria-expanded={menuOpen}
         >
           <span /><span /><span />
         </button>
 
-        {/* Nav + actions */}
-        <div className={`site-header__body${menuOpen ? ' is-open' : ''}`}>
-          <nav className="site-header__nav" aria-label="Main navigation">
+        {/* Nav body */}
+        <div className={`ci-header__body${menuOpen ? ' is-open' : ''}`}>
+          <nav className="ci-header__nav" aria-label="Main navigation">
             {NAV_LINKS.map(({ to, label }) => (
               <Link
                 key={to}
                 to={to}
-                className={`site-header__nav-link${location.pathname === to ? ' is-active' : ''}`}
+                className={`ci-nav-link${location.pathname.startsWith(to) ? ' is-active' : ''}`}
               >
                 {label}
               </Link>
             ))}
           </nav>
 
-          {/* Leaderboard quick-peek dropdown */}
-          <div className="site-header__lb-wrap" ref={lbRef}>
-            <button
-              className="site-header__lb-trigger"
-              onClick={() => setLbOpen((o) => !o)}
-              aria-expanded={lbOpen}
-              aria-haspopup="true"
-            >
-              🏆 <span className="site-header__lb-label">Top Coders</span>
-              <span aria-hidden="true">{lbOpen ? '▴' : '▾'}</span>
-            </button>
-            {lbOpen && (
-              <div className="site-header__lb-panel">
-                <LeaderboardPreview />
-              </div>
-            )}
-          </div>
-
-          {/* Auth */}
-          <div className="site-header__auth">
+          <div className="ci-header__actions">
             {user ? (
               <>
-                <span className="site-header__username">
-                  {user.name || user.email || 'Coder'}
-                </span>
-                <button onClick={handleLogout} className="site-header__logout">
+                <Link to="/character" className="ci-header__avatar-btn" aria-label="My avatar">
+                  <span className="ci-header__avatar-dot" />
+                  <span className="ci-header__username">
+                    {user.name || user.email?.split('@')[0] || 'Coder'}
+                  </span>
+                </Link>
+                <button onClick={handleLogout} className="ci-header__logout">
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <Link to="/login"    className="site-header__login">Login</Link>
-                <Link to="/register" className="site-header__cta">Get Started</Link>
+                <Link to="/login" className="ci-header__login">Log in</Link>
+                <Link to="/register" className="ci-header__cta">
+                  Start Building
+                </Link>
               </>
             )}
           </div>

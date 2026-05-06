@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { ENDPOINTS } from "../../config/api";
-import Header from "../Header/Header";
-import LeaderboardPreview from "../../components/LeaderboardPreview";
-import CharacterSpotlight from "../../components/CharacterSpotlight/CharacterSpotlight";
-import "./Home.css";
+import { useAuth } from "../context/AuthContext";
+import { ENDPOINTS } from "../config/api";
+import Header from "../pages/Header/Header";
+import LeaderboardPreview from "../components/LeaderboardPreview";
+import CharacterSpotlight from "../components/CharacterSpotlight/CharacterSpotlight";
+import "./HomeOld.css";
 
 const LESSON_TITLES = [
   null,
