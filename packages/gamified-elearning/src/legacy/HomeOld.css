@@ -1,0 +1,495 @@
+/* ================================================================
+   CodeIt — Home Page  (brand-aligned redesign)
+   Palette: #FF8A3D primary · #4CC9F0 secondary · #FFD166 accent
+            #1F2A44 text   · #FFF7ED background
+   ================================================================ */
+
+/* ── Page shell ──────────────────────────────────────────────── */
+.homepage {
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 5rem;
+  background: #FFF7ED;
+  font-family: 'Arvo', serif;
+  color: #1F2A44;
+  overflow-x: hidden;
+}
+
+/* Subtle brand-tinted radial overlays */
+.homepage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 10% 8%,  rgba(255, 138, 61, 0.12) 0%, transparent 52%),
+    radial-gradient(ellipse at 88% 6%,  rgba(255, 209, 102, 0.14) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 92%, rgba(76, 201, 240, 0.10) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Sparkles ────────────────────────────────────────────────── */
+.sparkle {
+  position: absolute;
+  font-size: 1.4rem;
+  opacity: 0.55;
+  animation: sparkle-bob 3.2s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+@keyframes sparkle-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-10px) rotate(15deg); }
+}
+
+/* ── Content wrapper ─────────────────────────────────────────── */
+.hp-content {
+  position: relative;
+  z-index: 2;
+  width: min(1260px, 92%);
+  margin: 0 auto;
+  padding-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+
+/* ================================================================
+   Shared glass primitives  (light-background version)
+   ================================================================ */
+.glass-card {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1.5px solid rgba(255, 138, 61, 0.14);
+  border-radius: 24px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow:
+    0 8px 32px rgba(31, 42, 68, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+/* ── Glass buttons (home-scoped aliases for .btn-glass) ─────── */
+.btn-glass {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Arvo', serif;
+  font-weight: 700;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 138, 61, 0.28);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #1F2A44;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+.btn-glass:hover  { transform: translateY(-3px); }
+.btn-glass:active { transform: translateY(0px) scale(0.97); }
+.btn-glass:focus-visible { outline: 2.5px solid #FF8A3D; outline-offset: 3px; }
+
+.btn-glass--primary {
+  background: linear-gradient(120deg, #FF8A3D, #FFD166);
+  border-color: rgba(255, 138, 61, 0.35);
+  color: #1F2A44;
+  padding: 0.85rem 2rem;
+  font-size: 1rem;
+  box-shadow: 0 10px 28px rgba(255, 138, 61, 0.30);
+}
+.btn-glass--primary:hover {
+  background: linear-gradient(120deg, #ff7a2e, #ffc84e);
+  box-shadow: 0 18px 36px rgba(255, 138, 61, 0.40);
+}
+
+.btn-glass--secondary {
+  background: rgba(76, 201, 240, 0.12);
+  border-color: rgba(76, 201, 240, 0.35);
+  color: #1F2A44;
+  padding: 0.85rem 2rem;
+  font-size: 1rem;
+  box-shadow: 0 6px 18px rgba(76, 201, 240, 0.15);
+}
+.btn-glass--secondary:hover {
+  background: rgba(76, 201, 240, 0.22);
+  box-shadow: 0 12px 26px rgba(76, 201, 240, 0.22);
+}
+
+.btn-glass--sm {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(255, 138, 61, 0.2);
+  color: #1F2A44;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.88rem;
+  box-shadow: 0 4px 12px rgba(31, 42, 68, 0.08);
+}
+.btn-glass--sm:hover {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+/* ================================================================
+   HERO  (2-column)
+   ================================================================ */
+.hp-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  padding: 3rem 3.5rem;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.70);
+  border: 1.5px solid rgba(255, 138, 61, 0.14);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow:
+    0 12px 40px rgba(31, 42, 68, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.hp-hero__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.hp-eyebrow {
+  font-size: 0.84rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #FF8A3D;
+  font-weight: 700;
+  margin: 0;
+}
+
+.hp-h1 {
+  margin: 0;
+  font-size: clamp(2.2rem, 3.5vw, 3.4rem);
+  line-height: 1.1;
+  color: #1F2A44;
+}
+
+.hp-welcome {
+  color: #FF8A3D;
+  font-weight: 800;
+}
+
+.hp-h1-accent {
+  background: linear-gradient(90deg, #FF8A3D, #4CC9F0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hp-sub {
+  margin: 0;
+  font-size: 1.06rem;
+  line-height: 1.75;
+  color: rgba(31, 42, 68, 0.72);
+}
+
+.hp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* ── Hero visual ─────────────────────────────────────────────── */
+.hp-hero__visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hp-hero__glow {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 209, 102, 0.35) 0%, transparent 70%);
+  filter: blur(28px);
+  pointer-events: none;
+}
+
+.hp-hero__img {
+  position: relative;
+  width: min(320px, 85%);
+  filter: drop-shadow(0 20px 40px rgba(255, 138, 61, 0.20));
+  animation: hero-float 4s ease-in-out infinite;
+}
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-14px); }
+}
+
+.hp-hero__badge {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0;
+  padding: 0.6rem 1.1rem;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1.5px solid rgba(255, 138, 61, 0.22);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 16px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #1F2A44;
+  box-shadow: 0 6px 18px rgba(31, 42, 68, 0.10);
+}
+
+/* ================================================================
+   STATS STRIP
+   ================================================================ */
+.hp-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+
+.hp-stat {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.4rem 1.6rem;
+  border-radius: 22px;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  font-family: 'Arvo', serif;
+
+  background: rgba(255, 255, 255, 0.65);
+  border: 1.5px solid rgba(255, 138, 61, 0.14);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 6px 20px rgba(31, 42, 68, 0.07);
+}
+.hp-stat:hover { transform: translateY(-4px); box-shadow: 0 14px 32px rgba(31, 42, 68, 0.12); }
+.hp-stat:focus-visible { outline: 2.5px solid #FF8A3D; outline-offset: 2px; }
+
+.hp-stat__emoji { font-size: 2rem; flex-shrink: 0; }
+
+.hp-stat__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.hp-stat__num   { font-size: 2rem; font-weight: 800; color: #1F2A44; line-height: 1; }
+.hp-stat__label { font-size: 0.88rem; color: rgba(31, 42, 68, 0.62); font-weight: 600; }
+
+.hp-stat__right {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+.hp-stat__pct { font-size: 1.1rem; font-weight: 800; color: #FF8A3D; }
+.hp-stat__bar {
+  width: 80px;
+  height: 8px;
+  background: rgba(31, 42, 68, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.hp-stat__fill { height: 100%; border-radius: 999px; transition: width 0.4s ease; }
+.hp-stat__fill--lesson { background: linear-gradient(90deg, #FF8A3D, #FFD166); }
+.hp-stat__fill--quiz   { background: linear-gradient(90deg, #4CC9F0, #FF8A3D); }
+.hp-stat__fill--puzzle { background: linear-gradient(90deg, #4CC9F0, #FFD166); }
+
+/* Coloured border accents per stat */
+.hp-stat--lesson { border-color: rgba(255, 138, 61,  0.28); }
+.hp-stat--quiz   { border-color: rgba(76,  201, 240, 0.28); }
+.hp-stat--puzzle { border-color: rgba(255, 209, 102, 0.28); }
+
+/* ================================================================
+   FEATURE CARDS  (4-column) — vivid brand-colour gradients
+   ================================================================ */
+.hp-features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2rem;
+}
+
+.hp-feat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.8rem 1.4rem;
+  border-radius: 22px;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Arvo', serif;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.hp-feat:hover { transform: translateY(-6px); }
+.hp-feat:focus-visible { outline: 2.5px solid #1F2A44; outline-offset: 3px; }
+
+.hp-feat__icon  { font-size: 2.2rem; line-height: 1; }
+.hp-feat__title { font-size: 1.1rem; font-weight: 800; margin: 0; }
+.hp-feat__sub   { font-size: 0.88rem; margin: 0; line-height: 1.5; opacity: 0.85; }
+.hp-feat__arrow { font-size: 1.3rem; margin-top: auto; opacity: 0.75; }
+
+/* Brand-only card gradients */
+.hp-feat--lesson {
+  background: linear-gradient(135deg, #FF8A3D, #FFD166);
+  box-shadow: 0 14px 28px rgba(255, 138, 61, 0.32);
+  color: #1F2A44;
+}
+.hp-feat--quiz {
+  background: linear-gradient(135deg, #4CC9F0, #FF8A3D);
+  box-shadow: 0 14px 28px rgba(76, 201, 240, 0.32);
+  color: #fff;
+}
+.hp-feat--puzzle {
+  background: linear-gradient(135deg, #4CC9F0, #FFD166);
+  box-shadow: 0 14px 28px rgba(76, 201, 240, 0.28);
+  color: #1F2A44;
+}
+.hp-feat--lab {
+  background: linear-gradient(135deg, #FFD166, #FF8A3D);
+  box-shadow: 0 14px 28px rgba(255, 209, 102, 0.32);
+  color: #1F2A44;
+}
+
+/* ================================================================
+   LOWER GRID  (2-column: progress + leaderboard)
+   ================================================================ */
+.hp-lower {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.hp-lower__left {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+/* ── Continue Learning ───────────────────────────────────────── */
+.hp-continue {
+  padding: 2rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.hp-continue__badge {
+  display: inline-block;
+  padding: 0.3rem 0.9rem;
+  background: rgba(255, 138, 61, 0.12);
+  border: 1px solid rgba(255, 138, 61, 0.28);
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #FF8A3D;
+  width: fit-content;
+}
+
+.hp-continue__title {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #1F2A44;
+  line-height: 1.25;
+}
+
+.hp-continue__sub {
+  margin: 0;
+  font-size: 0.95rem;
+  color: rgba(31, 42, 68, 0.68);
+  line-height: 1.6;
+}
+
+/* ── Progress stack ──────────────────────────────────────────── */
+.hp-progress-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.hp-prog-card {
+  padding: 1.3rem 1.6rem;
+}
+
+.hp-prog-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  font-size: 0.94rem;
+  color: #1F2A44;
+}
+.hp-prog-card__pct {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #FF8A3D;
+}
+
+.hp-prog-bar {
+  width: 100%;
+  height: 10px;
+  background: rgba(31, 42, 68, 0.07);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.9rem;
+}
+.hp-prog-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+.hp-prog-fill--lesson { background: linear-gradient(90deg, #FF8A3D, #FFD166); }
+.hp-prog-fill--quiz   { background: linear-gradient(90deg, #4CC9F0, #FF8A3D); }
+.hp-prog-fill--puzzle { background: linear-gradient(90deg, #4CC9F0, #FFD166); }
+
+/* ── Leaderboard column (light bg — no overrides needed) ─────── */
+/* The LeaderboardPreview component already uses a white/light glass style
+   that looks correct on the new cream background. We only provide
+   box-shadow consistency. */
+.hp-lower__right .lb-prev {
+  box-shadow: 0 8px 32px rgba(31, 42, 68, 0.08);
+}
+
+/* ── Character Spotlight wrapper ─────────────────────────────── */
+.hp-character {
+  margin-bottom: 1rem;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 1050px) {
+  .hp-features {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .hp-lower {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 780px) {
+  .hp-hero {
+    grid-template-columns: 1fr;
+    padding: 2.2rem;
+    text-align: center;
+  }
+  .hp-hero__visual { order: -1; }
+  .hp-actions { justify-content: center; }
+
+  .hp-stats {
+    grid-template-columns: 1fr;
+  }
+  .hp-stat__right { display: none; }
+}
+
+@media (max-width: 500px) {
+  .hp-features { grid-template-columns: 1fr; }
+  .hp-content  { padding-top: 2rem; gap: 2.2rem; }
+}

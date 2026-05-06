@@ -1,6 +1,9 @@
 import React, { useEffect, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, useParams, Navigate } from 'react-router-dom'; // Added Navigate
+import { USE_ARTISTIC_HOMEPAGE } from './featureFlags';
+import HomeOld from './legacy/HomeOld';
 import Home from './pages/Home/Home';
+const ActiveHome = USE_ARTISTIC_HOMEPAGE ? Home : HomeOld;
 import MainPage from './pages/MainPage/MainPage';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
@@ -43,7 +46,7 @@ const App = () => {
             {/* Place RouteLogger here, outside Routes but inside Router */}
             <RouteLogger />
             <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<ActiveHome />} />
           <Route path="/MainPage" element={<MainPage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
