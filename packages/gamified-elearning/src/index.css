@@ -1,8 +1,107 @@
+/* ── Global layout tokens ─────────────────────────────────────────
+   These custom properties create ONE consistent layout system used
+   across all pages. Reference these instead of hardcoding values.
+   ────────────────────────────────────────────────────────────────── */
+:root {
+  /* ── Brand color tokens ────────────────────────────────────────
+     4 accent colors + 1 dark for text. All text uses --clr-dark.
+     Accents are for surfaces/buttons ONLY — never for body text.
+     ─────────────────────────────────────────────────────────── */
+  --clr-orange:      #FF8A00;   /* primary CTA — lessons, main actions */
+  --clr-orange-text: #D46500;   /* accessible orange for text on cream (~4:1) */
+  --clr-orange-dim:  rgba(255, 138, 0, 0.14);
+  --clr-orange-glow: rgba(255, 138, 0, 0.30);
+
+  --clr-coral:       #FF5A5F;   /* secondary accent — AI/Build, special callouts */
+  --clr-coral-text:  #C62A2F;   /* darkened coral for accessible text */
+  --clr-coral-dim:   rgba(255, 90, 95, 0.12);
+  --clr-coral-glow:  rgba(255, 90, 95, 0.28);
+
+  --clr-mint:        #3DDC97;   /* progress / success / completion */
+  --clr-mint-text:   #1A7A50;   /* darkened mint for accessible text */
+  --clr-mint-dim:    rgba(61, 220, 151, 0.14);
+  --clr-mint-glow:   rgba(61, 220, 151, 0.30);
+
+  --clr-cream:       #FFF6ED;   /* page background */
+  --clr-cream-mid:   #FFF0E0;   /* slightly deeper cream for card surfaces */
+
+  /* ── Dark text token — use for ALL body text ────────────────── */
+  --clr-dark:        #1A1A1A;
+  --clr-dark-70:     rgba(26, 26, 26, 0.70);
+  --clr-dark-50:     rgba(26, 26, 26, 0.50);
+  --clr-dark-30:     rgba(26, 26, 26, 0.30);
+  --clr-dark-10:     rgba(26, 26, 26, 0.10);
+
+  /* Legacy aliases — keep so old files don't break while being migrated */
+  --clr-navy:        #1A1A1A;
+  --clr-navy-70:     rgba(26, 26, 26, 0.70);
+  --clr-navy-50:     rgba(26, 26, 26, 0.50);
+  --clr-navy-30:     rgba(26, 26, 26, 0.30);
+  --clr-navy-10:     rgba(26, 26, 26, 0.10);
+  --clr-orange-text: #D46500;
+
+  /* ── Header height — used to offset sticky/fixed header ────── */
+  --header-h: 72px;
+
+  /* Page container — max content width and padding */
+  --page-max:  1200px;
+  --page-px:   clamp(1rem, 4vw, 2rem);
+  --page-py:   clamp(1.5rem, 4vh, 3rem);
+
+  /* Card primitives */
+  --card-radius: 24px;
+  --card-border: 1.5px solid rgba(255, 138, 61, 0.16);
+  --card-shadow: 0 4px 24px rgba(31, 42, 68, 0.08), 0 1px 4px rgba(31, 42, 68, 0.04);
+  --card-pad:    1.75rem;
+
+  /* Spacing scale */
+  --sp-1: 0.5rem;   /* 8px  */
+  --sp-2: 1rem;     /* 16px */
+  --sp-3: 1.5rem;   /* 24px */
+  --sp-4: 2rem;     /* 32px */
+  --sp-6: 3rem;     /* 48px */
+  --sp-8: 4rem;     /* 64px */
+
+  /* Button primitives */
+  --btn-h:      2.5rem;
+  --btn-px:     1.25rem;
+  --btn-radius: 999px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Prevent any image or video from busting out of its container */
+img, video, svg, canvas {
+  max-width: 100%;
+}
+
 body {
   margin: 0;
-  font-family: 'Arvo', serif;
+  font-family: 'Nunito', 'Arvo', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent body-level horizontal overflow — pages must NOT add overflow-x:hidden
+     to individual wrappers, which masks bugs. Fix layout width instead. */
+  overflow-x: clip;
+}
+
+/* Visually hidden but present in DOM for SEO and screen readers */
+.seo-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Nunito', 'Arvo', sans-serif;
 }
 
 code {
@@ -28,7 +127,7 @@ code {
   border: 1.5px solid rgba(255, 138, 61, 0.22);
   border-radius: 14px;
   padding: 0.75rem 1.4rem;
-  font-family: 'Arvo', serif;
+  font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.95rem;
   font-weight: 700;
   color: #1F2A44;
@@ -56,17 +155,17 @@ code {
   outline-offset: 3px;
 }
 
-/* Primary variant — brand orange → yellow */
+/* Primary variant — brand orange */
 .glass-btn--primary {
-  background: linear-gradient(120deg, #FF8A3D, #FFD166);
-  border-color: rgba(255, 138, 61, 0.35);
-  color: #1F2A44;
-  box-shadow: 0 8px 24px rgba(255, 138, 61, 0.30);
+  background: linear-gradient(120deg, #FF8A00, #FF6B00);
+  border-color: rgba(255, 138, 0, 0.35);
+  color: #1A1A1A;
+  box-shadow: 0 8px 24px rgba(255, 138, 0, 0.28);
 }
 
 .glass-btn--primary:hover {
-  background: linear-gradient(120deg, #ff7a2e, #ffc84e);
-  box-shadow: 0 14px 32px rgba(255, 138, 61, 0.40);
+  background: linear-gradient(120deg, #FF7A00, #FF5C00);
+  box-shadow: 0 14px 32px rgba(255, 138, 0, 0.38);
 }
 
 /* Small variant */

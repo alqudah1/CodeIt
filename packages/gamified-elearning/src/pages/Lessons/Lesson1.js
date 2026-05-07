@@ -42,26 +42,12 @@ const Lesson1 = () => {
     loadProgress();
   }, []);
 
-  // Load saved progress from localStorage
-  const loadProgress = () => {
-    const savedProgress = localStorage.getItem('lesson1_progress');
-    if (savedProgress) {
-      setLessonProgress(JSON.parse(savedProgress));
-    }
-    const savedXP = localStorage.getItem('total_xp');
-    if (savedXP) {
-      setCurrentXP(parseInt(savedXP));
-    }
-    const savedStreak = localStorage.getItem('learning_streak');
-    if (savedStreak) {
-      setStreak(parseInt(savedStreak));
-    }
-  };
+  // Progress is session-only for this component (Lesson1Interactive is the active route).
+  // XP and streak come from the DB via GET /api/profile.
+  const loadProgress = () => {};
 
-  // Save progress to localStorage
   const saveProgress = (newProgress) => {
     setLessonProgress(newProgress);
-    localStorage.setItem('lesson1_progress', JSON.stringify(newProgress));
   };
 
   // Check for achievements
@@ -116,13 +102,10 @@ const Lesson1 = () => {
     return achievements;
   };
 
-  // Show achievement notification
+  // Show achievement notification (XP persisted to DB by trackStaticLessonCompletion)
   const showAchievementNotification = (achievement) => {
     setShowAchievement(achievement);
     setCurrentXP(prev => prev + achievement.xp);
-    localStorage.setItem('total_xp', (currentXP + achievement.xp).toString());
-    
-    // Auto-hide after 3 seconds
     setTimeout(() => {
       setShowAchievement(null);
     }, 3000);

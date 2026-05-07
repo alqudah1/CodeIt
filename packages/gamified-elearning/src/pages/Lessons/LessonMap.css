@@ -4,8 +4,8 @@
 
 .lm-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #fff5a5 0%, #ffd6a5 30%, #ffabab 65%, #9bf6ff 100%);
-  font-family: 'Arvo', serif;
+  background: #FFF7ED;
+  font-family: 'Nunito', 'Arvo', sans-serif;
   color: #041638;
   padding-bottom: 5rem;
 }
@@ -37,7 +37,7 @@
   font-weight: 700;
   cursor: pointer;
   color: #0b3d66;
-  font-family: 'Arvo', serif;
+  font-family: 'Nunito', 'Arvo', sans-serif;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
@@ -101,7 +101,7 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-  font-family: 'Arvo', serif;
+  font-family: 'Nunito', 'Arvo', sans-serif;
 }
 
 .lm-continue-btn:hover {

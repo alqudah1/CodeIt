@@ -1,22 +1,3 @@
-import React, { useEffect } from 'react';
-import { getGameById, getGameLaunchUrl } from './gameCatalog';
-
-const Game2 = () => {
-  useEffect(() => {
-    const game = getGameById('2');
-    if (game) {
-      window.location.href = getGameLaunchUrl(game, true);
-    }
-  }, []);
-
-  const game = getGameById('2');
-
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' }}>
-      <h2>Redirecting to Apple Game Challenge...</h2>
-      <p>If you are not redirected automatically, <a href={getGameLaunchUrl(game, true)}>click here</a>.</p>
-    </div>
-  );
-};
-
+import GameGate from './GameGate';
+const Game2 = () => <GameGate gameId="2" />;
 export default Game2;

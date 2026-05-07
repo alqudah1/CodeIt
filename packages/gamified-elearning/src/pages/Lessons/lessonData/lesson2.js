@@ -1,64 +1,47 @@
 const lesson2 = {
   id: 2,
   title: "Storing Info with Variables",
-  subtitle: "Learn to save names, numbers, and messages in Python — like labeling your favorite boxes!",
+  subtitle: "Save names, numbers, and messages in Python — like labeling boxes!",
   emoji: "📦",
-  story: [
-    "🤖 Pixel the Robot is forgetful. Every time it meets someone, it forgets their name by the next second!",
-    "🧠 You're going to give Pixel a superpower: variables! Variables are like labeled sticky notes inside the computer's brain.",
-    "📦 Imagine a box with a label 'name' on it. You put 'Alex' inside. Now Pixel can always look at the box and remember: 'That's Alex!'",
-    "✨ Let's teach Pixel to store your name, your age, and your favorite thing — so it never forgets!"
-  ],
-  concepts: [
+  steps: [
     {
-      icon: "📦",
-      title: "Variables",
-      body: "A variable is a labeled box that stores a value. You can change what's in the box anytime!"
+      type: 'concept',
+      id: 'concept',
+      title: 'What is a Variable?',
+      body: 'A variable is like a labeled box. You store a value inside and give the box a name. Later, Python opens the box and uses what is inside!',
+      highlight: 'name = "Alex"   stores the text:   Alex\nage  = 10       stores the number: 10',
+      code: 'name = "Alex"\nage = 10\nprint(name)\nprint(age)',
     },
     {
-      icon: "📝",
-      title: "Strings",
-      body: "Text values go in quotes: name = \"Alex\". These are called strings — like a string of letters."
+      type: 'example',
+      id: 'example',
+      title: 'Variables in Action',
+      description: 'Click Run to see how Python stores a name in a variable and prints it!',
+      code: 'name = "Alex"\nprint(name)',
+      successPattern: /Alex/,
+      hint: 'Click Run! The variable name holds "Alex" and print(name) shows it on screen.',
+      xp: 10,
     },
     {
-      icon: "🔢",
-      title: "Numbers",
-      body: "Numbers go without quotes: age = 10. Python knows the difference between text and numbers!"
-    },
-    {
-      icon: "🖨️",
-      title: "print(variable)",
-      body: "To show a variable's value, use print(name) — no quotes around the variable name!"
-    }
-  ],
-  checkpoints: [
-    {
-      id: "cp1",
-      title: "Checkpoint 1 — Store Your Name",
-      description: "Create a variable called name and give it your name. Then print it!",
-      initialCode: 'name = "Alex"\nprint(name)',
-      successPattern: /\S+/,
-      hint: "Try: name = \"YourName\" then on the next line: print(name)",
+      type: 'tryit',
+      id: 'tryit',
+      title: 'Store Your Own Info',
+      description: 'Change "Alex" to YOUR name and 10 to YOUR age. Click Run to see your own info printed!',
+      code: 'name = "Alex"\nage = 10\nprint(name)\nprint(age)',
+      successPattern: /\d+/,
+      hint: 'Change "Alex" to your name and 10 to your age, then click Run!',
       xp: 15,
     },
     {
-      id: "cp2",
-      title: "Checkpoint 2 — Number Variables",
-      description: "Store your age in a variable and print both your name and age on separate lines.",
-      initialCode: 'name = "Alex"\nage = 10\nprint(name)\nprint(age)',
-      successPattern: /[\s\S]+/,
-      hint: "Numbers don't need quotes! Just write: age = 10",
-      xp: 15,
-    },
-    {
-      id: "cp3",
-      title: "Checkpoint 3 — Your Character Sheet",
-      description: "Create three variables: name, age, and superpower. Print all three!",
-      initialCode: 'name = "Alex"\nage = 10\nsuperpower = "flying"\nprint(name)\nprint(age)\nprint(superpower)',
-      successPattern: /[\s\S]+/,
-      hint: "Each print() call shows one variable. You need three print() calls!",
+      type: 'challenge',
+      id: 'challenge',
+      title: 'Your Character Sheet',
+      description: 'Change all three variables — name, age, and superpower — to your own. Click Run to show your character sheet!',
+      code: 'name = "Alex"\nage = 10\nsuperpower = "flying"\nprint(name)\nprint(age)\nprint(superpower)',
+      successPattern: /\w+[\s\S]*\d+/,
+      hint: 'Change "Alex", 10, and "flying" to your own name, age, and favorite superpower!',
       xp: 20,
-    }
+    },
   ]
 };
 

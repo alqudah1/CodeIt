@@ -20,7 +20,8 @@ export const ENDPOINTS = {
     leaderboard: `${API_BASE_URL}/api/rewards/leaderboard`,
   },
   quiz: {
-    base: `${API_BASE_URL}/api/quiz`,
+    base:     `${API_BASE_URL}/api/quiz`,
+    progress: `${API_BASE_URL}/api/quiz/progress`,
   },
   leaderboard: {
     base: `${API_BASE_URL}/api/leaderboard`,
@@ -32,7 +33,24 @@ export const ENDPOINTS = {
   },
   puzzles: {
     list:     `${API_BASE_URL}/api/puzzles`,
+    progress: `${API_BASE_URL}/api/puzzles/progress`,
     complete: (id) => `${API_BASE_URL}/api/puzzles/${id}/complete`,
+  },
+  profile: {
+    get:            `${API_BASE_URL}/api/profile`,
+    character:      `${API_BASE_URL}/api/profile/character`,
+    dailyActivity:  `${API_BASE_URL}/api/profile/daily-activity`,
+    gameScore:      `${API_BASE_URL}/api/profile/game-score`,
+    gameScores:     `${API_BASE_URL}/api/profile/game-scores`,
+    parentEmail:    `${API_BASE_URL}/api/add-parent-email`,
+  },
+  admin: {
+    overview: `${API_BASE_URL}/api/admin/overview`,
+    users:    `${API_BASE_URL}/api/admin/users`,
+    user:     (id) => `${API_BASE_URL}/api/admin/users/${id}`,
+    progress: `${API_BASE_URL}/api/admin/progress`,
+    avatars:  `${API_BASE_URL}/api/admin/avatars`,
+    stats:    `${API_BASE_URL}/api/admin/stats`,
   },
 };
 

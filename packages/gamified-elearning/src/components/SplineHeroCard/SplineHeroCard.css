@@ -1,0 +1,191 @@
+/* ================================================================
+   SplineHeroCard
+   Dark glass card — spotlight glow + Spline 3D scene
+   Palette: CodeIt brand (#FF8A3D · #FFD166 · #4CC9F0 · #1F2A44)
+   ================================================================ */
+
+/* ── Card shell ──────────────────────────────────────────────── */
+.sphc-card {
+  --spot-x: 50%;
+  --spot-y: 50%;
+
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  min-height: 420px;
+  border-radius: 28px;
+  overflow: hidden;
+
+  background: linear-gradient(135deg, #0f1c3a 0%, #131d35 55%, #0d1829 100%);
+  border: 1px solid rgba(255, 138, 61, 0.18);
+  box-shadow:
+    0 0 0 1px rgba(255, 209, 102, 0.06),
+    0 24px 60px rgba(0, 0, 0, 0.45),
+    0 8px 24px rgba(255, 138, 61, 0.08);
+
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  color: #fff;
+  user-select: none;
+}
+
+/* ── Spotlight overlay ───────────────────────────────────────── */
+/* Follows mouse via --spot-x / --spot-y set in JS */
+.sphc-spotlight {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    520px circle at var(--spot-x) var(--spot-y),
+    rgba(255, 138, 61, 0.10) 0%,
+    rgba(255, 209, 102, 0.05) 30%,
+    transparent 65%
+  );
+  transition: background 0.12s ease;
+}
+
+/* Ambient top glow — always visible */
+.sphc-card::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: 10%;
+  right: 10%;
+  height: 120px;
+  background: radial-gradient(ellipse, rgba(255, 138, 61, 0.18) 0%, transparent 70%);
+  filter: blur(24px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Left: copy ──────────────────────────────────────────────── */
+.sphc-copy {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 45%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 2.5rem 3rem 3rem;
+}
+
+.sphc-eyebrow {
+  margin: 0 0 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #FF8A3D;
+}
+
+.sphc-title {
+  margin: 0 0 1rem;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 900;
+  line-height: 1.18;
+  color: #fff;
+  text-shadow: 0 2px 16px rgba(255, 138, 61, 0.25);
+}
+
+/* Accent word — wrap a span around key words if desired */
+.sphc-title .accent {
+  background: linear-gradient(90deg, #FF8A3D, #FFD166);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sphc-desc {
+  margin: 0 0 2rem;
+  font-size: 0.97rem;
+  font-weight: 500;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.68);
+  max-width: 34ch;
+}
+
+/* ── CTA button ──────────────────────────────────────────────── */
+.sphc-cta {
+  align-self: flex-start;
+  padding: 0.72rem 1.8rem;
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1F2A44;
+  background: linear-gradient(120deg, #FF8A3D, #FFD166);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 6px 22px rgba(255, 138, 61, 0.38);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.sphc-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(255, 138, 61, 0.48);
+}
+.sphc-cta:focus-visible {
+  outline: 2px solid #FFD166;
+  outline-offset: 3px;
+}
+
+/* ── Right: Spline scene ─────────────────────────────────────── */
+.sphc-scene-wrap {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  min-height: 360px;
+
+  /* Subtle inner border to separate from copy */
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Fade from card bg into the scene on the left edge */
+.sphc-scene-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  left: 0;
+  width: 60px;
+  background: linear-gradient(to right, #0f1c3a 0%, transparent 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 860px) {
+  .sphc-card {
+    flex-direction: column;
+    min-height: unset;
+  }
+
+  .sphc-copy {
+    flex: none;
+    padding: 2.4rem 2rem;
+  }
+
+  .sphc-scene-wrap {
+    min-height: 300px;
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .sphc-scene-wrap::before {
+    /* On mobile the fade goes top→bottom, not left→right */
+    width: 100%;
+    height: 48px;
+    top: 0;
+    background: linear-gradient(to bottom, #0f1c3a 0%, transparent 100%);
+  }
+
+  .sphc-desc { max-width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .sphc-copy { padding: 1.8rem 1.4rem; }
+  .sphc-title { font-size: 1.5rem; }
+  .sphc-scene-wrap { min-height: 240px; }
+}

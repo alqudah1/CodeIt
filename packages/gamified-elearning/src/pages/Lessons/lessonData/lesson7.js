@@ -1,48 +1,48 @@
 const lesson7 = {
   id: 7,
-  title: "Reading & Writing Files",
-  subtitle: "Learn how Python saves and loads data to disk — like a diary that never forgets!",
-  emoji: "📁",
-  story: [
-    "📓 Jake writes in a diary every day — but his notebook gets lost all the time.",
-    "💾 Python can save text to files on the computer so it's never lost. open(), write(), read() — simple tools!",
-    "📂 In a browser, we simulate this with Python's io.StringIO — same commands, safe sandbox.",
-    "📖 By the end you'll write text to a 'file' and read it back — like saving your progress in a game!"
-  ],
-  concepts: [
-    { icon: "📝", title: "Writing a File", body: "open('diary.txt', 'w') opens for writing. file.write('text') saves content." },
-    { icon: "📖", title: "Reading a File", body: "open('diary.txt', 'r') opens for reading. file.read() loads all the text." },
-    { icon: "🔒", title: "with Statement", body: "with open('file.txt', 'w') as f: — auto-closes the file when done. Safer!" },
-    { icon: "📋", title: "Readlines", body: "file.readlines() returns a list — one string per line. Great for line-by-line processing." }
-  ],
-  checkpoints: [
+  title: "Basic Lists",
+  subtitle: "Store many values in one place — then grab any one you need!",
+  emoji: "📋",
+  steps: [
     {
-      id: "cp1",
-      title: "Checkpoint 1 — Write and Read",
-      description: "Use io.StringIO to simulate writing 'Hello, diary!' and then reading it back.",
-      initialCode: 'import io\nf = io.StringIO()\nf.write("Hello, diary!")\nf.seek(0)\nprint(f.read())',
-      successPattern: /Hello, diary!/,
-      hint: "f.seek(0) moves back to the start before reading. Without it, you'd read nothing!",
+      type: 'concept',
+      id: 'concept',
+      title: 'Lists Hold Many Values',
+      body: 'A list stores many items inside square brackets, separated by commas. Each item has an index — the first item is index 0. You can add new items to a list with .append()!',
+      highlight: 'fruits = ["apple", "banana", "mango"]\nprint(fruits[0])   →   apple\nprint(fruits[1])   →   banana',
+      code: 'fruits = ["apple", "banana", "mango"]\nprint(fruits[0])\nprint(fruits[1])\nprint(fruits[2])',
+    },
+    {
+      type: 'example',
+      id: 'example',
+      title: 'Access by Index',
+      description: 'Click Run to create a list and pick out specific items by their index!',
+      code: 'colors = ["red", "green", "blue"]\nprint(colors[0])\nprint(colors[2])',
+      successPattern: /red|blue/i,
+      hint: 'Click Run! colors[0] gets the first item, colors[2] gets the third item.',
+      xp: 10,
+    },
+    {
+      type: 'tryit',
+      id: 'tryit',
+      title: 'Add to a List',
+      description: 'Run this code to see .append() add a new item. Then add another item of your own!',
+      code: 'animals = ["cat", "dog"]\nanimals.append("rabbit")\nprint(animals)',
+      successPattern: /rabbit/i,
+      hint: '.append() adds a new item to the end of the list. Add another animal after "rabbit"!',
       xp: 15,
     },
     {
-      id: "cp2",
-      title: "Checkpoint 2 — Multiple Lines",
-      description: "Write three diary entries to a StringIO object and read them all back.",
-      initialCode: 'import io\nf = io.StringIO()\nf.write("Day 1: Learned Python\\n")\nf.write("Day 2: Made a function\\n")\nf.write("Day 3: Loops are cool!\\n")\nf.seek(0)\nprint(f.read())',
-      successPattern: /Day 1/,
-      hint: "Use \\n at the end of each line to create a new line in the file.",
-      xp: 15,
-    },
-    {
-      id: "cp3",
-      title: "Checkpoint 3 — Readlines",
-      description: "Read the diary back as a list of lines and print each one with its line number.",
-      initialCode: 'import io\nf = io.StringIO("Day 1: Learned Python\\nDay 2: Made a function\\nDay 3: Loops!")\nlines = f.readlines()\nfor i, line in enumerate(lines, 1):\n    print(i, line.strip())',
-      successPattern: /1\s+Day/,
-      hint: "enumerate(lines, 1) gives (1, line1), (2, line2) etc. .strip() removes the newline at the end.",
+      type: 'challenge',
+      id: 'challenge',
+      title: 'List Length',
+      description: 'Run this code to count how many items are in a list. Then add more and run again!',
+      code: 'snacks = ["apple", "chips", "yogurt"]\nprint("Snacks:", snacks)\nprint("Count:", len(snacks))',
+      successPattern: /Count:/i,
+      hint: 'len() counts the items in the list. Append a new snack and run again to see the count go up!',
       xp: 20,
-    }
+    },
   ]
 };
+
 export default lesson7;

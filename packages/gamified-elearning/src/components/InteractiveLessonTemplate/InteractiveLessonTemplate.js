@@ -1,57 +1,157 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import PythonEditor from '../../pages/pythoneditor/PythonEditor';
+import { useNavigate, useLocation } from 'react-router-dom';
+import CodeRunnerPython from '../CodeRunnerPython';
 import Header from '../../pages/Header/Header';
 import ProgressBar from '../../pages/ProgressBar/progressBar';
+import LessonGuide from '../LessonGuide/LessonGuide';
+import CharacterAvatar from '../CharacterAvatar/CharacterAvatar';
 import './InteractiveLessonTemplate.css';
 import { trackStaticLessonCompletion } from '../../utils/progressTracker';
+import { getJourneyNext } from '../../pages/Journey/journeyNext';
 import { useProgress } from '../../context/ProgressContext';
 import { AuthContext } from '../../context/AuthContext';
+import { useCharacter } from '../../context/CharacterContext';
+import { useSEO } from '../../hooks/useSEO';
+import { API_BASE_URL } from '../../config/api';
+import { getNextUnlock, getNextUnlockLabel } from '../../data/unlocks';
+import { usePlayerProgress } from '../../hooks/usePlayerProgress';
 
-/**
- * InteractiveLessonTemplate
- *
- * Reusable component for Lessons 2–10. Accepts a `lessonData` prop shaped as:
- * {
- *   id: Number,
- *   title: String,
- *   subtitle: String,
- *   emoji: String,
- *   story: String[],          // 2–4 story panel strings
- *   concepts: { icon, title, body }[],
- *   checkpoints: {
- *     id, title, description, initialCode, successPattern, hint, xp
- *   }[]
- * }
- */
+const TYPE_LABEL  = { concept: 'Learn', example: 'Example', tryit: 'Try It', challenge: 'Challenge' };
+const TYPE_COLOR  = { concept: 'concept', example: 'example', tryit: 'tryit', challenge: 'challenge' };
+
+const LESSON_BUILDER_PROMPTS = {
+  1:  'Build a project that displays a welcome message and shows text on the screen.',
+  2:  'Build a website that uses variables to store and display a name, score, and fun message.',
+  3:  'Build a project that works with text — display names, format messages, and show user input.',
+  4:  'Build an interactive project that uses conditions to decide what happens when you click a button.',
+  5:  'Build a project that uses a loop to create a countdown timer or repeat an action.',
+  6:  'Build a text tool that goes through each word or letter and does something with it.',
+  7:  'Build a project that uses a list to store and display multiple items like names or scores.',
+  8:  'Build a project that loops through a list to display and process a collection of items.',
+  9:  'Build a project with buttons where each button calls a different function to do something.',
+  10: 'Build a mini-game that combines functions, loops, and lists all in one project.',
+  11: 'Build a calculator or math quiz that uses numbers and arithmetic operations.',
+  12: 'Build a quiz game that uses true or false questions and comparison operators.',
+  13: 'Build a logic puzzle that uses and, or, and not conditions to decide answers.',
+  14: 'Build a converter tool that transforms between different types like numbers and text.',
+  15: 'Build a project that displays nicely formatted messages using templates and variables.',
+  16: 'Build a text tool that cleans and transforms user text in different ways.',
+};
+
+const LESSON_SEO = {
+  1:  { title: 'Hello Python',                            desc: 'Write your first Python print statement and make the computer say something. Free beginner lesson — runs in your browser.'              },
+  2:  { title: 'Variables in Python',                    desc: 'Learn how to store names, numbers, and messages in Python variables. Free beginner Python lesson on CodeIt — no download needed.'   },
+  3:  { title: 'Python Strings',                         desc: 'Explore Python strings — concatenation, .upper(), .lower(), and len(). Free interactive lesson for beginners, runs in browser.'       },
+  4:  { title: 'If Statements in Python',                desc: 'Learn to make decisions in code with Python if statements and conditionals. Free beginner lesson — no install required.'              },
+  5:  { title: 'For Loops with range()',                 desc: 'Repeat code automatically with Python for loops and range(). Free beginner lesson — write and run code in your browser.'               },
+  6:  { title: 'For Loops over Strings',                 desc: 'Loop over every character in a string using Python for loops. Free interactive coding lesson for beginners on CodeIt.'                },
+  7:  { title: 'Python Lists',                           desc: 'Create and use Python lists — indexing, .append(), and len(). Free beginner lesson — code runs in your browser, no install needed.'  },
+  8:  { title: 'Loops with Lists in Python',             desc: 'Combine Python loops and lists to process collections of data. Free beginner coding lesson — runs instantly in your browser.'         },
+  9:  { title: 'Python Functions',                       desc: 'Write reusable Python functions with def, parameters, and return values. Free interactive lesson for beginners on CodeIt.'            },
+  10: { title: 'Combining Python Concepts',              desc: 'Put it all together — functions, loops, and lists in one Python project. Final free beginner lesson on CodeIt.'                       },
+  11: { title: 'Numbers and Arithmetic',                desc: 'Learn Python integer and float arithmetic — add, subtract, multiply, divide, floor division, and modulo. Free beginner lesson on CodeIt.'    },
+  12: { title: 'Booleans and Comparisons',              desc: 'Understand Python True/False values and comparison operators like ==, !=, <, >. Free interactive beginner lesson — runs in your browser.'   },
+  13: { title: 'Logical Operators in Python',           desc: 'Combine conditions with Python and, or, and not. Free beginner lesson — write and test logical expressions in your browser.'                 },
+  14: { title: 'Type Casting in Python',                desc: 'Convert between int, float, str, and bool in Python. Free beginner coding lesson — no install needed, runs in your browser.'                },
+  15: { title: 'String Formatting with f-Strings',      desc: 'Build polished Python output using f-strings and format specifiers. Free interactive beginner lesson — runs directly in your browser.'       },
+  16: { title: 'Python String Methods',                 desc: 'Clean and transform text with strip(), replace(), split(), join(), find(), and count(). Free Python beginner lesson on CodeIt.'              },
+};
+
+// JSON-LD: inject LearningResource + HowTo schema per lesson for Google Rich Snippets
+function useLessonJsonLd(lessonData, seoTitle, seoDesc) {
+  useEffect(() => {
+    if (!lessonData?.id || !seoTitle) return;
+    const BASE = 'https://codeitlearn.com';
+    const id   = `lesson-jsonld-${lessonData.id}`;
+    document.getElementById(id)?.remove();
+
+    const howToSteps = (lessonData.steps || []).map((step, i) => ({
+      '@type':  'HowToStep',
+      position: i + 1,
+      name:     step.title || `Step ${i + 1}`,
+      text:     step.body  || step.description || step.title || '',
+    }));
+
+    const schema = [
+      {
+        '@context': 'https://schema.org',
+        '@type':    'LearningResource',
+        name:        seoTitle,
+        description: seoDesc,
+        url:         `${BASE}/lesson/${lessonData.id}`,
+        educationalLevel: 'Beginner',
+        inLanguage:  'en',
+        isAccessibleForFree: true,
+        isPartOf: {
+          '@type': 'Course',
+          name:    'Python for Beginners — 16 Free Interactive Lessons',
+          url:     `${BASE}/lessons`,
+        },
+        provider: { '@type': 'Organization', name: 'CodeIt', url: BASE },
+      },
+      howToSteps.length > 0 && {
+        '@context': 'https://schema.org',
+        '@type':    'HowTo',
+        name:       seoTitle,
+        description: seoDesc,
+        step:        howToSteps,
+      },
+    ].filter(Boolean);
+
+    const el = document.createElement('script');
+    el.type = 'application/ld+json';
+    el.id   = id;
+    el.text = JSON.stringify(schema);
+    document.head.appendChild(el);
+
+    return () => { document.getElementById(id)?.remove(); };
+  }, [lessonData, seoTitle, seoDesc]);
+}
+
 const InteractiveLessonTemplate = ({ lessonData }) => {
-  const navigate = useNavigate();
+  // Extract id before hooks so useState / useEffect can reference it correctly
+  const lessonId = lessonData?.id ?? null;
+
+  const navigate   = useNavigate();
+  const location   = useLocation();
   const { markLessonComplete } = useProgress();
-  const { user } = useContext(AuthContext) || {};
-  const firstName = (user?.name || 'Coder').split(' ')[0];
+  const { user, token } = useContext(AuthContext) || {};
+  const { character } = useCharacter();
+  const { level: preLevel, xpToNext: preXpToNext } = usePlayerProgress(token);
+  const firstName  = (user?.name || 'Coder').split(' ')[0];
 
-  const confettiRef = useRef(null);
+  const seo = LESSON_SEO[lessonId] || {};
+  const seoTitle = seo.title ? `Lesson ${lessonData.id}: ${seo.title} — Python for Beginners | CodeIt` : undefined;
+  useSEO({
+    title:       seoTitle,
+    description: seo.desc,
+    canonical:   lessonData?.id ? `/lesson/${lessonData.id}` : undefined,
+  });
+  useLessonJsonLd(lessonData, seoTitle, seo.desc);
 
-  // Calm mode: suppresses confetti/audio
-  const [calmMode, setCalmMode] = useState(false);
-
-  // Story panel navigation
-  const [storyIdx, setStoryIdx] = useState(0);
-
-  // Per-checkpoint state: done[], hints shown[]
-  const totalCps = lessonData?.checkpoints?.length || 0;
-  const [cpDone, setCpDone] = useState(() => Array(totalCps).fill(false));
-  const [cpHints, setCpHints] = useState(() => Array(totalCps).fill(false));
-
-  // Guard: only fire DB completion once
+  const confettiRef       = useRef(null);
   const hasMarkedComplete = useRef(false);
 
-  // ── Confetti canvas resize ──────────────────────────────────────────────────
+  const [calmMode,    setCalmMode]    = useState(false);
+  const [stepIdx,     setStepIdx]     = useState(0);
+  const [maxVisited,  setMaxVisited]  = useState(0);
+  const [stepsDone,      setStepsDone]      = useState({});  // { [idx]: true }
+  const [stepHintCounts, setStepHintCounts] = useState({});  // { [idx]: number revealed }
+  const [lastOutputs,    setLastOutputs]    = useState({});  // { [idx]: string } — output from last Run
+  const [feedback,       setFeedback]       = useState({});  // { [idx]: 'incorrect' | null }
+
+  // ── Gate: lesson N requires lesson N-1 complete (logged-in users only) ──
+  const [gateStatus, setGateStatus] = useState(lessonId === 1 ? 'open' : 'checking');
+
+  // ── Completion screen ──────────────────────────────────────────────────
+  const [completionData, setCompletionData] = useState(null); // { xpEarned, nextRoute }
+
+  // ── Confetti canvas resize ──────────────────────────────────
   useEffect(() => {
     const canvas = confettiRef.current;
     if (!canvas) return;
     const resize = () => {
-      canvas.width = window.innerWidth;
+      canvas.width  = window.innerWidth;
       canvas.height = window.innerHeight;
     };
     resize();
@@ -59,262 +159,534 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
     return () => window.removeEventListener('resize', resize);
   }, []);
 
-  // ── Confetti helper ─────────────────────────────────────────────────────────
+  // ── Gate: enforce lesson N requires lesson N-1 complete ─────
+  // Only runs for logged-in users on lessons 2+.
+  // Unauthenticated visitors may freely preview any lesson.
+  useEffect(() => {
+    if (lessonId <= 1) { setGateStatus('open'); return; }
+    if (!user || !token) { setGateStatus('open'); return; }
+    let cancelled = false;
+    fetch(`${API_BASE_URL}/api/lessons/progress`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (cancelled) return;
+        const completed = (data?.completedLessons || []).map(Number);
+        setGateStatus(completed.includes(lessonId - 1) ? 'open' : 'locked');
+      })
+      .catch(() => { if (!cancelled) setGateStatus('open'); }); // fail open on network error
+    return () => { cancelled = true; };
+  }, [lessonId, user, token]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const triggerConfetti = (durationMs = 1200) => {
     if (calmMode) return;
     const canvas = confettiRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const colors = ['#ff4d6d', '#ffd166', '#06d6a0', '#4cc9f0', '#b5179e'];
-    const particles = Array.from({ length: 100 }, () => ({
-      x: Math.random() * canvas.width,
-      y: -10,
+    const ctx    = canvas.getContext('2d');
+    const colors = ['#FE582A', '#FED340', '#06d6a0', '#4cc9f0', '#b5179e'];
+    const parts  = Array.from({ length: 90 }, () => ({
+      x: Math.random() * canvas.width, y: -10,
       r: 3 + Math.random() * 4,
       c: colors[Math.floor(Math.random() * colors.length)],
-      vx: -2 + Math.random() * 4,
-      vy: 2 + Math.random() * 3,
-      g: 0.05 + Math.random() * 0.05,
-      a: 1,
+      vx: -2 + Math.random() * 4, vy: 2 + Math.random() * 3,
+      g: 0.05 + Math.random() * 0.05, a: 1,
     }));
     let start = null;
-    const step = (ts) => {
+    const tick = (ts) => {
       if (!start) start = ts;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p) => {
-        p.vy += p.g;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.a -= 0.005;
+      parts.forEach(p => {
+        p.vy += p.g; p.x += p.vx; p.y += p.vy; p.a -= 0.005;
         ctx.globalAlpha = Math.max(p.a, 0);
-        ctx.fillStyle = p.c;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillStyle   = p.c;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
       });
-      if (ts - start < durationMs) requestAnimationFrame(step);
+      if (ts - start < durationMs) requestAnimationFrame(tick);
       else ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
-    requestAnimationFrame(step);
+    requestAnimationFrame(tick);
   };
 
-  // ── DB completion (fires once on first checkpoint success) ──────────────────
-  const handleFirstSuccess = () => {
+  if (!lessonData) return <div style={{ padding: '2rem' }}>No lesson data provided.</div>;
+
+  const { id, title, subtitle, emoji, steps = [] } = lessonData;
+  const totalSteps    = steps.length;
+  const currentStep   = steps[stepIdx];
+  const isLastStep    = stepIdx === totalSteps - 1;
+  const isCurrentDone = !!stepsDone[stepIdx];
+  const anyCodeDone   = steps.some((s, i) => s.type !== 'concept' && stepsDone[i]);
+
+  // ── Lesson DB completion (fires once) ──────────────────────
+  const markLessonCompleteOnce = () => {
     if (hasMarkedComplete.current) return;
     hasMarkedComplete.current = true;
-    markLessonComplete(lessonData.id);
-    trackStaticLessonCompletion(lessonData.id).catch((err) =>
-      console.error(`Lesson ${lessonData.id} completion error:`, err)
+    markLessonComplete(id);
+    trackStaticLessonCompletion(id).catch(err =>
+      console.error(`Lesson ${id} completion error:`, err)
     );
   };
 
-  // ── Checkpoint output handler ───────────────────────────────────────────────
-  const handleCpOutput = (idx, cp, output) => {
-    const passed = cp.successPattern.test(output.trim());
-    if (passed) {
-      // Mark done
-      setCpDone((prev) => {
-        const next = [...prev];
-        next[idx] = true;
-        return next;
-      });
-      // Hide hint if previously shown
-      setCpHints((prev) => {
-        const next = [...prev];
-        next[idx] = false;
-        return next;
-      });
-      // Confetti on first success for this checkpoint
-      triggerConfetti(1200);
-      // DB completion guard
-      handleFirstSuccess();
-    } else {
-      // Show hint
-      setCpHints((prev) => {
-        const next = [...prev];
-        next[idx] = true;
-        return next;
-      });
+  const markStepDone = (idx) => {
+    setStepsDone(prev => ({ ...prev, [idx]: true }));
+    // Mark lesson complete on first code-step pass
+    const step = steps[idx];
+    if (step && step.type !== 'concept') markLessonCompleteOnce();
+  };
+
+  // Returns hints array for a step — supports both hints:[] and legacy hint:string
+  const getStepHints = (step) => step?.hints || (step?.hint ? [step.hint] : []);
+
+  // ── Code output handler — fires on every Run ───────────────
+  // Stores the latest output so Submit can validate it.
+  // Example steps (observational) auto-pass on any non-empty output.
+  const handleCodeOutput = (idx, step, output) => {
+    setLastOutputs(prev => ({ ...prev, [idx]: output }));
+    setFeedback(prev => ({ ...prev, [idx]: null })); // clear stale feedback on re-run
+
+    if (step.type === 'example') {
+      // Example steps: just run the pre-written code → auto-pass
+      if (output && !stepsDone[idx]) {
+        markStepDone(idx);
+        triggerConfetti(900);
+      }
     }
   };
 
-  // ── Footer / quiz navigation ────────────────────────────────────────────────
-  const anyDone = cpDone.some(Boolean);
-  const doneCount = cpDone.filter(Boolean).length;
+  // ── Submit handler — explicit validation ────────────────────
+  const submitAnswer = (idx, step) => {
+    const output = lastOutputs[idx] ?? '';
+    const passed = step.successPattern.test(output.trim());
 
-  const goToQuiz = () => {
-    if (!anyDone) return;
-    // Ensure completion is tracked even if goToQuiz fires before a cp succeeded
-    // (should already be tracked, but guard just in case)
+    if (passed) {
+      setFeedback(prev => ({ ...prev, [idx]: null }));
+      markStepDone(idx);
+      setStepHintCounts(prev => ({ ...prev, [idx]: 0 }));
+      triggerConfetti(1400);
+    } else {
+      setFeedback(prev => ({ ...prev, [idx]: 'incorrect' }));
+      // Reveal next hint on each wrong submission
+      const maxHints = getStepHints(step).length;
+      setStepHintCounts(prev => ({
+        ...prev,
+        [idx]: Math.min((prev[idx] || 0) + 1, maxHints),
+      }));
+    }
+  };
+
+  // ── Navigation ──────────────────────────────────────────────
+  const advanceStep = () => {
+    const next = stepIdx + 1;
+    setStepIdx(next);
+    setMaxVisited(prev => Math.max(prev, next));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleConceptNext = () => {
+    markStepDone(stepIdx);
+    if (!isLastStep) advanceStep();
+    else goToQuiz();
+  };
+
+  const handleCodeNext = () => {
+    if (!isLastStep) advanceStep();
+    else goToQuiz();
+  };
+
+  const goPrev = () => {
+    if (stepIdx > 0) {
+      setStepIdx(i => i - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const goToQuiz = async () => {
+    // Await lesson completion so the DB is updated before the quiz gate check runs
+    let xpEarned = 0;
     if (!hasMarkedComplete.current) {
       hasMarkedComplete.current = true;
-      markLessonComplete(lessonData.id);
-      trackStaticLessonCompletion(lessonData.id).catch((err) =>
-        console.error(`Lesson ${lessonData.id} completion error:`, err)
-      );
+      markLessonComplete(id);
+      try {
+        const result = await trackStaticLessonCompletion(id);
+        xpEarned = result?.alreadyCompleted ? 0 : (result?.xpEarned ?? 0);
+      } catch (err) {
+        console.error(`Lesson ${id} completion error:`, err);
+        // Show completion screen anyway — don't strand the student on a network blip
+      }
     }
-    navigate(`/quiz/${lessonData.id}`, {
-      state: { source: 'lesson', lessonId: lessonData.id },
-    });
+    const params      = new URLSearchParams(location.search);
+    const fromJourney = params.get('from') === 'journey';
+    const nodeId      = params.get('node');
+    const nextRoute   = (fromJourney && nodeId)
+      ? getJourneyNext(nodeId)
+      : `/quiz/${id}`;
+    setCompletionData({ xpEarned, quizId: id, nextRoute, fromJourney });
   };
 
-  // ── Guard: missing prop ─────────────────────────────────────────────────────
-  if (!lessonData) {
-    return <div style={{ padding: '2rem' }}>No lesson data provided.</div>;
+  // Can the current step be proceeded past?
+  const canProceed = currentStep?.type === 'concept' || isCurrentDone;
+
+  // Next-button label
+  const nextLabel = () => {
+    if (isLastStep) {
+      if (canProceed) return `Complete Lesson — Unlock Quiz ${id}`;
+      return 'Complete this step to advance';
+    }
+    if (currentStep?.type === 'concept') return 'Got It — Next Step';
+    if (canProceed) return 'Step Complete — Next';
+    if (currentStep?.type === 'example') return 'Run the code to continue';
+    return 'Submit your answer to advance';
+  };
+
+  const handleNextClick = () => {
+    if (!canProceed) return;
+    if (currentStep?.type === 'concept') handleConceptNext();
+    else if (isLastStep) goToQuiz();
+    else handleCodeNext();
+  };
+
+  // ── Gate screen — locked lesson ──────────────────────────────
+  if (gateStatus === 'locked') {
+    return (
+      <div className="sl-lesson">
+        <div className="sl-fixed-header"><Header /></div>
+        <div className="sl-gate-screen">
+          <div className="sl-gate-card">
+            <div className="sl-gate-card__icon">
+              <span aria-hidden="true">L</span>
+            </div>
+            <h2 className="sl-gate-card__title">Lesson {id} is locked</h2>
+            <p className="sl-gate-card__body">
+              You need to complete <strong>Lesson {id - 1}</strong> before you can start this one.
+              Each lesson builds on the one before it.
+            </p>
+            <div className="sl-gate-card__actions">
+              <button
+                className="sl-gate-card__btn sl-gate-card__btn--primary"
+                onClick={() => navigate(`/lesson/${id - 1}`)}
+              >
+                Go to Lesson {id - 1}
+              </button>
+              <button
+                className="sl-gate-card__btn sl-gate-card__btn--ghost"
+                onClick={() => navigate('/lessons')}
+              >
+                View All Lessons
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  const { id, title, subtitle, emoji, story = [], concepts = [], checkpoints = [] } = lessonData;
+  // ── Completion screen ─────────────────────────────────────────
+  if (completionData) {
+    return (
+      <div className="sl-lesson">
+        <div className="sl-fixed-header"><Header /></div>
+        <div className="sl-completion-screen">
+          <div className="sl-completion-card">
+            {character && (
+              <div className="sl-completion-card__avatar">
+                <CharacterAvatar character={character} size={88} />
+              </div>
+            )}
+            <div className="sl-completion-card__badge">Lesson Complete</div>
+            <h2 className="sl-completion-card__title">
+              Lesson {id} done, {firstName}!
+            </h2>
+            <p className="sl-completion-card__sub">
+              {title} — finished.
+            </p>
+            {completionData.xpEarned > 0 && (
+              <div className="sl-completion-card__xp">
+                +{completionData.xpEarned} XP earned
+              </div>
+            )}
+            {(() => {
+              const nu = getNextUnlock(preLevel);
+              if (!nu) return null;
+              if (preXpToNext > 0 && preXpToNext <= 150) {
+                return (
+                  <p className="sl-completion-card__level-hint sl-completion-card__level-hint--urgent">
+                    Only {preXpToNext} XP to reach Level {preLevel + 1}!
+                  </p>
+                );
+              }
+              return (
+                <p className="sl-completion-card__level-hint">
+                  Next reward: {getNextUnlockLabel(nu)} unlocks at Level {nu.atLevel}
+                </p>
+              );
+            })()}
+            <p className="sl-completion-card__cta-hint">
+              {completionData.fromJourney
+                ? 'Head back to the Journey Map to continue your path.'
+                : `Quiz ${completionData.quizId} is now unlocked. Test what you just learned.`}
+            </p>
+            <div className="sl-completion-card__actions">
+              <button
+                className="sl-completion-card__btn sl-completion-card__btn--primary"
+                onClick={() => navigate(completionData.nextRoute)}
+              >
+                {completionData.fromJourney ? 'Back to Journey' : `Start Quiz ${completionData.quizId}`}
+              </button>
+              {LESSON_BUILDER_PROMPTS[id] && (
+                <button
+                  className="sl-completion-card__btn sl-completion-card__btn--builder"
+                  onClick={() => navigate(`/builder?prompt=${encodeURIComponent(LESSON_BUILDER_PROMPTS[id])}`)}
+                >
+                  Use this in AI Builder
+                </button>
+              )}
+              <button
+                className="sl-completion-card__btn sl-completion-card__btn--ghost"
+                onClick={() => navigate('/lessons')}
+              >
+                All Lessons
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="il-lesson">
-      {/* Confetti canvas (fixed overlay, pointer-events: none) */}
-      <canvas ref={confettiRef} className="il-confetti" />
+    <div className="sl-lesson">
+      {/* Confetti */}
+      <canvas ref={confettiRef} className="sl-confetti" />
 
-      {/* Fixed Header + ProgressBar */}
-      <div className="il-fixed-header">
+      {/* Fixed header */}
+      <div className="sl-fixed-header">
         <Header />
         <ProgressBar currentStep="lesson" />
       </div>
 
-      {/* Scrollable body */}
-      <div className="il-scroll-body">
-        <div className="il-lesson-wrapper">
+      <div className="sl-body">
 
-          {/* ── Hero ──────────────────────────────────────────── */}
-          <div className="il-hero">
-            <span className="il-emoji" role="img" aria-label="lesson emoji">{emoji}</span>
+        {/* ── Lesson title bar ─────────────────────────── */}
+        <div className="sl-titlebar">
+          <div className="sl-titlebar__left">
+            {emoji && <span className="sl-titlebar__emoji" aria-hidden="true">{emoji}</span>}
             <div>
-              <span className="il-pill">Lesson {id}</span>
-              <h1 className="il-title">{title}</h1>
-              {subtitle && <p className="il-subtitle">{subtitle}</p>}
-            </div>
-            <div className="il-calm-toggle">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={calmMode}
-                  onChange={(e) => setCalmMode(e.target.checked)}
-                />
-                {' '}Calm mode
-              </label>
+              <span className="sl-titlebar__pill">Lesson {id}</span>
+              <h1 className="sl-titlebar__title">{title}</h1>
+              {subtitle && <p className="sl-titlebar__sub">{subtitle}</p>}
             </div>
           </div>
+          <label className="sl-calm-toggle">
+            <input
+              type="checkbox"
+              checked={calmMode}
+              onChange={e => setCalmMode(e.target.checked)}
+            />
+            Calm mode
+          </label>
+        </div>
 
-          {/* ── Story panels ──────────────────────────────────── */}
-          {story.length > 0 && (
-            <div className="il-story-card">
-              <p className="il-story-text">{story[storyIdx]}</p>
-              <div className="il-story-nav">
-                <button
-                  type="button"
-                  onClick={() => setStoryIdx((i) => Math.max(0, i - 1))}
-                  disabled={storyIdx === 0}
-                  aria-label="Previous story panel"
-                >
-                  ◀ Prev
-                </button>
-                <span className="il-story-counter">{storyIdx + 1} / {story.length}</span>
-                <button
-                  type="button"
-                  onClick={() => setStoryIdx((i) => Math.min(story.length - 1, i + 1))}
-                  disabled={storyIdx === story.length - 1}
-                  aria-label="Next story panel"
-                >
-                  Next ▶
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* ── Concept cards ─────────────────────────────────── */}
-          {concepts.length > 0 && (
-            <div className="il-concepts">
-              {concepts.map((concept, i) => (
-                <div key={i} className="il-concept-card">
-                  <span className="il-concept-icon" role="img" aria-label={concept.title}>
-                    {concept.icon}
-                  </span>
-                  <h3 className="il-concept-title">{concept.title}</h3>
-                  <p className="il-concept-body">{concept.body}</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* ── Progress strip ────────────────────────────────── */}
-          <div className="il-progress-strip">
-            <span className="il-progress-label">
-              Checkpoints: {doneCount}/{checkpoints.length}
-            </span>
-            {checkpoints.map((_, i) => (
-              <span
+        {/* ── Step indicator ───────────────────────────── */}
+        <div className="sl-stepper">
+          <div className="sl-stepper__dots">
+            {steps.map((step, i) => (
+              <button
                 key={i}
-                className={`il-cp-dot ${cpDone[i] ? 'il-cp-dot--done' : ''}`}
-                title={cpDone[i] ? 'Done' : 'Not done'}
-              >
-                {cpDone[i] ? '✅' : '⭕'}
-              </span>
+                className={[
+                  'sl-stepper__dot',
+                  i === stepIdx                  ? 'sl-stepper__dot--active'  : '',
+                  stepsDone[i]                   ? 'sl-stepper__dot--done'    : '',
+                  i > maxVisited && i !== stepIdx ? 'sl-stepper__dot--locked' : '',
+                ].filter(Boolean).join(' ')}
+                onClick={() => { if (i <= maxVisited) setStepIdx(i); }}
+                disabled={i > maxVisited}
+                aria-label={`Step ${i + 1}: ${step.title}`}
+                title={step.title}
+              />
             ))}
           </div>
+          <span className="sl-stepper__label">Step {stepIdx + 1} of {totalSteps}</span>
+        </div>
 
-          {/* ── Checkpoints ───────────────────────────────────── */}
-          {checkpoints.map((cp, i) => (
-            <div
-              key={cp.id}
-              className={`il-checkpoint ${cpDone[i] ? 'il-checkpoint--done' : ''}`}
-            >
-              <div className="il-cp-header">
-                <div className="il-cp-num">{i + 1}</div>
-                <div>
-                  <h2 className="il-cp-title">{cp.title}</h2>
-                  <p className="il-cp-desc">{cp.description}</p>
+        {/* ── Main step card ───────────────────────────── */}
+        <div className="sl-card">
+
+          {/* Tag row */}
+          <div className="sl-card__tags">
+            <span className={`sl-tag sl-tag--${TYPE_COLOR[currentStep?.type] || 'concept'}`}>
+              {TYPE_LABEL[currentStep?.type] || 'Step'}
+            </span>
+            {isCurrentDone && <span className="sl-tag sl-tag--done">Done</span>}
+          </div>
+
+          {/* Step title */}
+          <h2 className="sl-card__title">{currentStep?.title}</h2>
+
+          {/* ────── CONCEPT step ───────────────────────── */}
+          {currentStep?.type === 'concept' && (
+            <div className="sl-concept">
+              <p className="sl-concept__body">{currentStep.body}</p>
+              {currentStep.highlight && (
+                <div className="sl-concept__highlight">
+                  <span className="sl-concept__highlight-label">Key idea</span>
+                  <pre>{currentStep.highlight}</pre>
                 </div>
-                {cpDone[i] && (
-                  <span className="il-cp-check" aria-label="Completed">✅</span>
-                )}
-              </div>
-
-              {cp.xp && (
-                <div className="il-cp-xp">+{cp.xp} XP</div>
               )}
-
-              <PythonEditor
-                initialCode={cp.initialCode}
-                onOutput={(out) => handleCpOutput(i, cp, out)}
-              />
-
-              {cpHints[i] && cp.hint && (
-                <div className="il-hint">
-                  💡 {cp.hint}
+              {currentStep.code && (
+                <div className="sl-concept__code-wrap">
+                  <span className="sl-concept__code-label">Example (read only)</span>
+                  <pre className="sl-concept__code"><code>{currentStep.code}</code></pre>
                 </div>
               )}
             </div>
-          ))}
+          )}
 
-          {/* ── Footer ────────────────────────────────────────── */}
-          <div className="il-footer">
-            {anyDone && (
-              <p className="il-footer-greeting">
-                Great work, {firstName}! You're ready for the quiz.
-              </p>
-            )}
+          {/* ────── CODE steps (example / tryit / challenge) ── */}
+          {currentStep?.type !== 'concept' && (
+            <div className="sl-code-step">
+              <p className="sl-code-step__desc">{currentStep?.description}</p>
+
+              {/* All code-step editors mounted; only current one shown */}
+              <div className="sl-editors">
+                {steps.map((step, i) => {
+                  if (step.type === 'concept') return null;
+                  return (
+                    <div
+                      key={step.id || i}
+                      className={i === stepIdx ? 'sl-editor-wrap' : 'sl-editor-wrap sl-editor-wrap--hidden'}
+                      aria-hidden={i !== stepIdx}
+                    >
+                      <CodeRunnerPython
+                        starterCode={step.code}
+                        title={step.title}
+                        onOutput={(out) => handleCodeOutput(i, step, out)}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* ── Submit Answer (tryit / challenge only) ── */}
+              {(currentStep?.type === 'tryit' || currentStep?.type === 'challenge') && !isCurrentDone && (
+                <button
+                  className="sl-submit-btn"
+                  onClick={() => submitAnswer(stepIdx, currentStep)}
+                  disabled={!lastOutputs[stepIdx]}
+                  title={!lastOutputs[stepIdx] ? 'Run your code first, then submit' : ''}
+                >
+                  {!lastOutputs[stepIdx] ? 'Run your code first' : 'Submit Answer'}
+                </button>
+              )}
+
+              {/* ── Incorrect feedback ───────────────────── */}
+              {feedback[stepIdx] === 'incorrect' && !isCurrentDone && (
+                <div className="sl-feedback sl-feedback--incorrect">
+                  <span className="sl-feedback__icon" aria-hidden="true">✗</span>
+                  <div>
+                    <strong>Not quite.</strong> Check your output above and try again.
+                  </div>
+                </div>
+              )}
+
+              {/* ── Hint — progressive reveal ────────────── */}
+              {!isCurrentDone && (() => {
+                const hints = getStepHints(currentStep);
+                if (!hints.length) return null;
+                const count = stepHintCounts[stepIdx] || 0;
+                return (
+                  <div className="sl-hints">
+                    {count > 0 && (
+                      <div className="sl-hint">
+                        <span className="sl-hint__label">
+                          Hint{hints.length > 1 ? ` ${count}` : ''}
+                        </span>
+                        <span>{hints[count - 1]}</span>
+                      </div>
+                    )}
+                    {count < hints.length && currentStep?.type !== 'example' && (
+                      <button
+                        type="button"
+                        className="sl-hint-btn"
+                        onClick={() => setStepHintCounts(prev => ({
+                          ...prev,
+                          [stepIdx]: (prev[stepIdx] || 0) + 1,
+                        }))}
+                      >
+                        {count === 0 ? 'Show Hint' : 'Next Hint'}
+                      </button>
+                    )}
+                  </div>
+                );
+              })()}
+
+              {/* Success */}
+              {isCurrentDone && (
+                <div className="sl-success">
+                  <span>
+                    <strong>
+                      {isLastStep
+                        ? `Lesson ${id} complete, ${firstName}! Quiz ${id} is now unlocked.`
+                        : 'Step complete. Advance to the next one.'}
+                    </strong>
+                    {currentStep?.xp && (
+                      <span className="sl-success__xp">+{currentStep.xp} XP earned</span>
+                    )}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ────── Navigation ─────────────────────────── */}
+          <div className="sl-nav">
             <button
-              type="button"
-              className="il-quiz-btn"
-              onClick={goToQuiz}
-              disabled={!anyDone}
-              title={anyDone ? `Go to Quiz ${id}` : 'Complete at least one checkpoint first'}
+              className="sl-nav__back"
+              onClick={goPrev}
+              disabled={stepIdx === 0}
             >
-              Ready for Quiz {id} 🎯
+              Back
             </button>
-            {!anyDone && (
-              <p className="il-footer-hint">
-                Complete at least one checkpoint to unlock the quiz.
-              </p>
-            )}
-          </div>
 
+            <button
+              className={isLastStep ? 'sl-nav__continue' : 'sl-nav__next'}
+              onClick={handleNextClick}
+              disabled={!canProceed}
+            >
+              {nextLabel()}
+            </button>
+          </div>
         </div>
+
+        {/* ── Finish early: visible once at least one code step is done ── */}
+        {anyCodeDone && !isLastStep && (
+          <div className="sl-skip-row">
+            <button className="sl-skip-btn" onClick={goToQuiz}>
+              Finish lesson and go to Quiz {id}
+            </button>
+          </div>
+        )}
+
+        {/* ── Use this in AI Builder ─────────────────────────── */}
+        {LESSON_BUILDER_PROMPTS[id] && (
+          <div className="sl-builder-link">
+            <span className="sl-builder-link__label">Want to see this in action?</span>
+            <a
+              href={`/builder?prompt=${encodeURIComponent(LESSON_BUILDER_PROMPTS[id])}`}
+              className="sl-builder-link__btn"
+            >
+              Use this in AI Builder
+            </a>
+          </div>
+        )}
+
       </div>
+
+      {/* ── Character guide — fixed bottom-right ── */}
+      <LessonGuide
+        stepType={currentStep?.type}
+        isCurrentDone={isCurrentDone}
+        isLastStep={isLastStep}
+      />
     </div>
   );
 };

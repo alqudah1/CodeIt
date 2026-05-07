@@ -1,0 +1,76 @@
+/* ── LessonGuide — fixed bottom-right floating helper ── */
+.lg-wrap {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 120;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none; /* clicks pass through to content beneath */
+}
+
+/* Speech bubble */
+.lg-bubble {
+  position: relative;
+  max-width: 220px;
+  padding: 12px 14px;
+  border-radius: 16px 16px 4px 16px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 8px 24px rgba(30, 40, 90, 0.14),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  pointer-events: auto;
+}
+
+/* Arrow pointing right toward avatar */
+.lg-bubble__arrow {
+  position: absolute;
+  bottom: 14px;
+  right: -8px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 9px solid rgba(255, 255, 255, 0.92);
+  filter: drop-shadow(2px 0 1px rgba(30,40,90,0.08));
+}
+
+.lg-bubble__name {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #5636d3;
+  margin-bottom: 4px;
+}
+
+.lg-bubble__text {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: #1a214b;
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-weight: 600;
+}
+
+/* Avatar — override CharacterAvatar defaults for small size */
+.lg-avatar {
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+/* On small screens: tuck the bubble, keep avatar visible */
+@media (max-width: 600px) {
+  .lg-bubble {
+    max-width: 160px;
+    padding: 10px 12px;
+    font-size: 0.82rem;
+  }
+  .lg-wrap {
+    bottom: 16px;
+    right: 12px;
+  }
+}

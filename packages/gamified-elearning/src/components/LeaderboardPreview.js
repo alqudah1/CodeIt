@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ENDPOINTS } from '../config/api';
+import { useAuth } from '../context/AuthContext';
 import './LeaderboardPreview.css';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
@@ -21,7 +22,7 @@ const LeaderboardPreview = () => {
   const [errorMsg, setErrorMsg] = useState(null);
   const navigate                = useNavigate();
 
-  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
+  const { token } = useAuth();
   const isLoggedIn = !!token;
 
   useEffect(() => {

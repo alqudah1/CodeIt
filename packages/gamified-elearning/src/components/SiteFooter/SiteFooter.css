@@ -1,0 +1,76 @@
+.site-footer {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 2.5rem 1.5rem 1.5rem;
+  margin-top: 4rem;
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.site-footer__inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: space-between;
+}
+
+.site-footer__col {
+  min-width: 160px;
+  flex: 1 1 160px;
+}
+
+.site-footer__col strong {
+  display: block;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.site-footer__col strong:first-child {
+  margin-top: 0;
+}
+
+.site-footer__col ul {
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0;
+}
+
+.site-footer__col li {
+  margin-bottom: 0.3rem;
+}
+
+.site-footer__col a,
+.site-footer a {
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.site-footer__col a:hover,
+.site-footer a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.site-footer__copy {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+@media (max-width: 600px) {
+  .site-footer__inner {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

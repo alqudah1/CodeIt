@@ -1,6 +1,22 @@
 /* global loadPyodide */
 import React, { useState, useEffect, useRef } from 'react';
 
+function cleanPythonError(raw) {
+  if (!raw) return raw;
+  const lines = raw.split('\n');
+  const kept = lines.filter(line => {
+    const t = line.trim();
+    if (!t) return false;
+    if (t.startsWith('File "/lib/')) return false;
+    if (/^\.\.\.<\d+ lines>/.test(t)) return false;
+    if (t.startsWith('await CodeRunner(')) return false;
+    if (t.startsWith('.run_async(')) return false;
+    if (t.startsWith('coroutine = eval(')) return false;
+    return true;
+  });
+  return kept.join('\n').replace(/\n{2,}/g, '\n').trim() || raw;
+}
+
 const PythonEditor = ({ initialCode, onOutput }) => {
   const [code, setCode] = useState(initialCode || '');
   const [output, setOutput] = useState('');
@@ -47,7 +63,7 @@ const PythonEditor = ({ initialCode, onOutput }) => {
       if (onOutput) onOutput(outputText || '');
     } catch (err) {
       console.error('Execution error:', err);
-      const errorText = err.message || 'An error occurred during execution.';
+      const errorText = cleanPythonError(err.message || 'An error occurred during execution.');
       setOutput(errorText);
       if (onOutput) onOutput(errorText);
     }

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ENDPOINTS } from '../../config/api';
 import { AuthContext } from '../../context/AuthContext';
 import Header from '../Header/Header';
+import { useSEO } from '../../hooks/useSEO';
 import './Leaderboard.css';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
@@ -18,6 +19,12 @@ const avatarColour = (name) => {
 };
 
 const Leaderboard = () => {
+  useSEO({
+    title:       'Leaderboard | CodeIt',
+    description: 'See the top Python coders on CodeIt. Earn XP through lessons, quizzes, and puzzles to climb the global rankings.',
+    canonical:   '/leaderboard',
+  });
+
   const [rows, setRows]       = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);

@@ -1,0 +1,369 @@
+/* ================================================================
+   Profile — My Avatar page
+   Palette: #FFF6ED bg · #FF7A00 primary · #A855F7 accent · #1F2937 text
+   ================================================================ */
+
+.profile-page {
+  min-height: calc(100vh - var(--header-h));
+  background: #FFF6ED;
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  color: #1F2937;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 3rem clamp(1rem, 5vw, 2rem) 5rem;
+}
+
+/* ── Hero ────────────────────────────────────────────────────── */
+.profile-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  text-align: center;
+}
+
+/* Avatar ring — level-dependent styling */
+.profile-avatar-ring {
+  border-radius: 50%;
+  padding: 5px;
+  position: relative;
+}
+
+.profile-avatar-ring--lv1 { background: rgba(31,41,55,0.08); }
+.profile-avatar-ring--lv2 { background: linear-gradient(135deg, rgba(255,122,0,0.20), rgba(255,122,0,0.08)); }
+.profile-avatar-ring--lv3 { background: linear-gradient(135deg, #FF7A00, #FFB347); box-shadow: 0 0 0 3px rgba(255,122,0,0.18); }
+.profile-avatar-ring--lv4 { background: linear-gradient(135deg, #FF7A00, #A855F7); box-shadow: 0 0 16px rgba(255,122,0,0.30); }
+.profile-avatar-ring--lv5 {
+  background: linear-gradient(135deg, #FF7A00, #A855F7, #FF7A00);
+  box-shadow: 0 0 24px rgba(255,122,0,0.40);
+  animation: ring-glow 2.5s ease-in-out infinite;
+}
+
+@keyframes ring-glow {
+  0%, 100% { box-shadow: 0 0 16px rgba(255,122,0,0.35); }
+  50%       { box-shadow: 0 0 32px rgba(255,122,0,0.58), 0 0 48px rgba(168,85,247,0.20); }
+}
+
+.profile-avatar {
+  display: block;
+  border-radius: 50%;
+  background: #FFF6ED;
+}
+
+.profile-hero__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.profile-name {
+  margin: 0;
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-weight: 900;
+  color: #1F2937;
+  letter-spacing: -0.025em;
+}
+
+.profile-title-badge {
+  display: inline-block;
+  padding: 0.3rem 1rem;
+  background: rgba(255,122,0,0.10);
+  border: 1.5px solid rgba(255,122,0,0.28);
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #C85A00;
+  letter-spacing: 0.02em;
+}
+
+/* ── Cards ───────────────────────────────────────────────────── */
+.profile-card {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(255,255,255,0.92);
+  border: 1.5px solid rgba(255,122,0,0.12);
+  border-radius: 24px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 6px 28px rgba(31,41,55,0.07);
+  padding: 1.75rem;
+}
+
+/* ── XP card ─────────────────────────────────────────────────── */
+.profile-xp-header {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  margin-bottom: 1.1rem;
+}
+
+.profile-level-bubble {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #FF7A00;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(255,122,0,0.32);
+}
+
+.profile-level-num {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+
+.profile-level-lbl {
+  font-size: 0.55rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.profile-xp-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.profile-xp-total {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #1F2937;
+}
+
+.profile-xp-next {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(31,41,55,0.55);
+  font-weight: 700;
+}
+
+/* Progress bar */
+.profile-bar-wrap {
+  height: 10px;
+  background: rgba(31,41,55,0.07);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.profile-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FF7A00, #FFB347);
+  border-radius: 999px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 6px;
+}
+
+.profile-xp-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(31,41,55,0.40);
+}
+
+/* ── Stats grid ──────────────────────────────────────────────── */
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 480px;
+}
+
+.profile-stat {
+  background: rgba(255,255,255,0.88);
+  border: 1.5px solid rgba(255,122,0,0.10);
+  border-radius: 18px;
+  padding: 1.1rem 0.7rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  box-shadow: 0 2px 10px rgba(31,41,55,0.05);
+}
+
+.profile-stat__num {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #FF7A00;
+  line-height: 1;
+}
+
+.profile-stat__lbl {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(31,41,55,0.50);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Next level card ─────────────────────────────────────────── */
+.profile-card--next {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.profile-next__icon {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(168,85,247,0.10);
+  border: 2px dashed rgba(168,85,247,0.35);
+  color: #A855F7;
+  font-size: 1.2rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-next__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.profile-next__label {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(31,41,55,0.40);
+}
+
+.profile-next__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 900;
+  color: #1F2937;
+}
+
+.profile-next__hint {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(31,41,55,0.55);
+  line-height: 1.5;
+}
+
+/* ── Earn XP section ─────────────────────────────────────────── */
+.profile-earn {
+  width: 100%;
+  max-width: 480px;
+}
+
+.profile-earn__title {
+  margin: 0 0 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(31,41,55,0.40);
+}
+
+.profile-earn__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.profile-earn__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1rem;
+  background: rgba(255,255,255,0.85);
+  border: 1.5px solid rgba(255,122,0,0.10);
+  border-radius: 12px;
+}
+
+.profile-earn__action {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1F2937;
+}
+
+.profile-earn__xp {
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #FF7A00;
+}
+
+/* ── CTAs ────────────────────────────────────────────────────── */
+.profile-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 480px;
+}
+
+.profile-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 160px;
+  padding: 0.85rem 1.5rem;
+  border-radius: 999px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+
+.profile-cta--primary {
+  background: #FF7A00;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(255,122,0,0.30);
+}
+
+.profile-cta--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(255,122,0,0.42);
+}
+
+.profile-cta--secondary {
+  background: rgba(255,255,255,0.88);
+  border: 1.5px solid rgba(255,122,0,0.20);
+  color: #1F2937;
+  box-shadow: 0 2px 10px rgba(31,41,55,0.06);
+}
+
+.profile-cta--secondary:hover {
+  transform: translateY(-2px);
+  background: rgba(255,255,255,1);
+  box-shadow: 0 6px 18px rgba(31,41,55,0.10);
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .profile-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .profile-card--next {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+  }
+}

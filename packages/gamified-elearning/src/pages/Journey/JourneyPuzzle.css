@@ -1,0 +1,342 @@
+/* ── Journey Puzzle Page ───────────────────────────────────── */
+.jp-page {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #f8f4ff 0%, #fff8f0 100%);
+  padding-bottom: 4rem;
+  font-family: 'Nunito', 'Arvo', sans-serif;
+}
+
+.jp-container {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: calc(72px + 1.5rem) 1.5rem 4rem;
+}
+
+.jp-notfound {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  color: #1a214b;
+}
+
+/* ── Back link ─────────────────────────────────────────────── */
+.jp-back {
+  background: none;
+  border: none;
+  color: #6b6f9e;
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  transition: color 0.15s;
+}
+.jp-back:hover { color: #FF8A3D; }
+
+/* ── Header ────────────────────────────────────────────────── */
+.jp-header { margin-bottom: 1rem; }
+.jp-header__meta {
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.jp-header__next-hint {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #6b6f9e;
+  background: rgba(107,111,158,0.1);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  border: 1px solid rgba(107,111,158,0.2);
+}
+.jp-header__tag {
+  display: inline-block;
+  background: linear-gradient(135deg, #FF8A3D, #FFD166);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+}
+.jp-header__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  color: #1a214b;
+  line-height: 1.2;
+}
+
+/* ── Story ─────────────────────────────────────────────────── */
+.jp-story {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  padding: 1.2rem 1.4rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.jp-story p {
+  margin: 0;
+  color: #2c2f5b;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+/* ── Goals ─────────────────────────────────────────────────── */
+.jp-goals {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  padding: 1.2rem 1.4rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.jp-goals__heading {
+  margin: 0 0 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6b6f9e;
+}
+.jp-goals__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.jp-goals__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+  color: #2c2f5b;
+  line-height: 1.4;
+}
+.jp-goals__num {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF8A3D, #FFD166);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+/* ── Editor wrapper ────────────────────────────────────────── */
+.jp-editor {
+  margin-bottom: 1.5rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+/* ── Check area ────────────────────────────────────────────── */
+.jp-check-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.jp-check-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #9090a8;
+  font-style: italic;
+}
+
+/* ── Buttons ───────────────────────────────────────────────── */
+.jp-btn {
+  display: inline-block;
+  border: none;
+  border-radius: 999px;
+  padding: 0.8rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  align-self: flex-start;
+}
+.jp-btn:hover:not(:disabled) { transform: translateY(-2px); }
+.jp-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.jp-btn--primary {
+  background: linear-gradient(135deg, #FF8A3D, #FFD166);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(255,138,61,0.32);
+}
+.jp-btn--check {
+  background: linear-gradient(135deg, #7c5fc4, #a78bfa);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(124,95,196,0.32);
+}
+.jp-btn--ghost {
+  background: rgba(255,255,255,0.8);
+  color: #1a214b;
+  border: 2px solid #e0d8f0;
+}
+
+/* ── Result ────────────────────────────────────────────────── */
+.jp-result {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.jp-result--pass {
+  background: rgba(52,199,115,0.15);
+  color: #1a7a40;
+  border: 1.5px solid rgba(52,199,115,0.4);
+}
+.jp-result--fail {
+  background: rgba(255,100,80,0.1);
+  color: #c0392b;
+  border: 1.5px solid rgba(255,100,80,0.3);
+}
+.jp-result__icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  color: #fff;
+}
+.jp-result--pass .jp-result__icon { background: #34c773; }
+.jp-result--fail .jp-result__icon { background: #e74c3c; }
+
+/* ── Hint button + hint box ────────────────────────────────── */
+.jp-hints {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.jp-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  background: rgba(254, 211, 64, 0.13);
+  border: 1.5px solid rgba(254, 211, 64, 0.5);
+  border-radius: 0.9rem;
+  padding: 0.8rem 1rem;
+  font-size: 0.92rem;
+  color: #4a3800;
+  line-height: 1.55;
+}
+
+.jp-hint__label {
+  flex-shrink: 0;
+  background: #FED340;
+  color: #4a3800;
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  margin-top: 2px;
+}
+
+.jp-btn--hint {
+  background: rgba(254, 211, 64, 0.18);
+  border: 1.5px solid rgba(254, 211, 64, 0.6);
+  color: #4a3800;
+  font-size: 0.85rem;
+  box-shadow: none;
+  padding: 0.5rem 1.2rem;
+}
+.jp-btn--hint:hover:not(:disabled) {
+  background: rgba(254, 211, 64, 0.32);
+}
+.jp-btn--try {
+  background: rgba(6, 214, 160, 0.15);
+  border: 1.5px solid rgba(6, 214, 160, 0.5);
+  color: #0a5c45;
+  font-size: 0.85rem;
+  box-shadow: none;
+  padding: 0.5rem 1.2rem;
+}
+.jp-btn--try:hover:not(:disabled) {
+  background: rgba(6, 214, 160, 0.28);
+}
+
+/* ── Done actions ──────────────────────────────────────────── */
+.jp-done-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+/* Reward row: avatar + XP after puzzle pass */
+.jp-done-reward {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  background: linear-gradient(120deg, rgba(86,54,211,0.07), rgba(255,138,61,0.06));
+  border-radius: 16px;
+  border: 1.5px solid rgba(86,54,211,0.14);
+}
+
+.jp-done-reward__avatar {
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.jp-done-reward__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.jp-done-xp {
+  font-size: 1.5rem;
+  font-weight: 900;
+  background: linear-gradient(120deg, #FF8A3D, #FFD166);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.jp-done-reward__msg {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1a7a40;
+}
+
+.jp-done-level-hint {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #0a7a68;
+}
+
+.jp-done-level-hint--urgent {
+  color: #c85a00;
+  font-size: 0.8rem;
+}

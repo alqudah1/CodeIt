@@ -1,0 +1,48 @@
+const lesson16 = {
+  id: 16,
+  title: "String Methods",
+  subtitle: "Clean, search, and reshape text using Python's built-in string tools!",
+  emoji: "🧵",
+  steps: [
+    {
+      type: 'concept',
+      id: 'concept',
+      title: 'Strings Have Built-In Superpowers',
+      body: 'Python strings come with methods — functions you call with a dot. The most useful ones are: .strip() removes leading and trailing spaces. .replace(old, new) swaps one piece of text for another. .split() breaks a string into a list of words. .join(list) glues a list of strings back together. .find(text) returns the position of the first match (-1 if not found). .count(text) counts how many times something appears.',
+      highlight: '"  hello  ".strip()      # "hello"\n"a,b,c".split(",")       # ["a", "b", "c"]\n",".join(["a","b","c"])  # "a,b,c"',
+      code: 'print("  hello  ".strip())\nprint("a,b,c".split(","))\nprint(",".join(["a", "b", "c"]))',
+    },
+    {
+      type: 'example',
+      id: 'example',
+      title: 'Cleaning a String',
+      description: 'Click Run to see strip(), lower(), and replace() working together on a messy piece of text.',
+      code: 'text = "  Hello, World!  "\nclean = text.strip()\nprint(clean)\nprint(clean.lower())\nprint(clean.replace("World", "Python"))',
+      successPattern: /Hello|python/i,
+      hint: 'Click Run! Notice that each method returns a new string — the original text variable is never changed.',
+      xp: 10,
+    },
+    {
+      type: 'tryit',
+      id: 'tryit',
+      title: 'Word Counter',
+      description: 'Split a sentence into a list of words and count them. Then modify the sentence and run again to see the count update.',
+      code: 'sentence = "Python is fun and easy to learn"\nwords = sentence.split()\nprint("Word count:", len(words))\nprint("Words:", words)',
+      successPattern: /Word count:|words/i,
+      hint: '.split() with no argument splits on any whitespace. len() counts the items in the resulting list. Try adding or removing words from the sentence.',
+      xp: 15,
+    },
+    {
+      type: 'challenge',
+      id: 'challenge',
+      title: 'Input Cleaner',
+      description: 'Raw text from a user often has extra spaces and inconsistent casing. Clean it up with strip(), lower(), split(), and join(). Run and then try a different name!',
+      code: 'raw = "  ALICE SMITH  "\nstripped = raw.strip()\nlower = stripped.lower()\nwords = lower.split()\nformatted = words[0].capitalize() + " " + words[1].capitalize()\nprint("Cleaned:", formatted)',
+      successPattern: /Alice Smith|Cleaned:/i,
+      hint: 'Each method handles one job: strip removes spaces, lower makes it lowercase, split divides it, capitalize fixes each word. Try raw = "  BOB JONES  ".',
+      xp: 20,
+    },
+  ]
+};
+
+export default lesson16;

@@ -1,272 +1,498 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
 import { useCharacter, getDefaultCharacter } from '../../context/CharacterContext';
+import { useAuth } from '../../context/AuthContext';
+import Header from '../Header/Header';
+import { useSEO } from '../../hooks/useSEO';
+import { usePlayerProgress } from '../../hooks/usePlayerProgress';
+import { isUnlocked, unlockAt, getNextUnlock, getNextUnlockLabel } from '../../data/unlocks';
+import { ENDPOINTS } from '../../config/api';
 import './CharacterLab.css';
 
-const genderOptions = [
-  { value: 'female', label: 'Female base' },
-  { value: 'male', label: 'Male base' },
+// ── Option data ──────────────────────────────────────────────
+const GENDER_OPTIONS = [
+  { value: 'female', label: 'Female' },
+  { value: 'male',   label: 'Male'   },
 ];
 
-const skinOptions = [
-  { value: 'sunset', label: 'Sunset Glow', swatch: '#f6c7a3' },
-  { value: 'sand', label: 'Golden Sand', swatch: '#ebb190' },
-  { value: 'cocoa', label: 'Warm Cocoa', swatch: '#c88762' },
-  { value: 'deep', label: 'Amber Ember', swatch: '#8d5238' },
-  { value: 'pearl', label: 'Moon Pearl', swatch: '#f4ddd0' },
+const SKIN_OPTIONS = [
+  { value: 'sunset',  label: 'Sunset',  swatch: '#f6c7a3' },
+  { value: 'sand',    label: 'Sand',    swatch: '#ebb190' },
+  { value: 'cocoa',   label: 'Cocoa',   swatch: '#c88762' },
+  { value: 'deep',    label: 'Ember',   swatch: '#8d5238' },
+  { value: 'pearl',   label: 'Pearl',   swatch: '#f4ddd0' },
 ];
 
-const hairStyleOptions = [
-  { value: 'wave', label: 'Wave Rider' },
-  { value: 'crown', label: 'Spark Crown' },
-  { value: 'bun', label: 'Stellar Bun' },
-  { value: 'curls', label: 'Neon Curls' },
-  { value: 'pixie', label: 'Pixel Pixie' },
+const HAIR_STYLE_OPTIONS = [
+  { value: 'wave',  label: 'Wave'  },
+  { value: 'crown', label: 'Crown' },
+  { value: 'bun',   label: 'Bun'   },
+  { value: 'curls', label: 'Curls' },
+  { value: 'pixie', label: 'Pixie' },
 ];
 
-const hairColorOptions = [
-  { value: 'mocha', label: 'Mocha Breeze', swatch: '#4b2e2b' },
-  { value: 'midnight', label: 'Midnight Nova', swatch: '#1d1a39' },
-  { value: 'copper', label: 'Copper Comet', swatch: '#c6643d' },
-  { value: 'gold', label: 'Solar Gold', swatch: '#f6c06b' },
-  { value: 'ocean', label: 'Ocean Spark', swatch: '#2b7de9' },
-  { value: 'lavender', label: 'Cosmic Lavender', swatch: '#8660c1' },
+const HAIR_COLOR_OPTIONS = [
+  { value: 'mocha',    label: 'Brown',  swatch: '#4b2e2b' },
+  { value: 'midnight', label: 'Black',  swatch: '#1d1a39' },
+  { value: 'copper',   label: 'Copper', swatch: '#c6643d' },
+  { value: 'gold',     label: 'Gold',   swatch: '#f6c06b' },
+  { value: 'ocean',    label: 'Blue',   swatch: '#2b7de9' },
+  { value: 'lavender', label: 'Purple', swatch: '#8660c1' },
 ];
 
-const outfitOptions = [
-  { value: 'astronaut', label: 'Galactic Astronaut', description: 'Ready for stellar missions.' },
-  { value: 'explorer', label: 'Jungle Explorer', description: 'Finds clues in every jungle of code.' },
-  { value: 'hacker', label: 'Arcade Hacker', description: 'Debugs glitches with electric style.' },
-  { value: 'artist', label: 'Neon Artist', description: 'Paints vibrant story interfaces.' },
+const OUTFIT_OPTIONS = [
+  { value: 'astronaut', label: 'Astronaut', desc: 'Ready for cosmic missions.' },
+  { value: 'explorer',  label: 'Explorer',  desc: 'Finds clues in every challenge.' },
+  { value: 'hacker',    label: 'Hacker',    desc: 'Debugs glitches with style.' },
+  { value: 'artist',    label: 'Artist',    desc: 'Paints vibrant code worlds.' },
 ];
 
-const accentOptions = [
-  { value: 'headphones', label: 'Beat Headphones' },
-  { value: 'glasses', label: 'Code Specs' },
-  { value: 'cape', label: 'Hero Cape' },
-  { value: 'none', label: 'Keep it simple' },
+const ACCENT_OPTIONS = [
+  { value: 'headphones', label: 'Headphones' },
+  { value: 'glasses',    label: 'Glasses'    },
+  { value: 'cape',       label: 'Cape'       },
+  { value: 'none',       label: 'None'       },
 ];
 
-const expressionOptions = [
-  { value: 'smile', label: 'Confident Smile' },
-  { value: 'laugh', label: 'Bright Laugh' },
-  { value: 'wink', label: 'Cheeky Wink' },
+const EXPRESSION_OPTIONS = [
+  { value: 'smile', label: 'Smile' },
+  { value: 'laugh', label: 'Laugh' },
+  { value: 'wink',  label: 'Wink'  },
 ];
 
-const CharacterLab = () => {
+// ── Component ────────────────────────────────────────────────
+const AvatarLab = () => {
+  useSEO({
+    title:       'Avatar Lab — Customize Your Coding Avatar | CodeIt',
+    description: 'Design your personal coding avatar for CodeIt. Pick your style, outfit, accessories, and nickname. Level up through Python lessons to unlock new looks.',
+    canonical:   '/character',
+  });
+
   const navigate = useNavigate();
   const { character, updateCharacter, resetCharacter } = useCharacter();
-  const [showSaved, setShowSaved] = useState(false);
-  const gender = character.gender || 'female';
+  const { token } = useAuth();
+  const [savedFlash, setSavedFlash] = useState(false);
 
-  const handleChange = (key, value) => {
+  // ── Player level & XP ────────────────────────────────────
+  const { xp, level, progress, needed, pct, loading: xpLoading } = usePlayerProgress(token);
+
+  // ── Parent email state ────────────────────────────────────
+  const [parentEmailInput, setParentEmailInput] = useState('');
+  const [peStatus, setPeStatus] = useState(null);
+  const [peError, setPeError] = useState('');
+
+  useEffect(() => {
+    if (!token) return;
+    fetch(ENDPOINTS.profile.get, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.parentEmail) setParentEmailInput(data.parentEmail);
+      })
+      .catch(() => {});
+  }, [token]);
+
+  const handleParentEmailSave = async () => {
+    setPeStatus('saving');
+    setPeError('');
+    try {
+      const res = await fetch(ENDPOINTS.profile.parentEmail, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ parent_email: parentEmailInput }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setPeError(data.error || 'Failed to save');
+        setPeStatus('error');
+      } else {
+        setPeStatus('saved');
+        setTimeout(() => setPeStatus(null), 3000);
+      }
+    } catch {
+      setPeError('Network error. Please try again.');
+      setPeStatus('error');
+    }
+  };
+
+  const set = useCallback((key, value) => {
     updateCharacter({ [key]: value });
-    setShowSaved(true);
-    window.setTimeout(() => setShowSaved(false), 1200);
+  }, [updateCharacter]);
+
+  // ── Guarded setter — ignores locked items ─────────────────
+  const setIfUnlocked = useCallback((category, value) => {
+    if (!isUnlocked(category, value, level)) return;
+    updateCharacter({ [category]: value });
+  }, [updateCharacter, level]);
+
+  const handleSave = () => {
+    setSavedFlash(true);
+    setTimeout(() => setSavedFlash(false), 2200);
   };
 
   const nickname = character.nickname || '';
-  const selectedGender = genderOptions.find((option) => option.value === gender) || genderOptions[0];
 
-  const quickSummary = useMemo(() => {
-    const outfit = outfitOptions.find((option) => option.value === character.outfit);
-    const expression = expressionOptions.find((option) => option.value === character.expression);
-    const pronoun = gender === 'male' ? 'He' : 'She';
-    const energy = gender === 'male' ? 'bold' : 'radiant';
-    const summaryIntro = `${nickname || 'Your buddy'} ${outfit?.description || 'loves coding quests'} with a ${expression?.label.toLowerCase()}.`;
-    return `${summaryIntro} ${pronoun} brings a ${energy} energy to every challenge.`;
-  }, [nickname, character.outfit, character.expression, gender]);
+  const outfitDesc = useMemo(() => {
+    return OUTFIT_OPTIONS.find(o => o.value === character.outfit)?.desc || 'Ready for coding adventures.';
+  }, [character.outfit]);
 
-  const handleReset = () => {
-    resetCharacter();
-  };
-
-  const handleNicknameChange = (event) => {
-    updateCharacter({ nickname: event.target.value.slice(0, 28) });
-  };
+  // Which specific item is the global next unlock (used to highlight it)
+  const nextUnlock = useMemo(() => (!xpLoading ? getNextUnlock(level) : null), [level, xpLoading]);
 
   return (
-    <div className="character-lab">
-      <header className="character-lab__hero">
-        <button type="button" className="character-lab__back" onClick={() => navigate(-1)}>
-          ← Back
-        </button>
-        <span className="character-lab__tag">New</span>
-        <h1>Create your CodeIt buddy</h1>
-        <p>
-          Tune the colors, vibes, and accessories that greet you across the platform. Your buddy
-          travels with you through lessons, quizzes, and games.
-        </p>
-        {showSaved && <div className="character-lab__toast">Saved!</div>}
-      </header>
+    <div className="al-page">
+      <Header />
 
-      <section className="character-lab__preview">
-        <CharacterAvatar character={character} size={260} />
-        <div className="character-lab__preview-copy">
-          <h2>{nickname || 'Name your adventurer'}</h2>
-          <p>{quickSummary}</p>
-          <p className="character-lab__meta">Current base: {selectedGender.label}</p>
-          <div className="character-lab__field">
-            <label htmlFor="nickname">Nickname</label>
-            <input
-              id="nickname"
-              type="text"
-              value={nickname}
-              maxLength={28}
-              placeholder="E.g. Pixel Wizard"
-              onChange={handleNicknameChange}
-            />
+      <main className="al-main">
+
+        {/* ── Page hero ─────────────────────────────────── */}
+        <div className="al-hero">
+          <div className="al-hero__back">
+            <button type="button" className="al-back-btn" onClick={() => navigate(-1)}>
+              Back
+            </button>
           </div>
-          <button type="button" className="character-lab__reset" onClick={handleReset}>
-            Reset to default
-          </button>
+          <h1 className="al-hero__title">Your Coding Avatar</h1>
+          <p className="al-hero__sub">
+            Make it yours — pick your look, name your character, and level up through lessons to unlock new outfits and styles.
+          </p>
         </div>
-      </section>
 
-      <section className="character-lab__grid">
-        <fieldset className="character-lab__panel">
-          <legend>Base style</legend>
-          <div className="option-stack">
-            {genderOptions.map((option) => (
-              <label key={option.value} className={`pill ${gender === option.value ? 'is-active' : ''}`}>
+        {/* ── 2-col layout ──────────────────────────────── */}
+        <div className="al-layout">
+
+          {/* LEFT — Sticky preview card */}
+          <aside className="al-preview-col">
+            <div className="al-preview-card">
+
+              {savedFlash && (
+                <div className="al-toast" role="status">Avatar saved!</div>
+              )}
+
+              {/* Level badge + XP bar */}
+              {token && !xpLoading && (
+                <div className="al-level-block">
+                  <div className="al-level-row">
+                    <span className="al-level-badge">Level {level}</span>
+                    <span className="al-level-xp">{xp} XP total</span>
+                  </div>
+                  <div className="al-xp-bar-track">
+                    <div
+                      className="al-xp-bar-fill"
+                      style={{ width: `${pct}%` }}
+                      role="progressbar"
+                      aria-valuenow={progress}
+                      aria-valuemin={0}
+                      aria-valuemax={needed}
+                      aria-label={`XP progress: ${progress} of ${needed}`}
+                    />
+                  </div>
+                  <p className="al-xp-label">{progress} / {needed} XP to Level {level + 1}</p>
+                  {(() => {
+                    const nu = getNextUnlock(level);
+                    if (!nu) return null;
+                    return (
+                      <div className="al-next-unlock">
+                        <span className="al-next-unlock__label">Next unlock</span>
+                        <span className="al-next-unlock__item">
+                          {getNextUnlockLabel(nu)} at Level {nu.atLevel}
+                        </span>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+
+              <div className="al-preview-avatar">
+                <CharacterAvatar character={character} size={190} />
+              </div>
+
+              <h2 className="al-preview-name">
+                {nickname || 'Your Avatar'}
+              </h2>
+              <p className="al-preview-desc">{outfitDesc}</p>
+
+              <div className="al-field">
+                <label htmlFor="al-nickname" className="al-field__label">Nickname</label>
                 <input
-                  type="radio"
-                  name="gender"
-                  value={option.value}
-                  checked={gender === option.value}
-                  onChange={() => handleChange('gender', option.value)}
+                  id="al-nickname"
+                  className="al-field__input"
+                  type="text"
+                  value={nickname}
+                  maxLength={28}
+                  placeholder="E.g. Pixel Wizard"
+                  onChange={e => set('nickname', e.target.value.slice(0, 28))}
                 />
-                <span>{option.label}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
+              </div>
 
-        <fieldset className="character-lab__panel">
-          <legend>Skin tone</legend>
-          <div className="option-grid">
-            {skinOptions.map((option) => (
+              <div className="al-preview-actions">
+                <button
+                  type="button"
+                  className="al-btn al-btn--primary"
+                  onClick={handleSave}
+                >
+                  Save Avatar
+                </button>
+                <button
+                  type="button"
+                  className="al-btn al-btn--ghost"
+                  onClick={() => resetCharacter()}
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          </aside>
+
+          {/* RIGHT — Customiser sections */}
+          <div className="al-options-col">
+
+            {/* Base Style */}
+            <section className="al-section">
+              <h3 className="al-section__title">Base Style</h3>
+              <div className="al-pills">
+                {GENDER_OPTIONS.map(o => (
+                  <button
+                    key={o.value}
+                    type="button"
+                    className={`al-pill${character.gender === o.value ? ' is-active' : ''}`}
+                    onClick={() => set('gender', o.value)}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            {/* Skin Tone — always unlocked */}
+            <section className="al-section">
+              <h3 className="al-section__title">Skin Tone</h3>
+              <div className="al-swatches">
+                {SKIN_OPTIONS.map(o => (
+                  <button
+                    key={o.value}
+                    type="button"
+                    className={`al-swatch${character.skinTone === o.value ? ' is-active' : ''}`}
+                    style={{ '--sw': o.swatch }}
+                    onClick={() => set('skinTone', o.value)}
+                    title={o.label}
+                    aria-pressed={character.skinTone === o.value}
+                  >
+                    <span className="al-swatch__dot" />
+                    <span className="al-swatch__name">{o.label}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            {/* Hair Style */}
+            <section className="al-section">
+              <h3 className="al-section__title">
+                Hair Style
+                {HAIR_STYLE_OPTIONS.filter(o => !isUnlocked('hairStyle', o.value, level)).length > 0 && (
+                  <span className="al-section__lock-hint">
+                    {HAIR_STYLE_OPTIONS.filter(o => !isUnlocked('hairStyle', o.value, level)).length} locked
+                  </span>
+                )}
+              </h3>
+              <div className="al-pills">
+                {HAIR_STYLE_OPTIONS.map(o => {
+                  const locked = !isUnlocked('hairStyle', o.value, level);
+                  const isNext = locked && nextUnlock?.category === 'hairStyle' && nextUnlock?.value === o.value;
+                  return (
+                    <button
+                      key={o.value}
+                      type="button"
+                      className={`al-pill${character.hairStyle === o.value ? ' is-active' : ''}${locked ? ' is-locked' : ''}${isNext ? ' is-next-unlock' : ''}`}
+                      onClick={() => setIfUnlocked('hairStyle', o.value)}
+                      title={locked ? `Unlocks at Level ${unlockAt('hairStyle', o.value)}` : o.label}
+                      aria-disabled={locked}
+                    >
+                      {o.label}
+                      {locked && <span className="al-pill__lock">Lv.{unlockAt('hairStyle', o.value)}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* Hair Color */}
+            <section className="al-section">
+              <h3 className="al-section__title">
+                Hair Color
+                {HAIR_COLOR_OPTIONS.filter(o => !isUnlocked('hairColor', o.value, level)).length > 0 && (
+                  <span className="al-section__lock-hint">
+                    {HAIR_COLOR_OPTIONS.filter(o => !isUnlocked('hairColor', o.value, level)).length} locked
+                  </span>
+                )}
+              </h3>
+              <div className="al-swatches">
+                {HAIR_COLOR_OPTIONS.map(o => {
+                  const locked = !isUnlocked('hairColor', o.value, level);
+                  const isNext = locked && nextUnlock?.category === 'hairColor' && nextUnlock?.value === o.value;
+                  return (
+                    <button
+                      key={o.value}
+                      type="button"
+                      className={`al-swatch${character.hairColor === o.value ? ' is-active' : ''}${locked ? ' is-locked' : ''}${isNext ? ' is-next-unlock' : ''}`}
+                      style={{ '--sw': locked ? '#888' : o.swatch }}
+                      onClick={() => setIfUnlocked('hairColor', o.value)}
+                      title={locked ? `Unlocks at Level ${unlockAt('hairColor', o.value)}` : o.label}
+                      aria-pressed={!locked && character.hairColor === o.value}
+                      aria-disabled={locked}
+                    >
+                      <span className="al-swatch__dot" />
+                      <span className="al-swatch__name">
+                        {locked ? `Lv.${unlockAt('hairColor', o.value)}` : o.label}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* Outfit */}
+            <section className="al-section">
+              <h3 className="al-section__title">
+                Outfit
+                {OUTFIT_OPTIONS.filter(o => !isUnlocked('outfit', o.value, level)).length > 0 && (
+                  <span className="al-section__lock-hint">
+                    {OUTFIT_OPTIONS.filter(o => !isUnlocked('outfit', o.value, level)).length} locked
+                  </span>
+                )}
+              </h3>
+              <div className="al-outfit-grid">
+                {OUTFIT_OPTIONS.map(o => {
+                  const locked = !isUnlocked('outfit', o.value, level);
+                  const isNext = locked && nextUnlock?.category === 'outfit' && nextUnlock?.value === o.value;
+                  return (
+                    <button
+                      key={o.value}
+                      type="button"
+                      className={`al-outfit-card${character.outfit === o.value ? ' is-active' : ''}${locked ? ' is-locked' : ''}${isNext ? ' is-next-unlock' : ''}`}
+                      onClick={() => setIfUnlocked('outfit', o.value)}
+                      aria-pressed={!locked && character.outfit === o.value}
+                      aria-disabled={locked}
+                      title={locked ? `Unlocks at Level ${unlockAt('outfit', o.value)}` : undefined}
+                    >
+                      <span className="al-outfit-card__label">{o.label}</span>
+                      <span className="al-outfit-card__desc">
+                        {locked ? `Unlocks at Level ${unlockAt('outfit', o.value)}` : o.desc}
+                      </span>
+                      {locked && <span className="al-outfit-card__lock-badge">Locked</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* Accessories */}
+            <section className="al-section">
+              <h3 className="al-section__title">
+                Accessories
+                {ACCENT_OPTIONS.filter(o => !isUnlocked('accent', o.value, level)).length > 0 && (
+                  <span className="al-section__lock-hint">
+                    {ACCENT_OPTIONS.filter(o => !isUnlocked('accent', o.value, level)).length} locked
+                  </span>
+                )}
+              </h3>
+              <div className="al-pills">
+                {ACCENT_OPTIONS.map(o => {
+                  const locked = !isUnlocked('accent', o.value, level);
+                  const isNext = locked && nextUnlock?.category === 'accent' && nextUnlock?.value === o.value;
+                  return (
+                    <button
+                      key={o.value}
+                      type="button"
+                      className={`al-pill${character.accent === o.value ? ' is-active' : ''}${locked ? ' is-locked' : ''}${isNext ? ' is-next-unlock' : ''}`}
+                      onClick={() => setIfUnlocked('accent', o.value)}
+                      title={locked ? `Unlocks at Level ${unlockAt('accent', o.value)}` : o.label}
+                      aria-disabled={locked}
+                    >
+                      {o.label}
+                      {locked && <span className="al-pill__lock">Lv.{unlockAt('accent', o.value)}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* Expression — always unlocked */}
+            <section className="al-section">
+              <h3 className="al-section__title">Expression</h3>
+              <div className="al-pills">
+                {EXPRESSION_OPTIONS.map(o => (
+                  <button
+                    key={o.value}
+                    type="button"
+                    className={`al-pill${character.expression === o.value ? ' is-active' : ''}`}
+                    onClick={() => set('expression', o.value)}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            {/* Parent Email */}
+            <section className="al-section">
+              <h3 className="al-section__title">Parent Email</h3>
+              <p className="al-section__hint">
+                Add a parent email to receive progress updates when you hit milestones.
+              </p>
+              <div className="al-parent-email-row">
+                <input
+                  className="al-field__input"
+                  type="email"
+                  value={parentEmailInput}
+                  placeholder="parent@example.com"
+                  onChange={e => { setParentEmailInput(e.target.value); setPeStatus(null); setPeError(''); }}
+                />
+                <button
+                  type="button"
+                  className="al-btn al-btn--primary"
+                  onClick={handleParentEmailSave}
+                  disabled={peStatus === 'saving'}
+                >
+                  {peStatus === 'saving' ? 'Saving...' : parentEmailInput ? 'Update' : 'Save'}
+                </button>
+              </div>
+              {peStatus === 'saved' && (
+                <p className="al-pe-feedback al-pe-feedback--ok">Parent email saved!</p>
+              )}
+              {peStatus === 'error' && (
+                <p className="al-pe-feedback al-pe-feedback--err">{peError}</p>
+              )}
+            </section>
+
+            {/* Bottom actions row */}
+            <div className="al-bottom-row">
               <button
                 type="button"
-                key={option.value}
-                className={`swatch ${character.skinTone === option.value ? 'is-active' : ''}`}
-                onClick={() => handleChange('skinTone', option.value)}
-                style={{ '--swatch-color': option.swatch }}
-                aria-pressed={character.skinTone === option.value}
+                className="al-btn al-btn--primary al-btn--wide"
+                onClick={handleSave}
               >
-                <span>{option.label}</span>
+                Save Avatar
               </button>
-            ))}
-          </div>
-        </fieldset>
-
-        <fieldset className="character-lab__panel">
-          <legend>Hair style</legend>
-          <div className="option-stack">
-            {hairStyleOptions.map((option) => (
-              <label key={option.value} className={`pill ${character.hairStyle === option.value ? 'is-active' : ''}`}>
-                <input
-                  type="radio"
-                  name="hair-style"
-                  value={option.value}
-                  checked={character.hairStyle === option.value}
-                  onChange={() => handleChange('hairStyle', option.value)}
-                />
-                <span>{option.label}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-
-        <fieldset className="character-lab__panel">
-          <legend>Hair color</legend>
-          <div className="option-grid">
-            {hairColorOptions.map((option) => (
               <button
                 type="button"
-                key={option.value}
-                className={`swatch ${character.hairColor === option.value ? 'is-active' : ''}`}
-                onClick={() => handleChange('hairColor', option.value)}
-                style={{ '--swatch-color': option.swatch }}
-                aria-pressed={character.hairColor === option.value}
+                className="al-btn al-btn--secondary al-btn--wide"
+                onClick={() => navigate('/')}
               >
-                <span>{option.label}</span>
+                Done
               </button>
-            ))}
-          </div>
-        </fieldset>
+            </div>
 
-        <fieldset className="character-lab__panel">
-          <legend>Outfit</legend>
-          <div className="option-card-grid">
-            {outfitOptions.map((option) => (
-              <button
-                type="button"
-                key={option.value}
-                className={`option-card ${character.outfit === option.value ? 'is-active' : ''}`}
-                onClick={() => handleChange('outfit', option.value)}
-                aria-pressed={character.outfit === option.value}
-              >
-                <h3>{option.label}</h3>
-                <p>{option.description}</p>
-              </button>
-            ))}
           </div>
-        </fieldset>
-
-        <fieldset className="character-lab__panel">
-          <legend>Accessories</legend>
-          <div className="option-stack">
-            {accentOptions.map((option) => (
-              <label key={option.value} className={`pill ${character.accent === option.value ? 'is-active' : ''}`}>
-                <input
-                  type="radio"
-                  name="accent"
-                  value={option.value}
-                  checked={character.accent === option.value}
-                  onChange={() => handleChange('accent', option.value)}
-                />
-                <span>{option.label}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-
-        <fieldset className="character-lab__panel">
-          <legend>Expression</legend>
-          <div className="option-stack">
-            {expressionOptions.map((option) => (
-              <label key={option.value} className={`pill ${character.expression === option.value ? 'is-active' : ''}`}>
-                <input
-                  type="radio"
-                  name="expression"
-                  value={option.value}
-                  checked={character.expression === option.value}
-                  onChange={() => handleChange('expression', option.value)}
-                />
-                <span>{option.label}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-      </section>
-
-      <footer className="character-lab__footer">
-        <p>
-          Tips: visit lessons or your dashboard to see your updated buddy cheering you on. Looking for
-          inspiration? Try the default combo&nbsp;
-          <button type="button" onClick={() => updateCharacter(getDefaultCharacter())} className="character-lab__link">
-            Code Explorer
-          </button>
-          .
-        </p>
-        <button type="button" className="character-lab__primary" onClick={() => navigate('/')}>
-          Done — return home
-        </button>
-      </footer>
+        </div>
+      </main>
     </div>
   );
 };
 
-export default CharacterLab;
+export default AvatarLab;

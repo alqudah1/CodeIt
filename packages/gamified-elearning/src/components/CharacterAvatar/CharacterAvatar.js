@@ -172,7 +172,43 @@ const getExpressionLayer = (expressionKey, strokeColor) => {
   );
 };
 
-const CharacterAvatar = ({ character, size = 240, className }) => {
+const svgContent = (palette, accentColor, geometry, skin, hair, hairShape, accentLayer, accent, expression) => (
+  <>
+    <defs>
+      <linearGradient id="avatar-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor={palette.accent} stopOpacity="0.9" />
+        <stop offset="100%" stopColor="#ffffff" stopOpacity="0.7" />
+      </linearGradient>
+      <filter id="shadow-blur" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
+        <feOffset in="blur" dx="0" dy="4" result="offsetBlur" />
+        <feMerge>
+          <feMergeNode in="offsetBlur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+
+    <rect x="10" y="10" width="220" height="240" rx="40" fill="url(#avatar-bg)" />
+
+    {accent === 'cape' && accentLayer(accentColor)}
+
+    <path d={geometry.torso} fill={palette.primary} filter="url(#shadow-blur)" />
+    <path d={geometry.overlay} fill={palette.secondary} opacity="0.7" />
+
+    <path d={geometry.leftArm} fill={skin} stroke={palette.primary} strokeWidth="10" strokeLinecap="round" />
+    <path d={geometry.rightArm} fill={skin} stroke={palette.primary} strokeWidth="10" strokeLinecap="round" />
+
+    <circle cx="120" cy="90" r="55" fill={skin} />
+    {hairShape(hair)}
+    {getExpressionLayer(expression, '#2b1b18')}
+    {accent !== 'cape' && accentLayer(accentColor)}
+
+    <circle cx="170" cy="50" r="12" fill="#ffffff" opacity="0.4" />
+  </>
+);
+
+const CharacterAvatar = ({ character, size = 240, className, compact = false }) => {
   const {
     skinTone = 'sunset',
     hairStyle = 'wave',
@@ -189,73 +225,33 @@ const CharacterAvatar = ({ character, size = 240, className }) => {
   const accentColor = accentPalette[accent] || accentPalette.none;
   const geometry = baseGeometry[gender] || baseGeometry.female;
 
-  const aspectRatio = 260 / 240;
-  const height = size * aspectRatio;
   const hairShape = hairShapes[hairStyle] || hairShapes.wave;
   const accentLayer = accentLayers[accent] || accentLayers.none;
 
+  if (compact) {
+    return (
+      <svg
+        viewBox="40 5 160 160"
+        width={size}
+        height={size}
+        className={className}
+        role="img"
+        aria-label="Customized CodeIt character"
+        style={{ display: 'block' }}
+      >
+        {svgContent(palette, accentColor, geometry, skin, hair, hairShape, accentLayer, accent, expression)}
+      </svg>
+    );
+  }
+
+  const aspectRatio = 260 / 240;
+  const height = size * aspectRatio;
   const classes = ['character-avatar', className].filter(Boolean).join(' ');
 
   return (
     <div className={classes} style={{ width: size, height }}>
       <svg viewBox="0 0 240 260" role="img" aria-label="Customized CodeIt character">
-        <defs>
-          <linearGradient id="avatar-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={palette.accent} stopOpacity="0.9" />
-            <stop offset="100%" stopColor="#ffffff" stopOpacity="0.7" />
-          </linearGradient>
-          <filter id="shadow-blur" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
-            <feOffset in="blur" dx="0" dy="4" result="offsetBlur" />
-            <feMerge>
-              <feMergeNode in="offsetBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        <rect x="10" y="10" width="220" height="240" rx="40" fill="url(#avatar-bg)" />
-
-        {accent === 'cape' && accentLayer(accentColor)}
-
-        {/* Body */}
-        <path
-          d={geometry.torso}
-          fill={palette.primary}
-          filter="url(#shadow-blur)"
-        />
-        <path d={geometry.overlay} fill={palette.secondary} opacity="0.7" />
-
-        {/* Arms */}
-        <path
-          d={geometry.leftArm}
-          fill={skin}
-          stroke={palette.primary}
-          strokeWidth="10"
-          strokeLinecap="round"
-        />
-        <path
-          d={geometry.rightArm}
-          fill={skin}
-          stroke={palette.primary}
-          strokeWidth="10"
-          strokeLinecap="round"
-        />
-
-        {/* Head */}
-        <circle cx="120" cy="90" r="55" fill={skin} />
-
-        {/* Hair */}
-        {hairShape(hair)}
-
-        {/* Facial features */}
-        {getExpressionLayer(expression, '#2b1b18')}
-
-        {/* Accent accessory */}
-        {accent !== 'cape' && accentLayer(accentColor)}
-
-        {/* Highlight sparkle */}
-        <circle cx="170" cy="50" r="12" fill="#ffffff" opacity="0.4" />
+        {svgContent(palette, accentColor, geometry, skin, hair, hairShape, accentLayer, accent, expression)}
       </svg>
     </div>
   );

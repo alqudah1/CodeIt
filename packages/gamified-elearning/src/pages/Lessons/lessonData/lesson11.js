@@ -1,0 +1,48 @@
+const lesson11 = {
+  id: 11,
+  title: "Numbers & Arithmetic",
+  subtitle: "Use Python as a calculator — add, subtract, divide, and more!",
+  emoji: "🔢",
+  steps: [
+    {
+      type: 'concept',
+      id: 'concept',
+      title: 'Python Handles Two Kinds of Numbers',
+      body: 'Integers (int) are whole numbers like 5 or -3. Floats are decimals like 3.14. The basic operators are + (add), - (subtract), * (multiply), and / (divide). Dividing always gives a float. Two extra operators: // gives you the integer part of a division (floor division), and % gives you the remainder (modulo).',
+      highlight: '10 // 3   # → 3  (whole part only)\n10 % 3    # → 1  (what is left over)',
+      code: 'print(10 // 3)\nprint(10 % 3)',
+    },
+    {
+      type: 'example',
+      id: 'example',
+      title: 'The Four Basic Operators',
+      description: 'Click Run to see addition, subtraction, multiplication, and division all at once.',
+      code: 'a = 10\nb = 3\nprint("Add:", a + b)\nprint("Subtract:", a - b)\nprint("Multiply:", a * b)\nprint("Divide:", a / b)',
+      successPattern: /Add:|Subtract:|Multiply:|Divide:/i,
+      hint: 'Click Run! Notice that 10 / 3 gives a decimal even though both numbers are integers.',
+      xp: 10,
+    },
+    {
+      type: 'tryit',
+      id: 'tryit',
+      title: 'Packing Boxes',
+      description: 'You have 25 items and each box holds 4. Use // to find the number of full boxes and % to find the leftovers. Run the code to see the result!',
+      code: 'items = 25\nbox_size = 4\nfull_boxes = items // box_size\nleftover = items % box_size\nprint("Full boxes:", full_boxes)\nprint("Leftover items:", leftover)',
+      successPattern: /Full boxes:|Leftover/i,
+      hint: '// gives the whole-number part of the division. % gives what is left over after filling complete boxes.',
+      xp: 15,
+    },
+    {
+      type: 'challenge',
+      id: 'challenge',
+      title: 'Area and Perimeter',
+      description: 'Calculate the area and perimeter of a rectangle. Then try changing the length and width and run again to see different results!',
+      code: 'length = 8\nwidth = 5\narea = length * width\nperimeter = 2 * (length + width)\nprint("Area:", area)\nprint("Perimeter:", perimeter)',
+      successPattern: /Area:|Perimeter:/i,
+      hint: 'Area = length x width. Perimeter = 2 x (length + width). Change the numbers and observe how the results shift!',
+      xp: 20,
+    },
+  ]
+};
+
+export default lesson11;

@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675">
+  <defs>
+    <!-- Sky gradient -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#1b3f7e"/>
+      <stop offset="45%"  stop-color="#2e7cc4"/>
+      <stop offset="100%" stop-color="#93d4f0"/>
+    </linearGradient>
+    <!-- Grass (island top) -->
+    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#6dd56e"/>
+      <stop offset="100%" stop-color="#45a048"/>
+    </linearGradient>
+    <!-- Dirt (island body) -->
+    <linearGradient id="dirt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#9b7040"/>
+      <stop offset="100%" stop-color="#5c3a1e"/>
+    </linearGradient>
+    <!-- Island shadow -->
+    <filter id="islandShadow" x="-20%" y="-40%" width="140%" height="200%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+    <!-- Cloud blur -->
+    <filter id="cloudBlur">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="1200" height="675" fill="url(#sky)"/>
+
+  <!-- Stars (upper sky) -->
+  <g fill="white" opacity="0.7">
+    <circle cx="80"  cy="30"  r="1.5"/>
+    <circle cx="200" cy="60"  r="1"/>
+    <circle cx="340" cy="20"  r="1.5"/>
+    <circle cx="450" cy="55"  r="1"/>
+    <circle cx="560" cy="35"  r="1.5"/>
+    <circle cx="650" cy="15"  r="1"/>
+    <circle cx="780" cy="45"  r="1.5"/>
+    <circle cx="880" cy="25"  r="1"/>
+    <circle cx="980" cy="55"  r="1.5"/>
+    <circle cx="1100" cy="30" r="1"/>
+    <circle cx="1160" cy="65" r="1.5"/>
+    <circle cx="120" cy="80"  r="1"/>
+    <circle cx="700" cy="70"  r="1"/>
+    <circle cx="1050" cy="10" r="1.5"/>
+  </g>
+
+  <!-- Clouds (blurred white blobs for depth) -->
+  <!-- Cloud 1 (far left, large) -->
+  <g opacity="0.55" filter="url(#cloudBlur)">
+    <ellipse cx="140" cy="200" rx="90" ry="28" fill="white"/>
+    <ellipse cx="185" cy="185" rx="60" ry="22" fill="white"/>
+    <ellipse cx="100" cy="195" rx="50" ry="20" fill="white"/>
+  </g>
+  <!-- Cloud 2 (upper centre) -->
+  <g opacity="0.45" filter="url(#cloudBlur)">
+    <ellipse cx="550" cy="100" rx="100" ry="30" fill="white"/>
+    <ellipse cx="600" cy="82"  rx="65"  ry="24" fill="white"/>
+    <ellipse cx="510" cy="92"  rx="55"  ry="22" fill="white"/>
+  </g>
+  <!-- Cloud 3 (right side) -->
+  <g opacity="0.5" filter="url(#cloudBlur)">
+    <ellipse cx="1020" cy="80"  rx="85" ry="26" fill="white"/>
+    <ellipse cx="1060" cy="64"  rx="55" ry="20" fill="white"/>
+    <ellipse cx="985"  cy="75"  rx="50" ry="18" fill="white"/>
+  </g>
+  <!-- Cloud 4 (small, mid-left) -->
+  <g opacity="0.35" filter="url(#cloudBlur)">
+    <ellipse cx="350" cy="155" rx="65" ry="18" fill="white"/>
+    <ellipse cx="385" cy="143" rx="40" ry="15" fill="white"/>
+  </g>
+  <!-- Cloud 5 (small, mid-right low) -->
+  <g opacity="0.35" filter="url(#cloudBlur)">
+    <ellipse cx="870" cy="190" rx="70" ry="20" fill="white"/>
+    <ellipse cx="905" cy="178" rx="45" ry="16" fill="white"/>
+  </g>
+
+  <!-- Winding path connecting islands -->
+  <!-- Node positions (xPct, yPct) mapped to 1200×675:
+       Start (8,80)→(96,540), L1 (22,64)→(264,432), P1 (37,48)→(444,324),
+       P2 (54,33)→(648,223), Quiz (68,21)→(816,142), Boss (80,36)→(960,243), L2 (90,55)→(1080,371) -->
+  <path d="M 96,530 C 155,495 200,460 264,422 C 325,390 385,355 444,314 C 510,278 575,248 648,213 C 715,185 760,158 816,132 C 855,162 910,200 960,233 C 1012,266 1052,315 1080,361"
+        fill="none"
+        stroke="rgba(255,255,255,0.45)"
+        stroke-width="4"
+        stroke-dasharray="12,9"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <!-- Helper macro: each island = grass ellipse + dirt body + shadow -->
+  <!-- Island sizes: grass rx=72 ry=14, dirt rx=68 ry=24 (centered 18px below node) -->
+
+  <!-- Start island (96, 558) grass / (96, 572) dirt -->
+  <g filter="url(#islandShadow)">
+    <ellipse cx="96"  cy="572" rx="68" ry="22" fill="url(#dirt)"/>
+    <ellipse cx="96"  cy="555" rx="72" ry="14" fill="url(#grass)"/>
+  </g>
+  <!-- Grass highlight -->
+  <ellipse cx="96"  cy="550" rx="60" ry="6"  fill="#8ae08b" opacity="0.5"/>
+
+  <!-- Lesson 1 island (264, 450) -->
+  <g filter="url(#islandShadow)">
+    <ellipse cx="264" cy="450" rx="68" ry="22" fill="url(#dirt)"/>
+    <ellipse cx="264" cy="433" rx="72" ry="14" fill="url(#grass)"/>
+  </g>
+  <ellipse cx="264" cy="428" rx="60" ry="6"  fill="#8ae08b" opacity="0.5"/>
+
+  <!-- Puzzle 1 island (444, 342) -->
+  <g filter="url(#islandShadow)">
+    <ellipse cx="444" cy="342" rx="68" ry="22" fill="url(#dirt)"/>
+    <ellipse cx="444" cy="325" rx="72" ry="14" fill="url(#grass)"/>
+  </g>
+  <ellipse cx="444" cy="320" rx="60" ry="6"  fill="#8ae08b" opacity="0.5"/>
+
+  <!-- Puzzle 2 island (648, 241) -->
+  <g filter="url(#islandShadow)">
+    <ellipse cx="648" cy="241" rx="68" ry="22" fill="url(#dirt)"/>
+    <ellipse cx="648" cy="224" rx="72" ry="14" fill="url(#grass)"/>
+  </g>
+  <ellipse cx="648" cy="219" rx="60" ry="6"  fill="#8ae08b" opacity="0.5"/>
+
+  <!-- Mini Quiz island (816, 160) -->
+  <g filter="url(#islandShadow)">
+    <ellipse cx="816" cy="160" rx="68" ry="22" fill="url(#dirt)"/>
+    <ellipse cx="816" cy="143" rx="72" ry="14" fill="url(#grass)"/>
+  </g>
+  <ellipse cx="816" cy="138" rx="60" ry="6"  fill="#8ae08b" opacity="0.5"/>
+
+  <!-- Boss Puzzle island (960, 261) -->
+  <g filter="url(#islandShadow)">
+    <ellipse cx="960" cy="261" rx="78" ry="24" fill="url(#dirt)"/>
+    <ellipse cx="960" cy="244" rx="82" ry="15" fill="url(#grass)"/>
+  </g>
+  <ellipse cx="960" cy="239" rx="68" ry="7"  fill="#8ae08b" opacity="0.5"/>
+
+  <!-- Lesson 2 island (1080, 389) -->
+  <g filter="url(#islandShadow)">
+    <ellipse cx="1080" cy="389" rx="68" ry="22" fill="url(#dirt)"/>
+    <ellipse cx="1080" cy="372" rx="72" ry="14" fill="url(#grass)"/>
+  </g>
+  <ellipse cx="1080" cy="367" rx="60" ry="6"  fill="#8ae08b" opacity="0.5"/>
+
+  <!-- Small decorative pebble islands (no nodes, just atmosphere) -->
+  <g opacity="0.55">
+    <ellipse cx="190" cy="310" rx="28" ry="8"  fill="url(#dirt)"/>
+    <ellipse cx="190" cy="303" rx="29" ry="6"  fill="url(#grass)"/>
+  </g>
+  <g opacity="0.45">
+    <ellipse cx="750" cy="295" rx="22" ry="7"  fill="url(#dirt)"/>
+    <ellipse cx="750" cy="289" rx="23" ry="5"  fill="url(#grass)"/>
+  </g>
+  <g opacity="0.4">
+    <ellipse cx="540" cy="420" rx="30" ry="9"  fill="url(#dirt)"/>
+    <ellipse cx="540" cy="413" rx="31" ry="6"  fill="url(#grass)"/>
+  </g>
+</svg>

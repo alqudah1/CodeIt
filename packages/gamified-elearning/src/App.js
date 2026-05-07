@@ -1,107 +1,195 @@
-import React, { useEffect, useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation, useParams, Navigate } from 'react-router-dom'; // Added Navigate
-import { USE_ARTISTIC_HOMEPAGE } from './featureFlags';
-import HomeOld from './legacy/HomeOld';
+import React, { lazy, Suspense, useEffect, useContext } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation, useParams, Navigate } from 'react-router-dom';
 import Home from './pages/Home/Home';
-import Builder from './pages/Builder/Builder';
-import Playground from './pages/Playground/Playground';
-import MainPage from './pages/MainPage/MainPage';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, AuthContext } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { CharacterProvider } from './context/CharacterContext';
-import { Lesson1, Lesson1Interactive, Lesson2, Lesson2Interactive, Lesson3, Lesson3Interactive, Lesson4, Lesson4Interactive, Lesson5, Lesson5Interactive, Lesson6, Lesson6Interactive, Lesson7, Lesson7Interactive, Lesson8, Lesson8Interactive, Lesson9, Lesson9Interactive, Lesson10, Lesson10Interactive, LessonMap } from './pages/Lessons';
-import Quiz from './pages/Quizzes/Quiz';
-import { Game1, Game2, Game3, Game4, Game5, Game6, Game7, Game8, Game9, Game10, GameHub } from './pages/Games';
-import CharacterLab from './pages/CharacterLab/CharacterLab';
-import Leaderboard from './pages/Leaderboard';
-import { AuthContext } from './context/AuthContext';
-import './App.css';
+import RequireAdmin from './pages/Admin/RequireAdmin';
 
-const ActiveHome = USE_ARTISTIC_HOMEPAGE ? Home : HomeOld;
+// ── Lazy-loaded routes ────────────────────────────────────────────
+const MainPage       = lazy(() => import('./pages/MainPage/MainPage'));
+const LessonMap      = lazy(() => import('./pages/Lessons/LessonMap'));
 
-// Quiz Wrapper Component
+const Lesson1Interactive  = lazy(() => import('./pages/Lessons/Lesson1Interactive'));
+const Lesson2Interactive  = lazy(() => import('./pages/Lessons/Lesson2Interactive'));
+const Lesson3Interactive  = lazy(() => import('./pages/Lessons/Lesson3Interactive'));
+const Lesson4Interactive  = lazy(() => import('./pages/Lessons/Lesson4Interactive'));
+const Lesson5Interactive  = lazy(() => import('./pages/Lessons/Lesson5Interactive'));
+const Lesson6Interactive  = lazy(() => import('./pages/Lessons/Lesson6Interactive'));
+const Lesson7Interactive  = lazy(() => import('./pages/Lessons/Lesson7Interactive'));
+const Lesson8Interactive  = lazy(() => import('./pages/Lessons/Lesson8Interactive'));
+const Lesson9Interactive  = lazy(() => import('./pages/Lessons/Lesson9Interactive'));
+const Lesson10Interactive = lazy(() => import('./pages/Lessons/Lesson10Interactive'));
+const Lesson11Interactive = lazy(() => import('./pages/Lessons/Lesson11Interactive'));
+const Lesson12Interactive = lazy(() => import('./pages/Lessons/Lesson12Interactive'));
+const Lesson13Interactive = lazy(() => import('./pages/Lessons/Lesson13Interactive'));
+const Lesson14Interactive = lazy(() => import('./pages/Lessons/Lesson14Interactive'));
+const Lesson15Interactive = lazy(() => import('./pages/Lessons/Lesson15Interactive'));
+const Lesson16Interactive = lazy(() => import('./pages/Lessons/Lesson16Interactive'));
+
+const Quiz         = lazy(() => import('./pages/Quizzes/Quiz'));
+
+const GameHub      = lazy(() => import('./pages/Games/GameHub'));
+const Game1        = lazy(() => import('./pages/Games/Game1'));
+const Game2        = lazy(() => import('./pages/Games/Game2'));
+const Game3        = lazy(() => import('./pages/Games/Game3'));
+const Game4        = lazy(() => import('./pages/Games/Game4'));
+const Game5        = lazy(() => import('./pages/Games/Game5'));
+const Game6        = lazy(() => import('./pages/Games/Game6'));
+const Game7        = lazy(() => import('./pages/Games/Game7'));
+const Game8        = lazy(() => import('./pages/Games/Game8'));
+const Game9        = lazy(() => import('./pages/Games/Game9'));
+const Game10       = lazy(() => import('./pages/Games/Game10'));
+
+const JourneyMap    = lazy(() => import('./pages/Journey/JourneyMap'));
+const JourneyPuzzle = lazy(() => import('./pages/Journey/JourneyPuzzle'));
+
+const CharacterLab  = lazy(() => import('./pages/CharacterLab/CharacterLab'));
+const Leaderboard   = lazy(() => import('./pages/Leaderboard'));
+const Playground    = lazy(() => import('./pages/Playground/Playground'));
+const Builder       = lazy(() => import('./pages/Builder/Builder'));
+const Profile       = lazy(() => import('./pages/Profile/Profile'));
+
+const BlogIndex         = lazy(() => import('./pages/Blog/BlogIndex'));
+const BlogPost          = lazy(() => import('./pages/Blog/BlogPost'));
+const LearnPythonForKids = lazy(() => import('./pages/SEO/LearnPythonForKids'));
+const CodingForKids     = lazy(() => import('./pages/SEO/CodingForKids'));
+const PythonGamesForKids = lazy(() => import('./pages/SEO/PythonGamesForKids'));
+
+const AdminDashboard  = lazy(() => import('./pages/Admin/AdminDashboard'));
+const AdminUsers      = lazy(() => import('./pages/Admin/AdminUsers'));
+const AdminUserDetail = lazy(() => import('./pages/Admin/AdminUserDetail'));
+const AdminStats      = lazy(() => import('./pages/Admin/AdminStats'));
+const AdminAvatars    = lazy(() => import('./pages/Admin/AdminAvatars'));
+
+// ── Page loading fallback ─────────────────────────────────────────
+const PageLoader = () => (
+  <div style={{
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    height: '100vh', background: '#fdf8f3',
+  }}>
+    <div style={{
+      width: 36, height: 36, borderRadius: '50%',
+      border: '4px solid rgba(86,54,211,0.15)',
+      borderTopColor: '#5636d3',
+      animation: 'page-spin 0.7s linear infinite',
+    }} />
+    <style>{`@keyframes page-spin { to { transform: rotate(360deg); } }`}</style>
+  </div>
+);
+
+// ── Quiz validation wrapper ───────────────────────────────────────
+const VALID_QUIZ_IDS = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'];
 const QuizWrapper = () => {
   const { quizId } = useParams();
-  if (!['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].includes(quizId)) {
-    return <div>Invalid Quiz ID</div>;
-  }
+  if (!VALID_QUIZ_IDS.includes(quizId)) return <div>Invalid Quiz ID</div>;
   return <Quiz quizId={quizId} />;
 };
 
-// Route Logger Component
+// ── Route logger ──────────────────────────────────────────────────
 const RouteLogger = () => {
   const location = useLocation();
-  const { user } = useContext(AuthContext) || {}; // Fallback to empty object
+  const { user } = useContext(AuthContext) || {};
   useEffect(() => {
     console.log('Navigated to:', location.pathname, 'User:', JSON.stringify(user));
   }, [location]);
-  return null; // No rendering, just logging
+  return null;
 };
 
-const App = () => {
-  return (
-    <AuthProvider>
-      <ProgressProvider>
-        <CharacterProvider>
-          <Router>
-            {/* Place RouteLogger here, outside Routes but inside Router */}
-            <RouteLogger />
+const App = () => (
+  <AuthProvider>
+    <ProgressProvider>
+      <CharacterProvider>
+        <Router>
+          <RouteLogger />
+          <Suspense fallback={<PageLoader />}>
             <Routes>
-          <Route path="/" element={<ActiveHome />} />
-          <Route path="/MainPage" element={<MainPage />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          
-          {/* Lesson Map route */}
-          <Route path="/lessons" element={<LessonMap />} />
+              {/* ── Public / always-eager ── */}
+              <Route path="/"         element={<Home />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/login"    element={<Login />} />
 
-          {/* Lesson Routes - All using Interactive versions */}
-          <Route path="/lesson/1" element={<Lesson1Interactive />} />
-          <Route path="/lesson/2" element={<Lesson2Interactive />} />
-          <Route path="/lesson/3" element={<Lesson3Interactive />} />
-          <Route path="/lesson/4" element={<Lesson4Interactive />} />
-          <Route path="/lesson/5" element={<Lesson5Interactive />} />
-          <Route path="/lesson/6" element={<Lesson6Interactive />} />
-          <Route path="/lesson/7" element={<Lesson7Interactive />} />
-          <Route path="/lesson/8" element={<Lesson8Interactive />} />
-          <Route path="/lesson/9" element={<Lesson9Interactive />} />
-          <Route path="/lesson/10" element={<Lesson10Interactive />} />
-          {/* Quiz Routes */}
-          <Route path="/quiz/:quizId" element={<QuizWrapper />} />
-          
-          {/* Game Routes */}
-          <Route path="/games" element={<GameHub />} />
-          <Route path="/game/1"  element={<Game1  />} />
-          <Route path="/game/2"  element={<Game2  />} />
-          <Route path="/game/3"  element={<Game3  />} />
-          <Route path="/game/4"  element={<Game4  />} />
-          <Route path="/game/5"  element={<Game5  />} />
-          <Route path="/game/6"  element={<Game6  />} />
-          <Route path="/game/7"  element={<Game7  />} />
-          <Route path="/game/8"  element={<Game8  />} />
-          <Route path="/game/9"  element={<Game9  />} />
-          <Route path="/game/10" element={<Game10 />} />
-          
-          {/* Builder + Playground */}
-          <Route path="/builder"    element={<Builder />} />
-          <Route path="/playground" element={<Playground />} />
+              {/* ── Dashboard ── */}
+              <Route path="/MainPage" element={<MainPage />} />
 
-          {/* Character Lab Route */}
-          <Route path="/character" element={<CharacterLab />} />
-          
-          {/* Leaderboard Route */}
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          
-          {/* 404 Route */}
-          <Route path="*" element={<Navigate to="/" replace />} /> {/* Now works with import */}
-          </Routes>
+              {/* ── Lessons ── */}
+              <Route path="/lessons"    element={<LessonMap />} />
+              <Route path="/lesson/1"  element={<Lesson1Interactive />} />
+              <Route path="/lesson/2"  element={<Lesson2Interactive />} />
+              <Route path="/lesson/3"  element={<Lesson3Interactive />} />
+              <Route path="/lesson/4"  element={<Lesson4Interactive />} />
+              <Route path="/lesson/5"  element={<Lesson5Interactive />} />
+              <Route path="/lesson/6"  element={<Lesson6Interactive />} />
+              <Route path="/lesson/7"  element={<Lesson7Interactive />} />
+              <Route path="/lesson/8"  element={<Lesson8Interactive />} />
+              <Route path="/lesson/9"  element={<Lesson9Interactive />} />
+              <Route path="/lesson/10" element={<Lesson10Interactive />} />
+              <Route path="/lesson/11" element={<Lesson11Interactive />} />
+              <Route path="/lesson/12" element={<Lesson12Interactive />} />
+              <Route path="/lesson/13" element={<Lesson13Interactive />} />
+              <Route path="/lesson/14" element={<Lesson14Interactive />} />
+              <Route path="/lesson/15" element={<Lesson15Interactive />} />
+              <Route path="/lesson/16" element={<Lesson16Interactive />} />
+
+              {/* ── Quiz ── */}
+              <Route path="/quiz/:quizId" element={<QuizWrapper />} />
+
+              {/* ── Games ── */}
+              <Route path="/games"   element={<GameHub />} />
+              <Route path="/game/1"  element={<Game1  />} />
+              <Route path="/game/2"  element={<Game2  />} />
+              <Route path="/game/3"  element={<Game3  />} />
+              <Route path="/game/4"  element={<Game4  />} />
+              <Route path="/game/5"  element={<Game5  />} />
+              <Route path="/game/6"  element={<Game6  />} />
+              <Route path="/game/7"  element={<Game7  />} />
+              <Route path="/game/8"  element={<Game8  />} />
+              <Route path="/game/9"  element={<Game9  />} />
+              <Route path="/game/10" element={<Game10 />} />
+
+              {/* ── Journey ── */}
+              <Route path="/journey"                          element={<JourneyMap />} />
+              <Route path="/journey/puzzle/:lessonId/:slot"  element={<JourneyPuzzle />} />
+
+              {/* ── Character & Social ── */}
+              <Route path="/character"   element={<CharacterLab />} />
+              <Route path="/leaderboard" element={<Leaderboard />} />
+
+              {/* ── Playground ── */}
+              <Route path="/playground" element={<Playground />} />
+
+              {/* ── AI Builder ── */}
+              <Route path="/builder" element={<Builder />} />
+
+              {/* ── Profile ── */}
+              <Route path="/profile" element={<Profile />} />
+
+              {/* ── Blog ── */}
+              <Route path="/blog"       element={<BlogIndex />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+
+              {/* ── SEO landing pages ── */}
+              <Route path="/learn-python-for-kids"  element={<LearnPythonForKids />} />
+              <Route path="/coding-for-kids"        element={<CodingForKids />} />
+              <Route path="/python-games-for-kids"  element={<PythonGamesForKids />} />
+
+              {/* ── Admin ── */}
+              <Route path="/admin"           element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />
+              <Route path="/admin/users"     element={<RequireAdmin><AdminUsers /></RequireAdmin>} />
+              <Route path="/admin/users/:id" element={<RequireAdmin><AdminUserDetail /></RequireAdmin>} />
+              <Route path="/admin/stats"     element={<RequireAdmin><AdminStats /></RequireAdmin>} />
+              <Route path="/admin/avatars"   element={<RequireAdmin><AdminAvatars /></RequireAdmin>} />
+
+              {/* ── 404 ── */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
         </Router>
-        </CharacterProvider>
-      </ProgressProvider>
-    </AuthProvider>
-  );
-};
+      </CharacterProvider>
+    </ProgressProvider>
+  </AuthProvider>
+);
 
 export default App;

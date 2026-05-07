@@ -1,48 +1,48 @@
 const lesson8 = {
   id: 8,
-  title: "Handling Errors Gracefully",
-  subtitle: "Learn to catch mistakes before they crash your program — like a safety net for your code!",
-  emoji: "🛡️",
-  story: [
-    "💥 Maya's robot kept crashing every time someone typed a word instead of a number. Total disaster!",
-    "🦺 Python's try/except is a safety net. If code inside try: fails, Python jumps to except: — no crash!",
-    "🧪 You can even print a friendly message: 'Oops! Please enter a number.' instead of a scary error.",
-    "🏆 Professional programmers always handle errors. After this lesson, you will too!"
-  ],
-  concepts: [
-    { icon: "🛡️", title: "try / except", body: "Code in try: runs normally. If it crashes, except: catches the error and handles it." },
-    { icon: "🏷️", title: "Exception Types", body: "ValueError, TypeError, ZeroDivisionError — each error has a name you can catch specifically." },
-    { icon: "📢", title: "Error Messages", body: "except ValueError as e: print(e) — you can print what went wrong in a friendly way." },
-    { icon: "✅", title: "finally", body: "finally: always runs — even if there's an error. Use it for cleanup tasks." }
-  ],
-  checkpoints: [
+  title: "Loops with Lists",
+  subtitle: "Visit every item in a list — automatically, one by one!",
+  emoji: "🔁",
+  steps: [
     {
-      id: "cp1",
-      title: "Checkpoint 1 — Safe Division",
-      description: "Write try/except to handle division by zero. Print 'Cannot divide by zero!' if it happens.",
-      initialCode: 'try:\n    result = 10 / 0\n    print(result)\nexcept ZeroDivisionError:\n    print("Cannot divide by zero!")',
-      successPattern: /Cannot divide/i,
-      hint: "Division by zero raises ZeroDivisionError. Catch it with except ZeroDivisionError:",
+      type: 'concept',
+      id: 'concept',
+      title: 'Loop Through a List',
+      body: 'Combine a for loop with a list and Python visits every item automatically. Write what you want to do with each item — the loop handles the rest, no matter how long the list is!',
+      highlight: 'fruits = ["apple", "banana", "mango"]\nfor fruit in fruits:\n    print(fruit)   →   apple  banana  mango',
+      code: 'fruits = ["apple", "banana", "mango"]\nfor fruit in fruits:\n    print(fruit)',
+    },
+    {
+      type: 'example',
+      id: 'example',
+      title: 'Print Every Item',
+      description: 'Click Run to loop through a list and print each item on its own line!',
+      code: 'planets = ["Mercury", "Venus", "Earth", "Mars"]\nfor planet in planets:\n    print(planet)',
+      successPattern: /Mercury|Earth/i,
+      hint: 'Click Run! The loop visits each planet in the list one by one.',
+      xp: 10,
+    },
+    {
+      type: 'tryit',
+      id: 'tryit',
+      title: 'Your Favorites',
+      description: 'Change the items to YOUR three favorite things and run the loop!',
+      code: 'favorites = ["coding", "pizza", "music"]\nfor item in favorites:\n    print(item)',
+      successPattern: /\w{3,}/,
+      hint: 'Change "coding", "pizza", "music" to three things you love and click Run!',
       xp: 15,
     },
     {
-      id: "cp2",
-      title: "Checkpoint 2 — Type Safety",
-      description: "Try to convert 'hello' to an integer. Catch the ValueError and print a friendly message.",
-      initialCode: "try:\n    num = int(\"hello\")\n    print(num)\nexcept ValueError:\n    print(\"That's not a number!\")",
-      successPattern: /not a number/i,
-      hint: "int('hello') raises ValueError because 'hello' can't be converted to a number.",
-      xp: 15,
-    },
-    {
-      id: "cp3",
-      title: "Checkpoint 3 — Finally Block",
-      description: "Add a finally block that always prints 'Program finished!' regardless of error.",
-      initialCode: 'try:\n    print(10 / 2)\nexcept ZeroDivisionError:\n    print("Error!")\nfinally:\n    print("Program finished!")',
-      successPattern: /Program finished/,
-      hint: "finally: runs after try/except no matter what. Put cleanup code here.",
+      type: 'challenge',
+      id: 'challenge',
+      title: 'Loop with If',
+      description: 'Run this to print only the short words. Then add more words to the list!',
+      code: 'words = ["hi", "elephant", "go", "python", "ok"]\nfor word in words:\n    if len(word) <= 3:\n        print(word, "is short")',
+      successPattern: /short/i,
+      hint: 'The if checks the length of each word. Add more words to the list and run again!',
       xp: 20,
-    }
+    },
   ]
 };
+
 export default lesson8;

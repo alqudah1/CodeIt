@@ -1,60 +1,80 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { API_BASE_URL } from "../../config/api";
 import { useAuth } from "../../context/AuthContext";
+import { useCharacter } from "../../context/CharacterContext";
+import CharacterAvatar from "../../components/CharacterAvatar/CharacterAvatar";
+import { getJourneyNext } from "../Journey/journeyNext";
+import { getGameById } from "../Games/gameCatalog";
+import { usePlayerProgress } from "../../hooks/usePlayerProgress";
+import { getXpProgress, getNextUnlock, getNextUnlockLabel } from "../../data/unlocks";
 import "./Quiz.css";
+
+// Shuffle an array without mutating it
+const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
+
+// Apply random question order + random option order to a question list
+const applyShuffles = (list) =>
+  shuffle(list).map((q) => ({
+    ...q,
+    options: Array.isArray(q.options) ? shuffle(q.options) : q.options,
+  }));
 
 export default function Quiz() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { quizId: routeId } = useParams(); // route: /quiz/:quizId
+  const { quizId: routeId } = useParams();
   const quizId = useMemo(() => (routeId ? String(routeId) : "1"), [routeId]);
 
-  const { user, loading: authLoading } = useAuth();
-  const token = useMemo(() => localStorage.getItem("token"), []);
+  const { user, token, loading: authLoading } = useAuth();
+  const { character } = useCharacter();
+  const { xp: preQuizXp } = usePlayerProgress(token);
 
-  // Quiz gating: only block when navigated from a lesson page
-  const fromLesson = location.state?.source === 'lesson';
-  const sourceLessonId = location.state?.lessonId ? Number(location.state.lessonId) : null;
+  // Gate: lesson N must be complete before quiz N
   const [gateBlocked, setGateBlocked] = useState(false);
-  const [gateChecking, setGateChecking] = useState(fromLesson);
+  const [gateChecking, setGateChecking] = useState(true);
 
   const [questions, setQuestions] = useState([]);
+  const rawQuestionsRef = useRef([]); // original fetch order, for re-shuffle on retry
   const [loadErr, setLoadErr] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // one-at-a-time state
+  // Per-question state
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [selected, setSelected] = useState(null);   // option value the user picked
-  const [revealed, setRevealed] = useState(false);  // true after picking
-  const [allAnswers, setAllAnswers] = useState({}); // { [qId]: value }
+  const [selected, setSelected] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+  const [allAnswers, setAllAnswers] = useState({});
 
-  // per-question check result from backend { correct, correctAnswerText }
+  // Check result from backend: { correct, correctAnswerText, explanation }
   const [checkResult, setCheckResult] = useState(null);
   const [checking, setChecking] = useState(false);
 
-  // results
+  // Accumulated per-question results for missed-question review
+  const [questionResults, setQuestionResults] = useState({});
+
+  // Final results
   const [done, setDone] = useState(false);
   const [results, setResults] = useState(null);
   const [submitErr, setSubmitErr] = useState("");
+
+  // Journey-aware routing
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
+  const nextRoute   = searchParams.get("next")  || null;
+  const journeyNode = searchParams.get("node")  || null;
+  const fromJourney = searchParams.get("from")  === "journey";
 
   const quizQuestionsUrl = useMemo(
     () => `${API_BASE_URL}/api/quiz/${quizId}/questions`,
     [quizId]
   );
 
-  // Lesson gating check — only runs when arriving from a lesson flow
+  // ── Gate check ──────────────────────────────────────────────────────────────
   useEffect(() => {
-    if (!fromLesson || !sourceLessonId) {
-      setGateChecking(false);
-      return;
-    }
     if (authLoading) return;
-    if (!user || !token) {
-      setGateChecking(false);
-      return;
-    }
+    if (!user || !token) { setGateChecking(false); return; }
+    const lessonNum = Number(quizId);
+    if (lessonNum > 10) { setGateChecking(false); return; }
     const checkGate = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/api/lessons/progress`, {
@@ -63,34 +83,22 @@ export default function Quiz() {
         if (res.ok) {
           const data = await res.json();
           const completed = (data.completedLessons || []).map(Number);
-          if (!completed.includes(sourceLessonId)) {
-            setGateBlocked(true);
-          }
+          if (!completed.includes(lessonNum)) setGateBlocked(true);
         }
-      } catch (_) {
-        // If gate check fails, don't block the user
-      } finally {
-        setGateChecking(false);
-      }
+      } catch (_) { /* fail open */ }
+      finally { setGateChecking(false); }
     };
     checkGate();
-  }, [fromLesson, sourceLessonId, user, token, authLoading]);
+  }, [quizId, user, token, authLoading]);
 
+  // ── Fetch questions ──────────────────────────────────────────────────────────
   useEffect(() => {
     const fetchQuestions = async () => {
       setLoading(true);
       setLoadErr("");
       if (authLoading) return;
-      if (!user) {
-        setLoading(false);
-        setLoadErr("Please log in to take the quiz.");
-        return;
-      }
-      if (!token) {
-        setLoading(false);
-        setLoadErr("Missing token. Please logout/login again.");
-        return;
-      }
+      if (!user) { setLoading(false); setLoadErr("Please log in to take the quiz."); return; }
+      if (!token) { setLoading(false); setLoadErr("Missing token. Please logout/login again."); return; }
       try {
         const res = await axios.get(quizQuestionsUrl, {
           headers: { Authorization: `Bearer ${token}` },
@@ -104,7 +112,9 @@ export default function Quiz() {
           setLoading(false);
           return;
         }
-        setQuestions(list.slice(0, 10)); // enforce max 10
+        const capped = list.slice(0, 10);
+        rawQuestionsRef.current = capped;
+        setQuestions(applyShuffles(capped));
         setLoading(false);
       } catch (err) {
         const status = err?.response?.status;
@@ -124,7 +134,7 @@ export default function Quiz() {
     fetchQuestions();
   }, [quizQuestionsUrl, user, authLoading, token]);
 
-  // current question helpers
+  // ── Current question helpers ──────────────────────────────────────────────
   const q = questions[currentIdx];
   const qId = q ? (q.id ?? q.questionId ?? currentIdx) : null;
   const questionText = q
@@ -133,13 +143,13 @@ export default function Quiz() {
   const options = q ? q.options || q.choices || q.answers || [] : [];
   const total = questions.length;
 
+  // ── Select answer ─────────────────────────────────────────────────────────
   const handleSelect = async (optVal) => {
     if (revealed || checking) return;
     setSelected(optVal);
     setRevealed(true);
     setAllAnswers((prev) => ({ ...prev, [String(qId)]: optVal }));
 
-    // Ask backend if the answer is correct (no correct answer pre-loaded)
     setChecking(true);
     try {
       const res = await axios.post(
@@ -147,15 +157,27 @@ export default function Quiz() {
         { questionId: qId, answer: optVal },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setCheckResult(res.data); // { correct, correctAnswerText }
+      const result = res.data; // { correct, correctAnswerText, explanation }
+      setCheckResult(result);
+      // Accumulate for missed-question review
+      setQuestionResults((prev) => ({
+        ...prev,
+        [String(qId)]: {
+          questionText,
+          correct: result.correct,
+          correctAnswerText: result.correctAnswerText,
+          explanation: result.explanation || "",
+          selectedAnswer: optVal,
+        },
+      }));
     } catch {
-      // If check fails, show no highlighting but still allow progress
-      setCheckResult({ correct: false, correctAnswerText: null });
+      setCheckResult({ correct: false, correctAnswerText: null, explanation: null });
     } finally {
       setChecking(false);
     }
   };
 
+  // ── Next / finish ─────────────────────────────────────────────────────────
   const handleNext = async () => {
     if (currentIdx < total - 1) {
       setCurrentIdx((i) => i + 1);
@@ -163,7 +185,6 @@ export default function Quiz() {
       setRevealed(false);
       setCheckResult(null);
     } else {
-      // last question — submit all answers to backend for final score
       const finalAnswers = { ...allAnswers, [String(qId)]: selected };
       try {
         const res = await axios.post(
@@ -173,8 +194,7 @@ export default function Quiz() {
         );
         setResults(res.data);
       } catch (err) {
-        const msg =
-          err?.response?.data?.error || err?.message || "Submit failed";
+        const msg = err?.response?.data?.error || err?.message || "Submit failed";
         setSubmitErr(msg);
         setResults({ correctCount: 0, totalQuestions: total, percentage: 0, xpEarned: 0 });
       }
@@ -182,7 +202,22 @@ export default function Quiz() {
     }
   };
 
+  // ── Retry — re-shuffles everything ───────────────────────────────────────
+  const handleRetry = () => {
+    setQuestions(applyShuffles(rawQuestionsRef.current));
+    setCurrentIdx(0);
+    setSelected(null);
+    setRevealed(false);
+    setCheckResult(null);
+    setAllAnswers({});
+    setQuestionResults({});
+    setDone(false);
+    setResults(null);
+    setSubmitErr("");
+  };
+
   const correctAnswerText = checkResult?.correctAnswerText ?? null;
+  const isCorrect = revealed && checkResult?.correct === true;
 
   const getOptClass = (optVal) => {
     if (!revealed) return "qz-opt";
@@ -191,21 +226,7 @@ export default function Quiz() {
     return "qz-opt qz-opt--dim";
   };
 
-  const isCorrect = revealed && checkResult?.correct === true;
-
-  const handleRetry = () => {
-    // Reset all quiz state to start fresh
-    setCurrentIdx(0);
-    setSelected(null);
-    setRevealed(false);
-    setCheckResult(null);
-    setAllAnswers({});
-    setDone(false);
-    setResults(null);
-    setSubmitErr("");
-  };
-
-  // ── gate checking (lesson flow only) ──
+  // ── Gate checking ─────────────────────────────────────────────────────────
   if (gateChecking) {
     return (
       <div className="qz-page">
@@ -217,27 +238,21 @@ export default function Quiz() {
     );
   }
 
-  // ── gate blocked ──
   if (gateBlocked) {
     return (
       <div className="qz-page">
         <div className="qz-error-card">
-          <span className="qz-error-icon">🔒</span>
           <p>
-            Complete <strong>Lesson {sourceLessonId}</strong> first to unlock this quiz!
+            Complete <strong>Lesson {quizId}</strong> first to unlock Quiz {quizId}.
           </p>
-          <button
-            className="qz-btn-back"
-            onClick={() => navigate(`/lesson/${sourceLessonId}`)}
-          >
-            ← Back to Lesson {sourceLessonId}
+          <button className="qz-btn-back" onClick={() => navigate(`/lesson/${quizId}`)}>
+            Go to Lesson {quizId}
           </button>
         </div>
       </div>
     );
   }
 
-  // ── loading ──
   if (loading || authLoading) {
     return (
       <div className="qz-page">
@@ -249,80 +264,154 @@ export default function Quiz() {
     );
   }
 
-  // ── error ──
   if (loadErr) {
     return (
       <div className="qz-page">
         <div className="qz-error-card">
-          <span className="qz-error-icon">😕</span>
           <p>{loadErr}</p>
           <button className="qz-btn-back" onClick={() => navigate(-1)}>
-            ← Go Back
+            Back
           </button>
         </div>
       </div>
     );
   }
 
-  // ── results screen ──
+  // ── Results screen ────────────────────────────────────────────────────────
   if (done) {
     const correct = results?.correctCount ?? 0;
-    const tot = results?.totalQuestions ?? total;
-    const xp = results?.xpEarned ?? 0;
-    const pct = results?.percentage ?? (tot > 0 ? Math.round((correct / tot) * 100) : 0);
+    const tot     = results?.totalQuestions ?? total;
+    const xp      = results?.xpEarned ?? 0;
+    const pct     = results?.percentage ?? (tot > 0 ? Math.round((correct / tot) * 100) : 0);
+
+    const headline =
+      pct === 100 ? "Perfect Score!"
+      : pct >= 75 ? "Great Job!"
+      : pct >= 50 ? "Nice Try!"
+      : "Keep Going!";
+
+    const encouragement =
+      pct === 100 ? "You know this topic inside out. Ready for the challenge?"
+      : pct >= 75 ? "Solid understanding. You are ready to move on."
+      : pct >= 50 ? "Good effort. Review any missed questions below, then try again."
+      : "Go back to the lesson, read the explanations below, then retry.";
+
+    const missedEntries = Object.values(questionResults).filter((r) => !r.correct);
+
+    // Forward CTA: puzzle if live, else journey, else dashboard
+    const livePuzzle = !fromJourney ? getGameById(String(quizId)) : null;
+    const puzzleIsLive = livePuzzle && !livePuzzle.comingSoon;
+
     return (
       <div className="qz-page">
         <div className="qz-results-card">
-          <div className="qz-results-trophy">
-            {pct === 100 ? "🏆" : pct >= 60 ? "⭐" : "💪"}
-          </div>
-          <h1 className="qz-results-title">
-            {pct === 100
-              ? "Perfect Score!"
-              : pct >= 60
-              ? "Great Job!"
-              : "Keep Trying!"}
-          </h1>
+          {character && (
+            <div className="qz-results-avatar">
+              <CharacterAvatar character={character} size={80} />
+            </div>
+          )}
+          <h1 className="qz-results-title">{headline}</h1>
+
           <div className="qz-score-wrap">
             <span className="qz-score-big">{correct}</span>
             <span className="qz-score-slash"> / </span>
             <span className="qz-score-total">{tot}</span>
           </div>
-          <div className="qz-xp-pill">+{xp} XP earned! 🎉</div>
+
+          <div className="qz-xp-pill">+{xp} XP earned</div>
+
+          {(() => {
+            const newXp = (preQuizXp || 0) + (xp || 0);
+            const info  = getXpProgress(newXp);
+            const nu    = getNextUnlock(info.level);
+            if (info.hasNext && info.pctToNext >= 70) {
+              return (
+                <p className="qz-level-hint qz-level-hint--urgent">
+                  Only {info.xpToNext} XP to reach Level {info.level + 1}!
+                </p>
+              );
+            }
+            if (nu) {
+              return (
+                <p className="qz-level-hint">
+                  Next reward: {getNextUnlockLabel(nu)} unlocks at Level {nu.atLevel}
+                </p>
+              );
+            }
+            return null;
+          })()}
+
+          <p className="qz-encouragement">{encouragement}</p>
+
           {submitErr && <p className="qz-submit-err">{submitErr}</p>}
+
+          {/* Missed questions review */}
+          {missedEntries.length > 0 && (
+            <div className="qz-missed-review">
+              <p className="qz-missed-label">Questions you missed</p>
+              {missedEntries.map((entry, i) => (
+                <div key={i} className="qz-missed-item">
+                  <p className="qz-missed-question">{entry.questionText}</p>
+                  <p className="qz-missed-wrong">Your answer: {entry.selectedAnswer}</p>
+                  <p className="qz-missed-correct">Correct answer: {entry.correctAnswerText}</p>
+                  {entry.explanation && (
+                    <p className="qz-missed-explanation">{entry.explanation}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="qz-results-actions">
-            <button className="qz-btn-retry" onClick={handleRetry}>
-              🔄 Retry
-            </button>
-            <button className="qz-btn-home" onClick={() => navigate(-1)}>
-              ← Back
-            </button>
+            {!fromJourney && (
+              <button className="qz-btn-retry" onClick={handleRetry}>
+                Retry
+              </button>
+            )}
+
+            {fromJourney && (journeyNode || nextRoute) ? (
+              <button
+                className="qz-btn-forward"
+                onClick={() => navigate(journeyNode ? getJourneyNext(journeyNode) : nextRoute)}
+              >
+                Continue
+              </button>
+            ) : puzzleIsLive ? (
+              <button
+                className="qz-btn-forward"
+                onClick={() => navigate(`/journey/puzzle/${quizId}/a`)}
+              >
+                Go to Challenge {quizId}
+              </button>
+            ) : (
+              <button className="qz-btn-forward" onClick={() => navigate("/MainPage")}>
+                Back to Dashboard
+              </button>
+            )}
           </div>
         </div>
       </div>
     );
   }
 
-  // ── main quiz ──
+  // ── Main quiz ─────────────────────────────────────────────────────────────
   return (
     <div className="qz-page">
       <div className="qz-card">
-        {/* header */}
+        {/* Header */}
         <div className="qz-header">
           <button className="qz-btn-back" onClick={() => navigate(-1)}>
-            ← Back
+            Back
           </button>
           <span className="qz-quiz-label">Quiz {quizId}</span>
         </div>
 
-        {/* progress bar */}
+        {/* Progress bar */}
         <div className="qz-progress-wrap">
           <div className="qz-progress-track">
             <div
               className="qz-progress-fill"
-              style={{
-                width: `${((currentIdx + (revealed ? 1 : 0)) / total) * 100}%`,
-              }}
+              style={{ width: `${((currentIdx + (revealed ? 1 : 0)) / total) * 100}%` }}
             />
           </div>
           <span className="qz-progress-text">
@@ -330,17 +419,17 @@ export default function Quiz() {
           </span>
         </div>
 
-        {/* question */}
+        {/* Question */}
         <div className="qz-question-card">
           <span className="qz-q-badge">Q{currentIdx + 1}</span>
           <h2 className="qz-question-text">{questionText}</h2>
         </div>
 
-        {/* options */}
+        {/* Options */}
         <div className="qz-options">
           {options.map((opt, oi) => {
-            const val = opt?.value ?? opt?.text ?? opt ?? String(oi);
-            const label = opt?.text ?? opt?.label ?? opt ?? String(val);
+            const val   = opt?.value ?? opt?.text ?? opt ?? String(oi);
+            const label = opt?.text  ?? opt?.label ?? opt ?? String(val);
             return (
               <button
                 key={`${qId}-${oi}`}
@@ -348,9 +437,7 @@ export default function Quiz() {
                 onClick={() => handleSelect(val)}
                 disabled={revealed || checking}
               >
-                <span className="qz-opt-letter">
-                  {String.fromCharCode(65 + oi)}
-                </span>
+                <span className="qz-opt-letter">{String.fromCharCode(65 + oi)}</span>
                 <span className="qz-opt-label">{label}</span>
                 {revealed && correctAnswerText && val === correctAnswerText && (
                   <span className="qz-opt-icon">✓</span>
@@ -363,25 +450,24 @@ export default function Quiz() {
           })}
         </div>
 
-        {/* feedback + next button */}
+        {/* Feedback + Next */}
         {revealed && !checking && (
           <div className="qz-bottom">
-            <div
-              className={`qz-feedback ${
-                isCorrect ? "qz-feedback--correct" : "qz-feedback--wrong"
-              }`}
-            >
-              <span className="qz-feedback-icon">
-                {isCorrect ? "🎉" : "💡"}
-              </span>
-              <span>
-                {isCorrect
-                  ? "Correct! Great job!"
-                  : "Not quite — the correct answer is highlighted in green."}
-              </span>
+            <div className={`qz-feedback ${isCorrect ? "qz-feedback--correct" : "qz-feedback--wrong"}`}>
+              <div className="qz-feedback-main">
+                <span className="qz-feedback-icon">{isCorrect ? "+" : "!"}</span>
+                <span className="qz-feedback-verdict">
+                  {isCorrect
+                    ? "Correct!"
+                    : `Not quite — the correct answer is "${correctAnswerText}".`}
+                </span>
+              </div>
+              {checkResult?.explanation && (
+                <p className="qz-feedback-explanation">{checkResult.explanation}</p>
+              )}
             </div>
             <button className="qz-btn-next" onClick={handleNext}>
-              {currentIdx < total - 1 ? "Next Question →" : "Finish Quiz 🎉"}
+              {currentIdx < total - 1 ? "Next Question" : "See Results"}
             </button>
           </div>
         )}

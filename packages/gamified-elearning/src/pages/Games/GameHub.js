@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import CharacterSpotlight from '../../components/CharacterSpotlight/CharacterSpotlight';
-import { getGameLaunchUrl, games } from './gameCatalog';
+import Header from '../Header/Header';
+import { games } from './gameCatalog';
 import './Games.css';
 
 const GameHub = () => {
@@ -8,36 +10,25 @@ const GameHub = () => {
 
   return (
     <div className="game-hub">
+      <Header />
+      <div className="game-hub__inner">
       <button type="button" className="game-back" onClick={() => window.history.back()}>
         ← Back
       </button>
 
-      {/* Hero section — unchanged */}
+      {/* Hero section */}
       <section className="game-hero">
         <div className="game-hero__copy">
-          <span className="game-hero__pill">Game Arcade</span>
-          <h1>Master coding through playful games</h1>
+          <span className="game-hero__pill">Challenge Arcade</span>
+          <h1>Master coding through playful challenges</h1>
           <p>
-            Each game is an adventure that sharpens your programming skills. Have fun, collect XP, unlock achievements,
-            and build your coding confidence one game at a time.
+            Each challenge reinforces what you learned in the lesson. Solve puzzles, collect XP, and
+            build your coding confidence one challenge at a time.
           </p>
           <div className="game-hero__actions">
-            <a
-              href={getGameLaunchUrl(featuredGame, true)}
-              className="game-cta primary"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <Link to="/game/1" className="game-cta primary">
               Play {featuredGame.title}
-            </a>
-            <a
-              href={getGameLaunchUrl(featuredGame, true)}
-              className="game-cta secondary"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Launch in new tab ↗
-            </a>
+            </Link>
           </div>
         </div>
         <CharacterSpotlight headline="Cheer squad" cta="Update your buddy" size={220} />
@@ -52,9 +43,6 @@ const GameHub = () => {
             style={{ background: game.gradient }}
           >
             <div className="game-card__meta">
-              <span className="game-card__emoji" aria-hidden="true">
-                {game.heroEmoji}
-              </span>
               <span className="game-card__difficulty">{game.difficulty}</span>
             </div>
 
@@ -69,28 +57,24 @@ const GameHub = () => {
 
             <div className="game-card__footer">
               <div className="game-card__xp">
-                <span className="label">XP reward</span>
+                <span className="label">XP to earn</span>
                 <strong>{game.xpReward}</strong>
               </div>
 
               <div className="game-card__actions">
                 {game.comingSoon ? (
-                  <span className="game-card__soon-badge">🔒 Coming Soon</span>
+                  <span className="game-card__soon-badge">Coming Soon</span>
                 ) : (
-                  <a
-                    href={getGameLaunchUrl(game, true)}
-                    className="game-card__launch"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Play ↗
-                  </a>
+                  <Link to={`/game/${game.id}`} className="game-card__launch">
+                    Play
+                  </Link>
                 )}
               </div>
             </div>
           </article>
         ))}
       </section>
+      </div>
     </div>
   );
 };

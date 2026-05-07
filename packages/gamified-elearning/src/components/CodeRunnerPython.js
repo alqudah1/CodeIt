@@ -20,16 +20,34 @@ const LESSON_STARTER = {
 
 const DEFAULT_CODE = `# Write your Python code here\nprint("Hello, Python!")`;
 
+// Strip internal Pyodide traceback lines; keep only the user-relevant error
+function cleanPythonError(raw) {
+  if (!raw) return raw;
+  const lines = raw.split('\n');
+  const kept = lines.filter(line => {
+    const t = line.trim();
+    if (!t) return false;
+    if (t.startsWith('File "/lib/')) return false;          // internal Pyodide paths
+    if (/^\.\.\.<\d+ lines>/.test(t)) return false;         // collapsed internal frames
+    if (t.startsWith('await CodeRunner(')) return false;
+    if (t.startsWith('.run_async(')) return false;
+    if (t.startsWith('coroutine = eval(')) return false;
+    return true;
+  });
+  return kept.join('\n').replace(/\n{2,}/g, '\n').trim() || raw;
+}
+
 /**
  * CodeRunnerPython
  *
  * Props:
- *   lessonId   {number}   — picks starter code from LESSON_STARTER map
+ *   lessonId    {number}  — picks starter code from LESSON_STARTER map
  *   starterCode {string}  — override starter code directly
- *   title       {string}  — panel title (default: "🐍 Python Playground")
+ *   title       {string}  — panel title (default: "Python Playground")
+ *   height      {string}  — CodeMirror editor height (default: "220px")
  *   onOutput    {fn}      — called with output string after each run
  */
-const CodeRunnerPython = ({ lessonId, starterCode, title, onOutput }) => {
+const CodeRunnerPython = ({ lessonId, starterCode, title, height = '220px', onOutput }) => {
   const initialCode = starterCode || LESSON_STARTER[lessonId] || DEFAULT_CODE;
 
   const [code, setCode]       = useState(initialCode);
@@ -95,7 +113,8 @@ const CodeRunnerPython = ({ lessonId, starterCode, title, onOutput }) => {
       if (mountedRef.current) setOutput(result || '(no output)');
       if (onOutput) onOutput(result || '');
     } catch (err) {
-      const msg = err.message || 'An error occurred';
+      const raw = err.message || 'An error occurred';
+      const msg = cleanPythonError(raw);
       if (mountedRef.current) setOutput('❌ ' + msg);
       if (onOutput) onOutput(msg);
     } finally {
@@ -113,7 +132,7 @@ const CodeRunnerPython = ({ lessonId, starterCode, title, onOutput }) => {
     <div className="cr-wrap">
       {/* ── Header bar ─────────────────────────────── */}
       <div className="cr-header">
-        <span className="cr-title">{title || '🐍 Python Playground'}</span>
+        <span className="cr-title">{title || 'Python Playground'}</span>
         <div className="cr-actions">
           <button
             className="cr-btn cr-btn--reset"
@@ -128,7 +147,7 @@ const CodeRunnerPython = ({ lessonId, starterCode, title, onOutput }) => {
             disabled={!pyReady || running}
             title={pyReady ? 'Run your Python code (Ctrl+Enter)' : 'Loading Python interpreter…'}
           >
-            {running ? '⏳ Running…' : pyReady ? '▶ Run' : '⏳ Loading…'}
+            {running ? 'Running...' : pyReady ? '▶ Run' : 'Loading...'}
           </button>
         </div>
       </div>
@@ -137,7 +156,7 @@ const CodeRunnerPython = ({ lessonId, starterCode, title, onOutput }) => {
       <div className="cr-editor">
         <CodeMirror
           value={code}
-          height="220px"
+          height={height}
           theme="dark"
           extensions={[python()]}
           onChange={(val) => setCode(val)}

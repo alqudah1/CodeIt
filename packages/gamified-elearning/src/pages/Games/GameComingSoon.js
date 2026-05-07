@@ -15,7 +15,7 @@ const GameComingSoon = ({ gameId }) => {
       alignItems: 'center',
       justifyContent: 'center',
       padding: '2rem',
-      fontFamily: "'Arvo', serif",
+      fontFamily: "'Nunito', 'Arvo', sans-serif",
       textAlign: 'center',
       gap: '1.5rem',
     }}>
@@ -31,8 +31,6 @@ const GameComingSoon = ({ gameId }) => {
         alignItems: 'center',
         gap: '1.2rem',
       }}>
-        <span style={{ fontSize: '4rem', lineHeight: 1 }}>{game?.heroEmoji || '🎮'}</span>
-
         <div style={{
           display: 'inline-block',
           background: 'linear-gradient(120deg, #ff7a59, #ffaf40)',
@@ -79,7 +77,7 @@ const GameComingSoon = ({ gameId }) => {
             fontWeight: 600,
             color: '#1a214b',
           }}>
-            ⭐ {game?.xpReward || 0} XP on launch
+            {game?.xpReward || 0} XP on launch
           </span>
         </div>
 

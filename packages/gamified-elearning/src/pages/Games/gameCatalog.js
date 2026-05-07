@@ -1,149 +1,135 @@
-import { PUZZLE_BASE_URL } from '../../config/api';
-
-const baseUrl = () => PUZZLE_BASE_URL || window.location.origin;
-
 export const games = [
-  // ── Puzzles 1–5: live games ────────────────────────────────────────────────
+  // ── Challenges 1–5: live (route to Journey puzzle system) ──────────────────
   {
     id: '1',
     slug: 'talking-robot',
     title: 'Talking Robot Adventure',
-    summary: 'Meet the friendly talking robot and learn basic coding concepts through a fun conversation.',
+    summary: 'Write a print statement to make the robot speak. Your first Python program in action.',
     difficulty: 'Beginner',
-    focus: ['introduction', 'basics'],
+    focus: ['print', 'strings', 'basics'],
     xpReward: 100,
-    path: '/puzzle',
+    journeyRoute: '/journey/puzzle/1/a',
     accent: '#5b8def',
     gradient: 'linear-gradient(135deg, #5b8def, #9dd9ff)',
-    heroEmoji: '🤖',
     comingSoon: false,
   },
   {
     id: '2',
     slug: 'apple-game',
-    title: 'Apple Game Challenge',
-    summary: 'Collect apples and learn about game mechanics while having fun.',
+    title: 'Variables Challenge',
+    summary: 'Use variables to store values and print them. Master Python variable assignment.',
     difficulty: 'Beginner',
-    focus: ['game logic', 'interaction'],
+    focus: ['variables', 'assignment', 'numbers'],
     xpReward: 120,
-    path: '/apple-game',
+    journeyRoute: '/journey/puzzle/2/a',
     accent: '#ff9f5a',
     gradient: 'linear-gradient(135deg, #ff9f5a, #ffd66b)',
-    heroEmoji: '🍎',
     comingSoon: false,
   },
   {
     id: '3',
-    slug: 'math-game',
-    title: 'Math Game Quest',
-    summary: 'Solve mathematical puzzles and challenges to level up your skills.',
-    difficulty: 'Intermediate',
-    focus: ['arithmetic', 'logic'],
-    xpReward: 150,
-    path: '/math-game',
-    accent: '#6cd4b9',
-    gradient: 'linear-gradient(135deg, #6cd4b9, #a4f2d3)',
-    heroEmoji: '🧮',
+    slug: 'loop-game',
+    title: 'Strings Challenge',
+    summary: 'Manipulate strings with concatenation and built-in methods. Text is your playground.',
+    difficulty: 'Beginner',
+    focus: ['strings', 'concatenation', 'methods'],
+    xpReward: 130,
+    journeyRoute: '/journey/puzzle/3/a',
+    accent: '#ff7a8a',
+    gradient: 'linear-gradient(135deg, #ff7a8a, #ffb4c0)',
     comingSoon: false,
   },
   {
     id: '4',
     slug: 'condition-game',
-    title: 'Condition Game Master',
-    summary: 'Master conditional statements and decision-making logic through challenges.',
+    title: 'If Statement Challenge',
+    summary: 'Write conditions that control the flow of your program. Make decisions in code.',
     difficulty: 'Intermediate',
-    focus: ['conditionals', 'if-else'],
+    focus: ['conditionals', 'if', 'comparison'],
     xpReward: 180,
-    path: '/condition-game',
+    journeyRoute: '/journey/puzzle/4/a',
     accent: '#b983ff',
     gradient: 'linear-gradient(135deg, #b983ff, #ebadff)',
-    heroEmoji: '🎯',
     comingSoon: false,
   },
   {
     id: '5',
-    slug: 'loop-game',
-    title: 'Loop Game Challenge',
-    summary: 'Learn loops and iteration with engaging coding challenges.',
-    difficulty: 'Advanced',
-    focus: ['loops', 'iteration'],
-    xpReward: 220,
-    path: '/loop-game',
-    accent: '#ff7a8a',
-    gradient: 'linear-gradient(135deg, #ff7a8a, #ffb4c0)',
-    heroEmoji: '🔁',
+    slug: 'loop-challenge',
+    title: 'For Loop Challenge',
+    summary: 'Write for loops using range() to repeat actions. Automation starts here.',
+    difficulty: 'Intermediate',
+    focus: ['loops', 'for', 'range'],
+    xpReward: 160,
+    journeyRoute: '/journey/puzzle/5/a',
+    accent: '#6cd4b9',
+    gradient: 'linear-gradient(135deg, #6cd4b9, #a4f2d3)',
     comingSoon: false,
   },
 
-  // ── Puzzles 6–10: coming soon ──────────────────────────────────────────────
+  // ── Puzzles 6–10: coming soon (aligned with lessons 6–10) ─────────────────
   {
     id: '6',
-    slug: 'variable-vault',
-    title: 'Variable Vault',
-    summary: 'Explore the vault of variables and learn how data gets stored and retrieved in Python.',
-    difficulty: 'Beginner',
-    focus: ['variables', 'data types'],
-    xpReward: 100,
-    path: null,
-    accent: '#f9a825',
-    gradient: 'linear-gradient(135deg, #f9a825, #ffd54f)',
-    heroEmoji: '📦',
-    comingSoon: true,
-  },
-  {
-    id: '7',
-    slug: 'function-factory',
-    title: 'Function Factory',
-    summary: 'Build and run your own Python functions on an exciting factory assembly line!',
-    difficulty: 'Intermediate',
-    focus: ['functions', 'return values'],
-    xpReward: 150,
-    path: null,
-    accent: '#546e7a',
-    gradient: 'linear-gradient(135deg, #546e7a, #90a4ae)',
-    heroEmoji: '⚙️',
-    comingSoon: true,
-  },
-  {
-    id: '8',
-    slug: 'string-sorcerer',
-    title: 'String Sorcerer',
-    summary: 'Cast spells with Python strings — slice, join, and transform text like a true wizard!',
-    difficulty: 'Beginner',
-    focus: ['strings', 'text methods'],
-    xpReward: 110,
-    path: null,
-    accent: '#ab47bc',
-    gradient: 'linear-gradient(135deg, #ab47bc, #ce93d8)',
-    heroEmoji: '✨',
-    comingSoon: true,
-  },
-  {
-    id: '9',
     slug: 'dictionary-detective',
     title: 'Dictionary Detective',
-    summary: 'Crack the case using Python dictionaries — find clues hidden in key-value pairs!',
+    summary: 'Look up clues hidden in Python dictionaries. Master key-value pair access.',
     difficulty: 'Intermediate',
     focus: ['dictionaries', 'keys', 'values'],
     xpReward: 160,
     path: null,
     accent: '#00897b',
     gradient: 'linear-gradient(135deg, #00897b, #80cbc4)',
-    heroEmoji: '🔍',
+    comingSoon: true,
+  },
+  {
+    id: '7',
+    slug: 'file-handling-challenge',
+    title: 'File Handling Challenge',
+    summary: 'Read and write Python files to save game state. Put open() and with statements to work.',
+    difficulty: 'Intermediate',
+    focus: ['files', 'open', 'read', 'write'],
+    xpReward: 170,
+    path: null,
+    accent: '#546e7a',
+    gradient: 'linear-gradient(135deg, #546e7a, #90a4ae)',
+    comingSoon: true,
+  },
+  {
+    id: '8',
+    slug: 'exception-handler',
+    title: 'Exception Handler',
+    summary: 'Wrap risky code in try/except to keep the program running when errors occur.',
+    difficulty: 'Intermediate',
+    focus: ['try', 'except', 'errors'],
+    xpReward: 180,
+    path: null,
+    accent: '#ab47bc',
+    gradient: 'linear-gradient(135deg, #ab47bc, #ce93d8)',
+    comingSoon: true,
+  },
+  {
+    id: '9',
+    slug: 'oop-builder',
+    title: 'OOP Builder',
+    summary: 'Design a class blueprint, create objects, and call methods to build your own world.',
+    difficulty: 'Advanced',
+    focus: ['classes', 'objects', 'methods'],
+    xpReward: 200,
+    path: null,
+    accent: '#f9a825',
+    gradient: 'linear-gradient(135deg, #f9a825, #ffd54f)',
     comingSoon: true,
   },
   {
     id: '10',
     slug: 'module-mission',
     title: 'Module Mission',
-    summary: 'Launch into orbit by importing Python modules and using their superpowers!',
+    summary: 'Import Python modules and use their superpowers to complete the mission.',
     difficulty: 'Advanced',
     focus: ['modules', 'imports', 'libraries'],
     xpReward: 200,
     path: null,
     accent: '#1565c0',
     gradient: 'linear-gradient(135deg, #1565c0, #64b5f6)',
-    heroEmoji: '🚀',
     comingSoon: true,
   },
 ];
@@ -151,24 +137,10 @@ export const games = [
 export const getGameById = (id) => games.find((game) => game.id === String(id));
 
 /**
- * Returns an ABSOLUTE URL so the browser does a full reload and Apache can proxy it.
- * Returns null for coming-soon games that have no path yet.
+ * Returns the internal React Router route for a live challenge, or null if coming soon.
+ * All challenges route through the Journey puzzle system (/journey/puzzle/:id/a).
  */
-export const getGameLaunchUrl = (game, includeAuth = false) => {
-  if (!game || !game.path) return null;
-
-  const url = `${baseUrl()}${game.path}`;
-
-  if (!includeAuth) return url;
-
-  const token   = localStorage.getItem('token');
-  const userStr = localStorage.getItem('user');
-
-  if (!token || !userStr) return url;
-
-  const params = new URLSearchParams();
-  params.append('token', token);
-  params.append('user', userStr);
-
-  return `${url}?${params.toString()}`;
+export const getGameRoute = (game) => {
+  if (!game || game.comingSoon) return null;
+  return game.journeyRoute || null;
 };

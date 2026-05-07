@@ -1,9 +1,9 @@
 /* ───── Quiz Page ───── */
 .qz-page {
   min-height: 100vh;
-  padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 5vw, 3rem);
-  background: linear-gradient(135deg, #fff5a5 0%, #ffd6a5 32%, #ffabab 65%, #9bf6ff 100%);
-  font-family: 'Arvo', serif;
+  padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 4vw, 2.5rem);
+  background: #FFF7ED;
+  font-family: 'Nunito', 'Arvo', sans-serif;
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -217,8 +217,8 @@
 
 .qz-feedback {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  flex-direction: column;
+  gap: 0.5rem;
   border-radius: 16px;
   padding: 0.9rem 1.2rem;
   font-size: 0.96rem;
@@ -235,9 +235,25 @@
   border: 2px solid rgba(239, 68, 68, 0.35);
   color: #991b1b;
 }
+.qz-feedback-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
 .qz-feedback-icon {
   font-size: 1.35rem;
   flex-shrink: 0;
+}
+.qz-feedback-verdict {
+  font-weight: 700;
+}
+.qz-feedback-explanation {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.5;
+  padding-left: 0.2rem;
+  opacity: 0.9;
 }
 
 @keyframes slideUp {
@@ -294,6 +310,12 @@
   50%       { transform: translateY(-8px); }
 }
 
+.qz-results-avatar {
+  border-radius: 16px;
+  overflow: hidden;
+  animation: bounce-trophy 2s ease infinite;
+}
+
 .qz-results-title {
   margin: 0;
   font-size: clamp(1.6rem, 4vw, 2.2rem);
@@ -323,6 +345,87 @@
   font-size: 0.88rem;
   margin: 0;
 }
+
+.qz-level-hint {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0a7a68;
+  text-align: center;
+}
+.qz-level-hint--urgent {
+  color: #c85a00;
+  font-size: 0.88rem;
+}
+
+.qz-encouragement {
+  margin: 0;
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: #0b3d66;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ── Missed questions review ── */
+.qz-missed-review {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid rgba(4, 22, 56, 0.08);
+  border-radius: 20px;
+  padding: 1.1rem 1.3rem;
+  text-align: left;
+}
+.qz-missed-label {
+  margin: 0 0 0.2rem 0;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0b3d66;
+  opacity: 0.6;
+}
+.qz-missed-item {
+  border-top: 1.5px solid rgba(4, 22, 56, 0.07);
+  padding-top: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.qz-missed-item:first-of-type { border-top: none; padding-top: 0; }
+.qz-missed-question {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #041638;
+  line-height: 1.4;
+}
+.qz-missed-wrong {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #991b1b;
+}
+.qz-missed-correct {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #166534;
+}
+.qz-missed-explanation {
+  margin: 0;
+  font-size: 0.87rem;
+  font-weight: 500;
+  color: #0b3d66;
+  line-height: 1.5;
+  background: rgba(155, 246, 255, 0.15);
+  border-radius: 10px;
+  padding: 0.45rem 0.7rem;
+}
+
 /* Results action row */
 .qz-results-actions {
   display: flex;
@@ -332,23 +435,42 @@
 }
 
 .qz-btn-retry {
-  background: linear-gradient(120deg, #9bf6ff, #a0c4ff);
-  border: none;
+  background: rgba(255, 255, 255, 0.88);
+  border: 2px solid rgba(4, 22, 56, 0.12);
   border-radius: 999px;
-  padding: 0.6rem 1.6rem;
+  padding: 0.65rem 1.6rem;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #041638;
+  color: #0b3d66;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s, transform 0.2s;
+}
+.qz-btn-retry:hover {
+  background: rgba(255, 183, 3, 0.18);
+  transform: translateY(-2px);
+}
+
+/* Primary forward CTA */
+.qz-btn-forward {
+  background: linear-gradient(120deg, #ff85a1, #ff9f1c);
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
   cursor: pointer;
   font-family: inherit;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 8px 20px rgba(155, 246, 255, 0.35);
+  box-shadow: 0 16px 32px rgba(255, 133, 161, 0.32);
 }
-.qz-btn-retry:hover {
+.qz-btn-forward:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(155, 246, 255, 0.48);
+  box-shadow: 0 22px 40px rgba(255, 133, 161, 0.42);
 }
 
+/* Keep .qz-btn-home as alias for backwards-compat */
 .qz-btn-home {
   background: rgba(255, 255, 255, 0.85);
   border: 2px solid rgba(4, 22, 56, 0.12);

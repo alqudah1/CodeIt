@@ -1,0 +1,307 @@
+/* ════════════════════════════════════════════════════════════
+   SEO Landing Pages — CodeIt brand-aligned
+   Palette: #FF8A3D primary · #FFD166 accent · #4CC9F0 secondary
+            #1F2A44 text  · #FFF7ED background
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Page shell ──────────────────────────────────────────── */
+.seo-page {
+  min-height: 100vh;
+  background: #FFF7ED;
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  color: #1F2A44;
+  position: relative;
+}
+
+.seo-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 10% 8%,  rgba(255, 138, 61,  0.10), transparent 52%),
+    radial-gradient(ellipse at 88% 6%,  rgba(255, 209, 102, 0.12), transparent 50%),
+    radial-gradient(ellipse at 50% 92%, rgba(76,  201, 240, 0.08), transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.seo-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 6rem;
+}
+
+/* ── Back button ─────────────────────────────────────────── */
+.seo-back {
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #FF8A3D;
+  margin-bottom: 2rem;
+  transition: opacity 0.15s;
+  text-decoration: none;
+}
+.seo-back:hover { opacity: 0.72; }
+
+/* ── Hero header ─────────────────────────────────────────── */
+.seo-hero {
+  margin-bottom: 3.5rem;
+}
+
+.seo-eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #FF8A3D;
+  margin-bottom: 0.75rem;
+  padding: 0.25rem 0.85rem;
+  background: rgba(255, 138, 61, 0.10);
+  border-radius: 999px;
+}
+
+.seo-h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4.5vw, 2.8rem);
+  font-weight: 900;
+  color: #1F2A44;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.seo-hero-desc {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #3a4a62;
+  max-width: 680px;
+  margin: 0 0 2rem;
+}
+
+/* ── CTA button ──────────────────────────────────────────── */
+.seo-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  background: linear-gradient(135deg, #FF8A3D, #ffb347);
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  border-radius: 12px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 16px rgba(255, 138, 61, 0.35);
+}
+.seo-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(255, 138, 61, 0.45);
+}
+
+/* ── Article body ────────────────────────────────────────── */
+.seo-body {
+  margin-bottom: 3rem;
+}
+
+.seo-section {
+  margin-bottom: 2.8rem;
+}
+
+.seo-h2 {
+  font-size: clamp(1.35rem, 2.8vw, 1.75rem);
+  font-weight: 800;
+  color: #1F2A44;
+  margin: 0 0 0.9rem;
+  line-height: 1.25;
+}
+
+.seo-p {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #3a4a62;
+  margin: 0 0 1rem;
+}
+
+.seo-p a {
+  color: #FF8A3D;
+  font-weight: 700;
+  text-decoration: none;
+}
+.seo-p a:hover { text-decoration: underline; }
+
+.seo-list {
+  margin: 0.5rem 0 1rem 1.5rem;
+  padding: 0;
+}
+
+.seo-list li {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #3a4a62;
+  margin-bottom: 0.35rem;
+}
+
+/* ── Highlight box ───────────────────────────────────────── */
+.seo-highlight {
+  background: rgba(255, 138, 61, 0.08);
+  border-left: 4px solid #FF8A3D;
+  border-radius: 0 10px 10px 0;
+  padding: 1.1rem 1.4rem;
+  margin: 1.5rem 0;
+}
+
+.seo-highlight p {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #1F2A44;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* ── Bottom CTA block ────────────────────────────────────── */
+.seo-bottom-cta {
+  background: linear-gradient(135deg, rgba(255,138,61,0.12), rgba(255,209,102,0.10));
+  border: 1.5px solid rgba(255,138,61,0.22);
+  border-radius: 18px;
+  padding: 2.2rem 2rem;
+  text-align: center;
+  margin: 3rem 0 2rem;
+}
+
+.seo-bottom-cta h2 {
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #1F2A44;
+  margin: 0 0 0.6rem;
+}
+
+.seo-bottom-cta p {
+  font-size: 1.05rem;
+  color: #3a4a62;
+  margin: 0 0 1.5rem;
+  line-height: 1.65;
+}
+
+/* ── Internal link nav ───────────────────────────────────── */
+.seo-related {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1.5px solid rgba(31,42,68,0.10);
+}
+
+.seo-related__title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #888;
+  margin-bottom: 1rem;
+}
+
+.seo-related__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.seo-related__link {
+  display: inline-block;
+  padding: 0.45rem 1rem;
+  background: rgba(255,138,61,0.08);
+  border: 1px solid rgba(255,138,61,0.22);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #FF8A3D;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.12s;
+}
+.seo-related__link:hover {
+  background: rgba(255,138,61,0.16);
+  transform: translateY(-1px);
+}
+
+/* ── Answer Box (featured-snippet target) ────────────────── */
+.seo-answer-box {
+  background: rgba(76, 201, 240, 0.07);
+  border: 1.5px solid rgba(76, 201, 240, 0.28);
+  border-radius: 14px;
+  padding: 1.6rem 1.8rem;
+  margin-bottom: 2.8rem;
+}
+
+.seo-answer-box__label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #4CC9F0;
+  margin-bottom: 0.65rem;
+}
+
+.seo-answer-box__answer {
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.65;
+  color: #1F2A44;
+  margin: 0 0 0.75rem;
+}
+
+.seo-answer-box__detail {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #3a4a62;
+  margin: 0;
+}
+
+/* ── FAQ Section ─────────────────────────────────────────── */
+.seo-faq {
+  margin-bottom: 2.8rem;
+}
+
+.seo-faq__item {
+  border-bottom: 1px solid rgba(31, 42, 68, 0.10);
+  padding: 1.25rem 0;
+}
+
+.seo-faq__item:first-of-type {
+  border-top: 1px solid rgba(31, 42, 68, 0.10);
+}
+
+.seo-faq__q {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1F2A44;
+  margin: 0 0 0.55rem;
+}
+
+.seo-faq__a {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #3a4a62;
+  margin: 0;
+}
+
+.seo-faq__a a {
+  color: #FF8A3D;
+  font-weight: 700;
+  text-decoration: none;
+}
+.seo-faq__a a:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  .seo-container { padding: 2rem 1rem 4rem; }
+  .seo-h1 { font-size: 1.8rem; }
+  .seo-answer-box { padding: 1.2rem 1.2rem; }
+}

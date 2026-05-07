@@ -1,0 +1,118 @@
+import { useEffect, useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
+import { API_BASE_URL } from '../../config/api';
+import AdminLayout from './AdminLayout';
+import './AdminLayout.css';
+
+const fmt = (n) => (Number(n) || 0).toLocaleString();
+
+const AdminDashboard = () => {
+  const { token } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [data, setData]   = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/admin/overview`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(r => r.json())
+      .then(d => {
+        if (d.error) setError(d.error);
+        else setData(d);
+      })
+      .catch(() => setError('Failed to load overview'));
+  }, [token]);
+
+  const t = data?.totals || {};
+
+  const CARDS = [
+    { key: 'total_users',            label: 'Total Users',           cls: 'accent' },
+    { key: 'signups_today',          label: 'Signups Today',         cls: 'green'  },
+    { key: 'signups_week',           label: 'Signups This Week',     cls: 'orange' },
+    { key: 'total_xp_earned',        label: 'Total XP Awarded',      cls: 'teal'   },
+    { key: 'total_lesson_completions', label: 'Lesson Completions',  cls: ''       },
+    { key: 'total_quiz_attempts',    label: 'Quiz Attempts',         cls: ''       },
+    { key: 'journey_puzzle_completions', label: 'Puzzle Completions', cls: ''      },
+    { key: 'avatars_customised',     label: 'Avatars Customised',    cls: ''       },
+    { key: 'students_with_streak',   label: 'Active Streaks',        cls: 'orange' },
+    { key: 'longest_active_streak',  label: 'Longest Streak',        cls: 'teal'   },
+  ];
+
+  return (
+    <AdminLayout>
+      <h2 className="adm-page-title">Overview</h2>
+
+      {error && <div className="adm-error">{error}</div>}
+
+      {!data && !error && <div className="adm-loading">Loading…</div>}
+
+      {data && (
+        <>
+          <div className="adm-stat-grid">
+            {CARDS.map(({ key, label, cls }) => (
+              <div key={key} className="adm-stat-card">
+                <div className={`adm-stat-num${cls ? ` ${cls}` : ''}`}>{fmt(t[key])}</div>
+                <div className="adm-stat-lbl">{label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="adm-section-head">Recent Signups</div>
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name / Username</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>XP</th>
+                  <th>Joined</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(data.recentSignups || []).map(u => (
+                  <tr
+                    key={u.user_id}
+                    className="clickable"
+                    onClick={() => navigate(`/admin/users/${u.user_id}`)}
+                  >
+                    <td className="adm-badge adm-badge-gray" style={{ display: 'table-cell' }}>
+                      #{u.user_id}
+                    </td>
+                    <td>
+                      <strong>{u.name || '—'}</strong>
+                      {u.username && <span style={{ color: '#718096', marginLeft: '0.4rem', fontSize: '0.82rem' }}>@{u.username}</span>}
+                    </td>
+                    <td style={{ color: '#718096' }}>{u.email || '—'}</td>
+                    <td>
+                      <span className={`adm-badge ${roleBadge(u.role)}`}>{u.role || '—'}</span>
+                    </td>
+                    <td><strong>{fmt(u.xp)}</strong></td>
+                    <td style={{ color: '#718096' }}>{fmtDate(u.created_at)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </AdminLayout>
+  );
+};
+
+function roleBadge(role) {
+  const r = (role || '').toLowerCase();
+  if (r === 'admin')   return 'adm-badge-purple';
+  if (r === 'student') return 'adm-badge-teal';
+  return 'adm-badge-gray';
+}
+
+function fmtDate(dt) {
+  if (!dt) return '—';
+  return new Date(dt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+export default AdminDashboard;

@@ -1,37 +1,51 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ENDPOINTS } from '../../config/api';
+import { useAuth } from '../../context/AuthContext';
 import Header from '../Header/Header';
 import './LessonMap.css';
 
 const LESSON_META = {
-  1:  { emoji: '🐍', shortDesc: 'Print statements & your first Python program' },
-  2:  { emoji: '📦', shortDesc: 'Variables, strings, numbers & data types' },
-  3:  { emoji: '🔄', shortDesc: 'Build reusable functions and repeat with loops' },
-  4:  { emoji: '🔀', shortDesc: 'Make decisions with if, elif, else' },
-  5:  { emoji: '📋', shortDesc: 'Work with lists, strings & string methods' },
-  6:  { emoji: '📚', shortDesc: 'Key-value pairs with dictionaries & sets' },
-  7:  { emoji: '📁', shortDesc: 'Read and write files on disk' },
-  8:  { emoji: '🛡️', shortDesc: 'Handle errors gracefully with try/except' },
-  9:  { emoji: '🏗️', shortDesc: 'Classes, objects & object-oriented programming' },
-  10: { emoji: '🧩', shortDesc: 'Import and use Python modules & libraries' },
+  1:  { shortDesc: 'Write your first Python program using print()' },
+  2:  { shortDesc: 'Store names, numbers, and messages in variables' },
+  3:  { shortDesc: 'Work with text using quotes, len(), and string methods' },
+  4:  { shortDesc: 'Make decisions in code with if, elif, and else' },
+  5:  { shortDesc: 'Repeat code automatically using for i in range()' },
+  6:  { shortDesc: 'Loop over characters and sequences with for loops' },
+  7:  { shortDesc: 'Create and use Python lists — index, append, and len()' },
+  8:  { shortDesc: 'Combine loops and lists to process collections of data' },
+  9:  { shortDesc: 'Write reusable functions using def, parameters, and return' },
+  10: { shortDesc: 'Put it all together — functions, loops, and lists in one program' },
+  11: { shortDesc: 'Integers, floats, and arithmetic operators' },
+  12: { shortDesc: 'True/False values and comparison operators' },
+  13: { shortDesc: 'Combine conditions with and, or, and not' },
+  14: { shortDesc: 'Convert between int, float, str, and bool' },
+  15: { shortDesc: 'Build clean output with f-strings and format specifiers' },
+  16: { shortDesc: 'strip, replace, split, join, find, and count' },
 };
 
 const FALLBACK_LESSONS = [
-  { id: 1,  title: 'Hello Python!',                       xp: 100 },
-  { id: 2,  title: 'Storing Information with Variables',   xp: 120 },
-  { id: 3,  title: 'Loops & Functions',                   xp: 130 },
-  { id: 4,  title: 'Making Decisions with Conditionals',  xp: 130 },
-  { id: 5,  title: 'Lists & Strings',                     xp: 140 },
-  { id: 6,  title: 'Dictionaries & Sets',                 xp: 150 },
-  { id: 7,  title: 'File Handling',                       xp: 150 },
-  { id: 8,  title: 'Exception Handling',                  xp: 160 },
-  { id: 9,  title: 'Object-Oriented Programming',         xp: 170 },
-  { id: 10, title: 'Modules & Libraries',                 xp: 180 },
+  { id: 1,  title: 'Hello Python',                          xp: 50  },
+  { id: 2,  title: 'Storing Info with Variables',           xp: 50  },
+  { id: 3,  title: 'Strings',                               xp: 50  },
+  { id: 4,  title: 'Making Decisions with If Statements',   xp: 50  },
+  { id: 5,  title: 'Simple Repetition',                     xp: 50  },
+  { id: 6,  title: 'For Loops',                             xp: 50  },
+  { id: 7,  title: 'Basic Lists',                           xp: 50  },
+  { id: 8,  title: 'Loops with Lists',                      xp: 50  },
+  { id: 9,  title: 'Basic Functions',                       xp: 50  },
+  { id: 10, title: 'Combining Concepts',                    xp: 50  },
+  { id: 11, title: 'Numbers & Arithmetic',                  xp: 50  },
+  { id: 12, title: 'Booleans & Comparisons',                xp: 50  },
+  { id: 13, title: 'Logical Operators',                     xp: 50  },
+  { id: 14, title: 'Type Casting',                          xp: 50  },
+  { id: 15, title: 'String Formatting',                     xp: 50  },
+  { id: 16, title: 'String Methods',                        xp: 50  },
 ];
 
 const LessonMap = () => {
   const navigate = useNavigate();
+  const { token } = useAuth();
   const [lessons, setLessons] = useState(FALLBACK_LESSONS);
   const [completedIds, setCompletedIds] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +53,6 @@ const LessonMap = () => {
   const nextRef = useRef(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token') || '';
     if (!token) {
       setLoading(false);
       return;
@@ -65,7 +78,7 @@ const LessonMap = () => {
       }
     };
     load();
-  }, []);
+  }, [token]);
 
   const isCompleted = (id) => completedIds.includes(id);
   const isAvailable = (id) => id === 1 || isCompleted(id - 1);
@@ -86,7 +99,7 @@ const LessonMap = () => {
   const handleLessonClick = (lesson) => {
     const status = getStatus(lesson.id);
     if (status === 'locked') {
-      showToast(`🔒 Finish Lesson ${lesson.id - 1} first!`);
+      showToast(`Complete Lesson ${lesson.id - 1} to unlock this one.`);
       return;
     }
     navigate(`/lesson/${lesson.id}`);
@@ -110,18 +123,18 @@ const LessonMap = () => {
           <button className="lm-back-btn" onClick={() => navigate('/MainPage')}>
             ← Back to Dashboard
           </button>
-          <h1 className="lm-title">📘 Lessons Map</h1>
+          <h1 className="lm-title">Lessons Map</h1>
           <p className="lm-subtitle">
             Complete each lesson to unlock the next. Earn XP and level up your Python skills!
           </p>
 
           <div className="lm-stats-row">
             <span className="lm-stat-chip">
-              {loading ? '…' : `${completedIds.length} / ${lessons.length} completed`}
+              {loading ? '…' : `${completedIds.length} of ${lessons.length} lessons complete`}
             </span>
             {!loading && nextLesson && (
               <button className="lm-continue-btn" onClick={scrollToNext}>
-                {completedIds.length === 0 ? '🚀 Start Learning' : `▶ Continue → Lesson ${nextLesson.id}`}
+                {completedIds.length === 0 ? 'Unlock Lesson 1' : `Advance to Lesson ${nextLesson.id}`}
               </button>
             )}
           </div>
@@ -154,9 +167,9 @@ const LessonMap = () => {
                   onKeyDown={(e) => e.key === 'Enter' && handleLessonClick(lesson)}
                   aria-label={`Lesson ${lesson.id}: ${lesson.title} — ${status}`}
                 >
-                  {/* Emoji bubble */}
+                  {/* Number bubble */}
                   <div className={`lm-emoji lm-emoji--${status}`} aria-hidden="true">
-                    {status === 'locked' ? '🔒' : meta.emoji}
+                    {lesson.id}
                   </div>
 
                   {/* Content */}
@@ -164,14 +177,14 @@ const LessonMap = () => {
                     <div className="lm-card-toprow">
                       <span className="lm-lesson-num">Lesson {lesson.id}</span>
                       <span className={`lm-badge lm-badge--${status}`}>
-                        {status === 'completed' ? '✅ Done'
-                          : status === 'available' ? '▶ Start'
-                          : '🔒 Locked'}
+                        {status === 'completed' ? 'Complete'
+                          : status === 'available' ? 'Unlock'
+                          : 'Locked'}
                       </span>
                     </div>
                     <h3 className="lm-card-title">{lesson.title}</h3>
                     <p className="lm-card-desc">{meta.shortDesc}</p>
-                    <span className="lm-xp">⭐ {lesson.xp} XP</span>
+                    <span className="lm-xp">{lesson.xp} XP</span>
                   </div>
 
                   {/* Arrow indicator */}
@@ -187,7 +200,7 @@ const LessonMap = () => {
         {/* ── All done banner ───────────────────────────── */}
         {!loading && completedIds.length === lessons.length && lessons.length > 0 && (
           <div className="lm-all-done">
-            🎉 You've completed all lessons! You're a Python champion!
+            All {lessons.length} lessons complete. Every XP point earned. Every skill unlocked.
           </div>
         )}
       </div>

@@ -10,7 +10,7 @@ const descriptionByOutfit = {
   artist: 'paints vibrant worlds with code and creativity.',
 };
 
-const CharacterSpotlight = ({ headline = 'Your CodeIt buddy', cta = 'Open character lab', size = 220 }) => {
+const CharacterSpotlight = ({ headline = 'Your CodeIt buddy', cta = 'Open Avatar Lab', size = 220 }) => {
   const { character } = useCharacter();
   const summary = descriptionByOutfit[character.outfit] || descriptionByOutfit.astronaut;
 

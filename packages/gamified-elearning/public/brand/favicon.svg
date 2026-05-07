@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Blob body -->
+  <path d="M11,33 C9,21 17,9 30,9 C31,5 37,3 42,7 C46,3 56,7 58,18 C64,20 66,31 61,37 C65,48 57,59 44,59 C38,65 27,63 21,57 C11,57 7,46 11,33Z" fill="#F07252"/>
+  <!-- Accent dots (top) -->
+  <circle cx="30" cy="7"  r="4" fill="#F07252"/>
+  <circle cx="42" cy="4"  r="3" fill="#F07252"/>
+  <!-- Accent dot (bottom-right) -->
+  <circle cx="58" cy="51" r="3" fill="#F07252"/>
+  <!-- CI monogram -->
+  <text
+    x="33" y="45"
+    text-anchor="middle"
+    font-family="Arial Black, Arial, sans-serif"
+    font-weight="900"
+    font-size="26"
+    fill="#FFD166"
+  >CI</text>
+</svg>

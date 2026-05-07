@@ -1,0 +1,410 @@
+/* ── Admin shell ──────────────────────────────────────────── */
+.adm-shell {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Nunito', 'Segoe UI', sans-serif;
+  background: #f0f2f5;
+  color: #1a2035;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────── */
+.adm-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: #1a2035;
+  color: #c8cde8;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.adm-logo {
+  padding: 1.4rem 1.5rem 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  letter-spacing: 0.01em;
+}
+.adm-logo span { color: #FF8A3D; }
+
+.adm-nav {
+  flex: 1;
+  padding: 0.75rem 0;
+}
+
+.adm-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1.5rem;
+  color: #8892b0;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+  border-left: 3px solid transparent;
+}
+
+.adm-nav a:hover {
+  background: rgba(255,255,255,0.06);
+  color: #e2e8f0;
+}
+
+.adm-nav a.active {
+  background: rgba(255,138,61,0.12);
+  color: #FF8A3D;
+  border-left-color: #FF8A3D;
+}
+
+.adm-nav-icon {
+  font-size: 0.95rem;
+  width: 18px;
+  text-align: center;
+}
+
+.adm-sidebar-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 0.78rem;
+  color: #4a5568;
+}
+
+.adm-logout-btn {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #8892b0;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: 'Nunito', sans-serif;
+  margin-top: 0.5rem;
+  width: 100%;
+  transition: border-color 0.15s, color 0.15s;
+}
+.adm-logout-btn:hover { border-color: #e53e3e; color: #e53e3e; }
+
+/* ── Main content ─────────────────────────────────────────── */
+.adm-main {
+  flex: 1;
+  padding: 2rem 2.5rem;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.adm-page-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0 0 1.5rem;
+  color: #1a2035;
+}
+
+/* ── Stat cards ───────────────────────────────────────────── */
+.adm-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.adm-stat-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.2rem 1.4rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  border: 1px solid #e8ecf4;
+}
+
+.adm-stat-num {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #1a2035;
+}
+.adm-stat-num.accent  { color: #6c63ff; }
+.adm-stat-num.orange  { color: #FF8A3D; }
+.adm-stat-num.green   { color: #38a169; }
+.adm-stat-num.teal    { color: #2b9e8f; }
+
+.adm-stat-lbl {
+  font-size: 0.78rem;
+  color: #718096;
+  margin-top: 0.3rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Section heading ──────────────────────────────────────── */
+.adm-section-head {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1a2035;
+  margin: 1.75rem 0 0.75rem;
+}
+
+/* ── Tables ───────────────────────────────────────────────── */
+.adm-table-wrap {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e8ecf4;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.adm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.87rem;
+}
+
+.adm-table thead tr {
+  background: #f7f9fc;
+}
+
+.adm-table th {
+  padding: 0.7rem 1rem;
+  text-align: left;
+  color: #718096;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e8ecf4;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+.adm-table th:hover { color: #1a2035; }
+.adm-table th.sorted { color: #6c63ff; }
+
+.adm-table td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid #f0f2f5;
+  color: #2d3748;
+}
+
+.adm-table tbody tr:last-child td { border-bottom: none; }
+
+.adm-table tbody tr:hover {
+  background: #f7f9fc;
+}
+
+.adm-table tbody tr.clickable {
+  cursor: pointer;
+}
+
+/* ── Badges ───────────────────────────────────────────────── */
+.adm-badge {
+  display: inline-block;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.adm-badge-purple { background: rgba(108,99,255,0.12); color: #6c63ff; }
+.adm-badge-green  { background: rgba(56,161,105,0.12); color: #38a169; }
+.adm-badge-amber  { background: rgba(255,138,61,0.12); color: #c97122; }
+.adm-badge-red    { background: rgba(229,62,62,0.12);  color: #e53e3e; }
+.adm-badge-gray   { background: rgba(113,128,150,0.12); color: #718096; }
+.adm-badge-teal   { background: rgba(43,158,143,0.12); color: #2b9e8f; }
+
+/* ── Search bar ───────────────────────────────────────────── */
+.adm-search-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.adm-search-input {
+  flex: 1;
+  max-width: 400px;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #d4dae8;
+  background: #fff;
+  font-size: 0.9rem;
+  font-family: 'Nunito', sans-serif;
+  color: #1a2035;
+  outline: none;
+}
+.adm-search-input:focus { border-color: #6c63ff; }
+
+.adm-btn {
+  padding: 0.55rem 1.1rem;
+  border-radius: 10px;
+  border: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.adm-btn:hover { opacity: 0.85; }
+.adm-btn-primary   { background: #6c63ff; color: #fff; }
+.adm-btn-secondary { background: #e8ecf4; color: #1a2035; }
+
+/* ── Pagination ───────────────────────────────────────────── */
+.adm-pagination {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  align-items: center;
+}
+.adm-pagination button {
+  background: #fff;
+  border: 1px solid #d4dae8;
+  color: #1a2035;
+  padding: 0.35rem 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.83rem;
+  font-family: 'Nunito', sans-serif;
+}
+.adm-pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+.adm-pagination button:not(:disabled):hover { border-color: #6c63ff; }
+.adm-pagination .adm-pg-info { color: #718096; font-size: 0.83rem; }
+
+/* ── Loading / error states ───────────────────────────────── */
+.adm-loading {
+  padding: 3rem;
+  text-align: center;
+  color: #718096;
+  font-size: 0.9rem;
+}
+.adm-error {
+  padding: 1rem 1.5rem;
+  color: #e53e3e;
+  background: rgba(229,62,62,0.06);
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+/* ── Detail page ──────────────────────────────────────────── */
+.adm-back-btn {
+  background: none;
+  border: 1px solid #d4dae8;
+  color: #718096;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.83rem;
+  font-family: 'Nunito', sans-serif;
+  margin-bottom: 1.25rem;
+  transition: border-color 0.15s, color 0.15s;
+}
+.adm-back-btn:hover { border-color: #6c63ff; color: #6c63ff; }
+
+.adm-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.adm-detail-card {
+  background: #fff;
+  border: 1px solid #e8ecf4;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.adm-detail-card h3 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #718096;
+  margin: 0 0 0.9rem;
+  font-weight: 700;
+}
+
+.adm-kv {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #f0f2f5;
+  font-size: 0.86rem;
+}
+.adm-kv:last-child { border-bottom: none; }
+.adm-kv .k { color: #718096; }
+.adm-kv .v { font-weight: 600; max-width: 60%; text-align: right; word-break: break-all; }
+
+/* ── Avatar chips ─────────────────────────────────────────── */
+.adm-chip {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  background: rgba(108,99,255,0.1);
+  border: 1px solid rgba(108,99,255,0.2);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  color: #6c63ff;
+  font-weight: 600;
+  margin: 0.15rem 0.15rem 0 0;
+}
+
+/* ── Progress bar ─────────────────────────────────────────── */
+.adm-prog-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #f0f2f5;
+  font-size: 0.85rem;
+}
+.adm-prog-row:last-child { border-bottom: none; }
+.adm-prog-label {
+  width: 130px;
+  flex-shrink: 0;
+  color: #4a5568;
+  font-weight: 600;
+}
+.adm-prog-bar-wrap {
+  flex: 1;
+  background: #e8ecf4;
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+}
+.adm-prog-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #6c63ff, #FF8A3D);
+  transition: width 0.4s;
+}
+.adm-prog-pct {
+  width: 40px;
+  text-align: right;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #6c63ff;
+}
+
+/* ── Dist grid ────────────────────────────────────────────── */
+.adm-dist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.adm-dist-card {
+  background: #fff;
+  border: 1px solid #e8ecf4;
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.adm-dist-card h3 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #718096;
+  margin: 0 0 0.75rem;
+  font-weight: 700;
+}

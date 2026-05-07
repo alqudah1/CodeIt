@@ -18,11 +18,19 @@ import Lesson7Interactive from './Lesson7Interactive';
 import Lesson8Interactive from './Lesson8Interactive';
 import Lesson9Interactive from './Lesson9Interactive';
 import Lesson10Interactive from './Lesson10Interactive';
+import Lesson11Interactive from './Lesson11Interactive';
+import Lesson12Interactive from './Lesson12Interactive';
+import Lesson13Interactive from './Lesson13Interactive';
+import Lesson14Interactive from './Lesson14Interactive';
+import Lesson15Interactive from './Lesson15Interactive';
+import Lesson16Interactive from './Lesson16Interactive';
 import LessonMap from './LessonMap';
 
 export {
   Lesson1, Lesson2, Lesson3, Lesson4, Lesson5, Lesson6, Lesson7, Lesson8, Lesson9, Lesson10,
   Lesson1Interactive, Lesson2Interactive, Lesson3Interactive, Lesson4Interactive, Lesson5Interactive,
   Lesson6Interactive, Lesson7Interactive, Lesson8Interactive, Lesson9Interactive, Lesson10Interactive,
+  Lesson11Interactive, Lesson12Interactive, Lesson13Interactive, Lesson14Interactive,
+  Lesson15Interactive, Lesson16Interactive,
   LessonMap
 };

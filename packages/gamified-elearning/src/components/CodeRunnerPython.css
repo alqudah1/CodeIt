@@ -7,7 +7,7 @@
   overflow: hidden;
   box-shadow: 0 24px 52px rgba(4, 22, 56, 0.18);
   border: 2px solid rgba(255, 159, 28, 0.3);
-  font-family: 'Arvo', serif;
+  font-family: 'Nunito', 'Arvo', sans-serif;
   background: #1e1e2e;
 }
 
@@ -44,7 +44,7 @@
   cursor: pointer;
   border: 2px solid;
   transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-  font-family: 'Arvo', serif;
+  font-family: 'Nunito', 'Arvo', sans-serif;
   white-space: nowrap;
 }
 
@@ -114,7 +114,7 @@
   letter-spacing: 0.12em;
   color: rgba(255, 159, 28, 0.8);
   margin-bottom: 0.45rem;
-  font-family: 'Arvo', serif;
+  font-family: 'Nunito', 'Arvo', sans-serif;
 }
 
 .cr-output {

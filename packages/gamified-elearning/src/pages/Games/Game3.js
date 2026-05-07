@@ -1,22 +1,3 @@
-import React, { useEffect } from 'react';
-import { getGameById, getGameLaunchUrl } from './gameCatalog';
-
-const Game3 = () => {
-  useEffect(() => {
-    const game = getGameById('3');
-    if (game) {
-      window.location.href = getGameLaunchUrl(game, true);
-    }
-  }, []);
-
-  const game = getGameById('3');
-
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' }}>
-      <h2>Redirecting to Math Game Quest...</h2>
-      <p>If you are not redirected automatically, <a href={getGameLaunchUrl(game, true)}>click here</a>.</p>
-    </div>
-  );
-};
-
+import GameGate from './GameGate';
+const Game3 = () => <GameGate gameId="3" />;
 export default Game3;

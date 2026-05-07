@@ -8,13 +8,14 @@
   min-height: 100vh;
   width: 100%;
   background: #FFF7ED;
-  font-family: 'Arvo', serif;
+  font-family: 'Nunito', 'Arvo', sans-serif;
   color: #1F2A44;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 0 1rem 5rem;
-  overflow-x: hidden;
+  /* overflow-x removed: body-level clip handles it.
+     Inner container uses width:min(680px,94%) — no content can escape that. */
   position: relative;
 }
 

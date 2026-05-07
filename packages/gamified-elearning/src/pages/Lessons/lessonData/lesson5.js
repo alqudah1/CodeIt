@@ -1,48 +1,48 @@
 const lesson5 = {
   id: 5,
-  title: "Lists & Strings — Your Data Toolkit",
-  subtitle: "Collect multiple items in lists and manipulate text like a Python word wizard!",
-  emoji: "📋",
-  story: [
-    "🛒 Marco is making a shopping list — but every time he adds something, the paper gets messy!",
-    "💡 Python has lists: shopping = ['apples', 'milk', 'eggs']. All items in one tidy place!",
-    "✂️ Strings are also super powerful. You can reverse them, count letters, find words, and more.",
-    "🎯 By the end, you'll manage a list of your favorite things and perform cool string magic!"
-  ],
-  concepts: [
-    { icon: "📋", title: "Lists", body: "A list holds multiple items: fruits = ['apple', 'banana', 'mango']. Access with fruits[0]." },
-    { icon: "➕", title: "Append & Remove", body: "fruits.append('grape') adds an item. fruits.remove('apple') deletes one." },
-    { icon: "🔤", title: "String Methods", body: "name.upper() makes UPPERCASE. name.lower() makes lowercase. len(name) counts characters." },
-    { icon: "🔁", title: "Loop a List", body: "for fruit in fruits: print(fruit) — loops through every item in the list!" }
-  ],
-  checkpoints: [
+  title: "Simple Repetition",
+  subtitle: "Tell Python to repeat something — without writing it out ten times!",
+  emoji: "🔁",
+  steps: [
     {
-      id: "cp1",
-      title: "Checkpoint 1 — Favorite Things List",
-      description: "Create a list called favorites with 3 of your favorite things, then print the whole list.",
-      initialCode: "favorites = ['coding', 'pizza', 'music']\nprint(favorites)",
-      successPattern: /\[/,
-      hint: "Lists use square brackets [ ]. Add strings inside with quotes, separated by commas.",
+      type: 'concept',
+      id: 'concept',
+      title: 'For Loops with Range',
+      body: 'A for loop with range() tells Python: "repeat this block N times". The variable i counts each step, starting from 0. You can print i to see the counter change!',
+      highlight: 'for i in range(3):\n    print("Go!")   →   prints Go! three times',
+      code: 'for i in range(3):\n    print("Go!")',
+    },
+    {
+      type: 'example',
+      id: 'example',
+      title: 'Count with Range',
+      description: 'Click Run to see the loop count from 0. Notice it starts at 0, not 1!',
+      code: 'for i in range(5):\n    print(i)',
+      successPattern: /0|1|2|3|4/,
+      hint: 'Click Run! range(5) gives: 0, 1, 2, 3, 4 — five numbers starting from 0.',
+      xp: 10,
+    },
+    {
+      type: 'tryit',
+      id: 'tryit',
+      title: 'Repeat a Message',
+      description: 'Run this code to see "Coding is fun!" 5 times. Then change 5 to 3 — what happens?',
+      code: 'for i in range(5):\n    print("Coding is fun!")',
+      successPattern: /Coding is fun/,
+      hint: 'Change 5 to 3 and click Run again — the message appears fewer times!',
       xp: 15,
     },
     {
-      id: "cp2",
-      title: "Checkpoint 2 — Loop Through the List",
-      description: "Print each item in your favorites list on its own line using a for loop.",
-      initialCode: "favorites = ['coding', 'pizza', 'music']\nfor item in favorites:\n    print(item)",
-      successPattern: /coding|pizza|music/i,
-      hint: "The loop variable item takes on each list value one at a time.",
-      xp: 15,
-    },
-    {
-      id: "cp3",
-      title: "Checkpoint 3 — String Magic",
-      description: "Store your name in a variable and print it in UPPERCASE, then print how many letters it has.",
-      initialCode: 'name = "Alex"\nprint(name.upper())\nprint(len(name))',
-      successPattern: /[A-Z]{2,}/,
-      hint: "name.upper() converts to uppercase. len(name) counts the characters.",
+      type: 'challenge',
+      id: 'challenge',
+      title: 'Count from 1',
+      description: 'Run this code to count from 1 to 5. range(1, 6) starts at 1 and stops before 6!',
+      code: 'for i in range(1, 6):\n    print(i)',
+      successPattern: /1|2|3|4|5/,
+      hint: 'range(1, 6) gives: 1, 2, 3, 4, 5. Try changing the start or end number!',
       xp: 20,
-    }
+    },
   ]
 };
+
 export default lesson5;

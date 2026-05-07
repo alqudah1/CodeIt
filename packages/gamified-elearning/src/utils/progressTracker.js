@@ -1,5 +1,6 @@
 // Progress tracking utilities for the frontend
 import axios from 'axios';
+import { ENDPOINTS } from '../config/api';
 
 const API_BASE_URL = '';
 
@@ -71,9 +72,7 @@ export const getStudentProgress = async () => {
 
 // Helper function to track lesson completion from static pages
 export const trackStaticLessonCompletion = async (lessonNumber) => {
-  // Mark attempted in localStorage for UX state restoration
-  localStorage.setItem(`lesson_${lessonNumber}_attempted`, 'true');
-  // Call the real backend endpoint
+  // Progress is tracked in DB only — no localStorage flags needed
   const result = await trackLessonCompletion(lessonNumber);
   return result; // { success, alreadyCompleted, xpEarned }
 };
@@ -81,24 +80,33 @@ export const trackStaticLessonCompletion = async (lessonNumber) => {
 // Helper function to track game completion from puzzle games
 export const trackPuzzleGameCompletion = async (lessonNumber, gameType, score, timeSpent) => {
   const lessonId = lessonNumber;
-  
-  // Check if this is high score (you might want to compare with stored scores)
-  const scoreKey = `game_${lessonNumber}_${gameType}_high_score`;
-  const currentHighScore = parseInt(localStorage.getItem(scoreKey) || '0');
-  const isHighScore = score > currentHighScore;
-  
-  if (isHighScore) {
-    localStorage.setItem(scoreKey, score.toString());
+  const scoreKey = `game_${lessonNumber}_${gameType}`;
+
+  // Save high score to DB (backend uses GREATEST so only updates if higher)
+  const token = getAuthToken();
+  if (token && typeof score === 'number' && score > 0) {
+    try {
+      await fetch(ENDPOINTS.profile.gameScore, {
+        method:  'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization:  `Bearer ${token}`,
+        },
+        body: JSON.stringify({ gameKey: scoreKey, score }),
+      });
+    } catch {
+      // Non-fatal — high score is non-critical; DB will sync on next successful call
+    }
   }
-  
-  // Track completion
+
+  // Track completion — high score comparison handled server-side via GREATEST()
   const result = await trackGameCompletion(lessonId, gameType, {
     score,
-    isHighScore,
-    attempts: 1, // You might want to track this more accurately
+    isHighScore: false,
+    attempts: 1,
     completionTime: timeSpent,
   });
-  
+
   return result;
 };
 
@@ -226,12 +234,35 @@ export class TimeTracker {
 export const initializeTimeTracker = () => new TimeTracker();
 
 export const autoTrackDailyLogin = async () => {
-  // Simple daily login tracker (client-side). Safe no-op for backend.
+  // Quick client-side dedup: skip the API call if we already recorded today
   const key = "daily_login_tracked_date";
   const today = new Date().toISOString().slice(0, 10);
-
   if (localStorage.getItem(key) === today) return { alreadyTracked: true };
 
-  localStorage.setItem(key, today);
+  // Record in DB (updates streak server-side)
+  const token = getAuthToken();
+  if (token) {
+    try {
+      const res = await fetch(ENDPOINTS.profile.dailyActivity, {
+        method:  'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization:  `Bearer ${token}`,
+        },
+      });
+      if (res.ok) {
+        localStorage.setItem(key, today);
+        const data = await res.json();
+        return { tracked: true, currentStreak: data.currentStreak };
+      }
+    } catch {
+      // Network error — record locally so we don't spam retries all day
+      localStorage.setItem(key, today);
+    }
+  } else {
+    // Not logged in — just mark locally
+    localStorage.setItem(key, today);
+  }
+
   return { tracked: true };
 };

@@ -157,20 +157,10 @@ export default function Builder() {
   const promptRef  = useRef(null);
   const editRef    = useRef(null);
 
-  // ── Read URL params on mount: ?prompt= (from lessons), ?type= (from lobby), ?view=projects ──
+  // ── Prefill prompt from ?prompt= URL param (sent by lesson "Use in AI Builder") ─
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const pre  = params.get('prompt');
-    const type = params.get('type');
-    const view = params.get('view');
-    if (pre)                setPrompt(pre);
-    if (type === 'game')    setProjectType('game');
-    if (type === 'website') setProjectType('website');
-    if (view === 'projects') {
-      setTimeout(() => {
-        document.querySelector('.bldr-projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 700);
-    }
+    const pre = new URLSearchParams(location.search).get('prompt');
+    if (pre) setPrompt(pre);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Confetti (only on fresh builds, not edits) ─────────────────────────────
