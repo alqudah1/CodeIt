@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, useLocation, useParams, Navigat
 import { USE_ARTISTIC_HOMEPAGE } from './featureFlags';
 import HomeOld from './legacy/HomeOld';
 import Home from './pages/Home/Home';
+import Builder from './pages/Builder/Builder';
+import Playground from './pages/Playground/Playground';
 import MainPage from './pages/MainPage/MainPage';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
@@ -82,6 +84,10 @@ const App = () => {
           <Route path="/game/9"  element={<Game9  />} />
           <Route path="/game/10" element={<Game10 />} />
           
+          {/* Builder + Playground */}
+          <Route path="/builder"    element={<Builder />} />
+          <Route path="/playground" element={<Playground />} />
+
           {/* Character Lab Route */}
           <Route path="/character" element={<CharacterLab />} />
           
