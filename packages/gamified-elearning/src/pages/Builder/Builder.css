@@ -244,6 +244,15 @@
   pointer-events: none;
 }
 
+.bldr-privacy-hint {
+  margin: -0.2rem 0 0;
+  border-left: 3px solid #f0a05c;
+  padding-left: 0.7rem;
+  color: #785b49;
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
 /* Quick-start chips */
 .bldr-quickstarts {
   display: flex;

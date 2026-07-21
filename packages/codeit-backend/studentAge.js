@@ -1,0 +1,37 @@
+'use strict';
+
+function parseDateOnly(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const [year, month, day] = value.split('-').map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (
+    date.getUTCFullYear() !== year
+    || date.getUTCMonth() !== month - 1
+    || date.getUTCDate() !== day
+  ) return null;
+  return { year, month, day };
+}
+
+function ageOnDate(dob, now = new Date()) {
+  const birth = parseDateOnly(dob);
+  if (!birth || !(now instanceof Date) || Number.isNaN(now.getTime())) return null;
+
+  const current = {
+    year: now.getUTCFullYear(),
+    month: now.getUTCMonth() + 1,
+    day: now.getUTCDate(),
+  };
+  let age = current.year - birth.year;
+  if (current.month < birth.month || (current.month === birth.month && current.day < birth.day)) age -= 1;
+  return age;
+}
+
+function studentAgeEligibility(dob, now = new Date()) {
+  const age = ageOnDate(dob, now);
+  if (age === null || age < 0) return { allowed: false, reason: 'invalid', age: null };
+  if (age < 13) return { allowed: false, reason: 'parent_required', age };
+  if (age > 18) return { allowed: false, reason: 'adult_account', age };
+  return { allowed: true, reason: 'eligible', age };
+}
+
+module.exports = { ageOnDate, parseDateOnly, studentAgeEligibility };

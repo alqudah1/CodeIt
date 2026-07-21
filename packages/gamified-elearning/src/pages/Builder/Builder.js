@@ -1729,6 +1729,9 @@ export default function Builder() {
             />
             <div className="bldr-textarea-hint">Ctrl+Enter to build</div>
           </div>
+          <p className="bldr-privacy-hint">
+            Keep personal details private. Do not enter your full name, email, school, address, or passwords.
+          </p>
 
           {code && !loading && (
             <div className="bldr-quickstarts">

@@ -5,6 +5,7 @@ const jwt     = require('jsonwebtoken');
 const db      = require('../db');
 const { JWT_SECRET, JWT_EXPIRY } = require('../config');
 const { recordEvent } = require('../analytics');
+const { studentAgeEligibility } = require('../studentAge');
 
 // ── POST /api/signup ───────────────────────────────────────────────────────────
 router.post('/signup', async (req, res) => {
@@ -16,6 +17,25 @@ router.post('/signup', async (req, res) => {
     if (!username || !username.trim()) return res.status(400).json({ error: 'Username is required' });
     if (!password)                     return res.status(400).json({ error: 'Password is required' });
     if (!dob)                          return res.status(400).json({ error: 'Birthday is required' });
+
+    const eligibility = studentAgeEligibility(dob);
+    if (eligibility.reason === 'invalid') {
+      return res.status(400).json({ field: 'dob', error: 'Enter a valid birthday.' });
+    }
+    if (eligibility.reason === 'parent_required') {
+      return res.status(403).json({
+        code: 'PARENT_ACCOUNT_REQUIRED',
+        field: 'dob',
+        error: 'Learners under 13 need a parent or guardian to create and manage their access. You can still try CodeIt without an account.',
+      });
+    }
+    if (eligibility.reason === 'adult_account') {
+      return res.status(400).json({
+        code: 'ADULT_ACCOUNT_REQUIRED',
+        field: 'dob',
+        error: 'Use the Parent or Educator option for adult accounts.',
+      });
+    }
   } else {
     if (!name || !name.trim())   return res.status(400).json({ error: 'Name is required' });
     if (!email || !email.trim()) return res.status(400).json({ error: 'Email is required' });

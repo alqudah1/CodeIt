@@ -59,7 +59,7 @@ export default function Register() {
 
   useSEO({
     title:       'Create Free Account | CodeIt',
-    description: 'Join CodeIt for free and start learning Python with interactive lessons, quizzes, and coding games. Built for kids aged 8–12.',
+    description: 'Join CodeIt for free and start learning Python with interactive lessons, quizzes, coding games, and creative projects.',
     canonical:   '/register',
   });
 
@@ -141,7 +141,7 @@ export default function Register() {
 
           <div className="auth-path-list">
             <button className="auth-path-card auth-path-card--student" onClick={() => setStep('student')}>
-              <span className="auth-path-card__title">I am a Student</span>
+              <span className="auth-path-card__title">I am a Student (13–18)</span>
               <span className="auth-path-card__desc">Sign up with a username — no email needed</span>
             </button>
 
@@ -154,6 +154,10 @@ export default function Register() {
               <span className="auth-path-card__title">Try CodeIt First</span>
               <span className="auth-path-card__desc">Make a project without creating an account</span>
             </button>
+          </div>
+
+          <div className="auth-educator-note">
+            Under 13? Ask a parent or guardian to manage your access, or try CodeIt first without an account.
           </div>
 
           <div className="auth-footer">
@@ -238,12 +242,15 @@ export default function Register() {
                       const age = Math.floor(
                         (new Date() - new Date(v)) / (365.25 * 24 * 60 * 60 * 1000)
                       );
-                      return (age >= 6 && age <= 18) || 'Age must be between 6 and 18 to sign up as a student';
+                      return (age >= 13 && age <= 18) || 'Student accounts are for ages 13–18. Younger learners need parent-managed access.';
                     },
                   },
                 })}
               />
               {errS.dob && <span className="error">{errS.dob.message}</span>}
+              {!errS.dob && (
+                <span className="auth-hint">Student accounts are for ages 13–18. We do not create under-13 accounts without a parent-managed consent flow.</span>
+              )}
             </div>
 
             {error && <p className="error-message">{error}</p>}
