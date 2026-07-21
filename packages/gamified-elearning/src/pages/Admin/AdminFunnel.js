@@ -63,6 +63,7 @@ export default function AdminFunnel() {
   const counts = useMemo(() => Object.fromEntries(
     (data?.events || []).map((row) => [row.event_name, Number(row.event_count) || 0])
   ), [data]);
+  const ageAudit = data?.student_age_audit || null;
 
   const uniqueUsers = useMemo(() => Object.fromEntries(
     (data?.events || []).map((row) => [row.event_name, Number(row.unique_users) || 0])
@@ -123,6 +124,15 @@ export default function AdminFunnel() {
               </article>
             ))}
           </div>
+
+          <div className="adm-section-head">Account safety audit</div>
+          <div className="funnel-safety-grid">
+            <article><span>Existing students under 13</span><strong>{fmt(ageAudit?.under_13)}</strong></article>
+            <article><span>Parent email on file</span><strong>{fmt(ageAudit?.under_13_with_parent_email)}</strong></article>
+            <article className="is-urgent"><span>No parent email on file</span><strong>{fmt(ageAudit?.under_13_without_parent_email)}</strong></article>
+            <article><span>Students ages 13–18</span><strong>{fmt(ageAudit?.age_13_18)}</strong></article>
+          </div>
+          <p className="funnel-safety-note">Aggregate counts only. A parent email on file is not proof of verified parental consent. Existing under-13 accounts need a reviewed remediation plan before a paid launch.</p>
 
           <div className="adm-section-head">AI unit economics</div>
           <div className="funnel-cost-grid">

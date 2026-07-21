@@ -55,7 +55,7 @@ async function getFunnelReport(requestedDays = 30) {
   try {
     if (!await tableReady) return null;
     const windowSql = `created_at >= DATE_SUB(NOW(), INTERVAL ${days} DAY)`;
-    const [[events], [daily], [breakdown]] = await Promise.all([
+    const [[events], [daily], [breakdown], [studentAgeRows]] = await Promise.all([
       pool.query(
         `SELECT event_name, COUNT(*) AS event_count, COUNT(DISTINCT user_id) AS unique_users
          FROM analytics_events WHERE ${windowSql}
@@ -73,9 +73,22 @@ async function getFunnelReport(requestedDays = 30) {
          GROUP BY event_name, meta
          ORDER BY event_name, event_count DESC`
       ),
+      pool.query(
+        `SELECT
+           COUNT(*) AS students,
+           SUM(dob IS NULL) AS missing_dob,
+           SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) < 13) AS under_13,
+           SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) < 13
+             AND parent_email IS NOT NULL AND parent_email <> '') AS under_13_with_parent_email,
+           SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) < 13
+             AND (parent_email IS NULL OR parent_email = '')) AS under_13_without_parent_email,
+           SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) BETWEEN 13 AND 18) AS age_13_18,
+           SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) > 18) AS over_18
+         FROM Users WHERE LOWER(role) = 'student'`
+      ),
     ]);
 
-    return { days, events, daily, breakdown };
+    return { days, events, daily, breakdown, student_age_audit: studentAgeRows[0] || null };
   } catch (err) {
     console.error('Analytics report failed:', err.message);
     return null;
