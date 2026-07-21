@@ -156,7 +156,7 @@
 .studio-preview__project-kicker { color: var(--project-accent); font-size: 0.61rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
 .studio-preview__project-card h2 { margin: 0.8rem 0 0.5rem; font-family: "Arvo", serif; font-size: clamp(1.35rem, 2.5vw, 2rem); letter-spacing: -0.04em; }
 .studio-preview__project-card p { min-height: 2.5em; margin-bottom: 1.2rem; color: #656b78; font-size: 0.83rem; }
-.studio-preview__project-card button { padding: 0.65rem 1rem; color: #fff; background: var(--project-accent); border: 0; border-radius: 9px; font: inherit; font-size: 0.76rem; font-weight: 900; }
+.studio-preview__project-action { padding: 0.65rem 1rem; display: inline-block; color: #fff; background: var(--project-accent); border-radius: 9px; font-size: 0.76rem; font-weight: 900; }
 @keyframes studio-project-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
 
 .studio-proof {

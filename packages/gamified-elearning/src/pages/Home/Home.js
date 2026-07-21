@@ -97,6 +97,7 @@ function StudioPreview() {
                 key={idea.id}
                 className={idea.id === active.id ? "is-active" : ""}
                 onClick={() => setActiveId(idea.id)}
+                aria-pressed={idea.id === active.id}
               >
                 {idea.label}
               </button>
@@ -112,13 +113,17 @@ function StudioPreview() {
           </div>
         </aside>
 
-        <div className="studio-preview__canvas" style={{ "--project-accent": active.accent }}>
+        <div
+          className="studio-preview__canvas"
+          style={{ "--project-accent": active.accent }}
+          aria-live="polite"
+        >
           <span className="studio-preview__made-with">Made with CodeIt</span>
           <div className="studio-preview__project-card" key={active.id}>
             <span className="studio-preview__project-kicker">A working project, not a template</span>
             <h2>{active.title}</h2>
             <p>{active.detail}</p>
-            <button type="button">{active.action}</button>
+            <span className="studio-preview__project-action" aria-hidden="true">{active.action}</span>
           </div>
         </div>
       </div>
