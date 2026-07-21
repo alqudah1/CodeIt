@@ -49,4 +49,37 @@ async function recordEvent(eventName, { userId = null, meta = null } = {}) {
   }
 }
 
-module.exports = { recordEvent };
+async function getFunnelReport(requestedDays = 30) {
+  const days = [7, 30, 90].includes(Number(requestedDays)) ? Number(requestedDays) : 30;
+
+  try {
+    if (!await tableReady) return null;
+    const windowSql = `created_at >= DATE_SUB(NOW(), INTERVAL ${days} DAY)`;
+    const [[events], [daily], [breakdown]] = await Promise.all([
+      pool.query(
+        `SELECT event_name, COUNT(*) AS event_count, COUNT(DISTINCT user_id) AS unique_users
+         FROM analytics_events WHERE ${windowSql}
+         GROUP BY event_name`
+      ),
+      pool.query(
+        `SELECT DATE_FORMAT(created_at, '%Y-%m-%d') AS day, event_name, COUNT(*) AS event_count
+         FROM analytics_events WHERE ${windowSql}
+         GROUP BY DATE(created_at), event_name
+         ORDER BY DATE(created_at) ASC`
+      ),
+      pool.query(
+        `SELECT event_name, meta, COUNT(*) AS event_count
+         FROM analytics_events WHERE ${windowSql} AND meta IS NOT NULL
+         GROUP BY event_name, meta
+         ORDER BY event_name, event_count DESC`
+      ),
+    ]);
+
+    return { days, events, daily, breakdown };
+  } catch (err) {
+    console.error('Analytics report failed:', err.message);
+    return null;
+  }
+}
+
+module.exports = { getFunnelReport, recordEvent };

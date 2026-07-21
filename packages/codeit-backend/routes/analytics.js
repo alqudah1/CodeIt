@@ -3,7 +3,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
-const { recordEvent } = require('../analytics');
+const { getFunnelReport, recordEvent } = require('../analytics');
 const {
   CLIENT_REPORTED_EVENTS,
   normalizeEventName,
@@ -22,6 +22,20 @@ function optionalAuth(req, res, next) {
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (!err) req.user = user;
+    next();
+  });
+}
+
+function requireAdmin(req, res, next) {
+  const header = req.headers.authorization;
+  const token = header && header.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'Admin authentication required.' });
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err || String(user?.role || '').toLowerCase() !== 'admin') {
+      return res.status(403).json({ error: 'Admin access required.' });
+    }
+    req.user = user;
     next();
   });
 }
@@ -52,6 +66,12 @@ function rateLimit(req, res, next) {
 
   next();
 }
+
+router.get('/funnel', requireAdmin, async (req, res) => {
+  const report = await getFunnelReport(req.query.days);
+  if (!report) return res.status(503).json({ error: 'Analytics report is unavailable.' });
+  return res.json(report);
+});
 
 router.post('/event', rateLimit, optionalAuth, async (req, res) => {
   const eventName = normalizeEventName(req.body?.event_name);
