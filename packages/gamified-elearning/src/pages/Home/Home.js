@@ -4,373 +4,316 @@ import { useAuth } from "../../context/AuthContext";
 import Header from "../Header/Header";
 import { useSEO } from "../../hooks/useSEO";
 import "./Home.css";
+import "./HomeStudio.css";
 
-/* ── SEO lesson list (crawlable footer links) ──────────────────── */
-const LESSON_TITLES = [
-  null,
-  "Hello Python",
-  "Storing Info with Variables",
-  "Strings",
-  "Making Decisions with If Statements",
-  "Simple Repetition",
-  "For Loops",
-  "Basic Lists",
-  "Loops with Lists",
-  "Basic Functions",
-  "Combining Concepts",
-  "Numbers and Arithmetic",
-  "Booleans and Comparisons",
-  "Logical Operators",
-  "Type Casting",
-  "String Formatting",
-  "String Methods",
+const PROJECT_IDEAS = [
+  {
+    id: "space-quiz",
+    label: "Space quiz",
+    prompt: "Build a five-question space quiz with a score and a restart button.",
+    title: "Mission Control Quiz",
+    accent: "#6c5ce7",
+    detail: "Question 2 of 5",
+    action: "Launch answer",
+  },
+  {
+    id: "portfolio",
+    label: "My first site",
+    prompt: "Make a bright portfolio about my drawings, with a gallery and contact button.",
+    title: "Maya Makes Things",
+    accent: "#ff7a00",
+    detail: "Art, experiments & tiny inventions",
+    action: "View gallery",
+  },
+  {
+    id: "reaction-game",
+    label: "Reaction game",
+    prompt: "Create a reaction game that tracks my fastest time and lets me play again.",
+    title: "Lightning Tap",
+    accent: "#00a896",
+    detail: "Best time: 0.42 seconds",
+    action: "Play again",
+  },
 ];
 
-/* ── Hero mock card (animated, center of visual) ────────────────── */
-function HeroMockCard() {
-  const [phase, setPhase] = useState('prompt');
+const STARTING_POINTS = [
+  {
+    number: "01",
+    title: "Build something personal",
+    copy: "Start with a game, fan page, quiz, or school project that already matters to you.",
+    link: "/builder",
+    linkLabel: "Open the AI studio",
+  },
+  {
+    number: "02",
+    title: "See the code behind it",
+    copy: "Move between the working project and the code so every change has a visible reason.",
+    link: "/playground",
+    linkLabel: "Try the code playground",
+  },
+  {
+    number: "03",
+    title: "Learn, edit, and make it yours",
+    copy: "Use short lessons to understand a concept, then bring it back into your own project.",
+    link: "/lessons",
+    linkLabel: "Browse beginner lessons",
+  },
+];
 
-  useEffect(() => {
-    const dur  = { prompt: 2200, building: 1800, result: 3200 };
-    const next = { prompt: 'building', building: 'result', result: 'prompt' };
-    const t = setTimeout(() => setPhase(next[phase]), dur[phase]);
-    return () => clearTimeout(t);
-  }, [phase]);
+const POPULAR_LESSONS = [
+  [1, "Your first Python program"],
+  [2, "Variables and stored information"],
+  [4, "Making decisions with if statements"],
+  [6, "Repeating ideas with loops"],
+];
+
+function trackConversion(action) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent("codeit:conversion", { detail: { action } }));
+  if (typeof window.gtag === "function") {
+    window.gtag("event", action, { event_category: "homepage" });
+  }
+}
+
+function StudioPreview() {
+  const [activeId, setActiveId] = useState(PROJECT_IDEAS[0].id);
+  const active = PROJECT_IDEAS.find((idea) => idea.id === activeId) || PROJECT_IDEAS[0];
 
   return (
-    <div className="hp-mock" aria-hidden="true">
-      <div className="hp-mock__chrome">
-        <span className="hp-mock__dot" />
-        <span className="hp-mock__dot" />
-        <span className="hp-mock__dot" />
-        <span className="hp-mock__chrome-label">AI Builder</span>
+    <div className="studio-preview" aria-label="Example of a project made with CodeIt">
+      <div className="studio-preview__toolbar">
+        <div className="studio-preview__traffic" aria-hidden="true"><i /><i /><i /></div>
+        <span>CodeIt studio</span>
+        <span className="studio-preview__status"><i /> Live preview</span>
       </div>
-      <div className="hp-mock__body">
-          <div className="hp-mock__prompt-row">
-            <span className="hp-mock__key">Prompt</span>
-            <span className="hp-mock__val">"Make a simple game"</span>
+
+      <div className="studio-preview__body">
+        <aside className="studio-preview__prompt">
+          <p className="studio-preview__label">Try an idea</p>
+          <div className="studio-preview__idea-list" role="list" aria-label="Example project ideas">
+            {PROJECT_IDEAS.map((idea) => (
+              <button
+                type="button"
+                key={idea.id}
+                className={idea.id === active.id ? "is-active" : ""}
+                onClick={() => setActiveId(idea.id)}
+              >
+                {idea.label}
+              </button>
+            ))}
           </div>
-          <div className={`hp-mock__status hp-mock__status--${phase}`}>
-            {phase === 'prompt' && (
-              <span className="hp-mock__idle">Ready to build...</span>
-            )}
-            {phase === 'building' && (
-              <>
-                <span className="hp-mock__spinner" />
-                <span>Building...</span>
-              </>
-            )}
-            {phase === 'result' && (
-              <>
-                <span className="hp-mock__check">&#10003;</span>
-                <span>Playable project ready</span>
-              </>
-            )}
+          <div className="studio-preview__prompt-box">
+            <span>Prompt</span>
+            <p>{active.prompt}</p>
           </div>
-          <div className="hp-mock__preview" aria-hidden="true">
-            <div className="hp-mock__preview-bar" />
-            <div className="hp-mock__preview-bar hp-mock__preview-bar--sm" />
-            <div className="hp-mock__preview-game" />
+          <div className="studio-preview__code" aria-hidden="true">
+            <span><b>const</b> project = createIdea();</span>
+            <span>project.<em>makeInteractive</em>();</span>
           </div>
+        </aside>
+
+        <div className="studio-preview__canvas" style={{ "--project-accent": active.accent }}>
+          <span className="studio-preview__made-with">Made with CodeIt</span>
+          <div className="studio-preview__project-card" key={active.id}>
+            <span className="studio-preview__project-kicker">A working project, not a template</span>
+            <h2>{active.title}</h2>
+            <p>{active.detail}</p>
+            <button type="button">{active.action}</button>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-
-/* ── What you can build cards ──────────────────────────────────── */
-const BUILD_CARDS = [
-  {
-    title: 'Websites',
-    desc: 'Fan pages, portfolios, science projects, birthday cards',
-    badge: null,
-    cls: 'website',
-    examples: ['Soccer fan page', 'About-me page', 'Science project'],
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-        <line x1="3" y1="9" x2="21" y2="9" />
-        <line x1="9" y1="21" x2="9" y2="9" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Games',
-    desc: 'Click-target games, reaction challenges, quizzes with scoring',
-    badge: 'Most popular',
-    cls: 'game',
-    examples: ['Click-the-target game', 'Space quiz', 'Word scramble'],
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <rect x="2" y="7" width="20" height="11" rx="4" />
-        <path d="M12 11v4M10 13h4" />
-        <circle cx="17.5" cy="12.5" r="1" fill="currentColor" stroke="none" />
-        <circle cx="19.5" cy="10.5" r="1" fill="currentColor" stroke="none" />
-      </svg>
-    ),
-  },
-  {
-    title: 'AI Projects',
-    desc: 'Story generators, random name pickers, idea machines',
-    badge: null,
-    cls: 'tool',
-    examples: ['Random story maker', 'Name picker', 'Idea generator'],
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M12 3l2.09 6.26L20 11l-5.91 1.74L12 19l-2.09-6.26L4 11l5.91-1.74L12 3z" />
-        <path d="M5 3v4M3 5h4" strokeWidth="1.8" />
-        <path d="M19 17v4M17 19h4" strokeWidth="1.8" />
-      </svg>
-    ),
-  },
-];
-
 export default function Home() {
+  const { user } = useAuth();
+
   useSEO({
-    title:       'Build with AI. Learn How It Works. | CodeIt — AI Coding for Kids',
-    description: 'CodeIt helps kids and beginners build websites, games, and projects with AI while learning the coding concepts behind them. Free to start, no install needed.',
-    canonical:   '/',
+    title: "AI Coding for Kids: Build Websites & Learn the Code | CodeIt",
+    description: "CodeIt is a beginner-friendly AI coding studio where kids build websites, games, and quizzes, then learn the code behind their projects.",
+    canonical: "/",
   });
 
-  const { user } = useAuth();
+  useEffect(() => {
+    const schemaId = "codeit-home-schema";
+    let script = document.getElementById(schemaId);
+    if (!script) {
+      script = document.createElement("script");
+      script.id = schemaId;
+      script.type = "application/ld+json";
+      document.head.appendChild(script);
+    }
+    script.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      name: "CodeIt",
+      url: "https://codeitlearn.com/",
+      applicationCategory: "EducationalApplication",
+      operatingSystem: "Web",
+      description: "A beginner-friendly AI coding studio where students build websites, games, and quizzes and learn the code behind their projects.",
+      audience: {
+        "@type": "EducationalAudience",
+        educationalRole: "student",
+        audienceType: "Kids and beginner coders",
+      },
+      isAccessibleForFree: true,
+    });
+    return () => script?.remove();
+  }, []);
 
   return (
     <>
       <Header />
-      <div className="homepage">
-        <main className="hp-content">
-
-          {/* ════════════════════════════════════════════════════
-              HERO
-          ════════════════════════════════════════════════════ */}
-          <section className="hp-hero">
-            <div className="hp-hero__copy">
-
-              {user && (
-                <p className="hp-eyebrow">Welcome back, {user.name || 'Builder'}</p>
-              )}
-
-              <h1 className="hp-h1">
-                <span className="seo-only">
-                  Build with AI, Learn How It Works — AI Coding for Kids | CodeIt
-                </span>
-                <span aria-hidden="true">
-                  Build with AI.<br />
-                  <span className="hp-h1-accent">Learn how it works.</span>
-                </span>
+      <div className="studio-home">
+        <main>
+          <section className="studio-hero" aria-labelledby="studio-title">
+            <div className="studio-hero__copy">
+              <p className="studio-kicker">AI coding studio for curious beginners</p>
+              {user && <p className="studio-welcome">Welcome back, {user.name || "Builder"}.</p>}
+              <h1 id="studio-title">
+                Turn an idea into a real website.
+                <span>Then learn the code behind it.</span>
               </h1>
-
-              <p className="hp-sub">
-                Kids create websites, games, and projects in seconds — then learn
-                the coding concepts behind what they built.
+              <p className="studio-hero__lead">
+                Build games, quizzes, and websites with AI—then open the code, change how it works,
+                and grow from creator to coder.
               </p>
-
-              <div className="hp-actions">
-                <Link to="/builder" className="hp-btn hp-btn--primary hp-hero__cta">
-                  Start Building
+              <div className="studio-hero__actions">
+                <Link
+                  to="/builder"
+                  className="studio-button studio-button--primary"
+                  data-cta="hero-build"
+                  onClick={() => trackConversion("hero_build_started")}
+                >
+                  Build your first project <span aria-hidden="true">→</span>
                 </Link>
-                <Link to="/lessons" className="hp-btn hp-btn--ghost">
-                  Explore Lessons
+                <Link
+                  to="/lessons"
+                  className="studio-button studio-button--quiet"
+                  data-cta="hero-lessons"
+                  onClick={() => trackConversion("hero_lessons_opened")}
+                >
+                  Explore beginner lessons
                 </Link>
               </div>
-
-            </div>
-
-            <div className="hp-hero__visual">
-              <HeroMockCard />
-            </div>
-          </section>
-
-          {/* ════════════════════════════════════════════════════
-              WHAT YOU CAN BUILD
-          ════════════════════════════════════════════════════ */}
-          <section id="hp-what-you-can-build" className="hp-build" aria-labelledby="hp-h2-build">
-            <h2 id="hp-h2-build" className="hp-section-title">What you can build</h2>
-            <p className="hp-section-sub">Type any idea in plain words. AI builds it in seconds.</p>
-            <div className="hp-build__grid">
-              {BUILD_CARDS.map((card) => (
-                <Link key={card.title} to="/builder" className={`hp-build-card hp-build-card--${card.cls}`}>
-                  {card.badge && (
-                    <span className="hp-build-card__badge">{card.badge}</span>
-                  )}
-                  <div className="hp-build-card__icon-wrap">
-                    {card.icon}
-                  </div>
-                  <h3 className="hp-build-card__title">{card.title}</h3>
-                  <p className="hp-build-card__desc">{card.desc}</p>
-                  <ul className="hp-build-card__examples">
-                    {card.examples.map((ex) => (
-                      <li key={ex}>{ex}</li>
-                    ))}
-                  </ul>
-                  <span className="hp-build-card__cta">Try this</span>
-                </Link>
-              ))}
-            </div>
-          </section>
-
-          {/* ════════════════════════════════════════════════════
-              HOW IT WORKS
-          ════════════════════════════════════════════════════ */}
-          <section className="hp-how" aria-labelledby="hp-h2-how">
-            <h2 id="hp-h2-how" className="hp-section-title">How it works</h2>
-            <div className="hp-how__steps">
-              {[
-                {
-                  num: '1',
-                  title: 'Type an idea',
-                  sub: 'Describe anything in plain words — a game, a quiz, a website about anything you love.',
-                  link: { to: '/builder', label: 'Open Builder' },
-                },
-                {
-                  num: '2',
-                  title: 'AI builds it',
-                  sub: 'Watch your idea appear live in seconds. See the code, play the game, interact with the result.',
-                  link: null,
-                },
-                {
-                  num: '3',
-                  title: 'Learn and improve it',
-                  sub: 'Discover which coding concepts made it work. Take a lesson, then use what you learned to make it better.',
-                  link: { to: '/lessons', label: 'Browse Lessons' },
-                },
-              ].map(({ num, title, sub, link }) => (
-                <div key={num} className="hp-how__step">
-                  <div className="hp-how__num">{num}</div>
-                  <h3 className="hp-how__step-title">{title}</h3>
-                  <p className="hp-how__step-sub">{sub}</p>
-                  {link && (
-                    <Link to={link.to} className="hp-how__step-link">{link.label} &rarr;</Link>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* ════════════════════════════════════════════════════
-              AVATAR / PROGRESS PROMO
-          ════════════════════════════════════════════════════ */}
-          <section className="hp-xp" aria-labelledby="hp-h2-xp">
-            <div className="hp-xp__inner">
-              <div className="hp-xp__copy">
-                <span className="hp-xp__eyebrow">Progress system</span>
-                <h2 id="hp-h2-xp" className="hp-xp__title">
-                  Build projects.<br />Earn XP. Level up.
-                </h2>
-                <p className="hp-xp__sub">
-                  Every project you build, every lesson you complete, every edit you make
-                  earns XP. Level up your avatar and watch your coding skills grow.
-                </p>
-                <div className="hp-xp__actions">
-                  <Link to={user ? '/character' : '/register'} className="hp-btn hp-btn--primary">
-                    {user ? 'View your avatar' : 'Create your account'}
-                  </Link>
-                  <Link to="/MainPage" className="hp-btn hp-btn--ghost">See progress</Link>
-                </div>
-              </div>
-              <div className="hp-xp__visual" aria-hidden="true">
-                <div className="hp-xp-card">
-                  <div className="hp-xp-card__header">
-                    <span className="hp-xp-card__level">Level 4</span>
-                    <span className="hp-xp-card__total">340 XP</span>
-                  </div>
-                  <div className="hp-xp-card__bar-wrap">
-                    <div className="hp-xp-card__bar" style={{ width: '68%' }} />
-                  </div>
-                  <p className="hp-xp-card__bar-label">68 / 100 XP to Level 5</p>
-                  <div className="hp-xp-card__events">
-                    <div className="hp-xp-card__event hp-xp-card__event--orange">+20 XP — Project built</div>
-                    <div className="hp-xp-card__event hp-xp-card__event--green">+15 XP — Lesson complete</div>
-                    <div className="hp-xp-card__event hp-xp-card__event--blue">+10 XP — Project edited</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ════════════════════════════════════════════════════
-              CTA STRIP
-          ════════════════════════════════════════════════════ */}
-          <section className="hp-cta-strip" aria-label="Get started">
-            <div className="hp-cta-strip__inner">
-              <div className="hp-cta-strip__copy">
-                <h2 className="hp-cta-strip__title">Ready to build something?</h2>
-                <p className="hp-cta-strip__sub">
-                  No coding experience needed. No software to install. Free to start.
-                </p>
-              </div>
-              <Link
-                to={user ? '/builder' : '/register'}
-                className="hp-btn hp-btn--primary"
-              >
-                {user ? 'Open Builder' : 'Start for free'}
-              </Link>
-            </div>
-          </section>
-
-        </main>
-
-        {/* ════════════════════════════════════════════════════
-            FOOTER
-        ════════════════════════════════════════════════════ */}
-        <footer className="hp-footer">
-          <div className="hp-footer__main">
-            <div className="hp-footer__main-inner">
-
-              <div className="hp-footer__brand">
-                <span className="hp-footer__wordmark">
-                  Code<span className="hp-footer__wordmark-accent">It</span>
-                </span>
-                <p className="hp-footer__tagline">
-                  AI-powered coding for kids and beginners.
-                </p>
-              </div>
-
-              <div className="hp-footer__col">
-                <p className="hp-footer__col-heading">Product</p>
-                <Link to="/builder"   className="hp-footer__col-link">Build with AI</Link>
-                <Link to="/lessons"   className="hp-footer__col-link">Lessons</Link>
-                <Link to="/character" className="hp-footer__col-link">Avatar</Link>
-                <Link to="/MainPage"  className="hp-footer__col-link">Progress</Link>
-              </div>
-
-              <div className="hp-footer__col">
-                <p className="hp-footer__col-heading">Company</p>
-                <Link to="/"               className="hp-footer__col-link">How it works</Link>
-                <Link to="/blog"            className="hp-footer__col-link">Blog</Link>
-                <Link to="/coding-for-kids" className="hp-footer__col-link">Who we are</Link>
-              </div>
-
-              <div className="hp-footer__col">
-                <p className="hp-footer__col-heading">Support</p>
-                <a href="mailto:hello@codeitlearn.com" className="hp-footer__col-link">Contact</a>
-                <Link to="/privacy" className="hp-footer__col-link">Privacy</Link>
-                <Link to="/terms"   className="hp-footer__col-link">Terms</Link>
-              </div>
-
-            </div>
-          </div>
-
-          <div className="hp-footer__lesson-zone">
-            <div className="hp-footer__lesson-zone-inner">
-              <p className="hp-footer__lesson-heading">Learn Python for Kids — Free Lessons</p>
-              <ul className="hp-footer__lesson-list">
-                {LESSON_TITLES.slice(1).map((title, idx) => (
-                  <li key={idx + 1}>
-                    <Link to={`/lesson/${idx + 1}`} className="hp-footer__lesson-link">
-                      Lesson {idx + 1}: {title}
-                    </Link>
-                  </li>
-                ))}
+              <ul className="studio-assurances" aria-label="CodeIt benefits">
+                <li>No software to install</li>
+                <li>Try the builder before signing up</li>
+                <li>Edit with words or code</li>
               </ul>
             </div>
-          </div>
 
-          <div className="hp-footer__bottom">
-            <span>&copy; {new Date().getFullYear()} CodeIt. All rights reserved.</span>
+            <StudioPreview />
+          </section>
+
+          <section className="studio-proof" aria-label="What makes CodeIt different">
+            <p><strong>Make it work.</strong> Start from an idea instead of a blank file.</p>
+            <p><strong>Understand it.</strong> Connect each visible result to the code.</p>
+            <p><strong>Make it yours.</strong> Keep editing after the AI is finished.</p>
+          </section>
+
+          <section className="studio-start" aria-labelledby="studio-start-title">
+            <div className="studio-section-heading">
+              <p className="studio-kicker">A better first step into coding</p>
+              <h2 id="studio-start-title">Creation first. Understanding follows.</h2>
+              <p>CodeIt keeps the excitement of AI building, but turns every project into something a student can inspect, change, and learn from.</p>
+            </div>
+            <div className="studio-start__grid">
+              {STARTING_POINTS.map((item) => (
+                <article className="studio-start-card" key={item.number}>
+                  <span className="studio-start-card__number">{item.number}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.copy}</p>
+                  <Link to={item.link}>{item.linkLabel} <span aria-hidden="true">→</span></Link>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section id="how-it-works" className="studio-loop" aria-labelledby="studio-loop-title">
+            <div className="studio-loop__visual" aria-hidden="true">
+              <div className="studio-loop__window">
+                <div className="studio-loop__window-head"><i /><i /><i /><span>project.js</span></div>
+                <pre><code><b>function</b> celebrate(score) {`{`}{"\n"}  <em>if</em> (score &gt; 3) {`{`}{"\n"}    showConfetti();{"\n"}  {`}`}{"\n"}{`}`}</code></pre>
+              </div>
+              <div className="studio-loop__lesson-card">
+                <span>Concept unlocked</span>
+                <strong>If statements</strong>
+                <small>Use a condition to make your project react.</small>
+              </div>
+            </div>
+            <div className="studio-loop__copy">
+              <p className="studio-kicker">The build → learn → improve loop</p>
+              <h2 id="studio-loop-title">The AI gives you momentum. The learning makes it yours.</h2>
+              <ol>
+                <li><span>1</span><div><strong>Describe</strong><p>Explain what you want to create in everyday language.</p></div></li>
+                <li><span>2</span><div><strong>Build and play</strong><p>Use the working result immediately and notice what you want to change.</p></div></li>
+                <li><span>3</span><div><strong>Open the code</strong><p>Learn the concept behind the behaviour, then edit and test it yourself.</p></div></li>
+              </ol>
+              <Link to="/builder" className="studio-text-link">See the builder in action <span aria-hidden="true">→</span></Link>
+            </div>
+          </section>
+
+          <section className="studio-trust" aria-labelledby="studio-trust-title">
+            <div>
+              <p className="studio-kicker">For students, parents, and educators</p>
+              <h2 id="studio-trust-title">Creative freedom with a clear learning path.</h2>
+            </div>
+            <div className="studio-trust__points">
+              <article><strong>Beginner-friendly by design</strong><p>Start without setup, jargon, or an intimidating blank editor.</p></article>
+              <article><strong>Projects with a purpose</strong><p>Each lesson connects back to something students can build and improve.</p></article>
+              <article><strong>Visible progress</strong><p>Lessons, projects, XP, and milestones make the next step easier to understand.</p></article>
+            </div>
+          </section>
+
+          <section className="studio-final" aria-labelledby="studio-final-title">
+            <div>
+              <p className="studio-kicker">Your first project can start today</p>
+              <h2 id="studio-final-title">What do you want to make?</h2>
+              <p>Bring one idea. CodeIt will help you build it, understand it, and keep improving it.</p>
+            </div>
+            <Link
+              to="/builder"
+              className="studio-button studio-button--dark"
+              data-cta="final-build"
+              onClick={() => trackConversion("final_build_started")}
+            >
+              Start building for free <span aria-hidden="true">→</span>
+            </Link>
+          </section>
+        </main>
+
+        <footer className="studio-footer">
+          <div className="studio-footer__top">
+            <div className="studio-footer__brand">
+              <img src="/brand/CodeItRG.svg" alt="CodeIt" />
+              <p>Build with AI. Learn the code. Make it yours.</p>
+            </div>
+            <div>
+              <strong>Build</strong>
+              <Link to="/builder">AI project studio</Link>
+              <Link to="/playground">Python playground</Link>
+              <Link to="/lessons">Beginner lessons</Link>
+            </div>
+            <div>
+              <strong>Learn</strong>
+              {POPULAR_LESSONS.map(([id, title]) => <Link key={id} to={`/lesson/${id}`}>{title}</Link>)}
+            </div>
+            <div>
+              <strong>About</strong>
+              <Link to="/coding-for-kids">Coding for kids</Link>
+              <Link to="/blog">Guides and ideas</Link>
+              <a href="mailto:hello@codeitlearn.com">Contact</a>
+              <Link to="/privacy">Privacy</Link>
+            </div>
+          </div>
+          <div className="studio-footer__bottom">
+            <span>© {new Date().getFullYear()} CodeIt</span>
+            <Link to="/terms">Terms</Link>
+            <Link to="/privacy">Privacy</Link>
           </div>
         </footer>
-
       </div>
     </>
   );
