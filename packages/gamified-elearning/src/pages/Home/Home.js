@@ -10,26 +10,32 @@ const PROJECT_IDEAS = [
   {
     id: "space-quiz",
     label: "Space quiz",
-    prompt: "Build a five-question space quiz with a score and a restart button.",
+    eyebrow: "Space challenge",
     title: "Mission Control Quiz",
     accent: "#6c5ce7",
-    detail: "Question 2 of 5",
+    detail: "Question 2 of 5 · Which planet has the most moons?",
+    concept: "Variables keep track of the score",
+    code: "let score = 2;",
   },
   {
     id: "portfolio",
     label: "My first site",
-    prompt: "Make a bright portfolio about my drawings, with a gallery and contact button.",
+    eyebrow: "Creative portfolio",
     title: "Maya Makes Things",
     accent: "#ff7a00",
     detail: "Art, experiments & tiny inventions",
+    concept: "HTML gives every idea a place",
+    code: "<section class=\"gallery\">",
   },
   {
     id: "reaction-game",
     label: "Reaction game",
-    prompt: "Create a reaction game that tracks my fastest time and lets me play again.",
+    eyebrow: "Quick reaction game",
     title: "Lightning Tap",
     accent: "#00a896",
     detail: "Best time: 0.42 seconds",
+    concept: "Events make the game respond",
+    code: "button.onclick = playAgain;",
   },
 ];
 
@@ -39,7 +45,7 @@ const STARTING_POINTS = [
     title: "Build something personal",
     copy: "Start with a game, fan page, quiz, or school project that already matters to you.",
     link: "/builder",
-    linkLabel: "Open the AI studio",
+    linkLabel: "Open the project studio",
   },
   {
     number: "02",
@@ -71,48 +77,46 @@ function StudioPreview() {
   return (
     <section className="studio-preview" aria-label="Interactive example of a project made with CodeIt">
       <div className="studio-preview__toolbar">
-        <div className="studio-preview__traffic" aria-hidden="true"><i /><i /><i /></div>
-        <span>CodeIt studio</span>
-        <span className="studio-preview__status"><i /> Interactive example</span>
+        <span className="studio-preview__brand-mark">C</span>
+        <span>My CodeIt project</span>
+        <span className="studio-preview__status">Preview + code</span>
+      </div>
+
+      <div className="studio-preview__idea-list" role="group" aria-label="Choose an example project">
+        {PROJECT_IDEAS.map((idea) => (
+          <button
+            type="button"
+            key={idea.id}
+            className={idea.id === active.id ? "is-active" : ""}
+            onClick={() => setActiveId(idea.id)}
+            aria-pressed={idea.id === active.id}
+          >
+            {idea.label}
+          </button>
+        ))}
       </div>
 
       <div className="studio-preview__body">
-        <aside className="studio-preview__prompt">
-          <p className="studio-preview__label">Try an idea</p>
-          <div className="studio-preview__idea-list" role="group" aria-label="Choose an example project">
-            {PROJECT_IDEAS.map((idea) => (
-              <button
-                type="button"
-                key={idea.id}
-                className={idea.id === active.id ? "is-active" : ""}
-                onClick={() => setActiveId(idea.id)}
-                aria-pressed={idea.id === active.id}
-              >
-                {idea.label}
-              </button>
-            ))}
-          </div>
-          <div className="studio-preview__prompt-box">
-            <span>Prompt</span>
-            <p>{active.prompt}</p>
-          </div>
-          <div className="studio-preview__code" aria-hidden="true">
-            <span><b>const</b> project = createIdea();</span>
-            <span>project.<em>makeInteractive</em>();</span>
-          </div>
-        </aside>
-
         <div
           className="studio-preview__canvas"
           style={{ "--project-accent": active.accent }}
           aria-live="polite"
         >
-          <span className="studio-preview__made-with">Made with CodeIt</span>
+          <span className="studio-preview__made-with">Your project</span>
           <div className="studio-preview__project-card" key={active.id}>
-            <span className="studio-preview__project-kicker">Example project output</span>
+            <span className="studio-preview__project-kicker">{active.eyebrow}</span>
             <p className="studio-preview__project-title">{active.title}</p>
             <p>{active.detail}</p>
+            <div className="studio-preview__project-shapes" aria-hidden="true"><i /><i /><i /></div>
           </div>
+        </div>
+
+        <div className="studio-preview__learn" aria-live="polite">
+          <div>
+            <span>Behind your project</span>
+            <strong>{active.concept}</strong>
+          </div>
+          <code>{active.code}</code>
         </div>
       </div>
     </section>
@@ -123,8 +127,8 @@ export default function Home() {
   const { user } = useAuth();
 
   useSEO({
-    title: "AI Coding for Kids: Build Websites & Learn the Code | CodeIt",
-    description: "CodeIt is a beginner-friendly AI coding studio where kids build websites, games, and quizzes, then learn the code behind their projects.",
+    title: "Coding for Kids: Build Websites & Learn the Code | CodeIt",
+    description: "CodeIt is a beginner-friendly coding studio where kids build websites, games, and quizzes, then learn the code behind their projects.",
     canonical: "/",
   });
 
@@ -135,15 +139,14 @@ export default function Home() {
         <main>
           <section className="studio-hero" aria-labelledby="studio-title">
             <div className="studio-hero__copy">
-              <p className="studio-kicker">AI coding studio for curious beginners</p>
+              <p className="studio-kicker">Coding starts with something you want to make</p>
               {user && <p className="studio-welcome">Welcome back, {user.name || "Builder"}.</p>}
               <h1 id="studio-title">
-                Turn an idea into a real website.
-                <span>Then learn the code behind it.</span>
+                Make a website.
+                <span>Learn the code behind it.</span>
               </h1>
               <p className="studio-hero__lead">
-                Build games, quizzes, and websites with AI—then open the code, change how it works,
-                and grow from creator to coder.
+                Start with an idea. Build it, change it, and understand how it works.
               </p>
               <div className="studio-hero__actions">
                 <Link
@@ -151,21 +154,16 @@ export default function Home() {
                   className="studio-button studio-button--primary"
                   data-cta="hero-build"
                 >
-                  Build your first project <span aria-hidden="true">→</span>
+                  Start making <span aria-hidden="true">→</span>
                 </Link>
                 <Link
                   to="/lessons"
                   className="studio-button studio-button--quiet"
                   data-cta="hero-lessons"
                 >
-                  Explore beginner lessons
+                  See how it works
                 </Link>
               </div>
-              <ul className="studio-assurances" aria-label="CodeIt benefits">
-                <li>No software to install</li>
-                <li>Try the builder before signing up</li>
-                <li>Edit with words or code</li>
-              </ul>
             </div>
 
             <StudioPreview />
@@ -174,7 +172,7 @@ export default function Home() {
           <section className="studio-proof" aria-label="What makes CodeIt different">
             <p><strong>Make it work.</strong> Start from an idea instead of a blank file.</p>
             <p><strong>Understand it.</strong> Connect each visible result to the code.</p>
-            <p><strong>Make it yours.</strong> Keep editing after the AI is finished.</p>
+            <p><strong>Make it yours.</strong> Keep editing after the first version is finished.</p>
           </section>
 
           <section className="studio-start" aria-labelledby="studio-start-title">
