@@ -2178,7 +2178,7 @@ router.post('/projects/:id/publish', requireAuth, async (req, res) => {
       });
     }
 
-    const publicUrl = `https://www.codeitlearn.com/project/${public_id}`;
+    const publicUrl = `https://codeitlearn.com/project/${public_id}`;
     res.json({ success: true, public_id, public_url: publicUrl });
   } catch (err) {
     console.error('Publish project error:', err.message);

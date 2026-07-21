@@ -5,7 +5,7 @@ import BLOG_POSTS from '../../data/blogPosts';
 import { useSEO } from '../../hooks/useSEO';
 import './Blog.css';
 
-const BASE_URL = 'https://www.codeitlearn.com';
+const BASE_URL = 'https://codeitlearn.com';
 
 // ── JSON-LD Article schema ────────────────────────────────────────────────────
 function useArticleJsonLd(post) {

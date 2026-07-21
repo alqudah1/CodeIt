@@ -64,7 +64,7 @@ export default function SiteFooter() {
       </div>
       <p className="site-footer__copy">
         &copy; {new Date().getFullYear()} CodeIt &mdash; Free Python lessons for beginners.
-        &nbsp;<a href="https://www.codeitlearn.com/sitemap.xml">Sitemap</a>
+        &nbsp;<a href="https://codeitlearn.com/sitemap.xml">Sitemap</a>
       </p>
     </footer>
   );

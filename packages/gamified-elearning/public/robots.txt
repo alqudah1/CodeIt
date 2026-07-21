@@ -5,6 +5,7 @@ Allow: /
 Disallow: /login
 Disallow: /register
 Disallow: /MainPage
+Disallow: /admin
 Disallow: /admin/
 Disallow: /character
 Disallow: /leaderboard
@@ -15,4 +16,4 @@ Allow: /static/
 Allow: /brand/
 Allow: /images/
 
-Sitemap: https://www.codeitlearn.com/sitemap.xml
+Sitemap: https://codeitlearn.com/sitemap.xml

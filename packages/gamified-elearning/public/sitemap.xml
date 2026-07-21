@@ -3,51 +3,63 @@
 
   <!-- ── Core public pages ──────────────────────────────────── -->
   <url>
-    <loc>https://www.codeitlearn.com/</loc>
+    <loc>https://codeitlearn.com/</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/lessons</loc>
+    <loc>https://codeitlearn.com/lessons</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/journey</loc>
+    <loc>https://codeitlearn.com/journey</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/games</loc>
+    <loc>https://codeitlearn.com/games</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/playground</loc>
+    <loc>https://codeitlearn.com/playground</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
+  <url>
+    <loc>https://codeitlearn.com/builder</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://codeitlearn.com/explore</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
 
   <!-- ── SEO Landing Pages ──────────────────────────────────── -->
   <url>
-    <loc>https://www.codeitlearn.com/learn-python-for-kids</loc>
+    <loc>https://codeitlearn.com/learn-python-for-kids</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/coding-for-kids</loc>
+    <loc>https://codeitlearn.com/coding-for-kids</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/python-games-for-kids</loc>
+    <loc>https://codeitlearn.com/python-games-for-kids</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
@@ -55,61 +67,61 @@
 
   <!-- ── Lessons 1–10 (active beginner track) ──────────────── -->
   <url>
-    <loc>https://www.codeitlearn.com/lesson/1</loc>
+    <loc>https://codeitlearn.com/lesson/1</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/lesson/2</loc>
+    <loc>https://codeitlearn.com/lesson/2</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/lesson/3</loc>
+    <loc>https://codeitlearn.com/lesson/3</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/lesson/4</loc>
+    <loc>https://codeitlearn.com/lesson/4</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/lesson/5</loc>
+    <loc>https://codeitlearn.com/lesson/5</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/lesson/6</loc>
+    <loc>https://codeitlearn.com/lesson/6</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/lesson/7</loc>
+    <loc>https://codeitlearn.com/lesson/7</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/lesson/8</loc>
+    <loc>https://codeitlearn.com/lesson/8</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/lesson/9</loc>
+    <loc>https://codeitlearn.com/lesson/9</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/lesson/10</loc>
+    <loc>https://codeitlearn.com/lesson/10</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
@@ -117,49 +129,49 @@
 
   <!-- ── Blog ──────────────────────────────────────────────── -->
   <url>
-    <loc>https://www.codeitlearn.com/blog</loc>
+    <loc>https://codeitlearn.com/blog</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/blog/learn-python-for-kids</loc>
+    <loc>https://codeitlearn.com/blog/learn-python-for-kids</loc>
     <lastmod>2026-03-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.78</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/blog/python-coding-games</loc>
+    <loc>https://codeitlearn.com/blog/python-coding-games</loc>
     <lastmod>2026-03-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/blog/how-to-start-coding-for-beginners</loc>
+    <loc>https://codeitlearn.com/blog/how-to-start-coding-for-beginners</loc>
     <lastmod>2026-03-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/blog/best-coding-games-for-kids</loc>
+    <loc>https://codeitlearn.com/blog/best-coding-games-for-kids</loc>
     <lastmod>2026-03-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/blog/python-basics-for-beginners</loc>
+    <loc>https://codeitlearn.com/blog/python-basics-for-beginners</loc>
     <lastmod>2026-03-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/blog/is-python-good-for-kids</loc>
+    <loc>https://codeitlearn.com/blog/is-python-good-for-kids</loc>
     <lastmod>2026-03-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.codeitlearn.com/blog/coding-for-kids-beginner-guide</loc>
+    <loc>https://codeitlearn.com/blog/coding-for-kids-beginner-guide</loc>
     <lastmod>2026-03-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>

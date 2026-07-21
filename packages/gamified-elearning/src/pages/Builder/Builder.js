@@ -1574,7 +1574,7 @@ export default function Builder() {
       if (!res.ok) throw new Error(data.error || 'Publish failed');
       setIsPublished(true);
       setPublicId(data.public_id);
-      const url = `https://www.codeitlearn.com/project/${data.public_id}`;
+      const url = `https://codeitlearn.com/project/${data.public_id}`;
       try { await navigator.clipboard.writeText(url); } catch (_) {}
       setPublishStatus('copied');
       setTimeout(() => setPublishStatus(null), 3000);
@@ -1586,7 +1586,7 @@ export default function Builder() {
 
   const handleCopyPublicLink = async () => {
     if (!publicId) return;
-    const url = `https://www.codeitlearn.com/project/${publicId}`;
+    const url = `https://codeitlearn.com/project/${publicId}`;
     try { await navigator.clipboard.writeText(url); } catch (_) {}
     setPublishStatus('copied');
     setTimeout(() => setPublishStatus(null), 2000);
@@ -2253,7 +2253,7 @@ export default function Builder() {
                     className="bldr-action-btn bldr-action-btn--published"
                     onClick={handleCopyPublicLink}
                     disabled={editing}
-                    title={`https://www.codeitlearn.com/project/${publicId}`}
+                    title={`https://codeitlearn.com/project/${publicId}`}
                   >
                     {publishStatus === 'copied' ? 'Link copied!' : 'Copy link'}
                   </button>
