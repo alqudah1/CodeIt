@@ -4,6 +4,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
 const { getFunnelReport, recordEvent } = require('../analytics');
+const { getAIUsageReport } = require('../aiUsage');
 const {
   CLIENT_REPORTED_EVENTS,
   normalizeEventName,
@@ -70,6 +71,12 @@ function rateLimit(req, res, next) {
 router.get('/funnel', requireAdmin, async (req, res) => {
   const report = await getFunnelReport(req.query.days);
   if (!report) return res.status(503).json({ error: 'Analytics report is unavailable.' });
+  return res.json(report);
+});
+
+router.get('/costs', requireAdmin, async (req, res) => {
+  const report = await getAIUsageReport(req.query.days);
+  if (!report) return res.status(503).json({ error: 'AI usage report is unavailable.' });
   return res.json(report);
 });
 

@@ -7,8 +7,15 @@ const designEngine = require('../designEngine');
 const { JWT_SECRET } = require('../config');
 const { recordEvent } = require('../analytics');
 const { projectCategory } = require('../analyticsEvents');
+const { recordAIUsage } = require('../aiUsage');
 
 const client     = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+async function createTrackedMessage(operation, params) {
+  const message = await client.messages.create(params);
+  void recordAIUsage(operation, message);
+  return message;
+}
 
 // ── Auto-create ai_project_versions table ─────────────────────────────────────
 (async () => {
@@ -522,7 +529,7 @@ async function runPolishPass(html, type) {
       ? 'game' : ['website','portfolio','restaurant','shop','sports','blog','landing'].includes(type)
       ? 'website' : 'tool';
 
-    const message = await client.messages.create({
+    const message = await createTrackedMessage('polish', {
       model:      'claude-haiku-4-5-20251001',
       max_tokens: 8192,
       system:     POLISH_SYSTEM_PROMPT,
@@ -1388,7 +1395,7 @@ ${designConfig.category === 'game' ? '• Game must be startable, playable, scor
     let attempt1Timedout = false;
     try {
       message = await Promise.race([
-        client.messages.create({
+        createTrackedMessage('build_initial', {
           model:      'claude-haiku-4-5-20251001',
           max_tokens: maxTok,
           system:     systemPrompt,
@@ -1505,7 +1512,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
       let retryTimedout = false;
       try {
         retryResponse = await Promise.race([
-          client.messages.create({
+          createTrackedMessage('build_retry', {
             model:      'claude-haiku-4-5-20251001',
             max_tokens: maxTok,
             system:     systemPrompt,
@@ -1636,7 +1643,7 @@ router.post('/edit', async (req, res) => {
     : '';
 
   try {
-    const message = await client.messages.create({
+    const message = await createTrackedMessage('edit', {
       model:      'claude-haiku-4-5-20251001',
       max_tokens: 8192,
       system:     EDIT_SYSTEM_PROMPT,
@@ -1653,7 +1660,7 @@ router.post('/edit', async (req, res) => {
 
     // Retry once if script/event-listener check fails after edit
     if (validateHtml(html) && !/<script[\s\S]*?>[\s\S]+?<\/script>/i.test(html)) {
-      const retry = await client.messages.create({
+      const retry = await createTrackedMessage('edit_retry', {
         model:      'claude-haiku-4-5-20251001',
         max_tokens: 8192,
         system:     EDIT_SYSTEM_PROMPT,
@@ -1698,7 +1705,7 @@ router.post('/explain', async (req, res) => {
   }
 
   try {
-    const message = await client.messages.create({
+    const message = await createTrackedMessage('explain', {
       model:      'claude-haiku-4-5-20251001',
       max_tokens: 300,
       system:     'You explain HTML and CSS code to beginners aged 8–14. Write in plain, friendly language. No jargon. Keep it to 2–4 short sentences. Do not use bullet points or markdown.',
@@ -1970,7 +1977,7 @@ router.post('/patch', async (req, res) => {
   }
 
   try {
-    const message = await client.messages.create({
+    const message = await createTrackedMessage('element_patch', {
       model:      'claude-haiku-4-5-20251001',
       max_tokens: 1024,
       system:     `You are a precise HTML element editor for a kids coding platform.
@@ -2088,7 +2095,7 @@ Return ONLY a JSON array of 5 strings. No explanation, no extra text.
 Example format: ["Mission one", "Mission two", "Mission three", "Mission four", "Mission five"]`;
 
   try {
-    const message = await client.messages.create({
+    const message = await createTrackedMessage('missions', {
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 512,
       messages: [{ role: 'user', content: missionPrompt }],

@@ -18,6 +18,7 @@ export const ENDPOINTS = {
   analytics: {
     event: `${API_BASE_URL}/api/analytics/event`,
     funnel: (days = 30) => `${API_BASE_URL}/api/analytics/funnel?days=${days}`,
+    costs: (days = 30) => `${API_BASE_URL}/api/analytics/costs?days=${days}`,
   },
   rewards: {
     progress:    `${API_BASE_URL}/api/rewards/progress-percentages`,

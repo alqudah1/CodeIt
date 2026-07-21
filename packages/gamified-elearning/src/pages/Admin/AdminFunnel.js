@@ -16,6 +16,7 @@ const STAGES = [
 ];
 
 const fmt = (value) => (Number(value) || 0).toLocaleString();
+const usd = (value) => value == null ? '—' : `$${Number(value).toFixed(3)}`;
 
 function ratio(numerator, denominator) {
   if (!denominator) return '—';
@@ -26,20 +27,29 @@ export default function AdminFunnel() {
   const { token } = useContext(AuthContext);
   const [days, setDays] = useState(30);
   const [data, setData] = useState(null);
+  const [costs, setCosts] = useState(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
     let cancelled = false;
     setData(null);
+    setCosts(null);
     setError('');
 
-    fetch(ENDPOINTS.analytics.funnel(days), {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(async (response) => {
-        const body = await response.json();
-        if (!response.ok) throw new Error(body.error || 'Could not load funnel data.');
-        if (!cancelled) setData(body);
+    const headers = { Authorization: `Bearer ${token}` };
+    Promise.all([
+      fetch(ENDPOINTS.analytics.funnel(days), { headers }),
+      fetch(ENDPOINTS.analytics.costs(days), { headers }),
+    ])
+      .then(async ([funnelResponse, costResponse]) => {
+        const funnelBody = await funnelResponse.json();
+        const costBody = await costResponse.json();
+        if (!funnelResponse.ok) throw new Error(funnelBody.error || 'Could not load funnel data.');
+        if (!costResponse.ok) throw new Error(costBody.error || 'Could not load AI cost data.');
+        if (!cancelled) {
+          setData(funnelBody);
+          setCosts(costBody);
+        }
       })
       .catch((err) => {
         if (!cancelled) setError(err.message);
@@ -64,6 +74,9 @@ export default function AdminFunnel() {
   ] : [];
 
   const recentDaily = (data?.daily || []).slice(-35).reverse();
+  const costPerGenerated = counts.generation_complete && costs?.totals?.estimated_usd != null
+    ? costs.totals.estimated_usd / counts.generation_complete
+    : null;
 
   return (
     <AdminLayout>
@@ -107,6 +120,15 @@ export default function AdminFunnel() {
               </article>
             ))}
           </div>
+
+          <div className="adm-section-head">AI unit economics</div>
+          <div className="funnel-cost-grid">
+            <article><span>Estimated API cost</span><strong>{usd(costs?.totals?.estimated_usd)}</strong></article>
+            <article><span>AI calls</span><strong>{fmt(costs?.totals?.calls)}</strong></article>
+            <article><span>Cost / generated project</span><strong>{usd(costPerGenerated)}</strong></article>
+            <article><span>Input / output tokens</span><strong>{fmt(costs?.totals?.input_tokens)} / {fmt(costs?.totals?.output_tokens)}</strong></article>
+          </div>
+          <p className="funnel-cost-note">Estimate uses the standard Claude Haiku 4.5 list price. Timed-out calls are still counted when Anthropic finishes them.</p>
 
           <div className="adm-section-head">Recent event activity</div>
           <div className="adm-table-wrap">

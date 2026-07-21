@@ -25,6 +25,12 @@
 .funnel-signal span { font-size: 0.78rem; font-weight: 800; }
 .funnel-signal strong { color: #c95f16; font-size: 1.15rem; }
 
+.funnel-cost-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.8rem; }
+.funnel-cost-grid article { border: 1px solid #d1fae5; border-radius: 14px; background: #f0fdf4; padding: 1rem; }
+.funnel-cost-grid span { display: block; color: #527062; font-size: 0.75rem; font-weight: 800; }
+.funnel-cost-grid strong { display: block; margin-top: 0.45rem; color: #176b4d; font-size: 1.25rem; }
+.funnel-cost-note { margin: 0.6rem 0 2rem; color: #7b8a81; font-size: 0.75rem; }
+
 @media (max-width: 680px) {
   .funnel-head { flex-direction: column; gap: 1rem; }
   .funnel-window select { min-width: 180px; }
