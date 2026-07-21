@@ -139,6 +139,30 @@ const BASE_PAGES = [
     detail: 'The proposed Founding Family plan adds more assisted project builds, two learner profiles, parent visibility, and a simple progress summary.',
     type: 'WebPage',
   },
+  {
+    route: '/privacy',
+    title: 'Privacy & Safety | CodeIt',
+    description: 'How CodeIt handles account information, learning progress, projects, AI processing, analytics, public sharing, and child safety.',
+    eyebrow: 'Privacy & safety',
+    h1: 'Clear information about what CodeIt collects—and why.',
+    intro: 'CodeIt collects information needed to run accounts, save learning progress, and build projects. It does not sell personal information or run behavioural advertising.',
+    sectionTitle: 'Privacy choices and controls',
+    detail: 'Saved projects are private until their owner chooses Publish. Parents and users can ask to access, correct, unpublish, or delete personal information.',
+    primaryLinkLabel: 'Read Privacy & Safety',
+    type: 'WebPage',
+  },
+  {
+    route: '/terms',
+    title: 'Terms of Use | CodeIt',
+    description: 'The rules for using CodeIt lessons, coding tools, AI-assisted projects, accounts, public sharing, and planned paid features.',
+    eyebrow: 'Terms of use',
+    h1: 'Build freely. Learn responsibly. Keep people safe.',
+    intro: 'These terms explain the current rules for using CodeIt accounts, lessons, project tools, AI-assisted results, and public sharing.',
+    sectionTitle: 'Using CodeIt responsibly',
+    detail: 'Student accounts are for ages 13–18, younger learners need parent-managed access, and public projects must not include private or harmful information.',
+    primaryLinkLabel: 'Read the Terms of Use',
+    type: 'WebPage',
+  },
 ];
 
 const PAGES = [
@@ -196,10 +220,10 @@ function staticContent(page) {
       <p class="static-route-kicker">${escapeHtml(page.eyebrow)}</p>
       <h1>${escapeHtml(page.h1)}</h1>
       <p>${escapeHtml(page.intro)}</p>
-      <h2>What you can do on CodeIt</h2>
+      <h2>${escapeHtml(page.sectionTitle || 'What you can do on CodeIt')}</h2>
       <p>${escapeHtml(page.detail)}</p>
       <nav aria-label="Continue on CodeIt">
-        <a href="${escapeHtml(page.route)}">Open this page</a>
+        <a href="${escapeHtml(page.route)}">${escapeHtml(page.primaryLinkLabel || 'Open this page')}</a>
         <a href="/builder">Build a project</a>
         <a href="/lessons">Browse lessons</a>
       </nav>

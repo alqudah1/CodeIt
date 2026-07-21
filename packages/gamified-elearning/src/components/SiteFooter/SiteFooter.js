@@ -46,6 +46,11 @@ export default function SiteFooter() {
             <li><Link to="/coding-for-kids">Coding for Kids</Link></li>
             <li><Link to="/python-games-for-kids">Python Games for Kids</Link></li>
           </ul>
+          <strong>Trust</strong>
+          <ul>
+            <li><Link to="/privacy">Privacy &amp; Safety</Link></li>
+            <li><Link to="/terms">Terms of Use</Link></li>
+          </ul>
         </div>
 
         <div className="site-footer__col">

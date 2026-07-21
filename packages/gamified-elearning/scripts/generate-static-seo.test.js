@@ -62,3 +62,15 @@ test('the sitemap lists every generated public route on the canonical host', () 
   }
   assert.doesNotMatch(sitemap, /www\.codeitlearn\.com/);
 });
+
+test('legal search documents use trust-specific copy', () => {
+  const privacy = renderRouteDocument(TEMPLATE, PAGES.find((item) => item.route === '/privacy'));
+  const terms = renderRouteDocument(TEMPLATE, PAGES.find((item) => item.route === '/terms'));
+
+  assert.match(privacy, /Privacy choices and controls/);
+  assert.match(privacy, /Read Privacy &amp; Safety/);
+  assert.doesNotMatch(privacy, /What you can do on CodeIt/);
+  assert.match(terms, /Using CodeIt responsibly/);
+  assert.match(terms, /Read the Terms of Use/);
+  assert.doesNotMatch(terms, /What you can do on CodeIt/);
+});

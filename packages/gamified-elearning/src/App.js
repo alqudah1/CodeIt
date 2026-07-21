@@ -54,6 +54,8 @@ const PublicProject = lazy(() => import('./pages/Builder/PublicProject'));
 const Explore       = lazy(() => import('./pages/Builder/Explore'));
 const Profile       = lazy(() => import('./pages/Profile/Profile'));
 const Pricing       = lazy(() => import('./pages/Pricing/Pricing'));
+const Privacy       = lazy(() => import('./pages/Legal/Privacy'));
+const Terms         = lazy(() => import('./pages/Legal/Terms'));
 
 const BlogIndex         = lazy(() => import('./pages/Blog/BlogIndex'));
 const BlogPost          = lazy(() => import('./pages/Blog/BlogPost'));
@@ -171,6 +173,10 @@ const App = () => (
 
               {/* ── Pricing ── */}
               <Route path="/pricing" element={<Pricing />} />
+
+              {/* ── Trust & legal ── */}
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms"   element={<Terms />} />
 
               {/* ── Profile ── */}
               <Route path="/profile" element={<Profile />} />
