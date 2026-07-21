@@ -145,7 +145,7 @@
 .studio-preview__made-with { position: absolute; top: 1rem; right: 1.2rem; color: var(--studio-ink); font-size: 0.63rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
 .studio-preview__project-card { position: relative; z-index: 1; width: min(100%, 390px); padding: 2.4rem 1.8rem 1.6rem; text-align: center; background: rgba(255,255,255,0.94); border: 2px solid #6b4fc8; border-radius: 22px; box-shadow: 9px 9px 0 color-mix(in srgb, var(--project-accent) 68%, #f87824); animation: studio-project-in 260ms ease both; }
 .studio-preview__project-kicker { color: var(--project-accent); font-size: 0.61rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
-.studio-preview__project-title { margin: 0.8rem 0 0.5rem; color: #171f30; font-family: "Arvo", serif; font-size: clamp(1.35rem, 2.5vw, 2rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.15; }
+.studio-preview__project-title { margin: 0.8rem 0 0.5rem; color: var(--studio-ink); font-family: "Arvo", serif; font-size: clamp(1.35rem, 2.5vw, 2rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.15; }
 .studio-preview__project-card > p:not(.studio-preview__project-title) { min-height: 2.5em; margin-bottom: 1rem; color: #656b78; font-size: 0.83rem; }
 .studio-preview__project-shapes { display: flex; justify-content: center; gap: 0.45rem; }
 .studio-preview__project-shapes i { width: 42px; height: 10px; background: var(--studio-orange); border-radius: 99px; }
@@ -200,7 +200,7 @@
 .studio-loop__window pre { margin: 0; padding: 2.2rem 1.6rem; color: var(--studio-ink); font-size: clamp(0.72rem, 1.3vw, 0.9rem); line-height: 1.8; }
 .studio-loop__window b { color: #5b45b8; }
 .studio-loop__window em { color: #008d72; font-style: normal; }
-.studio-loop__lesson-card { position: absolute; right: 4%; bottom: 8%; width: min(55%, 245px); padding: 1.1rem; display: grid; gap: 0.2rem; background: #fff; border: 1px solid var(--studio-line); border-radius: 13px; box-shadow: 0 14px 34px rgba(23,32,51,0.13); }
+.studio-loop__lesson-card { position: absolute; right: 4%; bottom: 8%; width: min(55%, 245px); padding: 1.1rem; display: grid; gap: 0.2rem; background: #fff; border: 1px solid var(--studio-line); border-radius: 13px; box-shadow: 0 14px 34px rgba(91,69,184,0.14); }
 .studio-loop__lesson-card span { color: var(--studio-orange-dark); font-size: 0.62rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
 .studio-loop__lesson-card small { color: var(--studio-muted); line-height: 1.4; }
 .studio-loop__copy ol { margin: 2rem 0; padding: 0; display: grid; gap: 1.35rem; list-style: none; }
