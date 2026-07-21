@@ -2,7 +2,7 @@ const express = require('express');
 const pool = require('../db');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'Team42*';
+const { JWT_SECRET } = require('../config');
 
 // Middleware to verify JWT and set req.user
 const authenticateToken = (req, res, next) => {

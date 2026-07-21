@@ -4,9 +4,9 @@ const Anthropic    = require('@anthropic-ai/sdk');
 const jwt          = require('jsonwebtoken');
 const pool         = require('../db');
 const designEngine = require('../designEngine');
+const { JWT_SECRET } = require('../config');
 
 const client     = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const JWT_SECRET = 'Team42*';
 
 // ── Auto-create ai_project_versions table ─────────────────────────────────────
 (async () => {

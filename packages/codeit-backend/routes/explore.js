@@ -4,8 +4,7 @@ const express    = require('express');
 const router     = express.Router();
 const pool       = require('../db');
 const jwt        = require('jsonwebtoken');
-
-const JWT_SECRET = 'Team42*';
+const { JWT_SECRET } = require('../config');
 
 function optionalAuth(req, res, next) {
   const header = req.headers['authorization'];

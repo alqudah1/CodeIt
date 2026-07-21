@@ -2,7 +2,7 @@ const express = require('express');
 const pool = require('../db');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'Team42*';
+const { JWT_SECRET } = require('../config');
 
 const TOTAL_QUIZZES  = 10;
 const TOTAL_LESSONS  = 10;

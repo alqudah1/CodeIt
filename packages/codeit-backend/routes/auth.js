@@ -3,9 +3,7 @@ const router  = express.Router();
 const bcrypt  = require('bcryptjs');
 const jwt     = require('jsonwebtoken');
 const db      = require('../db');
-
-const JWT_SECRET = 'Team42*';
-const JWT_EXPIRY = '7d';
+const { JWT_SECRET, JWT_EXPIRY } = require('../config');
 
 // ── POST /api/signup ───────────────────────────────────────────────────────────
 router.post('/signup', async (req, res) => {
