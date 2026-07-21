@@ -269,6 +269,7 @@ export default function Home() {
               <strong>About</strong>
               <Link to="/coding-for-kids">Coding for kids</Link>
               <Link to="/blog">Guides and ideas</Link>
+              <Link to="/pricing">Pricing</Link>
               <a href="mailto:hello@codeitlearn.com">Contact</a>
               <Link to="/privacy">Privacy</Link>
             </div>

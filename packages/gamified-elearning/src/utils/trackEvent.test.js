@@ -26,6 +26,17 @@ describe("trackEvent", () => {
     );
   });
 
+  test("sends only the fixed founding offer identifier", async () => {
+    await expect(trackEvent("pricing_interest", "founding-family")).resolves.toBe(true);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/api/analytics/event"),
+      expect.objectContaining({
+        body: JSON.stringify({ event_name: "pricing_interest", meta: "founding-family" }),
+      })
+    );
+  });
+
   test("refuses unknown events before making a request", async () => {
     await expect(trackEvent("prompt_submitted", "private prompt")).resolves.toBe(false);
     expect(global.fetch).not.toHaveBeenCalled();

@@ -38,6 +38,7 @@ export default function SiteFooter() {
             <li><Link to="/games">Coding Games</Link></li>
             <li><Link to="/journey">Learning Journey</Link></li>
             <li><Link to="/playground">Python Playground</Link></li>
+            <li><Link to="/pricing">Pricing</Link></li>
           </ul>
           <strong>Topics</strong>
           <ul>

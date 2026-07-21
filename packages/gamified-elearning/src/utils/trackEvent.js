@@ -1,6 +1,6 @@
 import { ENDPOINTS } from "../config/api";
 
-const CLIENT_EVENTS = new Set(["landing_cta_click", "return_use"]);
+const CLIENT_EVENTS = new Set(["landing_cta_click", "return_use", "pricing_view", "pricing_interest"]);
 
 export async function trackEvent(eventName, meta = null, explicitToken = null) {
   if (!CLIENT_EVENTS.has(eventName)) return false;

@@ -13,6 +13,8 @@ const STAGES = [
   ['project_save', 'Projects saved'],
   ['project_publish', 'Projects published'],
   ['return_use', 'Daily returns'],
+  ['pricing_view', 'Pricing views'],
+  ['pricing_interest', 'Plan interest'],
 ];
 
 const fmt = (value) => (Number(value) || 0).toLocaleString();
@@ -71,6 +73,7 @@ export default function AdminFunnel() {
     ['Generated → saved', ratio(counts.project_save, counts.generation_complete)],
     ['Saved → published', ratio(counts.project_publish, counts.project_save)],
     ['New accounts → return days', ratio(counts.return_use, counts.signup_complete)],
+    ['Pricing view → interest', ratio(counts.pricing_interest, counts.pricing_view)],
   ] : [];
 
   const recentDaily = (data?.daily || []).slice(-35).reverse();

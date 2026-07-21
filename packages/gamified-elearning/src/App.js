@@ -53,6 +53,7 @@ const Builder       = lazy(() => import('./pages/Builder/Builder'));
 const PublicProject = lazy(() => import('./pages/Builder/PublicProject'));
 const Explore       = lazy(() => import('./pages/Builder/Explore'));
 const Profile       = lazy(() => import('./pages/Profile/Profile'));
+const Pricing       = lazy(() => import('./pages/Pricing/Pricing'));
 
 const BlogIndex         = lazy(() => import('./pages/Blog/BlogIndex'));
 const BlogPost          = lazy(() => import('./pages/Blog/BlogPost'));
@@ -167,6 +168,9 @@ const App = () => (
               <Route path="/builder"           element={<Builder />} />
               <Route path="/project/:publicId" element={<PublicProject />} />
               <Route path="/explore"           element={<Explore />} />
+
+              {/* ── Pricing ── */}
+              <Route path="/pricing" element={<Pricing />} />
 
               {/* ── Profile ── */}
               <Route path="/profile" element={<Profile />} />

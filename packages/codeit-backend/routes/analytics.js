@@ -87,7 +87,10 @@ router.post('/event', rateLimit, optionalAuth, async (req, res) => {
   }
 
   const meta = normalizeMeta(eventName, req.body?.meta);
-  if (eventName === 'landing_cta_click' && !meta) {
+  const requiresMeta = eventName === 'landing_cta_click'
+    || eventName === 'pricing_interest';
+
+  if (requiresMeta && !meta) {
     return res.status(400).json({ error: 'Unsupported analytics metadata.' });
   }
 

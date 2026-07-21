@@ -9,11 +9,13 @@ const PUBLIC_NAV = [
   { to: "/builder", label: "Build", primary: true },
   { to: "/lessons", label: "Learn" },
   { to: "/playground", label: "Playground" },
+  { to: "/pricing", label: "Pricing" },
   { to: "/coding-for-kids", label: "For parents" },
 ];
 
 const MEMBER_NAV = [
   ...PUBLIC_NAV.slice(0, 3),
+  { to: "/pricing", label: "Pricing" },
   { to: "/character", label: "Avatar" },
   { to: "/MainPage", label: "Progress" },
 ];

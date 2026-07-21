@@ -129,6 +129,16 @@ const BASE_PAGES = [
     detail: 'Use the guides alongside the free lessons and project studio for a practical route from curiosity to a finished project.',
     type: 'CollectionPage',
   },
+  {
+    route: '/pricing',
+    title: 'CodeIt Pricing: Free Coding & Founding Family Plan',
+    description: 'Start coding for free. Preview the planned CodeIt Founding Family plan for more project builds, parent visibility, and two learner profiles.',
+    eyebrow: 'Simple, honest pricing',
+    h1: 'Start free. Pay when your family needs more room to build.',
+    intro: 'CodeIt keeps a useful free option for beginners. We are testing one straightforward family plan before opening billing.',
+    detail: 'The proposed Founding Family plan adds more assisted project builds, two learner profiles, parent visibility, and a simple progress summary.',
+    type: 'WebPage',
+  },
 ];
 
 const PAGES = [
