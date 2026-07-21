@@ -140,7 +140,7 @@
 .studio-preview__prompt { padding: 1.1rem; background: #171f30; color: #e8ebf2; }
 .studio-preview__label { margin-bottom: 0.65rem; color: #9ca6b8; font-size: 0.67rem; font-weight: 900; letter-spacing: 0.11em; text-transform: uppercase; }
 .studio-preview__idea-list { display: flex; gap: 0.35rem; overflow-x: auto; scrollbar-width: none; }
-.studio-preview__idea-list button { padding: 0.42rem 0.55rem; flex: 0 0 auto; color: #aab3c4; background: transparent; border: 1px solid #354059; border-radius: 7px; font: inherit; font-size: 0.67rem; font-weight: 800; cursor: pointer; }
+.studio-preview__idea-list button { min-height: 44px; padding: 0.65rem 0.75rem; flex: 0 0 auto; color: #aab3c4; background: transparent; border: 1px solid #354059; border-radius: 7px; font: inherit; font-size: 0.75rem; font-weight: 800; cursor: pointer; }
 .studio-preview__idea-list button.is-active { color: #fff; background: #2a3449; border-color: #65708a; }
 .studio-preview__prompt-box { margin-top: 1rem; min-height: 155px; padding: 0.9rem; background: #202a3e; border: 1px solid #36425a; border-radius: 11px; }
 .studio-preview__prompt-box span { color: #ffb17f; font-size: 0.66rem; font-weight: 900; letter-spacing: 0.09em; text-transform: uppercase; }
@@ -154,9 +154,8 @@
 .studio-preview__made-with { position: absolute; top: 1rem; right: 1rem; color: #5e6572; font-size: 0.62rem; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase; }
 .studio-preview__project-card { position: relative; z-index: 1; width: min(100%, 315px); padding: 2rem 1.4rem; text-align: center; background: rgba(255,255,255,0.9); border: 1px solid rgba(23,32,51,0.1); border-radius: 18px; box-shadow: 0 18px 50px color-mix(in srgb, var(--project-accent) 16%, transparent); animation: studio-project-in 260ms ease both; }
 .studio-preview__project-kicker { color: var(--project-accent); font-size: 0.61rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
-.studio-preview__project-card h2 { margin: 0.8rem 0 0.5rem; font-family: "Arvo", serif; font-size: clamp(1.35rem, 2.5vw, 2rem); letter-spacing: -0.04em; }
-.studio-preview__project-card p { min-height: 2.5em; margin-bottom: 1.2rem; color: #656b78; font-size: 0.83rem; }
-.studio-preview__project-action { padding: 0.65rem 1rem; display: inline-block; color: #fff; background: var(--project-accent); border-radius: 9px; font-size: 0.76rem; font-weight: 900; }
+.studio-preview__project-title { margin: 0.8rem 0 0.5rem; color: #171f30; font-family: "Arvo", serif; font-size: clamp(1.35rem, 2.5vw, 2rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.15; }
+.studio-preview__project-card > p:not(.studio-preview__project-title) { min-height: 2.5em; margin-bottom: 0; color: #656b78; font-size: 0.83rem; }
 @keyframes studio-project-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
 
 .studio-proof {

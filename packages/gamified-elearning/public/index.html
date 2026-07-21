@@ -74,11 +74,32 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet" />
 
+    <style>
+      .static-home-shell { min-height: 100vh; padding: 15vh 8vw; color: #172033; background: #fff9f2; font-family: Nunito, system-ui, sans-serif; }
+      .static-home-shell__inner { max-width: 760px; }
+      .static-home-shell h1 { margin: 0 0 1.25rem; font-family: Arvo, Georgia, serif; font-size: clamp(2.5rem, 7vw, 5.5rem); line-height: 1; letter-spacing: -0.055em; }
+      .static-home-shell p { max-width: 640px; font-size: 1.15rem; line-height: 1.65; }
+      .static-home-shell nav { margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 1rem; }
+      .static-home-shell a { color: #172033; font-weight: 800; }
+    </style>
+
     <!-- Existing lessons currently rely on this global; move it to a route-level loader in the performance phase. -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.29.0/full/pyodide.js" defer></script>
   </head>
   <body>
     <noscript>CodeIt needs JavaScript to run the project builder, coding lessons, and playground.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <main class="static-home-shell">
+        <div class="static-home-shell__inner">
+          <h1>Build with AI. Learn the code. Make it yours.</h1>
+          <p>CodeIt helps kids and beginner coders create websites, games, and quizzes, inspect the code behind them, and keep improving every project.</p>
+          <nav aria-label="CodeIt starting points">
+            <a href="/builder">Open the AI project studio</a>
+            <a href="/lessons">Browse beginner coding lessons</a>
+            <a href="/playground">Try the Python playground</a>
+          </nav>
+        </div>
+      </main>
+    </div>
   </body>
 </html>

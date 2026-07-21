@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Header from "../Header/Header";
@@ -14,7 +14,6 @@ const PROJECT_IDEAS = [
     title: "Mission Control Quiz",
     accent: "#6c5ce7",
     detail: "Question 2 of 5",
-    action: "Launch answer",
   },
   {
     id: "portfolio",
@@ -23,7 +22,6 @@ const PROJECT_IDEAS = [
     title: "Maya Makes Things",
     accent: "#ff7a00",
     detail: "Art, experiments & tiny inventions",
-    action: "View gallery",
   },
   {
     id: "reaction-game",
@@ -32,7 +30,6 @@ const PROJECT_IDEAS = [
     title: "Lightning Tap",
     accent: "#00a896",
     detail: "Best time: 0.42 seconds",
-    action: "Play again",
   },
 ];
 
@@ -67,30 +64,22 @@ const POPULAR_LESSONS = [
   [6, "Repeating ideas with loops"],
 ];
 
-function trackConversion(action) {
-  if (typeof window === "undefined") return;
-  window.dispatchEvent(new CustomEvent("codeit:conversion", { detail: { action } }));
-  if (typeof window.gtag === "function") {
-    window.gtag("event", action, { event_category: "homepage" });
-  }
-}
-
 function StudioPreview() {
   const [activeId, setActiveId] = useState(PROJECT_IDEAS[0].id);
   const active = PROJECT_IDEAS.find((idea) => idea.id === activeId) || PROJECT_IDEAS[0];
 
   return (
-    <div className="studio-preview" aria-label="Example of a project made with CodeIt">
+    <section className="studio-preview" aria-label="Interactive example of a project made with CodeIt">
       <div className="studio-preview__toolbar">
         <div className="studio-preview__traffic" aria-hidden="true"><i /><i /><i /></div>
         <span>CodeIt studio</span>
-        <span className="studio-preview__status"><i /> Live preview</span>
+        <span className="studio-preview__status"><i /> Interactive example</span>
       </div>
 
       <div className="studio-preview__body">
         <aside className="studio-preview__prompt">
           <p className="studio-preview__label">Try an idea</p>
-          <div className="studio-preview__idea-list" role="list" aria-label="Example project ideas">
+          <div className="studio-preview__idea-list" role="group" aria-label="Choose an example project">
             {PROJECT_IDEAS.map((idea) => (
               <button
                 type="button"
@@ -120,14 +109,13 @@ function StudioPreview() {
         >
           <span className="studio-preview__made-with">Made with CodeIt</span>
           <div className="studio-preview__project-card" key={active.id}>
-            <span className="studio-preview__project-kicker">A working project, not a template</span>
-            <h2>{active.title}</h2>
+            <span className="studio-preview__project-kicker">Example project output</span>
+            <p className="studio-preview__project-title">{active.title}</p>
             <p>{active.detail}</p>
-            <span className="studio-preview__project-action" aria-hidden="true">{active.action}</span>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -139,33 +127,6 @@ export default function Home() {
     description: "CodeIt is a beginner-friendly AI coding studio where kids build websites, games, and quizzes, then learn the code behind their projects.",
     canonical: "/",
   });
-
-  useEffect(() => {
-    const schemaId = "codeit-home-schema";
-    let script = document.getElementById(schemaId);
-    if (!script) {
-      script = document.createElement("script");
-      script.id = schemaId;
-      script.type = "application/ld+json";
-      document.head.appendChild(script);
-    }
-    script.textContent = JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      name: "CodeIt",
-      url: "https://codeitlearn.com/",
-      applicationCategory: "EducationalApplication",
-      operatingSystem: "Web",
-      description: "A beginner-friendly AI coding studio where students build websites, games, and quizzes and learn the code behind their projects.",
-      audience: {
-        "@type": "EducationalAudience",
-        educationalRole: "student",
-        audienceType: "Kids and beginner coders",
-      },
-      isAccessibleForFree: true,
-    });
-    return () => script?.remove();
-  }, []);
 
   return (
     <>
@@ -189,7 +150,6 @@ export default function Home() {
                   to="/builder"
                   className="studio-button studio-button--primary"
                   data-cta="hero-build"
-                  onClick={() => trackConversion("hero_build_started")}
                 >
                   Build your first project <span aria-hidden="true">→</span>
                 </Link>
@@ -197,7 +157,6 @@ export default function Home() {
                   to="/lessons"
                   className="studio-button studio-button--quiet"
                   data-cta="hero-lessons"
-                  onClick={() => trackConversion("hero_lessons_opened")}
                 >
                   Explore beginner lessons
                 </Link>
@@ -282,7 +241,6 @@ export default function Home() {
               to="/builder"
               className="studio-button studio-button--dark"
               data-cta="final-build"
-              onClick={() => trackConversion("final_build_started")}
             >
               Start building for free <span aria-hidden="true">→</span>
             </Link>

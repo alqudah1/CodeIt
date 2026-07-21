@@ -143,7 +143,7 @@ export default function Header() {
                           <span className="site-header__dropdown-xp-total">{stats.totalXP} XP</span>
                         </div>
                         <div className="site-header__dropdown-xp-bar">
-                          <div className="site-header__dropdown-xp-fill" style={{ width: `${stats.totalXP % XP_PER_LEVEL}%` }} />
+                          <div className="site-header__dropdown-xp-fill" style={{ width: `${((stats.totalXP % XP_PER_LEVEL) / XP_PER_LEVEL) * 100}%` }} />
                         </div>
                       </div>
                     )}
