@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -27,6 +27,13 @@ export default function Register() {
 
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const requestedPath = location.state?.from;
+  const returnTo = typeof requestedPath === 'string' && requestedPath.startsWith('/') && !requestedPath.startsWith('//')
+    ? requestedPath
+    : '/';
+  const resumeBuilderSave = location.state?.resumeBuilderSave === true;
+  const returnState = resumeBuilderSave ? { resumeBuilderSave: true } : null;
 
   // Separate form instances per path to avoid field-name collisions
   const {
@@ -97,7 +104,7 @@ export default function Register() {
         { headers: { 'Content-Type': 'application/json' } }
       );
       login({ user: res.data.user, token: res.data.token });
-      navigate('/');
+      navigate(returnTo, { replace: true, state: returnState });
     } catch (err) {
       setError(err?.response?.data?.error || 'Registration failed. Please try again.');
     }
@@ -116,7 +123,7 @@ export default function Register() {
         // Non-fatal — proceed anyway
       }
     }
-    navigate('/');
+    navigate(returnTo, { replace: true, state: returnState });
   };
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -143,15 +150,15 @@ export default function Register() {
               <span className="auth-path-card__desc">Create an account with email for class management</span>
             </button>
 
-            <button className="auth-path-card auth-path-card--guest" onClick={() => navigate('/lesson/1')}>
+            <button className="auth-path-card auth-path-card--guest" onClick={() => navigate('/builder')}>
               <span className="auth-path-card__title">Try CodeIt First</span>
-              <span className="auth-path-card__desc">Explore Lesson 1 without creating an account</span>
+              <span className="auth-path-card__desc">Make a project without creating an account</span>
             </button>
           </div>
 
           <div className="auth-footer">
             Already have an account?{' '}
-            <Link to="/login">Sign in</Link>
+            <Link to="/login" state={{ from: returnTo, resumeBuilderSave }}>Sign in</Link>
           </div>
         </div>
       </div>
@@ -244,7 +251,7 @@ export default function Register() {
           </form>
 
           <div className="auth-footer">
-            Already have an account? <Link to="/login">Sign in</Link>
+            Already have an account? <Link to="/login" state={{ from: returnTo, resumeBuilderSave }}>Sign in</Link>
           </div>
         </div>
       </div>
@@ -288,7 +295,7 @@ export default function Register() {
             <button type="submit" className="auth-button">Save and Start Learning</button>
           </form>
 
-          <button type="button" className="auth-skip-btn" onClick={() => navigate('/')}>
+          <button type="button" className="auth-skip-btn" onClick={() => navigate(returnTo, { replace: true, state: returnState })}>
             Skip for now
           </button>
         </div>
@@ -363,7 +370,7 @@ export default function Register() {
           </form>
 
           <div className="auth-footer">
-            Already have an account? <Link to="/login">Sign in</Link>
+            Already have an account? <Link to="/login" state={{ from: returnTo, resumeBuilderSave }}>Sign in</Link>
           </div>
         </div>
       </div>

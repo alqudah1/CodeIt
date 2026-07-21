@@ -666,6 +666,7 @@ export default function Builder() {
   const [saveStatus, setSaveStatus]         = useState(null);
   const [saveError, setSaveError]           = useState('');
   const [unsavedWarning, setUnsavedWarning] = useState(false);
+  const [resumeSave, setResumeSave]         = useState(false);
 
   // ── Saved projects ─────────────────────────────────────────────────────────
   const [savedProjects, setSavedProjects]     = useState([]);
@@ -683,6 +684,8 @@ export default function Builder() {
   const promptRef  = useRef(null);
   const editRef    = useRef(null);
   const iframeRef  = useRef(null);
+  const resumeSaveStartedRef = useRef(false);
+  const saveInFlightRef = useRef(false);
 
   // ── Live element editor ────────────────────────────────────────────────────
   const [editModeOn, setEditModeOn]     = useState(false);
@@ -977,6 +980,11 @@ export default function Builder() {
         setConceptsUsed(draft.conceptsUsed || []);
         setPromptHistory(draft.promptHistory || []);
         setBuildKey(k => k + 1);
+        const draftIsFresh = Number.isFinite(draft.savedAt) && Date.now() - draft.savedAt < 30 * 60 * 1000;
+        setResumeSave(location.state?.resumeBuilderSave === true && draftIsFresh);
+        if (location.state?.resumeBuilderSave) {
+          navigate('/builder', { replace: true, state: null });
+        }
       }
     } catch (_) {}
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -1356,12 +1364,14 @@ export default function Builder() {
       try {
         sessionStorage.setItem('codeit_builder_draft', JSON.stringify({
           code, prompt, builtPrompt, projectType, aiTitle,
-          builtSummary, conceptsUsed, promptHistory,
+          builtSummary, conceptsUsed, promptHistory, savedAt: Date.now(),
         }));
       } catch (_) {}
-      navigate('/login');
+      navigate('/login', { state: { from: '/builder', resumeBuilderSave: true } });
       return;
     }
+    if (saveInFlightRef.current) return;
+    saveInFlightRef.current = true;
     setSaveStatus('saving');
     setSaveError('');
     const title = (builtPrompt ? deriveProjectName(builtPrompt) : '') || 'My Project';
@@ -1394,8 +1404,19 @@ export default function Builder() {
       setSaveStatus('error');
       setSaveError(err.message);
       setTimeout(() => setSaveStatus(null), 3000);
+    } finally {
+      saveInFlightRef.current = false;
     }
   };
+
+  // Complete the action that brought a guest to authentication. The restored
+  // draft is saved automatically once AuthContext and the project state are ready.
+  useEffect(() => {
+    if (!resumeSave || !user || !token || !code || resumeSaveStartedRef.current) return;
+    resumeSaveStartedRef.current = true;
+    setResumeSave(false);
+    handleSaveProject();
+  }, [resumeSave, user, token, code]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Load saved project ─────────────────────────────────────────────────────
   const handleLoadProject = async (project) => {

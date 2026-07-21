@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -14,6 +14,13 @@ export default function Login() {
   const [role, setRole] = useState('student'); // 'student' | 'educator'
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const requestedPath = location.state?.from;
+  const returnTo = typeof requestedPath === 'string' && requestedPath.startsWith('/') && !requestedPath.startsWith('//')
+    ? requestedPath
+    : '/';
+  const resumeBuilderSave = location.state?.resumeBuilderSave === true;
+  const returnState = resumeBuilderSave ? { resumeBuilderSave: true } : null;
 
   useSEO({
     title:       'Sign In | CodeIt',
@@ -30,7 +37,7 @@ export default function Login() {
         { headers: { 'Content-Type': 'application/json' } }
       );
       login({ user: response.data.user, token: response.data.token });
-      navigate('/');
+      navigate(returnTo, { replace: true, state: returnState });
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed. Check your details and try again.');
     }
@@ -130,15 +137,15 @@ export default function Login() {
         {role === 'student' && (
           <>
             <div className="auth-divider">or</div>
-            <button type="button" className="auth-guest-btn" onClick={() => navigate('/lesson/1')}>
-              Try Lesson 1 First — no account needed
+            <button type="button" className="auth-guest-btn" onClick={() => navigate('/builder')}>
+              Try the project builder — no account needed
             </button>
           </>
         )}
 
         <div className="auth-footer">
           New to CodeIt?{' '}
-          <Link to="/register">Create a free account</Link>
+          <Link to="/register" state={{ from: returnTo, resumeBuilderSave }}>Create a free account</Link>
         </div>
 
       </div>
