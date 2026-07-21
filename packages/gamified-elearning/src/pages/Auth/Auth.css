@@ -51,23 +51,20 @@
 }
 
 /* ── Brand mark (top of card) ───────────────────────────────── */
-/* Same crop technique as the navbar — render the PNG larger and hide the
-   white margins via overflow:hidden + negative margin-top. */
 .auth-brand {
   display: flex;
-  align-items: flex-start;   /* let margin-top control vertical crop */
+  align-items: center;
   justify-content: center;
-  overflow: hidden;
-  height: 68px;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.4rem;
 }
 
-.auth-brand__img {
-  display: block;
-  height: 168px;
+.auth-logo {
+  height: 56px;
   width: auto;
-  margin-top: -48px;
-  mix-blend-mode: multiply;
+  object-fit: contain;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 /* ── Role switcher ──────────────────────────────────────────── */

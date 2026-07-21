@@ -3430,6 +3430,55 @@
   transform: translateY(-1px);
 }
 
+/* ── Publish / Share buttons ─────────────────────────────────────── */
+
+.bldr-action-btn--publish {
+  background: linear-gradient(135deg, #FF7A00, #A855F7);
+  color: #fff;
+  border-color: transparent;
+  font-weight: 800;
+  box-shadow: 0 3px 14px rgba(255,122,0,.28);
+  transition: filter .15s, transform .12s, box-shadow .15s;
+}
+
+.bldr-action-btn--publish:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 20px rgba(255,122,0,.36);
+}
+
+.bldr-action-btn--published {
+  background: rgba(16,185,129,.1);
+  color: #059669;
+  border-color: rgba(16,185,129,.3);
+  font-weight: 800;
+}
+
+.bldr-action-btn--published:hover:not(:disabled) {
+  background: rgba(16,185,129,.18);
+  transform: translateY(-1px);
+}
+
+.bldr-action-btn--unpublish {
+  background: rgba(107,114,128,.08);
+  color: #6B7280;
+  border-color: rgba(107,114,128,.2);
+  font-size: .82rem;
+}
+
+.bldr-action-btn--unpublish:hover:not(:disabled) {
+  background: rgba(239,68,68,.08);
+  color: #EF4444;
+  border-color: rgba(239,68,68,.22);
+}
+
+.bldr-share-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 /* ════════════════════════════════════════════════════════════
    MY CREATIONS — sort bar + favorites
 ════════════════════════════════════════════════════════════ */

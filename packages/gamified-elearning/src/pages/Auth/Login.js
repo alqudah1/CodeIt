@@ -6,7 +6,6 @@ import { useAuth } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import './Auth.css';
-const CodeItLogo = process.env.PUBLIC_URL + '/images/CodeItLogo.png';
 
 export default function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -43,7 +42,7 @@ export default function Login() {
 
         {/* Brand mark */}
         <div className="auth-brand">
-          <img src={CodeItLogo} alt="CodeIt coding platform for kids" className="auth-brand__img" width="120" height="120" />
+          <img src="/brand/CodeItRG.svg" alt="CodeIt" className="auth-logo" />
         </div>
 
         {/* Role switcher */}

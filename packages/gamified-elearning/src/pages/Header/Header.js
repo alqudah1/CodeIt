@@ -7,6 +7,7 @@ import './Header.css';
 
 const NAV_LINKS = [
   { to: '/builder',   label: 'Build with AI', primary: true },
+  { to: '/explore',   label: 'Discover' },
   { to: '/lessons',   label: 'Lessons' },
   { to: '/character', label: 'Avatar' },
   { to: '/MainPage',  label: 'Progress' },

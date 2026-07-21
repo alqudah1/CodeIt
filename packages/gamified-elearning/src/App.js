@@ -50,6 +50,8 @@ const CharacterLab  = lazy(() => import('./pages/CharacterLab/CharacterLab'));
 const Leaderboard   = lazy(() => import('./pages/Leaderboard'));
 const Playground    = lazy(() => import('./pages/Playground/Playground'));
 const Builder       = lazy(() => import('./pages/Builder/Builder'));
+const PublicProject = lazy(() => import('./pages/Builder/PublicProject'));
+const Explore       = lazy(() => import('./pages/Builder/Explore'));
 const Profile       = lazy(() => import('./pages/Profile/Profile'));
 
 const BlogIndex         = lazy(() => import('./pages/Blog/BlogIndex'));
@@ -161,7 +163,9 @@ const App = () => (
               <Route path="/playground" element={<Playground />} />
 
               {/* ── AI Builder ── */}
-              <Route path="/builder" element={<Builder />} />
+              <Route path="/builder"           element={<Builder />} />
+              <Route path="/project/:publicId" element={<PublicProject />} />
+              <Route path="/explore"           element={<Explore />} />
 
               {/* ── Profile ── */}
               <Route path="/profile" element={<Profile />} />

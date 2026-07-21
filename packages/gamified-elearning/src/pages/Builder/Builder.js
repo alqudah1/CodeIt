@@ -162,58 +162,317 @@ const EFFECT_UPGRADES = [
   'Add floating particles to the background',
 ];
 
-// ── Creator missions (static pools per type, 3 picked randomly after build) ──
+// ── Creator missions (per-type pools, 3 picked randomly after build) ──────────
 const MISSION_POOLS = {
+
+  // ── Generic game fallback ──
   game: [
-    'Add a high score tracker that saves your best run',
-    'Add lives so the player can try three times',
-    'Add power-up items that appear randomly',
-    'Make the game get faster as the score goes up',
-    'Add a boss level at the end',
-    'Add coins to collect for bonus points',
-    'Add a pause button',
-    'Add a countdown timer that ends the game',
-    'Add a second level with a new challenge',
-    'Make enemies smarter or targets faster',
+    'Add a combo multiplier that triples points on streaks',
+    'Add a shield power-up that absorbs one hit',
+    'Add a boss enemy that takes 5 hits to defeat',
+    'Add animated particle explosions on every score event',
+    'Add a speed-boost power-up that lasts 3 seconds',
+    'Add a sudden death mode when the timer hits zero',
+    'Add a coin magnet power-up that pulls pickups toward you',
+    'Add a secret bonus round that triggers at 100 points',
+    'Add screen shake on every miss or hit',
+    'Add a lives system with 3 hearts displayed on screen',
+    'Add a "double score" power-up that lasts 5 seconds',
+    'Add a difficulty selector before the game starts',
   ],
-  website: [
-    'Add a dark mode toggle',
-    'Add a contact form with a success message',
-    'Add smooth scroll animations to every section',
-    'Make all buttons glow on hover',
-    'Add a sticky header that stays at the top',
-    'Add a back-to-top button',
-    'Add a customer review or testimonial section',
-    'Make the layout fully mobile-friendly',
-    'Add an image gallery or card grid',
+
+  // ── Specific game types ──
+  clicker: [
+    'Add a golden target worth triple points',
+    'Add a bomb target that explodes and ends the game',
+    'Add a combo multiplier — 5 hits in a row = 3x score',
+    'Add a ghost target that only appears for half a second',
+    'Add a shield power-up that freezes the timer for 3 seconds',
+    'Add a rage mode when your combo hits 8',
+    'Add a boss target that takes 3 hits before it disappears',
+    'Add shrinking targets — smaller targets score more points',
+    'Add a giant target that splits into 3 smaller ones when hit',
+    'Turn it into a two-zone game: red targets cost points',
   ],
+
+  runner: [
+    'Add a double jump power-up that floats you over danger',
+    'Add a magnet that auto-collects nearby coins',
+    'Add a shield that lets you survive one crash',
+    'Add a rocket boost that launches you forward at warp speed',
+    'Add spikes on the ceiling as a second deadly hazard',
+    'Add animated fire trails behind the character',
+    'Add a slow-motion power-up that stretches 3 seconds into 10',
+    'Add a checkpoint that saves progress after 500 points',
+    'Add moving platforms that slide side to side',
+    'Add a boss obstacle — a giant wall with one gap to jump through',
+  ],
+
+  platformer: [
+    'Add spring pads that launch you to secret upper platforms',
+    'Add enemies that patrol back and forth and must be jumped on',
+    'Add a double jump so you can leap even higher',
+    'Add a coin magnet power-up that lasts 10 seconds',
+    'Add moving platforms that shift left and right',
+    'Add a hazard zone — lava at the bottom that resets the level',
+    'Add a boss platform at the end with a giant enemy to dodge',
+    'Add a ghost mode power-up where you pass through walls briefly',
+    'Add animated sparkle effects when coins are collected',
+    'Add a teleporter pad that warps you to a secret area',
+  ],
+
+  dodge: [
+    'Add homing missiles that track your position',
+    'Add a shield power-up that blocks one hit',
+    'Add explosive obstacles that create a shockwave on impact',
+    'Add a slow-motion power-up that freezes everything briefly',
+    'Add diagonal-moving obstacles for unpredictable patterns',
+    'Add a "close call" bonus — dodge an obstacle within 5 pixels',
+    'Add a warp zone that teleports you to the other side of the screen',
+    'Add a second player ghost to race against your own best run',
+    'Add screen flash on every near-miss',
+    'Add a magnet that pulls score orbs toward you',
+  ],
+
+  racing: [
+    'Add a nitro boost button that surges you forward',
+    'Add an oil slick that makes steering slippery for 3 seconds',
+    'Add a shield that absorbs one crash before shattering',
+    'Add cop cars that appear at high speeds and must be avoided',
+    'Add a lap counter and a personal best time tracker',
+    'Add rain weather that reduces your control',
+    'Add roadside obstacles: barrels and cones to dodge',
+    'Add a ramp that launches your car briefly airborne',
+    'Add a rival car that chases you and tries to overtake',
+    'Add a speed camera zone where going too fast costs points',
+  ],
+
+  typing: [
+    'Add bomb words — type them in time or the game ends',
+    'Add a golden word that appears for 2 seconds and scores triple',
+    'Add a boss word: one huge 12-letter word worth 50 points',
+    'Add a freeze power-up unlocked by typing the word FREEZE',
+    'Add a miss counter — 3 typos and the round ends early',
+    'Add a turbo rush mode where words fly in for 5 seconds',
+    'Add longer words as levels increase to ramp up difficulty',
+    'Add a slow-motion power-up unlocked by typing a perfect streak of 5',
+    'Add a two-word challenge where both must be typed before timeout',
+    'Add an on-screen keyboard highlight for each letter as typed',
+  ],
+
+  tower: [
+    'Add a freeze tower that slows all enemies passing through',
+    'Add a bomb tower with area-of-effect splash damage',
+    'Add armored enemy units that take 3 hits to destroy',
+    'Add flying enemies that bypass all ground-level towers',
+    'Add an air strike power-up that wipes the entire screen',
+    'Add a tower upgrade system — spend gold to double a tower\'s range',
+    'Add a repair station that restores 3 lives for 50 gold',
+    'Add a boss enemy at wave 5 that has 10 hit points',
+    'Add a slow-down button that reduces enemy speed for 5 seconds',
+    'Add income towers that generate 2 gold every 5 seconds',
+  ],
+
+  maze: [
+    'Add a key you must collect before the exit unlocks',
+    'Add an enemy that chases you through the corridors',
+    'Add a fog of war — only reveal walls close to the player',
+    'Add teleport pads that warp you to a random maze location',
+    'Add collectible stars hidden at dead ends for bonus points',
+    'Add a countdown timer — escape before it hits zero',
+    'Add moving walls that shift and change the maze layout',
+    'Add a torch power-up that temporarily reveals the whole maze',
+    'Add multiple exits and a bonus for finding the correct one',
+    'Add a "map reveal" item worth collecting for a navigation hint',
+  ],
+
+  survival: [
+    'Add a temporary shield that repels all enemies on contact',
+    'Add an explosion ability that clears the entire screen',
+    'Add armored enemies that absorb 2 hits before dying',
+    'Add a speed boost power-up to outrun the horde',
+    'Add a magnet that automatically pulls health packs to you',
+    'Add a scoring multiplier for deliberately getting close to enemies',
+    'Add a boss enemy — giant, fast, and worth 100 points',
+    'Add a freeze ability that stops all enemies for 3 seconds',
+    'Add enemy waves that announce themselves with a flashing warning',
+    'Add a safe zone that appears briefly and restores 1 health',
+  ],
+
+  puzzle: [
+    'Add a hint button that highlights the correct next tile',
+    'Add a countdown timer that challenges you to beat the clock',
+    'Add an undo button that rewinds your last 3 moves',
+    'Add animated tile sliding with smooth easing',
+    'Add a "shuffle again" penalty — costs 20 points per use',
+    'Add a star rating: 3 stars for under 20 moves, 2 for 30, 1 for any win',
+    'Add a color-coded guide showing which tiles are in the right place',
+    'Add a move counter that turns red when over the ideal limit',
+    'Add a celebration animation with confetti when the puzzle is solved',
+    'Add a difficulty selector: 3x3, 4x4, or 5x5 grids',
+  ],
+
+  basketball: [
+    'Add a 3-point line — shots from far away score triple',
+    'Add wind gusts that push the ball left or right mid-flight',
+    'Add an arc guide that shows the ball\'s predicted trajectory',
+    'Add a layup zone close to the hoop that scores 1 point quickly',
+    'Add a fast break mode that awards double points for 10 seconds',
+    'Add a shot streak bonus — 3 in a row gives you 5 bonus points',
+    'Add backboard bounce detection for a lucky-shot bonus',
+    'Add a moving hoop that slides left and right to increase difficulty',
+    'Add a buzzer beater round: score in under 2 seconds',
+    'Add a crowd noise effect that grows louder with your score',
+  ],
+
+  soccer: [
+    'Add a goalkeeper that levels up and gets smarter each miss',
+    'Add a curve shot — click a direction for the ball to bend mid-air',
+    'Add a wind meter that tilts ball flight left or right',
+    'Add a sudden death round: next miss ends the game',
+    'Add a corner kick round with a more difficult angle to shoot from',
+    'Add a power meter — hold longer to kick harder',
+    'Add a slow-motion replay on every successful goal',
+    'Add hat trick celebrations — score 3 and the crowd goes wild',
+    'Add a goalkeeper dive animation with a miss or save sound',
+    'Add a training round with a stationary goalkeeper to warm up',
+  ],
+
+  cooking: [
+    'Add a secret ingredient that secretly doubles the dish\'s value',
+    'Add a burned dish penalty when you are too slow',
+    'Add a rush hour mode — complete 3 recipes simultaneously',
+    'Add a chef star rating: 1 to 5 stars based on accuracy and speed',
+    'Add a wrong ingredient penalty that scrambles the order',
+    'Add ingredient substitutions that appear in advanced rounds',
+    'Add a time bonus that rewards completing recipes super fast',
+    'Add a kitchen disaster: random event that shuffles all ingredients',
+    'Add animated cooking effects: steam, sizzle, and fire on the stove',
+    'Add a customer order ticket that shows what the dish should look like',
+  ],
+
+  memory: [
+    'Add a hidden countdown — match all pairs before time runs out',
+    'Add a golden pair worth double points when matched first',
+    'Add a peek power-up that briefly flips all cards face-up',
+    'Add faster flip-back timing as levels advance',
+    'Add a 6x6 expert mode with 18 pairs to find',
+    'Add a combo bonus — match 3 pairs in a row for bonus points',
+    'Add confetti and a score multiplier for speed matching',
+    'Add a daily challenge with a fixed layout to compare scores',
+    'Add themed emoji sets that change each round',
+    'Add a distraction: one card spins in place to throw you off',
+  ],
+
+  reaction: [
+    'Add a fake-out flash that penalizes tapping too early',
+    'Add a color challenge — only tap when the circle turns green',
+    'Add a final lightning round with half the normal reaction window',
+    'Add a streak bonus: 3 perfect taps doubles your next round score',
+    'Add a sound cue before the visual one — react to the beep',
+    'Add a two-target round where both must be tapped simultaneously',
+    'Add a leaderboard entry for all-time top 3 times',
+    'Add a personal best tracker with animated record celebrations',
+    'Add a penalty for tapping during the wrong color',
+    'Add a score rating: Lightning / Fast / Average / Too Slow per round',
+  ],
+
+  // ── Non-game categories ──
   quiz: [
-    'Add a 10-second timer per question',
-    'Add 3 more questions on the same topic',
-    'Add a streak bonus for correct answers in a row',
-    'Show the correct answer explanation after each question',
-    'Add a progress bar at the top',
-    'Randomize the question order each time',
-    'Add a difficulty selector before starting',
+    'Add a 10-second countdown bar per question',
+    'Add a streak bonus — 3 correct in a row doubles points',
+    'Add a lifeline: skip one question without penalty',
+    'Add difficulty levels: Easy, Medium, and Hard',
+    'Add a correct-answer explanation that appears after each wrong pick',
+    'Add an impossible bonus round at the very end',
+    'Add animated correct and wrong answer feedback',
+    'Add a final result certificate with your score percentage',
+    'Shuffle questions and answer options on every new game',
+    'Add a combo multiplier that resets on wrong answers',
   ],
+
+  website: [
+    'Add a live search bar that filters content instantly',
+    'Add a dark mode toggle that flips the whole page',
+    'Add an animated counter that counts up from zero on load',
+    'Make every card flip or zoom in on hover',
+    'Add a modal popup with an image gallery or special offer',
+    'Add a sticky header that shrinks when you scroll down',
+    'Add a testimonial slider with left and right arrows',
+    'Add a full-screen hero with a parallax scroll effect',
+    'Add a shopping cart panel that slides in from the side',
+    'Add a newsletter signup bar with a success animation',
+    'Add smooth scroll and section highlights on the nav links',
+    'Add a floating chat button that pops up a contact form',
+  ],
+
   tool: [
-    'Add a history log of recent results',
-    'Add keyboard shortcut support',
-    'Add a copy-to-clipboard button on the result',
-    'Add input validation with helpful error messages',
-    'Add a reset button to clear everything',
-    'Make it work smoothly on mobile',
-    'Add a dark theme toggle',
+    'Add a history log showing your last 10 results',
+    'Add keyboard shortcuts for the most common actions',
+    'Add a copy-to-clipboard button with a checkmark animation',
+    'Add real-time input validation with color-coded feedback',
+    'Add a dark and light theme toggle',
+    'Add animated transitions between every state change',
+    'Add an export button that downloads results as a text file',
+    'Add an undo and redo button for the last 5 actions',
+    'Add a share button that generates a shareable summary',
+    'Add a compact mode that collapses extra options',
+  ],
+
+  simulator: [
+    'Add a speed slider that controls how fast time passes',
+    'Add a live graph that charts the key stat over time',
+    'Add a dramatic event button that injects a sudden change',
+    'Add a pause and resume toggle with the spacebar',
+    'Add color coding based on density, energy, or population',
+    'Add a births vs deaths counter that updates every second',
+    'Add a reset button that restores the exact starting state',
+    'Add a zoom control to focus on a specific part of the simulation',
   ],
 };
+
+async function fetchAiMissions(html, type, title, token) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/builder/missions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({ html, type, title }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (Array.isArray(data.missions) && data.missions.length >= 3) return data.missions;
+    return null;
+  } catch (_) {
+    return null;
+  }
+}
 
 function getMissions(type) {
   const t = (type || '').toLowerCase();
   let pool;
-  if (/quiz/.test(t))                                                         pool = MISSION_POOLS.quiz;
-  else if (/game|clicker|runner|memory|reaction|soccer/.test(t))              pool = MISSION_POOLS.game;
-  else if (/website|portfolio|restaurant|shop|sports|blog|landing/.test(t))   pool = MISSION_POOLS.website;
-  else                                                                          pool = MISSION_POOLS.tool;
+  if      (t === 'clicker')    pool = MISSION_POOLS.clicker;
+  else if (t === 'runner')     pool = MISSION_POOLS.runner;
+  else if (t === 'platformer') pool = MISSION_POOLS.platformer;
+  else if (t === 'dodge')      pool = MISSION_POOLS.dodge;
+  else if (t === 'racing')     pool = MISSION_POOLS.racing;
+  else if (t === 'typing')     pool = MISSION_POOLS.typing;
+  else if (t === 'tower')      pool = MISSION_POOLS.tower;
+  else if (t === 'maze')       pool = MISSION_POOLS.maze;
+  else if (t === 'survival')   pool = MISSION_POOLS.survival;
+  else if (t === 'puzzle')     pool = MISSION_POOLS.puzzle;
+  else if (t === 'basketball') pool = MISSION_POOLS.basketball;
+  else if (t === 'soccer')     pool = MISSION_POOLS.soccer;
+  else if (t === 'cooking')    pool = MISSION_POOLS.cooking;
+  else if (t === 'memory')     pool = MISSION_POOLS.memory;
+  else if (t === 'reaction')   pool = MISSION_POOLS.reaction;
+  else if (t === 'quiz')       pool = MISSION_POOLS.quiz;
+  else if (t === 'simulator')  pool = MISSION_POOLS.simulator;
+  else if (/website|portfolio|restaurant|shop|sports|blog|landing/.test(t)) pool = MISSION_POOLS.website;
+  else if (/tool|calculator|timer|drawing|flashcard/.test(t))               pool = MISSION_POOLS.tool;
+  else                                                                        pool = MISSION_POOLS.game;
   return [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
 }
 
@@ -468,6 +727,11 @@ export default function Builder() {
   const [wowType, setWowType] = useState('');
   const wowShownRef           = useRef(false);
 
+  // ── Public sharing ────────────────────────────────────────────────────────
+  const [isPublished, setIsPublished]     = useState(false);
+  const [publicId, setPublicId]           = useState(null);
+  const [publishStatus, setPublishStatus] = useState(null); // null | 'publishing' | 'copied' | 'error'
+
   // ── My Creations — sort + favorites ───────────────────────────────────────
   const [projectSort, setProjectSort]   = useState('recent');
   const [shareStatus, setShareStatus]   = useState(null); // null | 'copied' | 'shared'
@@ -542,7 +806,12 @@ export default function Builder() {
     if (editing || missionActive) return;
     setMissionActive(mission);
     try {
-      await applyEdit(mission + '. Keep all design and colors unchanged.');
+      await applyEdit(
+        `MISSION UPGRADE: ${mission}. ` +
+        `Implement this fully — add real working JavaScript logic, not a placeholder. ` +
+        `Preserve all existing gameplay, scoring, and visual style exactly. ` +
+        `The new feature must integrate seamlessly with the current code.`
+      );
       setTimeout(() => popXp(10, 'Mission Complete!'), 350);
     } finally {
       setMissionActive(null);
@@ -662,8 +931,33 @@ export default function Builder() {
 
   // ── Prefill prompt from ?prompt= URL param (sent by lesson "Use in AI Builder") ─
   useEffect(() => {
-    const pre = new URLSearchParams(location.search).get('prompt');
+    const params = new URLSearchParams(location.search);
+    const pre = params.get('prompt');
     if (pre) setPrompt(pre);
+
+    // Auto-load a remixed project (redirected from /project/:publicId after remix)
+    const remixId = params.get('remix');
+    if (remixId && token) {
+      fetch(`${API_BASE_URL}/api/builder/projects/${remixId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (!data.success) return;
+          const p = data.project;
+          setPrompt(p.prompt || '');
+          setCode(p.generated_code);
+          setBuiltPrompt(p.prompt || '');
+          setProjectType(p.project_type || 'website');
+          setAiTitle(p.title || '');
+          setPromptHistory([p.prompt || '']);
+          setIsSaved(true);
+          setSavedProjectId(p.id);
+          setBuildKey(k => k + 1);
+          setShowEditPanel(true);
+        })
+        .catch(() => {});
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Restore guest draft saved before redirecting to /login ─────────────────
@@ -884,7 +1178,7 @@ export default function Builder() {
     setShowEditPanel(false);
     setEditError('');
     const buildController = new AbortController();
-    const buildTimeout = setTimeout(() => buildController.abort(), 70000);
+    const buildTimeout = setTimeout(() => buildController.abort(), 120000);
     try {
       const res  = await fetch(`${API_BASE_URL}/api/builder`, {
         method:  'POST',
@@ -899,7 +1193,7 @@ export default function Builder() {
       if (!isValidHtml(html)) throw new Error('The AI returned an incomplete page. Please try again.');
       setCode(html);
       setBuiltPrompt(text);
-      setBuiltSummary(data.summary || '');
+      setBuiltSummary(data.isFallback ? 'Starter ready — AI polish can be added next' : (data.summary || ''));
       setAiTitle(data.title || '');
       setProjectType(data.type || 'website');
       setConceptsUsed(Array.isArray(data.conceptsUsed) ? data.conceptsUsed : []);
@@ -912,8 +1206,11 @@ export default function Builder() {
       if (/game|clicker|runner|memory|reaction|quiz|soccer/.test(builtType)) {
         setIsPlayMode(true);
       }
-      // Creator missions
+      // Creator missions — show static pool immediately, then upgrade with AI-generated ones
       setMissions(getMissions(builtType));
+      fetchAiMissions(html, builtType, data.title || '', token).then(aiMissions => {
+        if (aiMissions) setMissions(aiMissions);
+      });
       // Companion
       setCompanionVisible(true);
       // Wow moment — once per session, with a short delay so the iframe renders first
@@ -1123,6 +1420,9 @@ export default function Builder() {
       setEditError('');
       setBuildKey(k => k + 1);
       setSavedProjectId(p.id);
+      setIsPublished(!!(p.is_public && p.public_id));
+      setPublicId(p.public_id || null);
+      setPublishStatus(null);
       setLocalVersions([]);
       setServerVersions([]);
       setActiveVersionId(null);
@@ -1177,6 +1477,9 @@ export default function Builder() {
     setActiveVersionId(null);
     setRestoringVersion(false);
     setLoadingPreviewType('');
+    setIsPublished(false);
+    setPublicId(null);
+    setPublishStatus(null);
     setStudioPanel(null);
     setDeviceView('desktop');
     setProjectDesc('');
@@ -1210,6 +1513,73 @@ export default function Builder() {
       catch (_) {}
     }
     setTimeout(() => setShareStatus(null), 2200);
+  };
+
+  // ── Publish project ────────────────────────────────────────────────────────
+  const handlePublish = async () => {
+    if (!code) return;
+    if (!user || !token) { navigate('/login'); return; }
+
+    // Save first if not saved
+    let projectId = savedProjectId;
+    if (!projectId) {
+      const title = (builtPrompt ? deriveProjectName(builtPrompt) : '') || 'My Project';
+      try {
+        const res  = await fetch(`${API_BASE_URL}/api/builder/projects`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body:    JSON.stringify({ title, prompt: builtPrompt, generated_code: code, project_type: projectType }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Save failed');
+        projectId = data.project.id;
+        setSavedProjectId(projectId);
+        setSavedProjects(prev => [data.project, ...prev]);
+        setIsSaved(true);
+      } catch (err) {
+        setPublishStatus('error');
+        setTimeout(() => setPublishStatus(null), 3000);
+        return;
+      }
+    }
+
+    setPublishStatus('publishing');
+    try {
+      const res  = await fetch(`${API_BASE_URL}/api/builder/projects/${projectId}/publish`, {
+        method:  'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Publish failed');
+      setIsPublished(true);
+      setPublicId(data.public_id);
+      const url = `https://www.codeitlearn.com/project/${data.public_id}`;
+      try { await navigator.clipboard.writeText(url); } catch (_) {}
+      setPublishStatus('copied');
+      setTimeout(() => setPublishStatus(null), 3000);
+    } catch (_) {
+      setPublishStatus('error');
+      setTimeout(() => setPublishStatus(null), 3000);
+    }
+  };
+
+  const handleCopyPublicLink = async () => {
+    if (!publicId) return;
+    const url = `https://www.codeitlearn.com/project/${publicId}`;
+    try { await navigator.clipboard.writeText(url); } catch (_) {}
+    setPublishStatus('copied');
+    setTimeout(() => setPublishStatus(null), 2000);
+  };
+
+  const handleUnpublish = async () => {
+    if (!savedProjectId || !token) return;
+    try {
+      await fetch(`${API_BASE_URL}/api/builder/projects/${savedProjectId}/unpublish`, {
+        method:  'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setIsPublished(false);
+    } catch (_) {}
   };
 
   // ── Favorite toggle ────────────────────────────────────────────────────────
@@ -1856,14 +2226,38 @@ export default function Builder() {
                   : 'How does this work?'}
               </button>
 
-              <button
-                className="bldr-action-btn bldr-action-btn--share"
-                onClick={handleShare}
-                disabled={editing}
-                title={navigator.share ? 'Share this project' : 'Copy project summary to clipboard'}
-              >
-                {shareStatus === 'copied' ? 'Copied!' : shareStatus === 'shared' ? 'Shared!' : navigator.share ? 'Share' : 'Copy'}
-              </button>
+              {isPublished ? (
+                <div className="bldr-share-group">
+                  <button
+                    className="bldr-action-btn bldr-action-btn--published"
+                    onClick={handleCopyPublicLink}
+                    disabled={editing}
+                    title={`https://www.codeitlearn.com/project/${publicId}`}
+                  >
+                    {publishStatus === 'copied' ? 'Link copied!' : 'Copy link'}
+                  </button>
+                  <button
+                    className="bldr-action-btn bldr-action-btn--unpublish"
+                    onClick={handleUnpublish}
+                    disabled={editing}
+                    title="Make project private"
+                  >
+                    Unpublish
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className="bldr-action-btn bldr-action-btn--publish"
+                  onClick={handlePublish}
+                  disabled={editing || publishStatus === 'publishing'}
+                  title="Get a public link anyone can open"
+                >
+                  {publishStatus === 'publishing'
+                    ? <><span className="bldr-spinner bldr-spinner--sm" />Publishing...</>
+                    : publishStatus === 'error' ? 'Try again'
+                    : 'Share'}
+                </button>
+              )}
 
               <button
                 className={`bldr-action-btn bldr-action-btn--edit${showEditPanel ? ' bldr-action-btn--edit-active' : ''}`}

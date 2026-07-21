@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import CodeRunnerPython from '../CodeRunnerPython';
 import Header from '../../pages/Header/Header';
-import ProgressBar from '../../pages/ProgressBar/progressBar';
 import LessonGuide from '../LessonGuide/LessonGuide';
 import CharacterAvatar from '../CharacterAvatar/CharacterAvatar';
 import './InteractiveLessonTemplate.css';
@@ -117,7 +116,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const { markLessonComplete } = useProgress();
   const { user, token } = useContext(AuthContext) || {};
   const { character } = useCharacter();
-  const { level: preLevel, xpToNext: preXpToNext } = usePlayerProgress(token);
+  const { xp, level, xpToNext } = usePlayerProgress(token);
   const firstName  = (user?.name || 'Coder').split(' ')[0];
 
   const seo = LESSON_SEO[lessonId] || {};
@@ -132,7 +131,6 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const confettiRef       = useRef(null);
   const hasMarkedComplete = useRef(false);
 
-  const [calmMode,    setCalmMode]    = useState(false);
   const [stepIdx,     setStepIdx]     = useState(0);
   const [maxVisited,  setMaxVisited]  = useState(0);
   const [stepsDone,      setStepsDone]      = useState({});  // { [idx]: true }
@@ -180,7 +178,6 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   }, [lessonId, user, token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const triggerConfetti = (durationMs = 1200) => {
-    if (calmMode) return;
     const canvas = confettiRef.current;
     if (!canvas) return;
     const ctx    = canvas.getContext('2d');
@@ -215,7 +212,9 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const currentStep   = steps[stepIdx];
   const isLastStep    = stepIdx === totalSteps - 1;
   const isCurrentDone = !!stepsDone[stepIdx];
-  const anyCodeDone   = steps.some((s, i) => s.type !== 'concept' && stepsDone[i]);
+  const anyCodeDone          = steps.some((s, i) => s.type !== 'concept' && stepsDone[i]);
+  const stepsCompletedCount  = Object.values(stepsDone).filter(Boolean).length;
+  const progressPct          = totalSteps > 0 ? Math.round((stepsCompletedCount / totalSteps) * 100) : 0;
 
   // ── Lesson DB completion (fires once) ──────────────────────
   const markLessonCompleteOnce = () => {
@@ -405,12 +404,12 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               </div>
             )}
             {(() => {
-              const nu = getNextUnlock(preLevel);
+              const nu = getNextUnlock(level);
               if (!nu) return null;
-              if (preXpToNext > 0 && preXpToNext <= 150) {
+              if (xpToNext > 0 && xpToNext <= 150) {
                 return (
                   <p className="sl-completion-card__level-hint sl-completion-card__level-hint--urgent">
-                    Only {preXpToNext} XP to reach Level {preLevel + 1}!
+                    Only {xpToNext} XP to reach Level {level + 1}!
                   </p>
                 );
               }
@@ -458,65 +457,67 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
       {/* Confetti */}
       <canvas ref={confettiRef} className="sl-confetti" />
 
-      {/* Fixed header */}
+      {/* Fixed header: global nav + compact lesson strip */}
       <div className="sl-fixed-header">
         <Header />
-        <ProgressBar currentStep="lesson" />
+        <div className="sl-lesson-strip">
+          <button className="sl-strip__back" onClick={() => navigate('/lessons')} aria-label="Back to lessons">
+            &#8592; Lessons
+          </button>
+          <div className="sl-strip__center">
+            <span className="sl-strip__title">Lesson {id} &middot; {title}</span>
+            <div
+              className="sl-strip__bar-track"
+              role="progressbar"
+              aria-valuenow={progressPct}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`Lesson progress: ${progressPct}%`}
+            >
+              <div className="sl-strip__bar-fill" style={{ width: `${progressPct}%` }} />
+            </div>
+          </div>
+          {user && (
+            <div className="sl-strip__xp">
+              <span className="sl-strip__xp-lv">Lv.{level}</span>
+              <span className="sl-strip__xp-val">{(xp || 0).toLocaleString()} XP</span>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="sl-body">
 
-        {/* ── Lesson title bar ─────────────────────────── */}
-        <div className="sl-titlebar">
-          <div className="sl-titlebar__left">
-            {emoji && <span className="sl-titlebar__emoji" aria-hidden="true">{emoji}</span>}
-            <div>
-              <span className="sl-titlebar__pill">Lesson {id}</span>
-              <h1 className="sl-titlebar__title">{title}</h1>
-              {subtitle && <p className="sl-titlebar__sub">{subtitle}</p>}
-            </div>
+        {/* ── Journey path: Lesson → Quiz → Puzzle ─────── */}
+        <div className="sl-journey-path" aria-label="Your learning path">
+          <div className="sl-jp-node sl-jp-node--active">
+            <div className="sl-jp-dot">L</div>
+            <span className="sl-jp-label">Lesson {id}</span>
           </div>
-          <label className="sl-calm-toggle">
-            <input
-              type="checkbox"
-              checked={calmMode}
-              onChange={e => setCalmMode(e.target.checked)}
-            />
-            Calm mode
-          </label>
-        </div>
-
-        {/* ── Step indicator ───────────────────────────── */}
-        <div className="sl-stepper">
-          <div className="sl-stepper__dots">
-            {steps.map((step, i) => (
-              <button
-                key={i}
-                className={[
-                  'sl-stepper__dot',
-                  i === stepIdx                  ? 'sl-stepper__dot--active'  : '',
-                  stepsDone[i]                   ? 'sl-stepper__dot--done'    : '',
-                  i > maxVisited && i !== stepIdx ? 'sl-stepper__dot--locked' : '',
-                ].filter(Boolean).join(' ')}
-                onClick={() => { if (i <= maxVisited) setStepIdx(i); }}
-                disabled={i > maxVisited}
-                aria-label={`Step ${i + 1}: ${step.title}`}
-                title={step.title}
-              />
-            ))}
+          <div className="sl-jp-connector" aria-hidden="true" />
+          <div className="sl-jp-node sl-jp-node--upcoming">
+            <div className="sl-jp-dot">Q</div>
+            <span className="sl-jp-label">Quiz {id}</span>
           </div>
-          <span className="sl-stepper__label">Step {stepIdx + 1} of {totalSteps}</span>
+          <div className="sl-jp-connector" aria-hidden="true" />
+          <div className="sl-jp-node sl-jp-node--upcoming">
+            <div className="sl-jp-dot">P</div>
+            <span className="sl-jp-label">Puzzle</span>
+          </div>
         </div>
 
         {/* ── Main step card ───────────────────────────── */}
-        <div className="sl-card">
+        <div className={`sl-card sl-card--${currentStep?.type || 'concept'}`}>
 
-          {/* Tag row */}
-          <div className="sl-card__tags">
-            <span className={`sl-tag sl-tag--${TYPE_COLOR[currentStep?.type] || 'concept'}`}>
-              {TYPE_LABEL[currentStep?.type] || 'Step'}
-            </span>
-            {isCurrentDone && <span className="sl-tag sl-tag--done">Done</span>}
+          {/* Card head: type tag + step counter */}
+          <div className="sl-card__head">
+            <div className="sl-card__tags">
+              <span className={`sl-tag sl-tag--${TYPE_COLOR[currentStep?.type] || 'concept'}`}>
+                {TYPE_LABEL[currentStep?.type] || 'Step'}
+              </span>
+              {isCurrentDone && <span className="sl-tag sl-tag--done">Done</span>}
+            </div>
+            <span className="sl-card__step-num">{stepIdx + 1} / {totalSteps}</span>
           </div>
 
           {/* Step title */}
@@ -534,7 +535,11 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               )}
               {currentStep.code && (
                 <div className="sl-concept__code-wrap">
-                  <span className="sl-concept__code-label">Example (read only)</span>
+                  <div className="sl-terminal-bar">
+                    <span className="sl-terminal-dots"><i /><i /><i /></span>
+                    <span className="sl-terminal-lang">Python</span>
+                    <span className="sl-terminal-ro">read only</span>
+                  </div>
                   <pre className="sl-concept__code"><code>{currentStep.code}</code></pre>
                 </div>
               )}
@@ -556,6 +561,10 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                       className={i === stepIdx ? 'sl-editor-wrap' : 'sl-editor-wrap sl-editor-wrap--hidden'}
                       aria-hidden={i !== stepIdx}
                     >
+                      <div className="sl-terminal-bar">
+                        <span className="sl-terminal-dots"><i /><i /><i /></span>
+                        <span className="sl-terminal-lang">Python</span>
+                      </div>
                       <CodeRunnerPython
                         starterCode={step.code}
                         title={step.title}
