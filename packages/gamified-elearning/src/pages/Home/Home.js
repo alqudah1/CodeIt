@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Header from "../Header/Header";
 import { useSEO } from "../../hooks/useSEO";
+import { trackEvent } from "../../utils/trackEvent";
 import "./Home.css";
 import "./HomeStudio.css";
 
@@ -153,6 +154,7 @@ export default function Home() {
                   to="/builder"
                   className="studio-button studio-button--primary"
                   data-cta="hero-build"
+                  onClick={() => trackEvent("landing_cta_click", "hero-build")}
                 >
                   Start making <span aria-hidden="true">→</span>
                 </Link>
@@ -160,6 +162,7 @@ export default function Home() {
                   to="/lessons"
                   className="studio-button studio-button--quiet"
                   data-cta="hero-lessons"
+                  onClick={() => trackEvent("landing_cta_click", "hero-lessons")}
                 >
                   See how it works
                 </Link>
@@ -239,6 +242,7 @@ export default function Home() {
               to="/builder"
               className="studio-button studio-button--dark"
               data-cta="final-build"
+              onClick={() => trackEvent("landing_cta_click", "final-build")}
             >
               Start building for free <span aria-hidden="true">→</span>
             </Link>

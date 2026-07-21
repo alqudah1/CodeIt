@@ -19,8 +19,10 @@ const puzzlesRoutes = require('./routes/puzzles');
 const journeyRoutes = require('./routes/journey');
 const builderRoutes = require('./routes/builder');
 const exploreRoutes = require('./routes/explore');
+const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
+app.set('trust proxy', 1);
 app.get('/health', (req, res) => {
   res.json({ ok: true });
 });
@@ -44,6 +46,7 @@ app.use('/api/puzzles', puzzlesRoutes);
 app.use('/api/journey', journeyRoutes);
 app.use('/api/builder', builderRoutes);
 app.use('/api/explore', exploreRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 const PORT = 8080;
 app.listen(PORT, () => {

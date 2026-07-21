@@ -4,6 +4,7 @@ const bcrypt  = require('bcryptjs');
 const jwt     = require('jsonwebtoken');
 const db      = require('../db');
 const { JWT_SECRET, JWT_EXPIRY } = require('../config');
+const { recordEvent } = require('../analytics');
 
 // ── POST /api/signup ───────────────────────────────────────────────────────────
 router.post('/signup', async (req, res) => {
@@ -68,6 +69,10 @@ router.post('/signup', async (req, res) => {
     }
 
     await connection.commit();
+    void recordEvent('signup_complete', {
+      userId: result.insertId,
+      meta: isStudent ? 'student' : 'educator',
+    });
 
     const user_id    = result.insertId;
     const displayName = isStudent ? username.trim() : name.trim();

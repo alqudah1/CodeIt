@@ -15,6 +15,9 @@ export const ENDPOINTS = {
     login: `${API_BASE_URL}/api/login`,
     register: `${API_BASE_URL}/api/signup`,
   },
+  analytics: {
+    event: `${API_BASE_URL}/api/analytics/event`,
+  },
   rewards: {
     progress:    `${API_BASE_URL}/api/rewards/progress-percentages`,
     leaderboard: `${API_BASE_URL}/api/rewards/leaderboard`,

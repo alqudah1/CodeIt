@@ -5,6 +5,8 @@ const jwt          = require('jsonwebtoken');
 const pool         = require('../db');
 const designEngine = require('../designEngine');
 const { JWT_SECRET } = require('../config');
+const { recordEvent } = require('../analytics');
+const { projectCategory } = require('../analyticsEvents');
 
 const client     = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -1332,7 +1334,7 @@ function getRichFallback(designConfig, userPrompt) {
 }
 
 // ── POST /api/builder ─────────────────────────────────────────────────────────
-router.post('/', async (req, res) => {
+router.post('/', optionalAuth, async (req, res) => {
   const { prompt } = req.body;
 
   if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
@@ -1341,6 +1343,21 @@ router.post('/', async (req, res) => {
 
   // Classify prompt BEFORE try so catch block can serve a fallback
   const designConfig = designEngine.getDesignConfig(prompt.trim());
+  const analyticsContext = {
+    userId: req.user?.user_id,
+    meta: projectCategory(designConfig.category),
+  };
+  let generationMode = 'fallback';
+
+  void recordEvent('builder_start', analyticsContext);
+  res.once('finish', () => {
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      void recordEvent('generation_complete', {
+        userId: analyticsContext.userId,
+        meta: generationMode,
+      });
+    }
+  });
 
   if (!process.env.ANTHROPIC_API_KEY) {
     console.log('Builder: ANTHROPIC_API_KEY missing, serving fallback for type:', designConfig.type);
@@ -1549,6 +1566,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
     const { html, title, summary, conceptsUsed } = parsed;
     // Use design engine type as authoritative fallback
     const type = parsed.type && parsed.type !== 'website' ? parsed.type : designConfig.type;
+    generationMode = 'ai';
     res.json({ code: html, html, title, type, summary, conceptsUsed });
   } catch (err) {
     console.error('Builder AI error:', err.message);
@@ -1723,6 +1741,10 @@ router.post('/projects', requireAuth, async (req, res) => {
       [userId, title.trim(), prompt.trim(), generated_code.trim(), (project_type || 'website').trim()]
     );
     const [rows] = await pool.query('SELECT * FROM ai_projects WHERE id = ?', [result.insertId]);
+    void recordEvent('project_save', {
+      userId,
+      meta: projectCategory(project_type),
+    });
     res.status(201).json({ success: true, project: rows[0] });
   } catch (err) {
     console.error('Save project error:', err.message);
@@ -2115,11 +2137,12 @@ router.post('/projects/:id/publish', requireAuth, async (req, res) => {
   const { id }  = req.params;
   try {
     const [rows] = await pool.query(
-      'SELECT id, public_id, is_public FROM ai_projects WHERE id = ? AND user_id = ?',
+      'SELECT id, public_id, is_public, project_type FROM ai_projects WHERE id = ? AND user_id = ?',
       [id, userId]
     );
     if (!rows.length) return res.status(404).json({ error: 'Project not found.' });
 
+    const wasPublic = Boolean(rows[0].is_public);
     let { public_id } = rows[0];
     if (!public_id) {
       // Generate unique public_id with collision retry
@@ -2140,6 +2163,13 @@ router.post('/projects/:id/publish', requireAuth, async (req, res) => {
       'UPDATE ai_projects SET is_public = 1, public_id = ?, creator_name = ? WHERE id = ?',
       [public_id, creatorName, id]
     );
+
+    if (!wasPublic) {
+      void recordEvent('project_publish', {
+        userId,
+        meta: projectCategory(rows[0].project_type),
+      });
+    }
 
     const publicUrl = `https://www.codeitlearn.com/project/${public_id}`;
     res.json({ success: true, public_id, public_url: publicUrl });
