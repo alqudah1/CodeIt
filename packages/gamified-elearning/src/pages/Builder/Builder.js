@@ -1669,14 +1669,14 @@ export default function Builder() {
             HERO
         ════════════════════════════════════════ */}
         <section className="bldr-hero">
-          <div className="bldr-hero__badge">AI Builder</div>
+          <div className="bldr-hero__badge">Project studio</div>
           <h1 className="bldr-hero__title">
-            Type an idea.<br />
-            <span className="bldr-hero__title-accent">AI builds it instantly.</span>
+            Describe it. Build it.<br />
+            <span className="bldr-hero__title-accent">Make it yours.</span>
           </h1>
           <p className="bldr-hero__sub">
-            Describe anything — a game, a quiz, a website about your favourite topic.
-            Watch it appear live in seconds. Edit it with a single sentence. Save and share.
+            Start with a game, quiz, or website. Get a working first version, then play with it,
+            change the code, and learn how it works.
           </p>
         </section>
 
@@ -1758,7 +1758,7 @@ export default function Builder() {
           >
             {loading
               ? <><span className="bldr-spinner bldr-spinner--btn" />Building...</>
-              : hasResult ? 'Rebuild from scratch' : 'Build with AI'}
+              : hasResult ? 'Rebuild from scratch' : 'Build my project'}
           </button>
         </div>
 
