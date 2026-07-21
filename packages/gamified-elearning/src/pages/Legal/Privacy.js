@@ -76,7 +76,7 @@ export default function Privacy() {
             <section id="children">
               <h2>Children, parents, and guardians</h2>
               <p>New student accounts are limited to ages 13–18. A learner under 13 may try public activities with a parent or guardian, but CodeIt does not create a new under-13 student account until a verified parent-managed consent flow is available.</p>
-              <p>Where an older account indicates that its learner is under 13, CodeIt may restrict account features and request parent or guardian verification. A parent or guardian can contact us to ask what information is connected to a child, request correction or deletion, or stop further collection.</p>
+              <p>Some accounts created before this age limit may indicate that the learner is under 13. CodeIt is reviewing those accounts and does not treat an unverified parent email as consent. A parent or guardian can contact us to ask what information is connected to a child, request correction or deletion, or stop further collection.</p>
             </section>
 
             <section id="retention">
