@@ -1,7 +1,7 @@
-/* global loadPyodide */
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
+import { getPyodideRuntime } from '../utils/pyodideLoader';
 import './CodeRunnerPython.css';
 
 // Starter code per lesson id
@@ -62,39 +62,19 @@ const CodeRunnerPython = ({ lessonId, starterCode, title, height = '220px', onOu
     return () => { mountedRef.current = false; };
   }, []);
 
-  // Initialise Pyodide (reuse if already loaded by PythonEditor or index.html)
+  // Load Python only when a runner is actually mounted on a lesson or playground.
   useEffect(() => {
-    if (window.pyodide) {
-      setPyReady(true);
-      return;
-    }
-
     let cancelled = false;
-    const init = async () => {
-      try {
-        if (typeof loadPyodide === 'undefined') return; // CDN not loaded yet — poll
-        const py = await loadPyodide({ indexURL: '' });
-        window.printOutput = '';
-        py.setStdout({ batched: (t) => { window.printOutput += t + '\n'; } });
-        window.pyodide = py;
+    getPyodideRuntime()
+      .then(() => {
         if (!cancelled && mountedRef.current) setPyReady(true);
-      } catch (err) {
+      })
+      .catch((err) => {
         console.error('CodeRunnerPython: Pyodide error', err);
-      }
-    };
+        if (!cancelled && mountedRef.current) setOutput('❌ Could not load Python. Please refresh and try again.');
+      });
 
-    // If Pyodide CDN script is loaded async, poll until loadPyodide is available
-    const poll = setInterval(() => {
-      if (window.pyodide) {
-        clearInterval(poll);
-        if (mountedRef.current) setPyReady(true);
-      } else if (typeof loadPyodide !== 'undefined') {
-        clearInterval(poll);
-        init();
-      }
-    }, 400);
-
-    return () => { cancelled = true; clearInterval(poll); };
+    return () => { cancelled = true; };
   }, []);
 
   const runCode = useCallback(async () => {

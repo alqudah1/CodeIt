@@ -1,5 +1,5 @@
-/* global loadPyodide */
 import React, { useState, useEffect, useRef } from 'react';
+import { getPyodideRuntime } from '../../utils/pyodideLoader';
 
 function cleanPythonError(raw) {
   if (!raw) return raw;
@@ -26,20 +26,8 @@ const PythonEditor = ({ initialCode, onOutput }) => {
   useEffect(() => {
     const setupPyodide = async () => {
       try {
-        const pyodide = await loadPyodide({
-          indexURL: '',
-        });
-
-        window.printOutput = '';
-        pyodide.setStdout({
-          batched: (text) => {
-            // add a newline when capturing output
-            window.printOutput += text + "\n";
-          },
-        });
-
+        await getPyodideRuntime();
         setIsLoading(false);
-        window.pyodide = pyodide;
       } catch (err) {
         console.error('Pyodide load error:', err);
         setOutput('Error loading Python interpreter: ' + err.message);
