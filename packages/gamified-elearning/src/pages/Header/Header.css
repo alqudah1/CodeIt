@@ -4,7 +4,7 @@
      Cream:  #FFF6ED   background
      Orange: #FF7A00   primary / CTA
      Purple: #A855F7   accent highlights only
-     Dark:   #1F2937   text / strokes
+     Dark:   #38291F   text / strokes
    ================================================================ */
 
 /* ── Sticky shell ─────────────────────────────────────────────── */
@@ -19,7 +19,7 @@
   border-bottom: 1px solid rgba(255, 122, 0, 0.09);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.85) inset,
-    0 2px 24px rgba(31, 41, 55, 0.05);
+    0 2px 24px rgba(56, 41, 31, 0.05);
 }
 
 /* ── Inner row ────────────────────────────────────────────────── */
@@ -42,15 +42,20 @@
   margin-right: 0.5rem;
 }
 
-.site-header__logo-img {
-  height: 52px;
-  width: auto;
-  object-fit: contain;
-  display: block;
-  background: transparent;
-  padding: 0;
-  border: 0;
-  box-shadow: none;
+.site-header__wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  color: #38291F;
+  font-family: 'Arvo', Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.site-header__wordmark strong {
+  color: #E9782E;
+  font: inherit;
 }
 
 /* ── Hamburger ────────────────────────────────────────────────── */
@@ -73,7 +78,7 @@
   display: block;
   width: 22px;
   height: 2px;
-  background: #1F2937;
+  background: #38291F;
   border-radius: 2px;
   transition: transform 0.22s ease, opacity 0.22s ease;
 }
@@ -112,7 +117,7 @@
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.9rem;
   font-weight: 700;
-  color: #1F2937;
+  color: #38291F;
   text-decoration: none;
   border-radius: 999px;
   border: 1.5px solid transparent;
@@ -324,7 +329,7 @@
   border-radius: 16px;
   box-shadow:
     0 4px 6px rgba(0,0,0,0.04),
-    0 12px 40px rgba(31, 41, 55, 0.12);
+    0 12px 40px rgba(56, 41, 31, 0.12);
   padding: 0.55rem 0.45rem;
   z-index: 600;
   animation: hdr-drop-in 0.15s ease;
@@ -360,12 +365,12 @@
   font-family: 'Nunito', sans-serif;
   font-size: 0.68rem;
   font-weight: 700;
-  color: #9CA3AF;
+  color: #A48773;
 }
 
 .site-header__dropdown-xp-bar {
   height: 5px;
-  background: rgba(31,41,55,0.08);
+  background: rgba(56, 41, 31,0.08);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -382,7 +387,7 @@
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.73rem;
   font-weight: 800;
-  color: #9CA3AF;
+  color: #A48773;
   text-transform: uppercase;
   letter-spacing: 0.07em;
   padding: 0.25rem 0.75rem 0.55rem;
@@ -395,7 +400,7 @@
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.88rem;
   font-weight: 600;
-  color: #1F2937;
+  color: #38291F;
   text-decoration: none;
   padding: 0.5rem 0.75rem;
   border-radius: 10px;
@@ -425,7 +430,7 @@
 
 .site-header__dropdown-divider {
   height: 1px;
-  background: rgba(31, 41, 55, 0.07);
+  background: rgba(56, 41, 31, 0.07);
   margin: 0.35rem 0.3rem;
 }
 
@@ -434,7 +439,7 @@
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.83rem;
   font-weight: 700;
-  color: #6B7280;
+  color: #785B49;
   background: none;
   border: none;
   cursor: pointer;
@@ -443,8 +448,8 @@
   transition: color 0.15s, background 0.15s;
 }
 .site-header__logout:hover {
-  color: #1F2937;
-  background: rgba(31, 41, 55, 0.06);
+  color: #38291F;
+  background: rgba(56, 41, 31, 0.06);
 }
 .site-header__logout:focus-visible {
   outline: 2px solid #FF7A00;
@@ -456,11 +461,11 @@
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.88rem;
   font-weight: 700;
-  color: #1F2937;
+  color: #38291F;
   text-decoration: none;
   padding: 0.5rem 1.05rem;
   border-radius: 999px;
-  border: 1.5px solid rgba(31, 41, 55, 0.12);
+  border: 1.5px solid rgba(56, 41, 31, 0.12);
   transition: background 0.18s, border-color 0.18s, color 0.18s;
 }
 .site-header__login:hover {
@@ -494,7 +499,7 @@
     border: 1.5px solid rgba(255, 122, 0, 0.10);
     border-radius: 16px;
     padding: 1rem 1.1rem 1.2rem;
-    box-shadow: 0 12px 40px rgba(31, 41, 55, 0.10);
+    box-shadow: 0 12px 40px rgba(56, 41, 31, 0.10);
     z-index: 490;
   }
   .site-header__body.is-open { display: flex; }
@@ -527,7 +532,7 @@
     justify-content: flex-start;
     gap: 0.6rem;
     padding-top: 0.8rem;
-    border-top: 1px solid rgba(31, 41, 55, 0.06);
+    border-top: 1px solid rgba(56, 41, 31, 0.06);
     width: 100%;
   }
 
@@ -537,5 +542,4 @@
 
 @media (max-width: 480px) {
   .site-header__inner { padding: 0 1rem; height: 56px; }
-  .site-header__logo-img { height: 40px; }
 }

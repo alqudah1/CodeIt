@@ -65,7 +65,7 @@ export default function Header() {
     <header className="site-header">
       <div className="site-header__inner">
         <Link to="/" className="site-header__logo" aria-label="CodeIt home">
-          <img src="/brand/CodeItRG.svg" alt="CodeIt" className="site-header__logo-img" />
+          <span className="site-header__wordmark" aria-hidden="true">Code<strong>It</strong></span>
         </Link>
 
         <button
