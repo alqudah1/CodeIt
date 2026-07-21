@@ -2893,19 +2893,18 @@ export default function Builder() {
         {/* ════════════════════════════════════════
             PARENT / TRUST STRIP
         ════════════════════════════════════════ */}
-        <section className="bldr-trust" aria-label="About AI Builder">
+        <section className="bldr-trust" aria-label="About the project studio">
           <div className="bldr-trust__inner">
             <h2 className="bldr-trust__title">
-              A safe, guided way for kids to explore AI and coding
+              A guided place to build, change, and understand code
             </h2>
             <p className="bldr-trust__body">
-              The AI Builder lets children and beginners see what code can create — without needing
-              to know any programming first. Every project runs in a secure sandbox. Log in to save
-              your builds and come back to them any time. The AI remembers what it built and can
-              modify it — add features, change colours, make it interactive.
+              Start with an idea and get a working first version. Then keep shaping it: change the
+              words, colours, layout, and interactions; open the code; save versions; and share only
+              when you are ready. Every project runs in an isolated preview.
             </p>
             <div className="bldr-trust__pills">
-              {['Beginner-friendly', 'AI remembers your build', 'Secure sandbox', 'Save your builds'].map(pill => (
+              {['Beginner-friendly', 'Editable code', 'Private until published', 'Save versions'].map(pill => (
                 <span key={pill} className="bldr-trust__pill">{pill}</span>
               ))}
             </div>

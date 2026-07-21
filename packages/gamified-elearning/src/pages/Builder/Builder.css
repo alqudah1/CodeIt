@@ -1,6 +1,6 @@
 /* ============================================================
    Builder.css — AI Builder
-   Palette: #FFF6ED bg · #FF7A00 primary · #A855F7 accent · #1F2937 text
+   Palette: #FFF6ED bg · #FF7A00 primary · #A855F7 accent · #38291F text
    ============================================================ */
 
 /* ── Page shell ─────────────────────────────────────────────── */
@@ -76,7 +76,7 @@
 .bldr-hero__title {
   font-size: clamp(2.4rem, 6vw, 4rem);
   font-weight: 900;
-  color: #1F2937;
+  color: #38291F;
   line-height: 1.1;
   margin: 0 0 1rem;
   letter-spacing: -0.03em;
@@ -112,7 +112,7 @@
   background: rgba(255,255,255,0.75);
   border-radius: 20px;
   border: 1.5px solid rgba(168,85,247,0.10);
-  box-shadow: 0 2px 12px rgba(31,41,55,0.05);
+  box-shadow: 0 2px 12px rgba(56, 41, 31,0.05);
   padding: 1.5rem 0.5rem;
 }
 
@@ -150,7 +150,7 @@
 .bldr-how__title {
   font-size: 0.9rem;
   font-weight: 800;
-  color: #1F2937;
+  color: #38291F;
   margin: 0;
   letter-spacing: -0.01em;
 }
@@ -191,8 +191,8 @@
   border-radius: 24px;
   border: 2px solid rgba(255, 122, 0, 0.14);
   box-shadow:
-    0 2px 4px rgba(31,41,55,0.04),
-    0 16px 48px rgba(31,41,55,0.10),
+    0 2px 4px rgba(56, 41, 31,0.04),
+    0 16px 48px rgba(56, 41, 31,0.10),
     0 0 0 1px rgba(255,255,255,0.9) inset;
   backdrop-filter: blur(20px);
   padding: 1.75rem;
@@ -212,8 +212,8 @@
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 1.05rem;
   line-height: 1.65;
-  color: #1F2937;
-  background: #FAFAFA;
+  color: #38291F;
+  background: #FFFCF8;
   border: 2px solid rgba(255,122,0,0.14);
   border-radius: 16px;
   resize: none;
@@ -370,7 +370,7 @@
   border: 2px solid rgba(255,122,0,0.14);
   box-shadow:
     0 2px 0 rgba(255,255,255,0.98) inset,
-    0 20px 56px rgba(31,41,55,0.10),
+    0 20px 56px rgba(56, 41, 31,0.10),
     0 4px 16px rgba(255,122,0,0.06);
   padding: 2.2rem 2rem;
   display: flex;
@@ -388,7 +388,7 @@
 .bldr-loading__title {
   font-size: 1.05rem;
   font-weight: 800;
-  color: #1F2937;
+  color: #38291F;
 }
 
 .bldr-loading__idea {
@@ -455,9 +455,9 @@
 }
 
 .bldr-loading__step.is-pending .bldr-loading__step-icon {
-  background: rgba(31,41,55,0.07);
+  background: rgba(56, 41, 31,0.07);
   color: transparent;
-  border: 2px solid rgba(31,41,55,0.14);
+  border: 2px solid rgba(56, 41, 31,0.14);
 }
 
 .bldr-loading__step-spinner {
@@ -473,21 +473,21 @@
 .bldr-loading__step-text {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #1F2937;
+  color: #38291F;
 }
 
 .bldr-loading__step.is-pending .bldr-loading__step-text {
-  color: rgba(31,41,55,0.40);
+  color: rgba(56, 41, 31,0.40);
 }
 
 .bldr-loading__step.is-done .bldr-loading__step-text {
-  color: #1F2937;
+  color: #38291F;
 }
 
 /* Progress bar */
 .bldr-loading__bar-wrap {
   height: 5px;
-  background: rgba(31,41,55,0.07);
+  background: rgba(56, 41, 31,0.07);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -541,7 +541,7 @@
   margin: 0;
   font-weight: 800;
   font-size: 1rem;
-  color: #1F2937;
+  color: #38291F;
 }
 
 .bldr-error-card__sub {
@@ -721,7 +721,7 @@
   margin: 0;
   font-size: 1.35rem;
   font-weight: 900;
-  color: #1F2937;
+  color: #38291F;
   letter-spacing: -0.02em;
   line-height: 1.2;
   white-space: nowrap;
@@ -733,7 +733,7 @@
   margin: 0.35rem 0 0;
   font-size: 0.95rem;
   font-weight: 600;
-  color: rgba(31,41,55,0.78);
+  color: rgba(56, 41, 31,0.78);
   line-height: 1.55;
   padding: 0.4rem 0.7rem;
   background: rgba(16,185,129,0.08);
@@ -761,10 +761,10 @@
   border-radius: 999px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, transform 0.12s, box-shadow 0.15s;
-  color: #1F2937;
+  color: #38291F;
   background: rgba(255,255,255,0.9);
-  border: 1.5px solid rgba(31,41,55,0.16);
-  box-shadow: 0 1px 4px rgba(31,41,55,0.06);
+  border: 1.5px solid rgba(56, 41, 31,0.16);
+  box-shadow: 0 1px 4px rgba(56, 41, 31,0.06);
 }
 
 .bldr-action-btn--primary {
@@ -794,10 +794,10 @@
 }
 
 .bldr-action-btn:hover:not(:disabled) {
-  background: rgba(31,41,55,0.06);
-  border-color: rgba(31,41,55,0.26);
+  background: rgba(56, 41, 31,0.06);
+  border-color: rgba(56, 41, 31,0.26);
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(31,41,55,0.10);
+  box-shadow: 0 4px 10px rgba(56, 41, 31,0.10);
 }
 
 .bldr-action-btn--primary:hover:not(:disabled) {
@@ -817,10 +817,10 @@
 .bldr-browser {
   border-radius: 18px;
   overflow: hidden;
-  border: 2px solid rgba(31,41,55,0.12);
+  border: 2px solid rgba(56, 41, 31,0.12);
   box-shadow:
-    0 2px 4px rgba(31,41,55,0.06),
-    0 20px 60px rgba(31,41,55,0.16),
+    0 2px 4px rgba(56, 41, 31,0.06),
+    0 20px 60px rgba(56, 41, 31,0.16),
     0 0 0 1px rgba(255,255,255,0.5) inset;
 }
 
@@ -829,8 +829,8 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.7rem 1.1rem;
-  background: #f0f0f3;
-  border-bottom: 1px solid rgba(31,41,55,0.08);
+  background: #F4E7DC;
+  border-bottom: 1px solid rgba(56, 41, 31,0.08);
 }
 
 .bldr-browser__dots {
@@ -852,7 +852,7 @@
 .bldr-browser__bar {
   flex: 1;
   background: #fff;
-  border: 1px solid rgba(31,41,55,0.10);
+  border: 1px solid rgba(56, 41, 31,0.10);
   border-radius: 6px;
   padding: 0.3rem 0.75rem;
   font-size: 0.75rem;
@@ -1026,7 +1026,7 @@
   margin: 0;
   font-size: 0.97rem;
   line-height: 1.65;
-  color: #2a2a3e;
+  color: #38291F;
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1083,12 +1083,12 @@
 }
 .bldr-action-btn--new {
   color: #666;
-  background: rgba(31,41,55,0.04);
-  border-color: rgba(31,41,55,0.14);
+  background: rgba(56, 41, 31,0.04);
+  border-color: rgba(56, 41, 31,0.14);
 }
 .bldr-action-btn--new:hover:not(:disabled) {
-  background: rgba(31,41,55,0.08);
-  border-color: rgba(31,41,55,0.24);
+  background: rgba(56, 41, 31,0.08);
+  border-color: rgba(56, 41, 31,0.24);
   transform: translateY(-1px);
 }
 .bldr-action-btn--login-hint {
@@ -1193,7 +1193,7 @@
 .bldr-edit-panel__title {
   font-size: 0.95rem;
   font-weight: 900;
-  color: #1F2937;
+  color: #38291F;
   letter-spacing: -0.01em;
 }
 
@@ -1258,8 +1258,8 @@
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.97rem;
   line-height: 1.6;
-  color: #1F2937;
-  background: #FAFAFA;
+  color: #38291F;
+  background: #FFFCF8;
   border: 2px solid rgba(168,85,247,0.14);
   border-radius: 12px;
   resize: none;
@@ -1378,16 +1378,16 @@
   font-size: 0.82rem;
   font-weight: 700;
   color: #666;
-  background: rgba(31,41,55,0.04);
-  border: 1.5px solid rgba(31,41,55,0.14);
+  background: rgba(56, 41, 31,0.04);
+  border: 1.5px solid rgba(56, 41, 31,0.14);
   border-radius: 10px;
   cursor: pointer;
   transition: background 0.15s, transform 0.12s;
 }
 
 .bldr-edit-panel__undo-btn:hover:not(:disabled) {
-  background: rgba(31,41,55,0.09);
-  border-color: rgba(31,41,55,0.24);
+  background: rgba(56, 41, 31,0.09);
+  border-color: rgba(56, 41, 31,0.24);
   transform: translateY(-1px);
 }
 
@@ -1415,7 +1415,7 @@
   margin: 0;
   font-size: 1.1rem;
   font-weight: 900;
-  color: #1F2937;
+  color: #38291F;
   letter-spacing: -0.02em;
 }
 
@@ -1447,7 +1447,7 @@
   background: rgba(255,255,255,0.92);
   border: 1.5px solid rgba(168,85,247,0.12);
   border-radius: 16px;
-  box-shadow: 0 2px 10px rgba(31,41,55,0.06);
+  box-shadow: 0 2px 10px rgba(56, 41, 31,0.06);
   transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
 }
 
@@ -1482,7 +1482,7 @@
 .bldr-project-card__name {
   font-size: 0.95rem;
   font-weight: 800;
-  color: #1F2937;
+  color: #38291F;
   line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
@@ -1573,14 +1573,14 @@
 .bldr-trust__title {
   font-size: clamp(1.05rem, 2.5vw, 1.25rem);
   font-weight: 900;
-  color: #1F2937;
+  color: #38291F;
   margin: 0;
   letter-spacing: -0.02em;
 }
 
 .bldr-trust__body {
   font-size: 0.94rem;
-  color: rgba(31,41,55,0.65);
+  color: rgba(56, 41, 31,0.65);
   margin: 0;
   line-height: 1.75;
   max-width: 560px;
@@ -1616,7 +1616,7 @@
   padding: 1.4rem 1.5rem;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 4px 20px rgba(31, 41, 55, 0.06);
+  box-shadow: 0 4px 20px rgba(56, 41, 31, 0.06);
 }
 
 .bldr-lessons-used__header {
@@ -1627,14 +1627,14 @@
   display: block;
   font-size: 0.88rem;
   font-weight: 900;
-  color: #1F2937;
+  color: #38291F;
   letter-spacing: 0.01em;
   margin-bottom: 0.2rem;
 }
 
 .bldr-lessons-used__sub {
   font-size: 0.76rem;
-  color: rgba(31, 41, 55, 0.50);
+  color: rgba(56, 41, 31, 0.50);
   margin: 0;
 }
 
@@ -1682,13 +1682,13 @@
 .bldr-lesson-chip__name {
   font-size: 0.86rem;
   font-weight: 800;
-  color: #1F2937;
+  color: #38291F;
   line-height: 1.2;
 }
 
 .bldr-lesson-chip__hint {
   font-size: 0.74rem;
-  color: rgba(31, 41, 55, 0.58);
+  color: rgba(56, 41, 31, 0.58);
   margin: 0;
   line-height: 1.45;
   flex: 1;
@@ -1753,7 +1753,7 @@
 .bldr-history-panel__title {
   font-size: 0.95rem;
   font-weight: 800;
-  color: #1F2937;
+  color: #38291F;
 }
 
 .bldr-history-panel__header-actions {
@@ -1793,7 +1793,7 @@
 
 .bldr-history-empty {
   font-size: 0.85rem;
-  color: #9CA3AF;
+  color: #A48773;
   text-align: center;
   padding: 16px 0;
 }
@@ -1839,8 +1839,8 @@
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  background: #FAFAFA;
-  border: 1.5px solid #F3F4F6;
+  background: #FFFCF8;
+  border: 1.5px solid #F4E7DC;
   border-radius: 12px;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
@@ -1881,7 +1881,7 @@
 .bldr-version-card__label {
   font-size: 0.83rem;
   font-weight: 700;
-  color: #1F2937;
+  color: #38291F;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1915,7 +1915,7 @@
 
 .bldr-version-card__name {
   font-size: 0.75rem;
-  color: #6B7280;
+  color: #785B49;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1924,7 +1924,7 @@
 
 .bldr-version-card__time {
   font-size: 0.72rem;
-  color: #9CA3AF;
+  color: #A48773;
   white-space: nowrap;
 }
 
@@ -2003,7 +2003,7 @@
 
 .bldr-el-panel {
   background: #fff;
-  border: 1.5px solid #E5E7EB;
+  border: 1.5px solid #EAD9CB;
   border-radius: 16px;
   padding: 20px;
   margin-top: 12px;
@@ -2020,7 +2020,7 @@
 .bldr-el-panel__title {
   font-size: 0.88rem;
   font-weight: 700;
-  color: #374151;
+  color: #4F392C;
   font-family: 'Courier New', monospace;
 }
 
@@ -2029,7 +2029,7 @@
   border: none;
   font-size: 1.2rem;
   cursor: pointer;
-  color: #9CA3AF;
+  color: #A48773;
   width: 28px;
   height: 28px;
   border-radius: 6px;
@@ -2042,8 +2042,8 @@
 }
 
 .bldr-el-panel__close:hover {
-  background: #F3F4F6;
-  color: #374151;
+  background: #F4E7DC;
+  color: #4F392C;
 }
 
 .bldr-el-panel__tabs {
@@ -2052,18 +2052,18 @@
   flex-wrap: wrap;
   margin-bottom: 18px;
   padding-bottom: 14px;
-  border-bottom: 1.5px solid #F3F4F6;
+  border-bottom: 1.5px solid #F4E7DC;
 }
 
 .bldr-el-tab {
   background: none;
-  border: 1.5px solid #E5E7EB;
+  border: 1.5px solid #EAD9CB;
   border-radius: 999px;
   padding: 4px 14px;
   font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
-  color: #6B7280;
+  color: #785B49;
   font-family: inherit;
   transition: all 0.15s;
 }
@@ -2098,21 +2098,21 @@
 .bldr-el-label {
   font-size: 0.78rem;
   font-weight: 700;
-  color: #374151;
+  color: #4F392C;
   letter-spacing: 0.02em;
 }
 
 .bldr-el-textarea {
   width: 100%;
   padding: 10px 12px;
-  border: 1.5px solid #E5E7EB;
+  border: 1.5px solid #EAD9CB;
   border-radius: 10px;
   font-size: 0.9rem;
   font-family: inherit;
   resize: vertical;
   outline: none;
   transition: border-color 0.15s;
-  color: #1F2937;
+  color: #38291F;
 }
 
 .bldr-el-textarea:focus {
@@ -2154,7 +2154,7 @@
 .bldr-el-color-input {
   width: 44px;
   height: 36px;
-  border: 1.5px solid #E5E7EB;
+  border: 1.5px solid #EAD9CB;
   border-radius: 8px;
   padding: 2px;
   cursor: pointer;
@@ -2163,7 +2163,7 @@
 
 .bldr-el-color-val {
   font-size: 0.78rem;
-  color: #6B7280;
+  color: #785B49;
   font-family: 'Courier New', monospace;
 }
 
@@ -2180,8 +2180,8 @@
 }
 
 .bldr-el-anim-btn {
-  background: #F9FAFB;
-  border: 1.5px solid #E5E7EB;
+  background: #FFFCF8;
+  border: 1.5px solid #EAD9CB;
   border-radius: 8px;
   padding: 8px 6px;
   font-size: 0.8rem;
@@ -2189,7 +2189,7 @@
   cursor: pointer;
   font-family: inherit;
   transition: all 0.15s;
-  color: #374151;
+  color: #4F392C;
 }
 
 .bldr-el-anim-btn:hover {
@@ -2330,7 +2330,7 @@
     border-top: 1.5px solid rgba(255, 122, 0, 0.20);
     gap: 0.5rem;
     z-index: 200;
-    box-shadow: 0 -4px 20px rgba(31, 41, 55, 0.10);
+    box-shadow: 0 -4px 20px rgba(56, 41, 31, 0.10);
   }
 
   .bldr-mobile-play-bar__btn {
@@ -2461,8 +2461,8 @@
   border-radius: 22px;
   padding: 10px 8px;
   box-shadow:
-    0 8px 32px rgba(31, 41, 55, 0.13),
-    0 2px 8px rgba(31, 41, 55, 0.07),
+    0 8px 32px rgba(56, 41, 31, 0.13),
+    0 2px 8px rgba(56, 41, 31, 0.07),
     0 0 0 1px rgba(255, 255, 255, 0.85) inset;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -2531,7 +2531,7 @@
 .bldr-creator-tool--gameplay .bldr-creator-tool__dot { background: rgba(245,158,11,0.14);   color: #D97706; }
 .bldr-creator-tool--save     .bldr-creator-tool__dot { background: rgba(5,150,105,0.12);    color: #059669; }
 .bldr-creator-tool--sound    .bldr-creator-tool__dot { background: rgba(96,165,250,0.12);   color: #2563EB; }
-.bldr-creator-tool--mobile   .bldr-creator-tool__dot { background: rgba(31,41,55,0.08);     color: #374151; }
+.bldr-creator-tool--mobile   .bldr-creator-tool__dot { background: rgba(56, 41, 31,0.08);     color: #4F392C; }
 
 .bldr-creator-tool--colors   .bldr-creator-tool__dot::after { content: 'CLR'; }
 .bldr-creator-tool--text     .bldr-creator-tool__dot::after { content: 'TXT'; }
@@ -2546,7 +2546,7 @@
 .bldr-creator-tool__label {
   font-size: 0.66rem;
   font-weight: 800;
-  color: #7B7B8A;
+  color: #8C7564;
   text-align: center;
   line-height: 1.2;
   letter-spacing: 0.01em;
@@ -2568,7 +2568,7 @@
   background: rgba(255, 255, 255, 0.92);
   border: 1.5px solid rgba(255, 122, 0, 0.14);
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(31, 41, 55, 0.07);
+  box-shadow: 0 2px 12px rgba(56, 41, 31, 0.07);
 }
 
 @media (min-width: 1180px) {
@@ -2594,8 +2594,8 @@
   font-size: 0.83rem;
   font-weight: 700;
   color: #555;
-  background: rgba(31, 41, 55, 0.04);
-  border: 1.5px solid rgba(31, 41, 55, 0.11);
+  background: rgba(56, 41, 31, 0.04);
+  border: 1.5px solid rgba(56, 41, 31, 0.11);
   border-radius: 999px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, transform 0.12s, color 0.15s;
@@ -2623,8 +2623,8 @@
   border: 1.5px solid rgba(255, 122, 0, 0.16);
   border-radius: 20px;
   box-shadow:
-    0 4px 20px rgba(31, 41, 55, 0.10),
-    0 1px 4px rgba(31, 41, 55, 0.06);
+    0 4px 20px rgba(56, 41, 31, 0.10),
+    0 1px 4px rgba(56, 41, 31, 0.06);
   overflow: hidden;
   animation: bldr-panel-in 0.22s cubic-bezier(0.34, 1.2, 0.64, 1) both;
 }
@@ -2639,13 +2639,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.9rem 1.2rem 0.7rem;
-  border-bottom: 1px solid rgba(31, 41, 55, 0.06);
+  border-bottom: 1px solid rgba(56, 41, 31, 0.06);
 }
 
 .bldr-studio-panel__title {
   font-size: 0.88rem;
   font-weight: 900;
-  color: #1F2937;
+  color: #38291F;
   letter-spacing: -0.01em;
 }
 
@@ -2653,9 +2653,9 @@
   width: 28px;
   height: 28px;
   border: none;
-  background: rgba(31, 41, 55, 0.06);
+  background: rgba(56, 41, 31, 0.06);
   border-radius: 8px;
-  color: #6B7280;
+  color: #785B49;
   font-size: 1.1rem;
   cursor: pointer;
   display: flex;
@@ -2667,8 +2667,8 @@
 }
 
 .bldr-studio-panel__close:hover {
-  background: rgba(31, 41, 55, 0.12);
-  color: #1F2937;
+  background: rgba(56, 41, 31, 0.12);
+  color: #38291F;
 }
 
 .bldr-studio-panel__body {
@@ -2680,7 +2680,7 @@
 
 .bldr-studio-panel__hint {
   font-size: 0.77rem;
-  color: #9CA3AF;
+  color: #A48773;
   margin: 0 0 0.2rem;
 }
 
@@ -2688,13 +2688,13 @@
   display: block;
   width: 100%;
   padding: 0.65rem 1rem;
-  background: rgba(31, 41, 55, 0.03);
-  border: 1.5px solid rgba(31, 41, 55, 0.09);
+  background: rgba(56, 41, 31, 0.03);
+  border: 1.5px solid rgba(56, 41, 31, 0.09);
   border-radius: 12px;
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.87rem;
   font-weight: 700;
-  color: #374151;
+  color: #4F392C;
   cursor: pointer;
   text-align: left;
   transition: background 0.15s, border-color 0.15s, transform 0.13s, color 0.15s;
@@ -2739,9 +2739,9 @@
 .bldr-studio-panel__secondary-btn {
   width: 100%;
   padding: 0.62rem 1rem;
-  background: rgba(31, 41, 55, 0.04);
+  background: rgba(56, 41, 31, 0.04);
   color: #555;
-  border: 1.5px solid rgba(31, 41, 55, 0.12);
+  border: 1.5px solid rgba(56, 41, 31, 0.12);
   border-radius: 12px;
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.84rem;
@@ -2751,8 +2751,8 @@
 }
 
 .bldr-studio-panel__secondary-btn:hover:not(:disabled) {
-  background: rgba(31, 41, 55, 0.08);
-  border-color: rgba(31, 41, 55, 0.20);
+  background: rgba(56, 41, 31, 0.08);
+  border-color: rgba(56, 41, 31, 0.20);
   transform: translateY(-1px);
 }
 
@@ -2770,8 +2770,8 @@
   align-items: center;
   gap: 0.6rem;
   padding: 0.45rem 0.75rem;
-  background: rgba(31, 41, 55, 0.02);
-  border: 1.5px solid rgba(31, 41, 55, 0.08);
+  background: rgba(56, 41, 31, 0.02);
+  border: 1.5px solid rgba(56, 41, 31, 0.08);
   border-radius: 10px;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
@@ -2785,7 +2785,7 @@
 .bldr-color-picker-label {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #374151;
+  color: #4F392C;
   min-width: 5rem;
 }
 
@@ -2801,12 +2801,12 @@
 }
 
 .bldr-color-picker-input::-webkit-color-swatch-wrapper { padding: 0; }
-.bldr-color-picker-input::-webkit-color-swatch { border-radius: 6px; border: 1.5px solid rgba(31,41,55,0.18); }
+.bldr-color-picker-input::-webkit-color-swatch { border-radius: 6px; border: 1.5px solid rgba(56, 41, 31,0.18); }
 
 .bldr-color-picker-hex {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #9ca3af;
+  color: #A48773;
   font-family: 'Nunito', monospace;
   letter-spacing: 0.03em;
   margin-left: auto;
@@ -2820,8 +2820,8 @@
   gap: 0.7rem;
   width: 100%;
   padding: 0.62rem 0.85rem;
-  background: rgba(31, 41, 55, 0.02);
-  border: 1.5px solid rgba(31, 41, 55, 0.08);
+  background: rgba(56, 41, 31, 0.02);
+  border: 1.5px solid rgba(56, 41, 31, 0.08);
   border-radius: 12px;
   cursor: pointer;
   font-family: 'Nunito', 'Arvo', sans-serif;
@@ -2853,7 +2853,7 @@
 .bldr-palette-name {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #374151;
+  color: #4F392C;
 }
 
 /* ── Game controls sliders ───────────────────────────────────── */
@@ -2873,7 +2873,7 @@
 .bldr-studio-slider__label {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #374151;
+  color: #4F392C;
 }
 
 .bldr-studio-slider__val {
@@ -2901,12 +2901,12 @@
 .bldr-studio-dropdown {
   width: 100%;
   padding: 0.58rem 0.9rem;
-  border: 1.5px solid rgba(31, 41, 55, 0.14);
+  border: 1.5px solid rgba(56, 41, 31, 0.14);
   border-radius: 10px;
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.87rem;
   font-weight: 600;
-  color: #374151;
+  color: #4F392C;
   background: #fff;
   outline: none;
   cursor: pointer;
@@ -2927,7 +2927,7 @@
   gap: 0.75rem;
   padding: 0.6rem 1rem;
   background: rgba(255, 255, 255, 0.88);
-  border: 1.5px solid rgba(31, 41, 55, 0.08);
+  border: 1.5px solid rgba(56, 41, 31, 0.08);
   border-radius: 14px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -2944,7 +2944,7 @@
 .bldr-device-bar__project {
   font-size: 0.9rem;
   font-weight: 800;
-  color: #1F2937;
+  color: #38291F;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2974,18 +2974,18 @@
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.77rem;
   font-weight: 700;
-  color: #6B7280;
+  color: #785B49;
   background: transparent;
-  border: 1.5px solid rgba(31, 41, 55, 0.12);
+  border: 1.5px solid rgba(56, 41, 31, 0.12);
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
 .bldr-device-btn:hover {
-  background: rgba(31, 41, 55, 0.06);
-  border-color: rgba(31, 41, 55, 0.20);
-  color: #374151;
+  background: rgba(56, 41, 31, 0.06);
+  border-color: rgba(56, 41, 31, 0.20);
+  color: #4F392C;
 }
 
 .bldr-device-btn--active {
@@ -3025,18 +3025,18 @@
 
 .bldr-result .bldr-browser {
   box-shadow:
-    0 2px 4px rgba(31,41,55,0.06),
-    0 10px 28px rgba(31,41,55,0.14),
-    0 40px 80px rgba(31,41,55,0.12),
+    0 2px 4px rgba(56, 41, 31,0.06),
+    0 10px 28px rgba(56, 41, 31,0.14),
+    0 40px 80px rgba(56, 41, 31,0.12),
     0 0 0 1px rgba(255,255,255,0.55) inset;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .bldr-result .bldr-browser:hover {
   box-shadow:
-    0 2px 4px rgba(31,41,55,0.07),
-    0 14px 36px rgba(31,41,55,0.16),
-    0 48px 96px rgba(31,41,55,0.13),
+    0 2px 4px rgba(56, 41, 31,0.07),
+    0 14px 36px rgba(56, 41, 31,0.16),
+    0 48px 96px rgba(56, 41, 31,0.13),
     0 0 60px rgba(255,122,0,0.06),
     0 0 0 1px rgba(255,255,255,0.55) inset;
 }
@@ -3049,7 +3049,7 @@
   left: 5%;
   right: 5%;
   height: 18px;
-  background: radial-gradient(ellipse 80% 100% at 50% 0%, rgba(31,41,55,0.14), transparent);
+  background: radial-gradient(ellipse 80% 100% at 50% 0%, rgba(56, 41, 31,0.14), transparent);
   pointer-events: none;
   z-index: -1;
   border-radius: 0 0 50% 50%;
@@ -3084,7 +3084,7 @@
 }
 
 .bldr-project-desc__text--empty {
-  color: #c0c0cc;
+  color: #C9B8AB;
   font-style: italic;
   font-weight: 500;
 }
@@ -3095,7 +3095,7 @@
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.92rem;
   font-weight: 600;
-  color: #374151;
+  color: #4F392C;
   background: rgba(255, 255, 255, 0.97);
   border: 1.5px solid rgba(255, 122, 0, 0.38);
   border-radius: 10px;
@@ -3294,7 +3294,7 @@
 .bldr-hero-picks__label {
   font-size: 1.1rem;
   font-weight: 900;
-  color: #1F2937;
+  color: #38291F;
   letter-spacing: -0.02em;
   text-align: center;
   margin: 0;
@@ -3320,7 +3320,7 @@
   position: relative;
   overflow: hidden;
   transition: transform 0.16s, box-shadow 0.16s, border-color 0.16s;
-  box-shadow: 0 4px 16px rgba(31,41,55,0.10);
+  box-shadow: 0 4px 16px rgba(56, 41, 31,0.10);
 }
 
 .bldr-hero-pick::before {
@@ -3335,7 +3335,7 @@
 
 .bldr-hero-pick:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 32px rgba(31,41,55,0.16);
+  box-shadow: 0 10px 32px rgba(56, 41, 31,0.16);
 }
 
 .bldr-hero-pick:active { transform: translateY(-1px); }
@@ -3367,7 +3367,7 @@
 .bldr-hero-pick__title {
   font-size: 1.05rem;
   font-weight: 900;
-  color: #1F2937;
+  color: #38291F;
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
@@ -3375,7 +3375,7 @@
 .bldr-hero-pick__sub {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #6B7280;
+  color: #785B49;
   line-height: 1.4;
   flex: 1;
 }
@@ -3470,7 +3470,7 @@
 
 .bldr-action-btn--unpublish {
   background: rgba(107,114,128,.08);
-  color: #6B7280;
+  color: #785B49;
   border-color: rgba(107,114,128,.2);
   font-size: .82rem;
 }
@@ -3504,18 +3504,18 @@
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #6B7280;
-  background: rgba(31,41,55,0.04);
-  border: 1.5px solid rgba(31,41,55,0.12);
+  color: #785B49;
+  background: rgba(56, 41, 31,0.04);
+  border: 1.5px solid rgba(56, 41, 31,0.12);
   border-radius: 999px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
 .bldr-sort-btn:hover {
-  background: rgba(31,41,55,0.08);
-  border-color: rgba(31,41,55,0.22);
-  color: #374151;
+  background: rgba(56, 41, 31,0.08);
+  border-color: rgba(56, 41, 31,0.22);
+  color: #4F392C;
 }
 
 .bldr-sort-btn--active {
@@ -3536,7 +3536,7 @@
   border: none;
   background: rgba(255,255,255,0.85);
   backdrop-filter: blur(6px);
-  color: #9CA3AF;
+  color: #A48773;
   font-size: 1rem;
   cursor: pointer;
   display: flex;
@@ -3562,7 +3562,7 @@
 /* Project card favorite highlight */
 .bldr-project-card--fav {
   border-color: rgba(245,158,11,0.30) !important;
-  box-shadow: 0 4px 16px rgba(245,158,11,0.12), 0 2px 6px rgba(31,41,55,0.06) !important;
+  box-shadow: 0 4px 16px rgba(245,158,11,0.12), 0 2px 6px rgba(56, 41, 31,0.06) !important;
 }
 
 /* Continue button (renamed from "Open in Studio") */
@@ -3674,7 +3674,7 @@
   border-radius: 16px 16px 4px 16px;
   box-shadow:
     0 8px 32px rgba(168, 85, 247, 0.16),
-    0 2px 8px rgba(31, 41, 55, 0.10);
+    0 2px 8px rgba(56, 41, 31, 0.10);
   max-width: 230px;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -3684,14 +3684,14 @@
 .bldr-companion__bubble:hover {
   box-shadow:
     0 12px 40px rgba(168, 85, 247, 0.22),
-    0 3px 10px rgba(31, 41, 55, 0.12);
+    0 3px 10px rgba(56, 41, 31, 0.12);
 }
 
 .bldr-companion__text {
   margin: 0;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #374151;
+  color: #4F392C;
   line-height: 1.5;
   flex: 1;
 }
@@ -3701,9 +3701,9 @@
   width: 20px;
   height: 20px;
   border: none;
-  background: rgba(31, 41, 55, 0.07);
+  background: rgba(56, 41, 31, 0.07);
   border-radius: 5px;
-  color: #9CA3AF;
+  color: #A48773;
   font-size: 0.9rem;
   cursor: pointer;
   display: flex;
@@ -3716,8 +3716,8 @@
 }
 
 .bldr-companion__close:hover {
-  background: rgba(31, 41, 55, 0.14);
-  color: #374151;
+  background: rgba(56, 41, 31, 0.14);
+  color: #4F392C;
 }
 
 /* On mobile, push above sticky bar */
