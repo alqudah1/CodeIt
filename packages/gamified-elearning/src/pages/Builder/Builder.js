@@ -512,7 +512,7 @@ const COMPANION_TIPS = {
   default: [
     'Looking good.',
     'Try the Studio tools for instant changes.',
-    'Use Edit with AI for bigger changes.',
+    'Describe a change when you want a bigger update.',
     'Save this before editing more.',
   ],
 };
@@ -616,8 +616,8 @@ function rgbToHex(rgb) {
 
 export default function Builder() {
   useSEO({
-    title:       'AI Website Builder for Kids — Build Websites with AI | CodeIt',
-    description: 'Describe any idea in plain words and watch CodeIt build a real working website instantly. A beginner-friendly AI website builder for kids, students, and curious learners. No coding experience needed.',
+    title:       'Coding Project Builder for Kids | Websites, Games & Quizzes | CodeIt',
+    description: 'Turn an idea into a working website, game, or quiz, then edit the design and real code in your browser. Beginner-friendly and free to try.',
     canonical:   '/builder',
   });
 
@@ -666,7 +666,7 @@ export default function Builder() {
   const [saveStatus, setSaveStatus]         = useState(null);
   const [saveError, setSaveError]           = useState('');
   const [unsavedWarning, setUnsavedWarning] = useState(false);
-  const [resumeSave, setResumeSave]         = useState(false);
+  const [resumeAction, setResumeAction]     = useState(null);
 
   // ── Saved projects ─────────────────────────────────────────────────────────
   const [savedProjects, setSavedProjects]     = useState([]);
@@ -684,7 +684,7 @@ export default function Builder() {
   const promptRef  = useRef(null);
   const editRef    = useRef(null);
   const iframeRef  = useRef(null);
-  const resumeSaveStartedRef = useRef(false);
+  const resumeActionStartedRef = useRef(false);
   const saveInFlightRef = useRef(false);
 
   // ── Live element editor ────────────────────────────────────────────────────
@@ -969,7 +969,6 @@ export default function Builder() {
     if (!raw) return;
     try {
       const draft = JSON.parse(raw);
-      sessionStorage.removeItem('codeit_builder_draft');
       if (draft.code) {
         setCode(draft.code);
         setPrompt(draft.prompt || '');
@@ -981,8 +980,16 @@ export default function Builder() {
         setPromptHistory(draft.promptHistory || []);
         setBuildKey(k => k + 1);
         const draftIsFresh = Number.isFinite(draft.savedAt) && Date.now() - draft.savedAt < 30 * 60 * 1000;
-        setResumeSave(location.state?.resumeBuilderSave === true && draftIsFresh);
-        if (location.state?.resumeBuilderSave) {
+        const requestedAction = ['save', 'publish'].includes(location.state?.resumeBuilderAction)
+          ? location.state.resumeBuilderAction
+          : location.state?.resumeBuilderSave === true
+            ? 'save'
+            : null;
+        setResumeAction(draftIsFresh ? requestedAction : null);
+        if (!requestedAction || !draftIsFresh) {
+          sessionStorage.removeItem('codeit_builder_draft');
+        }
+        if (requestedAction) {
           navigate('/builder', { replace: true, state: null });
         }
       }
@@ -1198,10 +1205,10 @@ export default function Builder() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
       const html = data.html || data.code;
-      if (!isValidHtml(html)) throw new Error('The AI returned an incomplete page. Please try again.');
+      if (!isValidHtml(html)) throw new Error('The builder returned an incomplete page. Please try again.');
       setCode(html);
       setBuiltPrompt(text);
-      setBuiltSummary(data.isFallback ? 'Starter ready — AI polish can be added next' : (data.summary || ''));
+      setBuiltSummary(data.isFallback ? 'Starter ready — add your own details next' : (data.summary || ''));
       setAiTitle(data.title || '');
       setProjectType(data.type || 'website');
       setConceptsUsed(Array.isArray(data.conceptsUsed) ? data.conceptsUsed : []);
@@ -1263,7 +1270,7 @@ export default function Builder() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Edit failed');
       const html = data.html || data.code;
-      if (!isValidHtml(html)) throw new Error('AI returned invalid code — your project was not changed.');
+      if (!isValidHtml(html)) throw new Error('The builder returned invalid code — your project was not changed.');
       // Only touch state after confirmed success
       setPreviousCode(snapshot);
       setCode(html);
@@ -1357,17 +1364,21 @@ export default function Builder() {
     }
   };
 
+  const continueAfterAuth = (action) => {
+    try {
+      sessionStorage.setItem('codeit_builder_draft', JSON.stringify({
+        code, prompt, builtPrompt, projectType, aiTitle,
+        builtSummary, conceptsUsed, promptHistory, savedAt: Date.now(),
+      }));
+    } catch (_) {}
+    navigate('/login', { state: { from: '/builder', resumeBuilderAction: action } });
+  };
+
   // ── Save project ───────────────────────────────────────────────────────────
   const handleSaveProject = async () => {
     if (!code) return;
     if (!user || !token) {
-      try {
-        sessionStorage.setItem('codeit_builder_draft', JSON.stringify({
-          code, prompt, builtPrompt, projectType, aiTitle,
-          builtSummary, conceptsUsed, promptHistory, savedAt: Date.now(),
-        }));
-      } catch (_) {}
-      navigate('/login', { state: { from: '/builder', resumeBuilderSave: true } });
+      continueAfterAuth('save');
       return;
     }
     if (saveInFlightRef.current) return;
@@ -1398,6 +1409,7 @@ export default function Builder() {
       }).catch(() => {});
       setIsSaved(true);
       setSaveStatus('saved');
+      sessionStorage.removeItem('codeit_builder_draft');
       awardXP(15); popXp(15, 'Saved!');
       setTimeout(() => setSaveStatus(null), 2500);
     } catch (err) {
@@ -1408,15 +1420,6 @@ export default function Builder() {
       saveInFlightRef.current = false;
     }
   };
-
-  // Complete the action that brought a guest to authentication. The restored
-  // draft is saved automatically once AuthContext and the project state are ready.
-  useEffect(() => {
-    if (!resumeSave || !user || !token || !code || resumeSaveStartedRef.current) return;
-    resumeSaveStartedRef.current = true;
-    setResumeSave(false);
-    handleSaveProject();
-  }, [resumeSave, user, token, code]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Load saved project ─────────────────────────────────────────────────────
   const handleLoadProject = async (project) => {
@@ -1525,7 +1528,7 @@ export default function Builder() {
   // ── Share project ──────────────────────────────────────────────────────────
   const handleShare = async () => {
     const title = projectName || 'My Project';
-    const text  = `"${title}" — built with CodeIt AI Studio! codeitlearn.com/builder`;
+    const text  = `"${title}" — made and edited with CodeIt! codeitlearn.com/builder`;
     if (navigator.share) {
       try { await navigator.share({ title, text }); setShareStatus('shared'); }
       catch (_) {}
@@ -1539,7 +1542,10 @@ export default function Builder() {
   // ── Publish project ────────────────────────────────────────────────────────
   const handlePublish = async () => {
     if (!code) return;
-    if (!user || !token) { navigate('/login'); return; }
+    if (!user || !token) {
+      continueAfterAuth('publish');
+      return;
+    }
 
     // Save first if not saved
     let projectId = savedProjectId;
@@ -1574,6 +1580,7 @@ export default function Builder() {
       if (!res.ok) throw new Error(data.error || 'Publish failed');
       setIsPublished(true);
       setPublicId(data.public_id);
+      sessionStorage.removeItem('codeit_builder_draft');
       const url = `https://codeitlearn.com/project/${data.public_id}`;
       try { await navigator.clipboard.writeText(url); } catch (_) {}
       setPublishStatus('copied');
@@ -1583,6 +1590,17 @@ export default function Builder() {
       setTimeout(() => setPublishStatus(null), 3000);
     }
   };
+
+  // Complete the exact action that brought a guest to authentication after
+  // their fresh draft has been restored into the builder.
+  useEffect(() => {
+    if (!resumeAction || !user || !token || !code || resumeActionStartedRef.current) return;
+    resumeActionStartedRef.current = true;
+    const action = resumeAction;
+    setResumeAction(null);
+    if (action === 'publish') handlePublish();
+    else handleSaveProject();
+  }, [resumeAction, user, token, code]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCopyPublicLink = async () => {
     if (!publicId) return;
@@ -1810,7 +1828,7 @@ export default function Builder() {
                   </div>
                   <div className="bldr-browser__bar">
                     <span className="bldr-browser__bar-spinner" />
-                    AI is building your version...
+                    CodeIt is building your version...
                   </div>
                 </div>
                 <div className="bldr-loading-preview__iframe-wrap">
@@ -1822,7 +1840,7 @@ export default function Builder() {
                   />
                   <div className="bldr-loading-preview__status">
                     <span className="bldr-spinner bldr-spinner--sm" />
-                    AI is customizing this for your idea...
+                    Shaping this starter around your idea...
                   </div>
                 </div>
               </div>
@@ -1896,12 +1914,42 @@ export default function Builder() {
                 <h2 className="bldr-success-banner__name">{projectName}</h2>
                 <p className="bldr-success-banner__credit">
                   {user
-                    ? `by ${user.username || user.name || 'you'} — Built with CodeIt AI Studio`
-                    : 'Built with CodeIt AI Studio'}
+                    ? `by ${user.username || user.name || 'you'} — Made with CodeIt`
+                    : 'Made with CodeIt'}
                 </p>
                 {builtSummary && <p className="bldr-success-banner__summary">{builtSummary}</p>}
               </div>
             </div>
+
+            {!isSaved && (
+              <section className="bldr-activation-card" aria-labelledby="bldr-save-next-title">
+                <div className="bldr-activation-card__copy">
+                  <span className="bldr-activation-card__kicker">Your next step</span>
+                  <h3 id="bldr-save-next-title">Save this project before you leave.</h3>
+                  <p>
+                    {user
+                      ? 'Save this version so it appears in My Creations and is ready when you come back.'
+                      : 'We’ll keep this version in this browser while you sign in or choose an eligible account option, then bring you back here.'}
+                  </p>
+                </div>
+                <div className="bldr-activation-card__actions">
+                  <button
+                    className="bldr-activation-card__primary"
+                    onClick={handleSaveProject}
+                    disabled={saveStatus === 'saving' || editing}
+                  >
+                    {saveStatus === 'saving' ? 'Saving…' : user ? 'Save project' : 'Save and continue'}
+                  </button>
+                  <button
+                    className="bldr-activation-card__secondary"
+                    onClick={() => { setShowEditPanel(true); setTimeout(() => editRef.current?.focus(), 0); }}
+                    disabled={editing}
+                  >
+                    Make another change
+                  </button>
+                </div>
+              </section>
+            )}
 
             {/* Project description — inline editable */}
             <div className="bldr-project-desc">
@@ -2182,7 +2230,7 @@ export default function Builder() {
                         {isSaved ? 'Saved to My Creations' : 'Save to My Creations'}
                       </button>
                     ) : (
-                      <button className="bldr-studio-panel__apply-btn" onClick={() => navigate('/login')}>
+                      <button className="bldr-studio-panel__apply-btn" onClick={handleSaveProject}>
                         Log in to save
                       </button>
                     )}
@@ -2288,7 +2336,7 @@ export default function Builder() {
                 onClick={() => { setShowEditPanel(p => !p); setEditError(''); if (editModeOn) toggleEditMode(); }}
                 disabled={editing}
               >
-                {showEditPanel ? 'Close editor' : 'Edit with AI'}
+                {showEditPanel ? 'Close changes' : 'Describe a change'}
               </button>
 
               <button
@@ -2324,7 +2372,7 @@ export default function Builder() {
                   {!saveStatus && (isSaved ? 'Saved' : 'Save project')}
                 </button>
               ) : (
-                <button className="bldr-action-btn bldr-action-btn--login-hint" onClick={() => navigate('/login')}>
+                <button className="bldr-action-btn bldr-action-btn--login-hint" onClick={handleSaveProject}>
                   Log in to save
                 </button>
               )}
@@ -2342,7 +2390,7 @@ export default function Builder() {
             {showEditPanel && (
               <div className="bldr-edit-panel">
                 <div className="bldr-edit-panel__header">
-                  <span className="bldr-edit-panel__title">Edit with AI</span>
+                  <span className="bldr-edit-panel__title">Describe a change</span>
                   {promptHistory.length > 0 && (
                     <span className="bldr-edit-panel__badge">{promptHistory.length} prompt{promptHistory.length > 1 ? 's' : ''} in memory</span>
                   )}
@@ -2520,7 +2568,7 @@ export default function Builder() {
                   <button
                     className={`bldr-el-tab${elPanelTab === 'ai' ? ' bldr-el-tab--active' : ''}`}
                     onClick={() => setElPanelTab('ai')}
-                  >AI Refine</button>
+                  >Prompt</button>
                 </div>
 
                 <div className="bldr-el-panel__body">
@@ -2640,7 +2688,7 @@ export default function Builder() {
                       >
                         {patchLoading
                           ? <><span className="bldr-spinner bldr-spinner--sm" />Refining...</>
-                          : 'AI Refine element'}
+                          : 'Apply described change'}
                       </button>
                     </div>
                   )}

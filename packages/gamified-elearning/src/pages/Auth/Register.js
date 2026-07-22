@@ -32,8 +32,12 @@ export default function Register() {
   const returnTo = typeof requestedPath === 'string' && requestedPath.startsWith('/') && !requestedPath.startsWith('//')
     ? requestedPath
     : '/';
-  const resumeBuilderSave = location.state?.resumeBuilderSave === true;
-  const returnState = resumeBuilderSave ? { resumeBuilderSave: true } : null;
+  const resumeBuilderAction = ['save', 'publish'].includes(location.state?.resumeBuilderAction)
+    ? location.state.resumeBuilderAction
+    : location.state?.resumeBuilderSave === true
+      ? 'save'
+      : null;
+  const returnState = resumeBuilderAction ? { resumeBuilderAction } : null;
 
   // Separate form instances per path to avoid field-name collisions
   const {
@@ -162,7 +166,7 @@ export default function Register() {
 
           <div className="auth-footer">
             Already have an account?{' '}
-            <Link to="/login" state={{ from: returnTo, resumeBuilderSave }}>Sign in</Link>
+            <Link to="/login" state={{ from: returnTo, resumeBuilderAction }}>Sign in</Link>
           </div>
         </div>
       </div>
@@ -258,7 +262,7 @@ export default function Register() {
           </form>
 
           <div className="auth-footer">
-            Already have an account? <Link to="/login" state={{ from: returnTo, resumeBuilderSave }}>Sign in</Link>
+            Already have an account? <Link to="/login" state={{ from: returnTo, resumeBuilderAction }}>Sign in</Link>
           </div>
         </div>
       </div>
@@ -377,7 +381,7 @@ export default function Register() {
           </form>
 
           <div className="auth-footer">
-            Already have an account? <Link to="/login" state={{ from: returnTo, resumeBuilderSave }}>Sign in</Link>
+            Already have an account? <Link to="/login" state={{ from: returnTo, resumeBuilderAction }}>Sign in</Link>
           </div>
         </div>
       </div>

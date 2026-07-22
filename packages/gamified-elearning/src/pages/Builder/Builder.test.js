@@ -1,12 +1,14 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import Builder from './Builder';
+
+const mockNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => {
   const React = require('react');
   return {
     Link: ({ children, to, ...props }) => React.createElement('a', { href: to, ...props }, children),
     useLocation: () => ({ search: '', state: null }),
-    useNavigate: () => jest.fn(),
+    useNavigate: () => mockNavigate,
   };
 }, { virtual: true });
 jest.mock('../Header/Header', () => () => null);
@@ -24,6 +26,23 @@ describe('project studio opening', () => {
   beforeEach(() => {
     localStorage.clear();
     sessionStorage.clear();
+    mockNavigate.mockClear();
+    global.fetch = jest.fn((url) => Promise.resolve({
+      ok: true,
+      json: async () => String(url).includes('/missions')
+        ? { missions: [] }
+        : {
+            html: '<!doctype html><html><head><style>body{font-family:system-ui;background:#fffaf4;color:#432c23;padding:2rem}button{background:#e8692d;color:white;padding:1rem;border:0;border-radius:10px}</style></head><body><h1>My game</h1><p>A working test project with enough real markup to pass the builder validation.</p><button>Play</button><script>window.score = 0;</script></body></html>',
+            title: 'My game',
+            type: 'game',
+            summary: 'A working first version.',
+            conceptsUsed: ['variables'],
+          },
+    }));
+  });
+
+  afterEach(() => {
+    delete global.fetch;
   });
 
   test('renders a creator-led first screen and honest trust cues', () => {
@@ -34,5 +53,34 @@ describe('project studio opening', () => {
     expect(screen.getByRole('button', { name: 'Build my project' })).toBeDisabled();
     expect(screen.getByRole('region', { name: 'About the project studio' })).toHaveTextContent('Private until published');
     expect(screen.queryByText(/AI Builder/i)).not.toBeInTheDocument();
+  });
+
+  test('preserves a guest project before opening the save account gate', async () => {
+    render(<Builder />);
+
+    fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
+    await screen.findByRole('heading', { name: 'Save this project before you leave.' });
+    fireEvent.click(screen.getByRole('button', { name: 'Save and continue' }));
+
+    const draft = JSON.parse(sessionStorage.getItem('codeit_builder_draft'));
+    expect(draft.code).toContain('My game');
+    expect(draft.projectType).toBe('game');
+    expect(mockNavigate).toHaveBeenCalledWith('/login', {
+      state: { from: '/builder', resumeBuilderAction: 'save' },
+    });
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+  });
+
+  test('preserves a guest project and remembers a request to publish', async () => {
+    render(<Builder />);
+
+    fireEvent.click(screen.getByRole('button', { name: /Build a Quiz/i }));
+    await screen.findByRole('heading', { name: 'Save this project before you leave.' });
+    fireEvent.click(screen.getByRole('button', { name: 'Share' }));
+
+    expect(JSON.parse(sessionStorage.getItem('codeit_builder_draft')).code).toContain('My game');
+    expect(mockNavigate).toHaveBeenCalledWith('/login', {
+      state: { from: '/builder', resumeBuilderAction: 'publish' },
+    });
   });
 });

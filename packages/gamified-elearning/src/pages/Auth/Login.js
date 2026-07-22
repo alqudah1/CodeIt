@@ -19,8 +19,12 @@ export default function Login() {
   const returnTo = typeof requestedPath === 'string' && requestedPath.startsWith('/') && !requestedPath.startsWith('//')
     ? requestedPath
     : '/';
-  const resumeBuilderSave = location.state?.resumeBuilderSave === true;
-  const returnState = resumeBuilderSave ? { resumeBuilderSave: true } : null;
+  const resumeBuilderAction = ['save', 'publish'].includes(location.state?.resumeBuilderAction)
+    ? location.state.resumeBuilderAction
+    : location.state?.resumeBuilderSave === true
+      ? 'save'
+      : null;
+  const returnState = resumeBuilderAction ? { resumeBuilderAction } : null;
 
   useSEO({
     title:       'Sign In | CodeIt',
@@ -145,7 +149,7 @@ export default function Login() {
 
         <div className="auth-footer">
           New to CodeIt?{' '}
-          <Link to="/register" state={{ from: returnTo, resumeBuilderSave }}>Create a free account</Link>
+          <Link to="/register" state={{ from: returnTo, resumeBuilderAction }}>Create a free account</Link>
         </div>
 
       </div>

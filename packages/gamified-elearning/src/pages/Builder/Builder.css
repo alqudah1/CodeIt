@@ -3834,3 +3834,100 @@
   0%, 100% { opacity: 0.50; }
   50%       { opacity: 0.85; }
 }
+
+/* ════════════════════════════════════════════════════════════
+   POST-BUILD ACTIVATION — keep the project before leaving
+════════════════════════════════════════════════════════════ */
+
+.bldr-activation-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1.25rem 1.35rem;
+  border: 1.5px solid rgba(232, 105, 45, 0.28);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 96% 0%, rgba(246, 196, 83, 0.28), transparent 34%),
+    #fffaf4;
+  box-shadow: 0 8px 26px rgba(93, 55, 32, 0.08);
+}
+
+.bldr-activation-card__copy {
+  min-width: 0;
+}
+
+.bldr-activation-card__kicker {
+  display: block;
+  margin-bottom: 0.28rem;
+  color: #b94718;
+  font-size: 0.69rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.bldr-activation-card h3 {
+  margin: 0;
+  color: #38291f;
+  font-family: 'Arvo', serif;
+  font-size: 1.08rem;
+  line-height: 1.35;
+}
+
+.bldr-activation-card p {
+  max-width: 650px;
+  margin: 0.35rem 0 0;
+  color: #785b49;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.bldr-activation-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
+.bldr-activation-card__primary,
+.bldr-activation-card__secondary {
+  min-height: 42px;
+  padding: 0.62rem 1rem;
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.bldr-activation-card__primary {
+  background: #e8692d;
+  color: #fff;
+  box-shadow: 0 4px 0 rgba(123, 55, 25, 0.14);
+}
+
+.bldr-activation-card__primary:hover:not(:disabled) { background: #b94718; }
+
+.bldr-activation-card__secondary {
+  border-color: rgba(67, 44, 35, 0.24);
+  background: rgba(255, 255, 255, 0.72);
+  color: #432c23;
+}
+
+.bldr-activation-card__secondary:hover:not(:disabled) { background: #fff; }
+
+.bldr-activation-card button:focus-visible {
+  outline: 3px solid #f6c453;
+  outline-offset: 2px;
+}
+
+.bldr-activation-card button:disabled { opacity: 0.55; cursor: wait; }
+
+@media (max-width: 720px) {
+  .bldr-activation-card { grid-template-columns: 1fr; gap: 1rem; }
+  .bldr-activation-card__actions { justify-content: stretch; }
+  .bldr-activation-card__primary,
+  .bldr-activation-card__secondary { flex: 1 1 180px; }
+}
