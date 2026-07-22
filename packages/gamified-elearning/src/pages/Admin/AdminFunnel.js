@@ -7,6 +7,7 @@ import './AdminFunnel.css';
 
 const STAGES = [
   ['landing_cta_click', 'Landing clicks'],
+  ['parent_cta_click', 'Parent actions'],
   ['builder_start', 'Builds started'],
   ['generation_complete', 'Projects generated'],
   ['signup_complete', 'Accounts created'],
@@ -15,6 +16,12 @@ const STAGES = [
   ['return_use', 'Daily returns'],
   ['pricing_view', 'Pricing views'],
   ['pricing_interest', 'Plan interest'],
+];
+
+const PARENT_ACTIONS = [
+  ['try-project', 'Tried a project'],
+  ['view-pricing', 'Viewed family pricing'],
+  ['pilot-email', 'Opened pilot email'],
 ];
 
 const fmt = (value) => (Number(value) || 0).toLocaleString();
@@ -67,6 +74,10 @@ export default function AdminFunnel() {
 
   const uniqueUsers = useMemo(() => Object.fromEntries(
     (data?.events || []).map((row) => [row.event_name, Number(row.unique_users) || 0])
+  ), [data]);
+
+  const parentActions = useMemo(() => Object.fromEntries(
+    (data?.breakdown || []).filter((row) => row.event_name === 'parent_cta_click').map((row) => [row.meta, Number(row.event_count) || 0])
   ), [data]);
 
   const signals = data ? [
@@ -124,6 +135,17 @@ export default function AdminFunnel() {
               </article>
             ))}
           </div>
+
+          <div className="adm-section-head">Parent acquisition actions</div>
+          <div className="funnel-parent-grid">
+            {PARENT_ACTIONS.map(([key, label]) => (
+              <article key={key}>
+                <span>{label}</span>
+                <strong>{fmt(parentActions[key])}</strong>
+              </article>
+            ))}
+          </div>
+          <p className="funnel-parent-note">These are button clicks, not people. “Opened pilot email” means the visitor opened their email app; it does not confirm that they sent a message.</p>
 
           <div className="adm-section-head">Account safety audit</div>
           <div className="funnel-safety-grid">
