@@ -1,295 +1,293 @@
 import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
+import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
 import { useFAQSchema } from '../../hooks/useFAQSchema';
-import './SEOPage.css';
+import './CodingForKids.css';
+
+const PILOT_EMAIL = 'mailto:hello@codeitlearn.com?subject=Founding%20Family%20pilot&body=I%27m%20a%20parent%20or%20educator%20interested%20in%20the%20CodeIt%20pilot.%0A%0ALearner%20age%20range%3A%0AWhat%20they%20want%20to%20build%3A';
 
 const FAQS = [
   {
-    q: 'What is the best way for a kid to start learning coding?',
-    a: 'The best starting point is a beginner-friendly language with simple syntax — Python is the top recommendation for kids and first-time coders. From there, following a structured path (like CodeIt\'s 10-lesson journey) works far better than watching random tutorials, because each lesson builds directly on the last. Consistent short sessions of 20–30 minutes beat occasional long ones.',
+    q: 'What age is CodeIt for?',
+    a: 'New student accounts are for learners ages 13–18. A younger learner can explore guest activities with an adult beside them, without creating a student account.',
   },
   {
-    q: 'How do I know if my child is ready to start coding?',
-    a: 'If a child can read simple instructions and type basic text, they are ready to start coding. CodeIt is designed for ages 8 and up, but many younger children can follow along with a parent\'s help. There is no maths requirement beyond basic arithmetic, and no prior technology experience is needed — Lesson 1 starts from the very beginning.',
+    q: 'Do I need to know how to code to help?',
+    a: 'No. The activities use plain-language instructions and visible results. A parent or educator can help by asking what changed, what the learner wants to try next, and how they solved a problem.',
   },
   {
-    q: 'Can kids learn coding on their own without a parent\'s help?',
-    a: 'Yes. CodeIt is designed for independent learning — lessons are self-paced, instructions are written in simple language, and the in-browser code editor gives instant feedback without needing a teacher. Parents don\'t need to know anything about coding to support their child on CodeIt. Simply creating a free account and opening Lesson 1 is all it takes to get started.',
+    q: 'What can a learner make?',
+    a: 'Learners can create and edit websites, small games, and quizzes in the project studio. They can also follow step-by-step Python lessons or experiment in the browser playground.',
   },
   {
-    q: 'What do kids actually build when they learn Python on CodeIt?',
-    a: 'Kids start with simple print statements in Lesson 1 and progressively learn variables, strings, if statements, loops, lists, and functions. By Lesson 10, they are combining all of these concepts in one programme. Along the way, they solve real coding puzzles — like using variables to track scores in a game, or using loops to control a character\'s movements. It feels more like an adventure than a course.',
+    q: 'Is CodeIt free?',
+    a: 'CodeIt has useful free activities. A Founding Family plan is being considered at US$12 per month, but no payment starts from an interest button and no paid family subscription is live today.',
   },
   {
-    q: 'How long does it take a kid to complete the beginner Python journey?',
-    a: 'With two or three lessons per week, most kids complete CodeIt\'s 10-lesson beginner Python journey in four to six weeks. Each lesson takes around 20 to 30 minutes. Progress is saved automatically, so kids can return at any time and continue exactly where they left off. There is no deadline or pressure to move faster than feels comfortable.',
+    q: 'Are projects public?',
+    a: 'Saved projects are private by default. A learner must choose Publish before a project can appear publicly, and published work should never include private or identifying information.',
+  },
+];
+
+const PATHS = [
+  {
+    number: '01',
+    label: 'Project studio',
+    title: 'Start with something worth making',
+    body: 'Describe a website, game, or quiz. Then change the design, edit the code, and save a version that feels personal.',
+    link: '/builder',
+    linkLabel: 'Open the studio',
+  },
+  {
+    number: '02',
+    label: 'Python journey',
+    title: 'Build the foundations step by step',
+    body: 'Short lessons introduce variables, decisions, loops, lists, and functions with a place to try each idea.',
+    link: '/journey',
+    linkLabel: 'See the journey',
+  },
+  {
+    number: '03',
+    label: 'Browser playground',
+    title: 'Test a small idea immediately',
+    body: 'Change an example, run it, and connect each line of Python to the result—without installing anything.',
+    link: '/playground',
+    linkLabel: 'Try the playground',
   },
 ];
 
 export default function CodingForKids() {
   useSEO({
-    title:       'Coding for Kids | Learn Python for Free — CodeIt',
-    description: 'Free coding for kids — learn Python through interactive lessons, quizzes, and coding puzzles. Built for ages 8–14 with no experience needed.',
-    canonical:   '/coding-for-kids',
+    title: 'Coding for Kids: Projects, Python & Parent Guide | CodeIt',
+    description: 'A project-first coding platform for ages 13–18, with supervised guest activities for younger learners. Build websites, games and quizzes, then learn the code.',
+    canonical: '/coding-for-kids',
   });
   useFAQSchema(FAQS);
 
   return (
     <>
       <Header />
-      <div className="seo-page">
-        <div className="seo-container">
-
-          <Link to="/" className="seo-back">&larr; Back to Home</Link>
-
-          {/* ── Hero ──────────────────────────────────────── */}
-          <header className="seo-hero">
-            <span className="seo-eyebrow">Free Coding for Kids</span>
-            <h1 className="seo-h1">
-              Coding for Kids — Learn Python Step by Step
-            </h1>
-            <p className="seo-hero-desc">
-              CodeIt is a free, gamified platform where kids learn real Python coding through
-              interactive lessons, quizzes, and puzzles. No experience needed, nothing to install
-              — just open a lesson and start coding.
-            </p>
-            <Link to="/journey" className="seo-cta-btn">
-              Start Coding for Free &rarr;
-            </Link>
-          </header>
-
-          {/* ── Answer Box ────────────────────────────────── */}
-          <section className="seo-answer-box" aria-label="Quick answer">
-            <span className="seo-answer-box__label">Quick Answer</span>
-            <p className="seo-answer-box__answer">
-              Coding for kids on CodeIt means learning real Python through a structured journey of
-              10 free lessons, 10 quizzes, and 5+ coding puzzles — all running in the browser with
-              nothing to install and no experience required.
-            </p>
-            <p className="seo-answer-box__detail">
-              The platform is built around one core idea: kids learn best when they are actively
-              writing code, not watching videos. Each lesson introduces one concept, the quiz
-              checks understanding, and the puzzle applies the skill in a fun, story-based game.
-              A child who completes the full journey can write functions, work with lists, and
-              understand how real Python programs are structured — skills that transfer directly
-              to school, university, and future careers in technology.
-            </p>
-          </section>
-
-          {/* ── Body ──────────────────────────────────────── */}
-          <div className="seo-body">
-
-            <section className="seo-section">
-              <h2 className="seo-h2">Why Learning to Code Changes Everything for Kids</h2>
-              <p className="seo-p">
-                Coding is one of the most valuable skills a child can develop. It trains logical
-                thinking, problem-solving, and creativity — the same skills that help in maths,
-                science, writing, and everyday decision-making.
+      <main className="parents-page">
+        <section className="parents-hero">
+          <div className="parents-wrap parents-hero__grid">
+            <div className="parents-hero__copy">
+              <span className="parents-eyebrow">For parents &amp; educators</span>
+              <h1>A first coding project they’ll want to keep improving.</h1>
+              <p className="parents-hero__lead">
+                CodeIt helps a beginner turn an idea into a website, game, or quiz—then change the
+                design, inspect the code, and understand what makes it work.
               </p>
-              <p className="seo-p">
-                But beyond the practical benefits, coding is fun. When a kid writes a programme
-                that does something real — moves a character, answers a question, solves a puzzle
-                — there's a moment of genuine excitement. That feeling is what keeps them coming back.
-              </p>
-              <p className="seo-p">
-                The earlier kids start, the more natural it becomes. Children who learn to code
-                alongside reading and maths develop a fluency with technology that most adults
-                never gain. It's not about making every child a software engineer — it's about
-                giving them a tool that opens doors.
-              </p>
-            </section>
-
-            <section className="seo-section">
-              <h2 className="seo-h2">Why Python Is the Right Starting Point</h2>
-              <p className="seo-p">
-                There are dozens of programming languages, but Python is consistently the best
-                choice for kids and first-time coders. Here's why:
-              </p>
-              <ul className="seo-list">
-                <li><strong>Simple syntax:</strong> Python reads like English. There's no
-                  unnecessary punctuation cluttering up the code.</li>
-                <li><strong>Instant results:</strong> Kids can write one line and see something
-                  happen immediately — no waiting, no compiling.</li>
-                <li><strong>Real-world use:</strong> Python powers YouTube, Instagram, NASA
-                  data tools, and most machine learning research. It's not a toy language.</li>
-                <li><strong>Huge community:</strong> More tutorials, more help online, and more
-                  resources for beginners than any other language.</li>
-                <li><strong>It scales:</strong> A kid who starts with print("Hello") can eventually
-                  build web apps, games, or data science projects — all in the same language.</li>
-              </ul>
-              <p className="seo-p">
-                CodeIt is built entirely around Python, so every lesson, quiz, and coding puzzle
-                reinforces the same language and builds on what came before. Kids can also
-                experiment freely in the <Link to="/playground">Python playground</Link> — a
-                browser-based editor with starter presets, available without an account.
-              </p>
-            </section>
-
-            <section className="seo-section">
-              <h2 className="seo-h2">How CodeIt Makes Coding for Kids Fun</h2>
-              <p className="seo-p">
-                Most coding platforms for kids fall into one of two traps: they're either so
-                simplified that they don't teach real skills, or they're so academic that kids
-                lose interest after the first lesson. CodeIt is built to avoid both.
-              </p>
-              <p className="seo-p">
-                The platform uses a gamified learning system:
-              </p>
-              <ul className="seo-list">
-                <li><strong>XP and progression:</strong> Every completed lesson, quiz, and puzzle
-                  earns experience points. Progress is visible and rewarding.</li>
-                <li><strong>Journey Map:</strong> The learning path is a literal adventure map —
-                  each node is a lesson, quiz, or puzzle to unlock.</li>
-                <li><strong>Coding puzzles:</strong> Each lesson is followed by a story-driven
-                  coding challenge that uses the new concept in a fun context.</li>
-                <li><strong>Leaderboard:</strong> Friendly competition motivates consistent
-                  practice and gives learners a visible goal to aim for.</li>
-                <li><strong>Avatar Lab:</strong> Kids build and customise a personal coding
-                  avatar that levels up as they learn.</li>
-              </ul>
-              <p className="seo-p">
-                This combination keeps coding from feeling like homework. Kids come back because
-                they want to beat the next puzzle, not because someone told them to.
-              </p>
-            </section>
-
-            <section className="seo-section">
-              <h2 className="seo-h2">What You'll Find on CodeIt</h2>
-              <p className="seo-p">
-                CodeIt's beginner Python journey covers everything a new coder needs:
-              </p>
-              <ul className="seo-list">
-                <li>10 interactive <Link to="/lessons">beginner Python lessons</Link> with in-browser
-                  code editors</li>
-                <li>10 quizzes that test understanding before moving to the next chapter</li>
-                <li>5+ <Link to="/games">coding puzzles</Link> that apply each concept in a game
-                  setting</li>
-                <li>A full <Link to="/journey">journey map</Link> that tracks progress and unlocks
-                  content step by step</li>
-                <li>A <Link to="/playground">Python playground</Link> for free-form coding and
-                  experimentation</li>
-                <li>A leaderboard to compare progress with other learners</li>
-                <li>A <Link to="/blog">learning blog</Link> with guides, tips, and Python
-                  explanations</li>
-              </ul>
-              <p className="seo-p">
-                Everything is free to use. Creating an account unlocks progress tracking, XP,
-                leaderboard access, and the avatar customisation system.
-              </p>
-            </section>
-
-            <section className="seo-section">
-              <h2 className="seo-h2">How Old Should Kids Be to Start Coding?</h2>
-              <p className="seo-p">
-                CodeIt is designed for kids aged 8–14. Most children can follow the lessons
-                comfortably from around age 9 or 10, when reading comprehension and basic
-                problem-solving are well established.
-              </p>
-              <p className="seo-p">
-                Younger kids (6–8) may benefit from having a parent work through the first few
-                lessons with them. The coding itself isn't difficult at that age — the challenge
-                is understanding what the instructions are asking for. A short explanation from
-                a parent is often all it takes.
-              </p>
-              <p className="seo-p">
-                Older beginners — teens and adults — will find the lessons move at a comfortable
-                pace. The beginner-friendly tone and step-by-step format work just as well for
-                first-time coders of any age.
-              </p>
-            </section>
-
-            <section className="seo-section">
-              <h2 className="seo-h2">Tips for Parents: Supporting a Young Coder</h2>
-              <p className="seo-p">
-                You don't need to know anything about coding to support your child. A few things
-                that make a real difference:
-              </p>
-              <ul className="seo-list">
-                <li>Let them go at their own pace — rushing through lessons is worse than
-                  taking extra time to understand each one</li>
-                <li>Celebrate small wins — finishing a lesson, passing a quiz, and beating a
-                  puzzle are all worth acknowledging</li>
-                <li>Let them struggle a little — working through a problem independently builds
-                  the problem-solving muscle that makes a good programmer</li>
-                <li>Keep sessions short — 20–30 minutes of focused coding is more effective
-                  than a 2-hour marathon</li>
-              </ul>
-              <p className="seo-p">
-                Read our <Link to="/blog/coding-for-kids-beginner-guide">full beginner guide to
-                coding for kids</Link> for more advice, or explore the{' '}
-                <Link to="/blog">CodeIt blog</Link> for Python tips and learning strategies.
-              </p>
-            </section>
-
-            <section className="seo-section">
-              <h2 className="seo-h2">Coding Puzzles: Where the Fun Happens</h2>
-              <p className="seo-p">
-                The coding puzzles are where most kids say CodeIt really clicks. After learning
-                a concept in a lesson, they get to use it to solve a real challenge — and the
-                context makes all the difference.
-              </p>
-              <p className="seo-p">
-                Check out our page on <Link to="/python-games-for-kids">Python games for kids</Link>
-                {' '}to see what's in the puzzle collection and how each game ties to a specific
-                Python skill.
-              </p>
-            </section>
-
-            {/* ── FAQ Section ───────────────────────────────── */}
-            <section className="seo-section">
-              <h2 className="seo-h2">Frequently Asked Questions</h2>
-              <div className="seo-faq" itemScope itemType="https://schema.org/FAQPage">
-                {FAQS.map(({ q, a }) => (
-                  <div
-                    key={q}
-                    className="seo-faq__item"
-                    itemScope
-                    itemProp="mainEntity"
-                    itemType="https://schema.org/Question"
-                  >
-                    <p className="seo-faq__q" itemProp="name">{q}</p>
-                    <div itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
-                      <p className="seo-faq__a" itemProp="text">{a}</p>
-                    </div>
-                  </div>
-                ))}
+              <div className="parents-actions">
+                <Link to="/builder" className="parents-button parents-button--primary">
+                  Try a project together
+                </Link>
+                <Link to="/pricing" className="parents-button parents-button--quiet">
+                  See the planned family plan
+                </Link>
               </div>
-            </section>
-
-          </div>
-
-          {/* ── Bottom CTA ────────────────────────────────── */}
-          <div className="seo-bottom-cta">
-            <h2>Free Coding for Kids — Start Today</h2>
-            <p>
-              No experience, no downloads, no cost. Create a free account and start
-              Lesson 1 in under a minute — or try the{' '}
-              <Link to="/playground" style={{ color: '#FF8A3D', fontWeight: 700 }}>Python playground</Link>
-              {' '}first.
-            </p>
-            <Link to="/journey" className="seo-cta-btn">
-              Begin the Coding Journey &rarr;
-            </Link>
-          </div>
-
-          {/* ── Related links ─────────────────────────────── */}
-          <nav className="seo-related" aria-label="Related pages">
-            <p className="seo-related__title">Explore on CodeIt</p>
-            <div className="seo-related__links">
-              <Link to="/" className="seo-related__link">Home</Link>
-              <Link to="/learn-python-for-kids" className="seo-related__link">Learn Python for Kids</Link>
-              <Link to="/python-games-for-kids" className="seo-related__link">Python Games for Kids</Link>
-              <Link to="/lessons" className="seo-related__link">Python Lessons</Link>
-              <Link to="/playground" className="seo-related__link">Python Playground</Link>
-              <Link to="/games" className="seo-related__link">Coding Puzzles</Link>
-              <Link to="/blog/coding-for-kids-beginner-guide" className="seo-related__link">Blog: Coding for Kids Guide</Link>
-              <Link to="/blog" className="seo-related__link">All Blog Posts</Link>
+              <p className="parents-hero__note">No payment needed. The project studio opens in your browser.</p>
             </div>
-          </nav>
 
-        </div>
-      </div>
+            <div className="parents-project" aria-hidden="true">
+              <div className="parents-project__bar">
+                <span className="parents-project__dots" aria-hidden="true"><i /><i /><i /></span>
+                <span>My space quiz</span>
+              </div>
+              <div className="parents-project__canvas">
+                <span className="parents-project__tag">QUESTION 3 OF 5</span>
+                <p className="parents-project__question">Which planet has the shortest day?</p>
+                <div className="parents-project__answers" aria-hidden="true">
+                  <span>Earth</span><span className="is-selected">Jupiter</span><span>Mars</span>
+                </div>
+              </div>
+              <div className="parents-project__edit">
+                <span>Next change</span>
+                <p>Add a streak counter and make the correct answer glow.</p>
+                <strong>Make it mine →</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="parents-trust" aria-label="CodeIt trust commitments">
+          <div className="parents-wrap parents-trust__grid">
+            <p><strong>No ads</strong><span>We do not sell personal data.</span></p>
+            <p><strong>Private first</strong><span>Saved projects stay private until Publish.</span></p>
+            <p><strong>Clear age rules</strong><span>New student accounts are for ages 13–18.</span></p>
+          </div>
+        </section>
+
+        <section className="parents-section parents-intro">
+          <div className="parents-wrap parents-intro__grid">
+            <div>
+              <span className="parents-kicker">Coding for kids, made concrete</span>
+              <h2>Start with a result. Learn through every change.</h2>
+            </div>
+            <div className="parents-intro__answer">
+              <p>
+                CodeIt combines creative coding projects with a structured Python path. Beginners
+                see something work early, then build the habit that matters: make a change, run it,
+                notice the result, and explain why it happened.
+              </p>
+              <p>
+                That gives a learner a reason to keep going—and gives an adult something more useful
+                to ask than “Did you finish the lesson?”
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="parents-section parents-loop-section">
+          <div className="parents-wrap">
+            <div className="parents-heading">
+              <span className="parents-kicker">The learning loop</span>
+              <h2>Make. Edit. Understand.</h2>
+              <p>Three small steps turn a generated starting point into the learner’s own work.</p>
+            </div>
+            <div className="parents-loop">
+              <article>
+                <span>1</span>
+                <h3>Make</h3>
+                <p>Choose a small project with a visible result.</p>
+              </article>
+              <article>
+                <span>2</span>
+                <h3>Edit</h3>
+                <p>Change the words, colors, rules, and code.</p>
+              </article>
+              <article>
+                <span>3</span>
+                <h3>Understand</h3>
+                <p>Connect each decision to what happened on screen.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section className="parents-section parents-paths-section">
+          <div className="parents-wrap">
+            <div className="parents-heading parents-heading--left">
+              <span className="parents-kicker">Three ways in</span>
+              <h2>Meet them where their curiosity is.</h2>
+            </div>
+            <div className="parents-paths">
+              {PATHS.map(path => (
+                <article key={path.number} className="parents-path">
+                  <div className="parents-path__top">
+                    <span className="parents-path__number">{path.number}</span>
+                    <span className="parents-path__label">{path.label}</span>
+                  </div>
+                  <h3>{path.title}</h3>
+                  <p>{path.body}</p>
+                  <Link to={path.link}>{path.linkLabel} →</Link>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="parents-section parents-week-section">
+          <div className="parents-wrap parents-week">
+            <div className="parents-week__copy">
+              <span className="parents-kicker">A realistic first week</span>
+              <h2>Four short sessions. One project worth showing you.</h2>
+              <p>
+                Twenty focused minutes is enough for a useful win. The goal is not to race through
+                content; it is to return with a better question each time.
+              </p>
+            </div>
+            <ol className="parents-week__list">
+              <li><span>Day 1</span><p>Pick a project and get the first version working.</p></li>
+              <li><span>Day 2</span><p>Change the design so it no longer looks like a template.</p></li>
+              <li><span>Day 3</span><p>Edit one piece of code and predict what will happen.</p></li>
+              <li><span>Day 4</span><p>Explain the project, save it, and choose the next improvement.</p></li>
+            </ol>
+          </div>
+        </section>
+
+        <section className="parents-section parents-adult-section">
+          <div className="parents-wrap parents-adult">
+            <div className="parents-adult__card">
+              <span className="parents-kicker">What the learner does</span>
+              <h2>Builds, tests, and makes decisions.</h2>
+              <ul>
+                <li>Starts from an idea instead of a blank screen</li>
+                <li>Changes real HTML, CSS, JavaScript, or Python</li>
+                <li>Saves versions and publishes only by choice</li>
+              </ul>
+            </div>
+            <div className="parents-adult__card parents-adult__card--mint">
+              <span className="parents-kicker">What the adult can expect</span>
+              <h2>Clear boundaries and visible progress.</h2>
+              <ul>
+                <li>No coding knowledge required to get started</li>
+                <li>No ads and no sale of personal information</li>
+                <li>Plain-language privacy and account guidance</li>
+              </ul>
+              <Link to="/privacy">Read Privacy &amp; Safety →</Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="parents-section parents-faq-section">
+          <div className="parents-wrap parents-faq-layout">
+            <div className="parents-heading parents-heading--left">
+              <span className="parents-kicker">Before you begin</span>
+              <h2>Questions parents ask first.</h2>
+              <p>Simple answers, including what is available today and what is still planned.</p>
+            </div>
+            <div className="parents-faq" itemScope itemType="https://schema.org/FAQPage">
+              {FAQS.map(({ q, a }) => (
+                <article
+                  key={q}
+                  className="parents-faq__item"
+                  itemScope
+                  itemProp="mainEntity"
+                  itemType="https://schema.org/Question"
+                >
+                  <h3 itemProp="name">{q}</h3>
+                  <div itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
+                    <p itemProp="text">{a}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="parents-pilot-section">
+          <div className="parents-wrap">
+            <div className="parents-pilot">
+              <div>
+                <span className="parents-eyebrow">Founding Family pilot</span>
+                <h2>Help shape a coding product your learner would actually return to.</h2>
+                <p>
+                  We’re inviting a small group of parents and educators to try CodeIt, tell us where
+                  a beginner gets stuck, and influence what we build next.
+                </p>
+              </div>
+              <div className="parents-pilot__action">
+                <a href={PILOT_EMAIL} className="parents-button parents-button--primary">
+                  Ask about the pilot
+                </a>
+                <span>This opens your email app. CodeIt does not save your address on this page.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <nav className="parents-related" aria-label="Related CodeIt pages">
+          <div className="parents-wrap parents-related__inner">
+            <span>Keep exploring</span>
+            <Link to="/learn-python-for-kids">Python for kids</Link>
+            <Link to="/python-games-for-kids">Coding games</Link>
+            <Link to="/playground">Python playground</Link>
+            <Link to="/pricing">Pricing</Link>
+          </div>
+        </nav>
+      </main>
+      <SiteFooter />
     </>
   );
 }

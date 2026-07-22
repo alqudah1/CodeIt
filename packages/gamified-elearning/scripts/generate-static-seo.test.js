@@ -26,7 +26,8 @@ test('replaces homepage fallback and metadata with route-specific content', () =
   const page = PAGES.find((item) => item.route === '/coding-for-kids');
   const html = renderRouteDocument(TEMPLATE, page);
 
-  assert.match(html, /Coding starts with something a child wants to make/);
+  assert.match(html, /A first coding project they’ll want to keep improving/);
+  assert.match(html, /New student accounts are for ages 13–18/);
   assert.match(html, /canonical" href="https:\/\/codeitlearn\.com\/coding-for-kids/);
   assert.match(html, /static-route-jsonld/);
   assert.doesNotMatch(html, /homepage fallback/);

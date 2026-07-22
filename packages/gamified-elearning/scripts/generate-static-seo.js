@@ -91,12 +91,12 @@ const BASE_PAGES = [
   },
   {
     route: '/coding-for-kids',
-    title: 'Coding for Kids: Free Beginner Lessons & Projects | CodeIt',
-    description: 'Kids learn coding through beginner Python lessons and creative website, game, and quiz projects—no installation required.',
-    eyebrow: 'Coding for kids',
-    h1: 'Coding starts with something a child wants to make.',
-    intro: 'CodeIt combines a structured beginner path with an open project studio. Children can learn Python fundamentals and apply the same problem-solving habits to websites, games, and quizzes.',
-    detail: 'Short sessions, visible results, and editable projects help beginners understand what their code changes instead of memorizing isolated commands.',
+    title: 'Coding for Kids: Projects, Python & Parent Guide | CodeIt',
+    description: 'A project-first coding platform for ages 13–18, with supervised guest activities for younger learners. Build websites, games and quizzes, then learn the code.',
+    eyebrow: 'For parents & educators',
+    h1: 'A first coding project they’ll want to keep improving.',
+    intro: 'CodeIt helps a beginner turn an idea into a website, game, or quiz, then change the design, inspect the code, and understand what makes it work.',
+    detail: 'New student accounts are for ages 13–18. Younger learners can explore guest activities with an adult beside them. Saved projects are private until the learner chooses Publish.',
     type: 'LearningResource',
   },
   {
