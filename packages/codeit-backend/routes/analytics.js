@@ -88,6 +88,7 @@ router.post('/event', rateLimit, optionalAuth, async (req, res) => {
 
   const meta = normalizeMeta(eventName, req.body?.meta);
   const requiresMeta = eventName === 'landing_cta_click'
+    || eventName === 'parent_cta_click'
     || eventName === 'pricing_interest';
 
   if (requiresMeta && !meta) {

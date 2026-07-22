@@ -37,6 +37,17 @@ describe("trackEvent", () => {
     );
   });
 
+  test("sends only a fixed parent acquisition action", async () => {
+    await expect(trackEvent("parent_cta_click", "pilot-email")).resolves.toBe(true);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/api/analytics/event"),
+      expect.objectContaining({
+        body: JSON.stringify({ event_name: "parent_cta_click", meta: "pilot-email" }),
+      })
+    );
+  });
+
   test("refuses unknown events before making a request", async () => {
     await expect(trackEvent("prompt_submitted", "private prompt")).resolves.toBe(false);
     expect(global.fetch).not.toHaveBeenCalled();

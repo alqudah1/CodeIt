@@ -3,6 +3,7 @@ import Header from '../Header/Header';
 import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
 import { useFAQSchema } from '../../hooks/useFAQSchema';
+import { trackEvent } from '../../utils/trackEvent';
 import './CodingForKids.css';
 
 const PILOT_EMAIL = 'mailto:hello@codeitlearn.com?subject=Founding%20Family%20pilot&body=I%27m%20a%20parent%20or%20educator%20interested%20in%20the%20CodeIt%20pilot.%0A%0ALearner%20age%20range%3A%0AWhat%20they%20want%20to%20build%3A';
@@ -79,10 +80,18 @@ export default function CodingForKids() {
                 design, inspect the code, and understand what makes it work.
               </p>
               <div className="parents-actions">
-                <Link to="/builder" className="parents-button parents-button--primary">
+                <Link
+                  to="/builder"
+                  className="parents-button parents-button--primary"
+                  onClick={() => void trackEvent('parent_cta_click', 'try-project')}
+                >
                   Try a project together
                 </Link>
-                <Link to="/pricing" className="parents-button parents-button--quiet">
+                <Link
+                  to="/pricing"
+                  className="parents-button parents-button--quiet"
+                  onClick={() => void trackEvent('parent_cta_click', 'view-pricing')}
+                >
                   See the planned family plan
                 </Link>
               </div>
@@ -268,7 +277,11 @@ export default function CodingForKids() {
                 </p>
               </div>
               <div className="parents-pilot__action">
-                <a href={PILOT_EMAIL} className="parents-button parents-button--primary">
+                <a
+                  href={PILOT_EMAIL}
+                  className="parents-button parents-button--primary"
+                  onClick={() => void trackEvent('parent_cta_click', 'pilot-email')}
+                >
                   Ask about the pilot
                 </a>
                 <span>This opens your email app. CodeIt does not save your address on this page.</span>

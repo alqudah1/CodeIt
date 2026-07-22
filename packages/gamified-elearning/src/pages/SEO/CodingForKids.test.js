@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import CodingForKids from './CodingForKids';
 import { useSEO } from '../../hooks/useSEO';
 import { useFAQSchema } from '../../hooks/useFAQSchema';
+import { trackEvent } from '../../utils/trackEvent';
 
 jest.mock('react-router-dom', () => {
   const React = require('react');
@@ -13,11 +14,13 @@ jest.mock('../Header/Header', () => () => null);
 jest.mock('../../components/SiteFooter/SiteFooter', () => () => null);
 jest.mock('../../hooks/useSEO', () => ({ useSEO: jest.fn() }));
 jest.mock('../../hooks/useFAQSchema', () => ({ useFAQSchema: jest.fn() }));
+jest.mock('../../utils/trackEvent', () => ({ trackEvent: jest.fn(() => Promise.resolve(true)) }));
 
 describe('parent acquisition page', () => {
   beforeEach(() => {
     useSEO.mockClear();
     useFAQSchema.mockClear();
+    trackEvent.mockClear();
   });
 
   test('opens with a concrete project and honest trust commitments', () => {
@@ -42,5 +45,8 @@ describe('parent acquisition page', () => {
     expect(useFAQSchema).toHaveBeenCalledWith(expect.arrayContaining([
       expect.objectContaining({ q: 'What age is CodeIt for?' }),
     ]));
+
+    fireEvent.click(pilotLink);
+    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'pilot-email');
   });
 });
