@@ -24,7 +24,14 @@ export default function Login() {
     : location.state?.resumeBuilderSave === true
       ? 'save'
       : null;
-  const returnState = resumeBuilderAction ? { resumeBuilderAction } : null;
+  const resumePricingInterest = location.state?.resumePricingInterest === true;
+  const returnState = resumeBuilderAction || resumePricingInterest
+    ? {
+        ...(resumeBuilderAction ? { resumeBuilderAction } : {}),
+        ...(resumePricingInterest ? { resumePricingInterest: true } : {}),
+      }
+    : null;
+  const authLinkState = { from: returnTo, ...(returnState || {}) };
 
   useSEO({
     title:       'Sign In | CodeIt',
@@ -149,7 +156,7 @@ export default function Login() {
 
         <div className="auth-footer">
           New to CodeIt?{' '}
-          <Link to="/register" state={{ from: returnTo, resumeBuilderAction }}>Create a free account</Link>
+          <Link to="/register" state={authLinkState}>Create a free account</Link>
         </div>
 
       </div>

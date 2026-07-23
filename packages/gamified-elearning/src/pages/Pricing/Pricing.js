@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Header from '../Header/Header';
 import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
 import { trackEvent } from '../../utils/trackEvent';
+import { useAuth } from '../../context/AuthContext';
 import './Pricing.css';
 
 const FREE_FEATURES = [
@@ -29,8 +30,12 @@ const FAQ = [
 ];
 
 export default function Pricing() {
+  const { user, token } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isStudentAccount = String(user?.role || '').toLowerCase() === 'student';
   const [interestStatus, setInterestStatus] = useState(() => (
-    localStorage.getItem('codeit_founding_interest') === 'yes' ? 'saved' : 'idle'
+    localStorage.getItem('codeit_founding_waitlist_contacted') === 'yes' ? 'saved' : 'idle'
   ));
 
   useSEO({
@@ -46,12 +51,53 @@ export default function Pricing() {
     void trackEvent('pricing_view');
   }, []);
 
+  useEffect(() => {
+    if (interestStatus !== 'idle' || !user || !token) return undefined;
+    const shouldResume = location.state?.resumePricingInterest === true
+      || sessionStorage.getItem('codeit_pending_founding_interest') === 'yes';
+    if (!shouldResume) return undefined;
+
+    sessionStorage.removeItem('codeit_pending_founding_interest');
+    if (isStudentAccount) {
+      setInterestStatus('parent-required');
+      return undefined;
+    }
+
+    let cancelled = false;
+    setInterestStatus('saving');
+    trackEvent('pricing_interest', 'founding-family', token).then((recorded) => {
+      if (cancelled) return;
+      if (recorded) {
+        localStorage.setItem('codeit_founding_waitlist_contacted', 'yes');
+        setInterestStatus('saved');
+      } else {
+        setInterestStatus('error');
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [interestStatus, isStudentAccount, location.state?.resumePricingInterest, token, user]);
+
   const registerInterest = async () => {
     if (interestStatus === 'saving' || interestStatus === 'saved') return;
+    if (!user || !token) {
+      sessionStorage.setItem('codeit_pending_founding_interest', 'yes');
+      navigate('/register', {
+        state: { from: '/pricing', resumePricingInterest: true },
+      });
+      return;
+    }
+    if (isStudentAccount) {
+      setInterestStatus('parent-required');
+      return;
+    }
+
     setInterestStatus('saving');
-    const recorded = await trackEvent('pricing_interest', 'founding-family');
+    const recorded = await trackEvent('pricing_interest', 'founding-family', token);
     if (recorded) {
-      localStorage.setItem('codeit_founding_interest', 'yes');
+      localStorage.setItem('codeit_founding_waitlist_contacted', 'yes');
       setInterestStatus('saved');
     } else {
       setInterestStatus('error');
@@ -94,20 +140,27 @@ export default function Pricing() {
             >
               {interestStatus === 'saving' && 'Saving…'}
               {interestStatus === 'saved' && 'Interest saved — thank you'}
-              {(interestStatus === 'idle' || interestStatus === 'error') && "I'd consider this plan"}
+              {(interestStatus === 'idle' || interestStatus === 'error' || interestStatus === 'parent-required') && 'Join the founding family waitlist'}
             </button>
             {interestStatus === 'error' && <p className="pricing-card__error" role="alert">We could not save that just now. Please try again.</p>}
-            <small>No charge, checkout, or subscription. This only helps us decide what to build next.</small>
+            {interestStatus === 'parent-required' && (
+              <p className="pricing-card__error" role="alert">
+                This waitlist is for parents or guardians. Ask an adult to use a Parent / Educator account.
+              </p>
+            )}
+            <small>
+              No charge or subscription. Joining asks CodeIt to contact the email on your Parent / Educator account if the pilot opens.
+            </small>
           </article>
         </section>
 
         {interestStatus === 'saved' && (
           <section className="pricing-thanks" aria-live="polite">
             <div>
-              <strong>That is useful—thank you.</strong>
-              <p>Keep using the free product while we finish parent controls and billing.</p>
+              <strong>You are on the founding family waitlist.</strong>
+              <p>We will use your Parent / Educator account email only to contact you about this pilot.</p>
             </div>
-            <Link to="/register">Create a free account <span aria-hidden="true">→</span></Link>
+            <Link to="/builder">Start a free project <span aria-hidden="true">→</span></Link>
           </section>
         )}
 

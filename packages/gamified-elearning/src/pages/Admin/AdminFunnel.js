@@ -79,6 +79,7 @@ export default function AdminFunnel() {
   const parentActions = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'parent_cta_click').map((row) => [row.meta, Number(row.event_count) || 0])
   ), [data]);
+  const foundingLeads = data?.founding_leads || [];
 
   const signals = data ? [
     ['Build completion', ratio(counts.generation_complete, counts.builder_start)],
@@ -99,7 +100,7 @@ export default function AdminFunnel() {
         <div>
           <p className="funnel-kicker">Product health</p>
           <h2 className="adm-page-title">Activation funnel</h2>
-          <p className="funnel-note">Directional event activity. No prompts, code, email addresses, or IP addresses are stored.</p>
+          <p className="funnel-note">Directional event activity. Analytics stores no prompts, code, email addresses, or IP addresses; contact emails below come from adults' existing accounts after explicit waitlist opt-in.</p>
         </div>
         <label className="funnel-window">
           Window
@@ -146,6 +147,28 @@ export default function AdminFunnel() {
             ))}
           </div>
           <p className="funnel-parent-note">These are button clicks, not people. “Opened pilot email” means the visitor opened their email app; it does not confirm that they sent a message.</p>
+
+          <div className="adm-section-head">Founding family leads</div>
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead><tr><th>Parent / educator</th><th>Contact email</th><th>Joined</th></tr></thead>
+              <tbody>
+                {foundingLeads.length === 0 && (
+                  <tr><td colSpan={3} className="adm-loading">No contactable waitlist leads in this window yet.</td></tr>
+                )}
+                {foundingLeads.map((lead) => (
+                  <tr key={lead.user_id}>
+                    <td>{lead.name || 'Parent / educator'}</td>
+                    <td><a href={`mailto:${lead.email}`}>{lead.email}</a></td>
+                    <td>{lead.interested_at ? new Date(lead.interested_at).toLocaleDateString() : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="funnel-parent-note">
+            These adults explicitly joined the founding family waitlist while signed in. Contact them only about that pilot.
+          </p>
 
           <div className="adm-section-head">Account safety audit</div>
           <div className="funnel-safety-grid">

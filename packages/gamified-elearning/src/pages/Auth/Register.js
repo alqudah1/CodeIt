@@ -37,7 +37,14 @@ export default function Register() {
     : location.state?.resumeBuilderSave === true
       ? 'save'
       : null;
-  const returnState = resumeBuilderAction ? { resumeBuilderAction } : null;
+  const resumePricingInterest = location.state?.resumePricingInterest === true;
+  const returnState = resumeBuilderAction || resumePricingInterest
+    ? {
+        ...(resumeBuilderAction ? { resumeBuilderAction } : {}),
+        ...(resumePricingInterest ? { resumePricingInterest: true } : {}),
+      }
+    : null;
+  const authLinkState = { from: returnTo, ...(returnState || {}) };
 
   // Separate form instances per path to avoid field-name collisions
   const {
@@ -166,7 +173,7 @@ export default function Register() {
 
           <div className="auth-footer">
             Already have an account?{' '}
-            <Link to="/login" state={{ from: returnTo, resumeBuilderAction }}>Sign in</Link>
+            <Link to="/login" state={authLinkState}>Sign in</Link>
           </div>
         </div>
       </div>
@@ -262,7 +269,7 @@ export default function Register() {
           </form>
 
           <div className="auth-footer">
-            Already have an account? <Link to="/login" state={{ from: returnTo, resumeBuilderAction }}>Sign in</Link>
+            Already have an account? <Link to="/login" state={authLinkState}>Sign in</Link>
           </div>
         </div>
       </div>
@@ -381,7 +388,7 @@ export default function Register() {
           </form>
 
           <div className="auth-footer">
-            Already have an account? <Link to="/login" state={{ from: returnTo, resumeBuilderAction }}>Sign in</Link>
+            Already have an account? <Link to="/login" state={authLinkState}>Sign in</Link>
           </div>
         </div>
       </div>
