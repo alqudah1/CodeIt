@@ -631,7 +631,7 @@ const MainPage = () => {
             <span className="mp-builder-cta__badge">Project Studio</span>
             <h2 className="mp-builder-cta__title">Turn your idea into a real project</h2>
             <p className="mp-builder-cta__sub">
-              Describe any idea in plain words — a quiz, a game, a portfolio — and watch CodeIt build it for you instantly.
+              Start with a quiz, game, or portfolio, then change the design and code until the project feels like yours.
             </p>
           </div>
           <Link to="/builder" className="mp-builder-cta__btn">
@@ -647,10 +647,10 @@ const MainPage = () => {
       </main>
 
       <footer className="main-footer">
-        &copy; 2025 <strong>CodeIt</strong>. All rights reserved. |
-        <a href="#" target="_blank" rel="noopener noreferrer"> Instagram</a> |
-        <a href="#" target="_blank" rel="noopener noreferrer"> Twitter</a> |
-        <a href="#" target="_blank" rel="noopener noreferrer"> YouTube</a>
+        &copy; {new Date().getFullYear()} <strong>CodeIt</strong>. All rights reserved. |
+        <Link to="/builder"> Project studio</Link> |
+        <Link to="/privacy"> Privacy</Link> |
+        <Link to="/terms"> Terms</Link>
       </footer>
     </div>
   );
