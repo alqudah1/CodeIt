@@ -150,7 +150,7 @@ export default function Header() {
                       </div>
                     )}
                     <Link to="/profile" className="site-header__dropdown-item" role="menuitem">My profile</Link>
-                    <Link to="/builder" className="site-header__dropdown-item" role="menuitem">My projects</Link>
+                    <Link to="/builder?view=projects" className="site-header__dropdown-item" role="menuitem">My projects</Link>
                     <div className="site-header__dropdown-divider" />
                     <Link to="/blog" className="site-header__dropdown-item" role="menuitem">Guides and ideas</Link>
                     <button

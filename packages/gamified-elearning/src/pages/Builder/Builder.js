@@ -1092,6 +1092,15 @@ export default function Builder() {
       .finally(() => setProjectsLoading(false));
   }, [user, token]);
 
+  useEffect(() => {
+    if (projectsLoading || savedProjects.length === 0) return undefined;
+    if (new URLSearchParams(location.search).get('view') !== 'projects') return undefined;
+    const timer = setTimeout(() => {
+      document.getElementById('my-creations')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [location.search, projectsLoading, savedProjects.length]);
+
   // ── Live element editor — postMessage bridge ───────────────────────────────
   useEffect(() => {
     function handleIframeMessage(e) {
@@ -2777,7 +2786,7 @@ export default function Builder() {
             MY SAVED PROJECTS
         ════════════════════════════════════════ */}
         {user && (projectsLoading || savedProjects.length > 0) && (
-          <section className="bldr-projects" aria-label="My saved projects">
+          <section id="my-creations" className="bldr-projects" aria-label="My saved projects">
             <div className="bldr-projects__header">
               <h2 className="bldr-projects__title">My Creations</h2>
               {savedProjects.length > 0 && (
