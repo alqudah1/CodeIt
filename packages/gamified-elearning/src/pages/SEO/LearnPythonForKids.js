@@ -10,8 +10,8 @@ const FAQS = [
     a: 'Yes — Python is consistently ranked the best first programming language for beginners and kids. It uses simple, English-like syntax with no unnecessary punctuation, so kids can focus on thinking like a programmer rather than fighting the language. Python is also used professionally at companies like Google, NASA, and YouTube, so skills learned now remain valuable long-term.',
   },
   {
-    q: 'How old should a child be to start learning Python?',
-    a: 'Most children can follow interactive Python lessons comfortably from around age 8 to 10. Younger children may benefit from working through the first few lessons with a parent. Older beginners — including teens and adults who have never coded before — will find the same lessons well-paced and easy to follow.',
+    q: 'What ages can use CodeIt?',
+    a: 'New student accounts are for learners ages 13–18. Younger learners can try guest activities with a parent or guardian beside them, without creating a student account. The lessons also work for older beginners.',
   },
   {
     q: 'Do kids need prior coding experience to use CodeIt?',
@@ -23,14 +23,14 @@ const FAQS = [
   },
   {
     q: 'Is CodeIt free to use?',
-    a: 'Yes — CodeIt is completely free. All 10 beginner Python lessons, 10 quizzes, and 5+ coding puzzles are available at no cost. Creating a free account unlocks progress tracking, XP, leaderboard access, and the avatar customisation system. No credit card is ever required.',
+    a: 'CodeIt has useful free lessons, practice, and project tools. A paid family plan is being tested, but it is not live and CodeIt does not collect payment today.',
   },
 ];
 
 export default function LearnPythonForKids() {
   useSEO({
-    title:       'Learn Python for Kids | Free Interactive Lessons — CodeIt',
-    description: 'Learn Python for kids with free interactive lessons, coding puzzles, and quizzes. CodeIt makes beginner Python fun and rewarding for ages 8–14.',
+    title:       'Learn Python for Kids & Teens | Interactive Lessons — CodeIt',
+    description: 'Learn beginner Python in the browser with short lessons, real code, quizzes, and projects. Student accounts are designed for ages 13–18.',
     canonical:   '/learn-python-for-kids',
   });
   useFAQSchema(FAQS);
@@ -45,17 +45,16 @@ export default function LearnPythonForKids() {
 
           {/* ── Hero ──────────────────────────────────────── */}
           <header className="seo-hero">
-            <span className="seo-eyebrow">Free Python for Kids</span>
+            <span className="seo-eyebrow">Beginner Python, in the browser</span>
             <h1 className="seo-h1">
-              Learn Python for Kids — Free, Interactive, and Beginner-Friendly
+              Learn Python by making something work.
             </h1>
             <p className="seo-hero-desc">
-              Python is the world's most popular beginner programming language — and CodeIt is the
-              easiest place for kids to start. Interactive lessons, coding puzzles, quizzes, and a
-              full adventure map make learning Python something kids actually want to do.
+              Write a line, run it, and see what changed. CodeIt gives beginners a clear path
+              through real Python—without downloads or a wall of theory first.
             </p>
             <Link to="/journey" className="seo-cta-btn">
-              Start Learning Python Free &rarr;
+              Start with lesson one &rarr;
             </Link>
           </header>
 
@@ -63,7 +62,7 @@ export default function LearnPythonForKids() {
           <section className="seo-answer-box" aria-label="Quick answer">
             <span className="seo-answer-box__label">Quick Answer</span>
             <p className="seo-answer-box__answer">
-              CodeIt is a free platform where kids and beginners learn Python through 10 interactive
+              CodeIt helps kids, teens, and other beginners learn Python through 10 interactive
               lessons, each covering one concept at a time — no experience or downloads needed.
             </p>
             <p className="seo-answer-box__detail">
@@ -176,8 +175,10 @@ export default function LearnPythonForKids() {
             <section className="seo-section">
               <h2 className="seo-h2">Who Is This For?</h2>
               <p className="seo-p">
-                CodeIt is built for kids aged 8–14 who are new to coding. No experience is needed —
-                the first lesson starts from absolute zero. The language is simple, the instructions
+                New CodeIt student accounts are designed for learners ages 13–18. Younger learners
+                can explore guest activities with a parent or guardian beside them, without creating
+                a student account. No coding experience is needed—the first lesson starts from zero,
+                the language is simple, the instructions
                 are friendly, and there's nothing to install.
               </p>
               <p className="seo-p">
@@ -198,9 +199,9 @@ export default function LearnPythonForKids() {
             <section className="seo-section">
               <h2 className="seo-h2">How to Start Learning Python Today</h2>
               <p className="seo-p">
-                Getting started is free and takes less than a minute. Create a free account, open
-                Lesson 1, and write your first line of Python. The full journey — 10 lessons, 10
-                quizzes, and 10+ coding puzzles — is available at no cost.
+                Open Lesson 1 and write your first line of Python. CodeIt currently includes 10
+                beginner lessons, quizzes, and five coding puzzles, with useful activities available
+                free while the family plan is still being tested.
               </p>
               <p className="seo-p">
                 Want to explore before signing up? Try the{' '}

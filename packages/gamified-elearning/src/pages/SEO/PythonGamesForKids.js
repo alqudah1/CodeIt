@@ -45,14 +45,13 @@ export default function PythonGamesForKids() {
 
           {/* ── Hero ──────────────────────────────────────── */}
           <header className="seo-hero">
-            <span className="seo-eyebrow">Python Games for Kids</span>
+            <span className="seo-eyebrow">Real Python, playful challenges</span>
             <h1 className="seo-h1">
-              Python Games for Kids — Learn Python Through Play
+              Python games that make every line matter.
             </h1>
             <p className="seo-hero-desc">
-              CodeIt's coding puzzles are Python games for kids in disguise. Each challenge uses
-              a real Python concept — loops, variables, conditions — to drive a fun, story-based
-              game. Kids learn without realising they're learning.
+              Each short challenge gives a beginner a reason to use loops, variables, or conditions.
+              They type real Python, run it, and see what their code changed.
             </p>
             <Link to="/games" className="seo-cta-btn">
               Explore the Coding Puzzles &rarr;
