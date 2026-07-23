@@ -1792,13 +1792,20 @@ router.get('/projects/:id', requireAuth, async (req, res) => {
   }
 });
 
-// PUT /api/builder/projects/:id — update title (owner only)
+// PUT /api/builder/projects/:id — update a saved project (owner only)
 router.put('/projects/:id', requireAuth, async (req, res) => {
   const userId = req.user.user_id;
   const { id }  = req.params;
-  const { title } = req.body;
+  const { title, prompt, generated_code, project_type } = req.body;
+  const isFullSave = prompt !== undefined || generated_code !== undefined || project_type !== undefined;
 
   if (!title || !title.trim()) return res.status(400).json({ error: 'title is required' });
+  if (isFullSave && (!prompt || !prompt.trim())) {
+    return res.status(400).json({ error: 'prompt is required' });
+  }
+  if (isFullSave && (!generated_code || !generated_code.trim())) {
+    return res.status(400).json({ error: 'generated_code is required' });
+  }
 
   try {
     const [check] = await pool.query(
@@ -1807,8 +1814,18 @@ router.put('/projects/:id', requireAuth, async (req, res) => {
     );
     if (!check.length) return res.status(404).json({ error: 'Project not found.' });
 
-    await pool.query('UPDATE ai_projects SET title = ? WHERE id = ?', [title.trim(), id]);
-    res.json({ success: true });
+    if (isFullSave) {
+      await pool.query(
+        `UPDATE ai_projects
+         SET title = ?, prompt = ?, generated_code = ?, project_type = ?, updated_at = NOW()
+         WHERE id = ?`,
+        [title.trim(), prompt.trim(), generated_code.trim(), (project_type || 'website').trim(), id]
+      );
+    } else {
+      await pool.query('UPDATE ai_projects SET title = ?, updated_at = NOW() WHERE id = ?', [title.trim(), id]);
+    }
+    const [rows] = await pool.query('SELECT * FROM ai_projects WHERE id = ? AND user_id = ?', [id, userId]);
+    res.json({ success: true, project: rows[0] });
   } catch (err) {
     console.error('Update project error:', err.message);
     res.status(500).json({ error: 'Could not update project.' });
@@ -1902,6 +1919,13 @@ router.post('/projects/:id/versions', requireAuth, async (req, res) => {
         primaryColor,
         accentColor,
       ]
+    );
+    // A snapshot is also a save: make it the version that opens next time.
+    await pool.query(
+      `UPDATE ai_projects
+       SET generated_code = ?, title = COALESCE(?, title), updated_at = NOW()
+       WHERE id = ?`,
+      [generated_code.trim(), title ? title.trim() : null, id]
     );
     res.status(201).json({ success: true, versionId: result.insertId, version_num: versionNum });
   } catch (err) {

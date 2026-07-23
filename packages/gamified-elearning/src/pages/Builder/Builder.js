@@ -1396,26 +1396,44 @@ export default function Builder() {
     setSaveError('');
     const title = (builtPrompt ? deriveProjectName(builtPrompt) : '') || 'My Project';
     try {
-      const res  = await fetch(`${API_BASE_URL}/api/builder/projects`, {
-        method:  'POST',
+      const isUpdating = Boolean(savedProjectId);
+      const projectUrl = isUpdating
+        ? `${API_BASE_URL}/api/builder/projects/${savedProjectId}`
+        : `${API_BASE_URL}/api/builder/projects`;
+      const res  = await fetch(projectUrl, {
+        method:  isUpdating ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body:    JSON.stringify({ title, prompt: builtPrompt, generated_code: code, project_type: projectType }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Could not save project.');
-      setSavedProjects(prev => [data.project, ...prev]);
-      setSavedProjectId(data.project.id);
-      // save current code as first server version
-      fetch(`${API_BASE_URL}/api/builder/projects/${data.project.id}/versions`, {
+      // Older API versions returned only { success: true } for updates.
+      const projectRecord = data.project || {
+        ...(savedProjects.find(project => project.id === savedProjectId) || {}),
+        id: savedProjectId,
+        title,
+        prompt: builtPrompt,
+        project_type: projectType,
+        updated_at: new Date().toISOString(),
+      };
+      setSavedProjects(prev => isUpdating
+        ? prev.map(project => project.id === projectRecord.id ? projectRecord : project)
+        : [projectRecord, ...prev]);
+      setSavedProjectId(projectRecord.id);
+      // Keep a restorable snapshot alongside the latest project state.
+      const versionRes = await fetch(`${API_BASE_URL}/api/builder/projects/${projectRecord.id}/versions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           generated_code: code,
           title,
-          label: 'Initial save',
+          label: isUpdating ? 'Saved changes' : 'Initial save',
           prompt_history: promptHistory,
         }),
-      }).catch(() => {});
+      });
+      if (!versionRes.ok && isUpdating && !data.project) {
+        throw new Error('Could not save your latest changes. Please try again.');
+      }
       setIsSaved(true);
       setSaveStatus('saved');
       sessionStorage.removeItem('codeit_builder_draft');
@@ -1439,12 +1457,40 @@ export default function Builder() {
       const data = await res.json();
       if (!data.success) throw new Error();
       const p = data.project;
+      let latestCode = p.generated_code;
+      let latestTitle = p.title || '';
+      let latestPromptHistory = [p.prompt];
+      try {
+        const versionsRes = await fetch(`${API_BASE_URL}/api/builder/projects/${p.id}/versions`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const versionsData = await versionsRes.json();
+        const latestVersion = versionsData.success && versionsData.versions?.[0];
+        if (latestVersion) {
+          const versionRes = await fetch(
+            `${API_BASE_URL}/api/builder/projects/${p.id}/versions/${latestVersion.id}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          const versionData = await versionRes.json();
+          if (versionData.success) {
+            latestCode = versionData.version.generated_code || latestCode;
+            latestTitle = versionData.version.title || latestTitle;
+            try {
+              const storedHistory = typeof versionData.version.prompt_history === 'string'
+                ? JSON.parse(versionData.version.prompt_history)
+                : versionData.version.prompt_history;
+              if (Array.isArray(storedHistory) && storedHistory.length) latestPromptHistory = storedHistory;
+            } catch (_) {}
+          }
+        }
+      } catch (_) {}
       setPrompt(p.prompt);
-      setCode(p.generated_code);
+      setCode(latestCode);
+      setAiTitle(latestTitle);
       setBuiltPrompt(p.prompt);
       setBuiltSummary('');
       setExplanation('');
-      setPromptHistory([p.prompt]);
+      setPromptHistory(latestPromptHistory);
       setPreviousCode('');
       setIsSaved(true);
       setSaveStatus(null);
@@ -1681,7 +1727,7 @@ export default function Builder() {
       const bFav = favoriteIds.has(b.id);
       if (aFav && !bFav) return -1;
       if (!aFav && bFav) return 1;
-      return new Date(b.created_at) - new Date(a.created_at);
+      return new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at);
     });
     return list;
   }, [savedProjects, projectSort, favoriteIds]);
@@ -2851,7 +2897,7 @@ export default function Builder() {
                       <div className="bldr-project-card__type">{project.project_type}</div>
                       <div className="bldr-project-card__name">{project.title}</div>
                       <div className="bldr-project-card__prompt">{project.prompt}</div>
-                      <div className="bldr-project-card__date">{timeAgo(project.created_at)}</div>
+                      <div className="bldr-project-card__date">Updated {timeAgo(project.updated_at || project.created_at)}</div>
                     </div>
                     <div className="bldr-project-card__actions">
                       <button
