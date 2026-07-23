@@ -1,9 +1,9 @@
-import React, { lazy, Suspense, useEffect, useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation, useParams, Navigate } from 'react-router-dom';
+import React, { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route, useParams, Navigate } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
-import { AuthProvider, AuthContext } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { CharacterProvider } from './context/CharacterContext';
 import RequireAdmin from './pages/Admin/RequireAdmin';
@@ -94,22 +94,11 @@ const QuizWrapper = () => {
   return <Quiz quizId={quizId} />;
 };
 
-// ── Route logger ──────────────────────────────────────────────────
-const RouteLogger = () => {
-  const location = useLocation();
-  const { user } = useContext(AuthContext) || {};
-  useEffect(() => {
-    console.log('Navigated to:', location.pathname, 'User:', JSON.stringify(user));
-  }, [location]);
-  return null;
-};
-
 const App = () => (
   <AuthProvider>
     <ProgressProvider>
       <CharacterProvider>
         <Router>
-          <RouteLogger />
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* ── Public / always-eager ── */}
