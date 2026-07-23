@@ -8,7 +8,7 @@ const BLOG_POSTS = [
     slug: 'learn-python-for-kids',
     title: 'How to Learn Python for Kids: A Beginner\'s Guide',
     description:
-      'A step-by-step guide to learning Python programming for kids aged 8–14. Discover why Python is the perfect first language and how CodeIt makes it fun.',
+      'A practical guide to learning Python for kids and teens, with clear age guidance, real examples, and a simple first path through CodeIt.',
     date: '2026-03-11',
     readTime: '5 min read',
     category: 'Learning Guide',
@@ -360,7 +360,7 @@ const BLOG_POSTS = [
         body: [
           'Most children can start learning Python from around age 9 or 10, when reading comprehension and logical thinking are well developed. Some younger children — particularly those who are already comfortable with reading and basic maths — can start at 7 or 8 with some parental support.',
           'The key factor isn\'t age — it\'s whether the child is curious and patient enough to follow instructions and observe what happens. A motivated 8-year-old will learn faster than a bored 12-year-old.',
-          'CodeIt is designed for ages 8–14, but it works well for older beginners (teens and adults) too. The beginner-friendly language and step-by-step structure suit anyone new to programming.',
+          'New CodeIt student accounts are designed for ages 13–18. Younger learners can explore guest activities with a parent or guardian beside them, and the lessons also work for older beginners.',
         ],
       },
       {

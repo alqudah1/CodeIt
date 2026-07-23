@@ -1,7 +1,7 @@
 /* ════════════════════════════════════════════════════════════
    Blog — CodeIt brand-aligned
    Palette: #FF8A3D primary · #FFD166 accent · #4CC9F0 secondary
-            #1F2A44 text  · #FFF7ED background
+            #38291f text  · #fffaf5 background
    ════════════════════════════════════════════════════════════ */
 
 /* ════════════════════════════════════════════════════════════
@@ -12,9 +12,9 @@
 .blog-page {
   /* override — keep here so the post page also inherits it */
   min-height: 100vh;
-  background: #FFF7ED;
+  background: #fffaf5;
   font-family: 'Nunito', 'Arvo', sans-serif;
-  color: #1F2A44;
+  color: #38291f;
   position: relative;
 }
 
@@ -22,10 +22,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 12% 6%,  rgba(255,138,61, 0.09), transparent 50%),
-    radial-gradient(ellipse at 86% 8%,  rgba(255,209,102,0.11), transparent 50%),
-    radial-gradient(ellipse at 50% 94%, rgba(76,201,240, 0.07), transparent 55%);
+  background: linear-gradient(90deg, transparent 0 49.9%, rgba(201,95,22,.035) 50% 50.1%, transparent 50.2%);
   pointer-events: none;
   z-index: 0;
 }
@@ -55,26 +52,24 @@
   text-transform: uppercase;
   letter-spacing: 0.18em;
   color: #FF8A3D;
-  background: rgba(255,138,61,0.10);
-  border: 1px solid rgba(255,138,61,0.22);
-  border-radius: 999px;
-  padding: 0.28rem 0.95rem;
+  padding: 0;
   margin-bottom: 1rem;
 }
 
 .bi-title {
   margin: 0 0 0.75rem;
-  font-size: clamp(2rem, 4.5vw, 3rem);
-  font-weight: 900;
-  color: #1F2A44;
-  line-height: 1.1;
-  letter-spacing: -0.025em;
+  font-family: Arvo, Georgia, serif;
+  font-size: clamp(2.5rem, 5.5vw, 4.2rem);
+  font-weight: 700;
+  color: #38291f;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
 }
 
 .bi-sub {
   margin: 0 0 1.5rem;
   font-size: 1.05rem;
-  color: rgba(31,42,68,0.68);
+  color: rgba(56,41,31,0.68);
   line-height: 1.7;
 }
 
@@ -83,13 +78,13 @@
   align-items: center;
   gap: 0.35rem;
   padding: 0.65rem 1.5rem;
-  background: linear-gradient(120deg, #FF8A3D, #FFD166);
-  color: #1F2A44;
+  background: #ed6c1e;
+  color: #fff;
   font-weight: 800;
   font-size: 0.9rem;
-  border-radius: 999px;
+  border-radius: 10px;
   text-decoration: none;
-  box-shadow: 0 8px 22px rgba(255,138,61,0.28);
+  box-shadow: 0 10px 24px rgba(201,95,22,.2);
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 .bi-header-cta:hover {
@@ -99,7 +94,7 @@
 
 /* ── Category colour tokens ──────────────────────────────── */
 .bi-featured.cat-guide,
-.bi-card.cat-guide { --cat-from: #FF8A3D; --cat-to: #FFD166; --cat-txt: #1F2A44; }
+.bi-card.cat-guide { --cat-from: #FF8A3D; --cat-to: #FFD166; --cat-txt: #38291f; }
 
 .bi-featured.cat-games,
 .bi-card.cat-games { --cat-from: #4CC9F0; --cat-to: #7BA7FF; --cat-txt: #fff; }
@@ -156,7 +151,7 @@
 .bi-meta-read {
   font-size: 0.8rem;
   font-weight: 600;
-  color: rgba(31,42,68,0.48);
+  color: rgba(56,41,31,0.48);
 }
 
 .bi-meta-dot {
@@ -164,7 +159,7 @@
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: rgba(31,42,68,0.32);
+  background: rgba(56,41,31,0.32);
   vertical-align: middle;
 }
 
@@ -175,22 +170,20 @@
   display: grid;
   grid-template-columns: 320px 1fr;
   min-height: 340px;
-  border-radius: 28px;
+  border-radius: 20px;
   overflow: hidden;
   text-decoration: none;
-  box-shadow:
-    0 8px 40px rgba(31,42,68,0.10),
-    0 2px 8px rgba(31,42,68,0.06);
+  box-shadow: 0 18px 50px rgba(120,74,35,.08);
   margin-bottom: 3rem;
   transition: transform 0.24s ease, box-shadow 0.24s ease;
   background: #fff;
-  border: 1.5px solid rgba(31,42,68,0.07);
+  border: 1px solid #ead9cb;
 }
 
 .bi-featured:hover {
   transform: translateY(-5px);
   box-shadow:
-    0 24px 60px rgba(31,42,68,0.14),
+    0 24px 60px rgba(56,41,31,0.14),
     0 4px 16px rgba(255,138,61,0.10);
 }
 
@@ -240,9 +233,10 @@
 
 .bi-featured__title {
   margin: 0 0 0.85rem;
-  font-size: clamp(1.5rem, 2.6vw, 2rem);
-  font-weight: 900;
-  color: #1F2A44;
+  font-family: Arvo, Georgia, serif;
+  font-size: clamp(1.55rem, 2.8vw, 2.1rem);
+  font-weight: 700;
+  color: #38291f;
   line-height: 1.2;
   letter-spacing: -0.025em;
   transition: color 0.18s ease;
@@ -254,7 +248,7 @@
 .bi-featured__excerpt {
   margin: 0 0 1.4rem;
   font-size: 1rem;
-  color: rgba(31,42,68,0.68);
+  color: rgba(56,41,31,0.68);
   line-height: 1.7;
   max-width: 52ch;
 }
@@ -287,17 +281,17 @@
   overflow: hidden;
   text-decoration: none;
   background: #fff;
-  border: 1.5px solid rgba(31,42,68,0.07);
+  border: 1.5px solid rgba(56,41,31,0.07);
   box-shadow:
-    0 4px 20px rgba(31,42,68,0.07),
-    0 1px 4px rgba(31,42,68,0.04);
+    0 4px 20px rgba(56,41,31,0.07),
+    0 1px 4px rgba(56,41,31,0.04);
   transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
 }
 
 .bi-card:hover {
   transform: translateY(-5px);
   box-shadow:
-    0 20px 48px rgba(31,42,68,0.12),
+    0 20px 48px rgba(56,41,31,0.12),
     0 4px 12px rgba(255,138,61,0.08);
   border-color: rgba(255,138,61,0.22);
 }
@@ -352,7 +346,7 @@
   margin: 0 0 0.6rem;
   font-size: 1.1rem;
   font-weight: 900;
-  color: #1F2A44;
+  color: #38291f;
   line-height: 1.3;
   letter-spacing: -0.018em;
   transition: color 0.18s ease;
@@ -362,7 +356,7 @@
 .bi-card__excerpt {
   margin: 0;
   font-size: 0.9rem;
-  color: rgba(31,42,68,0.65);
+  color: rgba(56,41,31,0.65);
   line-height: 1.65;
   flex: 1;
   /* clamp to ~3 lines */
@@ -378,7 +372,7 @@
   gap: 0.45rem;
   margin-top: 1.1rem;
   padding-top: 0.9rem;
-  border-top: 1px solid rgba(31,42,68,0.07);
+  border-top: 1px solid rgba(56,41,31,0.07);
   flex-wrap: wrap;
 }
 
@@ -425,9 +419,9 @@
 /* ── Shared page shell ───────────────────────────────────── */
 .blog-page {
   min-height: 100vh;
-  background: #FFF7ED;
+  background: #fffaf5;
   font-family: 'Nunito', 'Arvo', sans-serif;
-  color: #1F2A44;
+  color: #38291f;
   position: relative;
 }
 
@@ -492,7 +486,7 @@
   margin: 0 0 0.6rem;
   font-size: clamp(2.1rem, 4.5vw, 3rem);
   font-weight: 900;
-  color: #1F2A44;
+  color: #38291f;
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
@@ -597,7 +591,7 @@
   margin: 0 0 0.6rem;
   font-size: 1.4rem;
   font-weight: 900;
-  color: #1F2A44;
+  color: #38291f;
   line-height: 1.25;
   letter-spacing: -0.02em;
   transition: color 0.18s ease;
@@ -673,7 +667,7 @@
   margin: 0 0 0.75rem;
   font-size: clamp(1.7rem, 4vw, 2.4rem);
   font-weight: 800;
-  color: #1F2A44;
+  color: #38291f;
   line-height: 1.2;
 }
 
@@ -714,7 +708,7 @@
   margin: 0 0 0.9rem;
   font-size: 1.15rem;
   font-weight: 800;
-  color: #1F2A44;
+  color: #38291f;
 }
 
 .blog-post__section-heading::before {
@@ -745,7 +739,7 @@
   border-left: 3px solid #FFD166;
   border-radius: 0 8px 8px 0;
   padding: 0.6rem 0.9rem;
-  color: #1F2A44;
+  color: #38291f;
   white-space: pre;
   overflow-x: auto;
 }
@@ -768,7 +762,7 @@
 .blog-post__cta-text {
   font-size: 1rem;
   font-weight: 700;
-  color: #1F2A44;
+  color: #38291f;
   margin: 0;
 }
 
@@ -778,7 +772,7 @@
   gap: 0.4rem;
   padding: 0.7rem 1.5rem;
   background: linear-gradient(120deg, #FF8A3D, #FFD166);
-  color: #1F2A44;
+  color: #38291f;
   border-radius: 999px;
   text-decoration: none;
   font-weight: 800;
@@ -823,7 +817,7 @@
   text-decoration: none;
   font-size: 0.86rem;
   font-weight: 700;
-  color: #1F2A44;
+  color: #38291f;
   transition: all 0.18s ease;
 }
 .blog-post__related-link:hover {
@@ -839,7 +833,7 @@
 }
 .blog-notfound h2 {
   font-size: 1.5rem;
-  color: #1F2A44;
+  color: #38291f;
   margin-bottom: 1rem;
 }
 
@@ -862,7 +856,7 @@
 .blog-breadcrumb__item:hover { color: #FF8A3D; }
 
 .blog-breadcrumb__item--current {
-  color: #1F2A44;
+  color: #38291f;
   font-weight: 700;
   cursor: default;
 }
@@ -903,7 +897,7 @@
 .blog-post__journey-cta {
   margin: 2.5rem 0;
   border-radius: 24px;
-  background: linear-gradient(135deg, #1F2A44 0%, #2a3a5c 100%);
+  background: linear-gradient(135deg, #38291f 0%, #2a3a5c 100%);
   overflow: hidden;
 }
 
@@ -963,7 +957,7 @@
 
 .blog-post__journey-cta__btn--primary {
   background: linear-gradient(120deg, #FF8A3D, #FFD166);
-  color: #1F2A44;
+  color: #38291f;
   box-shadow: 0 8px 22px rgba(255, 138, 61, 0.35);
 }
 .blog-post__journey-cta__btn--primary:hover {
@@ -990,7 +984,7 @@
   margin: 0 0 1.2rem;
   font-size: 1.2rem;
   font-weight: 900;
-  color: #1F2A44;
+  color: #38291f;
   letter-spacing: -0.01em;
 }
 
@@ -1045,7 +1039,7 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 800;
-  color: #1F2A44;
+  color: #38291f;
   line-height: 1.3;
   transition: color 0.15s;
 }
