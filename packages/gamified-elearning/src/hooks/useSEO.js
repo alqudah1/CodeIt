@@ -5,7 +5,7 @@ const DEFAULT_IMAGE = `${BASE_URL}/brand/og-image.png`;
 
 const DEFAULTS = {
   title: "AI Coding for Kids: Build Websites & Learn the Code | CodeIt",
-  description: "CodeIt helps kids and beginner coders build websites, games, and quizzes with AI, then understand and edit the code behind each project.",
+  description: "CodeIt helps kids and beginner coders build websites, games, and quizzes, then understand and edit the code behind each project.",
   canonical: "/",
   image: DEFAULT_IMAGE,
 };

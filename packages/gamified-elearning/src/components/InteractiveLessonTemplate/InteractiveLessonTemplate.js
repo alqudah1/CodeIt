@@ -436,7 +436,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                   className="sl-completion-card__btn sl-completion-card__btn--builder"
                   onClick={() => navigate(`/builder?prompt=${encodeURIComponent(LESSON_BUILDER_PROMPTS[id])}`)}
                 >
-                  Use this in AI Builder
+                  Use this in Project Studio
                 </button>
               )}
               <button
@@ -683,7 +683,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               href={`/builder?prompt=${encodeURIComponent(LESSON_BUILDER_PROMPTS[id])}`}
               className="sl-builder-link__btn"
             >
-              Use this in AI Builder
+              Use this in Project Studio
             </a>
           </div>
         )}
