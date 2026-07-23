@@ -118,7 +118,7 @@ const MainPage = () => {
     };
 
     fetchProgress();
-  }, [user]);
+  }, [user, token]);
 
   // "Your Next Mission" — sequential: lesson → quiz → puzzle (puzzles only for lessons 1-PUZZLE_LESSON_MAX)
   const nextMission = useMemo(() => {

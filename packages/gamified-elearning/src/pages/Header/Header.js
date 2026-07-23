@@ -81,7 +81,7 @@ export default function Header() {
 
         <div id="site-navigation" className={`site-header__body${menuOpen ? " is-open" : ""}`}>
           <nav className="site-header__nav" aria-label="Main navigation">
-            <ul className="site-header__nav-list" role="list">
+            <ul className="site-header__nav-list">
               {navLinks.map(({ to, label, primary }) => {
                 const active = location.pathname === to;
                 return (
