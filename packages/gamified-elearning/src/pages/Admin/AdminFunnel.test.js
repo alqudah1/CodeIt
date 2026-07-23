@@ -23,6 +23,7 @@ describe('admin acquisition funnel', () => {
         json: async () => ({
           events: [{ event_name: 'parent_cta_click', event_count: 7, unique_users: 0 }],
           breakdown: [
+            { event_name: 'acquisition_visit', meta: 'instagram', event_count: 9 },
             { event_name: 'parent_cta_click', meta: 'try-project', event_count: 4 },
             { event_name: 'parent_cta_click', meta: 'view-pricing', event_count: 2 },
             { event_name: 'parent_cta_click', meta: 'pilot-email', event_count: 1 },
@@ -51,6 +52,8 @@ describe('admin acquisition funnel', () => {
     render(<AdminFunnel />);
 
     await waitFor(() => expect(screen.getByText('Parent acquisition actions')).toBeInTheDocument());
+    expect(screen.getByText('How visitors found CodeIt')).toBeInTheDocument();
+    expect(screen.getByText('Instagram').parentElement).toHaveTextContent('9');
     expect(screen.getByText('Tried a project').parentElement).toHaveTextContent('4');
     expect(screen.getByText('Viewed family pricing').parentElement).toHaveTextContent('2');
     expect(screen.getByText('Opened pilot email').parentElement).toHaveTextContent('1');

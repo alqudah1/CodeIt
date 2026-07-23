@@ -26,6 +26,17 @@ describe("trackEvent", () => {
     );
   });
 
+  test("sends only a fixed acquisition channel", async () => {
+    await expect(trackEvent("acquisition_visit", "instagram")).resolves.toBe(true);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/api/analytics/event"),
+      expect.objectContaining({
+        body: JSON.stringify({ event_name: "acquisition_visit", meta: "instagram" }),
+      })
+    );
+  });
+
   test("sends only the fixed founding offer identifier", async () => {
     await expect(trackEvent("pricing_interest", "founding-family")).resolves.toBe(true);
 

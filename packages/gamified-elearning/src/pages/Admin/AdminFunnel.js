@@ -24,6 +24,17 @@ const PARENT_ACTIONS = [
   ['pilot-email', 'Opened pilot email'],
 ];
 
+const ACQUISITION_SOURCES = [
+  ['google', 'Google'],
+  ['youtube', 'YouTube'],
+  ['instagram', 'Instagram'],
+  ['tiktok', 'TikTok'],
+  ['facebook', 'Facebook'],
+  ['search', 'Other search'],
+  ['referral', 'Other websites'],
+  ['direct', 'Direct / unknown'],
+];
+
 const fmt = (value) => (Number(value) || 0).toLocaleString();
 const usd = (value) => value == null ? '—' : `$${Number(value).toFixed(3)}`;
 
@@ -78,6 +89,9 @@ export default function AdminFunnel() {
 
   const parentActions = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'parent_cta_click').map((row) => [row.meta, Number(row.event_count) || 0])
+  ), [data]);
+  const acquisitionSources = useMemo(() => Object.fromEntries(
+    (data?.breakdown || []).filter((row) => row.event_name === 'acquisition_visit').map((row) => [row.meta, Number(row.event_count) || 0])
   ), [data]);
   const foundingLeads = data?.founding_leads || [];
 
@@ -136,6 +150,17 @@ export default function AdminFunnel() {
               </article>
             ))}
           </div>
+
+          <div className="adm-section-head">How visitors found CodeIt</div>
+          <div className="funnel-parent-grid">
+            {ACQUISITION_SOURCES.map(([key, label]) => (
+              <article key={key}>
+                <span>{label}</span>
+                <strong>{fmt(acquisitionSources[key])}</strong>
+              </article>
+            ))}
+          </div>
+          <p className="funnel-parent-note">One privacy-safe source bucket per browser session. Campaign names, search terms, and referring URLs are never stored.</p>
 
           <div className="adm-section-head">Parent acquisition actions</div>
           <div className="funnel-parent-grid">
