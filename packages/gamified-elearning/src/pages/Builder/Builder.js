@@ -1802,15 +1802,11 @@ export default function Builder() {
               value={prompt}
               onChange={e => setPrompt(e.target.value)}
               onKeyDown={handleKeyDown}
-              rows={4}
+              rows={2}
               disabled={loading || editing}
             />
             <div className="bldr-textarea-hint">Ctrl+Enter to build</div>
           </div>
-          <p className="bldr-privacy-hint">
-            Keep personal details private. Do not enter your full name, email, school, address, or passwords.
-          </p>
-
           {code && !loading && (
             <div className="bldr-quickstarts">
               <span className="bldr-quickstarts__label">Try another idea:</span>
@@ -1838,6 +1834,9 @@ export default function Builder() {
               ? <><span className="bldr-spinner bldr-spinner--btn" />Building...</>
               : hasResult ? 'Rebuild from scratch' : 'Build my project'}
           </button>
+          <p className="bldr-privacy-hint">
+            Keep personal details private. Do not enter your full name, email, school, address, or passwords.
+          </p>
         </div>
 
         {/* ════════════════════════════════════════
