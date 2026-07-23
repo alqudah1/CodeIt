@@ -6,8 +6,6 @@ import { useFAQSchema } from '../../hooks/useFAQSchema';
 import { trackEvent } from '../../utils/trackEvent';
 import './CodingForKids.css';
 
-const PILOT_EMAIL = 'mailto:hello@codeitlearn.com?subject=Founding%20Family%20pilot&body=I%27m%20a%20parent%20or%20educator%20interested%20in%20the%20CodeIt%20pilot.%0A%0ALearner%20age%20range%3A%0AWhat%20they%20want%20to%20build%3A';
-
 const FAQS = [
   {
     q: 'What age is CodeIt for?',
@@ -277,14 +275,14 @@ export default function CodingForKids() {
                 </p>
               </div>
               <div className="parents-pilot__action">
-                <a
-                  href={PILOT_EMAIL}
+                <Link
+                  to="/pricing"
                   className="parents-button parents-button--primary"
-                  onClick={() => void trackEvent('parent_cta_click', 'pilot-email')}
+                  onClick={() => void trackEvent('parent_cta_click', 'view-pricing')}
                 >
-                  Ask about the pilot
-                </a>
-                <span>This opens your email app. CodeIt does not save your address on this page.</span>
+                  Join the founding family waitlist
+                </Link>
+                <span>No charge. Use a Parent / Educator account so we can contact you if the pilot opens.</span>
               </div>
             </div>
           </div>

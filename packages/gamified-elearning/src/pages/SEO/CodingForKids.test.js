@@ -34,12 +34,12 @@ describe('parent acquisition page', () => {
     expect(screen.queryByText(/everything is free/i)).not.toBeInTheDocument();
   });
 
-  test('offers a user-initiated pilot email without a collection form', () => {
+  test('sends parents to the explicit founding-family waitlist', () => {
     render(<CodingForKids />);
 
-    const pilotLink = screen.getByRole('link', { name: 'Ask about the pilot' });
-    expect(pilotLink.getAttribute('href')).toMatch(/^mailto:hello@codeitlearn\.com/);
-    expect(screen.getByText(/does not save your address on this page/i)).toBeInTheDocument();
+    const pilotLink = screen.getByRole('link', { name: 'Join the founding family waitlist' });
+    expect(pilotLink).toHaveAttribute('href', '/pricing');
+    expect(screen.getByText(/use a Parent \/ Educator account/i)).toBeInTheDocument();
     expect(document.querySelector('form')).not.toBeInTheDocument();
     expect(useSEO).toHaveBeenCalledWith(expect.objectContaining({ canonical: '/coding-for-kids' }));
     expect(useFAQSchema).toHaveBeenCalledWith(expect.arrayContaining([
@@ -47,6 +47,6 @@ describe('parent acquisition page', () => {
     ]));
 
     fireEvent.click(pilotLink);
-    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'pilot-email');
+    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'view-pricing');
   });
 });
