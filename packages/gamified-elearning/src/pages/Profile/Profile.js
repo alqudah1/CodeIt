@@ -15,8 +15,8 @@ const LEVEL_TITLES = [
   'Beginner Builder',
   'Code Explorer',
   'Creative Coder',
-  'AI Apprentice',
-  'AI Wizard',
+  'Project Apprentice',
+  'Project Wizard',
   'Master Creator',
   'Legend',
 ];
@@ -133,7 +133,7 @@ export default function Profile() {
             {[
               { action: 'Build a project',   xp: '+20 XP' },
               { action: 'Save a project',    xp: '+15 XP' },
-              { action: 'Edit with AI',      xp: '+10 XP' },
+              { action: 'Improve a project', xp: '+10 XP' },
             ].map(({ action, xp }) => (
               <div key={action} className="profile-earn__item">
                 <span className="profile-earn__action">{action}</span>

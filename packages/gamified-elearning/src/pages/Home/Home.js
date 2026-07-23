@@ -182,7 +182,7 @@ export default function Home() {
             <div className="studio-section-heading">
               <p className="studio-kicker">A better first step into coding</p>
               <h2 id="studio-start-title">Creation first. Understanding follows.</h2>
-              <p>CodeIt keeps the excitement of AI building, but turns every project into something a student can inspect, change, and learn from.</p>
+              <p>CodeIt turns an idea into a working project, then helps students inspect, change, and understand what they made.</p>
             </div>
             <div className="studio-start__grid">
               {STARTING_POINTS.map((item) => (
@@ -210,7 +210,7 @@ export default function Home() {
             </div>
             <div className="studio-loop__copy">
               <p className="studio-kicker">The build → learn → improve loop</p>
-              <h2 id="studio-loop-title">The AI gives you momentum. The learning makes it yours.</h2>
+              <h2 id="studio-loop-title">A first version gives you momentum. The learning makes it yours.</h2>
               <ol>
                 <li><span>1</span><div><strong>Describe</strong><p>Explain what you want to create in everyday language.</p></div></li>
                 <li><span>2</span><div><strong>Build and play</strong><p>Use the working result immediately and notice what you want to change.</p></div></li>
@@ -253,11 +253,11 @@ export default function Home() {
           <div className="studio-footer__top">
             <div className="studio-footer__brand">
               <img src="/brand/CodeItRG.svg" alt="CodeIt" />
-              <p>Build with AI. Learn the code. Make it yours.</p>
+              <p>Build something. Learn the code. Make it yours.</p>
             </div>
             <div>
               <strong>Build</strong>
-              <Link to="/builder">AI project studio</Link>
+              <Link to="/builder">Project studio</Link>
               <Link to="/playground">Python playground</Link>
               <Link to="/lessons">Beginner lessons</Link>
             </div>

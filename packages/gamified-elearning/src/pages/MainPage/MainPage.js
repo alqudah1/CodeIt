@@ -628,14 +628,14 @@ const MainPage = () => {
         ══════════════════════════════════════════════════════ */}
         <section className="mp-builder-cta">
           <div className="mp-builder-cta__copy">
-            <span className="mp-builder-cta__badge">AI Website Builder</span>
-            <h2 className="mp-builder-cta__title">Build a real website with AI</h2>
+            <span className="mp-builder-cta__badge">Project Studio</span>
+            <h2 className="mp-builder-cta__title">Turn your idea into a real project</h2>
             <p className="mp-builder-cta__sub">
               Describe any idea in plain words — a quiz, a game, a portfolio — and watch CodeIt build it for you instantly.
             </p>
           </div>
           <Link to="/builder" className="mp-builder-cta__btn">
-            Try AI Builder &rarr;
+            Open Project Studio &rarr;
           </Link>
         </section>
 
