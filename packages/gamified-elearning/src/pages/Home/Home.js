@@ -156,15 +156,15 @@ export default function Home() {
                   data-cta="hero-build"
                   onClick={() => trackEvent("landing_cta_click", "hero-build")}
                 >
-                  Start making <span aria-hidden="true">→</span>
+                  {user ? "Open project studio" : "Start making"} <span aria-hidden="true">→</span>
                 </Link>
                 <Link
-                  to="/lessons"
+                  to={user ? "/MainPage" : "/lessons"}
                   className="studio-button studio-button--quiet"
-                  data-cta="hero-lessons"
-                  onClick={() => trackEvent("landing_cta_click", "hero-lessons")}
+                  data-cta={user ? "member-progress" : "hero-lessons"}
+                  onClick={() => { if (!user) trackEvent("landing_cta_click", "hero-lessons"); }}
                 >
-                  See how it works
+                  {user ? "View my progress" : "See how it works"}
                 </Link>
               </div>
             </div>
@@ -244,7 +244,7 @@ export default function Home() {
               data-cta="final-build"
               onClick={() => trackEvent("landing_cta_click", "final-build")}
             >
-              Start building for free <span aria-hidden="true">→</span>
+              {user ? "Keep building" : "Start building for free"} <span aria-hidden="true">→</span>
             </Link>
           </section>
         </main>
