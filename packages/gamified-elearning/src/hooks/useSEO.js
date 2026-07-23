@@ -4,7 +4,7 @@ const BASE_URL = "https://codeitlearn.com";
 const DEFAULT_IMAGE = `${BASE_URL}/brand/og-image.png`;
 
 const DEFAULTS = {
-  title: "AI Coding for Kids: Build Websites & Learn the Code | CodeIt",
+  title: "Coding for Kids: Build Websites & Learn the Code | CodeIt",
   description: "CodeIt helps kids and beginner coders build websites, games, and quizzes, then understand and edit the code behind each project.",
   canonical: "/",
   image: DEFAULT_IMAGE,

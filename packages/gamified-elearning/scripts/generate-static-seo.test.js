@@ -38,8 +38,8 @@ test('does not leak one route into another route document', () => {
   const games = renderRouteDocument(TEMPLATE, PAGES.find((item) => item.route === '/python-games-for-kids'));
 
   assert.match(builder, /Build a website\. Then learn how it works/);
-  assert.doesNotMatch(builder, /Turn Python practice into a challenge/);
-  assert.match(games, /Turn Python practice into a challenge/);
+  assert.doesNotMatch(builder, /Python games that make every line matter/);
+  assert.match(games, /Python games that make every line matter/);
 });
 
 test('every route document has one matching canonical, title, and static marker', () => {
