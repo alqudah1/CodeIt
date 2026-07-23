@@ -1093,7 +1093,7 @@ export default function Builder() {
   }, [user, token]);
 
   useEffect(() => {
-    if (projectsLoading || savedProjects.length === 0) return undefined;
+    if (projectsLoading) return undefined;
     if (new URLSearchParams(location.search).get('view') !== 'projects') return undefined;
     const timer = setTimeout(() => {
       document.getElementById('my-creations')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2785,7 +2785,7 @@ export default function Builder() {
         {/* ════════════════════════════════════════
             MY SAVED PROJECTS
         ════════════════════════════════════════ */}
-        {user && (projectsLoading || savedProjects.length > 0) && (
+        {user && (
           <section id="my-creations" className="bldr-projects" aria-label="My saved projects">
             <div className="bldr-projects__header">
               <h2 className="bldr-projects__title">My Creations</h2>
@@ -2821,6 +2821,12 @@ export default function Builder() {
               </div>
             )}
 
+
+            {!projectsLoading && savedProjects.length === 0 && (
+              <div className="bldr-projects__loading">
+                <span>Your first saved project will appear here. Start above, then save it when you are ready.</span>
+              </div>
+            )}
             {!projectsLoading && savedProjects.length > 0 && (
               <div className="bldr-projects__grid">
                 {sortedProjects.map(project => (
