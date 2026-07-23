@@ -672,6 +672,8 @@ export default function Builder() {
   const [savedProjects, setSavedProjects]     = useState([]);
   const [projectsLoading, setProjectsLoading] = useState(false);
 
+  const [projectOpeningId, setProjectOpeningId] = useState(null);
+  const [projectOpenError, setProjectOpenError] = useState('');
   // ── Version history ────────────────────────────────────────────────────────
   const [localVersions, setLocalVersions]       = useState([]);   // in-session snapshots
   const [serverVersions, setServerVersions]     = useState([]);   // from DB
@@ -1451,6 +1453,8 @@ export default function Builder() {
   // ── Load saved project ─────────────────────────────────────────────────────
   const handleLoadProject = async (project) => {
     try {
+    setProjectOpeningId(project.id);
+    setProjectOpenError('');
       const res  = await fetch(`${API_BASE_URL}/api/builder/projects/${project.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -1508,8 +1512,9 @@ export default function Builder() {
       fetchServerVersions(p.id);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch {
-      setPrompt(project.prompt);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setProjectOpenError('We could not open that project. Please check your connection and try again.');
+    } finally {
+      setProjectOpeningId(null);
     }
   };
 
@@ -2875,6 +2880,9 @@ export default function Builder() {
             )}
             {!projectsLoading && savedProjects.length > 0 && (
               <div className="bldr-projects__grid">
+            {projectOpenError && (
+              <p className="bldr-error-inline" role="alert">{projectOpenError}</p>
+            )}
                 {sortedProjects.map(project => (
                   <div key={project.id} className={`bldr-project-card${favoriteIds.has(project.id) ? ' bldr-project-card--fav' : ''}`}>
                     <div
@@ -2903,13 +2911,16 @@ export default function Builder() {
                       <button
                         className="bldr-project-card__btn bldr-project-card__btn--load"
                         onClick={() => handleLoadProject(project)}
+                        disabled={projectOpeningId !== null}
+                        aria-busy={projectOpeningId === project.id}
                       >
-                        Continue
+                        {projectOpeningId === project.id ? 'Opening...' : 'Continue'}
                       </button>
                       <button
                         className="bldr-project-card__btn bldr-project-card__btn--delete"
                         onClick={() => handleDeleteProject(project.id)}
                         aria-label={`Delete ${project.title}`}
+                        disabled={projectOpeningId !== null}
                       >
                         Delete
                       </button>
