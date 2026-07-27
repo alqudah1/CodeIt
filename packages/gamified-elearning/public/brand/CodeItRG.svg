@@ -2,9 +2,9 @@
   <title id="title">CodeIt — Play code</title>
   <desc id="desc">CodeIt wordmark in a coral creative cloud with yellow lettering</desc>
   <path fill="#FF7959" d="M18 18c7-8 21-10 32-5 12-9 32-11 47-5 13-5 32-1 40 10 13-3 28 3 33 15 5 12-1 25-13 31-9 5-20 4-28 1-10 7-25 8-37 3-14 5-31 0-38-10-13 3-28-4-32-16-3-8-1-17 5-23-4 1-7 0-9-1Z"/>
-  <circle cx="45" cy="10" r="7" fill="#FF7959"/>
-  <circle cx="132" cy="9" r="4.5" fill="#FF7959"/>
-  <circle cx="171" cy="59" r="5.5" fill="#FF7959"/>
+  <circle cx="45" cy="11" r="4.5" fill="#FF7959"/>
+  <circle cx="132" cy="11" r="3" fill="#FF7959"/>
+  <circle cx="169" cy="57" r="3.25" fill="#FF7959"/>
   <text x="28" y="45" fill="#FFD447" font-family="Arial Rounded MT Bold, Nunito, Arial, sans-serif" font-size="27" font-weight="900" letter-spacing="-1.8">CODEIT</text>
   <text x="76" y="60" fill="#FFD447" font-family="Nunito, Arial, sans-serif" font-size="8.5" font-weight="800" letter-spacing="1.4">PLAY CODE</text>
 </svg>
