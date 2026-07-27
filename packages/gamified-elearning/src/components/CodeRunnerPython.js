@@ -137,7 +137,7 @@ const CodeRunnerPython = ({ lessonId, starterCode, title, height = '220px', onOu
         <CodeMirror
           value={code}
           height={height}
-          theme="dark"
+          theme="light"
           extensions={[python()]}
           onChange={(val) => setCode(val)}
           basicSetup={{

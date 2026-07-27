@@ -324,7 +324,9 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.45rem 0.85rem;
-  background: #181825;
+  background: #f3e4d8;
+  border: 1px solid #ead3c2;
+  border-bottom: 0;
   border-radius: 10px 10px 0 0;
 }
 
@@ -350,7 +352,7 @@
   margin-left: 2px;
   font-size: 0.68rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.45);
+  color: #745d50;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -359,7 +361,7 @@
   margin-left: auto;
   font-size: 0.62rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.28);
+  color: #9a8172;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -369,12 +371,12 @@
   margin: 0 0 1.1rem;
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid rgba(43, 45, 66, 0.08);
+  border: 1px solid #ead3c2;
 }
 
 .sl-concept__code {
-  background: #1a1a2e;
-  color: #a8e6cf;
+  background: #fff8f1;
+  color: #3f5147;
   margin: 0;
   padding: 1rem 1.2rem;
   font-family: 'Fira Code', 'Consolas', 'Courier New', monospace;
@@ -466,8 +468,9 @@
 .sl-editor-wrap .editor-output {
   margin: 0;
   padding: 0.75rem 1.1rem;
-  background: #181825;
-  color: #a0f0a0;
+  background: #fff8f1;
+  color: #176b52;
+  border-top: 1px solid #ead3c2;
   font-family: 'Fira Code', 'Consolas', monospace;
   font-size: 0.88rem;
   min-height: 52px;

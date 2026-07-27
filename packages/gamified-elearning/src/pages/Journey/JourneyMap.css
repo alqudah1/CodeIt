@@ -626,3 +626,130 @@
   .jm-tl-circle   { width: 34px; height: 34px; }
   .jm-tl-type-tag { display: none; }
 }
+
+/* Warm light CodeIt theme */
+.jm-page {
+  background:
+    radial-gradient(circle at 12% 6%, rgba(255, 122, 0, 0.11), transparent 28%),
+    radial-gradient(circle at 88% 12%, rgba(255, 107, 107, 0.08), transparent 26%),
+    #fffaf5;
+}
+
+.jm-banner__title {
+  color: #38291f;
+  text-shadow: none;
+}
+
+.jm-banner__sub,
+.jm-level-hint,
+.jm-loading {
+  color: #745d50;
+}
+
+.jm-xp-pill {
+  background: #fff3d4;
+  color: #8a6800;
+  border-color: #ead59a;
+}
+
+.jm-timeline::before {
+  background: #ead9cb;
+}
+
+.jm-tl-connector {
+  background: #dcc5b4;
+}
+
+.jm-tl-start span {
+  color: #8a746a;
+}
+
+.jm-tl-node {
+  background: #fff;
+  border-color: #ead9cb;
+  box-shadow: 0 8px 24px rgba(94, 55, 30, 0.09);
+}
+
+.jm-tl-node--available:hover,
+.jm-tl-node--completed:hover {
+  background: #fffaf5;
+  box-shadow: 0 14px 34px rgba(94, 55, 30, 0.14);
+}
+
+.jm-tl-node--available:focus-visible,
+.jm-tl-node--completed:focus-visible {
+  outline-color: rgba(255, 122, 0, 0.55);
+}
+
+.jm-tl-node--completed {
+  background: #f1fbf6;
+}
+
+.jm-tl-node--current {
+  background: #fff3e8;
+}
+
+.jm-tl-node--locked .jm-tl-circle {
+  background: #d8c8bc !important;
+  border-color: #c7aa95 !important;
+  filter: saturate(0.35);
+}
+
+.jm-tl-circle {
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 14px rgba(94, 55, 30, 0.18);
+}
+
+.jm-tl-node--available:hover .jm-tl-circle,
+.jm-tl-node--current .jm-tl-circle {
+  box-shadow: 0 6px 18px rgba(94, 55, 30, 0.22);
+}
+
+.jm-tl-type-tag,
+.jm-chapter__sub {
+  color: #8a746a;
+}
+
+.jm-tl-title,
+.jm-chapter__title {
+  color: #38291f;
+}
+
+.jm-tl-sub {
+  color: #745d50;
+}
+
+.jm-tl-sub--locked,
+.jm-tl-badge--locked {
+  color: #9a8172;
+}
+
+.jm-tl-badge--available {
+  background: #fff3d4;
+  color: #8a6800;
+  border-color: #ead59a;
+}
+
+.jm-tl-badge--locked {
+  background: #f4ebe4;
+  border-color: #decbbc;
+}
+
+.jm-levelup-toast {
+  background: #fff3e8;
+  border-color: #f0c39f;
+  box-shadow: 0 12px 32px rgba(94, 55, 30, 0.16);
+}
+
+.jm-levelup-toast__badge {
+  color: #8a6800;
+  background: #fff3d4;
+}
+
+.jm-levelup-toast__title {
+  color: #38291f;
+}
+
+.jm-levelup-toast__unlocks {
+  color: #745d50;
+}
