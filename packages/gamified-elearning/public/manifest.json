@@ -4,7 +4,7 @@
   "description": "Learn Python through interactive lessons, coding puzzles, and quizzes.",
   "icons": [
     {
-      "src": "brand/LogoForSM.png",
+      "src": "brand/codeit-logo-trimmed.png",
       "type": "image/png",
       "sizes": "any",
       "purpose": "any"
