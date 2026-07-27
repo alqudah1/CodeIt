@@ -32,6 +32,7 @@ const ACQUISITION_SOURCES = [
   ['tiktok', 'TikTok'],
   ['facebook', 'Facebook'],
   ['search', 'Other search'],
+  ['project', 'Shared projects'],
   ['referral', 'Other websites'],
   ['direct', 'Direct / unknown'],
 ];

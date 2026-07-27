@@ -8,6 +8,7 @@ function namedChannel(value = '') {
   const source = value.trim().toLowerCase();
   if (!source) return null;
   if (source.includes('google')) return 'google';
+  if (source === 'project-share') return 'project';
   if (source.includes('youtube')) return 'youtube';
   if (source.includes('instagram') || source === 'ig') return 'instagram';
   if (source.includes('tiktok')) return 'tiktok';

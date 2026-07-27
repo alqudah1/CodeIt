@@ -67,7 +67,9 @@ describe('public project sharing', () => {
     await screen.findByRole('heading', { name: 'Solar System Quiz' });
     fireEvent.click(screen.getByRole('button', { name: 'Share project' }));
 
-    await waitFor(() => expect(clipboardWrite).toHaveBeenCalledWith(window.location.href));
+    await waitFor(() => expect(clipboardWrite).toHaveBeenCalledWith(
+      `${window.location.origin}/project/public-123?utm_source=project-share`
+    ));
     expect(trackEvent).toHaveBeenCalledWith('project_share', 'viewer', null);
     expect(screen.getByRole('button', { name: 'Link copied!' })).toBeInTheDocument();
   });

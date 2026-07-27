@@ -73,7 +73,9 @@ export default function PublicProject() {
   }
 
   async function handleShare() {
-    const url = window.location.href;
+    const shareUrl = new URL(`/project/${publicId}`, window.location.origin);
+    shareUrl.searchParams.set('utm_source', 'project-share');
+    const url = shareUrl.toString();
     const title = project?.title || 'A CodeIt project';
     const text = `Try "${title}", made with CodeIt—then remix it or build your own.`;
     let completed = false;

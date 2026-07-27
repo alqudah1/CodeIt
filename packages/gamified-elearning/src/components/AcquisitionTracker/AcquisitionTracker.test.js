@@ -12,6 +12,7 @@ describe('acquisition attribution', () => {
 
   test('reduces campaign and referrer data to fixed privacy-safe channels', () => {
     expect(getAcquisitionSource('?utm_source=instagram&utm_campaign=private-name', '')).toBe('instagram');
+    expect(getAcquisitionSource('?utm_source=project-share&project=private-title', '')).toBe('project');
     expect(getAcquisitionSource('', 'https://www.google.com/search?q=private+query')).toBe('google');
     expect(getAcquisitionSource('', 'https://example.org/private/path')).toBe('referral');
     expect(getAcquisitionSource('', '')).toBe('direct');

@@ -1590,7 +1590,7 @@ export default function Builder() {
   const handleShare = async () => {
     if (!publicId) return;
     const title = projectName || 'My Project';
-    const url = `https://codeitlearn.com/project/${publicId}`;
+    const url = `https://codeitlearn.com/project/${publicId}?utm_source=project-share`;
     const text = `I made "${title}" with CodeIt. Try it, then build your own.`;
     let completed = false;
 
@@ -1683,9 +1683,19 @@ export default function Builder() {
 
   const handleCopyPublicLink = async () => {
     if (!publicId) return;
-    const url = `https://codeitlearn.com/project/${publicId}`;
-    try { await navigator.clipboard.writeText(url); } catch (_) {}
-    setPublishStatus('copied');
+    const url = `https://codeitlearn.com/project/${publicId}?utm_source=project-share`;
+    let copied = false;
+    try {
+      await navigator.clipboard.writeText(url);
+      copied = true;
+    } catch (_) {}
+
+    if (copied) {
+      void trackEvent('project_share', 'creator', token);
+      setPublishStatus('copied');
+    } else {
+      setPublishStatus('error');
+    }
     setTimeout(() => setPublishStatus(null), 2000);
   };
 
@@ -2393,7 +2403,9 @@ export default function Builder() {
                     disabled={editing}
                     title={`https://codeitlearn.com/project/${publicId}`}
                   >
-                    {publishStatus === 'copied' ? 'Link copied!' : 'Copy link'}
+                    {publishStatus === 'copied' ? 'Link copied!'
+                      : publishStatus === 'error' ? 'Copy failed'
+                      : 'Copy link'}
                   </button>
                   <button
                     className="bldr-action-btn bldr-action-btn--unpublish"

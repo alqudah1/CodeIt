@@ -19,6 +19,7 @@ test('accepts only the fixed product event vocabulary', () => {
 test('accepts only allowlisted metadata and never arbitrary content', () => {
   assert.equal(normalizeMeta('landing_cta_click', 'hero-build'), 'hero-build');
   assert.equal(normalizeMeta('acquisition_visit', 'instagram'), 'instagram');
+  assert.equal(normalizeMeta('acquisition_visit', 'project'), 'project');
   assert.equal(normalizeMeta('acquisition_visit', 'private-campaign-name'), null);
   assert.equal(normalizeMeta('parent_cta_click', 'pilot-email'), 'pilot-email');
   assert.equal(normalizeMeta('parent_cta_click', 'parent@example.com'), null);
