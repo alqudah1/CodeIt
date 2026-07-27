@@ -56,6 +56,12 @@ const PATHS = [
   },
 ];
 
+const PILOT_EMAIL_HREF = [
+  'mailto:hello@codeitlearn.com',
+  '?subject=CodeIt%20Founding%20Family%20pilot',
+  '&body=Hi%20CodeIt%2C%0A%0AI%27m%20interested%20in%20the%20Founding%20Family%20pilot.%0A%0AMy%20learner%27s%20age%20range%3A%0AWhat%20we%27d%20like%20to%20build%3A%0A%0AThanks!',
+].join('');
+
 export default function CodingForKids() {
   useSEO({
     title: 'Coding for Kids: Projects, Python & Parent Guide | CodeIt',
@@ -282,7 +288,14 @@ export default function CodingForKids() {
                 >
                   Join the founding family waitlist
                 </Link>
-                <span>No charge. Use a Parent / Educator account so we can contact you if the pilot opens.</span>
+                <a
+                  href={PILOT_EMAIL_HREF}
+                  className="parents-button parents-button--quiet"
+                  onClick={() => void trackEvent('parent_cta_click', 'pilot-email')}
+                >
+                  Or email us about the pilot
+                </a>
+                <span>No charge. The email option opens your email app; nothing is sent automatically.</span>
               </div>
             </div>
           </div>

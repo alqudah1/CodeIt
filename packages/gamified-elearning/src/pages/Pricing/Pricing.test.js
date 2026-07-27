@@ -70,4 +70,18 @@ describe('Pricing', () => {
       state: { from: '/pricing', resumePricingInterest: true },
     });
   });
+
+  test('offers adults a low-friction email path without sending automatically', () => {
+    renderPricing();
+
+    const emailLink = screen.getByRole('link', { name: 'Or email us about the pilot' });
+    expect(emailLink).toHaveAttribute(
+      'href',
+      expect.stringMatching(/^mailto:hello@codeitlearn\.com\?subject=/)
+    );
+    expect(screen.getByText(/opens your email app; nothing is sent automatically/i)).toBeInTheDocument();
+
+    fireEvent.click(emailLink);
+    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'pilot-email');
+  });
 });

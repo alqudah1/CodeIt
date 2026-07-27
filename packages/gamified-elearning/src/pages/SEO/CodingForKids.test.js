@@ -39,7 +39,7 @@ describe('parent acquisition page', () => {
 
     const pilotLink = screen.getByRole('link', { name: 'Join the founding family waitlist' });
     expect(pilotLink).toHaveAttribute('href', '/pricing');
-    expect(screen.getByText(/use a Parent \/ Educator account/i)).toBeInTheDocument();
+    expect(screen.getByText(/nothing is sent automatically/i)).toBeInTheDocument();
     expect(document.querySelector('form')).not.toBeInTheDocument();
     expect(useSEO).toHaveBeenCalledWith(expect.objectContaining({ canonical: '/coding-for-kids' }));
     expect(useFAQSchema).toHaveBeenCalledWith(expect.arrayContaining([
@@ -48,5 +48,19 @@ describe('parent acquisition page', () => {
 
     fireEvent.click(pilotLink);
     expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'view-pricing');
+  });
+
+  test('gives adults a direct email option without claiming a message was sent', () => {
+    render(<CodingForKids />);
+
+    const emailLink = screen.getByRole('link', { name: 'Or email us about the pilot' });
+    expect(emailLink).toHaveAttribute(
+      'href',
+      expect.stringMatching(/^mailto:hello@codeitlearn\.com\?subject=/)
+    );
+    expect(screen.getByText(/opens your email app; nothing is sent automatically/i)).toBeInTheDocument();
+
+    fireEvent.click(emailLink);
+    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'pilot-email');
   });
 });

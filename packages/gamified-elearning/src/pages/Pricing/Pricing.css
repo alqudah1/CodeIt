@@ -37,6 +37,8 @@
 .pricing-button--primary { background: #ed6c1e; color: #fff; box-shadow: 0 10px 24px rgba(201,95,22,.22); }
 .pricing-button--primary:hover:not(:disabled) { background: #d95d13; }
 .pricing-button--primary:disabled { background: #dff6ea; color: #176b4d; cursor: default; box-shadow: none; }
+.pricing-button--email { min-height: 44px; margin-top: .65rem; border: 1px solid #e5d3c5; background: rgba(255,255,255,.72); color: #6d4935; font-size: .82rem; }
+.pricing-button--email:hover { background: #fff; box-shadow: 0 8px 18px rgba(120,74,35,.08); }
 
 .pricing-thanks { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; margin: 1.25rem 0 0; border: 1px solid #b7ead2; border-radius: 18px; background: #f0fdf6; padding: 1.15rem 1.3rem; }
 .pricing-thanks strong { color: #176b4d; }

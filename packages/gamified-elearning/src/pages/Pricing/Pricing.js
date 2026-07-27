@@ -22,6 +22,12 @@ const FOUNDING_FEATURES = [
   'Early access and a direct feedback channel',
 ];
 
+const PILOT_EMAIL_HREF = [
+  'mailto:hello@codeitlearn.com',
+  '?subject=CodeIt%20Founding%20Family%20pilot',
+  '&body=Hi%20CodeIt%2C%0A%0AI%27m%20interested%20in%20the%20Founding%20Family%20pilot.%0A%0AMy%20learner%27s%20age%20range%3A%0AWhat%20we%27d%20like%20to%20build%3A%0A%0AThanks!',
+].join('');
+
 const FAQ = [
   ['Can we use CodeIt for free?', 'Yes. The lessons, playground, coding games, and core project tools will keep a useful free option.'],
   ['Will I be charged today?', 'No. We are measuring interest before opening billing. Clicking the interest button does not start a trial or subscription.'],
@@ -142,6 +148,13 @@ export default function Pricing() {
               {interestStatus === 'saved' && 'Interest saved — thank you'}
               {(interestStatus === 'idle' || interestStatus === 'error' || interestStatus === 'parent-required') && 'Join the founding family waitlist'}
             </button>
+            <a
+              className="pricing-button pricing-button--email"
+              href={PILOT_EMAIL_HREF}
+              onClick={() => void trackEvent('parent_cta_click', 'pilot-email')}
+            >
+              Or email us about the pilot
+            </a>
             {interestStatus === 'error' && <p className="pricing-card__error" role="alert">We could not save that just now. Please try again.</p>}
             {interestStatus === 'parent-required' && (
               <p className="pricing-card__error" role="alert">
@@ -149,7 +162,7 @@ export default function Pricing() {
               </p>
             )}
             <small>
-              No charge or subscription. Joining asks CodeIt to contact the email on your Parent / Educator account if the pilot opens.
+              No charge or subscription. The email option opens your email app; nothing is sent automatically.
             </small>
           </article>
         </section>
