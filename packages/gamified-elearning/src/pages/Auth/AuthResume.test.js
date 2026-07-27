@@ -56,7 +56,9 @@ describe('builder authentication return', () => {
     fireEvent.change(screen.getByPlaceholderText('Your full name'), { target: { value: 'Parent Tester' } });
     fireEvent.change(screen.getByPlaceholderText('you@example.com'), { target: { value: 'parent@example.com' } });
     fireEvent.change(screen.getByPlaceholderText('Choose a password'), { target: { value: 'test-password' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Create Educator Account' }));
+    expect(screen.getByText('Create an adult account for family or classroom use.')).toBeInTheDocument();
+    expect(screen.getByText(/Parent dashboards are planned, not live/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Create Parent / Educator Account' }));
 
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/builder', {
       replace: true,

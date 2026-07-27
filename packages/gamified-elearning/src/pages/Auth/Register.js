@@ -158,7 +158,7 @@ export default function Register() {
 
             <button className="auth-path-card auth-path-card--educator" onClick={() => setStep('educator')}>
               <span className="auth-path-card__title">I am a Parent or Educator</span>
-              <span className="auth-path-card__desc">Create an account with email for class management</span>
+              <span className="auth-path-card__desc">Use email for family or classroom access</span>
             </button>
 
             <button className="auth-path-card auth-path-card--guest" onClick={() => navigate('/builder')}>
@@ -334,11 +334,15 @@ export default function Register() {
           <header className="auth-header">
             <span className="auth-pill">Parent / Educator</span>
             <h1>Create your account</h1>
-            <p>Set up your account to manage classes and track student progress.</p>
+            <p>
+              {resumePricingInterest
+                ? 'Create an adult account to finish joining the founding-family waitlist.'
+                : 'Create an adult account for family or classroom use.'}
+            </p>
           </header>
 
           <div className="auth-educator-note">
-            Class dashboards and student tracking are coming soon. Your account will be ready when they launch.
+            Parent dashboards are planned, not live. You can use the free project and learning tools today.
           </div>
 
           <form className="auth-form" onSubmit={submitE(onEducatorSubmit)}>
@@ -384,7 +388,7 @@ export default function Register() {
             </div>
 
             {error && <p className="error-message">{error}</p>}
-            <button type="submit" className="auth-button">Create Educator Account</button>
+            <button type="submit" className="auth-button">Create Parent / Educator Account</button>
           </form>
 
           <div className="auth-footer">
