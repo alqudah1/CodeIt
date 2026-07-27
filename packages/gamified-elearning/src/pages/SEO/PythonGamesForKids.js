@@ -23,7 +23,7 @@ const FAQS = [
   },
   {
     q: 'Are the Python coding games on CodeIt free?',
-    a: 'Yes — all current coding puzzles on CodeIt are free to play. Creating a free account unlocks progress tracking, XP, and leaderboard access so kids can see how far they have come. There is no premium tier for the core learning content — all 10 lessons, 10 quizzes, and 5+ coding puzzles are available at no cost.',
+    a: 'Yes — all current coding puzzles on CodeIt are free to play. The current learning path also includes 16 beginner lessons and matching quizzes. A paid family plan is being tested, but it is not live and CodeIt does not collect payment today.',
   },
 ];
 

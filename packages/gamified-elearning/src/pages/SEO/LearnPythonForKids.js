@@ -62,7 +62,7 @@ export default function LearnPythonForKids() {
           <section className="seo-answer-box" aria-label="Quick answer">
             <span className="seo-answer-box__label">Quick Answer</span>
             <p className="seo-answer-box__answer">
-              CodeIt helps kids, teens, and other beginners learn Python through 10 interactive
+              CodeIt helps kids, teens, and other beginners learn Python through 16 interactive
               lessons, each covering one concept at a time — no experience or downloads needed.
             </p>
             <p className="seo-answer-box__detail">
@@ -119,6 +119,12 @@ export default function LearnPythonForKids() {
                 <li><strong>Lesson 8:</strong> Loops with Lists — combining loops and lists together</li>
                 <li><strong>Lesson 9:</strong> Functions — writing reusable blocks of code</li>
                 <li><strong>Lesson 10:</strong> Combining Concepts — functions, loops, and lists working together</li>
+                <li><strong>Lesson 11:</strong> Numbers &amp; Arithmetic — calculating with integers and decimals</li>
+                <li><strong>Lesson 12:</strong> Booleans &amp; Comparisons — testing whether something is true</li>
+                <li><strong>Lesson 13:</strong> Logical Operators — combining several conditions</li>
+                <li><strong>Lesson 14:</strong> Type Casting — converting between text and numbers</li>
+                <li><strong>Lesson 15:</strong> String Formatting — building messages with f-strings</li>
+                <li><strong>Lesson 16:</strong> String Methods — cleaning, searching, and changing text</li>
               </ul>
               <p className="seo-p">
                 Each lesson has an interactive code editor built right into the page — no downloads,
@@ -199,7 +205,7 @@ export default function LearnPythonForKids() {
             <section className="seo-section">
               <h2 className="seo-h2">How to Start Learning Python Today</h2>
               <p className="seo-p">
-                Open Lesson 1 and write your first line of Python. CodeIt currently includes 10
+                Open Lesson 1 and write your first line of Python. CodeIt currently includes 16
                 beginner lessons, quizzes, and five coding puzzles, with useful activities available
                 free while the family plan is still being tested.
               </p>
@@ -240,7 +246,7 @@ export default function LearnPythonForKids() {
           <div className="seo-bottom-cta">
             <h2>Ready to Learn Python?</h2>
             <p>
-              10 free beginner lessons, no downloads, no credit card. Start Lesson 1 in under a
+              16 free beginner lessons, no downloads, no credit card. Start Lesson 1 in under a
               minute — or try the playground first to see Python in action.
             </p>
             <Link to="/journey" className="seo-cta-btn">

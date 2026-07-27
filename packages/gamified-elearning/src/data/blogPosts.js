@@ -384,7 +384,7 @@ const BLOG_POSTS = [
         body: [
           'CodeIt is a free, gamified platform built specifically for kids learning Python. Lessons are short, interactive, and structured so each one builds directly on the last.',
           'The journey starts at Lesson 1: Hello Python — one lesson, one concept, one line of code. It takes about 15 minutes and leaves kids with a working programme they wrote themselves.',
-          'From there, quizzes and coding puzzles reinforce each concept before the next one is introduced. The whole beginner journey — 10 lessons, 10 quizzes, and 10+ puzzles — is free and available immediately.',
+          'From there, quizzes and coding puzzles reinforce each concept before the next one is introduced. The current beginner journey includes 16 lessons, matching quizzes, and coding puzzles, with the learning activities available free today.',
         ],
       },
     ],
@@ -433,7 +433,7 @@ const BLOG_POSTS = [
         heading: 'The CodeIt Beginner Journey',
         body: [
           'CodeIt structures the beginner Python journey across ten lessons, each introducing exactly one new concept:',
-          '1. Hello Python — print()\n2. Variables — storing information\n3. Strings — working with text\n4. If Statements — making decisions\n5. Simple Loops — for and range()\n6. For Loops — looping through strings\n7. Lists — collections of data\n8. Loops with Lists — combining the two\n9. Functions — reusable code blocks\n10. Combining Concepts — putting it all together',
+          '1. Hello Python — print()\n2. Variables — storing information\n3. Strings — working with text\n4. If Statements — making decisions\n5. Simple Loops — for and range()\n6. For Loops — looping through strings\n7. Lists — collections of data\n8. Loops with Lists — combining the two\n9. Functions — reusable code blocks\n10. Combining Concepts — putting it all together\n11. Numbers & Arithmetic — calculating with Python\n12. Booleans & Comparisons — testing values\n13. Logical Operators — combining conditions\n14. Type Casting — converting values\n15. String Formatting — building clear messages\n16. String Methods — working with text',
           'After each lesson, a quiz checks understanding. After each quiz, a coding puzzle unlocks — a story-driven challenge where the new concept is the key to winning.',
         ],
       },

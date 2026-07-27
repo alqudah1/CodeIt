@@ -48,7 +48,7 @@ const LESSON_TITLES = [
 const buildAchievements = (lessons, quizzes, puzzles, streak) => [
   { id: 'first_steps',    icon: '1L',  label: 'First Steps',    desc: 'Completed lesson 1',       unlocked: lessons  >= 1  },
   { id: 'halfway',        icon: '5L',  label: 'Halfway There',  desc: '5 lessons completed',      unlocked: lessons  >= 5  },
-  { id: 'lesson_master',  icon: '10L', label: 'Lesson Master',  desc: 'All 10 lessons done',      unlocked: lessons  >= 10 },
+  { id: 'lesson_master',  icon: '16L', label: 'Lesson Master',  desc: 'All 16 lessons done',      unlocked: lessons  >= 16 },
   { id: 'quiz_starter',   icon: '1Q',  label: 'Quiz Starter',   desc: 'Completed first quiz',     unlocked: quizzes  >= 1  },
   { id: 'quiz_champ',     icon: '5Q',  label: 'Quiz Champion',  desc: '5 quizzes completed',      unlocked: quizzes  >= 5  },
   { id: 'puzzle_pioneer', icon: '1P',  label: 'Puzzle Pioneer', desc: 'Solved first puzzle',      unlocked: puzzles  >= 1  },

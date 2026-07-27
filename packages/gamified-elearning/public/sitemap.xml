@@ -83,7 +83,7 @@
     <priority>0.95</priority>
   </url>
 
-  <!-- ── Lessons 1–10 (active beginner track) ──────────────── -->
+  <!-- ── Lessons 1–16 (active beginner track) ──────────────── -->
   <url>
     <loc>https://codeitlearn.com/lesson/1</loc>
     <lastmod>2026-04-12</lastmod>
@@ -141,6 +141,42 @@
   <url>
     <loc>https://codeitlearn.com/lesson/10</loc>
     <lastmod>2026-04-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://codeitlearn.com/lesson/11</loc>
+    <lastmod>2026-07-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://codeitlearn.com/lesson/12</loc>
+    <lastmod>2026-07-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://codeitlearn.com/lesson/13</loc>
+    <lastmod>2026-07-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://codeitlearn.com/lesson/14</loc>
+    <lastmod>2026-07-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://codeitlearn.com/lesson/15</loc>
+    <lastmod>2026-07-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://codeitlearn.com/lesson/16</loc>
+    <lastmod>2026-07-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
   </url>

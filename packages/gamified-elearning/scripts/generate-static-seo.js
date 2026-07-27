@@ -16,6 +16,12 @@ const LESSONS = [
   ['loops-with-lists', 'Loops with Lists', 'processing every item in a list'],
   ['functions', 'Functions', 'organizing reusable actions and returning results'],
   ['combining-concepts', 'Combining Python Concepts', 'combining functions, loops, decisions, and lists'],
+  ['numbers-and-arithmetic', 'Numbers & Arithmetic', 'using integers, decimals, and arithmetic operators'],
+  ['booleans-and-comparisons', 'Booleans & Comparisons', 'comparing values and working with True and False'],
+  ['logical-operators', 'Logical Operators', 'combining conditions with and, or, and not'],
+  ['type-casting', 'Type Casting', 'converting safely between text and number values'],
+  ['string-formatting', 'String Formatting', 'building readable messages with modern f-strings'],
+  ['string-methods', 'String Methods', 'cleaning, searching, and reshaping text'],
 ];
 
 const BLOG_POSTS = [
