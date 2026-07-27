@@ -49,6 +49,16 @@ describe('builder authentication return', () => {
     expect(screen.getByRole('link', { name: 'Create a free account' }).dataset.state).toContain('publish');
   });
 
+  test('adult sign in describes only tools that are available', () => {
+    render(<Login />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Parent / Educator' }));
+
+    expect(screen.getByRole('heading', { name: 'Parent / Educator sign in' })).toBeInTheDocument();
+    expect(screen.getByText('Access your account, projects, and available learning tools.')).toBeInTheDocument();
+    expect(screen.queryByText(/class dashboard/i)).not.toBeInTheDocument();
+  });
+
   test('a new parent account returns to the same builder action', async () => {
     render(<Register />);
 

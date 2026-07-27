@@ -85,12 +85,12 @@ export default function Login() {
         <header className="auth-header">
           <span className="auth-pill">Welcome back</span>
           <h1>
-            {role === 'student' ? 'Sign in to your account' : 'Educator sign in'}
+            {role === 'student' ? 'Sign in to your account' : 'Parent / Educator sign in'}
           </h1>
           <p>
             {role === 'student'
               ? 'Pick up where you left off and keep your streak alive.'
-              : 'Access your class dashboard and track student progress.'}
+              : 'Access your account, projects, and available learning tools.'}
           </p>
         </header>
 
