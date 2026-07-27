@@ -29,7 +29,7 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 1.5rem;
-  height: 62px;
+  height: 80px;
   gap: 1rem;
 }
 
@@ -42,10 +42,23 @@
   margin-right: 0.5rem;
 }
 
-.site-header__logo img {
+.site-header__logo-frame {
+  position: relative;
   display: block;
-  width: 126px;
+  width: 112px;
+  height: 72px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.site-header__logo-frame img {
+  position: absolute;
+  display: block;
+  width: 275px;
+  max-width: none;
   height: auto;
+  left: -54px;
+  top: -75px;
 }
 
 /* ── Hamburger ────────────────────────────────────────────────── */
@@ -531,5 +544,5 @@
 }
 
 @media (max-width: 480px) {
-  .site-header__inner { padding: 0 1rem; height: 56px; }
+  .site-header__inner { padding: 0 1rem; height: 76px; }
 }
