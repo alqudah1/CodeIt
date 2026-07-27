@@ -1,18 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import BrandLogo from '../BrandLogo/BrandLogo';
 import './SiteFooter.css';
 
 const LESSONS = [
   { id: 1,  label: 'Hello Python' },
   { id: 2,  label: 'Variables' },
-  { id: 3,  label: 'Strings' },
   { id: 4,  label: 'If Statements' },
-  { id: 5,  label: 'For Loops (range)' },
-  { id: 6,  label: 'For Loops (strings)' },
-  { id: 7,  label: 'Lists' },
-  { id: 8,  label: 'Loops with Lists' },
-  { id: 9,  label: 'Functions' },
-  { id: 10, label: 'Combining Concepts' },
+  { id: 6,  label: 'Loops' },
 ];
 
 export default function SiteFooter() {
@@ -20,58 +15,52 @@ export default function SiteFooter() {
     <footer className="site-footer">
       <div className="site-footer__inner">
 
+        <div className="site-footer__brand">
+          <Link className="site-footer__home" to="/" aria-label="CodeIt home">
+            <BrandLogo className="site-footer__logo" />
+          </Link>
+          <p>Build something. Learn the code. Make it yours.</p>
+          <Link className="site-footer__build" to="/builder">
+            Build a free project <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+
         <div className="site-footer__col">
-          <strong>Python Lessons</strong>
+          <strong>Build &amp; learn</strong>
           <ul>
+            <li><Link to="/builder">Project studio</Link></li>
+            <li><Link to="/playground">Python playground</Link></li>
+            <li><Link to="/lessons">All beginner lessons</Link></li>
             {LESSONS.map(l => (
               <li key={l.id}>
-                <Link to={`/lesson/${l.id}`}>Lesson {l.id}: {l.label}</Link>
+                <Link to={`/lesson/${l.id}`}>{l.label}</Link>
               </li>
             ))}
           </ul>
         </div>
 
         <div className="site-footer__col">
-          <strong>Learn</strong>
+          <strong>For families</strong>
           <ul>
-            <li><Link to="/lessons">All Lessons</Link></li>
-            <li><Link to="/games">Coding Games</Link></li>
-            <li><Link to="/journey">Learning Journey</Link></li>
-            <li><Link to="/playground">Python Playground</Link></li>
+            <li><Link to="/coding-for-kids">How CodeIt works</Link></li>
             <li><Link to="/pricing">Pricing</Link></li>
+            <li><Link to="/pricing">Join the family pilot</Link></li>
           </ul>
-          <strong>Topics</strong>
+          <strong>Explore</strong>
           <ul>
-            <li><Link to="/learn-python-for-kids">Learn Python for Kids</Link></li>
-            <li><Link to="/coding-for-kids">Coding for Kids</Link></li>
-            <li><Link to="/python-games-for-kids">Python Games for Kids</Link></li>
-          </ul>
-          <strong>Trust</strong>
-          <ul>
-            <li><Link to="/privacy">Privacy &amp; Safety</Link></li>
-            <li><Link to="/terms">Terms of Use</Link></li>
-          </ul>
-        </div>
-
-        <div className="site-footer__col">
-          <strong>Blog</strong>
-          <ul>
-            <li><Link to="/blog">All Articles</Link></li>
-            <li><Link to="/blog/learn-python-for-kids">Learn Python for Kids Guide</Link></li>
-            <li><Link to="/blog/python-coding-games">Python Coding Games</Link></li>
-            <li><Link to="/blog/how-to-start-coding-for-beginners">How to Start Coding</Link></li>
-            <li><Link to="/blog/best-coding-games-for-kids">Best Coding Games for Kids</Link></li>
-            <li><Link to="/blog/python-basics-for-beginners">Python Basics for Beginners</Link></li>
-            <li><Link to="/blog/is-python-good-for-kids">Is Python Good for Kids?</Link></li>
-            <li><Link to="/blog/coding-for-kids-beginner-guide">Coding for Kids Guide</Link></li>
+            <li><Link to="/games">Coding games</Link></li>
+            <li><Link to="/journey">Learning journey</Link></li>
+            <li><Link to="/blog">Guides and project ideas</Link></li>
           </ul>
         </div>
 
       </div>
-      <p className="site-footer__copy">
-        &copy; {new Date().getFullYear()} CodeIt &mdash; Free Python lessons for beginners.
-        &nbsp;<a href="https://codeitlearn.com/sitemap.xml">Sitemap</a>
-      </p>
+      <div className="site-footer__bottom">
+        <span>&copy; {new Date().getFullYear()} CodeIt</span>
+        <Link to="/privacy">Privacy &amp; safety</Link>
+        <Link to="/terms">Terms</Link>
+        <a href="/sitemap.xml">Sitemap</a>
+      </div>
     </footer>
   );
 }

@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import { AuthContext } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
+import { useSEO } from '../../hooks/useSEO';
 import './Explore.css';
 
 // ── helpers ──────────────────────────────────────────────────────
@@ -145,6 +146,12 @@ export default function Explore() {
   const [remixingId, setRemixingId] = useState(null);
   const [toast,      setToast]      = useState('');
 
+  useSEO({
+    title: 'Student Coding Projects: Play, Remix & Learn | CodeIt',
+    description: 'Explore websites, games, quizzes, and tools shared by CodeIt learners. Play a project, remix an idea, or build your own.',
+    canonical: '/explore',
+  });
+
   const showToast = (msg) => {
     setToast(msg);
     setTimeout(() => setToast(''), 3500);
@@ -244,7 +251,7 @@ export default function Explore() {
         <div className="exp-hero__inner">
           <p className="exp-hero__eyebrow">Community</p>
           <h1 className="exp-hero__title">Discover</h1>
-          <p className="exp-hero__sub">Play, remix, and get inspired by projects built by kids around the world.</p>
+          <p className="exp-hero__sub">Play, remix, and get inspired by projects shared by CodeIt learners.</p>
           <Link to="/builder" className="exp-hero__cta">Build Your Own</Link>
         </div>
       </div>

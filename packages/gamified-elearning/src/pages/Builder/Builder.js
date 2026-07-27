@@ -11,7 +11,7 @@ import './Builder.css';
 const QUICK_STARTS = [
   // Games
   { label: 'Click the target',    category: 'Game',    prompt: 'a click-the-target game where colorful circles pop up randomly and you have to click them before they vanish — with a 30-second timer, score counter, increasing speed each hit, and a game-over screen' },
-  { label: 'Animal quiz',         category: 'Game',    prompt: 'a 6-question multiple choice quiz about amazing animals — show instant correct/wrong feedback with color, track the score, and show a fun results screen at the end' },
+  { label: 'Quick quiz',          category: 'Game',    prompt: 'a 3-question general knowledge quiz with multiple choice answers, instant correct or wrong feedback, a score counter, and a results screen at the end' },
   { label: 'Memory match',        category: 'Game',    prompt: 'a memory card matching game with emoji pairs on a 4x4 grid — cards flip with animation, track number of moves, and show a celebration screen when all pairs are found' },
   { label: 'Reaction tester',     category: 'Game',    prompt: 'a reaction time tester where a glowing circle appears after a random delay and you tap it as fast as possible — 5 rounds, shows your average reaction time at the end' },
   // Websites
@@ -112,8 +112,8 @@ const HERO_BUILDS = [
   {
     id:    'website',
     title: 'Build a Website',
-    sub:   'Portfolio, shop, fan page, restaurant',
-    prompt: QUICK_STARTS[4].prompt,
+    sub:   'A colorful page with working buttons and sections',
+    prompt: 'a colorful one-page website with About, Features, and Contact sections, working navigation buttons, and a message form the student can customize',
   },
   {
     id:    'quiz',
@@ -1220,7 +1220,10 @@ export default function Builder() {
       }
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
-      const html = data.html || data.code;
+      const generatedHtml = data.html || data.code;
+      const html = data.isFallback
+        ? (STARTER_TEMPLATES[previewType] || generatedHtml)
+        : generatedHtml;
       if (!isValidHtml(html)) throw new Error('The builder returned an incomplete page. Please try again.');
       setCode(html);
       setBuiltPrompt(text);
