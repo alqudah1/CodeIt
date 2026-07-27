@@ -1214,6 +1214,10 @@ export default function Builder() {
         body:    JSON.stringify({ prompt: text }),
       });
       clearTimeout(buildTimeout);
+      const responseType = res.headers.get('content-type') || '';
+      if (!responseType.includes('application/json')) {
+        throw new Error('The project studio is temporarily unavailable. Please try again in a moment.');
+      }
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
       const html = data.html || data.code;
