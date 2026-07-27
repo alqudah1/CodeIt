@@ -1550,7 +1550,7 @@ git commit -m "feat(xp): add XP level system with 6 levels and header progress b
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'Team42*';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -1932,7 +1932,7 @@ const pool = require('../db');
 const jwt = require('jsonwebtoken');
 const { welcomeEmail, weeklyProgressEmail, milestoneEmail } = require('../emailTemplates');
 const router = express.Router();
-const JWT_SECRET = 'Team42*';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Create transporter — uses env vars; falls back to console logging in dev
 function getTransporter() {
