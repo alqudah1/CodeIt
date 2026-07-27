@@ -78,7 +78,7 @@ function StudioPreview() {
   return (
     <section className="studio-preview" aria-label="Interactive example of a project made with CodeIt">
       <div className="studio-preview__toolbar">
-        <span className="studio-preview__brand-mark">C</span>
+        <span className="studio-preview__brand-mark"><img src="/brand/codeit-mark.svg" alt="" /></span>
         <span>My CodeIt project</span>
         <span className="studio-preview__status">Preview + code</span>
       </div>
@@ -169,7 +169,16 @@ export default function Home() {
               </div>
             </div>
 
-            <StudioPreview />
+            <div className="studio-hero__visual">
+              <StudioPreview />
+              <figure className="studio-pixel">
+                <img
+                  src="/brand/pixel-mascot-hero.png"
+                  alt="Pixel, CodeIt's friendly orange build buddy, creating a project on a laptop"
+                />
+                <figcaption><strong>Hi, I’m Pixel.</strong> What should we build?</figcaption>
+              </figure>
+            </div>
           </section>
 
           <section className="studio-proof" aria-label="What makes CodeIt different">

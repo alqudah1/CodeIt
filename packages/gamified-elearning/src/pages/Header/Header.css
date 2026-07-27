@@ -42,20 +42,10 @@
   margin-right: 0.5rem;
 }
 
-.site-header__wordmark {
-  display: inline-flex;
-  align-items: baseline;
-  color: #38291F;
-  font-family: 'Arvo', Georgia, serif;
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: -0.045em;
-  line-height: 1;
-}
-
-.site-header__wordmark strong {
-  color: #E9782E;
-  font: inherit;
+.site-header__logo img {
+  display: block;
+  width: 116px;
+  height: auto;
 }
 
 /* ── Hamburger ────────────────────────────────────────────────── */
