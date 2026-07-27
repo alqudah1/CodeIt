@@ -59,12 +59,7 @@
 }
 
 .auth-logo {
-  height: 56px;
-  width: auto;
-  object-fit: contain;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+  --brand-logo-width: 142px;
 }
 
 /* ── Role switcher ──────────────────────────────────────────── */

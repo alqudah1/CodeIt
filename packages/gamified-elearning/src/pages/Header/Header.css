@@ -42,23 +42,8 @@
   margin-right: 0.5rem;
 }
 
-.site-header__logo-frame {
-  position: relative;
-  display: block;
-  width: 112px;
-  height: 72px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.site-header__logo-frame img {
-  position: absolute;
-  display: block;
-  width: 275px;
-  max-width: none;
-  height: auto;
-  left: -54px;
-  top: -75px;
+.site-header__brand {
+  --brand-logo-width: 112px;
 }
 
 /* ── Hamburger ────────────────────────────────────────────────── */

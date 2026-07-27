@@ -1,0 +1,20 @@
+.brand-logo {
+  --brand-logo-width: 126px;
+  position: relative;
+  display: inline-block;
+  width: var(--brand-logo-width);
+  aspect-ratio: 789 / 522;
+  overflow: hidden;
+  flex: 0 0 auto;
+  line-height: 0;
+}
+
+.brand-logo > img {
+  position: absolute;
+  display: block;
+  width: 253.5%;
+  max-width: none;
+  height: auto;
+  left: -51.6%;
+  top: -103.8%;
+}

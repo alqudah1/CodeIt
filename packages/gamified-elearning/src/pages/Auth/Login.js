@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
+import BrandLogo from '../../components/BrandLogo/BrandLogo';
 import './Auth.css';
 
 export default function Login() {
@@ -60,7 +61,7 @@ export default function Login() {
 
         {/* Brand mark */}
         <div className="auth-brand">
-          <img src="/brand/CodeItRG.svg" alt="CodeIt" className="auth-logo" />
+          <BrandLogo className="auth-logo" />
         </div>
 
         {/* Role switcher */}

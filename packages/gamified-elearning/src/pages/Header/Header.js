@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useCharacter } from "../../context/CharacterContext";
 import CharacterAvatar from "../../components/CharacterAvatar/CharacterAvatar";
+import BrandLogo from "../../components/BrandLogo/BrandLogo";
 import "./Header.css";
 
 const PUBLIC_NAV = [
@@ -65,9 +66,7 @@ export default function Header() {
     <header className="site-header">
       <div className="site-header__inner">
         <Link to="/" className="site-header__logo" aria-label="CodeIt home">
-          <span className="site-header__logo-frame" aria-hidden="true">
-            <img src="/brand/LogoForSM.png" alt="" />
-          </span>
+          <BrandLogo className="site-header__brand" alt="" />
         </Link>
 
         <button

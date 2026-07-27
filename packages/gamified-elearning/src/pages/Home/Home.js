@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Header from "../Header/Header";
+import BrandLogo from "../../components/BrandLogo/BrandLogo";
 import { useSEO } from "../../hooks/useSEO";
 import { trackEvent } from "../../utils/trackEvent";
 import "./Home.css";
@@ -78,7 +79,7 @@ function StudioPreview() {
   return (
     <section className="studio-preview" aria-label="Interactive example of a project made with CodeIt">
       <div className="studio-preview__toolbar">
-        <span className="studio-preview__brand-mark"><img src="/brand/codeit-mark.svg" alt="" /></span>
+        <span className="studio-preview__brand-mark"><BrandLogo className="studio-preview__logo" alt="" /></span>
         <span>My CodeIt project</span>
         <span className="studio-preview__status">Preview + code</span>
       </div>
@@ -224,7 +225,7 @@ export default function Home() {
             </div>
             <article className="studio-family__email" aria-label="Example parent progress email">
               <div className="studio-family__email-bar">
-                <img src="/brand/codeit-mark.svg" alt="" />
+                <BrandLogo className="studio-family__email-logo" alt="" />
                 <span>CodeIt progress update</span>
               </div>
               <p className="studio-family__email-label">Website published</p>
@@ -295,7 +296,7 @@ export default function Home() {
         <footer className="studio-footer">
           <div className="studio-footer__top">
             <div className="studio-footer__brand">
-              <img src="/brand/CodeItRG.svg" alt="CodeIt" />
+              <BrandLogo className="studio-footer__logo" />
               <p>Build something. Learn the code. Make it yours.</p>
             </div>
             <div>

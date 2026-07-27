@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, Component, useEffect, useState } from 'react';
 import './SplineScene.css';
-import CodeItLogo from '../../assets/CodeItRG.svg';
+import BrandLogo from '../BrandLogo/BrandLogo';
 
 // Lazy-load @splinetool/react-spline so it never blocks the main bundle
 const Spline = lazy(() => import('@splinetool/react-spline'));
@@ -57,11 +57,9 @@ class SplineErrorBoundary extends Component {
 function SplineStaticFallback() {
   return (
     <div className="spline-scene__static-fallback" aria-label="CodeIt interactive learning">
-      <img
-        src={CodeItLogo}
-        alt="CodeIt – Learn Python through play"
+      <BrandLogo
+        alt="CodeIt"
         className="spline-scene__fallback-logo"
-        loading="lazy"
       />
       <p className="spline-scene__fallback-tagline">Python learning, reimagined for kids</p>
     </div>

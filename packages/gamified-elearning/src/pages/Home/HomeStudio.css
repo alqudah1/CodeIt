@@ -140,7 +140,7 @@
   font-weight: 900;
 }
 .studio-preview__brand-mark { width: 30px; height: 30px; display: grid; place-items: center; background: #fff; border-radius: 9px; box-shadow: 0 2px 0 rgba(61,48,43,0.12); overflow: hidden; }
-.studio-preview__brand-mark img { display: block; width: 27px; height: 27px; }
+.studio-preview__logo { --brand-logo-width: 27px; }
 .studio-preview__status { justify-self: end; padding: 0.38rem 0.65rem; color: var(--studio-ink); background: #fff3d7; border-radius: 999px; font-size: 0.68rem; }
 
 .studio-pixel {
@@ -274,7 +274,7 @@
   transform: rotate(0.7deg);
 }
 .studio-family__email-bar { margin: -1.4rem -1.4rem 1.3rem; padding: 0.85rem 1rem; display: flex; align-items: center; gap: 0.65rem; background: #fff7ee; border-bottom: 1px solid #eadfd5; border-radius: 20px 20px 0 0; color: var(--studio-muted); font-size: 0.72rem; font-weight: 900; }
-.studio-family__email-bar img { width: 30px; height: 30px; }
+.studio-family__email-logo { --brand-logo-width: 34px; }
 .studio-family__email-label { margin-bottom: 0.5rem; color: var(--studio-orange-dark); font-size: 0.67rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
 .studio-family__email h3 { margin: 0 0 0.65rem; font-family: "Arvo", serif; font-size: clamp(1.35rem, 3vw, 2rem); }
 .studio-family__email > p:not(.studio-family__email-label) { color: var(--studio-muted); line-height: 1.6; }
@@ -296,7 +296,7 @@
 
 .studio-footer { color: var(--studio-ink); background: #fff3e8; border-top: 1px solid #f0d8c5; }
 .studio-footer__top { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: 4.5rem 0 3.5rem; display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 3rem; }
-.studio-footer__brand img { width: 146px; height: auto; }
+.studio-footer__logo { --brand-logo-width: 146px; }
 .studio-footer__brand p { max-width: 260px; margin-top: 1rem; color: var(--studio-muted); line-height: 1.55; }
 .studio-footer__top > div:not(.studio-footer__brand) { display: flex; flex-direction: column; gap: 0.55rem; }
 .studio-footer__top strong { margin-bottom: 0.35rem; color: var(--studio-ink); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
