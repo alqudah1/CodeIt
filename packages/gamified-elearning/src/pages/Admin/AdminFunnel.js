@@ -13,6 +13,7 @@ const STAGES = [
   ['signup_complete', 'Accounts created'],
   ['project_save', 'Projects saved'],
   ['project_publish', 'Projects published'],
+  ['project_share', 'Projects shared'],
   ['return_use', 'Daily returns'],
   ['pricing_view', 'Pricing views'],
   ['pricing_interest', 'Plan interest'],
@@ -99,6 +100,7 @@ export default function AdminFunnel() {
     ['Build completion', ratio(counts.generation_complete, counts.builder_start)],
     ['Generated → saved', ratio(counts.project_save, counts.generation_complete)],
     ['Saved → published', ratio(counts.project_publish, counts.project_save)],
+    ['Published → shared', ratio(counts.project_share, counts.project_publish)],
     ['New accounts → return days', ratio(counts.return_use, counts.signup_complete)],
     ['Pricing view → interest', ratio(counts.pricing_interest, counts.pricing_view)],
   ] : [];

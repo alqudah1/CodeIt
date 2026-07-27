@@ -8,6 +8,7 @@ const { getAIUsageReport } = require('../aiUsage');
 const {
   CLIENT_REPORTED_EVENTS,
   normalizeEventName,
+  eventRequiresMeta,
   normalizeMeta,
 } = require('../analyticsEvents');
 
@@ -87,11 +88,7 @@ router.post('/event', rateLimit, optionalAuth, async (req, res) => {
   }
 
   const meta = normalizeMeta(eventName, req.body?.meta);
-  const requiresMeta = eventName === 'acquisition_visit'
-    || eventName === 'landing_cta_click'
-    || eventName === 'parent_cta_click'
-    || eventName === 'pricing_interest';
-
+  const requiresMeta = eventRequiresMeta(eventName);
   if (requiresMeta && !meta) {
     return res.status(400).json({ error: 'Unsupported analytics metadata.' });
   }

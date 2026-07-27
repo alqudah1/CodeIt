@@ -52,6 +52,8 @@ describe('admin acquisition funnel', () => {
     render(<AdminFunnel />);
 
     await waitFor(() => expect(screen.getByText('Parent acquisition actions')).toBeInTheDocument());
+    expect(screen.getByText('Projects shared')).toBeInTheDocument();
+    expect(screen.getByText('Published → shared')).toBeInTheDocument();
     expect(screen.getByText('How visitors found CodeIt')).toBeInTheDocument();
     expect(screen.getByText('Instagram').parentElement).toHaveTextContent('9');
     expect(screen.getByText('Tried a project').parentElement).toHaveTextContent('4');

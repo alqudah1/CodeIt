@@ -5,6 +5,7 @@ import { API_BASE_URL } from '../../config/api';
 import { AuthContext } from '../../context/AuthContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { useSEO } from '../../hooks/useSEO';
+import { trackEvent } from '../../utils/trackEvent';
 import './Builder.css';
 
 const QUICK_STARTS = [
@@ -1587,16 +1588,34 @@ export default function Builder() {
 
   // ── Share project ──────────────────────────────────────────────────────────
   const handleShare = async () => {
+    if (!publicId) return;
     const title = projectName || 'My Project';
-    const text  = `"${title}" — made and edited with CodeIt! codeitlearn.com/builder`;
+    const url = `https://codeitlearn.com/project/${publicId}`;
+    const text = `I made "${title}" with CodeIt. Try it, then build your own.`;
+    let completed = false;
+
     if (navigator.share) {
-      try { await navigator.share({ title, text }); setShareStatus('shared'); }
-      catch (_) {}
-    } else {
-      try { await navigator.clipboard.writeText(text); setShareStatus('copied'); }
-      catch (_) {}
+      try {
+        await navigator.share({ title, text, url });
+        setShareStatus('shared');
+        completed = true;
+      } catch (error) {
+        if (error?.name === 'AbortError') return;
+      }
     }
-    setTimeout(() => setShareStatus(null), 2200);
+
+    if (!completed) {
+      try {
+        await navigator.clipboard.writeText(url);
+        setShareStatus('copied');
+        completed = true;
+      } catch (_) {}
+    }
+
+    if (completed) {
+      void trackEvent('project_share', 'creator', token);
+      setTimeout(() => setShareStatus(null), 2200);
+    }
   };
 
   // ── Publish project ────────────────────────────────────────────────────────
@@ -2359,6 +2378,15 @@ export default function Builder() {
 
               {isPublished ? (
                 <div className="bldr-share-group">
+                  <button
+                    className="bldr-action-btn bldr-action-btn--publish"
+                    onClick={handleShare}
+                    disabled={editing}
+                  >
+                    {shareStatus === 'shared' ? 'Shared!'
+                      : shareStatus === 'copied' ? 'Link copied!'
+                      : 'Share project'}
+                  </button>
                   <button
                     className="bldr-action-btn bldr-action-btn--published"
                     onClick={handleCopyPublicLink}

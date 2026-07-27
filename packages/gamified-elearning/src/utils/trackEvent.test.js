@@ -48,6 +48,17 @@ describe("trackEvent", () => {
     );
   });
 
+  test("records only a fixed project sharing role", async () => {
+    await expect(trackEvent("project_share", "viewer")).resolves.toBe(true);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/api/analytics/event"),
+      expect.objectContaining({
+        body: JSON.stringify({ event_name: "project_share", meta: "viewer" }),
+      })
+    );
+  });
+
   test("sends only a fixed parent acquisition action", async () => {
     await expect(trackEvent("parent_cta_click", "pilot-email")).resolves.toBe(true);
 

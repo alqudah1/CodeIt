@@ -9,12 +9,13 @@ const EVENT_META = Object.freeze({
   generation_complete: new Set(['ai', 'fallback']),
   project_save: new Set(['website', 'game', 'quiz', 'tool', 'other']),
   project_publish: new Set(['website', 'game', 'quiz', 'tool', 'other']),
+  project_share: new Set(['creator', 'viewer']),
   return_use: new Set(),
   pricing_view: new Set(),
   pricing_interest: new Set(['founding-family']),
 });
 
-const CLIENT_REPORTED_EVENTS = new Set(['acquisition_visit', 'landing_cta_click', 'parent_cta_click', 'return_use', 'pricing_view', 'pricing_interest']);
+const CLIENT_REPORTED_EVENTS = new Set(['acquisition_visit', 'landing_cta_click', 'parent_cta_click', 'project_share', 'return_use', 'pricing_view', 'pricing_interest']);
 
 function normalizeEventName(value) {
   return typeof value === 'string' && Object.hasOwn(EVENT_META, value) ? value : null;
@@ -25,6 +26,11 @@ function normalizeMeta(eventName, value) {
   if (!allowed || allowed.size === 0 || typeof value !== 'string') return null;
   const normalized = value.trim().toLowerCase();
   return allowed.has(normalized) ? normalized : null;
+}
+
+function eventRequiresMeta(eventName) {
+  const allowed = EVENT_META[eventName];
+  return Boolean(allowed && allowed.size > 0);
 }
 
 function projectCategory(value) {
@@ -40,5 +46,6 @@ module.exports = {
   CLIENT_REPORTED_EVENTS,
   normalizeEventName,
   normalizeMeta,
+  eventRequiresMeta,
   projectCategory,
 };

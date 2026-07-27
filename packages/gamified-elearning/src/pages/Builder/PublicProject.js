@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
 import Header from '../Header/Header';
+import { trackEvent } from '../../utils/trackEvent';
 import './PublicProject.css';
 
 export default function PublicProject() {
@@ -14,7 +15,7 @@ export default function PublicProject() {
   const [loading, setLoading]       = useState(true);
   const [error, setError]           = useState('');
   const [remixStatus, setRemixStatus] = useState(null); // null | 'remixing' | 'error'
-  const [copyStatus, setCopyStatus] = useState(null);   // null | 'copied'
+  const [shareStatus, setShareStatus] = useState(null); // null | 'copied' | 'shared'
 
   useEffect(() => {
     let cancelled = false;
@@ -71,12 +72,34 @@ export default function PublicProject() {
     doRemix();
   }
 
-  async function handleCopyLink() {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopyStatus('copied');
-      setTimeout(() => setCopyStatus(null), 2000);
-    } catch (_) {}
+  async function handleShare() {
+    const url = window.location.href;
+    const title = project?.title || 'A CodeIt project';
+    const text = `Try "${title}", made with CodeIt—then remix it or build your own.`;
+    let completed = false;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text, url });
+        setShareStatus('shared');
+        completed = true;
+      } catch (error) {
+        if (error?.name === 'AbortError') return;
+      }
+    }
+
+    if (!completed) {
+      try {
+        await navigator.clipboard.writeText(url);
+        setShareStatus('copied');
+        completed = true;
+      } catch (_) {}
+    }
+
+    if (completed) {
+      void trackEvent('project_share', 'viewer', token);
+      setTimeout(() => setShareStatus(null), 2000);
+    }
   }
 
   function timeAgo(dateStr) {
@@ -176,9 +199,11 @@ export default function PublicProject() {
           </Link>
           <button
             className="pp-cta-btn pp-cta-btn--copy"
-            onClick={handleCopyLink}
+            onClick={handleShare}
           >
-            {copyStatus === 'copied' ? 'Copied!' : 'Copy link'}
+            {shareStatus === 'shared' ? 'Shared!'
+              : shareStatus === 'copied' ? 'Link copied!'
+              : 'Share project'}
           </button>
         </div>
 
