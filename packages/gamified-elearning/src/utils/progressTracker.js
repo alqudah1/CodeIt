@@ -77,6 +77,19 @@ export const trackStaticLessonCompletion = async (lessonNumber) => {
   return result; // { success, alreadyCompleted, xpEarned }
 };
 
+// Record a completed lesson exercise once. The backend de-duplicates repeated
+// runs, so refreshing or retrying an exercise never creates duplicate updates.
+export const trackExerciseCompletion = async (lessonId, exerciseIndex, title) => {
+  const token = getAuthToken();
+  if (!token) return { recorded: false, reason: 'guest' };
+  const response = await apiClient.post('/api/progress-notifications/exercise-complete', {
+    lessonId,
+    exerciseIndex,
+    title,
+  });
+  return response.data;
+};
+
 // Helper function to track game completion from puzzle games
 export const trackPuzzleGameCompletion = async (lessonNumber, gameType, score, timeSpent) => {
   const lessonId = lessonNumber;

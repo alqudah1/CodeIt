@@ -20,6 +20,7 @@ const journeyRoutes = require('./routes/journey');
 const builderRoutes = require('./routes/builder');
 const exploreRoutes = require('./routes/explore');
 const analyticsRoutes = require('./routes/analytics');
+const progressNotificationRoutes = require('./routes/progressNotifications');
 
 const app = express();
 app.set('trust proxy', 1);
@@ -47,6 +48,7 @@ app.use('/api/journey', journeyRoutes);
 app.use('/api/builder', builderRoutes);
 app.use('/api/explore', exploreRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/progress-notifications', progressNotificationRoutes);
 
 const PORT = 8080;
 app.listen(PORT, () => {

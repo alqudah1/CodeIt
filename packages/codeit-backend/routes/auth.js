@@ -6,6 +6,7 @@ const db      = require('../db');
 const { JWT_SECRET, JWT_EXPIRY } = require('../config');
 const { recordEvent } = require('../analytics');
 const { studentAgeEligibility } = require('../studentAge');
+const { updateSettings } = require('../progressNotifications');
 
 // ── POST /api/signup ───────────────────────────────────────────────────────────
 router.post('/signup', async (req, res) => {
@@ -181,10 +182,10 @@ router.post('/add-parent-email', async (req, res) => {
     const payload      = jwt.verify(token, JWT_SECRET);
     const { parent_email } = req.body;
     if (!parent_email) return res.status(400).json({ error: 'parent_email is required' });
-    await db.query('UPDATE Users SET parent_email = ? WHERE user_id = ?', [parent_email, payload.user_id]);
-    res.json({ success: true });
-  } catch {
-    res.status(400).json({ error: 'Could not save parent email' });
+    const result = await updateSettings(payload.user_id, { parentEmail: parent_email });
+    res.json({ success: true, ...result });
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ error: error.message || 'Could not save parent email' });
   }
 });
 

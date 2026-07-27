@@ -3,6 +3,7 @@ const pool = require('../db');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
+const { recordMilestoneAndNotify } = require('../progressNotifications');
 
 // Middleware to verify JWT and set req.user
 const authenticateToken = (req, res, next) => {
@@ -134,6 +135,13 @@ router.post('/submit', async (req, res) => {
         'UPDATE Students SET total_xp = total_xp + ? WHERE user_id = ?',
         [totalXp, studentId]
       );
+      void recordMilestoneAndNotify({
+        userId: studentId,
+        eventType: 'quiz_completed',
+        eventKey: String(quizId),
+        title: `Lesson ${quizId} quiz`,
+        detail: `${correctCount} of ${questionRows.length} correct · ${totalXp} XP`,
+      }).catch(error => console.error('Quiz milestone error:', error.message));
       console.log(`✅ Student ${studentId}: +${totalXp} XP for quiz ${quizId} (${correctCount}/${questionRows.length})`);
     }
 

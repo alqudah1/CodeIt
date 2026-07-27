@@ -3,6 +3,7 @@ const pool = require('../db');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
+const { recordMilestoneAndNotify } = require('../progressNotifications');
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -62,7 +63,7 @@ router.post('/:id/complete', authenticateToken, async (req, res) => {
 
   try {
     // Look up lesson XP
-    const [lessonRows] = await pool.query('SELECT id, xp FROM lessons WHERE id = ?', [lessonId]);
+    const [lessonRows] = await pool.query('SELECT id, title, xp FROM lessons WHERE id = ?', [lessonId]);
     if (!lessonRows.length) return res.status(404).json({ error: 'Lesson not found' });
     const xpReward = lessonRows[0].xp;
 
@@ -80,6 +81,13 @@ router.post('/:id/complete', authenticateToken, async (req, res) => {
 
     if (!alreadyCompleted && isStudent) {
       await pool.query('UPDATE Students SET total_xp = total_xp + ? WHERE user_id = ?', [xpReward, userId]);
+      void recordMilestoneAndNotify({
+        userId,
+        eventType: 'lesson_completed',
+        eventKey: String(lessonId),
+        title: lessonRows[0].title || `Lesson ${lessonId}`,
+        detail: `Earned ${xpReward} XP`,
+      }).catch(error => console.error('Lesson milestone error:', error.message));
     }
 
     res.json({

@@ -68,6 +68,9 @@
 }
 
 .studio-hero__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.8rem; }
+.studio-hero__audience { margin: 1.2rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; }
+.studio-hero__audience li { padding: 0.42rem 0.68rem; color: var(--studio-ink); background: #fff; border: 1px solid var(--studio-line); border-radius: 999px; font-size: 0.7rem; font-weight: 900; }
+.studio-hero__audience li::before { content: "•"; margin-right: 0.38rem; color: var(--studio-orange); }
 
 .studio-button {
   min-height: 52px;
@@ -204,7 +207,7 @@
 .studio-proof p:first-child { border-left: 0; }
 .studio-proof strong { display: block; margin-bottom: 0.2rem; color: var(--studio-ink); }
 
-.studio-start, .studio-loop, .studio-trust {
+.studio-start, .studio-loop, .studio-family, .studio-trust {
   width: min(1120px, calc(100% - 48px));
   margin: 0 auto;
   padding: clamp(5rem, 9vw, 8.5rem) 0;
@@ -243,6 +246,42 @@
 .studio-loop__copy li strong { display: block; margin-bottom: 0.25rem; }
 .studio-loop__copy li p { margin: 0; color: var(--studio-muted); line-height: 1.55; }
 
+.studio-family {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: clamp(3rem, 8vw, 8rem);
+  align-items: center;
+  border-top: 1px solid var(--studio-line);
+}
+.studio-family__copy h2 {
+  margin-bottom: 1rem;
+  font-family: "Arvo", serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+.studio-family__copy > p { color: var(--studio-muted); font-size: 1.04rem; line-height: 1.7; }
+.studio-family__copy ul { margin: 1.5rem 0; padding: 0; display: grid; gap: 0.75rem; list-style: none; }
+.studio-family__copy li { position: relative; padding-left: 1.6rem; color: var(--studio-ink); font-weight: 800; line-height: 1.5; }
+.studio-family__copy li::before { content: "✓"; position: absolute; left: 0; color: #008d72; font-weight: 900; }
+.studio-family__copy small { color: var(--studio-muted); line-height: 1.5; }
+.studio-family__email {
+  padding: 1.4rem;
+  background: #fff;
+  border: 2px solid var(--studio-ink);
+  border-radius: 22px;
+  box-shadow: 12px 12px 0 #ffd9be;
+  transform: rotate(0.7deg);
+}
+.studio-family__email-bar { margin: -1.4rem -1.4rem 1.3rem; padding: 0.85rem 1rem; display: flex; align-items: center; gap: 0.65rem; background: #fff7ee; border-bottom: 1px solid #eadfd5; border-radius: 20px 20px 0 0; color: var(--studio-muted); font-size: 0.72rem; font-weight: 900; }
+.studio-family__email-bar img { width: 30px; height: 30px; }
+.studio-family__email-label { margin-bottom: 0.5rem; color: var(--studio-orange-dark); font-size: 0.67rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
+.studio-family__email h3 { margin: 0 0 0.65rem; font-family: "Arvo", serif; font-size: clamp(1.35rem, 3vw, 2rem); }
+.studio-family__email > p:not(.studio-family__email-label) { color: var(--studio-muted); line-height: 1.6; }
+.studio-family__email-result { margin-top: 1.3rem; padding: 1rem; display: grid; gap: 0.18rem; background: #dff7ef; border-radius: 13px; }
+.studio-family__email-result span { color: #176b52; font-size: 0.62rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
+.studio-family__email-result small { color: var(--studio-muted); }
+
 .studio-trust { border-top: 1px solid var(--studio-line); display: grid; grid-template-columns: 0.8fr 1.2fr; gap: clamp(3rem, 8vw, 8rem); }
 .studio-trust__points { display: grid; gap: 1.4rem; }
 .studio-trust__points article { padding: 0 0 1.4rem; border-bottom: 1px solid var(--studio-line); }
@@ -277,11 +316,13 @@
   .studio-preview { width: min(100%, 760px); transform: none; }
   .studio-pixel { right: -1rem; }
   .studio-loop { grid-template-columns: 1fr; }
+  .studio-family { grid-template-columns: 1fr; }
+  .studio-family__email { max-width: 720px; width: 100%; }
   .studio-loop__visual { max-width: 720px; width: 100%; }
 }
 
 @media (max-width: 780px) {
-  .studio-hero, .studio-start, .studio-loop, .studio-trust, .studio-footer__top, .studio-footer__bottom { width: min(100% - 32px, 1120px); }
+  .studio-hero, .studio-start, .studio-loop, .studio-family, .studio-trust, .studio-footer__top, .studio-footer__bottom { width: min(100% - 32px, 1120px); }
   .studio-hero { padding-top: 3.2rem; }
   .studio-hero h1 { font-size: clamp(2.55rem, 12vw, 4rem); }
   .studio-preview__canvas { min-height: 320px; }

@@ -43,24 +43,24 @@ const PROJECT_IDEAS = [
 const STARTING_POINTS = [
   {
     number: "01",
-    title: "Build something personal",
-    copy: "Start with a game, fan page, quiz, or school project that already matters to you.",
+    title: "Describe the idea",
+    copy: "A student starts with a website, game, quiz, or school project they genuinely want to make.",
     link: "/builder",
-    linkLabel: "Open the project studio",
+    linkLabel: "Try the project studio",
   },
   {
     number: "02",
-    title: "See the code behind it",
-    copy: "Move between the working project and the code so every change has a visible reason.",
+    title: "Build and experiment",
+    copy: "CodeIt creates a working first version. The student plays with it, edits it, and sees every change.",
     link: "/playground",
-    linkLabel: "Try the code playground",
+    linkLabel: "Explore the playground",
   },
   {
     number: "03",
-    title: "Learn, edit, and make it yours",
-    copy: "Use short lessons to understand a concept, then bring it back into your own project.",
+    title: "Learn, own, and share it",
+    copy: "Short lessons explain the code, then the student saves or publishes a project they understand.",
     link: "/lessons",
-    linkLabel: "Browse beginner lessons",
+    linkLabel: "See the learning path",
   },
 ];
 
@@ -128,8 +128,8 @@ export default function Home() {
   const { user } = useAuth();
 
   useSEO({
-    title: "Coding for Kids: Build Websites & Learn the Code | CodeIt",
-    description: "CodeIt is a beginner-friendly coding studio where kids build websites, games, and quizzes, then learn the code behind their projects.",
+    title: "CodeIt: Build Websites, Learn Code & Share Projects",
+    description: "CodeIt helps students build real websites, games, and quizzes with an AI-assisted studio, then learn, edit, save, and share the code behind them.",
     canonical: "/",
   });
 
@@ -140,14 +140,14 @@ export default function Home() {
         <main>
           <section className="studio-hero" aria-labelledby="studio-title">
             <div className="studio-hero__copy">
-              <p className="studio-kicker">Coding starts with something you want to make</p>
+              <p className="studio-kicker">A creative coding studio for students</p>
               {user && <p className="studio-welcome">Welcome back, {user.name || "Builder"}.</p>}
               <h1 id="studio-title">
                 Make a website.
                 <span>Learn the code behind it.</span>
               </h1>
               <p className="studio-hero__lead">
-                Start with an idea. Build it, change it, and understand how it works.
+                Turn an idea into a real website, game, or quiz. Then learn the code, change it, save it, and share it.
               </p>
               <div className="studio-hero__actions">
                 <Link
@@ -156,17 +156,22 @@ export default function Home() {
                   data-cta="hero-build"
                   onClick={() => trackEvent("landing_cta_click", "hero-build")}
                 >
-                  {user ? "Open project studio" : "Start making"} <span aria-hidden="true">→</span>
+                  {user ? "Open project studio" : "Build a free project"} <span aria-hidden="true">→</span>
                 </Link>
                 <Link
-                  to={user ? "/MainPage" : "/lessons"}
+                  to={user ? "/MainPage" : "#how-it-works"}
                   className="studio-button studio-button--quiet"
                   data-cta={user ? "member-progress" : "hero-lessons"}
                   onClick={() => { if (!user) trackEvent("landing_cta_click", "hero-lessons"); }}
                 >
-                  {user ? "View my progress" : "See how it works"}
+                  {user ? "View my progress" : "See the student journey"}
                 </Link>
               </div>
+              <ul className="studio-hero__audience" aria-label="Who CodeIt helps">
+                <li>Students create</li>
+                <li>CodeIt teaches</li>
+                <li>Parents see progress</li>
+              </ul>
             </div>
 
             <div className="studio-hero__visual">
@@ -182,16 +187,16 @@ export default function Home() {
           </section>
 
           <section className="studio-proof" aria-label="What makes CodeIt different">
-            <p><strong>Make it work.</strong> Start from an idea instead of a blank file.</p>
-            <p><strong>Understand it.</strong> Connect each visible result to the code.</p>
-            <p><strong>Make it yours.</strong> Keep editing after the first version is finished.</p>
+            <p><strong>Build something real.</strong> Start from an idea instead of an intimidating blank file.</p>
+            <p><strong>Learn what powers it.</strong> Connect every visible result to the code behind it.</p>
+            <p><strong>Show meaningful progress.</strong> Save, publish, and keep parents informed.</p>
           </section>
 
           <section className="studio-start" aria-labelledby="studio-start-title">
             <div className="studio-section-heading">
-              <p className="studio-kicker">A better first step into coding</p>
-              <h2 id="studio-start-title">Creation first. Understanding follows.</h2>
-              <p>CodeIt turns an idea into a working project, then helps students inspect, change, and understand what they made.</p>
+              <p className="studio-kicker">What a student actually does</p>
+              <h2 id="studio-start-title">From “I have an idea” to “I built this.”</h2>
+              <p>The AI-assisted builder removes the scary first step. The lessons and exercises turn that first version into real understanding.</p>
             </div>
             <div className="studio-start__grid">
               {STARTING_POINTS.map((item) => (
@@ -203,6 +208,34 @@ export default function Home() {
                 </article>
               ))}
             </div>
+          </section>
+
+          <section className="studio-family" aria-labelledby="studio-family-title">
+            <div className="studio-family__copy">
+              <p className="studio-kicker">Progress parents can actually see</p>
+              <h2 id="studio-family-title">Learning does not disappear when the screen closes.</h2>
+              <p>With parent-approved updates, CodeIt records the moments that matter and sends a clear email when a student:</p>
+              <ul>
+                <li>finishes a lesson, exercise, quiz, or challenge;</li>
+                <li>creates a new website or project;</li>
+                <li>publishes something ready to share.</li>
+              </ul>
+              <small>Parents confirm the email first and can choose which updates they receive.</small>
+            </div>
+            <article className="studio-family__email" aria-label="Example parent progress email">
+              <div className="studio-family__email-bar">
+                <img src="/brand/codeit-mark.svg" alt="" />
+                <span>CodeIt progress update</span>
+              </div>
+              <p className="studio-family__email-label">Website published</p>
+              <h3>Sam published “My Space Quiz”</h3>
+              <p>Sam built an interactive quiz, learned how variables store the score, and published the project.</p>
+              <div className="studio-family__email-result">
+                <span>Project</span>
+                <strong>My Space Quiz</strong>
+                <small>Ready to view and share</small>
+              </div>
+            </article>
           </section>
 
           <section id="how-it-works" className="studio-loop" aria-labelledby="studio-loop-title">
@@ -231,21 +264,22 @@ export default function Home() {
 
           <section className="studio-trust" aria-labelledby="studio-trust-title">
             <div>
-              <p className="studio-kicker">For students, parents, and educators</p>
-              <h2 id="studio-trust-title">Creative freedom with a clear learning path.</h2>
+              <p className="studio-kicker">What CodeIt delivers</p>
+              <h2 id="studio-trust-title">One place for the complete beginner journey.</h2>
             </div>
             <div className="studio-trust__points">
-              <article><strong>Beginner-friendly by design</strong><p>Start without setup, jargon, or an intimidating blank editor.</p></article>
-              <article><strong>Projects with a purpose</strong><p>Each lesson connects back to something students can build and improve.</p></article>
-              <article><strong>Visible progress</strong><p>Lessons, projects, XP, and milestones make the next step easier to understand.</p></article>
+              <article><strong>AI-assisted project studio</strong><p>Students quickly create a first version, then keep control of what changes next.</p></article>
+              <article><strong>Lessons and hands-on exercises</strong><p>Python concepts are explained through code students can run and test immediately.</p></article>
+              <article><strong>Projects that belong to the student</strong><p>Save versions, return later, improve the work, and publish when it is ready.</p></article>
+              <article><strong>Progress families can follow</strong><p>Completed learning and creative milestones become understandable parent updates.</p></article>
             </div>
           </section>
 
           <section className="studio-final" aria-labelledby="studio-final-title">
             <div>
-              <p className="studio-kicker">Your first project can start today</p>
-              <h2 id="studio-final-title">What do you want to make?</h2>
-              <p>Bring one idea. CodeIt will help you build it, understand it, and keep improving it.</p>
+              <p className="studio-kicker">The CodeIt promise</p>
+              <h2 id="studio-final-title">Start with an idea. Leave with something real.</h2>
+              <p>Build it. Learn how it works. Make it yours. Share what you created.</p>
             </div>
             <Link
               to="/builder"

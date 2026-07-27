@@ -3,6 +3,7 @@ const pool = require('../db');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
+const { recordMilestoneAndNotify } = require('../progressNotifications');
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -45,7 +46,7 @@ router.post('/:id/complete', authenticateToken, async (req, res) => {
   const puzzleId = req.params.id;
 
   try {
-    const [puzzleRows] = await pool.query('SELECT id, xp FROM Puzzles WHERE id = ?', [puzzleId]);
+    const [puzzleRows] = await pool.query('SELECT id, name, xp FROM Puzzles WHERE id = ?', [puzzleId]);
     if (!puzzleRows.length) return res.status(404).json({ error: 'Puzzle not found' });
     const xpReward = puzzleRows[0].xp;
 
@@ -61,6 +62,13 @@ router.post('/:id/complete', authenticateToken, async (req, res) => {
 
     if (!alreadyCompleted && isStudent) {
       await pool.query('UPDATE Students SET total_xp = total_xp + ? WHERE user_id = ?', [xpReward, userId]);
+      void recordMilestoneAndNotify({
+        userId,
+        eventType: 'puzzle_completed',
+        eventKey: String(puzzleId),
+        title: puzzleRows[0].name || `Challenge ${puzzleId}`,
+        detail: `Earned ${xpReward} XP`,
+      }).catch(error => console.error('Puzzle milestone error:', error.message));
     }
 
     res.json({

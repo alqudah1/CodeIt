@@ -5,7 +5,7 @@ import Header from '../../pages/Header/Header';
 import LessonGuide from '../LessonGuide/LessonGuide';
 import CharacterAvatar from '../CharacterAvatar/CharacterAvatar';
 import './InteractiveLessonTemplate.css';
-import { trackStaticLessonCompletion } from '../../utils/progressTracker';
+import { trackExerciseCompletion, trackStaticLessonCompletion } from '../../utils/progressTracker';
 import { getJourneyNext } from '../../pages/Journey/journeyNext';
 import { useProgress } from '../../context/ProgressContext';
 import { AuthContext } from '../../context/AuthContext';
@@ -216,21 +216,16 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const stepsCompletedCount  = Object.values(stepsDone).filter(Boolean).length;
   const progressPct          = totalSteps > 0 ? Math.round((stepsCompletedCount / totalSteps) * 100) : 0;
 
-  // ── Lesson DB completion (fires once) ──────────────────────
-  const markLessonCompleteOnce = () => {
-    if (hasMarkedComplete.current) return;
-    hasMarkedComplete.current = true;
-    markLessonComplete(id);
-    trackStaticLessonCompletion(id).catch(err =>
-      console.error(`Lesson ${id} completion error:`, err)
-    );
-  };
-
   const markStepDone = (idx) => {
-    setStepsDone(prev => ({ ...prev, [idx]: true }));
-    // Mark lesson complete on first code-step pass
     const step = steps[idx];
-    if (step && step.type !== 'concept') markLessonCompleteOnce();
+    if (step && step.type !== 'concept' && !stepsDone[idx]) {
+      trackExerciseCompletion(
+        id,
+        idx,
+        step.title || `${TYPE_LABEL[step.type] || 'Coding'} exercise ${idx + 1}`
+      ).catch(err => console.error(`Exercise ${id}:${idx} completion error:`, err));
+    }
+    setStepsDone(prev => ({ ...prev, [idx]: true }));
   };
 
   // Returns hints array for a step — supports both hints:[] and legacy hint:string

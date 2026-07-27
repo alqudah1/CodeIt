@@ -209,6 +209,127 @@
   letter-spacing: 0.04em;
 }
 
+/* ── Parent progress updates ─────────────────────────────────── */
+.profile-card--parent {
+  max-width: 680px;
+  display: grid;
+  gap: 1.25rem;
+  color: #3d302b;
+}
+
+.profile-parent__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.profile-parent__eyebrow {
+  margin: 0 0 0.25rem;
+  color: #c94f0c;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.profile-parent__heading h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  color: #3d302b;
+}
+
+.profile-parent__status {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.profile-parent__status.is-verified { color: #176b52; background: #dff7ef; }
+.profile-parent__status.is-pending { color: #8b5b00; background: #fff3d7; }
+
+.profile-parent__counts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  overflow: hidden;
+  border: 1px solid rgba(61,48,43,0.12);
+  border-radius: 14px;
+}
+
+.profile-parent__counts span {
+  padding: 0.8rem 0.5rem;
+  display: grid;
+  gap: 0.18rem;
+  text-align: center;
+  border-left: 1px solid rgba(61,48,43,0.12);
+  color: #72594d;
+  font-size: 0.69rem;
+}
+
+.profile-parent__counts span:first-child { border-left: 0; }
+.profile-parent__counts strong { color: #f87824; font-size: 1.15rem; }
+
+.profile-parent__form { display: grid; gap: 0.75rem; }
+.profile-parent__form > label, .profile-parent__form legend {
+  color: #3d302b;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.profile-parent__form > input {
+  min-height: 48px;
+  padding: 0.75rem 0.9rem;
+  border: 1.5px solid rgba(61,48,43,0.18);
+  border-radius: 11px;
+  background: #fffdf9;
+  color: #3d302b;
+  font: inherit;
+}
+
+.profile-parent__form > input:focus {
+  outline: 3px solid rgba(248,120,36,0.2);
+  border-color: #f87824;
+}
+
+.profile-parent__form fieldset {
+  margin: 0;
+  padding: 0.9rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+  border: 1px solid rgba(61,48,43,0.12);
+  border-radius: 12px;
+}
+
+.profile-parent__form legend { padding: 0 0.35rem; }
+.profile-parent__check { display: flex; align-items: flex-start; gap: 0.55rem; color: #5f6674; font-size: 0.78rem; line-height: 1.35; }
+.profile-parent__check input { margin-top: 0.15rem; accent-color: #f87824; }
+
+.profile-parent__form button {
+  min-height: 48px;
+  padding: 0.75rem 1rem;
+  border: 0;
+  border-radius: 11px;
+  color: #fff;
+  background: #f87824;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.profile-parent__form button:disabled { cursor: wait; opacity: 0.6; }
+.profile-parent__message { margin: 0; color: #c94f0c; font-size: 0.78rem; font-weight: 800; }
+.profile-parent__privacy { margin: 0; color: #72594d; font-size: 0.72rem; line-height: 1.5; }
+
+.profile-parent__recent { padding-top: 1rem; border-top: 1px solid rgba(61,48,43,0.12); }
+.profile-parent__recent h3 { margin: 0 0 0.65rem; font-size: 0.85rem; }
+.profile-parent__recent ul { margin: 0; padding: 0; display: grid; gap: 0.55rem; list-style: none; }
+.profile-parent__recent li { display: flex; align-items: baseline; gap: 0.65rem; }
+.profile-parent__recent li span { min-width: 112px; color: #c94f0c; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; }
+.profile-parent__recent li strong { font-size: 0.82rem; }
+
 /* ── Next level card ─────────────────────────────────────────── */
 .profile-card--next {
   display: flex;
@@ -366,4 +487,11 @@
   .profile-actions {
     flex-direction: column;
   }
+
+  .profile-parent__heading { flex-direction: column; }
+  .profile-parent__counts { grid-template-columns: 1fr 1fr; }
+  .profile-parent__counts span:nth-child(3) { border-left: 0; border-top: 1px solid rgba(61,48,43,0.12); }
+  .profile-parent__counts span:nth-child(4) { border-top: 1px solid rgba(61,48,43,0.12); }
+  .profile-parent__form fieldset { grid-template-columns: 1fr; }
+  .profile-parent__recent li { align-items: flex-start; flex-direction: column; gap: 0.15rem; }
 }

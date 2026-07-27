@@ -8,6 +8,7 @@ const { JWT_SECRET } = require('../config');
 const { recordEvent } = require('../analytics');
 const { projectCategory } = require('../analyticsEvents');
 const { recordAIUsage } = require('../aiUsage');
+const { recordMilestoneAndNotify } = require('../progressNotifications');
 
 const client     = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -1752,6 +1753,13 @@ router.post('/projects', requireAuth, async (req, res) => {
       userId,
       meta: projectCategory(project_type),
     });
+    void recordMilestoneAndNotify({
+      userId,
+      eventType: 'project_created',
+      eventKey: String(result.insertId),
+      title: title.trim(),
+      detail: `${projectCategory(project_type)} project created`,
+    }).catch(error => console.error('Project milestone error:', error.message));
     res.status(201).json({ success: true, project: rows[0] });
   } catch (err) {
     console.error('Save project error:', err.message);
@@ -2168,7 +2176,7 @@ router.post('/projects/:id/publish', requireAuth, async (req, res) => {
   const { id }  = req.params;
   try {
     const [rows] = await pool.query(
-      'SELECT id, public_id, is_public, project_type FROM ai_projects WHERE id = ? AND user_id = ?',
+      'SELECT id, title, public_id, is_public, project_type FROM ai_projects WHERE id = ? AND user_id = ?',
       [id, userId]
     );
     if (!rows.length) return res.status(404).json({ error: 'Project not found.' });
@@ -2200,6 +2208,14 @@ router.post('/projects/:id/publish', requireAuth, async (req, res) => {
         userId,
         meta: projectCategory(rows[0].project_type),
       });
+      void recordMilestoneAndNotify({
+        userId,
+        eventType: 'project_published',
+        eventKey: String(id),
+        title: rows[0].title || 'Published CodeIt project',
+        detail: 'Published and ready to share',
+        targetUrl: `https://codeitlearn.com/project/${public_id}`,
+      }).catch(error => console.error('Publish milestone error:', error.message));
     }
 
     const publicUrl = `https://codeitlearn.com/project/${public_id}`;
