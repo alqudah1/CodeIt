@@ -2017,31 +2017,58 @@ export default function Builder() {
             </div>
 
             {!isSaved && (
-              <section className="bldr-activation-card" aria-labelledby="bldr-save-next-title">
+              <section className="bldr-activation-card" aria-labelledby="bldr-next-step-title">
                 <div className="bldr-activation-card__copy">
                   <span className="bldr-activation-card__kicker">Your next step</span>
-                  <h3 id="bldr-save-next-title">Save this project before you leave.</h3>
+                  <h3 id="bldr-next-step-title">
+                    {editCount === 0
+                      ? 'Change one thing so this project becomes yours.'
+                      : 'Save this project before you leave.'}
+                  </h3>
                   <p>
-                    {user
-                      ? 'Save this version so it appears in My Creations and is ready when you come back.'
-                      : 'We’ll keep this version in this browser while you sign in or choose an eligible account option, then bring you back here.'}
+                    {editCount === 0
+                      ? 'Try changing the words, colors, difficulty, or one feature. Then test what happened.'
+                      : user
+                        ? 'Save this version so it appears in My Creations and is ready when you come back.'
+                        : 'We’ll keep this version in this browser while you sign in or choose an eligible account option, then bring you back here.'}
                   </p>
                 </div>
                 <div className="bldr-activation-card__actions">
-                  <button
-                    className="bldr-activation-card__primary"
-                    onClick={handleSaveProject}
-                    disabled={saveStatus === 'saving' || editing}
-                  >
-                    {saveStatus === 'saving' ? 'Saving…' : user ? 'Save project' : 'Save and continue'}
-                  </button>
-                  <button
-                    className="bldr-activation-card__secondary"
-                    onClick={() => { setShowEditPanel(true); setTimeout(() => editRef.current?.focus(), 0); }}
-                    disabled={editing}
-                  >
-                    Make another change
-                  </button>
+                  {editCount === 0 ? (
+                    <>
+                      <button
+                        className="bldr-activation-card__primary"
+                        onClick={() => { setShowEditPanel(true); setTimeout(() => editRef.current?.focus(), 0); }}
+                        disabled={editing}
+                      >
+                        Personalize this project
+                      </button>
+                      <button
+                        className="bldr-activation-card__secondary"
+                        onClick={handleSaveProject}
+                        disabled={saveStatus === 'saving' || editing}
+                      >
+                        {saveStatus === 'saving' ? 'Saving…' : 'Save for later'}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="bldr-activation-card__primary"
+                        onClick={handleSaveProject}
+                        disabled={saveStatus === 'saving' || editing}
+                      >
+                        {saveStatus === 'saving' ? 'Saving…' : user ? 'Save project' : 'Save and continue'}
+                      </button>
+                      <button
+                        className="bldr-activation-card__secondary"
+                        onClick={() => { setShowEditPanel(true); setTimeout(() => editRef.current?.focus(), 0); }}
+                        disabled={editing}
+                      >
+                        Make another change
+                      </button>
+                    </>
+                  )}
                 </div>
               </section>
             )}

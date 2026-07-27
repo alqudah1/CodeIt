@@ -29,6 +29,7 @@ describe('project studio opening', () => {
     mockNavigate.mockClear();
     global.fetch = jest.fn((url) => Promise.resolve({
       ok: true,
+      headers: { get: () => 'application/json' },
       json: async () => String(url).includes('/missions')
         ? { missions: [] }
         : {
@@ -59,8 +60,8 @@ describe('project studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
-    await screen.findByRole('heading', { name: 'Save this project before you leave.' });
-    fireEvent.click(screen.getByRole('button', { name: 'Save and continue' }));
+    await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
+    fireEvent.click(screen.getByRole('button', { name: 'Save for later' }));
 
     const draft = JSON.parse(sessionStorage.getItem('codeit_builder_draft'));
     expect(draft.code).toContain('My game');
@@ -75,12 +76,32 @@ describe('project studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Quiz/i }));
-    await screen.findByRole('heading', { name: 'Save this project before you leave.' });
+    await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
     fireEvent.click(screen.getByRole('button', { name: 'Share' }));
 
     expect(JSON.parse(sessionStorage.getItem('codeit_builder_draft')).code).toContain('My game');
     expect(mockNavigate).toHaveBeenCalledWith('/login', {
       state: { from: '/builder', resumeBuilderAction: 'publish' },
     });
+  });
+
+  test('moves a first-time guest from creating to personalizing before save becomes primary', async () => {
+    render(<Builder />);
+
+    fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
+    await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
+
+    const personalizeButton = screen.getByRole('button', { name: 'Personalize this project' });
+    expect(personalizeButton).toHaveClass('bldr-activation-card__primary');
+    expect(screen.getByRole('button', { name: 'Save for later' })).toHaveClass('bldr-activation-card__secondary');
+
+    fireEvent.click(personalizeButton);
+    const editInput = screen.getByPlaceholderText(/Describe a change — e.g. make it harder/i);
+    fireEvent.change(editInput, { target: { value: 'Change the main color to orange' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Apply changes' }));
+
+    await screen.findByRole('heading', { name: 'Save this project before you leave.' });
+    expect(screen.getByRole('button', { name: 'Save and continue' })).toHaveClass('bldr-activation-card__primary');
+    expect(screen.getByRole('button', { name: 'Make another change' })).toBeInTheDocument();
   });
 });
