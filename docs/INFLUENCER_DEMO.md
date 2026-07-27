@@ -11,6 +11,10 @@ connects the result to the coding concepts that make it work.
 
 ## The three-minute walkthrough
 
+Before the meeting, open the homepage and project builder in separate tabs. Keep
+the browser playground open as a reliable backup so the conversation never
+depends on waiting for a new project to generate.
+
 ### 1. Start on the homepage
 
 Say:
@@ -60,7 +64,28 @@ Say:
 Say:
 
 > The action we want from a student is: build a free project. The action we
-> want from a parent is: join the Founding Family waitlist.
+> want from a parent is: join the Founding Family waitlist or email us directly
+> about the pilot.
+
+On the Pricing page, point out that the family plan is planned rather than
+available for purchase. A parent can join with a Parent / Educator account or
+choose **Email us about the pilot**. The email option only opens their email app;
+nothing is sent automatically.
+
+## If the live build is slow
+
+Do not wait silently or apologize repeatedly. Open the prepared space quiz,
+change one visible detail, then show the related code or run a small example in
+the Python playground.
+
+Say:
+
+> The important part is not the first generated version. The learning happens
+> when the student changes it, tests the result, and can explain what the code
+> does.
+
+This keeps the demonstration focused on the product’s real value rather than on
+generation speed.
 
 ## What to promote
 
