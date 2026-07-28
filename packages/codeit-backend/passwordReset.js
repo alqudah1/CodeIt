@@ -5,7 +5,9 @@ const bcrypt = require('bcryptjs');
 const db = require('./db');
 
 const SITE_URL = (process.env.PUBLIC_SITE_URL || 'https://codeitlearn.com').replace(/\/+$/, '');
-const EMAIL_FROM = process.env.EMAIL_FROM || 'CodeIt <progress@codeitlearn.com>';
+const DEFAULT_EMAIL_FROM = process.env.EMAIL_FROM || 'CodeIt <progress@codeitlearn.com>';
+const configuredAddress = DEFAULT_EMAIL_FROM.match(/<([^>]+)>/)?.[1] || DEFAULT_EMAIL_FROM;
+const EMAIL_FROM = `CodeIt Account <${configuredAddress}>`;
 const RESET_TTL_MINUTES = 30;
 
 const ready = (async () => {
