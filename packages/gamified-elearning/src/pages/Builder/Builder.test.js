@@ -71,6 +71,10 @@ describe('project studio opening', () => {
     const draft = JSON.parse(sessionStorage.getItem('codeit_builder_draft'));
     expect(draft.code).toContain('My game');
     expect(draft.projectType).toBe('game');
+    const builderRequest = global.fetch.mock.calls.find(([url]) => url === 'http://codeit.test/api/builder');
+    expect(builderRequest[1].headers).toEqual(expect.objectContaining({
+      'X-CodeIt-Journey': expect.stringMatching(/^[0-9a-f-]{36}$/i),
+    }));
     expect(mockNavigate).toHaveBeenCalledWith('/login', {
       state: { from: '/builder', resumeBuilderAction: 'save' },
     });

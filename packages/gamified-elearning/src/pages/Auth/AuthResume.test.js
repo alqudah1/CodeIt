@@ -74,5 +74,14 @@ describe('builder authentication return', () => {
       replace: true,
       state: { resumeBuilderAction: 'publish' },
     }));
+    expect(axios.post).toHaveBeenCalledWith(
+      'http://codeit.test/api/signup',
+      expect.objectContaining({ accountType: 'educator' }),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          'X-CodeIt-Journey': expect.stringMatching(/^[0-9a-f-]{36}$/i),
+        }),
+      })
+    );
   });
 });

@@ -20,7 +20,10 @@ describe("trackEvent", () => {
       expect.objectContaining({
         method: "POST",
         keepalive: true,
-        headers: expect.objectContaining({ Authorization: "Bearer test-token" }),
+        headers: expect.objectContaining({
+          Authorization: "Bearer test-token",
+          "X-CodeIt-Journey": expect.stringMatching(/^[0-9a-f-]{36}$/i),
+        }),
         body: JSON.stringify({ event_name: "landing_cta_click", meta: "hero-build" }),
       })
     );

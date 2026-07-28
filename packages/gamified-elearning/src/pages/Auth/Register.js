@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
+import { journeyHeaders } from '../../utils/journey';
 import BrandLogo from '../../components/BrandLogo/BrandLogo';
 import './Auth.css';
 
@@ -91,7 +92,7 @@ export default function Register() {
       const res = await axios.post(
         `${API_BASE_URL}/api/signup`,
         { accountType: 'student', username: data.username.trim(), password: data.password, dob: data.dob },
-        { headers: { 'Content-Type': 'application/json' } }
+        { headers: { 'Content-Type': 'application/json', ...journeyHeaders() } }
       );
       login({ user: res.data.user, token: res.data.token });
       setPendingToken(res.data.token);
@@ -114,7 +115,7 @@ export default function Register() {
       const res = await axios.post(
         `${API_BASE_URL}/api/signup`,
         { accountType: 'educator', name: data.name.trim(), email: data.email.trim(), password: data.password },
-        { headers: { 'Content-Type': 'application/json' } }
+        { headers: { 'Content-Type': 'application/json', ...journeyHeaders() } }
       );
       login({ user: res.data.user, token: res.data.token });
       navigate(returnTo, { replace: true, state: returnState });

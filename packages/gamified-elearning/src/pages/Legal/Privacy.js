@@ -64,6 +64,7 @@ export default function Privacy() {
             <section id="analytics">
               <h2>Product analytics</h2>
               <p>CodeIt records a short allowlisted set of actions such as landing-page clicks, builds started and completed, account creation, project saves and publishes, return days, pricing-page views, and plan-interest clicks. When someone is signed in, an action may be connected to the account ID.</p>
+              <p>A random first-party journey number is kept only in the current browser session. It lets CodeIt understand whether a visit led to a build, signup, save, or publish. It is not used across other websites, contains no name or contact details, and disappears from the browser when that session ends.</p>
               <p>Analytics events do not store prompts, generated code, email addresses, browser user-agent strings, or IP addresses. An IP address may be held in server memory for about 60 seconds solely to rate-limit analytics requests; it is not written to the analytics table.</p>
             </section>
 

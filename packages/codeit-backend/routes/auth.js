@@ -6,6 +6,7 @@ const db      = require('../db');
 const { JWT_SECRET, JWT_EXPIRY } = require('../config');
 const { recordEvent } = require('../analytics');
 const { studentAgeEligibility } = require('../studentAge');
+const { normalizeJourneyId } = require('../analyticsEvents');
 const { updateSettings } = require('../progressNotifications');
 const { requestPasswordReset, resetPassword, validPassword } = require('../passwordReset');
 
@@ -93,6 +94,7 @@ router.post('/signup', async (req, res) => {
     await connection.commit();
     void recordEvent('signup_complete', {
       userId: result.insertId,
+      journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')),
       meta: isStudent ? 'student' : 'educator',
     });
 

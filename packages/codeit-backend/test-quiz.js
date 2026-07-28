@@ -54,7 +54,7 @@ app.use(cors({
     return callback(new Error('Origin is not allowed by CORS'));
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-CodeIt-Journey'],
   credentials: true,
 }));
 

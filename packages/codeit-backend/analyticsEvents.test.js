@@ -7,6 +7,7 @@ const {
   normalizeEventName,
   eventRequiresMeta,
   normalizeMeta,
+  normalizeJourneyId,
   projectCategory,
 } = require('./analyticsEvents');
 
@@ -56,4 +57,13 @@ test('reduces project types to a short non-content category', () => {
   assert.equal(projectCategory('memory'), 'game');
   assert.equal(projectCategory('drawing'), 'tool');
   assert.equal(projectCategory('a unique user prompt'), 'other');
+});
+
+test('accepts only anonymous version-four journey identifiers', () => {
+  assert.equal(
+    normalizeJourneyId('123e4567-e89b-42d3-a456-426614174000'),
+    '123e4567-e89b-42d3-a456-426614174000'
+  );
+  assert.equal(normalizeJourneyId('parent@example.com'), null);
+  assert.equal(normalizeJourneyId('123e4567-e89b-12d3-a456-426614174000'), null);
 });

@@ -89,6 +89,9 @@ export default function AdminFunnel() {
   const uniqueUsers = useMemo(() => Object.fromEntries(
     (data?.events || []).map((row) => [row.event_name, Number(row.unique_users) || 0])
   ), [data]);
+  const uniqueJourneys = useMemo(() => Object.fromEntries(
+    (data?.events || []).map((row) => [row.event_name, Number(row.unique_journeys) || 0])
+  ), [data]);
 
   const parentActions = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'parent_cta_click').map((row) => [row.meta, Number(row.event_count) || 0])
@@ -97,16 +100,18 @@ export default function AdminFunnel() {
     (data?.breakdown || []).filter((row) => row.event_name === 'acquisition_visit').map((row) => [row.meta, Number(row.event_count) || 0])
   ), [data]);
   const foundingLeads = data?.founding_leads || [];
+  const sourceFunnel = data?.source_funnel || [];
+  const journeyMetric = (key) => uniqueJourneys[key] || counts[key] || 0;
 
   const signals = data ? [
-    ['Build completion', ratio(counts.generation_complete, counts.builder_start)],
-    ['Generated → personalized', ratio(counts.project_personalize, counts.generation_complete)],
-    ['Personalized → saved', ratio(counts.project_save, counts.project_personalize)],
-    ['Generated → saved', ratio(counts.project_save, counts.generation_complete)],
-    ['Saved → published', ratio(counts.project_publish, counts.project_save)],
-    ['Published → shared', ratio(counts.project_share, counts.project_publish)],
-    ['New accounts → return days', ratio(counts.return_use, counts.signup_complete)],
-    ['Pricing view → interest', ratio(counts.pricing_interest, counts.pricing_view)],
+    ['Build completion', ratio(journeyMetric('generation_complete'), journeyMetric('builder_start'))],
+    ['Generated → personalized', ratio(journeyMetric('project_personalize'), journeyMetric('generation_complete'))],
+    ['Personalized → saved', ratio(journeyMetric('project_save'), journeyMetric('project_personalize'))],
+    ['Generated → saved', ratio(journeyMetric('project_save'), journeyMetric('generation_complete'))],
+    ['Saved → published', ratio(journeyMetric('project_publish'), journeyMetric('project_save'))],
+    ['Published → shared', ratio(journeyMetric('project_share'), journeyMetric('project_publish'))],
+    ['New accounts → return days', ratio(journeyMetric('return_use'), journeyMetric('signup_complete'))],
+    ['Pricing view → interest', ratio(journeyMetric('pricing_interest'), journeyMetric('pricing_view'))],
   ] : [];
 
   const recentDaily = (data?.daily || []).slice(-35).reverse();
@@ -143,6 +148,7 @@ export default function AdminFunnel() {
                 <span className="funnel-stage__number">{String(index + 1).padStart(2, '0')}</span>
                 <strong>{fmt(counts[key])}</strong>
                 <p>{label}</p>
+                {uniqueJourneys[key] > 0 && <small>{fmt(uniqueJourneys[key])} visitor journeys</small>}
                 {uniqueUsers[key] > 0 && <small>{fmt(uniqueUsers[key])} signed-in users</small>}
               </article>
             ))}
@@ -167,6 +173,40 @@ export default function AdminFunnel() {
             ))}
           </div>
           <p className="funnel-parent-note">One privacy-safe source bucket per browser session. Campaign names, search terms, and referring URLs are never stored.</p>
+
+          <div className="adm-section-head">Which sources create activated visitors</div>
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead>
+                <tr>
+                  <th>Source</th>
+                  <th>Visits</th>
+                  <th>Generated</th>
+                  <th>Signed up</th>
+                  <th>Saved</th>
+                  <th>Published</th>
+                  <th>Visit → build</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sourceFunnel.length === 0 && (
+                  <tr><td colSpan={7} className="adm-loading">Journey attribution starts with the next new visitor session.</td></tr>
+                )}
+                {sourceFunnel.map((source) => (
+                  <tr key={source.source}>
+                    <td>{ACQUISITION_SOURCES.find(([key]) => key === source.source)?.[1] || source.source}</td>
+                    <td><strong>{fmt(source.visits)}</strong></td>
+                    <td>{fmt(source.generated)}</td>
+                    <td>{fmt(source.signed_up)}</td>
+                    <td>{fmt(source.saved)}</td>
+                    <td>{fmt(source.published)}</td>
+                    <td>{ratio(Number(source.generated), Number(source.visits))}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="funnel-parent-note">A random number connects actions only inside one browser session. It contains no prompt, project content, name, email, IP address, or cross-site tracking data.</p>
 
           <div className="adm-section-head">Parent acquisition actions</div>
           <div className="funnel-parent-grid">

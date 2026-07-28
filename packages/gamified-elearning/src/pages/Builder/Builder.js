@@ -6,6 +6,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { useSEO } from '../../hooks/useSEO';
 import { trackEvent } from '../../utils/trackEvent';
+import { journeyHeaders } from '../../utils/journey';
 import './Builder.css';
 
 const QUICK_STARTS = [
@@ -1225,7 +1226,11 @@ export default function Builder() {
       const res  = await fetch(`${API_BASE_URL}/api/builder`, {
         method:  'POST',
         signal:  buildController.signal,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...journeyHeaders(),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body:    JSON.stringify({ prompt: text }),
       });
       clearTimeout(buildTimeout);
@@ -1428,7 +1433,7 @@ export default function Builder() {
         : `${API_BASE_URL}/api/builder/projects`;
       const res  = await fetch(projectUrl, {
         method:  isUpdating ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...journeyHeaders() },
         body:    JSON.stringify({ title, prompt: builtPrompt, generated_code: code, project_type: projectType }),
       });
       const data = await res.json();
@@ -1658,7 +1663,7 @@ export default function Builder() {
       try {
         const res  = await fetch(`${API_BASE_URL}/api/builder/projects`, {
           method:  'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...journeyHeaders() },
           body:    JSON.stringify({ title, prompt: builtPrompt, generated_code: code, project_type: projectType }),
         });
         const data = await res.json();
@@ -1678,7 +1683,7 @@ export default function Builder() {
     try {
       const res  = await fetch(`${API_BASE_URL}/api/builder/projects/${projectId}/publish`, {
         method:  'POST',
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}`, ...journeyHeaders() },
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Publish failed');

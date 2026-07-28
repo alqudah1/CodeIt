@@ -1,7 +1,7 @@
 'use strict';
 
 const pool = require('./db');
-const { normalizeEventName, normalizeMeta } = require('./analyticsEvents');
+const { normalizeEventName, normalizeMeta, normalizeJourneyId } = require('./analyticsEvents');
 const { listFoundingFamilyLeads } = require('./foundingWaitlist');
 
 const tableReady = pool.query(`
@@ -16,6 +16,14 @@ const tableReady = pool.query(`
   ) ENGINE=InnoDB
 `).then(async () => {
   try {
+    const [journeyColumns] = await pool.query(
+      "SHOW COLUMNS FROM analytics_events LIKE 'journey_id'"
+    );
+    if (!journeyColumns.length) {
+      await pool.query(
+        'ALTER TABLE analytics_events ADD COLUMN journey_id CHAR(36) NULL AFTER user_id, ADD INDEX idx_analytics_journey_event (journey_id, event_name)'
+      );
+    }
     await pool.query(
       'DELETE FROM analytics_events WHERE created_at < DATE_SUB(NOW(), INTERVAL 13 MONTH)'
     );
@@ -28,7 +36,7 @@ const tableReady = pool.query(`
   return false;
 });
 
-async function recordEvent(eventName, { userId = null, meta = null } = {}) {
+async function recordEvent(eventName, { userId = null, journeyId = null, meta = null } = {}) {
   const normalizedEvent = normalizeEventName(eventName);
   if (!normalizedEvent) return false;
 
@@ -36,12 +44,13 @@ async function recordEvent(eventName, { userId = null, meta = null } = {}) {
     ? Number(userId)
     : null;
   const normalizedMeta = normalizeMeta(normalizedEvent, meta);
+  const normalizedJourneyId = normalizeJourneyId(journeyId);
 
   try {
     if (!await tableReady) return false;
     await pool.query(
-      'INSERT INTO analytics_events (event_name, user_id, meta) VALUES (?, ?, ?)',
-      [normalizedEvent, normalizedUserId, normalizedMeta]
+      'INSERT INTO analytics_events (event_name, user_id, journey_id, meta) VALUES (?, ?, ?, ?)',
+      [normalizedEvent, normalizedUserId, normalizedJourneyId, normalizedMeta]
     );
     return true;
   } catch (err) {
@@ -56,9 +65,10 @@ async function getFunnelReport(requestedDays = 30) {
   try {
     if (!await tableReady) return null;
     const windowSql = `created_at >= DATE_SUB(NOW(), INTERVAL ${days} DAY)`;
-    const [[events], [daily], [breakdown], [studentAgeRows], [accountLeads], directLeads] = await Promise.all([
+    const [[events], [daily], [breakdown], [sourceFunnel], [studentAgeRows], [accountLeads], directLeads] = await Promise.all([
       pool.query(
-        `SELECT event_name, COUNT(*) AS event_count, COUNT(DISTINCT user_id) AS unique_users
+        `SELECT event_name, COUNT(*) AS event_count, COUNT(DISTINCT user_id) AS unique_users,
+                COUNT(DISTINCT journey_id) AS unique_journeys
          FROM analytics_events WHERE ${windowSql}
          GROUP BY event_name`
       ),
@@ -73,6 +83,28 @@ async function getFunnelReport(requestedDays = 30) {
          FROM analytics_events WHERE ${windowSql} AND meta IS NOT NULL
          GROUP BY event_name, meta
          ORDER BY event_name, event_count DESC`
+      ),
+      pool.query(
+        `SELECT source,
+                COUNT(*) AS visits,
+                SUM(generated) AS generated,
+                SUM(signed_up) AS signed_up,
+                SUM(saved) AS saved,
+                SUM(published) AS published
+         FROM (
+           SELECT journey_id,
+                  MAX(CASE WHEN event_name = 'acquisition_visit' THEN meta END) AS source,
+                  MAX(event_name = 'generation_complete') AS generated,
+                  MAX(event_name = 'signup_complete') AS signed_up,
+                  MAX(event_name = 'project_save') AS saved,
+                  MAX(event_name = 'project_publish') AS published
+           FROM analytics_events
+           WHERE ${windowSql} AND journey_id IS NOT NULL
+           GROUP BY journey_id
+         ) journeys
+         WHERE source IS NOT NULL
+         GROUP BY source
+         ORDER BY visits DESC`
       ),
       pool.query(
         `SELECT
@@ -122,6 +154,7 @@ async function getFunnelReport(requestedDays = 30) {
       events,
       daily,
       breakdown,
+      source_funnel: sourceFunnel,
       student_age_audit: studentAgeRows[0] || null,
       founding_leads: foundingLeads,
     };

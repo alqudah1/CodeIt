@@ -6,7 +6,7 @@ const pool         = require('../db');
 const designEngine = require('../designEngine');
 const { JWT_SECRET } = require('../config');
 const { recordEvent } = require('../analytics');
-const { projectCategory } = require('../analyticsEvents');
+const { projectCategory, normalizeJourneyId } = require('../analyticsEvents');
 const { recordAIUsage } = require('../aiUsage');
 const { recordMilestoneAndNotify } = require('../progressNotifications');
 
@@ -1395,6 +1395,7 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
   const designConfig = designEngine.getDesignConfig(prompt.trim());
   const analyticsContext = {
     userId: req.user?.user_id,
+    journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')),
     meta: projectCategory(designConfig.category),
   };
   let generationMode = 'fallback';
@@ -1404,6 +1405,7 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
     if (res.statusCode >= 200 && res.statusCode < 300) {
       void recordEvent('generation_complete', {
         userId: analyticsContext.userId,
+        journeyId: analyticsContext.journeyId,
         meta: generationMode,
       });
     }
@@ -1798,6 +1800,7 @@ router.post('/projects', requireAuth, async (req, res) => {
     const [rows] = await pool.query('SELECT * FROM ai_projects WHERE id = ?', [result.insertId]);
     void recordEvent('project_save', {
       userId,
+      journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')),
       meta: projectCategory(project_type),
     });
     void recordMilestoneAndNotify({
@@ -2261,6 +2264,7 @@ router.post('/projects/:id/publish', requireAuth, async (req, res) => {
     if (!wasPublic) {
       void recordEvent('project_publish', {
         userId,
+        journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')),
         meta: projectCategory(rows[0].project_type),
       });
       void recordMilestoneAndNotify({
