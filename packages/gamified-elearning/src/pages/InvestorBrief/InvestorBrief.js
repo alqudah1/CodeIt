@@ -134,7 +134,7 @@ export default function InvestorBrief() {
             <article><strong>609</strong><span>Lesson completions</span></article>
             <article><strong>778</strong><span>Quiz attempts</span></article>
             <article><strong>1,167</strong><span>Puzzle completions</span></article>
-            <article><strong>13</strong><span>Saved projects</span></article>
+            <article><strong>16</strong><span>Saved projects</span></article>
           </div>
           <aside className="investor-brief__evidence-note">
             Login totals are not shown because the historical product did not record login events.
