@@ -10,7 +10,7 @@ const DEFAULTS = {
   image: DEFAULT_IMAGE,
 };
 
-export function useSEO({ title, description, canonical, image } = {}) {
+export function useSEO({ title, description, canonical, image, robots = "index,follow" } = {}) {
   useEffect(() => {
     const resolvedTitle = title ?? DEFAULTS.title;
     const resolvedDescription = description ?? DEFAULTS.description;
@@ -29,6 +29,7 @@ export function useSEO({ title, description, canonical, image } = {}) {
     setMeta("name", "twitter:title", resolvedTitle);
     setMeta("name", "twitter:description", resolvedDescription);
     setMeta("name", "twitter:image", resolvedImage);
+    setMeta("name", "robots", robots);
 
     let canonicalLink = document.querySelector('link[rel="canonical"]');
     if (!canonicalLink) {
@@ -48,10 +49,11 @@ export function useSEO({ title, description, canonical, image } = {}) {
       setMeta("name", "twitter:title", DEFAULTS.title);
       setMeta("name", "twitter:description", DEFAULTS.description);
       setMeta("name", "twitter:image", DEFAULTS.image);
+      setMeta("name", "robots", "index,follow");
       const link = document.querySelector('link[rel="canonical"]');
       if (link) link.href = `${BASE_URL}/`;
     };
-  }, [title, description, canonical, image]);
+  }, [title, description, canonical, image, robots]);
 }
 
 function setMeta(attribute, value, content) {
