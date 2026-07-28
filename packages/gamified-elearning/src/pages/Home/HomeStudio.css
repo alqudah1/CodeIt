@@ -265,6 +265,18 @@
 .studio-family__copy li { position: relative; padding-left: 1.6rem; color: var(--studio-ink); font-weight: 800; line-height: 1.5; }
 .studio-family__copy li::before { content: "✓"; position: absolute; left: 0; color: #008d72; font-weight: 900; }
 .studio-family__copy small { color: var(--studio-muted); line-height: 1.5; }
+.studio-family__cta {
+  width: fit-content;
+  margin-top: 1.35rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--studio-orange-dark);
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+.studio-family__cta:hover { color: var(--studio-ink); }
 .studio-family__email {
   padding: 1.4rem;
   background: #fff;

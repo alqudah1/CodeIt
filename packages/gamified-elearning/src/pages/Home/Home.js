@@ -222,6 +222,14 @@ export default function Home() {
                 <li>publishes something ready to share.</li>
               </ul>
               <small>Planned pilot feature. Email delivery starts only after a parent confirms and chooses the updates they receive.</small>
+              <Link
+                to="/pricing"
+                className="studio-family__cta"
+                data-cta="family-pilot"
+                onClick={() => trackEvent("parent_cta_click", "view-pricing")}
+              >
+                See the Founding Family pilot <span aria-hidden="true">→</span>
+              </Link>
             </div>
             <article className="studio-family__email" aria-label="Example parent progress email">
               <div className="studio-family__email-bar">
