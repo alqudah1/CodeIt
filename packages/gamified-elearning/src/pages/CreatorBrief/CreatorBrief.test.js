@@ -59,6 +59,6 @@ describe('CreatorBrief', () => {
     expect(screen.getByText('Say this')).toBeInTheDocument();
     expect(screen.getByText('Label this as planned')).toBeInTheDocument();
     expect(screen.getByText(/billing is not live/i)).toBeInTheDocument();
-    expect(screen.getByText(/progress email delivery is not live yet/i)).toBeInTheDocument();
+    expect(screen.getByText(/confirmed parents can receive selected milestone emails/i)).toBeInTheDocument();
   });
 });

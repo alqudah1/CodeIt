@@ -34,7 +34,7 @@ const CONTENT_FORMATS = [
   {
     label: 'Parent value',
     hook: '“This shows parents what a student actually built.”',
-    sequence: 'Project milestone → planned parent update → honest pilot label',
+    sequence: 'Project milestone → parent-approved update → what the student made',
     cta: 'Join the Founding Family pilot.',
   },
 ];
@@ -160,13 +160,13 @@ export default function CreatorBrief() {
                 <li>Students can build, edit, save, and publish projects.</li>
                 <li>CodeIt connects visible project behaviour to coding concepts.</li>
                 <li>The core beginner experience has a free starting option.</li>
+                <li>Confirmed parents can receive selected milestone emails from a student profile.</li>
               </ul>
             </article>
             <article className="is-planned">
               <h3>Label this as planned</h3>
               <ul>
                 <li>The Founding Family plan is proposed at US$12/month; billing is not live.</li>
-                <li>Parent-approved progress email delivery is not live yet.</li>
                 <li>Never promise grades, guaranteed learning, or career outcomes.</li>
               </ul>
             </article>

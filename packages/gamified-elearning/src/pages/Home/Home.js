@@ -171,7 +171,7 @@ export default function Home() {
               <ul className="studio-hero__audience" aria-label="Who CodeIt helps">
                 <li>Students create</li>
                 <li>CodeIt teaches</li>
-                <li>Family progress planned</li>
+                <li>Families see progress</li>
               </ul>
             </div>
 
@@ -215,13 +215,13 @@ export default function Home() {
             <div className="studio-family__copy">
               <p className="studio-kicker">Progress parents can actually see</p>
               <h2 id="studio-family-title">Learning does not disappear when the screen closes.</h2>
-              <p>The planned Founding Family pilot is designed to send a parent-approved update when a student:</p>
+              <p>CodeIt can send a parent-approved update when a student:</p>
               <ul>
                 <li>finishes a lesson, exercise, quiz, or challenge;</li>
                 <li>creates a new website or project;</li>
                 <li>publishes something ready to share.</li>
               </ul>
-              <small>Planned pilot feature. Email delivery starts only after a parent confirms and chooses the updates they receive.</small>
+              <small>Available from a student profile. Emails begin only after a parent confirms and chooses the updates they receive.</small>
               <Link
                 to="/pricing"
                 className="studio-family__cta"
@@ -280,7 +280,7 @@ export default function Home() {
               <article><strong>AI-assisted project studio</strong><p>Students quickly create a first version, then keep control of what changes next.</p></article>
               <article><strong>Lessons and hands-on exercises</strong><p>Python concepts are explained through code students can run and test immediately.</p></article>
               <article><strong>Projects that belong to the student</strong><p>Save versions, return later, improve the work, and publish when it is ready.</p></article>
-              <article><strong>Family progress for the pilot</strong><p>Planned milestone updates will explain completed learning and creative work in plain language.</p></article>
+              <article><strong>Parent-approved progress updates</strong><p>Confirmed parents can receive plain-language emails about completed learning and creative work.</p></article>
             </div>
           </section>
 

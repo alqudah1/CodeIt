@@ -22,7 +22,7 @@ const CURRENT_PRODUCT = [
 const NEXT_MILESTONES = [
   ['Validate demand', 'Interview parents and run a Founding Family pilot before turning on billing.'],
   ['Prove activation', 'Measure how many qualified visitors create, personalize, save, and return to a project.'],
-  ['Complete parent trust', 'Add verified parent-managed accounts and approved milestone emails.'],
+  ['Expand parent trust', 'Add verified parent-managed accounts and validate which milestone emails families value.'],
   ['Test distribution', 'Run repeatable creator, community, school, and coding-club partnerships.'],
 ];
 
@@ -130,11 +130,11 @@ export default function InvestorBrief() {
             <article><strong>215</strong><span>Account records</span></article>
             <article><strong>199</strong><span>Student profiles</span></article>
             <article><strong>151</strong><span>Learners with XP</span></article>
-            <article><strong>144,060</strong><span>XP recorded</span></article>
+            <article><strong>144,275</strong><span>XP recorded</span></article>
             <article><strong>609</strong><span>Lesson completions</span></article>
-            <article><strong>777</strong><span>Quiz attempts</span></article>
-            <article><strong>1,165</strong><span>Puzzle completions</span></article>
-            <article><strong>12</strong><span>Saved projects</span></article>
+            <article><strong>778</strong><span>Quiz attempts</span></article>
+            <article><strong>1,167</strong><span>Puzzle completions</span></article>
+            <article><strong>13</strong><span>Saved projects</span></article>
           </div>
           <aside className="investor-brief__evidence-note">
             Login totals are not shown because the historical product did not record login events.
@@ -194,6 +194,7 @@ export default function InvestorBrief() {
                 <li>A student can create, edit, save, and publish a project.</li>
                 <li>The product combines creation with lessons and coding concepts.</li>
                 <li>The funnel can measure acquisition and core activation events.</li>
+                <li>A confirmed parent can choose and receive student milestone emails.</li>
               </ul>
             </article>
             <article className="is-planned">
@@ -201,7 +202,7 @@ export default function InvestorBrief() {
               <ul>
                 <li>Consistent customer acquisition and paid conversion.</li>
                 <li>Retention strong enough to support a subscription.</li>
-                <li>Verified parent-managed accounts and progress-email delivery.</li>
+                <li>Verified parent-managed accounts and the long-term value of progress emails.</li>
               </ul>
             </article>
           </div>

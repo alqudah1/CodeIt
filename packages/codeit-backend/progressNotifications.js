@@ -111,10 +111,37 @@ function mailTransport() {
 
 async function sendMail(message) {
   const transport = mailTransport();
-  if (!transport) return { sent: false, status: 'not_configured' };
   try {
-    const result = await transport.sendMail({ from: EMAIL_FROM, ...message });
-    return { sent: true, status: 'sent', messageId: result.messageId || null };
+    if (transport) {
+      const result = await transport.sendMail({ from: EMAIL_FROM, ...message });
+      return { sent: true, status: 'sent', messageId: result.messageId || null };
+    }
+
+    if (process.env.RESEND_API_KEY) {
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: EMAIL_FROM,
+          to: Array.isArray(message.to) ? message.to : [message.to],
+          subject: message.subject,
+          text: message.text,
+          html: message.html,
+        }),
+      });
+      if (!response.ok) {
+        throw Object.assign(new Error(`Resend returned ${response.status}`), {
+          code: `RESEND_${response.status}`,
+        });
+      }
+      const result = await response.json();
+      return { sent: true, status: 'sent', messageId: result.id || null };
+    }
+
+    return { sent: false, status: 'not_configured' };
   } catch (error) {
     console.error('Parent progress email failed:', error.code || error.message);
     return { sent: false, status: 'failed', errorCode: String(error.code || 'SEND_FAILED').slice(0, 100) };
@@ -150,7 +177,7 @@ async function getSettings(userId) {
     notifyExercises: row.notify_exercises === null ? true : Boolean(row.notify_exercises),
     notifyProjects: row.notify_projects === null ? true : Boolean(row.notify_projects),
     notifyPublishing: row.notify_publishing === null ? true : Boolean(row.notify_publishing),
-    emailConfigured: Boolean(process.env.SMTP_HOST),
+    emailConfigured: Boolean(process.env.SMTP_HOST || process.env.RESEND_API_KEY),
   };
 }
 
