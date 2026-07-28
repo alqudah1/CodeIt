@@ -33,6 +33,7 @@ export default function Login() {
       }
     : null;
   const authLinkState = { from: returnTo, ...(returnState || {}) };
+  const passwordWasReset = location.state?.passwordReset === true;
 
   useSEO({
     title:       'Sign In | CodeIt',
@@ -142,8 +143,13 @@ export default function Login() {
 
           <button type="submit" className="auth-button">Sign In</button>
 
+          {passwordWasReset && <p className="auth-success" role="status">Password updated. Sign in with your new password.</p>}
           {error && <p className="error-message">{error}</p>}
         </form>
+
+        <div className="auth-recovery">
+          <Link to="/forgot-password">Forgot your password?</Link>
+        </div>
 
         {/* Guest option — students only */}
         {role === 'student' && (

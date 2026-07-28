@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, useParams, Navigate } from 'rea
 import Home from './pages/Home/Home';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
+import ForgotPassword from './pages/Auth/ForgotPassword';
+import ResetPassword from './pages/Auth/ResetPassword';
 import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { CharacterProvider } from './context/CharacterContext';
@@ -110,6 +112,8 @@ const App = () => (
               <Route path="/"         element={<Home />} />
               <Route path="/register" element={<Register />} />
               <Route path="/login"    element={<Login />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
 
               {/* ── Dashboard ── */}
               <Route path="/MainPage" element={<MainPage />} />

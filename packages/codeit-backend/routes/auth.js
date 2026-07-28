@@ -7,6 +7,7 @@ const { JWT_SECRET, JWT_EXPIRY } = require('../config');
 const { recordEvent } = require('../analytics');
 const { studentAgeEligibility } = require('../studentAge');
 const { updateSettings } = require('../progressNotifications');
+const { requestPasswordReset, resetPassword, validPassword } = require('../passwordReset');
 
 // ── POST /api/signup ───────────────────────────────────────────────────────────
 router.post('/signup', async (req, res) => {
@@ -169,6 +170,36 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ error: err.message });
   } finally {
     if (connection) connection.release();
+  }
+});
+
+// ── POST /api/forgot-password ─────────────────────────────────────────────────
+router.post('/forgot-password', async (req, res) => {
+  const genericMessage = 'If that email is registered, a reset link is on its way.';
+  try {
+    await requestPasswordReset(req.body.email);
+  } catch (error) {
+    console.error('Password reset request error:', error.message);
+  }
+  res.json({ message: genericMessage });
+});
+
+// ── POST /api/reset-password ──────────────────────────────────────────────────
+router.post('/reset-password', async (req, res) => {
+  const { token, password } = req.body;
+  if (!validPassword(password)) {
+    return res.status(400).json({ error: 'Use at least 10 characters for your new password.' });
+  }
+
+  try {
+    const result = await resetPassword(token, password);
+    if (!result.ok) {
+      return res.status(400).json({ error: 'This reset link is invalid or has expired.' });
+    }
+    res.json({ message: 'Password updated. You can now sign in.' });
+  } catch (error) {
+    console.error('Password reset error:', error.message);
+    res.status(500).json({ error: 'We could not update your password. Please try again.' });
   }
 });
 
