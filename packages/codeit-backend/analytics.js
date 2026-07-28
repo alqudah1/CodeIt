@@ -87,10 +87,10 @@ async function getFunnelReport(requestedDays = 30) {
       pool.query(
         `SELECT source,
                 COUNT(*) AS visits,
-                SUM(generated_count) AS generated,
-                SUM(signup_count) AS signed_up,
-                SUM(save_count) AS saved,
-                SUM(publish_count) AS published
+                SUM(generated_count) AS generated_projects,
+                SUM(signup_count) AS completed_signups,
+                SUM(save_count) AS saved_projects,
+                SUM(publish_count) AS published_projects
          FROM (
            SELECT journey_id,
                   MAX(CASE WHEN event_name = 'acquisition_visit' THEN meta END) AS source,

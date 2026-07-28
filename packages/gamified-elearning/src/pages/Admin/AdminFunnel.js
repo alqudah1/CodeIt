@@ -196,11 +196,11 @@ export default function AdminFunnel() {
                   <tr key={source.source}>
                     <td>{ACQUISITION_SOURCES.find(([key]) => key === source.source)?.[1] || source.source}</td>
                     <td><strong>{fmt(source.visits)}</strong></td>
-                    <td>{fmt(source.generated)}</td>
-                    <td>{fmt(source.signed_up)}</td>
-                    <td>{fmt(source.saved)}</td>
-                    <td>{fmt(source.published)}</td>
-                    <td>{ratio(Number(source.generated), Number(source.visits))}</td>
+                    <td>{fmt(source.generated_projects)}</td>
+                    <td>{fmt(source.completed_signups)}</td>
+                    <td>{fmt(source.saved_projects)}</td>
+                    <td>{fmt(source.published_projects)}</td>
+                    <td>{ratio(Number(source.generated_projects), Number(source.visits))}</td>
                   </tr>
                 ))}
               </tbody>

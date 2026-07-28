@@ -36,7 +36,14 @@ describe('admin acquisition funnel', () => {
           ],
           daily: [],
           source_funnel: [
-            { source: 'instagram', visits: 8, generated: 4, signed_up: 2, saved: 1, published: 1 },
+            {
+              source: 'instagram',
+              visits: 8,
+              generated_projects: 4,
+              completed_signups: 2,
+              saved_projects: 1,
+              published_projects: 1,
+            },
           ],
           student_age_audit: {},
           founding_leads: [
