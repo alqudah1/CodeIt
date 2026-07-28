@@ -2,13 +2,8 @@ Options -Indexes
 
 # Keep account, progress, and administration screens out of search results even
 # when a crawler does not execute the client-side application.
-<IfModule mod_setenvif.c>
-  SetEnvIf Request_URI "^/(login|register|forgot-password|reset-password|MainPage|character|leaderboard|profile)(/|$)" noindex_route
-  SetEnvIf Request_URI "^/admin(/|$)" noindex_route
-</IfModule>
-
 <IfModule mod_headers.c>
-  Header always set X-Robots-Tag "noindex, nofollow" env=noindex_route
+  Header always set X-Robots-Tag "noindex, nofollow" "expr=%{THE_REQUEST} =~ m#\s/+((login|register|forgot-password|reset-password|MainPage|admin|character|leaderboard|profile)(/|\?|\\s))#"
 </IfModule>
 
 # Keep the application shell fresh while allowing fingerprinted assets to cache.
