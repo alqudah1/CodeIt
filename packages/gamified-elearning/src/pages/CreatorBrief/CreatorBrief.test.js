@@ -30,6 +30,10 @@ describe('CreatorBrief', () => {
   test('provides only privacy-safe channel links', () => {
     render(<CreatorBrief />);
 
+    expect(screen.getByText('Young creators ages 8–17')).toBeInTheDocument();
+    expect(screen.getByText(/Ages 8–12 explore with a parent or guardian/i)).toBeInTheDocument();
+    expect(screen.getByText('Four links. One website.')).toBeInTheDocument();
+    expect(screen.getByText(/Direct sharing for WhatsApp, email, or messages/i)).toBeInTheDocument();
     const instagram = screen.getByLabelText('Instagram campaign link');
     const tiktok = screen.getByLabelText('TikTok campaign link');
     expect(instagram).toHaveValue('https://codeitlearn.com/?utm_source=instagram&utm_medium=creator');

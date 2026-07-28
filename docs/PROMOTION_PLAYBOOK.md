@@ -36,21 +36,22 @@ Build it. Learn how it works. Make it yours. Share what you created.
 
 ### Primary buyer
 
-Parents and guardians of beginner students aged 13–17 who want creative,
+Parents and guardians of young creators aged 8–17 who want creative,
 project-based coding and understandable progress.
 
 ### Primary user
 
-Students with an idea for a game, quiz, personal page, fan page, portfolio, or
-school project.
+Young creators aged 8–17 with an idea for a game, quiz, personal page, fan page,
+portfolio, or school project. Ages 8–12 should explore with a parent or guardian;
+independent student accounts currently begin at 13.
 
 ### Partnership audience
 
 Teachers, tutors, libraries, coding clubs, camps, and after-school programs.
 
-Do not promote direct account creation to children under 13 until CodeIt's
-parent-managed signup flow is complete. Content may still be useful to parents
-of younger learners, but the adult must be the call to action.
+For ages 8–12, promote CodeIt to the parent or guardian and show it as a shared,
+guided experience. Do not promote direct account creation to children under 13
+until CodeIt's parent-managed signup flow is complete.
 
 ## What the promoter should demonstrate
 

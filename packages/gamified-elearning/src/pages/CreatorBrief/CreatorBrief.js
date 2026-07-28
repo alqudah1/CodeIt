@@ -84,7 +84,7 @@ export default function CreatorBrief() {
         </section>
 
         <section className="creator-brief__audience" aria-label="CodeIt audience and promise">
-          <article><span>Primary user</span><strong>Beginner students ages 13–17</strong><p>Creative learners who want to make something real.</p></article>
+          <article><span>Primary user</span><strong>Young creators ages 8–17</strong><p>Ages 8–12 explore with a parent or guardian; independent student accounts currently begin at 13.</p></article>
           <article><span>Primary buyer</span><strong>Parents and guardians</strong><p>Adults who want visible, understandable progress.</p></article>
           <article><span>Product difference</span><strong>Build first, then understand</strong><p>General AI builders make; CodeIt connects making to learning.</p></article>
         </section>
@@ -111,8 +111,12 @@ export default function CreatorBrief() {
         <section id="campaign-links" className="creator-brief__section creator-brief__links" aria-labelledby="links-title">
           <div className="creator-brief__section-heading">
             <p className="creator-brief__eyebrow">Tracked campaign links</p>
-            <h2 id="links-title">Use the link that matches the platform.</h2>
-            <p>The dashboard records only the channel—not private campaign names, search terms, or visitor details.</p>
+            <h2 id="links-title">Four links. One website.</h2>
+            <p>
+              Use the Instagram link on Instagram, TikTok on TikTok, YouTube in video descriptions,
+              and Direct sharing for WhatsApp, email, or messages. Each opens the same CodeIt homepage;
+              the tag only tells the dashboard which channel brought the visit.
+            </p>
           </div>
           <div className="creator-brief__link-grid">
             {CHANNEL_LINKS.map(([channel, label, url]) => (
