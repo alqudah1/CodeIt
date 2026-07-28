@@ -12,9 +12,9 @@ learn, edit, save, and share the code behind what they built.
 Most beginner coding products start with lessons and an empty editor. CodeIt
 starts with something the student wants to create. Its AI-assisted studio makes
 a working first version, then the student explores the code, completes guided
-lessons and exercises, improves the project, and can publish it. Parents can
-confirm progress emails so they see real milestones such as completed lessons
-and published websites.
+lessons and exercises, improves the project, and can publish it. The planned
+Founding Family pilot will let parents confirm progress emails so they can see
+real milestones such as completed lessons and published websites.
 
 ### The problem CodeIt solves
 
@@ -63,7 +63,7 @@ Use one continuous two-minute story:
 5. Open the code and show the beginner-friendly explanation.
 6. Show a related lesson or exercise.
 7. Save and publish the project.
-8. Show the example parent milestone email.
+8. Show the planned parent milestone email and say clearly that delivery is not live yet.
 
 The proof is the workflow. Avoid long feature lists before showing it.
 
@@ -109,9 +109,9 @@ Connect a visible project behaviour to one coding concept.
 - “This game repeats because of a loop.”
 - “This quiz reacts because of an if statement.”
 
-### Series 4: Parent proof
+### Series 4: Planned parent value
 
-- Show the parent progress email.
+- Show the planned parent progress email mockup and label it as planned.
 - Show a project before and after the student edited it.
 - Show “lesson completed → project improved.”
 - Explain what a parent can see without reading source code.
@@ -130,7 +130,7 @@ Connect a visible project behaviour to one coding concept.
 ### Week 1: Establish the story
 
 - Publish three short project demonstrations.
-- Publish one parent-progress demonstration.
+- Publish one demonstration of the planned parent-progress experience.
 - Publish one simple “what CodeIt is” carousel.
 - Contact five parents for a 15-minute product reaction.
 
@@ -190,7 +190,7 @@ Views alone are not success.
 - Pricing page viewed
 - Founding Family interest recorded
 - Parent interview booked
-- Progress email confirmed
+- Progress email confirmed *(measure after email delivery launches)*
 
 ### Partnership demand
 

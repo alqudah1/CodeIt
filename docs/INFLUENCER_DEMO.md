@@ -26,7 +26,7 @@ Point out the three promises shown immediately:
 
 - Students create.
 - CodeIt teaches.
-- Parents see progress.
+- Family progress is planned for the pilot.
 
 ### 2. Open the project builder
 
@@ -56,8 +56,8 @@ Return to the homepage and scroll to the parent progress example.
 
 Say:
 
-> With parent-approved updates, a parent can see meaningful milestones such as
-> a completed lesson, a created project, or a published website.
+> The planned parent-approved updates will show meaningful milestones such as a
+> completed lesson, a created project, or a published website.
 
 ### 5. Finish with one action
 
@@ -97,7 +97,7 @@ Use one of these hooks:
 - “I asked CodeIt to build a space quiz.”
 - “A student idea became a real website.”
 - “This game teaches the code behind the score.”
-- “Parents can finally see what their child built.”
+- “The planned family update shows what a learner built.”
 
 Keep most videos between 15 and 35 seconds, add captions, and use only one call
 to action: **Build a free project.**
@@ -105,7 +105,9 @@ to action: **Build a free project.**
 ## Important accuracy notes
 
 - The Founding Family plan is a proposed US$12/month pilot; billing is not live.
-- Present parent updates as parent-approved.
+- Parent progress email delivery is not live until the backend feature and email
+  provider configuration are deployed.
+- Present parent updates as planned and parent-approved.
 - Do not claim guaranteed learning, grades, or career outcomes.
 - Do not use a student's name, face, project, or personal information without
   the appropriate permission.

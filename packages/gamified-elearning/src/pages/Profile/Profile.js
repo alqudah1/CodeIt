@@ -36,6 +36,8 @@ export default function Profile() {
   const [progressSummary, setProgressSummary] = useState(null);
   const [parentStatus, setParentStatus] = useState('');
   const [savingParent, setSavingParent] = useState(false);
+  const [parentLoading, setParentLoading] = useState(true);
+  const [parentLoadError, setParentLoadError] = useState('');
 
   const totalXP    = stats?.totalXP ?? 0;
   const level      = Math.floor(totalXP / XP_PER_LEVEL) + 1;
@@ -56,17 +58,31 @@ export default function Profile() {
       .catch(() => {});
 
     if (String(user.role).toLowerCase() === 'student') {
+      setParentLoading(true);
+      setParentLoadError('');
       Promise.all([
         fetch(`${API_BASE_URL}/api/progress-notifications/settings`, {
           headers: { Authorization: `Bearer ${token}` },
-        }).then(r => r.json()),
+        }).then(async response => {
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.success) throw new Error('settings unavailable');
+          return data;
+        }),
         fetch(`${API_BASE_URL}/api/progress-notifications/summary`, {
           headers: { Authorization: `Bearer ${token}` },
-        }).then(r => r.json()),
+        }).then(async response => {
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.success) throw new Error('summary unavailable');
+          return data;
+        }),
       ]).then(([settingsData, summaryData]) => {
-        if (settingsData.success) setParentSettings(settingsData.settings);
-        if (summaryData.success) setProgressSummary(summaryData);
-      }).catch(() => {});
+        setParentSettings(settingsData.settings);
+        setProgressSummary(summaryData);
+      }).catch(() => {
+        setParentLoadError('Parent updates are not connected in this preview yet.');
+      }).finally(() => {
+        setParentLoading(false);
+      });
     }
   }, [user, token, navigate]);
 
@@ -181,64 +197,97 @@ export default function Profile() {
               )}
             </div>
 
-            {progressSummary && (
-              <div className="profile-parent__counts" aria-label="Tracked milestones">
-                <span><strong>{progressSummary.counts.lessons}</strong> lessons</span>
-                <span><strong>{progressSummary.counts.exercises}</strong> exercises</span>
-                <span><strong>{progressSummary.counts.projects}</strong> projects</span>
-                <span><strong>{progressSummary.counts.published}</strong> published</span>
+            {parentLoading && (
+              <div className="profile-parent__notice" role="status">
+                <strong>Checking parent update availability…</strong>
               </div>
             )}
 
-            <form className="profile-parent__form" onSubmit={saveParentSettings}>
-              <label htmlFor="parent-progress-email">Parent or guardian email</label>
-              <input
-                id="parent-progress-email"
-                type="email"
-                value={parentSettings?.parentEmail || ''}
-                onChange={event => updateParentField('parentEmail', event.target.value)}
-                placeholder="parent@example.com"
-                required
-              />
-              <fieldset>
-                <legend>Email them when I:</legend>
-                {[
-                  ['notifyLessons', 'finish a lesson'],
-                  ['notifyExercises', 'finish an exercise, challenge, or quiz'],
-                  ['notifyProjects', 'create a website or project'],
-                  ['notifyPublishing', 'publish a project'],
-                ].map(([field, label]) => (
-                  <label className="profile-parent__check" key={field}>
-                    <input
-                      type="checkbox"
-                      checked={parentSettings?.[field] ?? true}
-                      onChange={event => updateParentField(field, event.target.checked)}
-                    />
-                    <span>{label}</span>
-                  </label>
-                ))}
-              </fieldset>
-              <button type="submit" disabled={savingParent || !parentSettings}>
-                {savingParent ? 'Saving…' : parentSettings?.verified ? 'Save update choices' : 'Send parent confirmation'}
-              </button>
-              {parentStatus && <p className="profile-parent__message" aria-live="polite">{parentStatus}</p>}
-              <p className="profile-parent__privacy">
-                Progress emails start only after the parent confirms. Every email includes an unsubscribe link.
-              </p>
-            </form>
-
-            {progressSummary?.recent?.length > 0 && (
-              <div className="profile-parent__recent">
-                <h3>Recently tracked</h3>
-                <ul>
-                  {progressSummary.recent.slice(0, 4).map((item, index) => (
-                    <li key={`${item.eventType}-${item.occurredAt}-${index}`}>
-                      <span>{progressSummary.eventLabels[item.eventType] || 'Milestone'}</span>
-                      <strong>{item.title}</strong>
-                    </li>
-                  ))}
-                </ul>
+            {!parentLoading && parentLoadError && (
+              <div className="profile-parent__notice is-planned" role="status">
+                <strong>{parentLoadError}</strong>
+                <p>
+                  CodeIt can track learning milestones, but this server has not enabled the parent
+                  confirmation and email service. No parent email has been collected here.
+                </p>
               </div>
+            )}
+
+            {!parentLoading && !parentLoadError && parentSettings && (
+              <>
+                {progressSummary && (
+                  <div className="profile-parent__counts" aria-label="Tracked milestones">
+                    <span><strong>{progressSummary.counts.lessons}</strong> lessons</span>
+                    <span><strong>{progressSummary.counts.exercises}</strong> exercises</span>
+                    <span><strong>{progressSummary.counts.projects}</strong> projects</span>
+                    <span><strong>{progressSummary.counts.published}</strong> published</span>
+                  </div>
+                )}
+
+                {!parentSettings.emailConfigured && (
+                  <div className="profile-parent__notice is-planned" role="status">
+                    <strong>Email delivery is not connected yet.</strong>
+                    <p>You can save the parent details and choices, but CodeIt will not claim that a confirmation email was sent.</p>
+                  </div>
+                )}
+
+                <form className="profile-parent__form" onSubmit={saveParentSettings}>
+                  <label htmlFor="parent-progress-email">Parent or guardian email</label>
+                  <input
+                    id="parent-progress-email"
+                    type="email"
+                    value={parentSettings.parentEmail || ''}
+                    onChange={event => updateParentField('parentEmail', event.target.value)}
+                    placeholder="parent@example.com"
+                    required
+                  />
+                  <fieldset>
+                    <legend>Email them when I:</legend>
+                    {[
+                      ['notifyLessons', 'finish a lesson'],
+                      ['notifyExercises', 'finish an exercise, challenge, or quiz'],
+                      ['notifyProjects', 'create a website or project'],
+                      ['notifyPublishing', 'publish a project'],
+                    ].map(([field, label]) => (
+                      <label className="profile-parent__check" key={field}>
+                        <input
+                          type="checkbox"
+                          checked={parentSettings[field] ?? true}
+                          onChange={event => updateParentField(field, event.target.checked)}
+                        />
+                        <span>{label}</span>
+                      </label>
+                    ))}
+                  </fieldset>
+                  <button type="submit" disabled={savingParent}>
+                    {savingParent
+                      ? 'Saving…'
+                      : parentSettings.verified
+                        ? 'Save update choices'
+                        : parentSettings.emailConfigured
+                          ? 'Send parent confirmation'
+                          : 'Save parent details'}
+                  </button>
+                  {parentStatus && <p className="profile-parent__message" aria-live="polite">{parentStatus}</p>}
+                  <p className="profile-parent__privacy">
+                    Progress emails start only after the parent confirms. Every email includes an unsubscribe link.
+                  </p>
+                </form>
+
+                {progressSummary?.recent?.length > 0 && (
+                  <div className="profile-parent__recent">
+                    <h3>Recently tracked</h3>
+                    <ul>
+                      {progressSummary.recent.slice(0, 4).map((item, index) => (
+                        <li key={`${item.eventType}-${item.occurredAt}-${index}`}>
+                          <span>{progressSummary.eventLabels[item.eventType] || 'Milestone'}</span>
+                          <strong>{item.title}</strong>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </>
             )}
           </section>
         )}

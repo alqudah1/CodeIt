@@ -1,5 +1,13 @@
 # Parent progress notifications
 
+## Current release status
+
+The feature code exists in the private feature worktree, but the currently
+running AWS backend does not expose these routes and SMTP delivery is not
+configured. Treat the experience as pre-launch until the backend is deployed,
+the sending domain is verified, and controlled confirmation and milestone
+emails pass end-to-end testing.
+
 ## What is implemented
 
 - Records first-time student milestones for:
