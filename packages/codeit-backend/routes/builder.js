@@ -11,6 +11,45 @@ const { recordAIUsage } = require('../aiUsage');
 const { recordMilestoneAndNotify } = require('../progressNotifications');
 
 const client     = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const MAX_PROMPT_LENGTH = 1000;
+const MAX_CODE_LENGTH = 250000;
+const MAX_INSTRUCTION_LENGTH = 2000;
+const MAX_ELEMENT_HTML_LENGTH = 25000;
+
+function createRequestLimiter({ anonymous, authenticated, windowMs = 60 * 60 * 1000 }) {
+  const requests = new Map();
+
+  return function requestLimiter(req, res, next) {
+    const now = Date.now();
+    const key = req.user?.user_id ? `user:${req.user.user_id}` : `ip:${req.ip}`;
+    const limit = req.user?.user_id ? authenticated : anonymous;
+    const entry = requests.get(key);
+
+    if (!entry || entry.resetAt <= now) {
+      requests.set(key, { count: 1, resetAt: now + windowMs });
+      return next();
+    }
+
+    if (entry.count >= limit) {
+      const retryAfter = Math.max(1, Math.ceil((entry.resetAt - now) / 1000));
+      res.set('Retry-After', String(retryAfter));
+      return res.status(429).json({
+        error: 'You have made lots of AI creations. Take a short break, then try again.',
+      });
+    }
+
+    entry.count += 1;
+    if (requests.size > 5000) {
+      for (const [storedKey, storedEntry] of requests) {
+        if (storedEntry.resetAt <= now) requests.delete(storedKey);
+      }
+    }
+    next();
+  };
+}
+
+const generationLimiter = createRequestLimiter({ anonymous: 5, authenticated: 20 });
+const helperLimiter = createRequestLimiter({ anonymous: 15, authenticated: 60 });
 
 async function createTrackedMessage(operation, params) {
   const message = await client.messages.create(params);
@@ -1342,11 +1381,14 @@ function getRichFallback(designConfig, userPrompt) {
 }
 
 // ── POST /api/builder ─────────────────────────────────────────────────────────
-router.post('/', optionalAuth, async (req, res) => {
+router.post('/', optionalAuth, generationLimiter, async (req, res) => {
   const { prompt } = req.body;
 
   if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
     return res.status(400).json({ error: 'prompt is required' });
+  }
+  if (prompt.trim().length > MAX_PROMPT_LENGTH) {
+    return res.status(400).json({ error: `Keep your idea under ${MAX_PROMPT_LENGTH} characters.` });
   }
 
   // Classify prompt BEFORE try so catch block can serve a fallback
@@ -1628,11 +1670,13 @@ Return EXACTLY this format — nothing else before or after:
 </CODE>
 <SUMMARY>one sentence under 20 words starting with "We" describing what changed</SUMMARY>`;
 
-router.post('/edit', async (req, res) => {
+router.post('/edit', optionalAuth, helperLimiter, async (req, res) => {
   const { currentCode, currentTitle, promptHistory, newInstruction } = req.body;
 
-  if (!currentCode || !currentCode.trim())       return res.status(400).json({ error: 'currentCode is required' });
-  if (!newInstruction || !newInstruction.trim())  return res.status(400).json({ error: 'newInstruction is required' });
+  if (typeof currentCode !== 'string' || !currentCode.trim()) return res.status(400).json({ error: 'currentCode is required' });
+  if (typeof newInstruction !== 'string' || !newInstruction.trim()) return res.status(400).json({ error: 'newInstruction is required' });
+  if (currentCode.length > MAX_CODE_LENGTH) return res.status(413).json({ error: 'This project is too large to edit with AI.' });
+  if (newInstruction.trim().length > MAX_INSTRUCTION_LENGTH) return res.status(400).json({ error: 'Keep the change request under 2,000 characters.' });
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return res.status(500).json({ error: 'AI service is not configured.' });
@@ -1694,11 +1738,14 @@ router.post('/edit', async (req, res) => {
 });
 
 // ── POST /api/builder/explain ─────────────────────────────────────────────────
-router.post('/explain', async (req, res) => {
+router.post('/explain', optionalAuth, helperLimiter, async (req, res) => {
   const { code } = req.body;
 
   if (!code || typeof code !== 'string' || !code.trim()) {
     return res.status(400).json({ error: 'code is required' });
+  }
+  if (code.length > MAX_CODE_LENGTH) {
+    return res.status(413).json({ error: 'This project is too large to explain all at once.' });
   }
 
   if (!process.env.ANTHROPIC_API_KEY) {
@@ -1997,11 +2044,17 @@ router.post('/projects/:id/versions/:vid/restore', requireAuth, async (req, res)
 });
 
 // POST /api/builder/patch — AI patches a single selected element (no full regeneration)
-router.post('/patch', async (req, res) => {
+router.post('/patch', optionalAuth, helperLimiter, async (req, res) => {
   const { elementId, tag, elementHtml, instruction } = req.body;
 
-  if (!elementHtml || !instruction || !instruction.trim()) {
+  if (typeof elementHtml !== 'string' || typeof instruction !== 'string' || !elementHtml || !instruction.trim()) {
     return res.status(400).json({ error: 'elementHtml and instruction are required' });
+  }
+  if (elementHtml.length > MAX_ELEMENT_HTML_LENGTH) {
+    return res.status(413).json({ error: 'That selected element is too large to patch.' });
+  }
+  if (instruction.trim().length > 1000) {
+    return res.status(400).json({ error: 'Keep the element change under 1,000 characters.' });
   }
 
   if (!process.env.ANTHROPIC_API_KEY) {
@@ -2093,9 +2146,10 @@ router.post('/projects/:id/fork', requireAuth, async (req, res) => {
 });
 
 // ── AI-generated context-aware missions ──────────────────────────────────────
-router.post('/missions', async (req, res) => {
+router.post('/missions', optionalAuth, helperLimiter, async (req, res) => {
   const { html, type, title } = req.body || {};
-  if (!html || html.length < 100) return res.status(400).json({ error: 'No code provided.' });
+  if (typeof html !== 'string' || html.length < 100) return res.status(400).json({ error: 'No code provided.' });
+  if (html.length > MAX_CODE_LENGTH) return res.status(413).json({ error: 'This project is too large for missions.' });
 
   const typeHint = (type || 'project').toLowerCase();
   const titleHint = (title || 'this project').slice(0, 80);
@@ -2197,7 +2251,8 @@ router.post('/projects/:id/publish', requireAuth, async (req, res) => {
       if (!public_id) return res.status(500).json({ error: 'Could not generate share ID.' });
     }
 
-    const creatorName = req.user.name || 'a CodeIt creator';
+    // Never expose a child's account name on a public project.
+    const creatorName = 'CodeIt creator';
     await pool.query(
       'UPDATE ai_projects SET is_public = 1, public_id = ?, creator_name = ? WHERE id = ?',
       [public_id, creatorName, id]
