@@ -1,4 +1,5 @@
 Options -Indexes
+DirectorySlash Off
 
 # Keep account, progress, and administration screens out of search results even
 # when a crawler does not execute the client-side application.
