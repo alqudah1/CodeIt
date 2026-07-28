@@ -7,6 +7,7 @@ const EVENT_META = Object.freeze({
   signup_complete: new Set(['student', 'educator']),
   builder_start: new Set(['website', 'game', 'quiz', 'tool', 'other']),
   generation_complete: new Set(['ai', 'fallback']),
+  project_personalize: new Set(),
   project_save: new Set(['website', 'game', 'quiz', 'tool', 'other']),
   project_publish: new Set(['website', 'game', 'quiz', 'tool', 'other']),
   project_share: new Set(['creator', 'viewer']),
@@ -15,7 +16,7 @@ const EVENT_META = Object.freeze({
   pricing_interest: new Set(['founding-family']),
 });
 
-const CLIENT_REPORTED_EVENTS = new Set(['acquisition_visit', 'landing_cta_click', 'parent_cta_click', 'project_share', 'return_use', 'pricing_view', 'pricing_interest']);
+const CLIENT_REPORTED_EVENTS = new Set(['acquisition_visit', 'landing_cta_click', 'parent_cta_click', 'project_personalize', 'project_share', 'return_use', 'pricing_view', 'pricing_interest']);
 
 function normalizeEventName(value) {
   return typeof value === 'string' && Object.hasOwn(EVENT_META, value) ? value : null;

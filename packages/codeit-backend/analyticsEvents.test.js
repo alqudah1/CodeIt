@@ -12,6 +12,7 @@ const {
 
 test('accepts only the fixed product event vocabulary', () => {
   assert.equal(normalizeEventName('project_publish'), 'project_publish');
+  assert.equal(normalizeEventName('project_personalize'), 'project_personalize');
   assert.equal(normalizeEventName('prompt_submitted'), null);
   assert.equal(normalizeEventName({ event: 'return_use' }), null);
 });
@@ -29,6 +30,7 @@ test('accepts only allowlisted metadata and never arbitrary content', () => {
   assert.equal(normalizeMeta('pricing_interest', 'custom enterprise plan'), null);
   assert.equal(normalizeMeta('project_share', 'creator'), 'creator');
   assert.equal(normalizeMeta('project_share', 'a private project title'), null);
+  assert.equal(normalizeMeta('project_personalize', 'change the title to my school name'), null);
 });
 
 test('limits browser-reported events to events the server cannot infer', () => {
@@ -39,6 +41,7 @@ test('limits browser-reported events to events the server cannot infer', () => {
   assert.equal(CLIENT_REPORTED_EVENTS.has('pricing_view'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('pricing_interest'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('project_share'), true);
+  assert.equal(CLIENT_REPORTED_EVENTS.has('project_personalize'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('signup_complete'), false);
 });
 

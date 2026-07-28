@@ -10,6 +10,7 @@ const STAGES = [
   ['parent_cta_click', 'Parent actions'],
   ['builder_start', 'Builds started'],
   ['generation_complete', 'Projects generated'],
+  ['project_personalize', 'Projects personalized'],
   ['signup_complete', 'Accounts created'],
   ['project_save', 'Projects saved'],
   ['project_publish', 'Projects published'],
@@ -99,6 +100,8 @@ export default function AdminFunnel() {
 
   const signals = data ? [
     ['Build completion', ratio(counts.generation_complete, counts.builder_start)],
+    ['Generated → personalized', ratio(counts.project_personalize, counts.generation_complete)],
+    ['Personalized → saved', ratio(counts.project_save, counts.project_personalize)],
     ['Generated → saved', ratio(counts.project_save, counts.generation_complete)],
     ['Saved → published', ratio(counts.project_publish, counts.project_save)],
     ['Published → shared', ratio(counts.project_share, counts.project_publish)],

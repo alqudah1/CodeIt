@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import Builder from './Builder';
+import { trackEvent } from '../../utils/trackEvent';
 
 const mockNavigate = jest.fn();
 
@@ -21,12 +22,16 @@ jest.mock('../../context/CharacterContext', () => ({
   useCharacter: () => ({ awardXP: jest.fn() }),
 }));
 jest.mock('../../hooks/useSEO', () => ({ useSEO: jest.fn() }));
+jest.mock('../../utils/trackEvent', () => ({
+  trackEvent: jest.fn(() => Promise.resolve(true)),
+}));
 
 describe('project studio opening', () => {
   beforeEach(() => {
     localStorage.clear();
     sessionStorage.clear();
     mockNavigate.mockClear();
+    trackEvent.mockClear();
     global.fetch = jest.fn((url) => Promise.resolve({
       ok: true,
       headers: { get: () => 'application/json' },
@@ -103,5 +108,7 @@ describe('project studio opening', () => {
     await screen.findByRole('heading', { name: 'Save this project before you leave.' });
     expect(screen.getByRole('button', { name: 'Save and continue' })).toHaveClass('bldr-activation-card__primary');
     expect(screen.getByRole('button', { name: 'Make another change' })).toBeInTheDocument();
+    expect(trackEvent).toHaveBeenCalledTimes(1);
+    expect(trackEvent).toHaveBeenCalledWith('project_personalize', null, null);
   });
 });

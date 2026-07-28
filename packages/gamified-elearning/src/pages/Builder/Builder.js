@@ -689,6 +689,7 @@ export default function Builder() {
   const iframeRef  = useRef(null);
   const resumeActionStartedRef = useRef(false);
   const saveInFlightRef = useRef(false);
+  const personalizationTrackedRef = useRef(false);
 
   // ── Live element editor ────────────────────────────────────────────────────
   const [editModeOn, setEditModeOn]     = useState(false);
@@ -752,6 +753,12 @@ export default function Builder() {
     setTimeout(() => setXpPopup(v => v?.id === id ? null : v), 2600);
   }
 
+  function trackPersonalizationOnce() {
+    if (personalizationTrackedRef.current) return;
+    personalizationTrackedRef.current = true;
+    void trackEvent('project_personalize', null, token);
+  }
+
   function applyColorsInstant(vars) {
     sendBridgeCmd('SET_ROOT_VARS', { vars });
   }
@@ -780,6 +787,7 @@ export default function Builder() {
     setIsSaved(false);
     setSaveStatus(null);
     pushLocalVersion('Color change', newCode, promptHistory, aiTitle);
+    trackPersonalizationOnce();
   }
 
   // Inject JS + CSS into iframe instantly — NO reload, NO AI call
@@ -957,6 +965,7 @@ export default function Builder() {
           setProjectType(p.project_type || 'website');
           setAiTitle(p.title || '');
           setPromptHistory([p.prompt || '']);
+          personalizationTrackedRef.current = true;
           setIsSaved(true);
           setSavedProjectId(p.id);
           setBuildKey(k => k + 1);
@@ -981,6 +990,7 @@ export default function Builder() {
         setBuiltSummary(draft.builtSummary || '');
         setConceptsUsed(draft.conceptsUsed || []);
         setPromptHistory(draft.promptHistory || []);
+        personalizationTrackedRef.current = (draft.promptHistory || []).length > 1;
         setBuildKey(k => k + 1);
         const draftIsFresh = Number.isFinite(draft.savedAt) && Date.now() - draft.savedAt < 30 * 60 * 1000;
         const requestedAction = ['save', 'publish'].includes(location.state?.resumeBuilderAction)
@@ -1151,11 +1161,13 @@ export default function Builder() {
   function applyElTextChange() {
     if (!selectedEl) return;
     sendBridgeCmd('SET_TEXT', { id: selectedEl.id, v: elText });
+    trackPersonalizationOnce();
   }
 
   function applyElStyleChange(styles) {
     if (!selectedEl) return;
     sendBridgeCmd('SET_STYLE', { id: selectedEl.id, styles });
+    trackPersonalizationOnce();
   }
 
   async function handleAiRefine() {
@@ -1178,6 +1190,7 @@ export default function Builder() {
       if (!res.ok) throw new Error(data.error || 'AI patch failed');
       sendBridgeCmd('SET_PATCH', { id: selectedEl.id, html: data.patchedHtml });
       setAiRefineText('');
+      trackPersonalizationOnce();
     } catch (err) {
       setPatchError(err.message);
     } finally {
@@ -1187,6 +1200,7 @@ export default function Builder() {
 
   // ── Fresh build ────────────────────────────────────────────────────────────
   const callBuilder = async (text) => {
+    personalizationTrackedRef.current = false;
     const previewType = detectProjectType(text);
     setLoadingPreviewType(previewType);
     setLoading(true);
@@ -1300,6 +1314,7 @@ export default function Builder() {
       setEditInstruction('');
       awardXP(10); popXp(10, 'Edit Applied');
       pushLocalVersion(`Edit: ${instruction.slice(0, 45)}`, html, [...promptHistory, instruction.trim()], aiTitle);
+      trackPersonalizationOnce();
       // Don't rebuildKey — keeps iframe alive; srcdoc update re-renders the content
     } catch (err) {
       clearTimeout(timeoutId);
@@ -1503,6 +1518,7 @@ export default function Builder() {
       setBuiltSummary('');
       setExplanation('');
       setPromptHistory(latestPromptHistory);
+      personalizationTrackedRef.current = true;
       setPreviousCode('');
       setIsSaved(true);
       setSaveStatus(null);
@@ -1544,6 +1560,7 @@ export default function Builder() {
   };
 
   const clearEditor = () => {
+    personalizationTrackedRef.current = false;
     setPrompt('');
     setCode('');
     setBuiltPrompt('');

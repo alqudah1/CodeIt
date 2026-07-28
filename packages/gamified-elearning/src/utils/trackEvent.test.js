@@ -59,6 +59,17 @@ describe("trackEvent", () => {
     );
   });
 
+  test("records personalization without sending project content", async () => {
+    await expect(trackEvent("project_personalize")).resolves.toBe(true);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/api/analytics/event"),
+      expect.objectContaining({
+        body: JSON.stringify({ event_name: "project_personalize", meta: null }),
+      })
+    );
+  });
+
   test("sends only a fixed parent acquisition action", async () => {
     await expect(trackEvent("parent_cta_click", "pilot-email")).resolves.toBe(true);
 
