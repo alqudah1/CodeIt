@@ -2,7 +2,6 @@
   "name": "@e-learning/gamified-elearning",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://127.0.0.1:8080",
   "dependencies": {
     "@codemirror/lang-python": "^6.1.7",
     "@e-learning/shared-auth": "1.0.0",

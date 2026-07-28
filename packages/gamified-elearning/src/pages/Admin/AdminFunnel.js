@@ -120,7 +120,7 @@ export default function AdminFunnel() {
         <div>
           <p className="funnel-kicker">Product health</p>
           <h2 className="adm-page-title">Activation funnel</h2>
-          <p className="funnel-note">Directional event activity. Analytics stores no prompts, code, email addresses, or IP addresses; contact emails below come from adults' existing accounts after explicit waitlist opt-in.</p>
+          <p className="funnel-note">Directional event activity. Analytics stores no prompts, code, email addresses, or IP addresses; contact emails below are kept separately after an adult explicitly joins the waitlist.</p>
         </div>
         <label className="funnel-window">
           Window
@@ -188,7 +188,7 @@ export default function AdminFunnel() {
                   <tr><td colSpan={3} className="adm-loading">No contactable waitlist leads in this window yet.</td></tr>
                 )}
                 {foundingLeads.map((lead) => (
-                  <tr key={lead.user_id}>
+                  <tr key={lead.user_id || lead.email}>
                     <td>{lead.name || 'Parent / educator'}</td>
                     <td><a href={`mailto:${lead.email}`}>{lead.email}</a></td>
                     <td>{lead.interested_at ? new Date(lead.interested_at).toLocaleDateString() : '—'}</td>
@@ -198,7 +198,7 @@ export default function AdminFunnel() {
             </table>
           </div>
           <p className="funnel-parent-note">
-            These adults explicitly joined the founding family waitlist while signed in. Contact them only about that pilot.
+            These adults explicitly joined through the waitlist form or an adult account. Contact them only about the Founding Family pilot.
           </p>
 
           <div className="adm-section-head">Account safety audit</div>

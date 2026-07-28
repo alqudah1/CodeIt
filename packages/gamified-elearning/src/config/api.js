@@ -20,6 +20,10 @@ export const ENDPOINTS = {
     funnel: (days = 30) => `${API_BASE_URL}/api/analytics/funnel?days=${days}`,
     costs: (days = 30) => `${API_BASE_URL}/api/analytics/costs?days=${days}`,
   },
+  foundingWaitlist: {
+    join: `${API_BASE_URL}/api/founding-waitlist`,
+    status: `${API_BASE_URL}/api/founding-waitlist/status`,
+  },
   rewards: {
     progress:    `${API_BASE_URL}/api/rewards/progress-percentages`,
     leaderboard: `${API_BASE_URL}/api/rewards/leaderboard`,

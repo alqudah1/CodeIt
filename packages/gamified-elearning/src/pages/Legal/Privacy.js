@@ -67,6 +67,12 @@ export default function Privacy() {
               <p>Analytics events do not store prompts, generated code, email addresses, browser user-agent strings, or IP addresses. An IP address may be held in server memory for about 60 seconds solely to rate-limit analytics requests; it is not written to the analytics table.</p>
             </section>
 
+            <section id="waitlist">
+              <h2>Founding Family waitlist</h2>
+              <p>An adult may choose to submit an email address and consent to receive updates about the Founding Family pilot. That contact email is stored separately from product analytics and is used only for the pilot, not for unrelated marketing.</p>
+              <p>Waitlist requests are rate-limited in server memory to reduce abuse. You may leave the waitlist at any time by replying to an update or contacting the privacy address below.</p>
+            </section>
+
             <section id="sharing">
               <h2>Publishing and community sharing</h2>
               <p>Projects are not listed publicly until the owner selects Publish. A public project may display its title, working code, project type, creator display name, avatar appearance, creation date, and play/like/remix counts. Anyone with the public link may open it, and signed-in users may remix a copy. Unpublishing removes it from public access.</p>
@@ -81,7 +87,7 @@ export default function Privacy() {
 
             <section id="retention">
               <h2>Retention, security, and choices</h2>
-              <p>Account, progress, and saved-project information is retained while the account is active or as needed to provide the service. Product analytics and AI usage totals are automatically removed after 13 months. Public projects remain available until they are unpublished or deleted.</p>
+              <p>Account, progress, and saved-project information is retained while the account is active or as needed to provide the service. Product analytics and AI usage totals are automatically removed after 13 months. Waitlist contact information is kept until the adult opts out or the pilot outreach ends. Public projects remain available until they are unpublished or deleted.</p>
               <p>CodeIt uses access controls, password hashing, authenticated routes, and encrypted HTTPS connections. No online service can promise perfect security. If you believe an account or project is exposed, contact us promptly.</p>
               <p>You may ask to access, correct, export, unpublish, or delete personal information by emailing the privacy contact below. We may need to verify the requester’s identity and, for a child’s account, their authority as parent or guardian.</p>
             </section>

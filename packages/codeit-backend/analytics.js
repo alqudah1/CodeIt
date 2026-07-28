@@ -2,6 +2,7 @@
 
 const pool = require('./db');
 const { normalizeEventName, normalizeMeta } = require('./analyticsEvents');
+const { listFoundingFamilyLeads } = require('./foundingWaitlist');
 
 const tableReady = pool.query(`
   CREATE TABLE IF NOT EXISTS analytics_events (
@@ -55,7 +56,7 @@ async function getFunnelReport(requestedDays = 30) {
   try {
     if (!await tableReady) return null;
     const windowSql = `created_at >= DATE_SUB(NOW(), INTERVAL ${days} DAY)`;
-    const [[events], [daily], [breakdown], [studentAgeRows], [foundingLeads]] = await Promise.all([
+    const [[events], [daily], [breakdown], [studentAgeRows], [accountLeads], directLeads] = await Promise.all([
       pool.query(
         `SELECT event_name, COUNT(*) AS event_count, COUNT(DISTINCT user_id) AS unique_users
          FROM analytics_events WHERE ${windowSql}
@@ -98,7 +99,23 @@ async function getFunnelReport(requestedDays = 30) {
          ORDER BY interested_at DESC
          LIMIT 100`
       ),
+      listFoundingFamilyLeads(days),
     ]);
+
+    const leadsByEmail = new Map();
+    for (const lead of accountLeads) {
+      leadsByEmail.set(String(lead.email).toLowerCase(), { ...lead, source: 'account-opt-in' });
+    }
+    for (const lead of directLeads) {
+      const key = String(lead.email).toLowerCase();
+      const existing = leadsByEmail.get(key);
+      if (!existing || new Date(lead.interested_at) > new Date(existing.interested_at)) {
+        leadsByEmail.set(key, { ...lead, name: existing?.name || null });
+      }
+    }
+    const foundingLeads = [...leadsByEmail.values()]
+      .sort((a, b) => new Date(b.interested_at) - new Date(a.interested_at))
+      .slice(0, 100);
 
     return {
       days,

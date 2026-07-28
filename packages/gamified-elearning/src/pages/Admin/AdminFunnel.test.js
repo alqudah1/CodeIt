@@ -36,12 +36,20 @@ describe('admin acquisition funnel', () => {
           ],
           daily: [],
           student_age_audit: {},
-          founding_leads: [{
-            user_id: 12,
-            name: 'Parent Tester',
-            email: 'parent@example.com',
-            interested_at: '2026-07-23T12:00:00.000Z',
-          }],
+          founding_leads: [
+            {
+              user_id: 12,
+              name: 'Parent Tester',
+              email: 'parent@example.com',
+              interested_at: '2026-07-23T12:00:00.000Z',
+            },
+            {
+              user_id: null,
+              name: null,
+              email: 'direct@example.com',
+              interested_at: '2026-07-24T12:00:00.000Z',
+            },
+          ],
         }),
       })
       .mockResolvedValueOnce({
@@ -73,5 +81,7 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Founding family leads')).toBeInTheDocument();
     expect(screen.getByText('Parent Tester')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'parent@example.com' })).toHaveAttribute('href', 'mailto:parent@example.com');
+    expect(screen.getByRole('link', { name: 'direct@example.com' })).toHaveAttribute('href', 'mailto:direct@example.com');
+    expect(screen.getByText(/waitlist form or an adult account/i)).toBeInTheDocument();
   });
 });

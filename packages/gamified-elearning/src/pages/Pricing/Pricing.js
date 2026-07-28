@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
 import { trackEvent } from '../../utils/trackEvent';
 import { useAuth } from '../../context/AuthContext';
+import { ENDPOINTS } from '../../config/api';
 import './Pricing.css';
 
 const FREE_FEATURES = [
@@ -37,12 +38,13 @@ const FAQ = [
 
 export default function Pricing() {
   const { user, token } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
   const isStudentAccount = String(user?.role || '').toLowerCase() === 'student';
   const [interestStatus, setInterestStatus] = useState(() => (
     localStorage.getItem('codeit_founding_waitlist_contacted') === 'yes' ? 'saved' : 'idle'
   ));
+  const [leadEmail, setLeadEmail] = useState(user?.email || '');
+  const [adultConsent, setAdultConsent] = useState(false);
+  const [waitlistReady, setWaitlistReady] = useState(false);
 
   useSEO({
     title: 'CodeIt Pricing: Free Coding & Founding Family Plan',
@@ -58,54 +60,54 @@ export default function Pricing() {
   }, []);
 
   useEffect(() => {
-    if (interestStatus !== 'idle' || !user || !token) return undefined;
-    const shouldResume = location.state?.resumePricingInterest === true
-      || sessionStorage.getItem('codeit_pending_founding_interest') === 'yes';
-    if (!shouldResume) return undefined;
-
-    sessionStorage.removeItem('codeit_pending_founding_interest');
-    if (isStudentAccount) {
-      setInterestStatus('parent-required');
-      return undefined;
-    }
-
     let cancelled = false;
-    setInterestStatus('saving');
-    trackEvent('pricing_interest', 'founding-family', token).then((recorded) => {
-      if (cancelled) return;
-      if (recorded) {
-        localStorage.setItem('codeit_founding_waitlist_contacted', 'yes');
-        setInterestStatus('saved');
-      } else {
-        setInterestStatus('error');
-      }
-    });
-
+    fetch(ENDPOINTS.foundingWaitlist.status)
+      .then(async (response) => (response.ok ? response.json() : null))
+      .then((result) => {
+        if (!cancelled && result?.ready === true) setWaitlistReady(true);
+      })
+      .catch(() => {});
     return () => {
       cancelled = true;
     };
-  }, [interestStatus, isStudentAccount, location.state?.resumePricingInterest, token, user]);
+  }, []);
 
-  const registerInterest = async () => {
+  useEffect(() => {
+    if (user?.email && !leadEmail) setLeadEmail(user.email);
+  }, [leadEmail, user?.email]);
+
+  const registerInterest = async (event) => {
+    event.preventDefault();
     if (interestStatus === 'saving' || interestStatus === 'saved') return;
-    if (!user || !token) {
-      sessionStorage.setItem('codeit_pending_founding_interest', 'yes');
-      navigate('/register', {
-        state: { from: '/pricing', resumePricingInterest: true },
-      });
-      return;
-    }
     if (isStudentAccount) {
       setInterestStatus('parent-required');
       return;
     }
+    if (!adultConsent) {
+      setInterestStatus('consent-required');
+      return;
+    }
 
     setInterestStatus('saving');
-    const recorded = await trackEvent('pricing_interest', 'founding-family', token);
-    if (recorded) {
+    try {
+      const response = await fetch(ENDPOINTS.foundingWaitlist.join, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          email: leadEmail.trim(),
+          consent: true,
+          source: 'pricing',
+          company: '',
+        }),
+      });
+      if (!response.ok) throw new Error('waitlist request failed');
+
       localStorage.setItem('codeit_founding_waitlist_contacted', 'yes');
       setInterestStatus('saved');
-    } else {
+    } catch {
       setInterestStatus('error');
     }
   };
@@ -138,31 +140,73 @@ export default function Pricing() {
             <div className="pricing-price"><strong>US$12</strong><span>per month · planned</span></div>
             <p className="pricing-card__summary">More project creation, two learner profiles, and a clearer view of progress.</p>
             <ul>{FOUNDING_FEATURES.map((feature) => <li key={feature}>{feature}</li>)}</ul>
-            <button
-              type="button"
-              className="pricing-button pricing-button--primary"
-              onClick={registerInterest}
-              disabled={interestStatus === 'saving' || interestStatus === 'saved'}
-            >
-              {interestStatus === 'saving' && 'Saving…'}
-              {interestStatus === 'saved' && 'Interest saved — thank you'}
-              {(interestStatus === 'idle' || interestStatus === 'error' || interestStatus === 'parent-required') && 'Join the founding family waitlist'}
-            </button>
-            <a
-              className="pricing-button pricing-button--email"
-              href={PILOT_EMAIL_HREF}
-              onClick={() => void trackEvent('parent_cta_click', 'pilot-email')}
-            >
-              Or email us about the pilot
-            </a>
+            {waitlistReady ? (
+              <form className="pricing-waitlist" onSubmit={registerInterest}>
+                <label htmlFor="founding-email">Your email for pilot updates</label>
+                <input
+                  id="founding-email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  value={leadEmail}
+                  onChange={(event) => {
+                    setLeadEmail(event.target.value);
+                    if (interestStatus !== 'saved') setInterestStatus('idle');
+                  }}
+                  placeholder="parent@example.com"
+                  required
+                  disabled={interestStatus === 'saving' || interestStatus === 'saved'}
+                />
+                <label className="pricing-waitlist__consent">
+                  <input
+                    type="checkbox"
+                    checked={adultConsent}
+                    onChange={(event) => {
+                      setAdultConsent(event.target.checked);
+                      if (interestStatus !== 'saved') setInterestStatus('idle');
+                    }}
+                    disabled={interestStatus === 'saving' || interestStatus === 'saved'}
+                  />
+                  <span>I am a parent, guardian, or educator and agree to receive Founding Family pilot updates.</span>
+                </label>
+                <button
+                  type="submit"
+                  className="pricing-button pricing-button--primary"
+                  disabled={interestStatus === 'saving' || interestStatus === 'saved'}
+                >
+                  {interestStatus === 'saving' && 'Saving…'}
+                  {interestStatus === 'saved' && 'Interest saved — thank you'}
+                  {(interestStatus === 'idle' || interestStatus === 'error' || interestStatus === 'parent-required' || interestStatus === 'consent-required') && 'Join the founding family waitlist'}
+                </button>
+              </form>
+            ) : (
+              <a
+                className="pricing-button pricing-button--primary"
+                href={PILOT_EMAIL_HREF}
+                onClick={() => void trackEvent('parent_cta_click', 'pilot-email')}
+              >
+                Email us to join the pilot
+              </a>
+            )}
+            {waitlistReady && (
+              <a
+                className="pricing-button pricing-button--email"
+                href={PILOT_EMAIL_HREF}
+                onClick={() => void trackEvent('parent_cta_click', 'pilot-email')}
+              >
+                Or email us about the pilot
+              </a>
+            )}
             {interestStatus === 'error' && <p className="pricing-card__error" role="alert">We could not save that just now. Please try again.</p>}
+            {interestStatus === 'consent-required' && <p className="pricing-card__error" role="alert">Please confirm that you are an adult and want pilot updates.</p>}
             {interestStatus === 'parent-required' && (
               <p className="pricing-card__error" role="alert">
                 This waitlist is for parents or guardians. Ask an adult to use a Parent / Educator account.
               </p>
             )}
             <small>
-              No charge or subscription. The email option opens your email app; nothing is sent automatically.
+              No charge or subscription. We use your email only for this pilot, and you can opt out at any time.
+              Email links open your email app; nothing is sent automatically.
             </small>
           </article>
         </section>
@@ -171,7 +215,7 @@ export default function Pricing() {
           <section className="pricing-thanks" aria-live="polite">
             <div>
               <strong>You are on the founding family waitlist.</strong>
-              <p>We will use your Parent / Educator account email only to contact you about this pilot.</p>
+              <p>We will use the submitted email only to contact you about this pilot.</p>
             </div>
             <Link to="/builder">Start a free project <span aria-hidden="true">→</span></Link>
           </section>

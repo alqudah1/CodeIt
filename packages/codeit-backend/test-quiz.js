@@ -21,6 +21,7 @@ const builderRoutes = require('./routes/builder');
 const exploreRoutes = require('./routes/explore');
 const analyticsRoutes = require('./routes/analytics');
 const progressNotificationRoutes = require('./routes/progressNotifications');
+const foundingWaitlistRoutes = require('./routes/foundingWaitlist');
 
 const app = express();
 app.set('trust proxy', 1);
@@ -49,8 +50,9 @@ app.use('/api/builder', builderRoutes);
 app.use('/api/explore', exploreRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/progress-notifications', progressNotificationRoutes);
+app.use('/api/founding-waitlist', foundingWaitlistRoutes);
 
-const PORT = 8080;
+const PORT = Number(process.env.PORT || 8080);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
