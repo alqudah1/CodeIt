@@ -117,6 +117,31 @@ export default function InvestorBrief() {
           </div>
         </section>
 
+        <section className="creator-brief__section investor-brief__evidence" aria-labelledby="evidence-title">
+          <div className="creator-brief__section-heading">
+            <p className="creator-brief__eyebrow">Historical product activity</p>
+            <h2 id="evidence-title">The existing database contains real usage signals.</h2>
+            <p>
+              Read-only audit completed July 28, 2026. These are aggregate database records—not
+              verified paying customers—and may include internal or test accounts.
+            </p>
+          </div>
+          <div className="investor-brief__evidence-grid">
+            <article><strong>215</strong><span>Account records</span></article>
+            <article><strong>199</strong><span>Student profiles</span></article>
+            <article><strong>151</strong><span>Learners with XP</span></article>
+            <article><strong>144,060</strong><span>XP recorded</span></article>
+            <article><strong>609</strong><span>Lesson completions</span></article>
+            <article><strong>777</strong><span>Quiz attempts</span></article>
+            <article><strong>1,165</strong><span>Puzzle completions</span></article>
+            <article><strong>12</strong><span>Saved projects</span></article>
+          </div>
+          <aside className="investor-brief__evidence-note">
+            Login totals are not shown because the historical product did not record login events.
+            Future acquisition and activation events are now measured separately and more accurately.
+          </aside>
+        </section>
+
         <section id="business" className="creator-brief__section" aria-labelledby="business-title">
           <div className="creator-brief__section-heading">
             <p className="creator-brief__eyebrow">Business model hypothesis</p>

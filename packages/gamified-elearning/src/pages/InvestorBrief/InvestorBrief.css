@@ -110,6 +110,44 @@
 .investor-brief__product aside p { color: var(--cb-muted); line-height: 1.6; }
 .investor-brief__product aside a { color: var(--cb-orange-dark); font-weight: 900; }
 
+.investor-brief__evidence-grid {
+  margin-top: 2.4rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .8rem;
+}
+
+.investor-brief__evidence-grid article {
+  border: 1px solid var(--cb-line);
+  border-radius: 16px;
+  padding: 1.25rem;
+  background: #fff;
+}
+
+.investor-brief__evidence-grid strong {
+  display: block;
+  color: var(--cb-orange);
+  font: 700 clamp(1.7rem, 4vw, 2.7rem)/1 Arvo, Georgia, serif;
+}
+
+.investor-brief__evidence-grid span {
+  display: block;
+  margin-top: .6rem;
+  color: var(--cb-muted);
+  font-size: .8rem;
+  font-weight: 900;
+}
+
+.investor-brief__evidence-note {
+  margin-top: .8rem;
+  border-left: 4px solid var(--cb-orange);
+  border-radius: 0 12px 12px 0;
+  padding: 1rem 1.2rem;
+  background: #fff0e3;
+  color: var(--cb-muted);
+  line-height: 1.55;
+}
+
 .investor-brief__business-grid h3 { margin: 1rem 0 0; font-size: 1.18rem; }
 .investor-brief__business-grid article:nth-child(2) { border: 2px solid var(--cb-orange); }
 
@@ -171,9 +209,11 @@
   .investor-brief__thesis-grid,
   .investor-brief__business-grid,
   .investor-brief__product-layout { grid-template-columns: 1fr; }
+  .investor-brief__evidence-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 460px) {
   .investor-brief__ask > div { flex-direction: column; }
   .investor-brief__ask a { width: 100%; }
+  .investor-brief__evidence-grid { grid-template-columns: 1fr; }
 }

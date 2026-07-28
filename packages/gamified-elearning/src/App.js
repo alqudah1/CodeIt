@@ -72,6 +72,7 @@ const AdminUserDetail = lazy(() => import('./pages/Admin/AdminUserDetail'));
 const AdminStats      = lazy(() => import('./pages/Admin/AdminStats'));
 const AdminAvatars    = lazy(() => import('./pages/Admin/AdminAvatars'));
 const AdminFunnel     = lazy(() => import('./pages/Admin/AdminFunnel'));
+const AdminEvidence   = lazy(() => import('./pages/Admin/AdminEvidence'));
 
 // ── Page loading fallback ─────────────────────────────────────────
 const PageLoader = () => (
@@ -192,6 +193,7 @@ const App = () => (
               <Route path="/admin/stats"     element={<RequireAdmin><AdminStats /></RequireAdmin>} />
               <Route path="/admin/avatars"   element={<RequireAdmin><AdminAvatars /></RequireAdmin>} />
               <Route path="/admin/funnel"    element={<RequireAdmin><AdminFunnel /></RequireAdmin>} />
+              <Route path="/admin/evidence"  element={<RequireAdmin><AdminEvidence /></RequireAdmin>} />
 
               {/* ── 404 ── */}
               <Route path="*" element={<Navigate to="/" replace />} />

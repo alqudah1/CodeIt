@@ -4,11 +4,12 @@ import { AuthContext } from '../../context/AuthContext';
 import './AdminLayout.css';
 
 const NAV = [
-  { to: '/admin',         label: 'Overview',  icon: '▦', end: true },
-  { to: '/admin/users',   label: 'Users',     icon: '◎' },
-  { to: '/admin/stats',   label: 'Stats',     icon: '◈' },
-  { to: '/admin/funnel',  label: 'Funnel',    icon: '↗' },
-  { to: '/admin/avatars', label: 'Avatars',   icon: '✦' },
+  { to: '/admin', label: 'Overview', icon: '▦', end: true },
+  { to: '/admin/evidence', label: 'Evidence', icon: '◆' },
+  { to: '/admin/users', label: 'Users', icon: '◎' },
+  { to: '/admin/stats', label: 'Stats', icon: '◈' },
+  { to: '/admin/funnel', label: 'Funnel', icon: '↗' },
+  { to: '/admin/avatars', label: 'Avatars', icon: '✦' },
 ];
 
 const AdminLayout = ({ children }) => {
@@ -38,7 +39,7 @@ const AdminLayout = ({ children }) => {
           ))}
         </nav>
         <div className="adm-sidebar-footer">
-          <div style={{ marginBottom: '0.25rem', color: '#8892b0', fontSize: '0.8rem' }}>
+          <div style={{ marginBottom: '0.25rem', color: '#72594d', fontSize: '0.8rem' }}>
             {user?.name || user?.username || 'Admin'}
           </div>
           <button className="adm-logout-btn" onClick={handleLogout}>Sign out</button>
