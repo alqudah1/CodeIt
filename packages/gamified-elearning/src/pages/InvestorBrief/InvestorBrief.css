@@ -1,0 +1,179 @@
+.investor-brief__hero h1 { max-width: 1040px; }
+
+.investor-brief__stage {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: .7fr 1.3fr;
+  gap: 2rem;
+  border: 2px solid var(--cb-ink);
+  border-radius: 20px;
+  padding: clamp(1.4rem, 4vw, 2.2rem);
+  background: #ffd8bd;
+  box-shadow: 8px 8px 0 var(--cb-ink);
+}
+
+.investor-brief__stage span,
+.investor-brief__thesis-grid span,
+.investor-brief__product aside > span,
+.investor-brief__business-grid > article > span {
+  color: var(--cb-orange-dark);
+  font-size: .68rem;
+  font-weight: 1000;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.investor-brief__stage strong {
+  display: block;
+  margin-top: .55rem;
+  font: 700 1.3rem/1.35 Arvo, Georgia, serif;
+}
+
+.investor-brief__stage p { margin: 0; color: var(--cb-muted); line-height: 1.65; }
+
+.investor-brief__thesis-grid,
+.investor-brief__business-grid {
+  margin-top: 2.4rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.investor-brief__thesis-grid article,
+.investor-brief__business-grid article {
+  border: 1px solid var(--cb-line);
+  border-radius: 18px;
+  padding: 1.5rem;
+  background: #fff;
+}
+
+.investor-brief__thesis-grid strong {
+  display: block;
+  margin-top: .8rem;
+  font-size: 1.08rem;
+}
+
+.investor-brief__thesis-grid p,
+.investor-brief__business-grid p {
+  margin: .55rem 0 0;
+  color: var(--cb-muted);
+  line-height: 1.6;
+}
+
+.investor-brief__product-layout {
+  margin-top: 2.4rem;
+  display: grid;
+  grid-template-columns: 1fr .8fr;
+  gap: 1rem;
+}
+
+.investor-brief__product ul {
+  margin: 0;
+  display: grid;
+  gap: 1px;
+  border: 1px solid var(--cb-line);
+  border-radius: 18px;
+  padding: 0;
+  background: var(--cb-line);
+  overflow: hidden;
+  list-style: none;
+}
+
+.investor-brief__product li {
+  position: relative;
+  padding: 1.15rem 1.25rem 1.15rem 3rem;
+  background: #fff;
+  font-weight: 800;
+}
+
+.investor-brief__product li::before {
+  position: absolute;
+  left: 1.2rem;
+  color: var(--cb-orange);
+  content: "✓";
+  font-weight: 1000;
+}
+
+.investor-brief__product aside {
+  border-radius: 18px;
+  padding: 1.6rem;
+  background: #ffe6d3;
+}
+
+.investor-brief__product aside strong {
+  display: block;
+  margin-top: .7rem;
+  font: 700 1.35rem/1.35 Arvo, Georgia, serif;
+}
+
+.investor-brief__product aside p { color: var(--cb-muted); line-height: 1.6; }
+.investor-brief__product aside a { color: var(--cb-orange-dark); font-weight: 900; }
+
+.investor-brief__business-grid h3 { margin: 1rem 0 0; font-size: 1.18rem; }
+.investor-brief__business-grid article:nth-child(2) { border: 2px solid var(--cb-orange); }
+
+.investor-brief__milestones {
+  margin-top: 2.4rem;
+  border-top: 1px solid var(--cb-line);
+}
+
+.investor-brief__milestones article {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 1rem;
+  border-bottom: 1px solid var(--cb-line);
+  padding: 1.4rem 0;
+}
+
+.investor-brief__milestones > article > span { color: var(--cb-orange); font-weight: 1000; }
+.investor-brief__milestones h3 { margin: 0; }
+.investor-brief__milestones p { margin: .4rem 0 0; color: var(--cb-muted); line-height: 1.55; }
+
+.investor-brief__truth {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(5rem, 10vw, 8rem) 0;
+  border-top: 1px solid var(--cb-line);
+}
+
+.investor-brief__ask {
+  margin-top: clamp(3rem, 8vw, 6rem);
+  padding: clamp(4rem, 8vw, 7rem) max(24px, calc((100% - 1120px) / 2));
+  background: var(--cb-ink);
+  color: #fff8f1;
+}
+
+.investor-brief__ask .creator-brief__eyebrow { color: #ffb27e; }
+.investor-brief__ask h2 { max-width: 900px; margin: 0; font-size: clamp(2.5rem, 6vw, 5rem); letter-spacing: -.045em; line-height: 1.05; }
+.investor-brief__ask > p:not(.creator-brief__eyebrow) { max-width: 720px; color: #e9d4c5; font-size: 1.08rem; line-height: 1.7; }
+.investor-brief__ask > div { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+
+.investor-brief__ask a {
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #795d4b;
+  border-radius: 12px;
+  padding: .8rem 1.15rem;
+  color: #fff;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.investor-brief__ask a:first-child { border-color: var(--cb-orange); background: var(--cb-orange); }
+
+@media (max-width: 760px) {
+  .investor-brief__stage,
+  .investor-brief__truth { width: min(100% - 28px, 1120px); }
+  .investor-brief__stage,
+  .investor-brief__thesis-grid,
+  .investor-brief__business-grid,
+  .investor-brief__product-layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 460px) {
+  .investor-brief__ask > div { flex-direction: column; }
+  .investor-brief__ask a { width: 100%; }
+}
