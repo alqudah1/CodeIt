@@ -393,7 +393,7 @@ Every project you generate must feel:
 
 ━━━ FIRST IMPRESSION (the project has 2 seconds to hook the user) ━━━
 ${category === 'game' ? `• Start screen: animated title (use animation:float 3s ease infinite or bounce), a visual icon/character representing the game theme, and a glowing pulsing Play button (animation:glow 2s ease infinite)
-• The start screen background must feel thematic — a dark space for space games, warm food colors for cooking, etc.
+• The start screen background must feel thematic — bright lavender starlight for space games, warm food colors for cooking, etc.
 • Something must be moving on the start screen before the user clicks anything` : category === 'website' ? `• Hero loads with an animated headline (.fade-up, animation-delay stagger)
 • The h1 must be large, bold, and use .gradient-text
 • At least one element is animated/floating on load — a badge, icon, or decorative shape` : `• The tool layout is centered, clean, and immediately clear in its purpose
@@ -403,7 +403,7 @@ ${category === 'game' ? `• Start screen: animated title (use animation:float 3
 ━━━ PERSONALITY — every project is unique, never generic ━━━
 • Give it a real name drawn from the user's idea: NOT "My Game" — "Galactic Rush", "Chef's Challenge", "Speed Typer 3000"
 • Use the theme's vocabulary everywhere: a cooking game says "ingredients" not "targets"; a space game says "asteroids" not "objects"
-• Color palette must match the theme: space → dark bg + cyan/purple glow; cooking → warm orange/cream; underwater → deep blue + teal; forest → dark green + lime
+• Color palette must match the theme while staying bright and welcoming: space → lavender + cyan/purple accents; cooking → warm orange/cream; underwater → sky blue + teal; forest → soft green + lime. Do not use navy or near-black page backgrounds.
 • HUD labels, button text, result messages — all should sound like they belong to THIS project
 
 ${category === 'game' ? `━━━ GAME FEEL REQUIREMENTS ━━━
@@ -716,10 +716,10 @@ function buildPortfolioFallback() {
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>My Portfolio</title>
 <style>
-:root{--p:#FF7A00;--a:#A855F7;--bg:#0F1117;--c:#1A1D27;--b:rgba(255,255,255,.1);--t:#F1F5F9;--m:#94A3B8;--r:14px}
+:root{--p:#F87824;--a:#8B5CF6;--bg:#FFF8EF;--c:#FFFFFF;--b:#EFD8C8;--t:#3D302B;--m:#725F55;--r:14px}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--t);line-height:1.65}
-nav{position:sticky;top:0;z-index:9;background:rgba(15,17,23,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--b);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between}
+nav{position:sticky;top:0;z-index:9;background:rgba(255,248,239,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--b);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between}
 .brand{font-size:1.2rem;font-weight:900;background:linear-gradient(135deg,var(--p),var(--a));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer}
 .nl{display:flex;gap:4px;list-style:none}
 .nb{color:var(--m);font-size:.88rem;font-weight:600;padding:7px 14px;border-radius:50px;background:none;border:none;cursor:pointer;font-family:inherit;transition:all .15s}
@@ -972,7 +972,7 @@ function buildQuizFallback() {
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Quiz Challenge</title>
 <style>
-:root{--p:#A855F7;--a:#06B6D4;--bg:#0F0A1E;--c:#1E1535;--b:#3D2B6E;--t:#F3F4F6;--m:#9CA3AF;--r:14px}
+:root{--p:#F87824;--a:#8B5CF6;--bg:#FFF8EF;--c:#FFFFFF;--b:#EFD8C8;--t:#3D302B;--m:#725F55;--r:14px}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--t);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .wrap{width:100%;max-width:560px}
@@ -985,11 +985,11 @@ p{color:var(--m);font-size:1rem;line-height:1.6}
 .btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
 .qbox{background:var(--c);border-radius:20px;padding:28px;width:100%;text-align:left;border:1px solid var(--b)}
 .prog{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--m);margin-bottom:14px}
-.pbar{height:6px;background:rgba(255,255,255,.08);border-radius:50px;overflow:hidden;margin-bottom:20px}
+.pbar{height:6px;background:#F5E7DC;border-radius:50px;overflow:hidden;margin-bottom:20px}
 .pf{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--p),var(--a));transition:width .4s ease}
 .qt{font-size:1.1rem;font-weight:700;line-height:1.55;margin-bottom:20px}
 .opts{display:flex;flex-direction:column;gap:10px}
-.opt{padding:13px 18px;border-radius:12px;background:rgba(255,255,255,.04);border:1.5px solid var(--b);text-align:left;font-family:inherit;font-size:.95rem;font-weight:600;color:var(--t);cursor:pointer;transition:all .18s}
+.opt{padding:13px 18px;border-radius:12px;background:#FFFDFC;border:1.5px solid var(--b);text-align:left;font-family:inherit;font-size:.95rem;font-weight:600;color:var(--t);cursor:pointer;transition:all .18s}
 .opt:hover:not(:disabled){background:rgba(168,85,247,.12);border-color:var(--p)}
 .opt.right{background:rgba(16,185,129,.12);border-color:#10B981;color:#10B981}
 .opt.wrong{background:rgba(239,68,68,.12);border-color:#EF4444;color:#EF4444}
@@ -1125,10 +1125,10 @@ function buildLandingFallback(userPrompt) {
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>${title}</title>
 <style>
-:root{--p:#FF7A00;--a:#A855F7;--s:#10B981;--bg:#0F1117;--c:#1A1D27;--b:rgba(255,255,255,.1);--t:#F1F5F9;--m:#94A3B8;--r:14px}
+:root{--p:#F87824;--a:#8B5CF6;--s:#10B981;--bg:#FFF8EF;--c:#FFFFFF;--b:#EFD8C8;--t:#3D302B;--m:#725F55;--r:14px}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--t);line-height:1.65}
-nav{position:sticky;top:0;z-index:100;background:rgba(15,17,23,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--b);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,248,239,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--b);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
 .brand{font-size:1.2rem;font-weight:900;background:linear-gradient(135deg,var(--p),var(--a));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer}
 .nl{display:flex;gap:4px;list-style:none}
 .nb{color:var(--m);font-size:.88rem;font-weight:600;padding:7px 14px;border-radius:50px;background:none;border:none;cursor:pointer;font-family:inherit;transition:all .15s}
@@ -1315,7 +1315,7 @@ function buildGenericGameFallback() {
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Click Challenge</title>
 <style>
-:root{--p:#FF7A00;--a:#A855F7;--d:#FF4757;--bg:#0D0D2B;--c:#1A1A3E;--b:rgba(255,255,255,.12);--t:#fff;--m:#9CA3AF;--r:14px}
+:root{--p:#F87824;--a:#8B5CF6;--d:#DC2626;--bg:#FFF8EF;--c:#FFFFFF;--b:#EFD8C8;--t:#3D302B;--m:#725F55;--r:14px}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--t);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px}
 h1{font-size:clamp(1.6rem,5vw,2.4rem);font-weight:900;text-align:center;letter-spacing:-.5px;background:linear-gradient(135deg,var(--p),var(--a));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -1325,7 +1325,7 @@ h1{font-size:clamp(1.6rem,5vw,2.4rem);font-weight:900;text-align:center;letter-s
 #ga{position:relative;width:min(420px,calc(100vw - 40px));height:300px;background:var(--c);border-radius:16px;border:2px solid var(--b);overflow:hidden;cursor:crosshair;box-shadow:0 8px 32px rgba(0,0,0,.4)}
 .tgt{position:absolute;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;user-select:none;animation:spawn .22s cubic-bezier(.2,.8,.4,1.4) both}
 .tgt:active{transform:scale(.85)}
-.ov{position:absolute;inset:0;background:rgba(13,13,43,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:10;text-align:center;padding:24px}
+.ov{position:absolute;inset:0;background:rgba(255,248,239,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:10;text-align:center;padding:24px}
 .ov h2{font-size:1.6rem;font-weight:900}
 .ov p{color:var(--m);font-size:.9rem;max-width:280px;line-height:1.6}
 .btn{padding:13px 30px;border-radius:50px;background:var(--p);color:#fff;font-family:inherit;font-size:1rem;font-weight:700;border:none;cursor:pointer;transition:all .18s;box-shadow:0 4px 18px rgba(255,122,0,.3)}

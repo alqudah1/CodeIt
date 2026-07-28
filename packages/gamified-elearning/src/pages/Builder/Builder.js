@@ -138,13 +138,13 @@ const PRESET_PALETTES = [
   { name: 'Ocean',  swatches: ['#0EA5E9', '#06B6D4', '#22C55E'],
     vars: { '--primary': '#0EA5E9', '--accent': '#06B6D4', '--success': '#22C55E', '--bg': '#E8F4FD', '--card': '#FFFFFF', '--border': '#BAE6FD', '--text': '#0F172A', '--muted': '#64748B' } },
   { name: 'Arcade', swatches: ['#FF6B6B', '#FFE66D', '#00E5FF'],
-    vars: { '--primary': '#FF6B6B', '--accent': '#FFE66D', '--success': '#00E5FF', '--bg': '#0D0D2B', '--card': '#1A1A3E', '--border': '#2D2D5E', '--text': '#FFFFFF', '--muted': '#9CA3AF' } },
+    vars: { '--primary': '#FF6B6B', '--accent': '#F4B942', '--success': '#00AFC1', '--bg': '#FFF8E7', '--card': '#FFFFFF', '--border': '#FFD6A5', '--text': '#3D302B', '--muted': '#725F55' } },
   { name: 'Forest', swatches: ['#22C55E', '#F59E0B', '#10B981'],
     vars: { '--primary': '#22C55E', '--accent': '#F59E0B', '--success': '#10B981', '--bg': '#F0FDF4', '--card': '#FFFFFF', '--border': '#BBF7D0', '--text': '#14532D', '--muted': '#785B49' } },
   { name: 'Candy',  swatches: ['#EC4899', '#A855F7', '#10B981'],
     vars: { '--primary': '#EC4899', '--accent': '#A855F7', '--success': '#10B981', '--bg': '#FFF0F6', '--card': '#FFFFFF', '--border': '#F9A8D4', '--text': '#38291F', '--muted': '#785B49' } },
-  { name: 'Night',  swatches: ['#8B5CF6', '#06B6D4', '#10B981'],
-    vars: { '--primary': '#8B5CF6', '--accent': '#06B6D4', '--success': '#10B981', '--bg': '#0F0A1E', '--card': '#1E1535', '--border': '#3D2B6E', '--text': '#F4E7DC', '--muted': '#9CA3AF' } },
+  { name: 'Galaxy', swatches: ['#8B5CF6', '#06B6D4', '#F87824'],
+    vars: { '--primary': '#8B5CF6', '--accent': '#06B6D4', '--success': '#10B981', '--bg': '#F8F2FF', '--card': '#FFFFFF', '--border': '#DDC9F7', '--text': '#3D302B', '--muted': '#725F55' } },
 ];
 
 const TEXT_UPGRADES = [

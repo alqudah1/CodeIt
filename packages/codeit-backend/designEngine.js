@@ -11,8 +11,8 @@
 const PALETTES = {
   arcade: {
     name: 'Arcade',
-    vars: '--bg:#0D0D2B;--card:#1A1A3E;--border:#2D2D5E;--primary:#FF6B6B;--accent:#FFE66D;--success:#00E5FF;--danger:#FF4757;--text:#FFFFFF;--muted:#9CA3AF;--r:12px;--shadow:0 4px 24px rgba(0,0,0,.45)',
-    mood: 'bold dark neon, game-center energy, glowing buttons',
+    vars: '--bg:#FFF8E7;--card:#FFFFFF;--border:#FFD6A5;--primary:#FF6B6B;--accent:#F4B942;--success:#00AFC1;--danger:#DC2626;--text:#3D302B;--muted:#725F55;--r:12px;--shadow:0 4px 22px rgba(255,107,107,.16)',
+    mood: 'bright arcade energy, colorful controls, playful motion',
   },
   candy: {
     name: 'Candy',
@@ -36,8 +36,8 @@ const PALETTES = {
   },
   space: {
     name: 'Space',
-    vars: '--bg:#0F0A1E;--card:#1E1535;--border:#3D2B6E;--primary:#8B5CF6;--accent:#06B6D4;--success:#10B981;--danger:#EF4444;--text:#F3F4F6;--muted:#9CA3AF;--r:14px;--shadow:0 8px 32px rgba(139,92,246,.25)',
-    mood: 'mysterious, futuristic, cosmic, sci-fi',
+    vars: '--bg:#F8F2FF;--card:#FFFFFF;--border:#DDC9F7;--primary:#8B5CF6;--accent:#06B6D4;--success:#10B981;--danger:#DC2626;--text:#3D302B;--muted:#725F55;--r:14px;--shadow:0 8px 28px rgba(139,92,246,.16)',
+    mood: 'bright cosmic adventure, lavender starlight, playful sci-fi',
   },
 };
 
