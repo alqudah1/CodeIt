@@ -60,6 +60,7 @@ const MainPage = () => {
     title:       'My Dashboard | CodeIt — Python Learning Progress',
     description: 'Track your Python lessons, quizzes, and coding challenges. See your XP, streak, achievements, and next mission on your CodeIt learner dashboard.',
     canonical:   '/MainPage',
+    robots:      'noindex,nofollow',
   });
 
   const navigate = useNavigate();

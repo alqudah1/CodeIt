@@ -23,6 +23,7 @@ const Leaderboard = () => {
     title:       'Leaderboard | CodeIt',
     description: 'See the top Python coders on CodeIt. Earn XP through lessons, quizzes, and puzzles to climb the global rankings.',
     canonical:   '/leaderboard',
+    robots:      'noindex,nofollow',
   });
 
   const [rows, setRows]       = useState([]);

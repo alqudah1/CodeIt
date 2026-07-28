@@ -73,6 +73,7 @@ export default function Register() {
     title:       'Create Free Account | CodeIt',
     description: 'Join CodeIt for free and start learning Python with interactive lessons, quizzes, coding games, and creative projects.',
     canonical:   '/register',
+    robots:      'noindex,nofollow',
   });
 
   function goBack() {

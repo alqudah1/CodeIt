@@ -67,6 +67,7 @@ const AvatarLab = () => {
     title:       'Avatar Lab — Customize Your Coding Avatar | CodeIt',
     description: 'Design your personal coding avatar for CodeIt. Pick your style, outfit, accessories, and nickname. Level up through Python lessons to unlock new looks.',
     canonical:   '/character',
+    robots:      'noindex,nofollow',
   });
 
   const navigate = useNavigate();

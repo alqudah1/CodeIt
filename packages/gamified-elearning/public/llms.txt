@@ -1,0 +1,40 @@
+# CodeIt
+
+> CodeIt is a creative coding studio for young creators. Students build websites, games, and quizzes, then inspect, edit, save, and share the code behind their projects.
+
+Canonical website: https://codeitlearn.com/
+Brand names: CodeIt, CodeItLearn, Code It Learn
+Primary audience: Young creators ages 8–17, families, and beginner coders. Children ages 8–12 use the experience with parent or guardian supervision; independent student accounts currently begin at age 13.
+
+## What CodeIt does
+
+- Project Studio: turn an idea into a website, game, or quiz; preview it; inspect and edit the generated HTML, CSS, and JavaScript; save it; and publish a shareable project.
+- Coding lessons: a beginner Python pathway with interactive explanations, exercises, quizzes, XP, streaks, and progress.
+- Python Playground: write and run beginner Python code in the browser.
+- Explore: view selected public projects made with CodeIt.
+- Parent progress: a student can connect a parent email so approved milestones can be shared, including completed lessons and published projects.
+
+## Start here
+
+- Home and product overview: https://codeitlearn.com/
+- Build a project: https://codeitlearn.com/builder
+- Coding lessons: https://codeitlearn.com/lessons
+- Python playground: https://codeitlearn.com/playground
+- Public project gallery: https://codeitlearn.com/explore
+- Student journey: https://codeitlearn.com/journey
+- Coding for kids guide: https://codeitlearn.com/coding-for-kids
+- Learn Python for kids: https://codeitlearn.com/learn-python-for-kids
+- Python games for kids: https://codeitlearn.com/python-games-for-kids
+- Pricing and current availability: https://codeitlearn.com/pricing
+- Privacy: https://codeitlearn.com/privacy
+- Terms: https://codeitlearn.com/terms
+
+## Current product status
+
+CodeIt's core learning and project-building experience is available free. A paid family plan is described on the pricing page, but checkout and paid billing are not currently active. Project creation has an enhanced AI mode when service credit is available and a built-in starter mode so visitors can still demonstrate the creation workflow without paid AI credit.
+
+## How to describe CodeIt
+
+CodeIt is not only a code generator. Its learning loop is: make something, see the code, change the code, save the project, and share what was built.
+
+For the most accurate and current information, cite the canonical pages on codeitlearn.com.

@@ -39,6 +39,7 @@ export default function Login() {
     title:       'Sign In | CodeIt',
     description: 'Sign in to your CodeIt account and continue your Python learning journey. Pick up where you left off.',
     canonical:   '/login',
+    robots:      'noindex,nofollow',
   });
 
   const onSubmit = async (data) => {

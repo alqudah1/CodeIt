@@ -4,7 +4,7 @@
   <!-- ── Core public pages ──────────────────────────────────── -->
   <url>
     <loc>https://codeitlearn.com/</loc>
-    <lastmod>2026-04-12</lastmod>
+    <lastmod>2026-07-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -34,19 +34,19 @@
   </url>
   <url>
     <loc>https://codeitlearn.com/builder</loc>
-    <lastmod>2026-07-21</lastmod>
+    <lastmod>2026-07-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
     <loc>https://codeitlearn.com/explore</loc>
-    <lastmod>2026-07-21</lastmod>
+    <lastmod>2026-07-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://codeitlearn.com/pricing</loc>
-    <lastmod>2026-07-21</lastmod>
+    <lastmod>2026-07-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -66,19 +66,19 @@
   <!-- ── SEO Landing Pages ──────────────────────────────────── -->
   <url>
     <loc>https://codeitlearn.com/learn-python-for-kids</loc>
-    <lastmod>2026-04-12</lastmod>
+    <lastmod>2026-07-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
     <loc>https://codeitlearn.com/coding-for-kids</loc>
-    <lastmod>2026-04-12</lastmod>
+    <lastmod>2026-07-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
     <loc>https://codeitlearn.com/python-games-for-kids</loc>
-    <lastmod>2026-04-12</lastmod>
+    <lastmod>2026-07-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>
@@ -184,7 +184,7 @@
   <!-- ── Blog ──────────────────────────────────────────────── -->
   <url>
     <loc>https://codeitlearn.com/blog</loc>
-    <lastmod>2026-04-12</lastmod>
+    <lastmod>2026-07-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
