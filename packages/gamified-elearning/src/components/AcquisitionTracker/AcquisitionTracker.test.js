@@ -1,8 +1,11 @@
 import { render, waitFor } from '@testing-library/react';
-import AcquisitionTracker, { getAcquisitionSource } from './AcquisitionTracker';
+import AcquisitionTracker, { getAcquisitionSource, shouldTrackAcquisition } from './AcquisitionTracker';
 import { trackEvent } from '../../utils/trackEvent';
 
 jest.mock('../../utils/trackEvent', () => ({ trackEvent: jest.fn(() => Promise.resolve(true)) }));
+jest.mock('react-router-dom', () => ({
+  useLocation: () => ({ pathname: '/' }),
+}), { virtual: true });
 
 describe('acquisition attribution', () => {
   beforeEach(() => {
@@ -26,5 +29,13 @@ describe('acquisition attribution', () => {
     render(<AcquisitionTracker />);
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(trackEvent).toHaveBeenCalledTimes(1);
+  });
+
+  test('excludes account, evidence, and administration screens from acquisition totals', () => {
+    expect(shouldTrackAcquisition('/admin/funnel')).toBe(false);
+    expect(shouldTrackAcquisition('/login')).toBe(false);
+    expect(shouldTrackAcquisition('/investor-brief')).toBe(false);
+    expect(shouldTrackAcquisition('/builder')).toBe(true);
+    expect(shouldTrackAcquisition('/project/example')).toBe(true);
   });
 });
