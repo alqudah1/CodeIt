@@ -321,6 +321,7 @@ export default function Home() {
             <div>
               <strong>About</strong>
               <Link to="/coding-for-kids">Coding for kids</Link>
+              <Link to="/ai-website-builder-for-kids">AI website builder for kids</Link>
               <Link to="/blog">Guides and ideas</Link>
               <Link to="/pricing">Pricing</Link>
               <Link to="/pricing">Join the family pilot</Link>

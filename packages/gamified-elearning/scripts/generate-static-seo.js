@@ -36,6 +36,16 @@ const BLOG_POSTS = [
 
 const BASE_PAGES = [
   {
+    route: '/ai-website-builder-for-kids',
+    title: 'AI Website Builder for Kids: Build & Learn the Code | CodeIt',
+    description: 'Kids can turn an idea into an editable website, game, or quiz, then inspect and change the HTML, CSS, and JavaScript behind it.',
+    eyebrow: 'Creative coding for ages 8–18',
+    h1: 'An AI website builder for kids that teaches the code.',
+    intro: 'CodeIt helps a young creator turn an idea into a website, game, or quiz, then change the design, inspect the real code, and understand how the project works.',
+    detail: 'The first version stays editable. Learners can change the content, colors, layout, and behavior, compare the preview with the HTML, CSS, and JavaScript, save their work, and keep improving it.',
+    type: 'SoftwareApplication',
+  },
+  {
     route: '/builder',
     title: 'AI Website Builder for Kids & Beginners | CodeIt',
     description: 'Describe a website, game, or quiz, build it in the browser, then inspect and edit the HTML, CSS, and JavaScript behind it.',

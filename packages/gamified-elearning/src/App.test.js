@@ -14,6 +14,7 @@ describe('public route contract', () => {
     '/pricing',
     '/privacy',
     '/terms',
+    '/ai-website-builder-for-kids',
   ])('declares %s as a public route', (route) => {
     const escapedRoute = route.replaceAll('/', '\\/');
     expect(appSource).toMatch(new RegExp(`<Route\\s+path="${escapedRoute}"`));

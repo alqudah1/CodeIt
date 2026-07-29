@@ -68,6 +68,7 @@ const BlogPost          = lazy(() => import('./pages/Blog/BlogPost'));
 const LearnPythonForKids = lazy(() => import('./pages/SEO/LearnPythonForKids'));
 const CodingForKids     = lazy(() => import('./pages/SEO/CodingForKids'));
 const PythonGamesForKids = lazy(() => import('./pages/SEO/PythonGamesForKids'));
+const AIWebsiteBuilderForKids = lazy(() => import('./pages/SEO/AIWebsiteBuilderForKids'));
 
 const AdminDashboard  = lazy(() => import('./pages/Admin/AdminDashboard'));
 const AdminUsers      = lazy(() => import('./pages/Admin/AdminUsers'));
@@ -191,6 +192,7 @@ const App = () => (
               <Route path="/learn-python-for-kids"  element={<LearnPythonForKids />} />
               <Route path="/coding-for-kids"        element={<CodingForKids />} />
               <Route path="/python-games-for-kids"  element={<PythonGamesForKids />} />
+              <Route path="/ai-website-builder-for-kids" element={<AIWebsiteBuilderForKids />} />
 
               {/* ── Admin ── */}
               <Route path="/admin"           element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />

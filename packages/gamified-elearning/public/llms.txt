@@ -24,6 +24,7 @@ Primary audience: Young creators ages 8–17, families, and beginner coders. A p
 - Public project gallery: https://codeitlearn.com/explore
 - Student journey: https://codeitlearn.com/journey
 - Coding for kids guide: https://codeitlearn.com/coding-for-kids
+- AI website builder for kids: https://codeitlearn.com/ai-website-builder-for-kids
 - Learn Python for kids: https://codeitlearn.com/learn-python-for-kids
 - Python games for kids: https://codeitlearn.com/python-games-for-kids
 - Pricing and current availability: https://codeitlearn.com/pricing

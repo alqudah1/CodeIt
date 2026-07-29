@@ -1,7 +1,7 @@
 {
   "short_name": "CodeIt",
-  "name": "CodeIt | Learn Python Through Play",
-  "description": "Learn Python through interactive lessons, coding puzzles, and quizzes.",
+  "name": "CodeIt | Build Projects and Learn the Code",
+  "description": "Build editable websites, games, and quizzes, then learn the code behind them.",
   "icons": [
     {
       "src": "brand/codeit-logo-trimmed.png",
