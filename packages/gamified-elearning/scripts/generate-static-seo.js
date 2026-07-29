@@ -108,7 +108,7 @@ const BASE_PAGES = [
   {
     route: '/coding-for-kids',
     title: 'Coding for Kids: Projects, Python & Parent Guide | CodeIt',
-    description: 'A project-first coding platform for ages 8–17, with private parent-managed profiles for ages 8–12. Build websites, games and quizzes, then learn the code.',
+    description: 'A project-first coding platform for ages 8–18, with private parent-managed profiles for ages 8–12. Build websites, games and quizzes, then learn the code.',
     eyebrow: 'For parents & educators',
     h1: 'A first coding project they’ll want to keep improving.',
     intro: 'CodeIt helps a beginner turn an idea into a website, game, or quiz, then change the design, inspect the code, and understand what makes it work.',

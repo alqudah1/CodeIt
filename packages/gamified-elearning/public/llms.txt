@@ -4,7 +4,7 @@
 
 Canonical website: https://codeitlearn.com/
 Brand names: CodeIt, CodeItLearn, Code It Learn
-Primary audience: Young creators ages 8–17, families, and beginner coders. A parent or legal guardian can create a private managed profile for ages 8–12 after confirming the adult account email and accepting the family privacy notice. Independent student accounts begin at age 13.
+Primary audience: Young creators ages 8–18, families, and beginner coders. A parent or legal guardian can create a private managed profile for ages 8–12 after confirming the adult account email and accepting the family privacy notice. Independent student accounts begin at age 13.
 
 ## What CodeIt does
 

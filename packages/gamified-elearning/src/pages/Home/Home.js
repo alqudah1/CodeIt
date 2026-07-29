@@ -131,7 +131,7 @@ export default function Home() {
 
   useSEO({
     title: "CodeIt: Build Websites, Learn Code & Share Projects",
-    description: "CodeIt helps students build real websites, games, and quizzes with an AI-assisted studio, then learn, edit, save, and share the code behind them.",
+    description: "CodeIt helps students ages 8–18 build real websites, games, and quizzes, then learn, edit, save, and share the code behind them.",
     canonical: "/",
   });
 

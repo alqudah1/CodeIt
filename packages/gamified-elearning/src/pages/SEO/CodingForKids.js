@@ -60,7 +60,7 @@ const PATHS = [
 export default function CodingForKids() {
   useSEO({
     title: 'Coding for Kids: Projects, Python & Parent Guide | CodeIt',
-    description: 'A project-first coding platform for ages 8–17, with private parent-managed profiles for ages 8–12. Build websites, games and quizzes, then learn the code.',
+    description: 'A project-first coding platform for ages 8–18, with private parent-managed profiles for ages 8–12. Build websites, games and quizzes, then learn the code.',
     canonical: '/coding-for-kids',
   });
   useFAQSchema(FAQS);

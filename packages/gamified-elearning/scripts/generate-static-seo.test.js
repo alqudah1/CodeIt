@@ -65,6 +65,30 @@ test('the sitemap lists every generated public route on the canonical host', () 
   assert.doesNotMatch(sitemap, /www\.codeitlearn\.com/);
 });
 
+test('public search documents use one accurate age range', () => {
+  const template = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
+  const llms = fs.readFileSync(path.resolve(__dirname, '../public/llms.txt'), 'utf8');
+  const codingForKids = renderRouteDocument(
+    template,
+    PAGES.find((item) => item.route === '/coding-for-kids')
+  );
+
+  for (const document of [template, llms, codingForKids]) {
+    assert.match(document, /ages 8–18/);
+    assert.doesNotMatch(document, /ages 8–17/);
+  }
+});
+
+test('homepage search copy leads with creating and learning, not AI', () => {
+  const template = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
+  const title = template.match(/<title>([\s\S]*?)<\/title>/)?.[1] || '';
+  const description = template.match(/<meta name="description" content="([^"]+)"/)?.[1] || '';
+
+  assert.match(title, /Coding for Kids.*Build Websites.*Learn the Code/);
+  assert.match(description, /build websites, games, and quizzes, then learn and edit the code/i);
+  assert.doesNotMatch(`${title} ${description}`, /\bAI\b/);
+});
+
 test('legal search documents use trust-specific copy', () => {
   const privacy = renderRouteDocument(TEMPLATE, PAGES.find((item) => item.route === '/privacy'));
   const terms = renderRouteDocument(TEMPLATE, PAGES.find((item) => item.route === '/terms'));

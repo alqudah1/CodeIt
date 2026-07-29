@@ -4,12 +4,13 @@ import { trackEvent } from '../../utils/trackEvent';
 import { AuthContext } from '../../context/AuthContext';
 
 const mockNavigate = jest.fn();
+const mockBuilderLocation = { search: '', state: null };
 
 jest.mock('react-router-dom', () => {
   const React = require('react');
   return {
     Link: ({ children, to, ...props }) => React.createElement('a', { href: to, ...props }, children),
-    useLocation: () => ({ search: '', state: null }),
+    useLocation: () => mockBuilderLocation,
     useNavigate: () => mockNavigate,
   };
 }, { virtual: true });
@@ -32,6 +33,8 @@ describe('project studio opening', () => {
     localStorage.clear();
     sessionStorage.clear();
     mockNavigate.mockClear();
+    mockBuilderLocation.search = '';
+    mockBuilderLocation.state = null;
     trackEvent.mockClear();
     global.fetch = jest.fn((url, options = {}) => {
       const target = String(url);
@@ -182,6 +185,65 @@ describe('project studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Learn how it works' }));
     expect(trackEvent).toHaveBeenCalledWith('activation_next_step', 'learn', 'managed-token');
     expect(await screen.findByText('This project uses variables and click events.')).toBeInTheDocument();
+  });
+
+  test('automatically completes a fresh guest save after account setup', async () => {
+    sessionStorage.setItem('codeit_builder_draft', JSON.stringify({
+      code: '<!doctype html><html><head><style>body{background:#fffaf4;color:#432c23;padding:2rem}</style></head><body><h1>Saved idea</h1><p>A complete draft with enough markup to restore safely after account setup.</p><button>Play</button></body></html>',
+      prompt: 'a saved idea',
+      builtPrompt: 'a saved idea',
+      projectType: 'website',
+      aiTitle: 'Saved idea',
+      promptHistory: ['a saved idea'],
+      savedAt: Date.now(),
+    }));
+    mockBuilderLocation.state = { resumeBuilderAction: 'save' };
+
+    render(
+      <AuthContext.Provider value={{ user: { id: 11, name: 'New learner', role: 'student' }, token: 'new-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    await screen.findByRole('heading', { name: 'Ready to show someone what you made?' });
+    expect(sessionStorage.getItem('codeit_builder_draft')).toBeNull();
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://codeit.test/api/builder/projects',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({ Authorization: 'Bearer new-token' }),
+      })
+    );
+    expect(mockNavigate).toHaveBeenCalledWith('/builder', { replace: true, state: null });
+  });
+
+  test('automatically saves and publishes a fresh guest project after account setup', async () => {
+    sessionStorage.setItem('codeit_builder_draft', JSON.stringify({
+      code: '<!doctype html><html><head><style>body{background:#fffaf4;color:#432c23;padding:2rem}</style></head><body><h1>Published idea</h1><p>A complete draft with enough markup to restore safely after account setup.</p><button>Play</button></body></html>',
+      prompt: 'a published idea',
+      builtPrompt: 'a published idea',
+      projectType: 'website',
+      aiTitle: 'Published idea',
+      promptHistory: ['a published idea'],
+      savedAt: Date.now(),
+    }));
+    mockBuilderLocation.state = { resumeBuilderAction: 'publish' };
+
+    render(
+      <AuthContext.Provider value={{ user: { id: 12, name: 'New creator', role: 'student' }, token: 'creator-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    await screen.findByRole('heading', { name: 'Invite someone to play it.' });
+    expect(sessionStorage.getItem('codeit_builder_draft')).toBeNull();
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://codeit.test/api/builder/projects/99/publish',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({ Authorization: 'Bearer creator-token' }),
+      })
+    );
   });
 
   test('lets a returning eligible creator publish directly from My Creations', async () => {

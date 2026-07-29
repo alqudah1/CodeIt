@@ -47,7 +47,7 @@ export default function InvestorBrief() {
           <p className="creator-brief__eyebrow">CodeIt investor overview</p>
           <h1>Students already have ideas.<br /><span>CodeIt turns them into builders.</span></h1>
           <p className="creator-brief__lead">
-            CodeIt is a creative coding studio for young people ages 8–17. Students build something
+            CodeIt is a creative coding studio for young people ages 8–18. Students build something
             exciting first, then learn how the code works by changing and owning the result.
           </p>
           <div className="creator-brief__hero-actions">
@@ -111,7 +111,7 @@ export default function InvestorBrief() {
             </ul>
             <aside>
               <span>Who it serves</span>
-              <strong>Young creators ages 8–17</strong>
+              <strong>Young creators ages 8–18</strong>
               <p>Parents can create private managed profiles for ages 8–12. Independent student accounts begin at 13.</p>
               <Link to="/creator-brief">Open the three-minute demonstration guide →</Link>
             </aside>

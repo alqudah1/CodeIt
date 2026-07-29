@@ -30,7 +30,7 @@ describe('CreatorBrief', () => {
   test('provides only privacy-safe channel links', () => {
     render(<CreatorBrief />);
 
-    expect(screen.getByText('Young creators ages 8–17')).toBeInTheDocument();
+    expect(screen.getByText('Young creators ages 8–18')).toBeInTheDocument();
     expect(screen.getByText(/Parents can create private managed profiles for ages 8–12/i)).toBeInTheDocument();
     expect(screen.getByText('Five links. One website.')).toBeInTheDocument();
     expect(screen.getByText(/LinkedIn for founder or investor posts/i)).toBeInTheDocument();
