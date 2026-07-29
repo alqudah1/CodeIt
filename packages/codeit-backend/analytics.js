@@ -91,14 +91,16 @@ async function getFunnelReport(requestedDays = 30) {
                 SUM(generated_count) AS generated_projects,
                 SUM(signup_count) AS completed_signups,
                 SUM(save_count) AS saved_projects,
-                SUM(publish_count) AS published_projects
+                SUM(publish_count) AS published_projects,
+                SUM(remix_count) AS remixed_projects
          FROM (
            SELECT journey_id,
                   MAX(CASE WHEN event_name = 'acquisition_visit' THEN meta END) AS source,
                   MAX(event_name = 'generation_complete') AS generated_count,
                   MAX(event_name = 'signup_complete') AS signup_count,
                   MAX(event_name = 'project_save') AS save_count,
-                  MAX(event_name = 'project_publish') AS publish_count
+                  MAX(event_name = 'project_publish') AS publish_count,
+                  MAX(event_name = 'project_remix') AS remix_count
            FROM analytics_events
            WHERE ${windowSql} AND journey_id IS NOT NULL
            GROUP BY journey_id

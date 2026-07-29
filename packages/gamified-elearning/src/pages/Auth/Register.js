@@ -118,7 +118,7 @@ export default function Register() {
         { headers: { 'Content-Type': 'application/json', ...journeyHeaders() } }
       );
       login({ user: res.data.user, token: res.data.token });
-      navigate(returnState ? returnTo : '/profile', { replace: true, state: returnState });
+      navigate(returnTo !== '/' ? returnTo : '/profile', { replace: true, state: returnState });
     } catch (err) {
       setError(err?.response?.data?.error || 'Registration failed. Please try again.');
     }

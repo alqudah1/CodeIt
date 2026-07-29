@@ -4,6 +4,7 @@ import Header from '../Header/Header';
 import { AuthContext } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
+import { journeyHeaders } from '../../utils/journey';
 import './Explore.css';
 
 // ── helpers ──────────────────────────────────────────────────────
@@ -210,17 +211,21 @@ export default function Explore() {
   }, [user, token, navigate]);
 
   const handleRemix = useCallback(async (project) => {
-    if (!user) { navigate('/login'); return; }
+    if (!user) {
+      sessionStorage.setItem('codeit_remix_intent', project.publicId);
+      navigate('/login', { state: { from: `/project/${project.publicId}` } });
+      return;
+    }
     setRemixingId(project.publicId);
     try {
       const res = await fetch(`${API_BASE_URL}/api/builder/pub/${project.publicId}/remix`, {
         method:  'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', ...journeyHeaders() },
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Remix failed');
       showToast('Added to your builds! Opening builder...');
-      setTimeout(() => navigate('/builder'), 1200);
+      setTimeout(() => navigate(`/builder?remix=${json.projectId}`), 1200);
     } catch (e) {
       showToast(e.message || 'Could not remix project.');
     } finally {

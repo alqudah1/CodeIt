@@ -28,6 +28,7 @@ describe('admin acquisition funnel', () => {
             { event_name: 'generation_complete', event_count: 10, unique_users: 2, unique_journeys: 8, attributed_events: 8 },
             { event_name: 'project_personalize', event_count: 6, unique_users: 2, unique_journeys: 5, attributed_events: 5 },
             { event_name: 'project_save', event_count: 4, unique_users: 2, unique_journeys: 3, attributed_events: 3 },
+            { event_name: 'project_remix', event_count: 2, unique_users: 2, unique_journeys: 2, attributed_events: 2 },
           ],
           breakdown: [
             { event_name: 'acquisition_visit', meta: 'instagram', event_count: 9 },
@@ -46,6 +47,7 @@ describe('admin acquisition funnel', () => {
               completed_signups: 2,
               saved_projects: 1,
               published_projects: 1,
+              remixed_projects: 2,
             },
           ],
           student_age_audit: {},
@@ -85,15 +87,18 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText(/6 more needed/i)).toBeInTheDocument();
     expect(screen.getByText('Projects shared')).toBeInTheDocument();
     expect(screen.getByText('Projects personalized')).toBeInTheDocument();
+    expect(screen.getByText('Projects remixed')).toBeInTheDocument();
     expect(screen.getByText('Generated → personalized').parentElement).toHaveTextContent('63%');
     expect(screen.getByText('Personalized → saved').parentElement).toHaveTextContent('60%');
     expect(screen.getByText('Published → shared')).toBeInTheDocument();
+    expect(screen.getByText('Shared visitors → remixed')).toBeInTheDocument();
     expect(screen.getByText('How visitors found CodeIt')).toBeInTheDocument();
     expect(screen.getByText('Instagram', { selector: 'span' }).parentElement).toHaveTextContent('9');
     expect(screen.getByText('LinkedIn', { selector: 'span' }).parentElement).toHaveTextContent('3');
     expect(screen.getByText('Shared projects').parentElement).toHaveTextContent('5');
     expect(screen.getByText('Which sources create activated visitors')).toBeInTheDocument();
     expect(screen.getByText('Visit → build')).toBeInTheDocument();
+    expect(screen.getByText('Remixed', { selector: 'th' })).toBeInTheDocument();
     expect(screen.getByText('50%')).toBeInTheDocument();
     expect(screen.getByText('Tried a project').parentElement).toHaveTextContent('4');
     expect(screen.getByText('Viewed family pricing').parentElement).toHaveTextContent('2');

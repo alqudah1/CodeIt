@@ -1685,7 +1685,7 @@ export default function Builder() {
       setIsPublished(true);
       setPublicId(data.public_id);
       sessionStorage.removeItem('codeit_builder_draft');
-      const url = `https://codeitlearn.com/project/${data.public_id}`;
+      const url = `https://codeitlearn.com/project/${data.public_id}?utm_source=project-share`;
       try { await navigator.clipboard.writeText(url); } catch (_) {}
       setPublishStatus('copied');
       setTimeout(() => setPublishStatus(null), 3000);

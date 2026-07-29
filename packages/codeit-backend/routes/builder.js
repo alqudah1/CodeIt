@@ -2387,6 +2387,11 @@ router.post('/pub/:publicId/remix', requireAuth, async (req, res) => {
       [publicId]
     ).catch(() => {});
 
+    void recordEvent('project_remix', {
+      userId,
+      journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')),
+      meta: projectCategory(original.project_type),
+    });
     res.status(201).json({ success: true, projectId });
   } catch (err) {
     console.error('Remix project error:', err.message);

@@ -10,6 +10,7 @@ const EVENT_META = Object.freeze({
   project_personalize: new Set(),
   project_save: new Set(['website', 'game', 'quiz', 'tool', 'other']),
   project_publish: new Set(['website', 'game', 'quiz', 'tool', 'other']),
+  project_remix: new Set(['website', 'game', 'quiz', 'tool', 'other']),
   project_share: new Set(['creator', 'viewer']),
   return_use: new Set(),
   pricing_view: new Set(),

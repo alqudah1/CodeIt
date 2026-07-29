@@ -29,6 +29,7 @@ describe('public project sharing', () => {
     mockNavigate.mockClear();
     trackEvent.mockClear();
     clipboardWrite.mockClear();
+    sessionStorage.clear();
     Object.defineProperty(navigator, 'share', {
       configurable: true,
       value: undefined,
@@ -80,5 +81,17 @@ describe('public project sharing', () => {
     await screen.findByRole('heading', { name: 'Solar System Quiz' });
     expect(screen.getByRole('link', { name: 'Build your own' })).toHaveAttribute('href', '/builder');
     expect(screen.getByText(/creative playground for builders/i)).toBeInTheDocument();
+  });
+
+  test('returns a guest to the same project after sign in so remix can finish', async () => {
+    render(<PublicProject />);
+
+    await screen.findByRole('heading', { name: 'Solar System Quiz' });
+    fireEvent.click(screen.getByRole('button', { name: 'Remix this' }));
+
+    expect(sessionStorage.getItem('codeit_remix_intent')).toBe('public-123');
+    expect(mockNavigate).toHaveBeenCalledWith('/login', {
+      state: { from: '/project/public-123' },
+    });
   });
 });

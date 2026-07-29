@@ -27,6 +27,8 @@ jest.mock('../../config/api', () => ({ API_BASE_URL: 'http://codeit.test' }));
 
 describe('builder authentication return', () => {
   beforeEach(() => {
+    mockLocationState.from = '/builder';
+    mockLocationState.resumeBuilderAction = 'publish';
     mockNavigate.mockClear();
     mockLogin.mockClear();
     axios.post.mockReset();
@@ -83,5 +85,22 @@ describe('builder authentication return', () => {
         }),
       })
     );
+  });
+
+  test('a new adult account returns to a shared project even without a builder action', async () => {
+    mockLocationState.from = '/project/public-123';
+    delete mockLocationState.resumeBuilderAction;
+    render(<Register />);
+
+    fireEvent.click(screen.getByRole('button', { name: /I am a Parent or Educator/i }));
+    fireEvent.change(screen.getByPlaceholderText('Your full name'), { target: { value: 'Parent Tester' } });
+    fireEvent.change(screen.getByPlaceholderText('you@example.com'), { target: { value: 'parent@example.com' } });
+    fireEvent.change(screen.getByPlaceholderText('Choose a password'), { target: { value: 'test-password' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Create Parent / Educator Account' }));
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/project/public-123', {
+      replace: true,
+      state: null,
+    }));
   });
 });

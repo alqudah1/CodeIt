@@ -4,6 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
 import Header from '../Header/Header';
 import { trackEvent } from '../../utils/trackEvent';
+import { journeyHeaders } from '../../utils/journey';
 import './PublicProject.css';
 
 export default function PublicProject() {
@@ -52,7 +53,7 @@ export default function PublicProject() {
     try {
       const res  = await fetch(`${API_BASE_URL}/api/builder/pub/${publicId}/remix`, {
         method:  'POST',
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}`, ...journeyHeaders() },
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Remix failed');
@@ -66,7 +67,7 @@ export default function PublicProject() {
   function handleRemix() {
     if (!user || !token) {
       sessionStorage.setItem('codeit_remix_intent', publicId);
-      navigate('/login');
+      navigate('/login', { state: { from: `/project/${publicId}` } });
       return;
     }
     doRemix();

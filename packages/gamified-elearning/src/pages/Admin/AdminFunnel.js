@@ -15,6 +15,7 @@ const STAGES = [
   ['project_save', 'Projects saved'],
   ['project_publish', 'Projects published'],
   ['project_share', 'Projects shared'],
+  ['project_remix', 'Projects remixed'],
   ['return_use', 'Daily returns'],
   ['pricing_view', 'Pricing views'],
   ['pricing_interest', 'Plan interest'],
@@ -119,6 +120,7 @@ export default function AdminFunnel() {
     ['Generated → saved', ratio(journeyMetric('project_save'), journeyMetric('generation_complete'))],
     ['Saved → published', ratio(journeyMetric('project_publish'), journeyMetric('project_save'))],
     ['Published → shared', ratio(journeyMetric('project_share'), journeyMetric('project_publish'))],
+    ['Shared visitors → remixed', ratio(journeyMetric('project_remix'), acquisitionSources.project || 0)],
     ['New accounts → return days', ratio(journeyMetric('return_use'), journeyMetric('signup_complete'))],
     ['Pricing view → interest', ratio(journeyMetric('pricing_interest'), journeyMetric('pricing_view'))],
   ] : [];
@@ -211,12 +213,13 @@ export default function AdminFunnel() {
                   <th>Signed up</th>
                   <th>Saved</th>
                   <th>Published</th>
+                  <th>Remixed</th>
                   <th>Visit → build</th>
                 </tr>
               </thead>
               <tbody>
                 {sourceFunnel.length === 0 && (
-                  <tr><td colSpan={7} className="adm-loading">Journey attribution starts with the next new visitor session.</td></tr>
+                  <tr><td colSpan={8} className="adm-loading">Journey attribution starts with the next new visitor session.</td></tr>
                 )}
                 {sourceFunnel.map((source) => (
                   <tr key={source.source}>
@@ -226,6 +229,7 @@ export default function AdminFunnel() {
                     <td>{fmt(source.completed_signups)}</td>
                     <td>{fmt(source.saved_projects)}</td>
                     <td>{fmt(source.published_projects)}</td>
+                    <td>{fmt(source.remixed_projects)}</td>
                     <td>{ratio(Number(source.generated_projects), Number(source.visits))}</td>
                   </tr>
                 ))}
