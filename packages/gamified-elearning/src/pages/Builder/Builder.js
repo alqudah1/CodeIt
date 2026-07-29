@@ -2091,6 +2091,95 @@ export default function Builder() {
               </section>
             )}
 
+            {isSaved && !isPublished && (
+              <section className="bldr-activation-card bldr-activation-card--finish" aria-labelledby="bldr-finish-step-title">
+                <div className="bldr-activation-card__copy">
+                  <span className="bldr-activation-card__kicker">Saved — one more step</span>
+                  <h3 id="bldr-finish-step-title">
+                    {user?.managedProfile
+                      ? 'Now learn one thing your project uses.'
+                      : 'Ready to show someone what you made?'}
+                  </h3>
+                  <p>
+                    {user?.managedProfile
+                      ? 'This project stays private in your family account. Open the explanation to connect what you see with the code behind it.'
+                      : 'Publish only when you are ready. CodeIt will create a link you can open on any phone and share with family or friends.'}
+                  </p>
+                </div>
+                <div className="bldr-activation-card__actions">
+                  {user?.managedProfile ? (
+                    <button
+                      className="bldr-activation-card__primary"
+                      onClick={() => {
+                        void trackEvent('activation_next_step', 'learn', token);
+                        handleExplain();
+                      }}
+                      disabled={explaining || editing}
+                    >
+                      {explaining ? 'Opening explanation…' : 'Learn how it works'}
+                    </button>
+                  ) : (
+                    <button
+                      className="bldr-activation-card__primary"
+                      onClick={() => {
+                        void trackEvent('activation_next_step', 'publish', token);
+                        handlePublish();
+                      }}
+                      disabled={editing || publishStatus === 'publishing'}
+                    >
+                      {publishStatus === 'publishing' ? 'Publishing…' : 'Publish and get a link'}
+                    </button>
+                  )}
+                  <button
+                    className="bldr-activation-card__secondary"
+                    onClick={() => {
+                      void trackEvent('activation_next_step', 'improve', token);
+                      setShowEditPanel(true);
+                      setTimeout(() => editRef.current?.focus(), 0);
+                    }}
+                    disabled={editing}
+                  >
+                    Keep improving
+                  </button>
+                </div>
+              </section>
+            )}
+
+            {isSaved && isPublished && (
+              <section className="bldr-activation-card bldr-activation-card--live" aria-labelledby="bldr-live-step-title">
+                <div className="bldr-activation-card__copy">
+                  <span className="bldr-activation-card__kicker">Your project is live</span>
+                  <h3 id="bldr-live-step-title">Invite someone to play it.</h3>
+                  <p>The link opens your project without an account. Anyone who wants to build can remix a separate copy.</p>
+                </div>
+                <div className="bldr-activation-card__actions">
+                  <button
+                    className="bldr-activation-card__primary"
+                    onClick={() => {
+                      void trackEvent('activation_next_step', 'share', token);
+                      handleShare();
+                    }}
+                    disabled={editing}
+                  >
+                    {shareStatus === 'shared' ? 'Shared!'
+                      : shareStatus === 'copied' ? 'Link copied!'
+                      : 'Share your project'}
+                  </button>
+                  <button
+                    className="bldr-activation-card__secondary"
+                    onClick={() => {
+                      void trackEvent('activation_next_step', 'improve', token);
+                      setShowEditPanel(true);
+                      setTimeout(() => editRef.current?.focus(), 0);
+                    }}
+                    disabled={editing}
+                  >
+                    Improve it again
+                  </button>
+                </div>
+              </section>
+            )}
+
             {/* Project description — inline editable */}
             <div className="bldr-project-desc">
               {editingDesc ? (

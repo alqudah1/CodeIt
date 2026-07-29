@@ -73,6 +73,17 @@ describe("trackEvent", () => {
     );
   });
 
+  test("records only a fixed post-save choice", async () => {
+    await expect(trackEvent("activation_next_step", "publish")).resolves.toBe(true);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/api/analytics/event"),
+      expect.objectContaining({
+        body: JSON.stringify({ event_name: "activation_next_step", meta: "publish" }),
+      })
+    );
+  });
+
   test("sends only a fixed parent acquisition action", async () => {
     await expect(trackEvent("parent_cta_click", "pilot-email")).resolves.toBe(true);
 

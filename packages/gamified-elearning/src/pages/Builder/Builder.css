@@ -3925,6 +3925,20 @@
 
 .bldr-activation-card button:disabled { opacity: 0.55; cursor: wait; }
 
+.bldr-activation-card--finish {
+  border-color: rgba(91, 65, 186, 0.24);
+  background:
+    radial-gradient(circle at 96% 0%, rgba(116, 71, 216, 0.16), transparent 34%),
+    #fffaf4;
+}
+
+.bldr-activation-card--live {
+  border-color: rgba(40, 143, 104, 0.28);
+  background:
+    radial-gradient(circle at 96% 0%, rgba(86, 197, 151, 0.18), transparent 34%),
+    #f8fff9;
+}
+
 @media (max-width: 720px) {
   .bldr-activation-card { grid-template-columns: 1fr; gap: 1rem; }
   .bldr-activation-card__actions { justify-content: stretch; }

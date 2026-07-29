@@ -13,6 +13,7 @@ const STAGES = [
   ['project_personalize', 'Projects personalized'],
   ['signup_complete', 'Accounts created'],
   ['project_save', 'Projects saved'],
+  ['activation_next_step', 'Finish steps chosen'],
   ['project_publish', 'Projects published'],
   ['project_share', 'Projects shared'],
   ['project_remix', 'Projects remixed'],
@@ -25,6 +26,13 @@ const PARENT_ACTIONS = [
   ['try-project', 'Tried a project'],
   ['view-pricing', 'Viewed family pricing'],
   ['pilot-email', 'Opened pilot email'],
+];
+
+const FINISH_ACTIONS = [
+  ['publish', 'Chose to publish'],
+  ['improve', 'Kept improving'],
+  ['learn', 'Opened code explanation'],
+  ['share', 'Shared a live project'],
 ];
 
 const ACQUISITION_SOURCES = [
@@ -100,6 +108,9 @@ export default function AdminFunnel() {
 
   const parentActions = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'parent_cta_click').map((row) => [row.meta, Number(row.event_count) || 0])
+  ), [data]);
+  const finishActions = useMemo(() => Object.fromEntries(
+    (data?.breakdown || []).filter((row) => row.event_name === 'activation_next_step').map((row) => [row.meta, Number(row.event_count) || 0])
   ), [data]);
   const acquisitionSources = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'acquisition_visit').map((row) => [row.meta, Number(row.event_count) || 0])
@@ -248,6 +259,17 @@ export default function AdminFunnel() {
             ))}
           </div>
           <p className="funnel-parent-note">These are button clicks, not people. “Opened pilot email” means the visitor opened their email app; it does not confirm that they sent a message.</p>
+
+          <div className="adm-section-head">What creators choose after saving</div>
+          <div className="funnel-parent-grid">
+            {FINISH_ACTIONS.map(([key, label]) => (
+              <article key={key}>
+                <span>{label}</span>
+                <strong>{fmt(finishActions[key])}</strong>
+              </article>
+            ))}
+          </div>
+          <p className="funnel-parent-note">These choices show whether saved projects move toward publishing, deeper editing, or learning. They contain no project names or content.</p>
 
           <div className="adm-section-head">Founding family leads</div>
           <div className="adm-table-wrap">

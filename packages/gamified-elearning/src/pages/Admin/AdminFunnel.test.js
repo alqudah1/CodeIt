@@ -29,6 +29,7 @@ describe('admin acquisition funnel', () => {
             { event_name: 'project_personalize', event_count: 6, unique_users: 2, unique_journeys: 5, attributed_events: 5 },
             { event_name: 'project_save', event_count: 4, unique_users: 2, unique_journeys: 3, attributed_events: 3 },
             { event_name: 'project_remix', event_count: 2, unique_users: 2, unique_journeys: 2, attributed_events: 2 },
+            { event_name: 'activation_next_step', event_count: 3, unique_users: 2, unique_journeys: 2, attributed_events: 3 },
           ],
           breakdown: [
             { event_name: 'acquisition_visit', meta: 'instagram', event_count: 9 },
@@ -37,6 +38,8 @@ describe('admin acquisition funnel', () => {
             { event_name: 'parent_cta_click', meta: 'try-project', event_count: 4 },
             { event_name: 'parent_cta_click', meta: 'view-pricing', event_count: 2 },
             { event_name: 'parent_cta_click', meta: 'pilot-email', event_count: 1 },
+            { event_name: 'activation_next_step', meta: 'publish', event_count: 2 },
+            { event_name: 'activation_next_step', meta: 'improve', event_count: 1 },
           ],
           daily: [],
           source_funnel: [
@@ -88,6 +91,7 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Projects shared')).toBeInTheDocument();
     expect(screen.getByText('Projects personalized')).toBeInTheDocument();
     expect(screen.getByText('Projects remixed')).toBeInTheDocument();
+    expect(screen.getByText('Finish steps chosen')).toBeInTheDocument();
     expect(screen.getByText('Generated → personalized').parentElement).toHaveTextContent('63%');
     expect(screen.getByText('Personalized → saved').parentElement).toHaveTextContent('60%');
     expect(screen.getByText('Published → shared')).toBeInTheDocument();
@@ -104,6 +108,9 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Viewed family pricing').parentElement).toHaveTextContent('2');
     expect(screen.getByText('Opened pilot email').parentElement).toHaveTextContent('1');
     expect(screen.getByText(/does not confirm that they sent a message/i)).toBeInTheDocument();
+    expect(screen.getByText('What creators choose after saving')).toBeInTheDocument();
+    expect(screen.getByText('Chose to publish').parentElement).toHaveTextContent('2');
+    expect(screen.getByText('Kept improving').parentElement).toHaveTextContent('1');
     expect(screen.getByText('Founding family leads')).toBeInTheDocument();
     expect(screen.getByText('Parent Tester')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'parent@example.com' })).toHaveAttribute('href', 'mailto:parent@example.com');

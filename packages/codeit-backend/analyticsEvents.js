@@ -9,6 +9,7 @@ const EVENT_META = Object.freeze({
   generation_complete: new Set(['ai', 'fallback']),
   project_personalize: new Set(),
   project_save: new Set(['website', 'game', 'quiz', 'tool', 'other']),
+  activation_next_step: new Set(['publish', 'improve', 'learn', 'share']),
   project_publish: new Set(['website', 'game', 'quiz', 'tool', 'other']),
   project_remix: new Set(['website', 'game', 'quiz', 'tool', 'other']),
   project_share: new Set(['creator', 'viewer']),
@@ -17,7 +18,7 @@ const EVENT_META = Object.freeze({
   pricing_interest: new Set(['founding-family']),
 });
 
-const CLIENT_REPORTED_EVENTS = new Set(['acquisition_visit', 'landing_cta_click', 'parent_cta_click', 'project_personalize', 'project_share', 'return_use', 'pricing_view', 'pricing_interest']);
+const CLIENT_REPORTED_EVENTS = new Set(['acquisition_visit', 'landing_cta_click', 'parent_cta_click', 'project_personalize', 'activation_next_step', 'project_share', 'return_use', 'pricing_view', 'pricing_interest']);
 const JOURNEY_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function normalizeEventName(value) {
