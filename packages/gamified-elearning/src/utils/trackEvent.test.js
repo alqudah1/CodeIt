@@ -52,12 +52,12 @@ describe("trackEvent", () => {
   });
 
   test("sends only the fixed founding offer identifier", async () => {
-    await expect(trackEvent("pricing_interest", "founding-family")).resolves.toBe(true);
+    await expect(trackEvent("parent_guide_view")).resolves.toBe(true);
 
     expect(global.fetch).toHaveBeenCalledWith(
       expect.stringContaining("/api/analytics/event"),
       expect.objectContaining({
-        body: JSON.stringify({ event_name: "pricing_interest", meta: "founding-family" }),
+        body: JSON.stringify({ event_name: "parent_guide_view", meta: null }),
       })
     );
   });

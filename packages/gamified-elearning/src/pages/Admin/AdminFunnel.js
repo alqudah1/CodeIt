@@ -8,6 +8,7 @@ import './AdminFunnel.css';
 const STAGES = [
   ['landing_cta_click', 'Landing clicks'],
   ['learning_start', 'Learning starts'],
+  ['parent_guide_view', 'Parent guide views'],
   ['parent_cta_click', 'Parent actions'],
   ['builder_start', 'Builds started'],
   ['generation_complete', 'Projects generated'],
@@ -22,11 +23,13 @@ const STAGES = [
   ['return_use', 'Daily returns'],
   ['pricing_view', 'Pricing views'],
   ['pricing_interest', 'Plan interest'],
+  ['pilot_join', 'Pilot joins'],
 ];
 
 const PARENT_ACTIONS = [
   ['create-family-account', 'Started family account setup'],
   ['try-project', 'Tried a project'],
+  ['join-pilot', 'Opened pilot signup'],
   ['view-pricing', 'Viewed family pricing'],
   ['pilot-email', 'Opened pilot email'],
 ];
@@ -115,6 +118,9 @@ export default function AdminFunnel() {
   const finishActions = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'activation_next_step').map((row) => [row.meta, Number(row.event_count) || 0])
   ), [data]);
+  const pilotJoinSources = useMemo(() => Object.fromEntries(
+    (data?.breakdown || []).filter((row) => row.event_name === 'pilot_join').map((row) => [row.meta, Number(row.event_count) || 0])
+  ), [data]);
   const acquisitionSources = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'acquisition_visit').map((row) => [row.meta, Number(row.event_count) || 0])
   ), [data]);
@@ -139,6 +145,7 @@ export default function AdminFunnel() {
     ['Shared visitors → remixed', ratio(journeyMetric('project_remix'), acquisitionSources.project || 0)],
     ['New accounts → return days', ratio(journeyMetric('return_use'), journeyMetric('signup_complete'))],
     ['Pricing view → interest', ratio(journeyMetric('pricing_interest'), journeyMetric('pricing_view'))],
+    ['Parent guide → pilot join', ratio(pilotJoinSources['parents-guide'] || 0, journeyMetric('parent_guide_view'))],
   ] : [];
 
   const recentDaily = (data?.daily || []).slice(-35).reverse();
@@ -279,15 +286,16 @@ export default function AdminFunnel() {
           <div className="adm-section-head">Founding family leads</div>
           <div className="adm-table-wrap">
             <table className="adm-table">
-              <thead><tr><th>Parent / educator</th><th>Contact email</th><th>Joined</th></tr></thead>
+              <thead><tr><th>Parent / educator</th><th>Contact email</th><th>Source</th><th>Joined</th></tr></thead>
               <tbody>
                 {foundingLeads.length === 0 && (
-                  <tr><td colSpan={3} className="adm-loading">No contactable waitlist leads in this window yet.</td></tr>
+                  <tr><td colSpan={4} className="adm-loading">No contactable waitlist leads in this window yet.</td></tr>
                 )}
                 {foundingLeads.map((lead) => (
                   <tr key={lead.user_id || lead.email}>
                     <td>{lead.name || 'Parent / educator'}</td>
                     <td><a href={`mailto:${lead.email}`}>{lead.email}</a></td>
+                    <td>{lead.source || 'account opt-in'}</td>
                     <td>{lead.interested_at ? new Date(lead.interested_at).toLocaleDateString() : '—'}</td>
                   </tr>
                 ))}

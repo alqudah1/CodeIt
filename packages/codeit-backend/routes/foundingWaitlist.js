@@ -68,11 +68,20 @@ router.post('/', rateLimit, optionalAuth, async (req, res) => {
     return res.status(503).json({ error: 'We could not save your interest just now.' });
   }
 
-  await recordEvent('pricing_interest', {
+  const analyticsContext = {
     userId: req.user?.user_id,
     journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')),
-    meta: 'founding-family',
+  };
+  await recordEvent('pilot_join', {
+    ...analyticsContext,
+    meta: normalized.value.source,
   });
+  if (normalized.value.source === 'pricing') {
+    await recordEvent('pricing_interest', {
+      ...analyticsContext,
+      meta: 'founding-family',
+    });
+  }
 
   return res.status(201).json({ saved: true });
 });

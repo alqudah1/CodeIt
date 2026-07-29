@@ -37,7 +37,8 @@ describe('parent acquisition page', () => {
 
     expect(screen.getByRole('heading', { name: 'A first coding project they’ll want to keep improving.' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Create a learner profile' })).toHaveAttribute('href', '/register?for=family');
-    expect(screen.getByRole('link', { name: 'Try a project together' })).toHaveAttribute('href', '/builder');
+    expect(screen.getByRole('link', { name: 'Try a free project together' })).toHaveAttribute('href', '/builder');
+    expect(screen.getByRole('link', { name: 'Join the free parent pilot' })).toHaveAttribute('href', '#parent-pilot');
     expect(screen.getByText('Saved projects stay private until Publish.')).toBeInTheDocument();
     expect(screen.getByText('Private parent-managed profiles begin at age 8.')).toBeInTheDocument();
     expect(screen.getByText(/Ages 8–12 start through a free parent or guardian account/i)).toBeInTheDocument();
@@ -45,14 +46,27 @@ describe('parent acquisition page', () => {
     expect(screen.queryByText(/everything is free/i)).not.toBeInTheDocument();
   });
 
-  test('measures the direct family-account path separately from a project trial', () => {
+  test('measures project, pilot, and account paths separately', () => {
     render(<CodingForKids />);
+
+    fireEvent.click(screen.getByRole('link', { name: 'Try a free project together' }));
+    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'try-project');
+
+    fireEvent.click(screen.getByRole('link', { name: 'Join the free parent pilot' }));
+    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'join-pilot');
 
     fireEvent.click(screen.getByRole('link', { name: 'Create a learner profile' }));
     expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'create-family-account');
+  });
 
-    fireEvent.click(screen.getByRole('link', { name: 'Try a project together' }));
-    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'try-project');
+  test('counts one parent-guide view per browser session', () => {
+    const { unmount } = render(<CodingForKids />);
+    expect(trackEvent).toHaveBeenCalledWith('parent_guide_view');
+    unmount();
+    trackEvent.mockClear();
+
+    render(<CodingForKids />);
+    expect(trackEvent).not.toHaveBeenCalledWith('parent_guide_view');
   });
 
   test('captures an adult lead directly from the parent guide', async () => {

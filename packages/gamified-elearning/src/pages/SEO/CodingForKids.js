@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import SiteFooter from '../../components/SiteFooter/SiteFooter';
@@ -64,6 +65,12 @@ export default function CodingForKids() {
     canonical: '/coding-for-kids',
   });
   useFAQSchema(FAQS);
+  useEffect(() => {
+    const key = 'codeit_parent_guide_viewed';
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, 'yes');
+    void trackEvent('parent_guide_view');
+  }, []);
 
   return (
     <>
@@ -80,22 +87,29 @@ export default function CodingForKids() {
               </p>
               <div className="parents-actions">
                 <Link
-                  to="/register?for=family"
+                  to="/builder"
                   className="parents-button parents-button--primary"
+                  onClick={() => void trackEvent('parent_cta_click', 'try-project')}
+                >
+                  Try a free project together
+                </Link>
+                <a
+                  href="#parent-pilot"
+                  className="parents-button parents-button--quiet"
+                  onClick={() => void trackEvent('parent_cta_click', 'join-pilot')}
+                >
+                  Join the free parent pilot
+                </a>
+              </div>
+              <p className="parents-hero__note">
+                Ages 8–12 start through a free parent or guardian account.{' '}
+                <Link
+                  to="/register?for=family"
                   onClick={() => void trackEvent('parent_cta_click', 'create-family-account')}
                 >
                   Create a learner profile
                 </Link>
-                <Link
-                  to="/builder"
-                  className="parents-button parents-button--quiet"
-                  onClick={() => void trackEvent('parent_cta_click', 'try-project')}
-                >
-                  Try a project together
-                </Link>
-              </div>
-              <p className="parents-hero__note">
-                Ages 8–12 start through a free parent or guardian account. No payment is needed.
+                . No payment is needed.
               </p>
             </div>
 
@@ -266,7 +280,7 @@ export default function CodingForKids() {
           </div>
         </section>
 
-        <section className="parents-pilot-section">
+        <section id="parent-pilot" className="parents-pilot-section">
           <div className="parents-wrap">
             <div className="parents-pilot">
               <div>
