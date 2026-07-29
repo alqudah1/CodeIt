@@ -22,10 +22,12 @@ describe('admin acquisition funnel', () => {
         ok: true,
         json: async () => ({
           events: [
-            { event_name: 'parent_cta_click', event_count: 7, unique_users: 0, unique_journeys: 5 },
-            { event_name: 'generation_complete', event_count: 10, unique_users: 2, unique_journeys: 8 },
-            { event_name: 'project_personalize', event_count: 6, unique_users: 2, unique_journeys: 5 },
-            { event_name: 'project_save', event_count: 4, unique_users: 2, unique_journeys: 3 },
+            { event_name: 'acquisition_visit', event_count: 14, unique_users: 0, unique_journeys: 14, attributed_events: 14 },
+            { event_name: 'parent_cta_click', event_count: 7, unique_users: 0, unique_journeys: 5, attributed_events: 5 },
+            { event_name: 'builder_start', event_count: 12, unique_users: 2, unique_journeys: 10, attributed_events: 10 },
+            { event_name: 'generation_complete', event_count: 10, unique_users: 2, unique_journeys: 8, attributed_events: 8 },
+            { event_name: 'project_personalize', event_count: 6, unique_users: 2, unique_journeys: 5, attributed_events: 5 },
+            { event_name: 'project_save', event_count: 4, unique_users: 2, unique_journeys: 3, attributed_events: 3 },
           ],
           breakdown: [
             { event_name: 'acquisition_visit', meta: 'instagram', event_count: 9 },
@@ -76,6 +78,10 @@ describe('admin acquisition funnel', () => {
     render(<AdminFunnel />);
 
     await waitFor(() => expect(screen.getByText('Parent acquisition actions')).toBeInTheDocument());
+    expect(screen.getByText('Measurement health')).toBeInTheDocument();
+    expect(screen.getByText('14 attributable visitor journeys')).toBeInTheDocument();
+    expect(screen.getByText('83%')).toBeInTheDocument();
+    expect(screen.getByText(/6 more needed/i)).toBeInTheDocument();
     expect(screen.getByText('Projects shared')).toBeInTheDocument();
     expect(screen.getByText('Projects personalized')).toBeInTheDocument();
     expect(screen.getByText('Generated → personalized').parentElement).toHaveTextContent('63%');

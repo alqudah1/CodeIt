@@ -68,7 +68,8 @@ async function getFunnelReport(requestedDays = 30) {
     const [[events], [daily], [breakdown], [sourceFunnel], [studentAgeRows], [accountLeads], directLeads] = await Promise.all([
       pool.query(
         `SELECT event_name, COUNT(*) AS event_count, COUNT(DISTINCT user_id) AS unique_users,
-                COUNT(DISTINCT journey_id) AS unique_journeys
+                COUNT(DISTINCT journey_id) AS unique_journeys,
+                SUM(journey_id IS NOT NULL) AS attributed_events
          FROM analytics_events WHERE ${windowSql}
          GROUP BY event_name`
       ),

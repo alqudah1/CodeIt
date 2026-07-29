@@ -42,7 +42,7 @@ const fmt = (value) => (Number(value) || 0).toLocaleString();
 const usd = (value) => value == null ? '—' : `$${Number(value).toFixed(3)}`;
 
 function ratio(numerator, denominator) {
-  if (!denominator) return '—';
+  if (!denominator) return 'Collecting data';
   return `${Math.round((numerator / denominator) * 100)}%`;
 }
 
@@ -92,6 +92,9 @@ export default function AdminFunnel() {
   const uniqueJourneys = useMemo(() => Object.fromEntries(
     (data?.events || []).map((row) => [row.event_name, Number(row.unique_journeys) || 0])
   ), [data]);
+  const attributedEvents = useMemo(() => Object.fromEntries(
+    (data?.events || []).map((row) => [row.event_name, Number(row.attributed_events) || 0])
+  ), [data]);
 
   const parentActions = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'parent_cta_click').map((row) => [row.meta, Number(row.event_count) || 0])
@@ -101,7 +104,12 @@ export default function AdminFunnel() {
   ), [data]);
   const foundingLeads = data?.founding_leads || [];
   const sourceFunnel = data?.source_funnel || [];
-  const journeyMetric = (key) => uniqueJourneys[key] || counts[key] || 0;
+  const journeyMetric = (key) => uniqueJourneys[key] || 0;
+  const measuredVisits = journeyMetric('acquisition_visit');
+  const builderAttribution = counts.builder_start
+    ? ratio(attributedEvents.builder_start || 0, counts.builder_start)
+    : 'Collecting data';
+  const sampleReady = measuredVisits >= 20;
 
   const signals = data ? [
     ['Build completion', ratio(journeyMetric('generation_complete'), journeyMetric('builder_start'))],
@@ -142,6 +150,22 @@ export default function AdminFunnel() {
 
       {data && (
         <>
+          <div className={`funnel-measurement ${sampleReady ? 'is-ready' : 'is-learning'}`} role="status">
+            <div>
+              <span>Measurement health</span>
+              <strong>{fmt(measuredVisits)} attributable visitor journeys</strong>
+            </div>
+            <div>
+              <span>Builder events connected to a journey</span>
+              <strong>{builderAttribution}</strong>
+            </div>
+            <p>
+              {sampleReady
+                ? 'The sample is large enough for directional conversion decisions. Keep comparing sources, not individual visitors.'
+                : `Keep collecting before changing the product from these percentages. Aim for at least 20 attributable visitor journeys; ${Math.max(20 - measuredVisits, 0)} more needed.`}
+            </p>
+          </div>
+
           <div className="funnel-stage-grid">
             {STAGES.map(([key, label], index) => (
               <article className="funnel-stage" key={key}>
@@ -149,6 +173,7 @@ export default function AdminFunnel() {
                 <strong>{fmt(counts[key])}</strong>
                 <p>{label}</p>
                 {uniqueJourneys[key] > 0 && <small>{fmt(uniqueJourneys[key])} visitor journeys</small>}
+                {counts[key] > 0 && attributedEvents[key] === 0 && <small>Legacy / unattributed activity</small>}
                 {uniqueUsers[key] > 0 && <small>{fmt(uniqueUsers[key])} signed-in users</small>}
               </article>
             ))}
