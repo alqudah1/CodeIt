@@ -30,6 +30,7 @@ const COLS = [
   { key: 'dob',            label: 'Birthday' },
   { key: '_age',           label: 'Age'      },
   { key: 'role',           label: 'Role'     },
+  { key: 'family_status',  label: 'Family'   },
   { key: 'created_at',     label: 'Joined'   },
   { key: 'total_xp',       label: 'XP'       },
   { key: 'current_streak', label: 'Streak'   },
@@ -150,6 +151,7 @@ const AdminUsers = () => {
                     <td style={{ color: '#718096' }}>{u.dob ? fmtDate(u.dob) : '—'}</td>
                     <td>{calcAge(u.dob)}</td>
                     <td><span className={`adm-badge ${roleBadge(u.role)}`}>{u.role || '—'}</span></td>
+                    <td>{familyStatus(u.family_status)}</td>
                     <td style={{ color: '#718096' }}>{fmtDate(u.created_at)}</td>
                     <td><strong style={{ color: '#6c63ff' }}>{(Number(u.total_xp) || 0).toLocaleString()}</strong></td>
                     <td>{u.current_streak > 0 ? `${u.current_streak}d` : <span style={{ color: '#ccc' }}>—</span>}</td>
@@ -180,6 +182,25 @@ function roleBadge(role) {
   if (r === 'admin')   return 'adm-badge-purple';
   if (r === 'student') return 'adm-badge-teal';
   return 'adm-badge-gray';
+}
+
+function familyStatus(status) {
+  if (!status) return <span style={{ color: '#aaa' }}>—</span>;
+  const labels = {
+    managed: 'Managed',
+    review_sent: 'Review sent',
+    review_required: 'Review needed',
+  };
+  const colors = {
+    managed: { background: '#e8f7ee', color: '#236b42' },
+    review_sent: { background: '#fff4d8', color: '#7a5412' },
+    review_required: { background: '#ffe8df', color: '#9a3f1e' },
+  };
+  return (
+    <span className="adm-badge" style={colors[status] || {}}>
+      {labels[status] || status}
+    </span>
+  );
 }
 
 export default AdminUsers;

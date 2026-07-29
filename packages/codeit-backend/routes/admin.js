@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const pool = require('../db');
 const { JWT_SECRET } = require('../config');
+const { ready: legacyParentReviewReady } = require('../legacyParentReview');
 
 const router = express.Router();
 
@@ -129,6 +130,7 @@ router.get('/users', async (req, res) => {
   }
 
   try {
+    await legacyParentReviewReady;
     const [[count]] = await pool.query(`SELECT COUNT(*) AS total FROM Users u ${where}`, params);
     const [users] = await pool.query(`
       SELECT
@@ -141,7 +143,28 @@ router.get('/users', async (req, res) => {
         (SELECT COUNT(*) FROM Student_Lesson_Progress lp WHERE lp.user_id = u.user_id) AS lessons_done,
         (SELECT COUNT(DISTINCT qa.quiz_id) FROM Student_Quiz_Attempt qa WHERE qa.student_id = u.user_id) AS quizzes_done,
         (SELECT COUNT(*) FROM Student_Puzzle_Progress pp WHERE pp.user_id = u.user_id AND pp.puzzle_id >= 100) AS puzzles_done,
-        (SELECT COUNT(*) FROM User_Character uc WHERE uc.user_id = u.user_id) AS has_avatar
+        (SELECT COUNT(*) FROM User_Character uc WHERE uc.user_id = u.user_id) AS has_avatar,
+        CASE
+          WHEN LOWER(u.role) <> 'student' OR u.dob IS NULL
+            OR TIMESTAMPDIFF(YEAR, u.dob, CURRENT_DATE()) >= 13 THEN NULL
+          WHEN EXISTS (
+            SELECT 1
+              FROM parent_child_links pcl
+              JOIN Users adult ON adult.user_id = pcl.adult_user_id
+              JOIN adult_email_verifications aev
+                ON aev.user_id = adult.user_id
+               AND aev.email = LOWER(adult.email)
+               AND aev.verified_at IS NOT NULL
+             WHERE pcl.child_user_id = u.user_id
+          ) THEN 'managed'
+          WHEN EXISTS (
+            SELECT 1 FROM legacy_parent_reviews lpr
+             WHERE lpr.child_user_id = u.user_id
+               AND lpr.status = 'pending'
+               AND lpr.expires_at > NOW()
+          ) THEN 'review_sent'
+          ELSE 'review_required'
+        END AS family_status
       FROM Users u
       LEFT JOIN Students s ON s.user_id = u.user_id
       ${where}
@@ -160,8 +183,35 @@ router.get('/users/:id', async (req, res) => {
   if (!Number.isInteger(userId)) return res.status(400).json({ error: 'Invalid user ID.' });
 
   try {
+    await legacyParentReviewReady;
     const [[users], [students], [characters], [lessons], [quizzes], [puzzles], [games], [achievements]] = await Promise.all([
-      pool.query('SELECT user_id, username, name, email, role, dob, parent_email, created_at, is_admin FROM Users WHERE user_id = ?', [userId]),
+      pool.query(`
+        SELECT u.user_id, u.username, u.name, u.email, u.role, u.dob, u.parent_email,
+               u.created_at, u.is_admin,
+               CASE
+                 WHEN LOWER(u.role) <> 'student' OR u.dob IS NULL
+                   OR TIMESTAMPDIFF(YEAR, u.dob, CURRENT_DATE()) >= 13 THEN NULL
+                 WHEN EXISTS (
+                   SELECT 1
+                     FROM parent_child_links pcl
+                     JOIN Users adult ON adult.user_id = pcl.adult_user_id
+                     JOIN adult_email_verifications aev
+                       ON aev.user_id = adult.user_id
+                      AND aev.email = LOWER(adult.email)
+                      AND aev.verified_at IS NOT NULL
+                    WHERE pcl.child_user_id = u.user_id
+                 ) THEN 'managed'
+                 WHEN EXISTS (
+                   SELECT 1 FROM legacy_parent_reviews lpr
+                    WHERE lpr.child_user_id = u.user_id
+                      AND lpr.status = 'pending'
+                      AND lpr.expires_at > NOW()
+                 ) THEN 'review_sent'
+                 ELSE 'review_required'
+               END AS family_status
+          FROM Users u WHERE u.user_id = ?`,
+        [userId]
+      ),
       pool.query('SELECT total_xp, weekly_xp, level_id, current_streak, longest_streak, last_active_date FROM Students WHERE user_id = ?', [userId]),
       pool.query('SELECT gender, skin_tone, hair_style, hair_color, outfit, accent, expression, nickname, updated_at FROM User_Character WHERE user_id = ?', [userId]),
       pool.query('SELECT lesson_id, xp_earned, completed_at FROM Student_Lesson_Progress WHERE user_id = ? ORDER BY lesson_id', [userId]),

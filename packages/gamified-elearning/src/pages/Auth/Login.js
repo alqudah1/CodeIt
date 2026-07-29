@@ -50,6 +50,11 @@ export default function Login() {
         { identifier: data.identifier, password: data.password },
         { headers: { 'Content-Type': 'application/json' } }
       );
+      if (response.data.requiresParentReview && response.data.reviewToken) {
+        sessionStorage.setItem('codeit_parent_review_token', response.data.reviewToken);
+        navigate('/parent-review', { replace: true });
+        return;
+      }
       login({ user: response.data.user, token: response.data.token });
       navigate(returnTo, { replace: true, state: returnState });
     } catch (err) {

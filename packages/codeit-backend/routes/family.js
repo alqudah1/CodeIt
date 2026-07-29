@@ -12,9 +12,15 @@ const {
   verifyAdultEmail,
 } = require('../familyAccounts');
 const { JWT_SECRET } = require('../config');
+const {
+  claimLegacyChild,
+  getClaimPreview,
+  requestLegacyReview,
+} = require('../legacyParentReview');
 
 const router = express.Router();
 const requests = new Map();
+const reviewRequests = new Map();
 
 function requireAuth(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1];
@@ -37,6 +43,21 @@ function limited(req, res, next) {
   }
   if (current.count >= 6) {
     return res.status(429).json({ error: 'Please wait before trying that again.' });
+  }
+  current.count += 1;
+  next();
+}
+
+function limitedReviewRequest(req, res, next) {
+  const now = Date.now();
+  const key = `review:${req.ip}`;
+  const current = reviewRequests.get(key);
+  if (!current || current.resetAt <= now) {
+    reviewRequests.set(key, { count: 1, resetAt: now + 60 * 60 * 1000 });
+    return next();
+  }
+  if (current.count >= 6) {
+    return res.status(429).json({ error: 'Please wait before sending another parent review.' });
   }
   current.count += 1;
   next();
@@ -65,6 +86,32 @@ router.get('/verify/:token', async (req, res) => {
     res.redirect(302, destination);
   } catch (_) {
     res.redirect(302, '/profile?familyVerified=0');
+  }
+});
+
+router.post('/legacy-review/request', limitedReviewRequest, async (req, res) => {
+  try {
+    const result = await requestLegacyReview(req.body.reviewToken, req.body.parentEmail);
+    res.json({ success: true, ...result });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message || 'Could not send the parent review.' });
+  }
+});
+
+router.post('/legacy-review/preview', async (req, res) => {
+  try {
+    res.json({ success: true, ...(await getClaimPreview(req.body.claimToken)) });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message || 'Could not open the parent review.' });
+  }
+});
+
+router.post('/legacy-review/claim', requireAuth, limited, async (req, res) => {
+  try {
+    const result = await claimLegacyChild(req.user.user_id, req.body.claimToken, req.body);
+    res.json({ success: true, ...result });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message || 'Could not connect the learner account.' });
   }
 });
 

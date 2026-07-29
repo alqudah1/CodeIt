@@ -3,6 +3,7 @@
 const pool = require('./db');
 const { normalizeEventName, normalizeMeta, normalizeJourneyId } = require('./analyticsEvents');
 const { listFoundingFamilyLeads } = require('./foundingWaitlist');
+const { ready: legacyParentReviewReady } = require('./legacyParentReview');
 
 const tableReady = pool.query(`
   CREATE TABLE IF NOT EXISTS analytics_events (
@@ -64,6 +65,7 @@ async function getFunnelReport(requestedDays = 30) {
 
   try {
     if (!await tableReady) return null;
+    await legacyParentReviewReady;
     const windowSql = `created_at >= DATE_SUB(NOW(), INTERVAL ${days} DAY)`;
     const [[events], [daily], [breakdown], [sourceFunnel], [studentAgeRows], [accountLeads], directLeads] = await Promise.all([
       pool.query(
@@ -118,6 +120,24 @@ async function getFunnelReport(requestedDays = 30) {
              AND parent_email IS NOT NULL AND parent_email <> '') AS under_13_with_parent_email,
            SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) < 13
              AND (parent_email IS NULL OR parent_email = '')) AS under_13_without_parent_email,
+           SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) < 13
+             AND EXISTS (
+               SELECT 1
+                 FROM parent_child_links pcl
+                 JOIN Users adult ON adult.user_id = pcl.adult_user_id
+                 JOIN adult_email_verifications aev
+                   ON aev.user_id = adult.user_id
+                  AND aev.email = LOWER(adult.email)
+                  AND aev.verified_at IS NOT NULL
+                WHERE pcl.child_user_id = Users.user_id
+             )) AS under_13_verified_managed,
+           SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) < 13
+             AND EXISTS (
+               SELECT 1 FROM legacy_parent_reviews lpr
+                WHERE lpr.child_user_id = Users.user_id
+                  AND lpr.status = 'pending'
+                  AND lpr.expires_at > NOW()
+             )) AS under_13_review_sent,
            SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) BETWEEN 13 AND 18) AS age_13_18,
            SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) > 18) AS over_18
          FROM Users WHERE LOWER(role) = 'student'`

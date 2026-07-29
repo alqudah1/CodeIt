@@ -5,6 +5,7 @@ import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import ResetPassword from './pages/Auth/ResetPassword';
+import ParentReview from './pages/Auth/ParentReview';
 import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { CharacterProvider } from './context/CharacterContext';
@@ -114,6 +115,7 @@ const App = () => (
               <Route path="/login"    element={<Login />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/parent-review" element={<ParentReview />} />
 
               {/* ── Dashboard ── */}
               <Route path="/MainPage" element={<MainPage />} />

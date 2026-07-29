@@ -296,11 +296,12 @@ export default function AdminFunnel() {
           <div className="adm-section-head">Account safety audit</div>
           <div className="funnel-safety-grid">
             <article><span>Existing students under 13</span><strong>{fmt(ageAudit?.under_13)}</strong></article>
-            <article><span>Parent email on file</span><strong>{fmt(ageAudit?.under_13_with_parent_email)}</strong></article>
-            <article className="is-urgent"><span>No parent email on file</span><strong>{fmt(ageAudit?.under_13_without_parent_email)}</strong></article>
+            <article><span>Verified managed profiles</span><strong>{fmt(ageAudit?.under_13_verified_managed)}</strong></article>
+            <article><span>Parent review sent</span><strong>{fmt(ageAudit?.under_13_review_sent)}</strong></article>
+            <article className="is-urgent"><span>Parent review needed</span><strong>{fmt(Math.max(0, Number(ageAudit?.under_13 || 0) - Number(ageAudit?.under_13_verified_managed || 0) - Number(ageAudit?.under_13_review_sent || 0)))}</strong></article>
             <article><span>Students ages 13–18</span><strong>{fmt(ageAudit?.age_13_18)}</strong></article>
           </div>
-          <p className="funnel-safety-note">Aggregate counts only. A parent email on file is not proof of verified parental consent. Existing under-13 accounts need a reviewed remediation plan before a paid launch.</p>
+          <p className="funnel-safety-note">Aggregate counts only. Historical under-13 accounts stay paused and private until a parent or guardian completes the review and connects a confirmed adult account.</p>
 
           <div className="adm-section-head">AI unit economics</div>
           <div className="funnel-cost-grid">

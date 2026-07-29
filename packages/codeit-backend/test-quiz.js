@@ -24,6 +24,7 @@ const progressNotificationRoutes = require('./routes/progressNotifications');
 const foundingWaitlistRoutes = require('./routes/foundingWaitlist');
 const adminRoutes = require('./routes/admin');
 const familyRoutes = require('./routes/family');
+const { legacyAccessGuard } = require('./legacyParentReview');
 
 const app = express();
 app.set('trust proxy', 1);
@@ -60,6 +61,7 @@ app.use(cors({
 }));
 
 app.use(express.json({ limit: '512kb' }));
+app.use('/api', legacyAccessGuard());
 
 app.use('/api/quiz', quizRoutes);
 app.use('/api', authRoutes);

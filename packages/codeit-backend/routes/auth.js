@@ -9,6 +9,7 @@ const { ageOnDate, studentAgeEligibility } = require('../studentAge');
 const { normalizeJourneyId } = require('../analyticsEvents');
 const { updateSettings } = require('../progressNotifications');
 const { requestPasswordReset, resetPassword, validPassword } = require('../passwordReset');
+const { childAccessStatus, createReviewSession } = require('../legacyParentReview');
 
 // ── POST /api/signup ───────────────────────────────────────────────────────────
 router.post('/signup', async (req, res) => {
@@ -151,9 +152,19 @@ router.post('/login', async (req, res) => {
 
     const displayName = user.name || user.username;
     const accountAge = user.dob ? ageOnDate(new Date(user.dob).toISOString().slice(0, 10)) : null;
-    const managedProfile = String(user.role).toLowerCase() === 'student'
-      && accountAge !== null
-      && accountAge < 13;
+    const familyAccess = await childAccessStatus(user.user_id, user.dob, user.role);
+    if (familyAccess.requiresParentReview) {
+      return res.json({
+        message: 'Parent review required',
+        code: 'PARENT_REVIEW_REQUIRED',
+        requiresParentReview: true,
+        reviewToken: createReviewSession(user.user_id),
+        review: {
+          ageGroup: accountAge !== null && accountAge < 13 ? 'under_13' : null,
+        },
+      });
+    }
+    const managedProfile = familyAccess.managedProfile;
     const token = jwt.sign(
       { user_id: user.user_id, role: user.role, name: displayName, managedProfile },
       JWT_SECRET,
