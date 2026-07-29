@@ -105,6 +105,27 @@
   background: #d95d13;
 }
 
+.seo-cta-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem 1.25rem;
+}
+
+.seo-cta-link {
+  color: #704c37;
+  font-size: 0.98rem;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: rgba(237, 108, 30, 0.42);
+  text-underline-offset: 0.24rem;
+}
+
+.seo-cta-link:hover {
+  color: #d95d13;
+  text-decoration-color: currentColor;
+}
+
 /* ── Article body ────────────────────────────────────────── */
 .seo-body {
   margin-bottom: 3rem;

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import { useSEO } from '../../hooks/useSEO';
 import { useFAQSchema } from '../../hooks/useFAQSchema';
+import { trackEvent } from '../../utils/trackEvent';
 import './SEOPage.css';
 
 const FAQS = [
@@ -29,8 +30,8 @@ const FAQS = [
 
 export default function LearnPythonForKids() {
   useSEO({
-    title:       'Learn Python for Kids & Teens | Interactive Lessons — CodeIt',
-    description: 'Learn beginner Python in the browser with short lessons, real code, quizzes, and projects. Private parent-managed profiles are available for ages 8–12.',
+    title:       'Free Python for Kids Online | 16 Interactive Lessons | CodeIt',
+    description: 'Start learning Python for free with 16 interactive browser lessons, real code, quizzes, and projects. No download or signup is needed to open Lesson 1.',
     canonical:   '/learn-python-for-kids',
   });
   useFAQSchema(FAQS);
@@ -51,11 +52,24 @@ export default function LearnPythonForKids() {
             </h1>
             <p className="seo-hero-desc">
               Write a line, run it, and see what changed. CodeIt gives beginners a clear path
-              through real Python—without downloads or a wall of theory first.
+              through real Python—free to start, with no download or signup needed for Lesson 1.
             </p>
-            <Link to="/journey" className="seo-cta-btn">
-              Start with lesson one &rarr;
-            </Link>
+            <div className="seo-cta-row">
+              <Link
+                to="/lesson/1"
+                className="seo-cta-btn"
+                onClick={() => void trackEvent('learning_start', 'lesson-one')}
+              >
+                Start Lesson 1 — no signup &rarr;
+              </Link>
+              <Link
+                to="/playground"
+                className="seo-cta-link"
+                onClick={() => void trackEvent('learning_start', 'playground')}
+              >
+                Try Python in the playground
+              </Link>
+            </div>
           </header>
 
           {/* ── Answer Box ────────────────────────────────── */}
@@ -105,7 +119,7 @@ export default function LearnPythonForKids() {
             <section className="seo-section">
               <h2 className="seo-h2">What Kids Learn in CodeIt's Python Lessons</h2>
               <p className="seo-p">
-                CodeIt teaches Python through ten beginner lessons, each focused on one core concept.
+                CodeIt teaches Python through 16 beginner lessons, each focused on one core concept.
                 By the end, kids have a solid foundation in real Python programming:
               </p>
               <ul className="seo-list">
@@ -249,8 +263,12 @@ export default function LearnPythonForKids() {
               16 free beginner lessons, no downloads, no credit card. Start Lesson 1 in under a
               minute — or try the playground first to see Python in action.
             </p>
-            <Link to="/journey" className="seo-cta-btn">
-              Start the Python Journey Free &rarr;
+            <Link
+              to="/lesson/1"
+              className="seo-cta-btn"
+              onClick={() => void trackEvent('learning_start', 'lesson-one')}
+            >
+              Open Lesson 1 — No Signup Needed &rarr;
             </Link>
           </div>
 

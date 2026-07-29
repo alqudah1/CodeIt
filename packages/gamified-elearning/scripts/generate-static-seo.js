@@ -117,8 +117,8 @@ const BASE_PAGES = [
   },
   {
     route: '/learn-python-for-kids',
-    title: 'Learn Python for Kids & Teens | Interactive Lessons — CodeIt',
-    description: 'Learn beginner Python in the browser with short lessons, real code, quizzes, and projects. Private parent-managed profiles are available for ages 8–12.',
+    title: 'Free Python for Kids Online | 16 Interactive Lessons | CodeIt',
+    description: 'Start learning Python for free with 16 interactive browser lessons, real code, quizzes, and projects. No download or signup is needed to open Lesson 1.',
     eyebrow: 'Beginner Python, in the browser',
     h1: 'Learn Python by making something work.',
     intro: 'Write a line, run it, and see what changed. CodeIt gives beginners a clear path through real Python without downloads or a wall of theory first.',

@@ -40,6 +40,17 @@ describe("trackEvent", () => {
     );
   });
 
+  test("records a fixed learning entry point without lesson content", async () => {
+    await expect(trackEvent("learning_start", "lesson-one")).resolves.toBe(true);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/api/analytics/event"),
+      expect.objectContaining({
+        body: JSON.stringify({ event_name: "learning_start", meta: "lesson-one" }),
+      })
+    );
+  });
+
   test("sends only the fixed founding offer identifier", async () => {
     await expect(trackEvent("pricing_interest", "founding-family")).resolves.toBe(true);
 

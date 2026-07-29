@@ -23,6 +23,7 @@ describe('admin acquisition funnel', () => {
         json: async () => ({
           events: [
             { event_name: 'acquisition_visit', event_count: 14, unique_users: 0, unique_journeys: 14, attributed_events: 14 },
+            { event_name: 'learning_start', event_count: 8, unique_users: 0, unique_journeys: 7, attributed_events: 8 },
             { event_name: 'parent_cta_click', event_count: 7, unique_users: 0, unique_journeys: 5, attributed_events: 5 },
             { event_name: 'builder_start', event_count: 12, unique_users: 2, unique_journeys: 10, attributed_events: 10 },
             { event_name: 'generation_complete', event_count: 10, unique_users: 2, unique_journeys: 8, attributed_events: 8 },
@@ -89,6 +90,8 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('83%')).toBeInTheDocument();
     expect(screen.getByText(/6 more needed/i)).toBeInTheDocument();
     expect(screen.getByText('Projects shared')).toBeInTheDocument();
+    expect(screen.getByText('Learning starts')).toBeInTheDocument();
+    expect(screen.getByText('Visit → learning').parentElement).toHaveTextContent('50%');
     expect(screen.getByText('Projects personalized')).toBeInTheDocument();
     expect(screen.getByText('Projects remixed')).toBeInTheDocument();
     expect(screen.getByText('Finish steps chosen')).toBeInTheDocument();
@@ -103,7 +106,7 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Which sources create activated visitors')).toBeInTheDocument();
     expect(screen.getByText('Visit → build')).toBeInTheDocument();
     expect(screen.getByText('Remixed', { selector: 'th' })).toBeInTheDocument();
-    expect(screen.getByText('50%')).toBeInTheDocument();
+    expect(screen.getByRole('row', { name: /Instagram 8 4 2 1 1 2 50%/i })).toBeInTheDocument();
     expect(screen.getByText('Tried a project').parentElement).toHaveTextContent('4');
     expect(screen.getByText('Viewed family pricing').parentElement).toHaveTextContent('2');
     expect(screen.getByText('Opened pilot email').parentElement).toHaveTextContent('1');

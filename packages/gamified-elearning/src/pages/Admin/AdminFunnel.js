@@ -7,6 +7,7 @@ import './AdminFunnel.css';
 
 const STAGES = [
   ['landing_cta_click', 'Landing clicks'],
+  ['learning_start', 'Learning starts'],
   ['parent_cta_click', 'Parent actions'],
   ['builder_start', 'Builds started'],
   ['generation_complete', 'Projects generated'],
@@ -125,6 +126,7 @@ export default function AdminFunnel() {
   const sampleReady = measuredVisits >= 20;
 
   const signals = data ? [
+    ['Visit → learning', ratio(journeyMetric('learning_start'), journeyMetric('acquisition_visit'))],
     ['Build completion', ratio(journeyMetric('generation_complete'), journeyMetric('builder_start'))],
     ['Generated → personalized', ratio(journeyMetric('project_personalize'), journeyMetric('generation_complete'))],
     ['Personalized → saved', ratio(journeyMetric('project_save'), journeyMetric('project_personalize'))],
