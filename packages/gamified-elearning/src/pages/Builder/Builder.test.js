@@ -184,4 +184,123 @@ describe('project studio opening', () => {
     expect(trackEvent).toHaveBeenCalledWith('activation_next_step', 'learn', 'managed-token');
     expect(await screen.findByText('This project uses variables and click events.')).toBeInTheDocument();
   });
+
+  test('lets a returning eligible creator publish directly from My Creations', async () => {
+    const savedProject = {
+      id: 42,
+      title: 'Mission Control Quiz',
+      prompt: 'A colorful space quiz',
+      project_type: 'quiz',
+      is_public: 0,
+      public_id: null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    global.fetch = jest.fn((url, options = {}) => {
+      const target = String(url);
+      if (target.endsWith('/api/builder/projects') && !options.method) {
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({ success: true, projects: [savedProject] }),
+        });
+      }
+      if (target.endsWith('/api/builder/projects/42/publish')) {
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({ success: true, public_id: 'public-42' }),
+        });
+      }
+      return Promise.resolve({ ok: true, json: async () => ({ success: true }) });
+    });
+
+    render(
+      <AuthContext.Provider value={{ user: { id: 7, name: 'Alex', role: 'student' }, token: 'creator-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    await screen.findByText('Mission Control Quiz');
+    expect(screen.getByText('Private')).toBeInTheDocument();
+    expect(screen.getByText(/unpublish anytime/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Publish Mission Control Quiz' }));
+
+    await screen.findByText('Live');
+    expect(screen.getByRole('button', { name: 'Share Mission Control Quiz' })).toBeInTheDocument();
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://codeit.test/api/builder/projects/42/publish',
+      expect.objectContaining({ method: 'POST' })
+    );
+    expect(trackEvent).toHaveBeenCalledWith('activation_next_step', 'publish', 'creator-token');
+  });
+
+  test('shares a live saved project directly from My Creations', async () => {
+    const clipboardWrite = jest.fn(() => Promise.resolve());
+    Object.defineProperty(navigator, 'share', { configurable: true, value: undefined });
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: clipboardWrite },
+    });
+    global.fetch = jest.fn(() => Promise.resolve({
+      ok: true,
+      json: async () => ({
+        success: true,
+        projects: [{
+          id: 43,
+          title: 'Reaction Rush',
+          prompt: 'A reaction timer game',
+          project_type: 'game',
+          is_public: 1,
+          public_id: 'public-43',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }],
+      }),
+    }));
+
+    render(
+      <AuthContext.Provider value={{ user: { id: 7, name: 'Alex', role: 'student' }, token: 'creator-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    await screen.findByText('Reaction Rush');
+    fireEvent.click(screen.getByRole('button', { name: 'Share Reaction Rush' }));
+
+    await waitFor(() => expect(clipboardWrite).toHaveBeenCalledWith(
+      `${window.location.origin}/project/public-43?utm_source=project-share`
+    ));
+    expect(screen.getByRole('button', { name: 'Share Reaction Rush' })).toHaveTextContent('Link copied!');
+    expect(trackEvent).toHaveBeenCalledWith('project_share', 'creator', 'creator-token');
+  });
+
+  test('keeps managed saved projects family-private in My Creations', async () => {
+    global.fetch = jest.fn(() => Promise.resolve({
+      ok: true,
+      json: async () => ({
+        success: true,
+        projects: [{
+          id: 44,
+          title: 'Private Space Quiz',
+          prompt: 'A private family quiz',
+          project_type: 'quiz',
+          is_public: 0,
+          public_id: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }],
+      }),
+    }));
+
+    render(
+      <AuthContext.Provider value={{ user: { id: 8, name: 'Sam', role: 'student', managedProfile: true }, token: 'managed-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    await screen.findByText('Private Space Quiz');
+    expect(screen.getByText('Family private')).toBeInTheDocument();
+    expect(screen.getByText(/only your family account can open it/i)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Publish Private Space Quiz' })).not.toBeInTheDocument();
+  });
 });

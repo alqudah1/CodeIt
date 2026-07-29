@@ -668,6 +668,7 @@ export default function Builder() {
   // ── Saved projects ─────────────────────────────────────────────────────────
   const [savedProjects, setSavedProjects]     = useState([]);
   const [projectsLoading, setProjectsLoading] = useState(false);
+  const [projectCardAction, setProjectCardAction] = useState({ id: null, status: null });
 
   const [projectOpeningId, setProjectOpeningId] = useState(null);
   const [projectOpenError, setProjectOpenError] = useState('');
@@ -1558,6 +1559,91 @@ export default function Builder() {
       });
       setSavedProjects(prev => prev.filter(p => p.id !== id));
     } catch {}
+  };
+
+  // ── Publish and share from My Creations ───────────────────────────────────
+  // Returning creators should not have to reopen a saved project and hunt for
+  // its publishing controls. The server still enforces the under-13 privacy
+  // rule; managed learner profiles never receive a public action here.
+  const handlePublishSavedProject = async (project) => {
+    if (
+      !project?.id
+      || !token
+      || user?.managedProfile
+      || ['publishing', 'sharing'].includes(projectCardAction.status)
+    ) return;
+    setProjectCardAction({ id: project.id, status: 'publishing' });
+    void trackEvent('activation_next_step', 'publish', token);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/builder/projects/${project.id}/publish`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, ...journeyHeaders() },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Publish failed');
+
+      setSavedProjects(prev => prev.map(saved => (
+        saved.id === project.id
+          ? { ...saved, is_public: 1, public_id: data.public_id }
+          : saved
+      )));
+      if (savedProjectId === project.id) {
+        setIsPublished(true);
+        setPublicId(data.public_id);
+      }
+      setProjectCardAction({ id: project.id, status: 'published' });
+      setTimeout(() => {
+        setProjectCardAction(current => (
+          current.id === project.id ? { id: null, status: null } : current
+        ));
+      }, 2200);
+    } catch (_) {
+      setProjectCardAction({ id: project.id, status: 'error' });
+    }
+  };
+
+  const handleShareSavedProject = async (project) => {
+    if (!project?.public_id || ['publishing', 'sharing'].includes(projectCardAction.status)) return;
+    const shareUrl = new URL(`/project/${project.public_id}`, window.location.origin);
+    shareUrl.searchParams.set('utm_source', 'project-share');
+    const url = shareUrl.toString();
+    const title = project.title || 'My Project';
+    const text = `I made "${title}" with CodeIt. Try it, then build your own.`;
+    let completed = false;
+
+    setProjectCardAction({ id: project.id, status: 'sharing' });
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text, url });
+        setProjectCardAction({ id: project.id, status: 'shared' });
+        completed = true;
+      } catch (error) {
+        if (error?.name === 'AbortError') {
+          setProjectCardAction({ id: null, status: null });
+          return;
+        }
+      }
+    }
+
+    if (!completed) {
+      try {
+        await navigator.clipboard.writeText(url);
+        setProjectCardAction({ id: project.id, status: 'copied' });
+        completed = true;
+      } catch (_) {
+        setProjectCardAction({ id: project.id, status: 'error' });
+      }
+    }
+
+    if (completed) {
+      void trackEvent('project_share', 'creator', token);
+      setTimeout(() => {
+        setProjectCardAction(current => (
+          current.id === project.id ? { id: null, status: null } : current
+        ));
+      }, 2200);
+    }
   };
 
   // ── New build ──────────────────────────────────────────────────────────────
@@ -3097,6 +3183,24 @@ export default function Builder() {
                       <div className="bldr-project-card__name">{project.title}</div>
                       <div className="bldr-project-card__prompt">{project.prompt}</div>
                       <div className="bldr-project-card__date">Updated {timeAgo(project.updated_at || project.created_at)}</div>
+                      <div className={`bldr-project-card__visibility ${
+                        project.is_public && project.public_id
+                          ? 'bldr-project-card__visibility--live'
+                          : 'bldr-project-card__visibility--private'
+                      }`}>
+                        <span>
+                          {project.is_public && project.public_id
+                            ? 'Live'
+                            : user?.managedProfile ? 'Family private' : 'Private'}
+                        </span>
+                        <small>
+                          {project.is_public && project.public_id
+                            ? 'Anyone with the link can play'
+                            : user?.managedProfile
+                              ? 'Only your family account can open it'
+                              : 'Publish when ready · unpublish anytime'}
+                        </small>
+                      </div>
                     </div>
                     <div className="bldr-project-card__actions">
                       <button
@@ -3107,6 +3211,41 @@ export default function Builder() {
                       >
                         {projectOpeningId === project.id ? 'Opening...' : 'Continue'}
                       </button>
+                      {!user?.managedProfile && (
+                        <button
+                          className={`bldr-project-card__btn ${
+                            project.is_public && project.public_id
+                              ? 'bldr-project-card__btn--share'
+                              : 'bldr-project-card__btn--publish'
+                          }`}
+                          onClick={() => (
+                            project.is_public && project.public_id
+                              ? handleShareSavedProject(project)
+                              : handlePublishSavedProject(project)
+                          )}
+                          aria-label={`${
+                            project.is_public && project.public_id ? 'Share' : 'Publish'
+                          } ${project.title}`}
+                          disabled={
+                            projectOpeningId !== null
+                            || ['publishing', 'sharing'].includes(projectCardAction.status)
+                          }
+                        >
+                          {projectCardAction.id === project.id && projectCardAction.status === 'publishing'
+                            ? 'Publishing…'
+                            : projectCardAction.id === project.id && projectCardAction.status === 'sharing'
+                              ? 'Sharing…'
+                              : projectCardAction.id === project.id && projectCardAction.status === 'published'
+                                ? 'Published!'
+                                : projectCardAction.id === project.id && projectCardAction.status === 'shared'
+                                  ? 'Shared!'
+                                  : projectCardAction.id === project.id && projectCardAction.status === 'copied'
+                                    ? 'Link copied!'
+                                    : projectCardAction.id === project.id && projectCardAction.status === 'error'
+                                      ? 'Try again'
+                                      : project.is_public && project.public_id ? 'Share' : 'Publish'}
+                        </button>
+                      )}
                       <button
                         className="bldr-project-card__btn bldr-project-card__btn--delete"
                         onClick={() => handleDeleteProject(project.id)}

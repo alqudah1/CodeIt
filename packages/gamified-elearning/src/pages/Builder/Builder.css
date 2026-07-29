@@ -1507,8 +1507,55 @@
   padding-top: 0.35rem;
 }
 
+.bldr-project-card__visibility {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  padding-top: 0.45rem;
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.bldr-project-card__visibility span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0.12rem 0.48rem;
+  border-radius: 999px;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.bldr-project-card__visibility small {
+  color: #8B7567;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.bldr-project-card__visibility--private span {
+  color: #765E50;
+  background: #F4ECE5;
+}
+
+.bldr-project-card__visibility--live span {
+  color: #176B45;
+  background: #DDF5E8;
+}
+
+.bldr-project-card__visibility--live span::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  margin-right: 0.3rem;
+  border-radius: 50%;
+  background: #2CA66F;
+}
+
 .bldr-project-card__actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.4rem;
   margin-top: 0.35rem;
 }
@@ -1536,7 +1583,23 @@
   transform: translateY(-1px);
 }
 
+.bldr-project-card__btn--publish,
+.bldr-project-card__btn--share {
+  color: #6A3DC8;
+  background: #F2EBFF;
+  border-color: #D7C4FA;
+}
+
+.bldr-project-card__btn--publish:hover,
+.bldr-project-card__btn--share:hover {
+  color: #5230A0;
+  background: #E8DCFF;
+  border-color: #C2A7F5;
+  transform: translateY(-1px);
+}
+
 .bldr-project-card__btn--delete {
+  flex: 0 0 auto;
   color: #c0392b;
   background: rgba(192,57,43,0.07);
   border-color: rgba(192,57,43,0.18);
