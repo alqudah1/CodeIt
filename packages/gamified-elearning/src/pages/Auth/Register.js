@@ -23,14 +23,15 @@ function BrandMark() {
 // Steps: 'choose' → 'student' | 'educator' → 'parent-optional' (student only)
 
 export default function Register() {
-  const [step, setStep] = useState('choose');
+  const location = useLocation();
+  const familyEntry = new URLSearchParams(location.search || '').get('for') === 'family';
+  const [step, setStep] = useState(familyEntry ? 'educator' : 'choose');
   const [error, setError] = useState(null);
   const [showPw, setShowPw] = useState(false);
   const [pendingToken, setPendingToken] = useState(null);
 
   const { login } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const requestedPath = location.state?.from;
   const returnTo = typeof requestedPath === 'string' && requestedPath.startsWith('/') && !requestedPath.startsWith('//')
     ? requestedPath
@@ -350,11 +351,13 @@ export default function Register() {
 
           <header className="auth-header">
             <span className="auth-pill">Parent / Educator</span>
-            <h1>Create your account</h1>
+            <h1>{familyEntry ? 'Create a private learner profile' : 'Create your account'}</h1>
             <p>
               {resumePricingInterest
                 ? 'Create an adult account to finish joining the founding-family waitlist.'
-                : 'Create an adult account for family or classroom use.'}
+                : familyEntry
+                  ? 'Start with your adult account. After confirming your email, you can create a private profile for a learner ages 8–12.'
+                  : 'Create an adult account for family or classroom use.'}
             </p>
           </header>
 

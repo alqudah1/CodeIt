@@ -27,11 +27,23 @@ describe('parent acquisition page', () => {
     render(<CodingForKids />);
 
     expect(screen.getByRole('heading', { name: 'A first coding project they’ll want to keep improving.' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Create a learner profile' })).toHaveAttribute('href', '/register?for=family');
     expect(screen.getByRole('link', { name: 'Try a project together' })).toHaveAttribute('href', '/builder');
     expect(screen.getByText('Saved projects stay private until Publish.')).toBeInTheDocument();
     expect(screen.getByText('Private parent-managed profiles begin at age 8.')).toBeInTheDocument();
+    expect(screen.getByText(/Ages 8–12 start through a free parent or guardian account/i)).toBeInTheDocument();
     expect(screen.queryByText(/ages 8–14/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/everything is free/i)).not.toBeInTheDocument();
+  });
+
+  test('measures the direct family-account path separately from a project trial', () => {
+    render(<CodingForKids />);
+
+    fireEvent.click(screen.getByRole('link', { name: 'Create a learner profile' }));
+    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'create-family-account');
+
+    fireEvent.click(screen.getByRole('link', { name: 'Try a project together' }));
+    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'try-project');
   });
 
   test('sends parents to the explicit founding-family waitlist', () => {

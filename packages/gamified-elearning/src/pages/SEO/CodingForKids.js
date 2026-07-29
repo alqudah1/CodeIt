@@ -85,21 +85,23 @@ export default function CodingForKids() {
               </p>
               <div className="parents-actions">
                 <Link
-                  to="/builder"
+                  to="/register?for=family"
                   className="parents-button parents-button--primary"
+                  onClick={() => void trackEvent('parent_cta_click', 'create-family-account')}
+                >
+                  Create a learner profile
+                </Link>
+                <Link
+                  to="/builder"
+                  className="parents-button parents-button--quiet"
                   onClick={() => void trackEvent('parent_cta_click', 'try-project')}
                 >
                   Try a project together
                 </Link>
-                <Link
-                  to="/pricing"
-                  className="parents-button parents-button--quiet"
-                  onClick={() => void trackEvent('parent_cta_click', 'view-pricing')}
-                >
-                  See the planned family plan
-                </Link>
               </div>
-              <p className="parents-hero__note">No payment needed. The project studio opens in your browser.</p>
+              <p className="parents-hero__note">
+                Ages 8–12 start through a free parent or guardian account. No payment is needed.
+              </p>
             </div>
 
             <div className="parents-project" aria-hidden="true">

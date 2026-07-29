@@ -6,6 +6,7 @@ import Register from './Register';
 const mockNavigate = jest.fn();
 const mockLogin = jest.fn();
 const mockLocationState = { from: '/builder', resumeBuilderAction: 'publish' };
+let mockLocationSearch = '';
 
 jest.mock('react-router-dom', () => {
   const React = require('react');
@@ -14,7 +15,7 @@ jest.mock('react-router-dom', () => {
       href: to,
       'data-state': JSON.stringify(state),
     }, children),
-    useLocation: () => ({ state: mockLocationState }),
+    useLocation: () => ({ state: mockLocationState, search: mockLocationSearch }),
     useNavigate: () => mockNavigate,
   };
 }, { virtual: true });
@@ -29,6 +30,7 @@ describe('builder authentication return', () => {
   beforeEach(() => {
     mockLocationState.from = '/builder';
     mockLocationState.resumeBuilderAction = 'publish';
+    mockLocationSearch = '';
     mockNavigate.mockClear();
     mockLogin.mockClear();
     axios.post.mockReset();
@@ -143,6 +145,19 @@ describe('builder authentication return', () => {
       replace: true,
       state: null,
     }));
+  });
+
+  test('a family campaign link opens directly on the adult account form', () => {
+    mockLocationState.from = '/';
+    delete mockLocationState.resumeBuilderAction;
+    mockLocationSearch = '?for=family';
+
+    render(<Register />);
+
+    expect(screen.getByRole('heading', { name: 'Create a private learner profile' })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Your full name')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /I am a Student/i })).not.toBeInTheDocument();
+    expect(screen.getByText(/After confirming your email/i)).toBeInTheDocument();
   });
 
   test('a new adult account returns to a shared project even without a builder action', async () => {

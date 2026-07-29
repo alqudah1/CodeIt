@@ -24,7 +24,7 @@ describe('admin acquisition funnel', () => {
           events: [
             { event_name: 'acquisition_visit', event_count: 14, unique_users: 0, unique_journeys: 14, attributed_events: 14 },
             { event_name: 'learning_start', event_count: 8, unique_users: 0, unique_journeys: 7, attributed_events: 8 },
-            { event_name: 'parent_cta_click', event_count: 7, unique_users: 0, unique_journeys: 5, attributed_events: 5 },
+            { event_name: 'parent_cta_click', event_count: 11, unique_users: 0, unique_journeys: 7, attributed_events: 9 },
             { event_name: 'builder_start', event_count: 12, unique_users: 2, unique_journeys: 10, attributed_events: 10 },
             { event_name: 'generation_complete', event_count: 10, unique_users: 2, unique_journeys: 8, attributed_events: 8 },
             { event_name: 'project_personalize', event_count: 6, unique_users: 2, unique_journeys: 5, attributed_events: 5 },
@@ -36,6 +36,7 @@ describe('admin acquisition funnel', () => {
             { event_name: 'acquisition_visit', meta: 'instagram', event_count: 9 },
             { event_name: 'acquisition_visit', meta: 'linkedin', event_count: 3 },
             { event_name: 'acquisition_visit', meta: 'project', event_count: 5 },
+            { event_name: 'parent_cta_click', meta: 'create-family-account', event_count: 4 },
             { event_name: 'parent_cta_click', meta: 'try-project', event_count: 4 },
             { event_name: 'parent_cta_click', meta: 'view-pricing', event_count: 2 },
             { event_name: 'parent_cta_click', meta: 'pilot-email', event_count: 1 },
@@ -81,7 +82,7 @@ describe('admin acquisition funnel', () => {
     delete global.fetch;
   });
 
-  test('shows the three privacy-safe parent actions separately', async () => {
+  test('shows the privacy-safe parent actions separately', async () => {
     render(<AdminFunnel />);
 
     await waitFor(() => expect(screen.getByText('Parent acquisition actions')).toBeInTheDocument());
@@ -107,6 +108,7 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Visit → build')).toBeInTheDocument();
     expect(screen.getByText('Remixed', { selector: 'th' })).toBeInTheDocument();
     expect(screen.getByRole('row', { name: /Instagram 8 4 2 1 1 2 50%/i })).toBeInTheDocument();
+    expect(screen.getByText('Started family account setup').parentElement).toHaveTextContent('4');
     expect(screen.getByText('Tried a project').parentElement).toHaveTextContent('4');
     expect(screen.getByText('Viewed family pricing').parentElement).toHaveTextContent('2');
     expect(screen.getByText('Opened pilot email').parentElement).toHaveTextContent('1');

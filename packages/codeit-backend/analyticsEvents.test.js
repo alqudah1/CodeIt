@@ -26,6 +26,7 @@ test('accepts only allowlisted metadata and never arbitrary content', () => {
   assert.equal(normalizeMeta('acquisition_visit', 'linkedin'), 'linkedin');
   assert.equal(normalizeMeta('acquisition_visit', 'project'), 'project');
   assert.equal(normalizeMeta('acquisition_visit', 'private-campaign-name'), null);
+  assert.equal(normalizeMeta('parent_cta_click', 'create-family-account'), 'create-family-account');
   assert.equal(normalizeMeta('parent_cta_click', 'pilot-email'), 'pilot-email');
   assert.equal(normalizeMeta('parent_cta_click', 'parent@example.com'), null);
   assert.equal(normalizeMeta('landing_cta_click', 'my private project idea'), null);

@@ -22,6 +22,11 @@ describe('Home', () => {
   test('gives parents a direct, measurable path to the family pilot', () => {
     render(<Home />);
 
+    const familyAccountLink = screen.getByRole('link', { name: 'Create a learner profile' });
+    expect(familyAccountLink).toHaveAttribute('href', '/register?for=family');
+    fireEvent.click(familyAccountLink);
+    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'create-family-account');
+
     const pilotLink = screen.getByRole('link', { name: 'See full pilot details' });
     expect(pilotLink).toHaveAttribute('href', '/pricing');
 

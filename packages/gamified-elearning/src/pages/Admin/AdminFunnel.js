@@ -24,6 +24,7 @@ const STAGES = [
 ];
 
 const PARENT_ACTIONS = [
+  ['create-family-account', 'Started family account setup'],
   ['try-project', 'Tried a project'],
   ['view-pricing', 'Viewed family pricing'],
   ['pilot-email', 'Opened pilot email'],

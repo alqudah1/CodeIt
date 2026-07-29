@@ -253,6 +253,18 @@ export default function Home() {
                 <li>publishes something ready to share.</li>
               </ul>
               <small>Available from a student profile. Emails begin only after a parent confirms and chooses the updates they receive.</small>
+              <div className="studio-family__setup">
+                <div>
+                  <strong>Using CodeIt with a learner ages 8–12?</strong>
+                  <span>Create a free adult account, confirm your email, and make their private profile.</span>
+                </div>
+                <Link
+                  to="/register?for=family"
+                  onClick={() => trackEvent("parent_cta_click", "create-family-account")}
+                >
+                  Create a learner profile <span aria-hidden="true">→</span>
+                </Link>
+              </div>
               <HomePilotSignup />
               <Link
                 to="/pricing"
