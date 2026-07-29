@@ -634,6 +634,7 @@ export default function Builder() {
   const [buildStep, setBuildStep]       = useState(0);
   const [error, setError]               = useState('');
   const [buildKey, setBuildKey]         = useState(0);
+  const [hasPersonalized, setHasPersonalized] = useState(false);
 
   // ── AI memory ──────────────────────────────────────────────────────────────
   const [promptHistory, setPromptHistory] = useState([]);
@@ -682,6 +683,7 @@ export default function Builder() {
   const promptRef  = useRef(null);
   const editRef    = useRef(null);
   const iframeRef  = useRef(null);
+  const studioRef  = useRef(null);
   const resumeActionStartedRef = useRef(false);
   const saveInFlightRef = useRef(false);
   const personalizationTrackedRef = useRef(false);
@@ -749,9 +751,16 @@ export default function Builder() {
   }
 
   function trackPersonalizationOnce() {
+    setHasPersonalized(true);
     if (personalizationTrackedRef.current) return;
     personalizationTrackedRef.current = true;
     void trackEvent('project_personalize', null, token);
+  }
+
+  function openStudioColors() {
+    setShowEditPanel(false);
+    setStudioPanel('colors');
+    setTimeout(() => studioRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' }), 0);
   }
 
   function applyColorsInstant(vars) {
@@ -1194,6 +1203,7 @@ export default function Builder() {
   // ── Fresh build ────────────────────────────────────────────────────────────
   const callBuilder = async (text) => {
     personalizationTrackedRef.current = false;
+    setHasPersonalized(false);
     const previewType = detectProjectType(text);
     setLoadingPreviewType(previewType);
     setLoading(true);
@@ -1244,7 +1254,7 @@ export default function Builder() {
       setConceptsUsed(Array.isArray(data.conceptsUsed) ? data.conceptsUsed : []);
       setPromptHistory([text]);
       setBuildKey(k => k + 1);
-      setShowEditPanel(true);
+      setShowEditPanel(false);
       awardXP(20); popXp(20, 'First Build');
       const builtType = data.type || 'website';
       // Auto-enter play mode for games and quizzes
@@ -1594,6 +1604,7 @@ export default function Builder() {
     setGameDiff('medium');
     setGameTimer(30);
     setEditModeOn(false);
+    setHasPersonalized(false);
     setSelectedEl(null);
     setShowElPanel(false);
     setPatchError('');
@@ -1755,6 +1766,7 @@ export default function Builder() {
     : 'Building your project...';
   const projectName = aiTitle || (builtPrompt ? deriveProjectName(builtPrompt) : '');
   const editCount   = promptHistory.length > 1 ? promptHistory.length - 1 : 0;
+  const isPersonalized = hasPersonalized || editCount > 0;
   const lessonChips = builtPrompt
     ? LESSON_CONCEPTS.filter(l => detectLessonIds(builtPrompt).includes(l.id))
     : [];
@@ -2022,7 +2034,7 @@ export default function Builder() {
                 <span className="bldr-success-banner__label">
                   {editCount > 0
                     ? `${editCount} edit${editCount > 1 ? 's' : ''} applied`
-                    : 'You built this!'}
+                    : hasPersonalized ? 'Personalized by you' : 'You built this!'}
                 </span>
                 <h2 className="bldr-success-banner__name">{projectName}</h2>
                 <p className="bldr-success-banner__credit">
@@ -2039,27 +2051,27 @@ export default function Builder() {
                 <div className="bldr-activation-card__copy">
                   <span className="bldr-activation-card__kicker">Your next step</span>
                   <h3 id="bldr-next-step-title">
-                    {editCount === 0
+                    {!isPersonalized
                       ? 'Change one thing so this project becomes yours.'
                       : 'Save this project before you leave.'}
                   </h3>
                   <p>
-                    {editCount === 0
-                      ? 'Try changing the words, colors, difficulty, or one feature. Then test what happened.'
+                    {!isPersonalized
+                      ? 'Start with a color theme that changes instantly and works without AI credits. Then test how your project feels.'
                       : user
                         ? 'Save this version so it appears in My Creations and is ready when you come back.'
                         : 'We’ll keep this version in this browser while you sign in or choose an eligible account option, then bring you back here.'}
                   </p>
                 </div>
                 <div className="bldr-activation-card__actions">
-                  {editCount === 0 ? (
+                  {!isPersonalized ? (
                     <>
                       <button
                         className="bldr-activation-card__primary"
-                        onClick={() => { setShowEditPanel(true); setTimeout(() => editRef.current?.focus(), 0); }}
+                        onClick={openStudioColors}
                         disabled={editing}
                       >
-                        Personalize this project
+                        Choose a color theme
                       </button>
                       <button
                         className="bldr-activation-card__secondary"
@@ -2277,7 +2289,7 @@ export default function Builder() {
             </div>
 
             {/* ── Creative Studio Toolbar ─────────────────────────────── */}
-            <div className="bldr-studio-bar">
+            <div className="bldr-studio-bar" ref={studioRef}>
               <span className="bldr-studio-bar__label">Studio:</span>
               {STUDIO_TOOLS
                 .filter(t => t.id !== 'gameplay' || /game|quiz|clicker|runner|memory|reaction|soccer/.test(projectType))
