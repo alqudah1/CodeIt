@@ -30,6 +30,18 @@
 .pricing-card small { display: block; margin-top: .8rem; color: #8b6c58; font-size: .72rem; line-height: 1.45; text-align: center; }
 .pricing-card__error { margin: .7rem 0 0; color: #a8382f; font-size: .78rem; font-weight: 800; text-align: center; }
 
+.pricing-next {
+  margin: -.4rem 0 1.25rem;
+  border: 1px solid #ead9cb;
+  border-radius: 14px;
+  background: rgba(255,255,255,.78);
+  padding: .9rem 1rem;
+}
+.pricing-next strong { color: #513b2e; font-size: .78rem; }
+.pricing-next ol { display: grid; gap: .38rem; margin: .55rem 0 0; padding-left: 1.15rem; }
+.pricing-next li { padding-left: .18rem; color: #704c37; font-size: .76rem; line-height: 1.4; }
+.pricing-next li::before { content: none; }
+
 .pricing-waitlist { display: grid; gap: .7rem; margin-top: auto; }
 .pricing-waitlist > label:first-child { color: #513b2e; font-size: .78rem; font-weight: 900; }
 .pricing-waitlist > input {

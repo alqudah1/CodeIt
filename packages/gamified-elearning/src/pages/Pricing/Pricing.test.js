@@ -36,15 +36,16 @@ describe('Pricing', () => {
     renderPricing();
     await screen.findByRole('checkbox');
 
-    expect(screen.getByText('Offer being tested')).toBeInTheDocument();
+    expect(screen.getByText('Pilot waitlist · no charge')).toBeInTheDocument();
     expect(screen.getByText('per month · planned')).toBeInTheDocument();
     expect(screen.getByText('No payment is being collected today')).toBeInTheDocument();
+    expect(screen.getByText('You decide whether to participate. Nothing starts automatically.')).toBeInTheDocument();
   });
 
   test('saves an adult lead through the waitlist endpoint', async () => {
     renderPricing();
     fireEvent.click(await screen.findByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: 'Join the founding family waitlist' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot waitlist — no charge' }));
 
     await waitFor(() => expect(screen.getByRole('button', { name: 'Interest saved — thank you' })).toBeDisabled());
     expect(screen.getByText('You are on the founding family waitlist.')).toBeInTheDocument();
@@ -52,7 +53,10 @@ describe('Pricing', () => {
       expect.stringMatching(/\/api\/founding-waitlist$/),
       expect.objectContaining({
         method: 'POST',
-        headers: expect.objectContaining({ Authorization: 'Bearer parent-token' }),
+        headers: expect.objectContaining({
+          Authorization: 'Bearer parent-token',
+          'X-CodeIt-Journey': expect.stringMatching(/^[0-9a-f-]{36}$/i),
+        }),
         body: JSON.stringify({
           email: 'parent@example.com',
           consent: true,
@@ -69,10 +73,10 @@ describe('Pricing', () => {
       .mockResolvedValueOnce({ ok: false });
     renderPricing();
     fireEvent.click(await screen.findByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: 'Join the founding family waitlist' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot waitlist — no charge' }));
 
     expect(await screen.findByRole('alert')).toHaveTextContent('We could not save that just now');
-    expect(screen.getByRole('button', { name: 'Join the founding family waitlist' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Join the pilot waitlist — no charge' })).toBeEnabled();
     expect(screen.queryByText('You are on the founding family waitlist.')).not.toBeInTheDocument();
   });
 
@@ -83,7 +87,7 @@ describe('Pricing', () => {
       target: { value: 'newparent@example.com' },
     });
     fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: 'Join the founding family waitlist' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot waitlist — no charge' }));
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
     expect(global.fetch.mock.calls[1][1].headers).not.toHaveProperty('Authorization');
@@ -93,7 +97,7 @@ describe('Pricing', () => {
   test('requires explicit adult consent before submitting contact information', async () => {
     renderPricing();
     await screen.findByRole('checkbox');
-    fireEvent.click(screen.getByRole('button', { name: 'Join the founding family waitlist' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot waitlist — no charge' }));
 
     expect(screen.getByRole('alert')).toHaveTextContent('confirm that you are an adult');
     expect(global.fetch).toHaveBeenCalledTimes(1);

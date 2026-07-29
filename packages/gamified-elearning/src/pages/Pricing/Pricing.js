@@ -6,6 +6,7 @@ import { useSEO } from '../../hooks/useSEO';
 import { trackEvent } from '../../utils/trackEvent';
 import { useAuth } from '../../context/AuthContext';
 import { ENDPOINTS } from '../../config/api';
+import { journeyHeaders } from '../../utils/journey';
 import './Pricing.css';
 
 const FREE_FEATURES = [
@@ -94,6 +95,7 @@ export default function Pricing() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...journeyHeaders(),
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
@@ -134,12 +136,20 @@ export default function Pricing() {
           </article>
 
           <article className="pricing-card pricing-card--founding">
-            <div className="pricing-card__flag">Offer being tested</div>
+            <div className="pricing-card__flag">Pilot waitlist · no charge</div>
             <p className="pricing-card__eyebrow">For parents and guardians</p>
             <h2>Founding Family</h2>
             <div className="pricing-price"><strong>US$12</strong><span>per month · planned</span></div>
             <p className="pricing-card__summary">More project creation, two learner profiles, and a clearer view of progress.</p>
             <ul>{FOUNDING_FEATURES.map((feature) => <li key={feature}>{feature}</li>)}</ul>
+            <div className="pricing-next" aria-label="What happens after joining the waitlist">
+              <strong>What happens next</strong>
+              <ol>
+                <li>Leave an adult email and join the pilot waitlist.</li>
+                <li>We contact you when a small testing group opens.</li>
+                <li>You decide whether to participate. Nothing starts automatically.</li>
+              </ol>
+            </div>
             {waitlistReady ? (
               <form className="pricing-waitlist" onSubmit={registerInterest}>
                 <label htmlFor="founding-email">Your email for pilot updates</label>
@@ -176,7 +186,7 @@ export default function Pricing() {
                 >
                   {interestStatus === 'saving' && 'Saving…'}
                   {interestStatus === 'saved' && 'Interest saved — thank you'}
-                  {(interestStatus === 'idle' || interestStatus === 'error' || interestStatus === 'parent-required' || interestStatus === 'consent-required') && 'Join the founding family waitlist'}
+                  {(interestStatus === 'idle' || interestStatus === 'error' || interestStatus === 'parent-required' || interestStatus === 'consent-required') && 'Join the pilot waitlist — no charge'}
                 </button>
               </form>
             ) : (
@@ -215,7 +225,7 @@ export default function Pricing() {
           <section className="pricing-thanks" aria-live="polite">
             <div>
               <strong>You are on the founding family waitlist.</strong>
-              <p>We will use the submitted email only to contact you about this pilot.</p>
+              <p>We will use the submitted email only for this pilot. Nothing starts and no billing happens automatically.</p>
             </div>
             <Link to="/builder">Start a free project <span aria-hidden="true">→</span></Link>
           </section>

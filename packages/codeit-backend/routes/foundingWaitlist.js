@@ -6,6 +6,7 @@ const { JWT_SECRET } = require('../config');
 const { recordEvent } = require('../analytics');
 const { isFoundingWaitlistReady, saveFoundingFamilyLead } = require('../foundingWaitlist');
 const { normalizeFoundingLead } = require('../foundingWaitlistUtils');
+const { normalizeJourneyId } = require('../analyticsEvents');
 
 const router = express.Router();
 const RATE_WINDOW_MS = 10 * 60 * 1000;
@@ -69,6 +70,7 @@ router.post('/', rateLimit, optionalAuth, async (req, res) => {
 
   await recordEvent('pricing_interest', {
     userId: req.user?.user_id,
+    journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')),
     meta: 'founding-family',
   });
 
