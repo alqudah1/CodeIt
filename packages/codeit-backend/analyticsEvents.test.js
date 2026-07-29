@@ -40,6 +40,8 @@ test('accepts only allowlisted metadata and never arbitrary content', () => {
   assert.equal(normalizeMeta('project_remix', 'game'), 'game');
   assert.equal(normalizeMeta('project_remix', 'a private project title'), null);
   assert.equal(normalizeMeta('project_personalize', 'change the title to my school name'), null);
+  assert.equal(normalizeMeta('activation_account_gate', 'save'), 'save');
+  assert.equal(normalizeMeta('activation_account_gate', 'private project title'), null);
   assert.equal(normalizeMeta('activation_next_step', 'publish'), 'publish');
   assert.equal(normalizeMeta('activation_next_step', 'private project title'), null);
 });
@@ -54,6 +56,7 @@ test('limits browser-reported events to events the server cannot infer', () => {
   assert.equal(CLIENT_REPORTED_EVENTS.has('pricing_interest'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('project_share'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('project_personalize'), true);
+  assert.equal(CLIENT_REPORTED_EVENTS.has('activation_account_gate'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('activation_next_step'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('signup_complete'), false);
   assert.equal(CLIENT_REPORTED_EVENTS.has('project_remix'), false);

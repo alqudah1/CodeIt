@@ -24,7 +24,8 @@ function BrandMark() {
 
 export default function Register() {
   const location = useLocation();
-  const familyEntry = new URLSearchParams(location.search || '').get('for') === 'family';
+  const searchParams = new URLSearchParams(location.search || '');
+  const familyEntry = searchParams.get('for') === 'family';
   const [step, setStep] = useState(familyEntry ? 'educator' : 'choose');
   const [error, setError] = useState(null);
   const [showPw, setShowPw] = useState(false);
@@ -32,15 +33,18 @@ export default function Register() {
 
   const { login } = useAuth();
   const navigate = useNavigate();
-  const requestedPath = location.state?.from;
+  const requestedPath = location.state?.from || (searchParams.get('from') === 'builder' ? '/builder' : null);
   const returnTo = typeof requestedPath === 'string' && requestedPath.startsWith('/') && !requestedPath.startsWith('//')
     ? requestedPath
     : '/';
+  const queryBuilderAction = ['save', 'publish'].includes(searchParams.get('action'))
+    ? searchParams.get('action')
+    : null;
   const resumeBuilderAction = ['save', 'publish'].includes(location.state?.resumeBuilderAction)
     ? location.state.resumeBuilderAction
     : location.state?.resumeBuilderSave === true
       ? 'save'
-      : null;
+      : queryBuilderAction;
   const resumePricingInterest = location.state?.resumePricingInterest === true;
   const returnState = resumeBuilderAction || resumePricingInterest
     ? {
@@ -49,6 +53,11 @@ export default function Register() {
       }
     : null;
   const authLinkState = { from: returnTo, ...(returnState || {}) };
+  const hasBuilderDraft = returnTo === '/builder' && Boolean(resumeBuilderAction);
+  const builderActionWord = resumeBuilderAction === 'publish' ? 'publish' : 'save';
+  const loginPath = hasBuilderDraft
+    ? `/login?from=builder&action=${resumeBuilderAction}`
+    : '/login';
 
   // Separate form instances per path to avoid field-name collisions
   const {
@@ -97,6 +106,10 @@ export default function Register() {
         { headers: { 'Content-Type': 'application/json', ...journeyHeaders() } }
       );
       login({ user: res.data.user, token: res.data.token });
+      if (hasBuilderDraft) {
+        navigate('/builder', { replace: true, state: returnState });
+        return;
+      }
       setPendingToken(res.data.token);
       setStep('parent-optional');
     } catch (err) {
@@ -157,24 +170,41 @@ export default function Register() {
         <div className="auth-card">
           <BrandMark />
           <header className="auth-header">
-            <span className="auth-pill">Get Started</span>
-            <h1>How would you like to start?</h1>
+            <span className="auth-pill">{hasBuilderDraft ? 'Project ready' : 'Get Started'}</span>
+            <h1>
+              {hasBuilderDraft
+                ? `${builderActionWord === 'publish' ? 'Publish' : 'Save'} your project`
+                : 'How would you like to start?'}
+            </h1>
+            {hasBuilderDraft && (
+              <p>Your work is safe in this browser. Choose the right account, and we’ll bring you straight back to finish.</p>
+            )}
           </header>
 
           <div className="auth-path-list">
             <button className="auth-path-card auth-path-card--student" onClick={() => setStep('student')}>
-              <span className="auth-path-card__title">I am a Student (13–18)</span>
-              <span className="auth-path-card__desc">Sign up with a username — no email needed</span>
+              <span className="auth-path-card__title">
+                {hasBuilderDraft
+                  ? `${builderActionWord === 'publish' ? 'Publish' : 'Save'} with a Student account (13–18)`
+                  : 'I am a Student (13–18)'}
+              </span>
+              <span className="auth-path-card__desc">Use a username — no student email needed</span>
             </button>
 
             <button className="auth-path-card auth-path-card--educator" onClick={() => setStep('educator')}>
-              <span className="auth-path-card__title">I am a Parent or Educator</span>
-              <span className="auth-path-card__desc">Create and manage a private profile for ages 8–12</span>
+              <span className="auth-path-card__title">
+                {hasBuilderDraft ? 'Continue with a Parent or Educator' : 'I am a Parent or Educator'}
+              </span>
+              <span className="auth-path-card__desc">Required to manage a private profile for ages 8–12</span>
             </button>
 
             <button className="auth-path-card auth-path-card--guest" onClick={() => navigate('/builder')}>
-              <span className="auth-path-card__title">Try CodeIt First</span>
-              <span className="auth-path-card__desc">Make a project without creating an account</span>
+              <span className="auth-path-card__title">
+                {hasBuilderDraft ? 'Go back to my project' : 'Try CodeIt First'}
+              </span>
+              <span className="auth-path-card__desc">
+                {hasBuilderDraft ? 'Keep editing without saving yet' : 'Make a project without creating an account'}
+              </span>
             </button>
           </div>
 
@@ -184,7 +214,7 @@ export default function Register() {
 
           <div className="auth-footer">
             Already have an account?{' '}
-            <Link to="/login" state={authLinkState}>Sign in</Link>
+            <Link to={loginPath} state={authLinkState}>Sign in</Link>
           </div>
         </div>
       </div>
@@ -203,8 +233,12 @@ export default function Register() {
 
           <header className="auth-header">
             <span className="auth-pill">Student</span>
-            <h1>Create your account</h1>
-            <p>Pick a username and start your coding journey.</p>
+            <h1>{hasBuilderDraft ? `Create an account to ${builderActionWord}` : 'Create your account'}</h1>
+            <p>
+              {hasBuilderDraft
+                ? 'Your project will be waiting when this short setup is finished.'
+                : 'Pick a username and start your coding journey.'}
+            </p>
           </header>
 
           <form className="auth-form" onSubmit={submitS(onStudentSubmit)}>
@@ -276,11 +310,15 @@ export default function Register() {
             </div>
 
             {error && <p className="error-message">{error}</p>}
-            <button type="submit" className="auth-button">Create Account and Play</button>
+            <button type="submit" className="auth-button">
+              {hasBuilderDraft
+                ? `Create account and ${builderActionWord} project`
+                : 'Create Account and Play'}
+            </button>
           </form>
 
           <div className="auth-footer">
-            Already have an account? <Link to="/login" state={authLinkState}>Sign in</Link>
+            Already have an account? <Link to={loginPath} state={authLinkState}>Sign in</Link>
           </div>
         </div>
       </div>
@@ -351,10 +389,16 @@ export default function Register() {
 
           <header className="auth-header">
             <span className="auth-pill">Parent / Educator</span>
-            <h1>{familyEntry ? 'Create a private learner profile' : 'Create your account'}</h1>
+            <h1>
+              {hasBuilderDraft
+                ? `Create an adult account to ${builderActionWord}`
+                : familyEntry ? 'Create a private learner profile' : 'Create your account'}
+            </h1>
             <p>
               {resumePricingInterest
                 ? 'Create an adult account to finish joining the founding-family waitlist.'
+                : hasBuilderDraft
+                  ? 'Your project is safe. After this setup, we’ll bring you back to finish.'
                 : familyEntry
                   ? 'Start with your adult account. After confirming your email, you can create a private profile for a learner ages 8–12.'
                   : 'Create an adult account for family or classroom use.'}
@@ -412,7 +456,7 @@ export default function Register() {
           </form>
 
           <div className="auth-footer">
-            Already have an account? <Link to="/login" state={authLinkState}>Sign in</Link>
+            Already have an account? <Link to={loginPath} state={authLinkState}>Sign in</Link>
           </div>
         </div>
       </div>

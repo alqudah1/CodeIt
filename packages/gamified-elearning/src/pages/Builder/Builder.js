@@ -1417,7 +1417,10 @@ export default function Builder() {
         builtSummary, conceptsUsed, promptHistory, savedAt: Date.now(),
       }));
     } catch (_) {}
-    navigate('/login', { state: { from: '/builder', resumeBuilderAction: action } });
+    void trackEvent('activation_account_gate', action, token);
+    navigate(`/register?from=builder&action=${action}`, {
+      state: { from: '/builder', resumeBuilderAction: action },
+    });
   };
 
   // ── Save project ───────────────────────────────────────────────────────────

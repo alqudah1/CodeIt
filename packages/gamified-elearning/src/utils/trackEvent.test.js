@@ -95,6 +95,17 @@ describe("trackEvent", () => {
     );
   });
 
+  test("records only the account action without project content", async () => {
+    await expect(trackEvent("activation_account_gate", "save")).resolves.toBe(true);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/api/analytics/event"),
+      expect.objectContaining({
+        body: JSON.stringify({ event_name: "activation_account_gate", meta: "save" }),
+      })
+    );
+  });
+
   test("sends only a fixed parent acquisition action", async () => {
     await expect(trackEvent("parent_cta_click", "pilot-email")).resolves.toBe(true);
 

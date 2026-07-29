@@ -94,9 +94,10 @@ describe('project studio opening', () => {
     expect(builderRequest[1].headers).toEqual(expect.objectContaining({
       'X-CodeIt-Journey': expect.stringMatching(/^[0-9a-f-]{36}$/i),
     }));
-    expect(mockNavigate).toHaveBeenCalledWith('/login', {
+    expect(mockNavigate).toHaveBeenCalledWith('/register?from=builder&action=save', {
       state: { from: '/builder', resumeBuilderAction: 'save' },
     });
+    expect(trackEvent).toHaveBeenCalledWith('activation_account_gate', 'save', null);
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
   });
 
@@ -109,7 +110,7 @@ describe('project studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save project to a free account' }));
 
     expect(JSON.parse(sessionStorage.getItem('codeit_builder_draft')).code).toContain('My game');
-    expect(mockNavigate).toHaveBeenCalledWith('/login', {
+    expect(mockNavigate).toHaveBeenCalledWith('/register?from=builder&action=save', {
       state: { from: '/builder', resumeBuilderAction: 'save' },
     });
   });
@@ -122,9 +123,10 @@ describe('project studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Share' }));
 
     expect(JSON.parse(sessionStorage.getItem('codeit_builder_draft')).code).toContain('My game');
-    expect(mockNavigate).toHaveBeenCalledWith('/login', {
+    expect(mockNavigate).toHaveBeenCalledWith('/register?from=builder&action=publish', {
       state: { from: '/builder', resumeBuilderAction: 'publish' },
     });
+    expect(trackEvent).toHaveBeenCalledWith('activation_account_gate', 'publish', null);
   });
 
   test('moves a first-time guest from creating to personalizing before save becomes primary', async () => {

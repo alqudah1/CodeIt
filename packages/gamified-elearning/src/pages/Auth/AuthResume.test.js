@@ -50,10 +50,12 @@ describe('builder authentication return', () => {
       replace: true,
       state: { resumeBuilderAction: 'publish' },
     }));
-    expect(screen.getByRole('link', { name: 'Create a free account' }).dataset.state).toContain('publish');
+    expect(screen.getByRole('link', { name: 'Create an account and publish' }).dataset.state).toContain('publish');
   });
 
   test('adult sign in describes only tools that are available', () => {
+    mockLocationState.from = '/';
+    delete mockLocationState.resumeBuilderAction;
     render(<Login />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Parent / Educator' }));
@@ -107,11 +109,13 @@ describe('builder authentication return', () => {
   test('a new parent account returns to the same builder action', async () => {
     render(<Register />);
 
-    fireEvent.click(screen.getByRole('button', { name: /I am a Parent or Educator/i }));
+    expect(screen.getByRole('heading', { name: 'Publish your project' })).toBeInTheDocument();
+    expect(screen.getByText(/Your work is safe in this browser/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Continue with a Parent or Educator/i }));
     fireEvent.change(screen.getByPlaceholderText('Your full name'), { target: { value: 'Parent Tester' } });
     fireEvent.change(screen.getByPlaceholderText('you@example.com'), { target: { value: 'parent@example.com' } });
     fireEvent.change(screen.getByPlaceholderText('Choose a password'), { target: { value: 'test-password' } });
-    expect(screen.getByText('Create an adult account for family or classroom use.')).toBeInTheDocument();
+    expect(screen.getByText(/Your project is safe/i)).toBeInTheDocument();
     expect(screen.getByText(/confirm your adult email to create a private learner profile/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Create Parent / Educator Account' }));
 
@@ -127,6 +131,41 @@ describe('builder authentication return', () => {
           'X-CodeIt-Journey': expect.stringMatching(/^[0-9a-f-]{36}$/i),
         }),
       })
+    );
+  });
+
+  test('a new eligible student returns directly to the project without an extra recovery step', async () => {
+    axios.post.mockResolvedValueOnce({
+      data: { user: { id: 10, name: 'builder_10', role: 'Student' }, token: 'student-token' },
+    });
+    render(<Register />);
+
+    fireEvent.click(screen.getByRole('button', { name: /Publish with a Student account/i }));
+    expect(screen.getByRole('heading', { name: 'Create an account to publish' })).toBeInTheDocument();
+    fireEvent.change(screen.getByPlaceholderText('e.g. coder_alex42'), { target: { value: 'builder_10' } });
+    fireEvent.change(screen.getByPlaceholderText('Choose a password'), { target: { value: 'test-password' } });
+    fireEvent.change(document.querySelector('input[type="date"]'), { target: { value: '2010-01-01' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Create account and publish project' }));
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/builder', {
+      replace: true,
+      state: { resumeBuilderAction: 'publish' },
+    }));
+    expect(screen.queryByRole('heading', { name: 'Add a parent or guardian email?' })).not.toBeInTheDocument();
+  });
+
+  test('refresh-safe query context keeps the project save handoff intact', () => {
+    delete mockLocationState.from;
+    delete mockLocationState.resumeBuilderAction;
+    mockLocationSearch = '?from=builder&action=save';
+
+    render(<Register />);
+
+    expect(screen.getByRole('heading', { name: 'Save your project' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Save with a Student account/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Sign in' })).toHaveAttribute(
+      'href',
+      '/login?from=builder&action=save'
     );
   });
 

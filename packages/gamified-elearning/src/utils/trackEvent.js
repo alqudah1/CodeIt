@@ -1,7 +1,7 @@
 import { ENDPOINTS } from "../config/api";
 import { journeyHeaders } from "./journey";
 
-const CLIENT_EVENTS = new Set(["acquisition_visit", "landing_cta_click", "learning_start", "parent_cta_click", "project_personalize", "activation_next_step", "project_share", "return_use", "pricing_view", "pricing_interest"]);
+const CLIENT_EVENTS = new Set(["acquisition_visit", "landing_cta_click", "learning_start", "parent_cta_click", "project_personalize", "activation_account_gate", "activation_next_step", "project_share", "return_use", "pricing_view", "pricing_interest"]);
 
 export async function trackEvent(eventName, meta = null, explicitToken = null) {
   if (!CLIENT_EVENTS.has(eventName)) return false;

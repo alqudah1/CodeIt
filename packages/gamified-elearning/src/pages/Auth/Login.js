@@ -17,15 +17,19 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const requestedPath = location.state?.from;
+  const searchParams = new URLSearchParams(location.search || '');
+  const requestedPath = location.state?.from || (searchParams.get('from') === 'builder' ? '/builder' : null);
   const returnTo = typeof requestedPath === 'string' && requestedPath.startsWith('/') && !requestedPath.startsWith('//')
     ? requestedPath
     : '/';
+  const queryBuilderAction = ['save', 'publish'].includes(searchParams.get('action'))
+    ? searchParams.get('action')
+    : null;
   const resumeBuilderAction = ['save', 'publish'].includes(location.state?.resumeBuilderAction)
     ? location.state.resumeBuilderAction
     : location.state?.resumeBuilderSave === true
       ? 'save'
-      : null;
+      : queryBuilderAction;
   const resumePricingInterest = location.state?.resumePricingInterest === true;
   const returnState = resumeBuilderAction || resumePricingInterest
     ? {
@@ -35,6 +39,11 @@ export default function Login() {
     : null;
   const authLinkState = { from: returnTo, ...(returnState || {}) };
   const passwordWasReset = location.state?.passwordReset === true;
+  const hasBuilderDraft = returnTo === '/builder' && Boolean(resumeBuilderAction);
+  const builderActionWord = resumeBuilderAction === 'publish' ? 'publish' : 'save';
+  const registerPath = hasBuilderDraft
+    ? `/register?from=builder&action=${resumeBuilderAction}`
+    : '/register';
 
   useSEO({
     title:       'Sign In | CodeIt',
@@ -95,12 +104,16 @@ export default function Login() {
 
         {/* Header */}
         <header className="auth-header">
-          <span className="auth-pill">Welcome back</span>
+          <span className="auth-pill">{hasBuilderDraft ? 'Project waiting' : 'Welcome back'}</span>
           <h1>
-            {role === 'student' ? 'Sign in to your account' : 'Parent / Educator sign in'}
+            {hasBuilderDraft
+              ? `Sign in to ${builderActionWord} your project`
+              : role === 'student' ? 'Sign in to your account' : 'Parent / Educator sign in'}
           </h1>
           <p>
-            {role === 'student'
+            {hasBuilderDraft
+              ? 'Your work is safe in this browser. Sign in and we’ll bring you straight back.'
+              : role === 'student'
               ? 'Pick up where you left off and keep your streak alive.'
               : 'Access your account, projects, and available learning tools.'}
           </p>
@@ -166,14 +179,16 @@ export default function Login() {
           <>
             <div className="auth-divider">or</div>
             <button type="button" className="auth-guest-btn" onClick={() => navigate('/builder')}>
-              Try the project builder — no account needed
+              {hasBuilderDraft ? 'Go back to my project' : 'Try the project builder — no account needed'}
             </button>
           </>
         )}
 
         <div className="auth-footer">
           New to CodeIt?{' '}
-          <Link to="/register" state={authLinkState}>Create a free account</Link>
+          <Link to={registerPath} state={authLinkState}>
+            {hasBuilderDraft ? `Create an account and ${builderActionWord}` : 'Create a free account'}
+          </Link>
         </div>
 
       </div>
