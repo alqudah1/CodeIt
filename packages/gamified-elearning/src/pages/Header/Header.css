@@ -469,7 +469,7 @@
 /* ================================================================
    RESPONSIVE
    ================================================================ */
-@media (max-width: 768px) {
+@media (max-width: 1060px) {
   .site-header__burger { display: flex; }
 
   .site-header__body {

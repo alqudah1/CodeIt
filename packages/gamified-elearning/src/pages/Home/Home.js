@@ -310,6 +310,7 @@ export default function Home() {
             <div>
               <strong>Build</strong>
               <Link to="/builder">Project studio</Link>
+              <Link to="/explore">Play and remix projects</Link>
               <Link to="/playground">Python playground</Link>
               <Link to="/lessons">Beginner lessons</Link>
             </div>

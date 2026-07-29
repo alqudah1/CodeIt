@@ -48,6 +48,7 @@ export default function SiteFooter() {
           </ul>
           <strong>Explore</strong>
           <ul>
+            <li><Link to="/explore">Play and remix projects</Link></li>
             <li><Link to="/games">Coding games</Link></li>
             <li><Link to="/journey">Learning journey</Link></li>
             <li><Link to="/blog">Guides and project ideas</Link></li>
