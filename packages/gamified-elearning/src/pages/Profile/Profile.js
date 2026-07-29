@@ -464,7 +464,7 @@ export default function Profile() {
         )}
 
         {String(user.role).toLowerCase() !== 'student' && (
-          <section className="profile-card profile-card--parent profile-family" aria-labelledby="family-controls-title">
+          <section id="family-controls" className="profile-card profile-card--parent profile-family" aria-labelledby="family-controls-title">
             <div className="profile-parent__heading">
               <div>
                 <p className="profile-parent__eyebrow">Parent-managed access</p>

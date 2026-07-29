@@ -7,6 +7,7 @@ import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
 import BrandLogo from '../../components/BrandLogo/BrandLogo';
+import { resolveAuthDestination } from '../../utils/authDestination';
 import './Auth.css';
 
 // ── Sub-component: Brand mark ─────────────────────────────────────────────────
@@ -118,7 +119,10 @@ export default function Register() {
         { headers: { 'Content-Type': 'application/json', ...journeyHeaders() } }
       );
       login({ user: res.data.user, token: res.data.token });
-      navigate(returnTo !== '/' ? returnTo : '/profile', { replace: true, state: returnState });
+      navigate(resolveAuthDestination(returnTo, res.data.user?.role, { newAccount: true }), {
+        replace: true,
+        state: returnState,
+      });
     } catch (err) {
       setError(err?.response?.data?.error || 'Registration failed. Please try again.');
     }
@@ -137,7 +141,10 @@ export default function Register() {
         // Non-fatal — proceed anyway
       }
     }
-    navigate(returnTo, { replace: true, state: returnState });
+    navigate(resolveAuthDestination(returnTo, 'Student', { newAccount: true }), {
+      replace: true,
+      state: returnState,
+    });
   };
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -316,7 +323,14 @@ export default function Register() {
             <button type="submit" className="auth-button">Save and Start Learning</button>
           </form>
 
-          <button type="button" className="auth-skip-btn" onClick={() => navigate(returnTo, { replace: true, state: returnState })}>
+          <button
+            type="button"
+            className="auth-skip-btn"
+            onClick={() => navigate(resolveAuthDestination(returnTo, 'Student', { newAccount: true }), {
+              replace: true,
+              state: returnState,
+            })}
+          >
             Skip for now
           </button>
         </div>

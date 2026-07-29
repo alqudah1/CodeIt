@@ -700,3 +700,4 @@
   .profile-parent__form fieldset { grid-template-columns: 1fr; }
   .profile-parent__recent li { align-items: flex-start; flex-direction: column; gap: 0.15rem; }
 }
+.profile-family { scroll-margin-top: 100px; }

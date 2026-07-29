@@ -61,6 +61,47 @@ describe('builder authentication return', () => {
     expect(screen.queryByText(/class dashboard/i)).not.toBeInTheDocument();
   });
 
+  test('a returning student with no requested action lands on progress', async () => {
+    mockLocationState.from = '/';
+    delete mockLocationState.resumeBuilderAction;
+    axios.post.mockResolvedValueOnce({
+      data: { user: { id: 8, name: 'Learner', role: 'Student' }, token: 'student-token' },
+    });
+    render(<Login />);
+
+    fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'learner_8' } });
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'test-password' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Sign In' }));
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/MainPage', {
+      replace: true,
+      state: null,
+    }));
+  });
+
+  test('a new student with no requested action lands on the first-win dashboard', async () => {
+    mockLocationState.from = '/';
+    delete mockLocationState.resumeBuilderAction;
+    axios.post.mockResolvedValueOnce({
+      data: { user: { id: 9, name: 'learner_9', role: 'Student' }, token: 'student-token' },
+    });
+    render(<Register />);
+
+    fireEvent.click(screen.getByRole('button', { name: /I am a Student/i }));
+    fireEvent.change(screen.getByPlaceholderText('e.g. coder_alex42'), { target: { value: 'learner_9' } });
+    fireEvent.change(screen.getByPlaceholderText('Choose a password'), { target: { value: 'test-password' } });
+    fireEvent.change(document.querySelector('input[type="date"]'), { target: { value: '2010-01-01' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Create Account and Play' }));
+
+    await screen.findByRole('heading', { name: 'Add a parent or guardian email?' });
+    fireEvent.click(screen.getByRole('button', { name: 'Skip for now' }));
+
+    expect(mockNavigate).toHaveBeenCalledWith('/MainPage', {
+      replace: true,
+      state: null,
+    });
+  });
+
   test('a new parent account returns to the same builder action', async () => {
     render(<Register />);
 
@@ -85,6 +126,23 @@ describe('builder authentication return', () => {
         }),
       })
     );
+  });
+
+  test('a new adult with no requested action lands on family setup', async () => {
+    mockLocationState.from = '/';
+    delete mockLocationState.resumeBuilderAction;
+    render(<Register />);
+
+    fireEvent.click(screen.getByRole('button', { name: /I am a Parent or Educator/i }));
+    fireEvent.change(screen.getByPlaceholderText('Your full name'), { target: { value: 'Parent Tester' } });
+    fireEvent.change(screen.getByPlaceholderText('you@example.com'), { target: { value: 'parent@example.com' } });
+    fireEvent.change(screen.getByPlaceholderText('Choose a password'), { target: { value: 'test-password' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Create Parent / Educator Account' }));
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/profile#family-controls', {
+      replace: true,
+      state: null,
+    }));
   });
 
   test('a new adult account returns to a shared project even without a builder action', async () => {

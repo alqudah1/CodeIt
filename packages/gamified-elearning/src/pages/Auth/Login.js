@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import BrandLogo from '../../components/BrandLogo/BrandLogo';
+import { resolveAuthDestination } from '../../utils/authDestination';
 import './Auth.css';
 
 export default function Login() {
@@ -56,7 +57,10 @@ export default function Login() {
         return;
       }
       login({ user: response.data.user, token: response.data.token });
-      navigate(returnTo, { replace: true, state: returnState });
+      navigate(resolveAuthDestination(returnTo, response.data.user?.role), {
+        replace: true,
+        state: returnState,
+      });
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed. Check your details and try again.');
     }

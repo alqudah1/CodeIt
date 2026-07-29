@@ -9,6 +9,8 @@ import LeaderboardPreview from '../../components/LeaderboardPreview';
 import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
 import { useSEO } from '../../hooks/useSEO';
 import { getXpProgress, getNextUnlock, getNextUnlockLabel } from '../../data/unlocks';
+import { isFirstWinState } from '../../utils/firstWin';
+import FirstWinPanel from './FirstWinPanel';
 import './MainPage.css';
 
 // Live content totals — updated whenever new lessons/quizzes ship
@@ -200,6 +202,13 @@ const MainPage = () => {
   );
 
   const levelInfo = useMemo(() => getXpProgress(xp), [xp]);
+  const showFirstWin = isFirstWinState({
+    loading: progressLoading,
+    completedLessons,
+    completedQuizzes,
+    completedPuzzles,
+    xp,
+  });
 
   // Microcopy — one place for all contextual hints throughout the dashboard
   const mc = useMemo(() => {
@@ -280,6 +289,8 @@ const MainPage = () => {
         <h1 className="seo-only">
           {firstName ? `${firstName}'s Python Dashboard` : 'Python Learning Dashboard'} — CodeIt
         </h1>
+
+        {showFirstWin && <FirstWinPanel token={token} />}
 
         {/* ══════════════════════════════════════════════════════
             YOUR NEXT MISSION — lesson-focused top action card
