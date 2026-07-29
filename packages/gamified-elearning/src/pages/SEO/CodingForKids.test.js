@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import CodingForKids from './CodingForKids';
 import { useSEO } from '../../hooks/useSEO';
 import { useFAQSchema } from '../../hooks/useFAQSchema';
@@ -15,13 +15,22 @@ jest.mock('../../components/SiteFooter/SiteFooter', () => () => null);
 jest.mock('../../hooks/useSEO', () => ({ useSEO: jest.fn() }));
 jest.mock('../../hooks/useFAQSchema', () => ({ useFAQSchema: jest.fn() }));
 jest.mock('../../utils/trackEvent', () => ({ trackEvent: jest.fn(() => Promise.resolve(true)) }));
+jest.mock('../../context/AuthContext', () => ({ useAuth: () => ({ user: null, token: null }) }));
+jest.mock('../../config/api', () => ({
+  ENDPOINTS: { foundingWaitlist: { join: '/api/founding-waitlist' } },
+}));
 
 describe('parent acquisition page', () => {
   beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
     useSEO.mockClear();
     useFAQSchema.mockClear();
     trackEvent.mockClear();
+    global.fetch = jest.fn().mockResolvedValue({ ok: true });
   });
+
+  afterEach(() => delete global.fetch);
 
   test('opens with a concrete project and honest trust commitments', () => {
     render(<CodingForKids />);
@@ -46,33 +55,40 @@ describe('parent acquisition page', () => {
     expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'try-project');
   });
 
-  test('sends parents to the explicit founding-family waitlist', () => {
+  test('captures an adult lead directly from the parent guide', async () => {
     render(<CodingForKids />);
 
-    const pilotLink = screen.getByRole('link', { name: 'Join the founding family waitlist' });
-    expect(pilotLink).toHaveAttribute('href', '/pricing');
-    expect(screen.getByText(/nothing is sent automatically/i)).toBeInTheDocument();
-    expect(document.querySelector('form')).not.toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText('Adult email'), {
+      target: { value: 'parent@example.com' },
+    });
+    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot list' }));
+
+    await waitFor(() => expect(screen.getByText(/You’re on the Founding Family pilot list/i)).toBeInTheDocument());
+    expect(global.fetch).toHaveBeenCalledWith('/api/founding-waitlist', expect.objectContaining({
+      method: 'POST',
+      body: JSON.stringify({
+        email: 'parent@example.com',
+        consent: true,
+        source: 'parents-guide',
+        company: '',
+      }),
+    }));
+    expect(screen.getByText(/Nothing starts automatically/i)).toBeInTheDocument();
     expect(useSEO).toHaveBeenCalledWith(expect.objectContaining({ canonical: '/coding-for-kids' }));
     expect(useFAQSchema).toHaveBeenCalledWith(expect.arrayContaining([
       expect.objectContaining({ q: 'What age is CodeIt for?' }),
     ]));
-
-    fireEvent.click(pilotLink);
-    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'view-pricing');
   });
 
-  test('gives adults a direct email option without claiming a message was sent', () => {
+  test('keeps the planned family plan as a separately measured detail link', () => {
     render(<CodingForKids />);
 
-    const emailLink = screen.getByRole('link', { name: 'Or email us about the pilot' });
-    expect(emailLink).toHaveAttribute(
-      'href',
-      expect.stringMatching(/^mailto:hello@codeitlearn\.com\?subject=/)
-    );
-    expect(screen.getByText(/opens your email app; nothing is sent automatically/i)).toBeInTheDocument();
+    const planLink = screen.getByRole('link', { name: 'See the planned family plan' });
+    expect(planLink).toHaveAttribute('href', '/pricing');
+    expect(screen.getByText(/No charge or subscription starts/i)).toBeInTheDocument();
 
-    fireEvent.click(emailLink);
-    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'pilot-email');
+    fireEvent.click(planLink);
+    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'view-pricing');
   });
 });

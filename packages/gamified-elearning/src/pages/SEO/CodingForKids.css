@@ -590,6 +590,11 @@
   gap: 16px;
 }
 
+.parents-pilot__action .founding-signup {
+  margin-top: 0;
+  background: rgba(255, 253, 249, 0.9);
+}
+
 .parents-pilot__action > span {
   color: var(--parents-muted);
   font-size: 0.78rem;

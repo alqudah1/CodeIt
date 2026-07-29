@@ -47,6 +47,26 @@ describe('HomePilotSignup', () => {
     }));
   });
 
+  test('uses the fixed parent-guide source when embedded on that page', async () => {
+    render(<HomePilotSignup source="parents-guide" showHeading={false} />);
+    expect(screen.queryByText('Parent, guardian, or educator?')).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText('Adult email'), {
+      target: { value: 'guide-parent@example.com' },
+    });
+    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot list' }));
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledWith('/api/founding-waitlist', expect.objectContaining({
+      body: JSON.stringify({
+        email: 'guide-parent@example.com',
+        consent: true,
+        source: 'parents-guide',
+        company: '',
+      }),
+    })));
+  });
+
   test('does not submit without explicit adult consent', () => {
     render(<HomePilotSignup />);
     fireEvent.change(screen.getByLabelText('Adult email'), {

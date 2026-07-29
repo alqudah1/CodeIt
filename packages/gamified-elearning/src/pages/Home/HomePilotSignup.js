@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { ENDPOINTS } from '../../config/api';
 import { journeyHeaders } from '../../utils/journey';
+import './HomePilotSignup.css';
 
 const PILOT_EMAIL_HREF = [
   'mailto:hello@codeitlearn.com',
@@ -10,8 +11,10 @@ const PILOT_EMAIL_HREF = [
   '&body=Hi%20CodeIt%2C%0A%0AI%27m%20a%20parent%2C%20guardian%2C%20or%20educator%20interested%20in%20the%20Founding%20Family%20pilot.%0A%0AThanks!',
 ].join('');
 
-export default function HomePilotSignup() {
+export default function HomePilotSignup({ source = 'homepage', showHeading = true }) {
   const { user, token } = useAuth();
+  const normalizedSource = source === 'parents-guide' ? 'parents-guide' : 'homepage';
+  const emailId = normalizedSource === 'parents-guide' ? 'parents-guide-pilot-email' : 'homepage-pilot-email';
   const isStudentAccount = String(user?.role || '').toLowerCase() === 'student';
   const [email, setEmail] = useState(user?.email || '');
   const [consent, setConsent] = useState(false);
@@ -48,7 +51,7 @@ export default function HomePilotSignup() {
         body: JSON.stringify({
           email: email.trim(),
           consent: true,
-          source: 'homepage',
+          source: normalizedSource,
           company,
         }),
       });
@@ -63,7 +66,7 @@ export default function HomePilotSignup() {
 
   if (status === 'saved') {
     return (
-      <div className="studio-pilot studio-pilot--saved" aria-live="polite">
+      <div className="founding-signup founding-signup--saved" aria-live="polite">
         <strong>You’re on the Founding Family pilot list.</strong>
         <p>Nothing starts automatically. We’ll contact the adult email you submitted when a small testing group opens.</p>
         <Link to="/builder">Try a free project now <span aria-hidden="true">→</span></Link>
@@ -72,15 +75,17 @@ export default function HomePilotSignup() {
   }
 
   return (
-    <form className="studio-pilot" onSubmit={submit}>
-      <div className="studio-pilot__heading">
-        <strong>Parent, guardian, or educator?</strong>
-        <span>Join the small Founding Family pilot list. No charge and no subscription.</span>
-      </div>
-      <label htmlFor="homepage-pilot-email">Adult email</label>
-      <div className="studio-pilot__row">
+    <form className="founding-signup" onSubmit={submit}>
+      {showHeading && (
+        <div className="founding-signup__heading">
+          <strong>Parent, guardian, or educator?</strong>
+          <span>Join the small Founding Family pilot list. No charge and no subscription.</span>
+        </div>
+      )}
+      <label htmlFor={emailId}>Adult email</label>
+      <div className="founding-signup__row">
         <input
-          id="homepage-pilot-email"
+          id={emailId}
           type="email"
           inputMode="email"
           autoComplete="email"
@@ -97,7 +102,7 @@ export default function HomePilotSignup() {
           {status === 'saving' ? 'Joining…' : 'Join the pilot list'}
         </button>
       </div>
-      <label className="studio-pilot__consent">
+      <label className="founding-signup__consent">
         <input
           type="checkbox"
           checked={consent}
@@ -109,7 +114,7 @@ export default function HomePilotSignup() {
         />
         <span>I am an adult and agree to receive updates only about this CodeIt pilot.</span>
       </label>
-      <label className="studio-pilot__trap" aria-hidden="true">
+      <label className="founding-signup__trap" aria-hidden="true">
         Company
         <input
           type="text"
@@ -119,10 +124,10 @@ export default function HomePilotSignup() {
           autoComplete="off"
         />
       </label>
-      {status === 'consent-required' && <p className="studio-pilot__error" role="alert">Please confirm that you are an adult and want pilot updates.</p>}
-      {status === 'parent-required' && <p className="studio-pilot__error" role="alert">Ask a parent, guardian, or educator to join using an adult account.</p>}
+      {status === 'consent-required' && <p className="founding-signup__error" role="alert">Please confirm that you are an adult and want pilot updates.</p>}
+      {status === 'parent-required' && <p className="founding-signup__error" role="alert">Ask a parent, guardian, or educator to join using an adult account.</p>}
       {status === 'error' && (
-        <p className="studio-pilot__error" role="alert">
+        <p className="founding-signup__error" role="alert">
           We could not save that just now. <a href={PILOT_EMAIL_HREF}>Email us instead.</a>
         </p>
       )}

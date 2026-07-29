@@ -4,6 +4,7 @@ import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
 import { useFAQSchema } from '../../hooks/useFAQSchema';
 import { trackEvent } from '../../utils/trackEvent';
+import HomePilotSignup from '../Home/HomePilotSignup';
 import './CodingForKids.css';
 
 const FAQS = [
@@ -55,12 +56,6 @@ const PATHS = [
     linkLabel: 'Try the playground',
   },
 ];
-
-const PILOT_EMAIL_HREF = [
-  'mailto:hello@codeitlearn.com',
-  '?subject=CodeIt%20Founding%20Family%20pilot',
-  '&body=Hi%20CodeIt%2C%0A%0AI%27m%20interested%20in%20the%20Founding%20Family%20pilot.%0A%0AMy%20learner%27s%20age%20range%3A%0AWhat%20we%27d%20like%20to%20build%3A%0A%0AThanks!',
-].join('');
 
 export default function CodingForKids() {
   useSEO({
@@ -283,21 +278,15 @@ export default function CodingForKids() {
                 </p>
               </div>
               <div className="parents-pilot__action">
+                <HomePilotSignup source="parents-guide" showHeading={false} />
                 <Link
                   to="/pricing"
-                  className="parents-button parents-button--primary"
+                  className="parents-button parents-button--quiet"
                   onClick={() => void trackEvent('parent_cta_click', 'view-pricing')}
                 >
-                  Join the founding family waitlist
+                  See the planned family plan
                 </Link>
-                <a
-                  href={PILOT_EMAIL_HREF}
-                  className="parents-button parents-button--quiet"
-                  onClick={() => void trackEvent('parent_cta_click', 'pilot-email')}
-                >
-                  Or email us about the pilot
-                </a>
-                <span>No charge. The email option opens your email app; nothing is sent automatically.</span>
+                <span>No charge or subscription starts by joining the pilot list.</span>
               </div>
             </div>
           </div>
