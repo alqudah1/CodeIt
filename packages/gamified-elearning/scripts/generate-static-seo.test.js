@@ -76,3 +76,15 @@ test('legal search documents use trust-specific copy', () => {
   assert.match(terms, /Read the Terms of Use/);
   assert.doesNotMatch(terms, /What you can do on CodeIt/);
 });
+
+test('private application pages are crawlable but excluded with X-Robots-Tag', () => {
+  const robots = fs.readFileSync(path.resolve(__dirname, '../public/robots.txt'), 'utf8');
+  const htaccess = fs.readFileSync(path.resolve(__dirname, '../public/.htaccess'), 'utf8');
+
+  assert.doesNotMatch(robots, /Disallow:\s*\/(login|register|MainPage|admin|character|leaderboard|quiz)/);
+  assert.match(htaccess, /X-Robots-Tag "noindex, nofollow"/);
+
+  for (const route of ['login', 'register', 'MainPage', 'admin', 'character', 'leaderboard', 'quiz']) {
+    assert.match(htaccess, new RegExp(`\\|${route}\\||\\(${route}\\||\\|${route}\\)`));
+  }
+});

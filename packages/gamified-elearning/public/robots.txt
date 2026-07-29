@@ -1,19 +1,8 @@
 User-agent: *
 Allow: /
 
-# Do not index auth, admin, or personal dashboard pages
-Disallow: /login
-Disallow: /register
-Disallow: /MainPage
-Disallow: /admin
-Disallow: /admin/
-Disallow: /character
-Disallow: /leaderboard
-Disallow: /quiz/
-
-# Allow all static assets so JS/CSS are renderable
-Allow: /static/
-Allow: /brand/
-Allow: /images/
+# Search exclusion for account, admin, and personal pages is sent with the
+# X-Robots-Tag HTTP header. Crawlers must be allowed to fetch those pages so
+# they can read and obey that noindex instruction.
 
 Sitemap: https://codeitlearn.com/sitemap.xml
