@@ -207,10 +207,72 @@
 .studio-proof p:first-child { border-left: 0; }
 .studio-proof strong { display: block; margin-bottom: 0.2rem; color: var(--studio-ink); }
 
-.studio-start, .studio-loop, .studio-family, .studio-trust {
+.studio-traction, .studio-start, .studio-loop, .studio-family, .studio-trust {
   width: min(1120px, calc(100% - 48px));
   margin: 0 auto;
   padding: clamp(5rem, 9vw, 8.5rem) 0;
+}
+
+.studio-traction {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+  align-items: end;
+  gap: clamp(2.5rem, 7vw, 7rem);
+  border-bottom: 1px solid var(--studio-line);
+}
+.studio-traction__heading h2 {
+  margin-bottom: 1rem;
+  font-family: "Arvo", serif;
+  font-size: clamp(2rem, 4vw, 3.35rem);
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+.studio-traction__heading > p:last-child {
+  margin-bottom: 0;
+  color: var(--studio-muted);
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+.studio-traction__metrics {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border: 1px solid var(--studio-line);
+  border-radius: 22px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0 18px 50px rgba(86, 51, 27, 0.08);
+}
+.studio-traction__metrics div {
+  min-height: 138px;
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  border-left: 1px solid var(--studio-line);
+}
+.studio-traction__metrics div:first-child { border-left: 0; }
+.studio-traction__metrics div:nth-child(1),
+.studio-traction__metrics div:nth-child(2) { grid-column: span 3; }
+.studio-traction__metrics div:nth-child(n+3) {
+  grid-column: span 2;
+  border-top: 1px solid var(--studio-line);
+}
+.studio-traction__metrics dt {
+  color: var(--studio-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.35;
+}
+.studio-traction__metrics dd {
+  margin: 0;
+  color: var(--studio-orange-dark);
+  font-family: "Arvo", serif;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
 .studio-section-heading { max-width: 760px; margin-bottom: 2.4rem; }
@@ -373,13 +435,14 @@
   .studio-preview { width: min(100%, 760px); transform: none; }
   .studio-pixel { right: -1rem; }
   .studio-loop { grid-template-columns: 1fr; }
+  .studio-traction { grid-template-columns: 1fr; align-items: start; }
   .studio-family { grid-template-columns: 1fr; }
   .studio-family__email { max-width: 720px; width: 100%; }
   .studio-loop__visual { max-width: 720px; width: 100%; }
 }
 
 @media (max-width: 780px) {
-  .studio-hero, .studio-start, .studio-loop, .studio-family, .studio-trust, .studio-footer__top, .studio-footer__bottom { width: min(100% - 32px, 1120px); }
+  .studio-hero, .studio-traction, .studio-start, .studio-loop, .studio-family, .studio-trust, .studio-footer__top, .studio-footer__bottom { width: min(100% - 32px, 1120px); }
   .studio-hero { padding-top: 3.2rem; }
   .studio-hero h1 { font-size: clamp(2.55rem, 12vw, 4rem); }
   .studio-preview__canvas { min-height: 320px; }
@@ -413,6 +476,19 @@
   .studio-hero__visual { padding-bottom: 7.5rem; }
   .studio-pixel { right: 50%; bottom: -0.5rem; width: 185px; transform: translateX(56%); }
   .studio-pixel figcaption { right: 72%; bottom: 0.75rem; width: 145px; }
+  .studio-traction__metrics { grid-template-columns: 1fr 1fr; }
+  .studio-traction__metrics div,
+  .studio-traction__metrics div:nth-child(1),
+  .studio-traction__metrics div:nth-child(2),
+  .studio-traction__metrics div:nth-child(n+3) {
+    min-height: 118px;
+    grid-column: auto;
+    border-top: 1px solid var(--studio-line);
+    border-left: 1px solid var(--studio-line);
+  }
+  .studio-traction__metrics div:nth-child(-n+2) { border-top: 0; }
+  .studio-traction__metrics div:nth-child(odd) { border-left: 0; }
+  .studio-traction__metrics div:last-child { grid-column: 1 / -1; }
   .studio-loop__visual { min-height: 390px; }
   .studio-loop__window { width: 92%; transform: translateY(-8%); }
   .studio-loop__lesson-card { right: 3%; bottom: 5%; width: 68%; }

@@ -28,4 +28,14 @@ describe('Home', () => {
     fireEvent.click(pilotLink);
     expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'view-pricing');
   });
+
+  test('shows rounded, defensible traction without claiming active users', () => {
+    render(<Home />);
+
+    expect(screen.getByRole('heading', { name: 'Learners are already building momentum.' })).toBeInTheDocument();
+    expect(screen.getByText('200+')).toBeInTheDocument();
+    expect(screen.getByText('140k+')).toBeInTheDocument();
+    expect(screen.getByText('1,900+')).toBeInTheDocument();
+    expect(screen.queryByText(/active users/i)).not.toBeInTheDocument();
+  });
 });

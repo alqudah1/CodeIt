@@ -194,6 +194,36 @@ export default function Home() {
             <p><strong>Show meaningful progress.</strong> Save, publish, and keep parents informed.</p>
           </section>
 
+          <section className="studio-traction" aria-labelledby="studio-traction-title">
+            <div className="studio-traction__heading">
+              <p className="studio-kicker">Real learning activity</p>
+              <h2 id="studio-traction-title">Learners are already building momentum.</h2>
+              <p>Rounded platform totals, verified in July 2026. Active usage is measured separately from these all-time milestones.</p>
+            </div>
+            <dl className="studio-traction__metrics">
+              <div>
+                <dt>Registered accounts</dt>
+                <dd>200+</dd>
+              </div>
+              <div>
+                <dt>XP earned</dt>
+                <dd>140k+</dd>
+              </div>
+              <div>
+                <dt>Lessons completed</dt>
+                <dd>600+</dd>
+              </div>
+              <div>
+                <dt>Quizzes &amp; puzzles completed</dt>
+                <dd>1,900+</dd>
+              </div>
+              <div>
+                <dt>Learners with a streak</dt>
+                <dd>50+</dd>
+              </div>
+            </dl>
+          </section>
+
           <section className="studio-start" aria-labelledby="studio-start-title">
             <div className="studio-section-heading">
               <p className="studio-kicker">What a student actually does</p>
