@@ -72,11 +72,38 @@ router.get('/leaderboard', authenticateToken, async (req, res) => {
       SELECT
         u.user_id AS student_id,
         (
-          COALESCE((SELECT SUM(xp_earned) FROM Student_Quiz_Attempt   WHERE student_id = u.user_id), 0) +
-          COALESCE((SELECT SUM(xp_earned) FROM Student_Lesson_Progress WHERE user_id    = u.user_id), 0) +
-          COALESCE((SELECT SUM(xp_earned) FROM Student_Puzzle_Progress WHERE user_id    = u.user_id), 0)
+          COALESCE(q.quiz_xp, 0) +
+          COALESCE(l.lesson_xp, 0) +
+          COALESCE(p.puzzle_xp, 0)
         ) AS xp_points
       FROM Users u
+      LEFT JOIN (
+        SELECT student_id, SUM(best_xp) AS quiz_xp
+        FROM (
+          SELECT student_id, quiz_id, MAX(xp_earned) AS best_xp
+          FROM Student_Quiz_Attempt
+          GROUP BY student_id, quiz_id
+        ) quiz_best
+        GROUP BY student_id
+      ) q ON q.student_id = u.user_id
+      LEFT JOIN (
+        SELECT user_id, SUM(best_xp) AS lesson_xp
+        FROM (
+          SELECT user_id, lesson_id, MAX(xp_earned) AS best_xp
+          FROM Student_Lesson_Progress
+          GROUP BY user_id, lesson_id
+        ) lesson_best
+        GROUP BY user_id
+      ) l ON l.user_id = u.user_id
+      LEFT JOIN (
+        SELECT user_id, SUM(best_xp) AS puzzle_xp
+        FROM (
+          SELECT user_id, puzzle_id, MAX(xp_earned) AS best_xp
+          FROM Student_Puzzle_Progress
+          GROUP BY user_id, puzzle_id
+        ) puzzle_best
+        GROUP BY user_id
+      ) p ON p.user_id = u.user_id
       WHERE u.role = 'student'
       HAVING xp_points > 0
       ORDER BY xp_points DESC
