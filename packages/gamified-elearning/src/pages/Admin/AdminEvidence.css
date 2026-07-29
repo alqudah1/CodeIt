@@ -23,10 +23,18 @@
 .evidence__bar b { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #f46f25, #ffb15f); }
 .evidence__bar strong { text-align: right; }
 .evidence__footer { margin-top: 1rem; border-radius: 14px; padding: 1rem 1.15rem; background: #38291f; color: #fff8f1; line-height: 1.5; }
+.evidence__activity { margin-top: 1rem; border: 1px solid #e7cdbb; border-radius: 18px; padding: 1.25rem; background: #fffaf6; }
+.evidence__activity header p { margin: 0 0 .35rem; color: #bd4e14; font-size: .7rem; font-weight: 1000; letter-spacing: .1em; text-transform: uppercase; }
+.evidence__activity header h2 { margin: 0; font: 700 1.45rem Arvo, Georgia, serif; }
+.evidence__activity header span, .evidence__activity > p { display: block; margin-top: .45rem; color: #72594d; font-size: .84rem; line-height: 1.5; }
+.evidence__activity > div { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; margin-top: 1rem; }
+.evidence__activity article { border: 1px solid #ead8c9; border-radius: 14px; padding: 1rem; background: #fff; }
+.evidence__activity article strong { display: block; color: #f46f25; font: 700 2rem Arvo, Georgia, serif; }
+.evidence__activity article span { color: #72594d; font-size: .78rem; font-weight: 900; }
 
 @media (max-width: 900px) {
   .evidence__cards { grid-template-columns: repeat(2, 1fr); }
-  .evidence__dates, .evidence__charts { grid-template-columns: 1fr; }
+  .evidence__dates, .evidence__charts, .evidence__activity > div { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 520px) {

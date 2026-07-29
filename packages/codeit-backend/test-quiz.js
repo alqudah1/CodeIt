@@ -24,6 +24,7 @@ const progressNotificationRoutes = require('./routes/progressNotifications');
 const foundingWaitlistRoutes = require('./routes/foundingWaitlist');
 const adminRoutes = require('./routes/admin');
 const familyRoutes = require('./routes/family');
+const activityRoutes = require('./routes/activity');
 const { legacyAccessGuard } = require('./legacyParentReview');
 
 const app = express();
@@ -76,6 +77,7 @@ app.use('/api/progress-notifications', progressNotificationRoutes);
 app.use('/api/founding-waitlist', foundingWaitlistRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/family', familyRoutes);
+app.use('/api/activity', activityRoutes);
 
 const PORT = Number(process.env.PORT || 8080);
 app.listen(PORT, () => {

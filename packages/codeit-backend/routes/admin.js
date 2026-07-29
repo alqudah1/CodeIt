@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const pool = require('../db');
 const { JWT_SECRET } = require('../config');
 const { ready: legacyParentReviewReady } = require('../legacyParentReview');
+const { getActivitySummary } = require('../userActivity');
 
 const router = express.Router();
 
@@ -30,6 +31,7 @@ router.use(requireAdmin);
 
 router.get('/evidence', async (_req, res) => {
   try {
+    const activity = await getActivitySummary();
     const [[totals]] = await pool.query(`
       SELECT
         (SELECT COUNT(*) FROM Users) AS accounts,
@@ -74,10 +76,11 @@ router.get('/evidence', async (_req, res) => {
 
     res.json({
       totals,
+      activity,
       lessonReach,
       xpDistribution,
       caveat: 'Historical product activity. These records are not verified paying customers and may include internal or test accounts.',
-      loginTracking: 'Login counts were not recorded by the historical product.',
+      loginTracking: 'Historical login counts were not recorded. New signed-in activity is measured from this release forward.',
     });
   } catch (error) {
     console.error('admin/evidence:', error.code || error.message);
@@ -87,6 +90,7 @@ router.get('/evidence', async (_req, res) => {
 
 router.get('/overview', async (_req, res) => {
   try {
+    const activity = await getActivitySummary();
     const [[totals]] = await pool.query(`
       SELECT
         (SELECT COUNT(*) FROM Users) AS total_users,
@@ -108,7 +112,7 @@ router.get('/overview', async (_req, res) => {
       ORDER BY u.created_at DESC
       LIMIT 10
     `);
-    res.json({ totals, recentSignups });
+    res.json({ totals, recentSignups, activity });
   } catch (error) {
     console.error('admin/overview:', error.code || error.message);
     res.status(500).json({ error: 'Could not load admin overview.' });

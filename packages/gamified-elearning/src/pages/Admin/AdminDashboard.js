@@ -26,8 +26,12 @@ const AdminDashboard = () => {
   }, [token]);
 
   const t = data?.totals || {};
+  const activity = data?.activity || {};
 
   const CARDS = [
+    { key: 'daily_active_users',     label: 'Active Today (DAU)',    cls: 'accent', source: activity },
+    { key: 'weekly_active_users',    label: 'Active 7 Days (WAU)',   cls: 'green',  source: activity },
+    { key: 'monthly_active_users',   label: 'Active 30 Days (MAU)',  cls: 'orange', source: activity },
     { key: 'total_users',            label: 'Total Users',           cls: 'accent' },
     { key: 'signups_today',          label: 'Signups Today',         cls: 'green'  },
     { key: 'signups_week',           label: 'Signups This Week',     cls: 'orange' },
@@ -36,7 +40,7 @@ const AdminDashboard = () => {
     { key: 'total_quiz_attempts',    label: 'Quiz Attempts',         cls: ''       },
     { key: 'journey_puzzle_completions', label: 'Puzzle Completions', cls: ''      },
     { key: 'avatars_customised',     label: 'Avatars Customised',    cls: ''       },
-    { key: 'students_with_streak',   label: 'Active Streaks',        cls: 'orange' },
+    { key: 'students_with_streak',   label: 'Learners With a Streak', cls: 'orange' },
     { key: 'longest_active_streak',  label: 'Longest Streak',        cls: 'teal'   },
   ];
 
@@ -50,10 +54,17 @@ const AdminDashboard = () => {
 
       {data && (
         <>
+          <div className="adm-info">
+            <strong>Active-user definition:</strong>{' '}
+            {activity.definition || 'A non-admin signed-in account that opened or used CodeIt during the selected period.'}
+            {' '}Tracking {activity.tracking_started_at
+              ? `started ${fmtDate(activity.tracking_started_at)}`
+              : 'starts with this release'}; historical accounts are not backfilled.
+          </div>
           <div className="adm-stat-grid">
-            {CARDS.map(({ key, label, cls }) => (
+            {CARDS.map(({ key, label, cls, source }) => (
               <div key={key} className="adm-stat-card">
-                <div className={`adm-stat-num${cls ? ` ${cls}` : ''}`}>{fmt(t[key])}</div>
+                <div className={`adm-stat-num${cls ? ` ${cls}` : ''}`}>{fmt((source || t)[key])}</div>
                 <div className="adm-stat-lbl">{label}</div>
               </div>
             ))}

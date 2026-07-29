@@ -1,4 +1,14 @@
 /* ── Admin shell ──────────────────────────────────────────── */
+.adm-info {
+  margin-bottom: 1rem;
+  border: 1px solid #f0cdb8;
+  border-radius: 12px;
+  padding: .85rem 1rem;
+  background: #fff7ef;
+  color: #72594d;
+  font-size: .84rem;
+  line-height: 1.5;
+}
 .adm-shell {
   display: flex;
   min-height: 100vh;

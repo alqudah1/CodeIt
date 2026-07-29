@@ -11,6 +11,7 @@ import { ProgressProvider } from './context/ProgressContext';
 import { CharacterProvider } from './context/CharacterContext';
 import RequireAdmin from './pages/Admin/RequireAdmin';
 import AcquisitionTracker from './components/AcquisitionTracker/AcquisitionTracker';
+import ActivityTracker from './components/ActivityTracker/ActivityTracker';
 
 // ── Lazy-loaded routes ────────────────────────────────────────────
 const MainPage       = lazy(() => import('./pages/MainPage/MainPage'));
@@ -108,6 +109,7 @@ const App = () => (
       <CharacterProvider>
         <Router>
           <AcquisitionTracker />
+          <ActivityTracker />
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* ── Public / always-eager ── */}

@@ -10,6 +10,7 @@ const { normalizeJourneyId } = require('../analyticsEvents');
 const { updateSettings } = require('../progressNotifications');
 const { requestPasswordReset, resetPassword, validPassword } = require('../passwordReset');
 const { childAccessStatus, createReviewSession } = require('../legacyParentReview');
+const { recordUserActivity } = require('../userActivity');
 
 // ── POST /api/signup ───────────────────────────────────────────────────────────
 router.post('/signup', async (req, res) => {
@@ -102,6 +103,7 @@ router.post('/signup', async (req, res) => {
     const user_id    = result.insertId;
     const displayName = isStudent ? username.trim() : name.trim();
     const token = jwt.sign({ user_id, role, name: displayName }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+    void recordUserActivity(user_id, 'login');
 
     res.json({
       message: isStudent ? 'Student created' : 'Educator created',
@@ -170,6 +172,7 @@ router.post('/login', async (req, res) => {
       JWT_SECRET,
       { expiresIn: JWT_EXPIRY }
     );
+    void recordUserActivity(user.user_id, 'login');
 
     res.json({
       message: 'Login successful',

@@ -31,8 +31,15 @@ describe('AdminEvidence', () => {
         },
         lessonReach: [{ lesson_id: 1, learners: 165 }],
         xpDistribution: [{ bucket: '1,000+ XP', learners: 46 }],
+        activity: {
+          daily_active_users: 3,
+          weekly_active_users: 9,
+          monthly_active_users: 14,
+          definition: 'A non-admin signed-in account that opened or used CodeIt during the selected period.',
+          measurement_note: 'Tracking begins with this release; historical accounts are not backfilled as active users.',
+        },
         caveat: 'Historical product activity. These records are not verified paying customers and may include internal or test accounts.',
-        loginTracking: 'Login counts were not recorded by the historical product.',
+        loginTracking: 'Historical login counts were not recorded. New signed-in activity is measured from this release forward.',
       }),
     });
   });
@@ -47,6 +54,9 @@ describe('AdminEvidence', () => {
     expect(screen.getByText('144,060')).toBeInTheDocument();
     expect(screen.getByText(/not verified paying customers/i)).toBeInTheDocument();
     expect(screen.getByText(/Login counts were not recorded/i)).toBeInTheDocument();
+    expect(screen.getByText('Recent active users')).toBeInTheDocument();
+    expect(screen.getByText('14')).toBeInTheDocument();
+    expect(screen.getByText(/historical accounts are not backfilled/i)).toBeInTheDocument();
     expect(screen.queryByText(/email/i)).toBeInTheDocument();
     expect(global.fetch).toHaveBeenCalledWith('/api/admin/evidence', {
       headers: { Authorization: 'Bearer admin-token' },

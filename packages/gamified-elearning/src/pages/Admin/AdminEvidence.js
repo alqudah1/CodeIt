@@ -33,6 +33,7 @@ export default function AdminEvidence() {
   }, [token]);
 
   const totals = data?.totals || {};
+  const activity = data?.activity || {};
   const cards = [
     ['Accounts in database', totals.accounts],
     ['Student profiles', totals.student_profiles],
@@ -79,6 +80,20 @@ export default function AdminEvidence() {
                   <span>{label}</span>
                 </article>
               ))}
+            </section>
+
+            <section className="evidence__activity" aria-label="Measured active users">
+              <header>
+                <p>Measured from signed-in visits—not streaks</p>
+                <h2>Recent active users</h2>
+                <span>{activity.definition}</span>
+              </header>
+              <div>
+                <article><strong>{fmt(activity.daily_active_users)}</strong><span>Active today (DAU)</span></article>
+                <article><strong>{fmt(activity.weekly_active_users)}</strong><span>Active in 7 days (WAU)</span></article>
+                <article><strong>{fmt(activity.monthly_active_users)}</strong><span>Active in 30 days (MAU)</span></article>
+              </div>
+              <p>{activity.measurement_note}</p>
             </section>
 
             <section className="evidence__dates">
