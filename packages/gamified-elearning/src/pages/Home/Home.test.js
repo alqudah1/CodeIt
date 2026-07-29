@@ -22,7 +22,7 @@ describe('Home', () => {
   test('gives parents a direct, measurable path to the family pilot', () => {
     render(<Home />);
 
-    const pilotLink = screen.getByRole('link', { name: 'See the Founding Family pilot' });
+    const pilotLink = screen.getByRole('link', { name: 'See full pilot details' });
     expect(pilotLink).toHaveAttribute('href', '/pricing');
 
     fireEvent.click(pilotLink);

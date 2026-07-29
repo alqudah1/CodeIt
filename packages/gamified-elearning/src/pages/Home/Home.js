@@ -5,6 +5,7 @@ import Header from "../Header/Header";
 import BrandLogo from "../../components/BrandLogo/BrandLogo";
 import { useSEO } from "../../hooks/useSEO";
 import { trackEvent } from "../../utils/trackEvent";
+import HomePilotSignup from "./HomePilotSignup";
 import "./Home.css";
 import "./HomeStudio.css";
 
@@ -211,7 +212,7 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="studio-family" aria-labelledby="studio-family-title">
+          <section id="family-pilot" className="studio-family" aria-labelledby="studio-family-title">
             <div className="studio-family__copy">
               <p className="studio-kicker">Progress parents can actually see</p>
               <h2 id="studio-family-title">Learning does not disappear when the screen closes.</h2>
@@ -222,13 +223,14 @@ export default function Home() {
                 <li>publishes something ready to share.</li>
               </ul>
               <small>Available from a student profile. Emails begin only after a parent confirms and chooses the updates they receive.</small>
+              <HomePilotSignup />
               <Link
                 to="/pricing"
                 className="studio-family__cta"
                 data-cta="family-pilot"
                 onClick={() => trackEvent("parent_cta_click", "view-pricing")}
               >
-                See the Founding Family pilot <span aria-hidden="true">→</span>
+                See full pilot details <span aria-hidden="true">→</span>
               </Link>
             </div>
             <article className="studio-family__email" aria-label="Example parent progress email">
