@@ -50,6 +50,7 @@ test('accepts only allowlisted metadata and never arbitrary content', () => {
   assert.equal(normalizeMeta('activation_account_gate', 'private project title'), null);
   assert.equal(normalizeMeta('activation_next_step', 'publish'), 'publish');
   assert.equal(normalizeMeta('activation_next_step', 'private project title'), null);
+  assert.equal(normalizeMeta('landing_cta_click', 'hero-idea'), 'hero-idea');
 });
 
 test('limits browser-reported events to events the server cannot infer', () => {

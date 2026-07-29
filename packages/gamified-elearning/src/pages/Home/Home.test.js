@@ -4,8 +4,11 @@ import { trackEvent } from '../../utils/trackEvent';
 
 jest.mock('react-router-dom', () => {
   const React = require('react');
+  const navigate = jest.fn();
   return {
     Link: ({ children, to, ...props }) => React.createElement('a', { href: to, ...props }, children),
+    useNavigate: () => navigate,
+    __navigate: navigate,
   };
 }, { virtual: true });
 jest.mock('../Header/Header', () => () => null);
@@ -42,5 +45,19 @@ describe('Home', () => {
     expect(screen.getByText('140k+')).toBeInTheDocument();
     expect(screen.getByText('1,900+')).toBeInTheDocument();
     expect(screen.queryByText(/active users/i)).not.toBeInTheDocument();
+  });
+
+  test('carries a visitor idea into the builder without sending it to analytics', () => {
+    const { __navigate } = require('react-router-dom');
+    render(<Home />);
+
+    fireEvent.change(screen.getByLabelText('What do you want to build?'), {
+      target: { value: 'A space quiz about planets' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
+
+    expect(trackEvent).toHaveBeenCalledWith('landing_cta_click', 'hero-idea');
+    expect(trackEvent).not.toHaveBeenCalledWith(expect.anything(), 'A space quiz about planets');
+    expect(__navigate).toHaveBeenCalledWith('/builder?prompt=A%20space%20quiz%20about%20planets');
   });
 });

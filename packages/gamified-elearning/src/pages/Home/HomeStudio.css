@@ -67,6 +67,64 @@
   line-height: 1.68;
 }
 
+.studio-hero__idea {
+  max-width: 610px;
+  margin-bottom: 1rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.studio-hero__idea > label {
+  color: var(--studio-ink);
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.studio-hero__idea-row {
+  padding: 0.38rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.45rem;
+  background: #fff;
+  border: 2px solid var(--studio-ink);
+  border-radius: 15px;
+  box-shadow: 7px 7px 0 #ffd166;
+}
+
+.studio-hero__idea-row:focus-within {
+  outline: 3px solid rgba(104, 87, 217, 0.28);
+  outline-offset: 3px;
+}
+
+.studio-hero__idea-row input {
+  min-width: 0;
+  padding: 0.78rem 0.85rem;
+  color: var(--studio-ink);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.studio-hero__idea-row input::placeholder { color: #8b827d; }
+
+.studio-hero__idea-row button {
+  min-height: 48px;
+  padding: 0.75rem 1.1rem;
+  color: #fff;
+  background: var(--studio-orange);
+  border: 0;
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.studio-hero__idea-row button:hover { background: #e96818; }
+.studio-hero__idea-row button:focus-visible { outline: 3px solid rgba(104, 87, 217, 0.42); outline-offset: 2px; }
+.studio-hero__idea > small { color: var(--studio-muted); font-size: 0.72rem; line-height: 1.45; }
+
 .studio-hero__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.8rem; }
 .studio-hero__audience { margin: 1.2rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; }
 .studio-hero__audience li { padding: 0.42rem 0.68rem; color: var(--studio-ink); background: #fff; border: 1px solid var(--studio-line); border-radius: 999px; font-size: 0.7rem; font-weight: 900; }
@@ -448,6 +506,8 @@
 }
 
 @media (max-width: 520px) {
+  .studio-hero__idea-row { grid-template-columns: 1fr; }
+  .studio-hero__idea-row button { width: 100%; }
   .studio-hero__actions { align-items: stretch; flex-direction: column; }
   .studio-button { width: 100%; }
   .studio-preview__toolbar { grid-template-columns: auto 1fr auto; }

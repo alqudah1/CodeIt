@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Header from "../Header/Header";
 import BrandLogo from "../../components/BrandLogo/BrandLogo";
@@ -128,6 +128,20 @@ function StudioPreview() {
 
 export default function Home() {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const ideaInputRef = useRef(null);
+  const [heroIdea, setHeroIdea] = useState("");
+
+  const startHeroIdea = (event) => {
+    event.preventDefault();
+    const idea = heroIdea.trim();
+    if (!idea) {
+      ideaInputRef.current?.focus();
+      return;
+    }
+    trackEvent("landing_cta_click", "hero-idea");
+    navigate(`/builder?prompt=${encodeURIComponent(idea)}`);
+  };
 
   useSEO({
     title: "CodeIt: Build Websites, Learn Code & Share Projects",
@@ -151,15 +165,27 @@ export default function Home() {
               <p className="studio-hero__lead">
                 Turn an idea into a real website, game, or quiz. Then learn the code, change it, save it, and share it.
               </p>
+              <form className="studio-hero__idea" onSubmit={startHeroIdea}>
+                <label htmlFor="studio-hero-idea">
+                  {user ? "What should we build next?" : "What do you want to build?"}
+                </label>
+                <div className="studio-hero__idea-row">
+                  <input
+                    ref={ideaInputRef}
+                    id="studio-hero-idea"
+                    value={heroIdea}
+                    onChange={(event) => setHeroIdea(event.target.value)}
+                    placeholder="A space quiz, a football game…"
+                    maxLength={240}
+                    autoComplete="off"
+                  />
+                  <button type="submit">
+                    Build it <span aria-hidden="true">→</span>
+                  </button>
+                </div>
+                <small>No account needed to try. Keep names and personal details private.</small>
+              </form>
               <div className="studio-hero__actions">
-                <Link
-                  to="/builder"
-                  className="studio-button studio-button--primary"
-                  data-cta="hero-build"
-                  onClick={() => trackEvent("landing_cta_click", "hero-build")}
-                >
-                  {user ? "Open project studio" : "Build a free project"} <span aria-hidden="true">→</span>
-                </Link>
                 <Link
                   to={user ? "/MainPage" : "#how-it-works"}
                   className="studio-button studio-button--quiet"
