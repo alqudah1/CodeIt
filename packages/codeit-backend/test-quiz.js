@@ -23,6 +23,7 @@ const analyticsRoutes = require('./routes/analytics');
 const progressNotificationRoutes = require('./routes/progressNotifications');
 const foundingWaitlistRoutes = require('./routes/foundingWaitlist');
 const adminRoutes = require('./routes/admin');
+const familyRoutes = require('./routes/family');
 
 const app = express();
 app.set('trust proxy', 1);
@@ -72,6 +73,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/progress-notifications', progressNotificationRoutes);
 app.use('/api/founding-waitlist', foundingWaitlistRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/family', familyRoutes);
 
 const PORT = Number(process.env.PORT || 8080);
 app.listen(PORT, () => {

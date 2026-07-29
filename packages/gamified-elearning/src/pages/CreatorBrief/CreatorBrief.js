@@ -84,7 +84,7 @@ export default function CreatorBrief() {
         </section>
 
         <section className="creator-brief__audience" aria-label="CodeIt audience and promise">
-          <article><span>Primary user</span><strong>Young creators ages 8–17</strong><p>Ages 8–12 explore with a parent or guardian; independent student accounts currently begin at 13.</p></article>
+          <article><span>Primary user</span><strong>Young creators ages 8–17</strong><p>Parents can create private managed profiles for ages 8–12; independent student accounts begin at 13.</p></article>
           <article><span>Primary buyer</span><strong>Parents and guardians</strong><p>Adults who want visible, understandable progress.</p></article>
           <article><span>Product difference</span><strong>Build first, then understand</strong><p>General AI builders make; CodeIt connects making to learning.</p></article>
         </section>
@@ -161,6 +161,7 @@ export default function CreatorBrief() {
                 <li>CodeIt connects visible project behaviour to coding concepts.</li>
                 <li>The core beginner experience has a free starting option.</li>
                 <li>Confirmed parents can receive selected milestone emails from a student profile.</li>
+                <li>Parents can create private managed profiles for learners ages 8–12.</li>
               </ul>
             </article>
             <article className="is-planned">

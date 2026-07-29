@@ -5,7 +5,7 @@ const jwt     = require('jsonwebtoken');
 const db      = require('../db');
 const { JWT_SECRET, JWT_EXPIRY } = require('../config');
 const { recordEvent } = require('../analytics');
-const { studentAgeEligibility } = require('../studentAge');
+const { ageOnDate, studentAgeEligibility } = require('../studentAge');
 const { normalizeJourneyId } = require('../analyticsEvents');
 const { updateSettings } = require('../progressNotifications');
 const { requestPasswordReset, resetPassword, validPassword } = require('../passwordReset');
@@ -150,8 +150,12 @@ router.post('/login', async (req, res) => {
     }
 
     const displayName = user.name || user.username;
+    const accountAge = user.dob ? ageOnDate(new Date(user.dob).toISOString().slice(0, 10)) : null;
+    const managedProfile = String(user.role).toLowerCase() === 'student'
+      && accountAge !== null
+      && accountAge < 13;
     const token = jwt.sign(
-      { user_id: user.user_id, role: user.role, name: displayName },
+      { user_id: user.user_id, role: user.role, name: displayName, managedProfile },
       JWT_SECRET,
       { expiresIn: JWT_EXPIRY }
     );
@@ -165,6 +169,7 @@ router.post('/login', async (req, res) => {
         username: user.username,
         email:    user.email,
         role:     user.role,
+        managedProfile,
       },
     });
   } catch (err) {

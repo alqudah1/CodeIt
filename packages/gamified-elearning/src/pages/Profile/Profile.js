@@ -43,6 +43,20 @@ export default function Profile() {
   const [savingParent, setSavingParent] = useState(false);
   const [parentLoading, setParentLoading] = useState(true);
   const [parentLoadError, setParentLoadError] = useState('');
+  const [familyStatus, setFamilyStatus] = useState(null);
+  const [familyLoading, setFamilyLoading] = useState(false);
+  const [familyMessage, setFamilyMessage] = useState('');
+  const [familySaving, setFamilySaving] = useState(false);
+  const [passwordResetId, setPasswordResetId] = useState(null);
+  const [newChildPassword, setNewChildPassword] = useState('');
+  const [childForm, setChildForm] = useState({
+    username: '',
+    password: '',
+    dob: '',
+    relationship: 'parent',
+    consent: false,
+    progressEmails: false,
+  });
 
   const totalXP    = stats?.totalXP ?? 0;
   const level      = Math.floor(totalXP / XP_PER_LEVEL) + 1;
@@ -53,7 +67,11 @@ export default function Profile() {
   const nextTitle  = getLevelTitle(nextLevel);
 
   useEffect(() => {
-    if (!user) { navigate('/login'); return; }
+    if (!user) {
+      const from = window.location.pathname + window.location.search;
+      navigate('/login', { state: { from } });
+      return;
+    }
     if (!token) return;
     fetch(`${API_BASE_URL}/api/builder/projects`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -87,6 +105,22 @@ export default function Profile() {
         setParentLoadError('Parent updates are not connected in this preview yet.');
       }).finally(() => {
         setParentLoading(false);
+      });
+    } else {
+      setFamilyLoading(true);
+      fetch(`${API_BASE_URL}/api/family`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then(async response => {
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.success) throw new Error(data.error || 'Family controls are unavailable.');
+        setFamilyStatus(data);
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('familyVerified') === '1') setFamilyMessage('Adult email confirmed. You can now create a private learner profile.');
+        if (params.get('familyVerified') === '0') setFamilyMessage('That confirmation link is invalid or expired. Send a new one below.');
+      }).catch(error => {
+        setFamilyMessage(error.message);
+      }).finally(() => {
+        setFamilyLoading(false);
       });
     }
   }, [user, token, navigate]);
@@ -123,6 +157,138 @@ export default function Profile() {
       setParentStatus(error.message);
     } finally {
       setSavingParent(false);
+    }
+  };
+
+  const sendFamilyVerification = async () => {
+    setFamilySaving(true);
+    setFamilyMessage('');
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/family/verification`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'Could not send the confirmation email.');
+      setFamilyStatus(data.status || familyStatus);
+      setFamilyMessage(data.alreadyVerified
+        ? 'This adult email is already confirmed.'
+        : 'Confirmation email sent. Open it within 48 hours, then return here.');
+    } catch (error) {
+      setFamilyMessage(error.message);
+    } finally {
+      setFamilySaving(false);
+    }
+  };
+
+  const updateChildField = (field, value) => {
+    setChildForm(current => ({ ...current, [field]: value }));
+    setFamilyMessage('');
+  };
+
+  const createChildProfile = async (event) => {
+    event.preventDefault();
+    setFamilySaving(true);
+    setFamilyMessage('');
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/family/children`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          ...childForm,
+          noticeVersion: familyStatus.noticeVersion,
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'Could not create the learner profile.');
+      setFamilyStatus(data.status);
+      setChildForm({
+        username: '',
+        password: '',
+        dob: '',
+        relationship: 'parent',
+        consent: false,
+        progressEmails: false,
+      });
+      setFamilyMessage(`Private learner profile “${data.child.username}” created. They can now sign in with that username.`);
+    } catch (error) {
+      setFamilyMessage(error.message);
+    } finally {
+      setFamilySaving(false);
+    }
+  };
+
+  const deleteChildProfile = async (child) => {
+    if (!window.confirm(`Delete ${child.username}'s managed profile and all connected projects and progress? This cannot be undone.`)) return;
+    setFamilySaving(true);
+    setFamilyMessage('');
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/family/children/${child.id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'Could not delete the learner profile.');
+      setFamilyStatus(data.status);
+      setFamilyMessage(`${child.username}'s profile and connected data were deleted.`);
+    } catch (error) {
+      setFamilyMessage(error.message);
+    } finally {
+      setFamilySaving(false);
+    }
+  };
+
+  const resetChildPassword = async (event, child) => {
+    event.preventDefault();
+    setFamilySaving(true);
+    setFamilyMessage('');
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/family/children/${child.id}/password`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ password: newChildPassword }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'Could not update the learner password.');
+      setPasswordResetId(null);
+      setNewChildPassword('');
+      setFamilyMessage(`${child.username}'s password was updated.`);
+    } catch (error) {
+      setFamilyMessage(error.message);
+    } finally {
+      setFamilySaving(false);
+    }
+  };
+
+  const toggleChildProgressEmails = async (child) => {
+    setFamilySaving(true);
+    setFamilyMessage('');
+    try {
+      const enabled = !child.progressEmailsEnabled;
+      const response = await fetch(`${API_BASE_URL}/api/family/children/${child.id}/progress-emails`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ enabled }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'Could not update progress emails.');
+      setFamilyStatus(data.status);
+      setFamilyMessage(enabled
+        ? `Progress emails are on for ${child.username}.`
+        : `Progress emails are paused for ${child.username}.`);
+    } catch (error) {
+      setFamilyMessage(error.message);
+    } finally {
+      setFamilySaving(false);
     }
   };
 
@@ -292,6 +458,188 @@ export default function Profile() {
                     </ul>
                   </div>
                 )}
+              </>
+            )}
+          </section>
+        )}
+
+        {String(user.role).toLowerCase() !== 'student' && (
+          <section className="profile-card profile-card--parent profile-family" aria-labelledby="family-controls-title">
+            <div className="profile-parent__heading">
+              <div>
+                <p className="profile-parent__eyebrow">Parent-managed access</p>
+                <h2 id="family-controls-title">Private profiles for ages 8–12</h2>
+              </div>
+              {familyStatus && (
+                <span className={`profile-parent__status ${familyStatus.emailVerified ? 'is-verified' : 'is-pending'}`}>
+                  {familyStatus.emailVerified ? 'Email confirmed' : 'Email confirmation needed'}
+                </span>
+              )}
+            </div>
+
+            <div className="profile-parent__notice">
+              <strong>What CodeIt stores</strong>
+              <p>
+                A non-identifying username, birthday, password hash, learning progress, and private projects.
+                Managed younger profiles cannot publish projects publicly.
+              </p>
+            </div>
+
+            {familyLoading && <p className="profile-parent__message" role="status">Loading family controls…</p>}
+            {familyMessage && <p className="profile-parent__message" aria-live="polite">{familyMessage}</p>}
+
+            {!familyLoading && familyStatus && !familyStatus.emailVerified && (
+              <div className="profile-family__verify">
+                <p>
+                  Confirm <strong>{familyStatus.adultEmail}</strong> before creating a learner profile.
+                  The confirmation link expires after 48 hours.
+                </p>
+                <button type="button" onClick={sendFamilyVerification} disabled={familySaving || !familyStatus.emailConfigured}>
+                  {familySaving ? 'Sending…' : familyStatus.emailConfigured ? 'Send confirmation email' : 'Email service unavailable'}
+                </button>
+              </div>
+            )}
+
+            {!familyLoading && familyStatus?.emailVerified && (
+              <>
+                <form className="profile-family__form" onSubmit={createChildProfile}>
+                  <h3>Create a private learner profile</h3>
+                  <p>Use a nickname—not the child’s full name. The learner signs in with this username and password.</p>
+                  <div className="profile-family__fields">
+                    <label>
+                      Learner username
+                      <input
+                        value={childForm.username}
+                        onChange={event => updateChildField('username', event.target.value)}
+                        pattern="[A-Za-z0-9_]{3,20}"
+                        minLength="3"
+                        maxLength="20"
+                        placeholder="creative_coder"
+                        required
+                      />
+                    </label>
+                    <label>
+                      Learner birthday
+                      <input
+                        type="date"
+                        value={childForm.dob}
+                        onChange={event => updateChildField('dob', event.target.value)}
+                        required
+                      />
+                    </label>
+                    <label>
+                      Learner password
+                      <input
+                        type="password"
+                        value={childForm.password}
+                        onChange={event => updateChildField('password', event.target.value)}
+                        minLength="10"
+                        maxLength="128"
+                        autoComplete="new-password"
+                        required
+                      />
+                    </label>
+                    <label>
+                      Your relationship
+                      <select
+                        value={childForm.relationship}
+                        onChange={event => updateChildField('relationship', event.target.value)}
+                      >
+                        <option value="parent">Parent</option>
+                        <option value="guardian">Guardian</option>
+                      </select>
+                    </label>
+                  </div>
+                  <label className="profile-family__consent">
+                    <input
+                      type="checkbox"
+                      checked={childForm.consent}
+                      onChange={event => updateChildField('consent', event.target.checked)}
+                      required
+                    />
+                    <span>
+                      I am this learner’s parent or legal guardian. I reviewed the <Link to="/privacy">privacy notice</Link>,
+                      consent to this private managed profile, and understand public publishing is disabled.
+                    </span>
+                  </label>
+                  <label className="profile-family__consent">
+                    <input
+                      type="checkbox"
+                      checked={childForm.progressEmails}
+                      onChange={event => updateChildField('progressEmails', event.target.checked)}
+                    />
+                    <span>
+                      Email me when this learner completes lessons, exercises, or creates projects.
+                      I can pause these updates at any time.
+                    </span>
+                  </label>
+                  <button type="submit" disabled={familySaving}>
+                    {familySaving ? 'Creating…' : 'Create private learner profile'}
+                  </button>
+                </form>
+
+                <div className="profile-family__children">
+                  <h3>Managed learner profiles</h3>
+                  {familyStatus.children.length === 0 ? (
+                    <p>No managed profiles yet.</p>
+                  ) : familyStatus.children.map(child => (
+                    <article key={child.id}>
+                      <div className="profile-family__child-summary">
+                        <div>
+                          <strong>{child.username}</strong>
+                          <span>
+                            {child.totalXP} XP · {child.lessons} lessons · {child.quizzes} quizzes ·
+                            {' '}{child.puzzles} puzzles · {child.projects} projects
+                          </span>
+                          <span>
+                            Private publishing · Progress emails {child.progressEmailsEnabled ? 'on' : 'off'}
+                          </span>
+                        </div>
+                        <div className="profile-family__child-actions">
+                          <button
+                            type="button"
+                            onClick={() => toggleChildProgressEmails(child)}
+                            disabled={familySaving}
+                          >
+                            {child.progressEmailsEnabled ? 'Pause emails' : 'Start emails'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPasswordResetId(current => current === child.id ? null : child.id);
+                              setNewChildPassword('');
+                            }}
+                            disabled={familySaving}
+                          >
+                            Change password
+                          </button>
+                          <button type="button" onClick={() => deleteChildProfile(child)} disabled={familySaving}>
+                            Delete profile
+                          </button>
+                        </div>
+                      </div>
+                      {passwordResetId === child.id && (
+                        <form className="profile-family__password" onSubmit={event => resetChildPassword(event, child)}>
+                          <label>
+                            New learner password
+                            <input
+                              type="password"
+                              value={newChildPassword}
+                              onChange={event => setNewChildPassword(event.target.value)}
+                              minLength="10"
+                              maxLength="128"
+                              autoComplete="new-password"
+                              required
+                            />
+                          </label>
+                          <button type="submit" disabled={familySaving}>
+                            {familySaving ? 'Updating…' : 'Update password'}
+                          </button>
+                        </form>
+                      )}
+                    </article>
+                  ))}
+                </div>
               </>
             )}
           </section>

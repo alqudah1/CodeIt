@@ -118,7 +118,7 @@ export default function Register() {
         { headers: { 'Content-Type': 'application/json', ...journeyHeaders() } }
       );
       login({ user: res.data.user, token: res.data.token });
-      navigate(returnTo, { replace: true, state: returnState });
+      navigate(returnState ? returnTo : '/profile', { replace: true, state: returnState });
     } catch (err) {
       setError(err?.response?.data?.error || 'Registration failed. Please try again.');
     }
@@ -161,7 +161,7 @@ export default function Register() {
 
             <button className="auth-path-card auth-path-card--educator" onClick={() => setStep('educator')}>
               <span className="auth-path-card__title">I am a Parent or Educator</span>
-              <span className="auth-path-card__desc">Use email for family or classroom access</span>
+              <span className="auth-path-card__desc">Create and manage a private profile for ages 8–12</span>
             </button>
 
             <button className="auth-path-card auth-path-card--guest" onClick={() => navigate('/builder')}>
@@ -171,7 +171,7 @@ export default function Register() {
           </div>
 
           <div className="auth-educator-note">
-            Under 13? Ask a parent or guardian to manage your access, or try CodeIt first without an account.
+            Ages 8–12: ask a parent or legal guardian to create a private managed profile.
           </div>
 
           <div className="auth-footer">
@@ -263,7 +263,7 @@ export default function Register() {
               />
               {errS.dob && <span className="error">{errS.dob.message}</span>}
               {!errS.dob && (
-                <span className="auth-hint">Student accounts are for ages 13–18. We do not create under-13 accounts without a parent-managed consent flow.</span>
+                <span className="auth-hint">Independent student accounts are for ages 13–18. A parent or guardian can create a private profile for ages 8–12.</span>
               )}
             </div>
 
@@ -345,7 +345,7 @@ export default function Register() {
           </header>
 
           <div className="auth-educator-note">
-            Parent dashboards are planned, not live. You can use the free project and learning tools today.
+            After signup, confirm your adult email to create a private learner profile for ages 8–12.
           </div>
 
           <form className="auth-form" onSubmit={submitE(onEducatorSubmit)}>

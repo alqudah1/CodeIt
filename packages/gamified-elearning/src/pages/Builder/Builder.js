@@ -1655,6 +1655,10 @@ export default function Builder() {
       continueAfterAuth('publish');
       return;
     }
+    if (user.managedProfile) {
+      setError('This parent-managed learner profile keeps projects private. A parent can still see progress from the family account.');
+      return;
+    }
 
     // Save first if not saved
     let projectId = savedProjectId;
@@ -2477,13 +2481,13 @@ export default function Builder() {
                 <button
                   className="bldr-action-btn bldr-action-btn--publish"
                   onClick={handlePublish}
-                  disabled={editing || publishStatus === 'publishing'}
-                  title="Get a public link anyone can open"
+                  disabled={editing || publishStatus === 'publishing' || user?.managedProfile}
+                  title={user?.managedProfile ? 'Parent-managed learner projects stay private' : 'Get a public link anyone can open'}
                 >
                   {publishStatus === 'publishing'
                     ? <><span className="bldr-spinner bldr-spinner--sm" />Publishing...</>
                     : publishStatus === 'error' ? 'Try again'
-                    : 'Share'}
+                    : user?.managedProfile ? 'Private profile' : 'Share'}
                 </button>
               )}
 

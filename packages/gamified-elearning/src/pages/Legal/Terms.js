@@ -3,7 +3,7 @@ import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
 import './Legal.css';
 
-const UPDATED = 'July 21, 2026';
+const UPDATED = 'July 28, 2026';
 
 export default function Terms() {
   useSEO({
@@ -40,12 +40,12 @@ export default function Terms() {
           <div className="legal-content">
             <section id="eligibility">
               <h2>Eligibility and younger learners</h2>
-              <p>Student accounts are for learners ages 13–18. Adults should use the Parent or Educator path. Learners under 13 may use public, no-account activities only with a parent or guardian until CodeIt provides a verified parent-managed account flow.</p>
+              <p>Independent student accounts are for learners ages 13–18. For a learner ages 8–12, a parent or legal guardian must use the Parent / Educator path, confirm the adult account email, review the family privacy notice, and explicitly create a managed profile. Managed younger profiles cannot publish projects publicly.</p>
             </section>
 
             <section id="accounts">
               <h2>Accounts</h2>
-              <p>Provide accurate age and account information, choose a non-identifying student username, protect the password, and do not share an account. Tell us promptly if someone else may have access. A parent, guardian, or educator must not create a student account that misstates a child’s age.</p>
+              <p>Provide accurate age and account information, choose a non-identifying student username, protect the password, and do not share an account. Tell us promptly if someone else may have access. An adult creating a managed profile confirms that they are the learner’s parent or legal guardian and must not misstate the child’s age or their relationship.</p>
             </section>
 
             <section id="projects">
@@ -56,7 +56,7 @@ export default function Terms() {
 
             <section id="public">
               <h2>Publishing and remixing</h2>
-              <p>Saved projects are private by default. Selecting Publish makes the project and its creator display information available to anyone with the link and may list it in Explore. Publishing gives other CodeIt users permission to view, play, and remix a separate copy inside CodeIt. You can unpublish your original project.</p>
+              <p>Saved projects are private by default. For eligible accounts, selecting Publish makes the project and a generic creator label available to anyone with the link and may list it in Explore. Publishing gives other CodeIt users permission to view, play, and remix a separate copy inside CodeIt. You can unpublish your original project. Managed profiles ages 8–12 cannot publish.</p>
               <p>Do not publish personal contact information, school details, precise location, private images, passwords, or information about another person without permission.</p>
             </section>
 

@@ -24,6 +24,14 @@ export const ENDPOINTS = {
     join: `${API_BASE_URL}/api/founding-waitlist`,
     status: `${API_BASE_URL}/api/founding-waitlist/status`,
   },
+  family: {
+    status: `${API_BASE_URL}/api/family`,
+    verification: `${API_BASE_URL}/api/family/verification`,
+    children: `${API_BASE_URL}/api/family/children`,
+    child: (id) => `${API_BASE_URL}/api/family/children/${id}`,
+    childPassword: (id) => `${API_BASE_URL}/api/family/children/${id}/password`,
+    childProgressEmails: (id) => `${API_BASE_URL}/api/family/children/${id}/progress-emails`,
+  },
   rewards: {
     progress:    `${API_BASE_URL}/api/rewards/progress-percentages`,
     leaderboard: `${API_BASE_URL}/api/rewards/leaderboard`,

@@ -2233,10 +2233,20 @@ router.post('/projects/:id/publish', requireAuth, async (req, res) => {
   const { id }  = req.params;
   try {
     const [rows] = await pool.query(
-      'SELECT id, title, public_id, is_public, project_type FROM ai_projects WHERE id = ? AND user_id = ?',
+      `SELECT p.id, p.title, p.public_id, p.is_public, p.project_type,
+              TIMESTAMPDIFF(YEAR, u.dob, CURDATE()) AS student_age
+         FROM ai_projects p
+         JOIN Users u ON u.user_id = p.user_id
+        WHERE p.id = ? AND p.user_id = ?`,
       [id, userId]
     );
     if (!rows.length) return res.status(404).json({ error: 'Project not found.' });
+    if (rows[0].student_age !== null && Number(rows[0].student_age) < 13) {
+      return res.status(403).json({
+        code: 'MANAGED_PROFILE_PRIVATE',
+        error: 'Projects from managed younger profiles stay private. A parent can still view progress from the family account.',
+      });
+    }
 
     const wasPublic = Boolean(rows[0].is_public);
     let { public_id } = rows[0];

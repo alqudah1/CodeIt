@@ -3,6 +3,7 @@ import Profile from './Profile';
 
 const mockNavigate = jest.fn();
 let mockFetchMode = 'unavailable';
+let mockProfileUser = { user_id: 8, name: 'Student Builder', username: 'student-builder', role: 'Student' };
 
 jest.mock('react-router-dom', () => {
   const React = require('react');
@@ -19,7 +20,7 @@ jest.mock('../../context/AuthContext', () => {
   const React = require('react');
   return {
     AuthContext: React.createContext({
-      user: { user_id: 8, name: 'Student Builder', username: 'student-builder', role: 'Student' },
+      get user() { return mockProfileUser; },
       token: 'student-token',
     }),
   };
@@ -44,10 +45,24 @@ const settings = {
 describe('parent progress availability', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+    mockProfileUser = { user_id: 8, name: 'Student Builder', username: 'student-builder', role: 'Student' };
     global.fetch = jest.fn((url) => {
       const requestUrl = String(url);
       if (requestUrl.endsWith('/api/builder/projects')) {
         return Promise.resolve({ ok: true, json: async () => ({ success: true, projects: [] }) });
+      }
+      if (requestUrl.endsWith('/api/family')) {
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({
+            success: true,
+            adultEmail: 'parent@example.com',
+            emailVerified: true,
+            emailConfigured: true,
+            noticeVersion: '2026-07-28',
+            children: [],
+          }),
+        });
       }
       if (mockFetchMode === 'unavailable') {
         return Promise.resolve({ ok: false, json: async () => ({ error: 'Not found' }) });
@@ -101,5 +116,15 @@ describe('parent progress availability', () => {
 
     await waitFor(() => expect(screen.getByRole('button', { name: 'Send parent confirmation' })).toBeInTheDocument());
     expect(screen.queryByText('Email delivery is not connected yet.')).not.toBeInTheDocument();
+  });
+
+  test('gives a confirmed adult a private managed-profile form', async () => {
+    mockProfileUser = { user_id: 9, name: 'Parent Builder', email: 'parent@example.com', role: 'Educator' };
+    render(<Profile />);
+
+    expect(await screen.findByRole('heading', { name: 'Private profiles for ages 8–12' })).toBeInTheDocument();
+    expect(await screen.findByText('Email confirmed')).toBeInTheDocument();
+    expect(screen.getByLabelText('Learner username')).toBeInTheDocument();
+    expect(screen.getByText(/public publishing is disabled/i)).toBeInTheDocument();
   });
 });

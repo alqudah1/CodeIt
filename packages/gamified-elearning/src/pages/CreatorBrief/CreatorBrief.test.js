@@ -31,7 +31,7 @@ describe('CreatorBrief', () => {
     render(<CreatorBrief />);
 
     expect(screen.getByText('Young creators ages 8–17')).toBeInTheDocument();
-    expect(screen.getByText(/Ages 8–12 explore with a parent or guardian/i)).toBeInTheDocument();
+    expect(screen.getByText(/Parents can create private managed profiles for ages 8–12/i)).toBeInTheDocument();
     expect(screen.getByText('Four links. One website.')).toBeInTheDocument();
     expect(screen.getByText(/Direct sharing for WhatsApp, email, or messages/i)).toBeInTheDocument();
     const instagram = screen.getByLabelText('Instagram campaign link');

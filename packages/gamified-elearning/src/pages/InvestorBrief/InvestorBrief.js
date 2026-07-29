@@ -16,13 +16,14 @@ const CURRENT_PRODUCT = [
   'Editable code and live project preview',
   'Project saving and public sharing',
   'Beginner lessons, quizzes, games, and progress',
+  'Private parent-managed profiles for ages 8–12',
   'Privacy-safe acquisition and activation analytics',
 ];
 
 const NEXT_MILESTONES = [
   ['Validate demand', 'Interview parents and run a Founding Family pilot before turning on billing.'],
   ['Prove activation', 'Measure how many qualified visitors create, personalize, save, and return to a project.'],
-  ['Expand parent trust', 'Add verified parent-managed accounts and validate which milestone emails families value.'],
+  ['Expand parent trust', 'Measure parent-managed profile activation and validate which milestone emails families value.'],
   ['Test distribution', 'Run repeatable creator, community, school, and coding-club partnerships.'],
 ];
 
@@ -111,7 +112,7 @@ export default function InvestorBrief() {
             <aside>
               <span>Who it serves</span>
               <strong>Young creators ages 8–17</strong>
-              <p>Ages 8–12 explore with a parent or guardian. Independent student accounts currently begin at 13.</p>
+              <p>Parents can create private managed profiles for ages 8–12. Independent student accounts begin at 13.</p>
               <Link to="/creator-brief">Open the three-minute demonstration guide →</Link>
             </aside>
           </div>
@@ -195,6 +196,7 @@ export default function InvestorBrief() {
                 <li>The product combines creation with lessons and coding concepts.</li>
                 <li>The funnel can measure acquisition and core activation events.</li>
                 <li>A confirmed parent can choose and receive student milestone emails.</li>
+                <li>A confirmed adult account can create a private managed profile for ages 8–12.</li>
               </ul>
             </article>
             <article className="is-planned">
@@ -202,7 +204,7 @@ export default function InvestorBrief() {
               <ul>
                 <li>Consistent customer acquisition and paid conversion.</li>
                 <li>Retention strong enough to support a subscription.</li>
-                <li>Verified parent-managed accounts and the long-term value of progress emails.</li>
+                <li>Parent-managed activation, retention, and the long-term value of progress emails.</li>
               </ul>
             </article>
           </div>

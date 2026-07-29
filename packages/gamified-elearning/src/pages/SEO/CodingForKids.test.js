@@ -29,7 +29,7 @@ describe('parent acquisition page', () => {
     expect(screen.getByRole('heading', { name: 'A first coding project they’ll want to keep improving.' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Try a project together' })).toHaveAttribute('href', '/builder');
     expect(screen.getByText('Saved projects stay private until Publish.')).toBeInTheDocument();
-    expect(screen.getByText('New student accounts are for ages 13–18.')).toBeInTheDocument();
+    expect(screen.getByText('Private parent-managed profiles begin at age 8.')).toBeInTheDocument();
     expect(screen.queryByText(/ages 8–14/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/everything is free/i)).not.toBeInTheDocument();
   });
