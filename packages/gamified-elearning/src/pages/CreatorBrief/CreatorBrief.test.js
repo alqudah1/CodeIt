@@ -32,12 +32,15 @@ describe('CreatorBrief', () => {
 
     expect(screen.getByText('Young creators ages 8–17')).toBeInTheDocument();
     expect(screen.getByText(/Parents can create private managed profiles for ages 8–12/i)).toBeInTheDocument();
-    expect(screen.getByText('Four links. One website.')).toBeInTheDocument();
+    expect(screen.getByText('Five links. One website.')).toBeInTheDocument();
+    expect(screen.getByText(/LinkedIn for founder or investor posts/i)).toBeInTheDocument();
     expect(screen.getByText(/Direct sharing for WhatsApp, email, or messages/i)).toBeInTheDocument();
     const instagram = screen.getByLabelText('Instagram campaign link');
     const tiktok = screen.getByLabelText('TikTok campaign link');
+    const linkedin = screen.getByLabelText('LinkedIn campaign link');
     expect(instagram).toHaveValue('https://codeitlearn.com/?utm_source=instagram&utm_medium=creator');
     expect(tiktok).toHaveValue('https://codeitlearn.com/?utm_source=tiktok&utm_medium=creator');
+    expect(linkedin).toHaveValue('https://codeitlearn.com/?utm_source=linkedin&utm_medium=founder');
     expect(instagram.value).not.toContain('utm_campaign');
   });
 

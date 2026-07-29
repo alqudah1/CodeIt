@@ -31,6 +31,7 @@ describe('admin acquisition funnel', () => {
           ],
           breakdown: [
             { event_name: 'acquisition_visit', meta: 'instagram', event_count: 9 },
+            { event_name: 'acquisition_visit', meta: 'linkedin', event_count: 3 },
             { event_name: 'acquisition_visit', meta: 'project', event_count: 5 },
             { event_name: 'parent_cta_click', meta: 'try-project', event_count: 4 },
             { event_name: 'parent_cta_click', meta: 'view-pricing', event_count: 2 },
@@ -89,6 +90,7 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Published → shared')).toBeInTheDocument();
     expect(screen.getByText('How visitors found CodeIt')).toBeInTheDocument();
     expect(screen.getByText('Instagram', { selector: 'span' }).parentElement).toHaveTextContent('9');
+    expect(screen.getByText('LinkedIn', { selector: 'span' }).parentElement).toHaveTextContent('3');
     expect(screen.getByText('Shared projects').parentElement).toHaveTextContent('5');
     expect(screen.getByText('Which sources create activated visitors')).toBeInTheDocument();
     expect(screen.getByText('Visit → build')).toBeInTheDocument();

@@ -8,6 +8,7 @@ const CHANNEL_LINKS = [
   ['instagram', 'Instagram', 'https://codeitlearn.com/?utm_source=instagram&utm_medium=creator'],
   ['tiktok', 'TikTok', 'https://codeitlearn.com/?utm_source=tiktok&utm_medium=creator'],
   ['youtube', 'YouTube', 'https://codeitlearn.com/?utm_source=youtube&utm_medium=creator'],
+  ['linkedin', 'LinkedIn', 'https://codeitlearn.com/?utm_source=linkedin&utm_medium=founder'],
   ['referral', 'Direct sharing', 'https://codeitlearn.com/?utm_source=referral&utm_medium=creator'],
 ];
 
@@ -111,10 +112,10 @@ export default function CreatorBrief() {
         <section id="campaign-links" className="creator-brief__section creator-brief__links" aria-labelledby="links-title">
           <div className="creator-brief__section-heading">
             <p className="creator-brief__eyebrow">Tracked campaign links</p>
-            <h2 id="links-title">Four links. One website.</h2>
+            <h2 id="links-title">Five links. One website.</h2>
             <p>
               Use the Instagram link on Instagram, TikTok on TikTok, YouTube in video descriptions,
-              and Direct sharing for WhatsApp, email, or messages. Each opens the same CodeIt homepage;
+              LinkedIn for founder or investor posts, and Direct sharing for WhatsApp, email, or messages. Each opens the same CodeIt homepage;
               the tag only tells the dashboard which channel brought the visit.
             </p>
           </div>

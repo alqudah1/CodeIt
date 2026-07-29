@@ -32,6 +32,7 @@ const ACQUISITION_SOURCES = [
   ['instagram', 'Instagram'],
   ['tiktok', 'TikTok'],
   ['facebook', 'Facebook'],
+  ['linkedin', 'LinkedIn'],
   ['search', 'Other search'],
   ['project', 'Shared projects'],
   ['referral', 'Other websites'],
