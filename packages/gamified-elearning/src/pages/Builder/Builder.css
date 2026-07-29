@@ -3953,6 +3953,55 @@
   gap: 0.55rem;
 }
 
+.bldr-activation-themes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.bldr-activation-theme {
+  min-height: 42px;
+  padding: 0.48rem 0.62rem;
+  border: 1.5px solid rgba(67, 44, 35, 0.18);
+  border-radius: 10px;
+  background: #fff;
+  color: #432c23;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.bldr-activation-theme:hover:not(:disabled) {
+  border-color: #e8692d;
+  box-shadow: 0 4px 12px rgba(123, 55, 25, 0.12);
+  transform: translateY(-1px);
+}
+
+.bldr-activation-theme__swatches {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.22rem;
+}
+
+.bldr-activation-theme__swatches span {
+  width: 13px;
+  height: 13px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(67, 44, 35, 0.12);
+}
+
+.bldr-activation-theme__swatches span + span {
+  margin-left: -3px;
+}
+
+.bldr-activation-theme--more {
+  background: rgba(255, 255, 255, 0.62);
+}
+
 .bldr-activation-card__primary,
 .bldr-activation-card__secondary {
   min-height: 42px;
@@ -4005,6 +4054,8 @@
 @media (max-width: 720px) {
   .bldr-activation-card { grid-template-columns: 1fr; gap: 1rem; }
   .bldr-activation-card__actions { justify-content: stretch; }
+  .bldr-activation-themes { flex: 1 1 100%; justify-content: stretch; }
+  .bldr-activation-theme { flex: 1 1 82px; }
   .bldr-activation-card__primary,
   .bldr-activation-card__secondary { flex: 1 1 180px; }
 }

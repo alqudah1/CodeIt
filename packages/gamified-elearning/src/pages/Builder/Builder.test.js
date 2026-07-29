@@ -133,13 +133,10 @@ describe('project studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
     await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
 
-    const personalizeButton = screen.getByRole('button', { name: 'Choose a color theme' });
-    expect(personalizeButton).toHaveClass('bldr-activation-card__primary');
+    expect(screen.getByRole('group', { name: 'Choose a color theme' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Save for later' })).toHaveClass('bldr-activation-card__secondary');
 
-    fireEvent.click(personalizeButton);
-    expect(screen.getByText('Pick individual colors — updates instantly')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Candy' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Apply Candy theme' }));
 
     await screen.findByRole('heading', { name: 'Save this project before you leave.' });
     expect(screen.getByRole('button', { name: 'Save and continue' })).toHaveClass('bldr-activation-card__primary');

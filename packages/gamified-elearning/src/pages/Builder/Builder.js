@@ -141,6 +141,10 @@ const PRESET_PALETTES = [
     vars: { '--primary': '#8B5CF6', '--accent': '#06B6D4', '--success': '#10B981', '--bg': '#F8F2FF', '--card': '#FFFFFF', '--border': '#DDC9F7', '--text': '#3D302B', '--muted': '#725F55' } },
 ];
 
+const FIRST_CHANGE_THEMES = PRESET_PALETTES.filter(({ name }) => (
+  ['CodeIt', 'Arcade', 'Candy'].includes(name)
+));
+
 const TEXT_UPGRADES = [
   'Make all text bigger and bolder',
   'Make the writing style fun and casual',
@@ -2152,13 +2156,33 @@ export default function Builder() {
                 <div className="bldr-activation-card__actions">
                   {!isPersonalized ? (
                     <>
-                      <button
-                        className="bldr-activation-card__primary"
-                        onClick={openStudioColors}
-                        disabled={editing}
-                      >
-                        Choose a color theme
-                      </button>
+                      <div className="bldr-activation-themes" role="group" aria-label="Choose a color theme">
+                        {FIRST_CHANGE_THEMES.map(theme => (
+                          <button
+                            key={theme.name}
+                            className="bldr-activation-theme"
+                            type="button"
+                            aria-label={`Apply ${theme.name} theme`}
+                            onClick={() => handleApplyColors(theme.vars)}
+                            disabled={editing}
+                          >
+                            <span className="bldr-activation-theme__swatches" aria-hidden="true">
+                              {theme.swatches.map(color => (
+                                <span key={color} style={{ background: color }} />
+                              ))}
+                            </span>
+                            <span>{theme.name}</span>
+                          </button>
+                        ))}
+                        <button
+                          className="bldr-activation-theme bldr-activation-theme--more"
+                          type="button"
+                          onClick={openStudioColors}
+                          disabled={editing}
+                        >
+                          More colors
+                        </button>
+                      </div>
                       <button
                         className="bldr-activation-card__secondary"
                         onClick={handleSaveProject}
