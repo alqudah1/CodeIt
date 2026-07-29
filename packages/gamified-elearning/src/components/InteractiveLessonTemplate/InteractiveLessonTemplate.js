@@ -132,7 +132,6 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const hasMarkedComplete = useRef(false);
 
   const [stepIdx,     setStepIdx]     = useState(0);
-  const [maxVisited,  setMaxVisited]  = useState(0);
   const [stepsDone,      setStepsDone]      = useState({});  // { [idx]: true }
   const [stepHintCounts, setStepHintCounts] = useState({});  // { [idx]: number revealed }
   const [lastOutputs,    setLastOutputs]    = useState({});  // { [idx]: string } — output from last Run
@@ -207,7 +206,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
 
   if (!lessonData) return <div style={{ padding: '2rem' }}>No lesson data provided.</div>;
 
-  const { id, title, subtitle, emoji, steps = [] } = lessonData;
+  const { id, title, steps = [] } = lessonData;
   const totalSteps    = steps.length;
   const currentStep   = steps[stepIdx];
   const isLastStep    = stepIdx === totalSteps - 1;
@@ -272,7 +271,6 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const advanceStep = () => {
     const next = stepIdx + 1;
     setStepIdx(next);
-    setMaxVisited(prev => Math.max(prev, next));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

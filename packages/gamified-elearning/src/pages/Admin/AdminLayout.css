@@ -4,14 +4,14 @@
   min-height: 100vh;
   font-family: 'Nunito', 'Segoe UI', sans-serif;
   background: #f0f2f5;
-  color: #1a2035;
+  color: #3B2A22;
 }
 
 /* ── Sidebar ──────────────────────────────────────────────── */
 .adm-sidebar {
   width: 220px;
   flex-shrink: 0;
-  background: #1a2035;
+  background: #3B2A22;
   color: #c8cde8;
   display: flex;
   flex-direction: column;
@@ -101,7 +101,7 @@
   font-size: 1.4rem;
   font-weight: 800;
   margin: 0 0 1.5rem;
-  color: #1a2035;
+  color: #3B2A22;
 }
 
 /* ── Stat cards ───────────────────────────────────────────── */
@@ -124,7 +124,7 @@
   font-size: 2rem;
   font-weight: 800;
   line-height: 1;
-  color: #1a2035;
+  color: #3B2A22;
 }
 .adm-stat-num.accent  { color: #6c63ff; }
 .adm-stat-num.orange  { color: #FF8A3D; }
@@ -144,7 +144,7 @@
 .adm-section-head {
   font-size: 1rem;
   font-weight: 800;
-  color: #1a2035;
+  color: #3B2A22;
   margin: 1.75rem 0 0.75rem;
 }
 
@@ -180,7 +180,7 @@
   cursor: pointer;
   user-select: none;
 }
-.adm-table th:hover { color: #1a2035; }
+.adm-table th:hover { color: #3B2A22; }
 .adm-table th.sorted { color: #6c63ff; }
 
 .adm-table td {
@@ -231,7 +231,7 @@
   background: #fff;
   font-size: 0.9rem;
   font-family: 'Nunito', sans-serif;
-  color: #1a2035;
+  color: #3B2A22;
   outline: none;
 }
 .adm-search-input:focus { border-color: #6c63ff; }
@@ -248,7 +248,7 @@
 }
 .adm-btn:hover { opacity: 0.85; }
 .adm-btn-primary   { background: #6c63ff; color: #fff; }
-.adm-btn-secondary { background: #e8ecf4; color: #1a2035; }
+.adm-btn-secondary { background: #e8ecf4; color: #3B2A22; }
 
 /* ── Pagination ───────────────────────────────────────────── */
 .adm-pagination {
@@ -260,7 +260,7 @@
 .adm-pagination button {
   background: #fff;
   border: 1px solid #d4dae8;
-  color: #1a2035;
+  color: #3B2A22;
   padding: 0.35rem 0.85rem;
   border-radius: 8px;
   cursor: pointer;

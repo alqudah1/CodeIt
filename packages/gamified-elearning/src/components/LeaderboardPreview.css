@@ -1,6 +1,6 @@
 /* ───────────────────────────────────────────────────────
    LeaderboardPreview  —  glassmorphism mini-panel
-   Brand-aligned: #FF8A3D · #4CC9F0 · #FFD166 · #1F2A44
+   Brand-aligned: #FF8A3D · #4CC9F0 · #FFD166 · #3B2A22
 ──────────────────────────────────────────────────────── */
 
 .lb-prev {
@@ -8,7 +8,7 @@
   border: 1.5px solid rgba(255, 138, 61, 0.16);
   border-radius: 26px;
   padding: 1.8rem 2rem;
-  box-shadow: 0 20px 44px rgba(31, 42, 68, 0.10);
+  box-shadow: 0 20px 44px rgba(59, 42, 34, 0.10);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   display: flex;
@@ -40,13 +40,13 @@
 .lb-prev-h2 {
   margin: 0;
   font-size: 1.35rem;
-  color: #1F2A44;
+  color: #3B2A22;
 }
 
 .lb-prev-tagline {
   margin: 0;
   font-size: 0.85rem;
-  color: rgba(31, 42, 68, 0.62);
+  color: rgba(59, 42, 34, 0.62);
 }
 
 .lb-prev-all-btn {
@@ -56,7 +56,7 @@
   padding: 0.45rem 1.2rem;
   font-size: 0.9rem;
   font-weight: 700;
-  color: #1F2A44;
+  color: #3B2A22;
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(255, 138, 61, 0.22);
   backdrop-filter: blur(10px);
@@ -83,13 +83,13 @@
   align-items: center;
   gap: 0.75rem;
   font-size: 0.95rem;
-  color: #1F2A44;
+  color: #3B2A22;
   padding: 0.5rem 0;
   flex-wrap: wrap;
 }
 
 .lb-prev-state--hint {
-  color: rgba(31, 42, 68, 0.72);
+  color: rgba(59, 42, 34, 0.72);
   font-weight: 600;
 }
 
@@ -100,7 +100,7 @@
 
 .lb-prev-state--login {
   font-weight: 600;
-  color: #1F2A44;
+  color: #3B2A22;
   gap: 0.5rem;
 }
 
@@ -170,13 +170,13 @@
   padding: 0.65rem 1rem;
   background: rgba(255, 255, 255, 0.65);
   border-radius: 14px;
-  border: 1.5px solid rgba(31, 42, 68, 0.07);
+  border: 1.5px solid rgba(59, 42, 34, 0.07);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .lb-prev-row:hover {
   transform: translateX(3px);
-  box-shadow: 0 6px 16px rgba(31, 42, 68, 0.08);
+  box-shadow: 0 6px 16px rgba(59, 42, 34, 0.08);
 }
 
 /* Top-3 highlights — brand-tinted */
@@ -212,7 +212,7 @@
   flex: 1;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #1F2A44;
+  color: #3B2A22;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -221,7 +221,7 @@
 /* XP */
 .lb-prev-xp {
   font-size: 0.9rem;
-  color: rgba(31, 42, 68, 0.68);
+  color: rgba(59, 42, 34, 0.68);
   white-space: nowrap;
   flex-shrink: 0;
 }

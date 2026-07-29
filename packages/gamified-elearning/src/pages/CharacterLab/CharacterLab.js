@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
-import { useCharacter, getDefaultCharacter } from '../../context/CharacterContext';
+import { useCharacter } from '../../context/CharacterContext';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../Header/Header';
 import { useSEO } from '../../hooks/useSEO';

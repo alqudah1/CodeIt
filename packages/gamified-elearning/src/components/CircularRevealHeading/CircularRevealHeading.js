@@ -163,7 +163,7 @@ export function CircularRevealHeading({ items, centerText, size = 'md', classNam
             <defs>
               <linearGradient id="crh-grad" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#FF8A3D" />
-                <stop offset="100%" stopColor="#1F2A44" />
+                <stop offset="100%" stopColor="#3B2A22" />
               </linearGradient>
             </defs>
             <path

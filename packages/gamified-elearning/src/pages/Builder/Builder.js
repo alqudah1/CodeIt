@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape -- fallback project templates intentionally preserve escaped HTML/JS */
 import { useState, useRef, useEffect, useMemo, useContext } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import Header from '../Header/Header';
@@ -58,13 +59,6 @@ const TOOL_MODIFIERS = [
   'Add more features',
   'Improve the design',
   'Add a history log',
-];
-
-const BUILD_STEPS = [
-  'Analyzing your idea',
-  'Selecting design style',
-  'Building the structure',
-  'Adding interactions',
 ];
 
 function getBuildSteps(type) {
@@ -795,10 +789,8 @@ export default function Builder() {
   function applyGameTweakInstant(speed, timer) {
     const spawnDelays = [1300, 950, 680, 460, 290];
     const speeds      = [1.8, 3, 4.5, 6, 9];
-    const animDurs    = [1.6, 1.0, 0.7, 0.48, 0.28];
     const sd  = spawnDelays[speed - 1] ?? 680;
     const spd = speeds[speed - 1] ?? 4.5;
-    const ad  = animDurs[speed - 1] ?? 0.7;
 
     const js = `(function(){
       if(typeof spawnDelay!=='undefined')spawnDelay=${sd};
@@ -876,7 +868,6 @@ export default function Builder() {
 
   async function saveVersionToServer(label) {
     if (!savedProjectId || !token || !code) return;
-    const { primary, accent } = extractColors(code);
     const title = aiTitle || deriveProjectName(builtPrompt || '') || 'Untitled';
     try {
       await fetch(`${API_BASE_URL}/api/builder/projects/${savedProjectId}/versions`, {
@@ -2921,15 +2912,14 @@ export default function Builder() {
             >
               Edit
             </button>
-            {user ? (
-              <button
-                className="bldr-mobile-play-bar__btn bldr-mobile-play-bar__btn--save"
-                onClick={handleSaveProject}
-                disabled={saveStatus === 'saving' || isSaved || editing}
-              >
-                {isSaved ? 'Saved' : 'Save'}
-              </button>
-            ) : null}
+            <button
+              className="bldr-mobile-play-bar__btn bldr-mobile-play-bar__btn--save"
+              onClick={handleSaveProject}
+              disabled={saveStatus === 'saving' || isSaved || editing}
+              aria-label={user ? 'Save project' : 'Save project to a free account'}
+            >
+              {isSaved ? 'Saved' : 'Save'}
+            </button>
           </div>
         )}
 

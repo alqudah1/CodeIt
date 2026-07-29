@@ -51,7 +51,7 @@
   /* Card primitives */
   --card-radius: 24px;
   --card-border: 1.5px solid rgba(255, 138, 61, 0.16);
-  --card-shadow: 0 4px 24px rgba(31, 42, 68, 0.08), 0 1px 4px rgba(31, 42, 68, 0.04);
+  --card-shadow: 0 4px 24px rgba(59, 42, 34, 0.08), 0 1px 4px rgba(59, 42, 34, 0.04);
   --card-pad:    1.75rem;
 
   /* Spacing scale */
@@ -130,11 +130,11 @@ code {
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #1F2A44;
+  color: #3B2A22;
   cursor: pointer;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 6px 20px rgba(31, 42, 68, 0.10);
+  box-shadow: 0 6px 20px rgba(59, 42, 34, 0.10);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   text-decoration: none;
 }
@@ -142,12 +142,12 @@ code {
 .glass-btn:hover {
   background: rgba(255, 255, 255, 0.88);
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(31, 42, 68, 0.14);
+  box-shadow: 0 12px 28px rgba(59, 42, 34, 0.14);
 }
 
 .glass-btn:active {
   transform: translateY(0);
-  box-shadow: 0 4px 12px rgba(31, 42, 68, 0.10);
+  box-shadow: 0 4px 12px rgba(59, 42, 34, 0.10);
 }
 
 .glass-btn:focus-visible {
@@ -173,7 +173,7 @@ code {
   padding: 0.42rem 0.95rem;
   font-size: 0.85rem;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(31, 42, 68, 0.08);
+  box-shadow: 0 4px 12px rgba(59, 42, 34, 0.08);
 }
 
 /* Pill variant (round ends) */

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ENDPOINTS, API_BASE_URL } from '../../config/api';
+import { ENDPOINTS } from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import { getGameById, getGameRoute } from './gameCatalog';
 
@@ -49,7 +49,7 @@ const GameGate = ({ gameId }) => {
     };
 
     check();
-  }, [gameId, user, authLoading, navigate]);
+  }, [gameId, user, token, authLoading, navigate]);
 
   // Navigate to challenge once allowed
   useEffect(() => {
@@ -129,7 +129,7 @@ const styles = {
     padding: '3rem 2.5rem',
     maxWidth: '420px',
     width: '100%',
-    boxShadow: '0 20px 48px rgba(31,42,68,0.12)',
+    boxShadow: '0 20px 48px rgba(59, 42, 34,0.12)',
     textAlign: 'center',
     backdropFilter: 'blur(12px)',
   },
@@ -137,7 +137,7 @@ const styles = {
     margin: '0 0 0.75rem',
     fontSize: '1.5rem',
     fontWeight: 800,
-    color: '#1F2A44',
+    color: '#3B2A22',
   },
   sub: {
     margin: '0 0 1.5rem',
@@ -155,7 +155,7 @@ const styles = {
     borderRadius: '12px',
     border: '1.5px solid rgba(255,138,61,0.22)',
     background: 'rgba(255,255,255,0.8)',
-    color: '#1F2A44',
+    color: '#3B2A22',
     fontFamily: "'Nunito', 'Arvo', sans-serif",
     fontSize: '0.95rem',
     fontWeight: 700,

@@ -1,7 +1,7 @@
 /* ================================================================
    SplineHeroCard
    Dark glass card — spotlight glow + Spline 3D scene
-   Palette: CodeIt brand (#FF8A3D · #FFD166 · #4CC9F0 · #1F2A44)
+   Palette: CodeIt brand (#FF8A3D · #FFD166 · #4CC9F0 · #3B2A22)
    ================================================================ */
 
 /* ── Card shell ──────────────────────────────────────────────── */
@@ -17,7 +17,7 @@
   border-radius: 28px;
   overflow: hidden;
 
-  background: linear-gradient(135deg, #0f1c3a 0%, #131d35 55%, #0d1829 100%);
+  background: linear-gradient(135deg, #3A241C 0%, #4A2F25 55%, #281B17 100%);
   border: 1px solid rgba(255, 138, 61, 0.18);
   box-shadow:
     0 0 0 1px rgba(255, 209, 102, 0.06),
@@ -113,7 +113,7 @@
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.95rem;
   font-weight: 800;
-  color: #1F2A44;
+  color: #3B2A22;
   background: linear-gradient(120deg, #FF8A3D, #FFD166);
   border: none;
   border-radius: 999px;
@@ -148,7 +148,7 @@
   inset: 0;
   left: 0;
   width: 60px;
-  background: linear-gradient(to right, #0f1c3a 0%, transparent 100%);
+  background: linear-gradient(to right, #3A241C 0%, transparent 100%);
   z-index: 3;
   pointer-events: none;
 }
@@ -178,7 +178,7 @@
     width: 100%;
     height: 48px;
     top: 0;
-    background: linear-gradient(to bottom, #0f1c3a 0%, transparent 100%);
+    background: linear-gradient(to bottom, #3A241C 0%, transparent 100%);
   }
 
   .sphc-desc { max-width: 100%; }

@@ -214,7 +214,7 @@ export default function JourneyMap() {
     } finally {
       setLoading(false);
     }
-  }, [user, token]);
+  }, [user, token, logout, navigate]);
 
   // Fetch on mount / auth change / route re-entry (location.key changes each visit)
   useEffect(() => {

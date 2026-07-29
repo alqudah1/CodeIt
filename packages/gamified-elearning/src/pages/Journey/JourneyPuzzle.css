@@ -20,7 +20,7 @@
   justify-content: center;
   gap: 1rem;
   font-family: 'Nunito', 'Arvo', sans-serif;
-  color: #1a214b;
+  color: #3B2A22;
 }
 
 /* ── Back link ─────────────────────────────────────────────── */
@@ -72,7 +72,7 @@
   margin: 0;
   font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 800;
-  color: #1a214b;
+  color: #3B2A22;
   line-height: 1.2;
 }
 
@@ -189,7 +189,7 @@
 }
 .jp-btn--ghost {
   background: rgba(255,255,255,0.8);
-  color: #1a214b;
+  color: #3B2A22;
   border: 2px solid #e0d8f0;
 }
 
@@ -297,9 +297,9 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem 1.2rem;
-  background: linear-gradient(120deg, rgba(86,54,211,0.07), rgba(255,138,61,0.06));
+  background: linear-gradient(120deg, rgba(232,105,45,0.07), rgba(255,138,61,0.06));
   border-radius: 16px;
-  border: 1.5px solid rgba(86,54,211,0.14);
+  border: 1.5px solid rgba(232,105,45,0.14);
 }
 
 .jp-done-reward__avatar {

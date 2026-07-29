@@ -27,6 +27,8 @@ const lesson15 = {
       id: 'tryit',
       title: 'Price Tag',
       description: 'Format a price to exactly two decimal places using :.2f inside the curly braces. Run to see the tidy output!',
+      // This is Python f-string syntax stored as plain lesson text, not a JavaScript template.
+      // eslint-disable-next-line no-template-curly-in-string
       code: 'item = "Headphones"\nprice = 34.5\nprint(f"{item}: ${price:.2f}")\nprint(f"With 10% discount: ${price * 0.9:.2f}")',
       successPattern: /34\.50|\$|discount/i,
       hint: ':.2f means "format as a float with 2 decimal places". Try price = 9.9 or price = 100 — the output always shows cents.',

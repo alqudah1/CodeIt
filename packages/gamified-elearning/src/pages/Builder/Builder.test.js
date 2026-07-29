@@ -81,6 +81,20 @@ describe('project studio opening', () => {
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
   });
 
+  test('keeps the guest save action available in the mobile project controls', async () => {
+    render(<Builder />);
+
+    fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
+    await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save project to a free account' }));
+
+    expect(JSON.parse(sessionStorage.getItem('codeit_builder_draft')).code).toContain('My game');
+    expect(mockNavigate).toHaveBeenCalledWith('/login', {
+      state: { from: '/builder', resumeBuilderAction: 'save' },
+    });
+  });
+
   test('preserves a guest project and remembers a request to publish', async () => {
     render(<Builder />);
 

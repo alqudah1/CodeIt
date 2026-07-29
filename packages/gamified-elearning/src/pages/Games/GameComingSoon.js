@@ -45,7 +45,7 @@ const GameComingSoon = ({ gameId }) => {
           Coming Soon
         </div>
 
-        <h1 style={{ margin: 0, fontSize: 'clamp(1.5rem, 3vw, 2rem)', color: '#1a214b', lineHeight: 1.2 }}>
+        <h1 style={{ margin: 0, fontSize: 'clamp(1.5rem, 3vw, 2rem)', color: '#3B2A22', lineHeight: 1.2 }}>
           {game?.title || `Puzzle ${gameId}`}
         </h1>
 
@@ -65,7 +65,7 @@ const GameComingSoon = ({ gameId }) => {
             padding: '0.3rem 0.8rem',
             fontSize: '0.8rem',
             fontWeight: 600,
-            color: '#1a214b',
+            color: '#3B2A22',
           }}>
             {game?.difficulty || 'Unknown'}
           </span>
@@ -75,7 +75,7 @@ const GameComingSoon = ({ gameId }) => {
             padding: '0.3rem 0.8rem',
             fontSize: '0.8rem',
             fontWeight: 600,
-            color: '#1a214b',
+            color: '#3B2A22',
           }}>
             {game?.xpReward || 0} XP on launch
           </span>

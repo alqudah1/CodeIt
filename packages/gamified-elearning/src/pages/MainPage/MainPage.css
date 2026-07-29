@@ -12,7 +12,7 @@
   gap: 1.2rem;
   padding: 1.1rem 1.5rem;
   border-radius: 1.4rem;
-  background: linear-gradient(120deg, rgba(86,54,211,0.10) 0%, rgba(255,138,61,0.08) 100%);
+  background: linear-gradient(120deg, rgba(232,105,45,0.10) 0%, rgba(255,138,61,0.08) 100%);
   border: 1.5px solid rgba(86, 54, 211, 0.18);
   box-shadow: 0 8px 24px rgba(86, 54, 211, 0.08);
   flex-wrap: wrap;
@@ -27,7 +27,7 @@
 .avatar-banner__title {
   font-size: 1rem;
   font-weight: 800;
-  color: #1a214b;
+  color: #3B2A22;
 }
 
 .avatar-banner__sub {
@@ -46,7 +46,7 @@
   padding: 0.55rem 1.3rem;
   border: none;
   border-radius: 999px;
-  background: linear-gradient(120deg, #5636d3, #8b65f2);
+  background: linear-gradient(120deg, #D95F20, #F59A5A);
   color: #fff;
   font-family: 'Nunito', 'Arvo', sans-serif;
   font-size: 0.88rem;
@@ -159,7 +159,7 @@
 .brand-tagline {
   margin: 0;
   font-size: 1.05rem;
-  color: #0b3d66;
+  color: #5A3A2C;
   line-height: 1.6;
 }
 
@@ -235,7 +235,7 @@
   margin: 0;
   font-size: 1.05rem;
   line-height: 1.7;
-  color: #0b3d66;
+  color: #5A3A2C;
 }
 
 .overview-progress-label {
@@ -244,13 +244,13 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.10em;
-  color: rgba(31, 42, 68, 0.50);
+  color: rgba(59, 42, 34, 0.50);
 }
 
 .overview-progress-sub {
   margin: 0 0 1rem;
   font-size: 0.92rem !important;
-  color: rgba(31, 42, 68, 0.58) !important;
+  color: rgba(59, 42, 34, 0.58) !important;
   line-height: 1.5 !important;
 }
 
@@ -342,7 +342,7 @@
   margin: 0.4rem 0 0 0;
   font-size: 1rem;
   line-height: 1.6;
-  color: #0b3d66;
+  color: #5A3A2C;
 }
 
 /* Lesson map CTA button inside track card */
@@ -392,7 +392,7 @@
   padding: 0.85rem 1rem;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0b3d66;
+  color: #5A3A2C;
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(4, 22, 56, 0.1);
   backdrop-filter: blur(10px);
@@ -465,20 +465,20 @@
   border: 1.5px solid rgba(255, 138, 61, 0.22);
   border-radius: 18px;
   padding: 1.5rem 1.8rem;
-  box-shadow: 0 6px 22px rgba(31, 42, 68, 0.07);
+  box-shadow: 0 6px 22px rgba(59, 42, 34, 0.07);
 }
 
 .mp-journey-cta__heading {
   margin: 0 0 0.35rem;
   font-size: 1.05rem;
   font-weight: 800;
-  color: #1F2A44;
+  color: #3B2A22;
 }
 
 .mp-journey-cta__sub {
   margin: 0;
   font-size: 0.9rem;
-  color: rgba(31, 42, 68, 0.70);
+  color: rgba(59, 42, 34, 0.70);
   line-height: 1.55;
   max-width: 52ch;
 }
@@ -496,7 +496,7 @@
   flex-shrink: 0;
   padding: 0.7rem 1.5rem;
   background: linear-gradient(120deg, #FF8A3D, #FFD166);
-  color: #1F2A44;
+  color: #3B2A22;
   border: none;
   border-radius: 999px;
   font-weight: 800;
@@ -531,7 +531,7 @@
   border: 1px solid rgba(255, 183, 3, 0.3);
   box-shadow: 0 20px 36px rgba(4, 22, 56, 0.12);
   font-size: 0.95rem;
-  color: #0b3d66;
+  color: #5A3A2C;
 }
 
 .main-footer a {
@@ -741,7 +741,7 @@
 
 /* Complete state — purple accent */
 .progress-track--complete .progress-track__pct {
-  color: #5636d3;
+  color: #D95F20;
 }
 
 /* Sub row: motivational text left, count right */
@@ -762,7 +762,7 @@
 }
 /* Completed track gets a bolder affirmation */
 .progress-track--complete .progress-track__motivation {
-  color: #5636d3;
+  color: #D95F20;
   font-style: normal;
 }
 
@@ -914,7 +914,7 @@
 .mp-level-card__bar-pct {
   font-size: 1.35rem;
   font-weight: 800;
-  color: #5636d3;
+  color: #D95F20;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
@@ -1788,7 +1788,7 @@
   transition: color 0.15s;
 }
 .track-view-all:hover {
-  color: #5636d3;
+  color: #D95F20;
 }
 
 /* Footer row on puzzle card: journey button + secondary games link */
@@ -1848,7 +1848,7 @@
   flex-shrink: 0;
   border-radius: 14px;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(86,54,211,0.08), rgba(255,138,61,0.06));
+  background: linear-gradient(135deg, rgba(232,105,45,0.08), rgba(255,138,61,0.06));
 }
 
 .mp-char-card__info {
@@ -1905,7 +1905,7 @@
 .mp-char-card__link {
   flex-shrink: 0;
   padding: 0.55rem 1.2rem;
-  background: linear-gradient(120deg, #5636d3, #8b65f2);
+  background: linear-gradient(120deg, #D95F20, #F59A5A);
   color: #fff;
   border-radius: 999px;
   font-size: 0.85rem;
@@ -1965,14 +1965,14 @@
 .mp-builder-cta__title {
   font-size: 1.15rem;
   font-weight: 800;
-  color: #1F2A44;
+  color: #3B2A22;
   margin: 0;
 }
 
 .mp-builder-cta__sub {
   font-size: 0.88rem;
   font-weight: 600;
-  color: rgba(31,42,68,0.65);
+  color: rgba(59, 42, 34,0.65);
   margin: 0;
   max-width: 480px;
 }

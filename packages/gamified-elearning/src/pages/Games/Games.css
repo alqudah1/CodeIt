@@ -57,7 +57,7 @@
 .game-hero h1 {
   margin: 0;
   font-size: clamp(2rem, 4vw, 2.8rem);
-  color: #1a214b;
+  color: #3B2A22;
   line-height: 1.2;
 }
 
@@ -102,7 +102,7 @@
 
 .game-cta.secondary {
   background: rgba(255, 255, 255, 0.8);
-  color: #5636d3;
+  color: #D95F20;
   box-shadow: 0 8px 20px rgba(86, 54, 211, 0.15);
 }
 
@@ -222,7 +222,7 @@
   padding: 0.6rem 1.2rem;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.95);
-  color: #1a214b;
+  color: #3B2A22;
   font-weight: 600;
   font-size: 0.9rem;
   text-decoration: none;

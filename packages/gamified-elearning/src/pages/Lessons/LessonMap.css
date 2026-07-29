@@ -36,7 +36,7 @@
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
-  color: #0b3d66;
+  color: #5A3A2C;
   font-family: 'Nunito', 'Arvo', sans-serif;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -63,7 +63,7 @@
 
 .lm-subtitle {
   font-size: 1.05rem;
-  color: #0b3d66;
+  color: #5A3A2C;
   margin: 0.25rem 0 1rem;
   line-height: 1.6;
   max-width: 540px;
@@ -84,7 +84,7 @@
   padding: 0.4rem 1.2rem;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0b3d66;
+  color: #5A3A2C;
   box-shadow: 0 8px 18px rgba(4, 22, 56, 0.1);
 }
 
@@ -291,7 +291,7 @@
 .lm-card-desc {
   margin: 0 0 0.45rem;
   font-size: 0.88rem;
-  color: #0b3d66;
+  color: #5A3A2C;
   line-height: 1.5;
   opacity: 0.85;
 }

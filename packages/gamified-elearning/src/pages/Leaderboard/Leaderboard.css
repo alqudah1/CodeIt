@@ -1,7 +1,7 @@
 /* ============================================================
    Leaderboard page — brand-aligned
    Palette: #FF8A3D primary · #4CC9F0 secondary · #FFD166 accent
-            #1F2A44 text   · #FFF7ED background
+            #3B2A22 text   · #FFF7ED background
    ============================================================ */
 
 .lb-page {
@@ -9,7 +9,7 @@
   width: 100%;
   background: #FFF7ED;
   font-family: 'Nunito', 'Arvo', sans-serif;
-  color: #1F2A44;
+  color: #3B2A22;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -57,9 +57,9 @@
   padding: 0.5rem 1.2rem;
   font-size: 0.92rem;
   font-weight: 700;
-  color: #1F2A44;
+  color: #3B2A22;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(31, 42, 68, 0.08);
+  box-shadow: 0 8px 20px rgba(59, 42, 34, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   font-family: inherit;
 }
@@ -67,13 +67,13 @@
 .lb-back-btn:hover {
   transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 14px 28px rgba(31, 42, 68, 0.12);
+  box-shadow: 0 14px 28px rgba(59, 42, 34, 0.12);
 }
 
 .lb-title {
   margin: 0.4rem 0 0;
   font-size: clamp(2rem, 4vw, 2.6rem);
-  color: #1F2A44;
+  color: #3B2A22;
   line-height: 1.1;
 }
 
@@ -81,7 +81,7 @@
   margin: 0;
   font-size: 1rem;
   line-height: 1.6;
-  color: rgba(31, 42, 68, 0.68);
+  color: rgba(59, 42, 34, 0.68);
 }
 
 .lb-count-badge {
@@ -119,12 +119,12 @@
 
 .lb-my-rank-text {
   font-size: 0.98rem;
-  color: rgba(31, 42, 68, 0.80);
+  color: rgba(59, 42, 34, 0.80);
   line-height: 1.5;
 }
 
 .lb-my-rank-text strong {
-  color: #1F2A44;
+  color: #3B2A22;
 }
 
 /* ── State cards (loading / error / empty) ────────────────── */
@@ -132,7 +132,7 @@
   background: rgba(255, 255, 255, 0.78);
   border-radius: 22px;
   border: 1.5px solid rgba(255, 138, 61, 0.16);
-  box-shadow: 0 20px 42px rgba(31, 42, 68, 0.08);
+  box-shadow: 0 20px 42px rgba(59, 42, 34, 0.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding: 3rem 2rem;
@@ -141,7 +141,7 @@
   align-items: center;
   gap: 0.9rem;
   text-align: center;
-  color: #1F2A44;
+  color: #3B2A22;
   font-size: 1.05rem;
 }
 
@@ -177,7 +177,7 @@
   padding: 0.5rem 1.4rem;
   font-size: 0.92rem;
   font-weight: 700;
-  color: #1F2A44;
+  color: #3B2A22;
   cursor: pointer;
   box-shadow: 0 10px 20px rgba(255, 138, 61, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -213,8 +213,8 @@
   padding: 1rem 1.4rem;
   background: rgba(255, 255, 255, 0.78);
   border-radius: 18px;
-  border: 1.5px solid rgba(31, 42, 68, 0.07);
-  box-shadow: 0 8px 22px rgba(31, 42, 68, 0.06);
+  border: 1.5px solid rgba(59, 42, 34, 0.07);
+  box-shadow: 0 8px 22px rgba(59, 42, 34, 0.06);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -223,7 +223,7 @@
 
 .lb-row:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 32px rgba(31, 42, 68, 0.10);
+  box-shadow: 0 16px 32px rgba(59, 42, 34, 0.10);
 }
 
 /* Top 3 rows */
@@ -286,7 +286,7 @@
 .lb-name {
   font-size: 1rem;
   font-weight: 600;
-  color: #1F2A44;
+  color: #3B2A22;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -296,7 +296,7 @@
 .lb-you-badge {
   display: inline-block;
   background: linear-gradient(120deg, #FF8A3D, #FFD166);
-  color: #1F2A44;
+  color: #3B2A22;
   font-size: 0.72rem;
   font-weight: 700;
   border-radius: 999px;
@@ -342,7 +342,7 @@
 .lb-bar-track {
   width: 100%;
   height: 8px;
-  background: rgba(31, 42, 68, 0.08);
+  background: rgba(59, 42, 34, 0.08);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -361,14 +361,14 @@
 /* XP cell */
 .lb-xp {
   font-size: 1rem;
-  color: rgba(31, 42, 68, 0.68);
+  color: rgba(59, 42, 34, 0.68);
   text-align: right;
   flex-shrink: 0;
 }
 
 .lb-xp strong {
   font-size: 1.15rem;
-  color: #1F2A44;
+  color: #3B2A22;
 }
 
 .lb-xp small {

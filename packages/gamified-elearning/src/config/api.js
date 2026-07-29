@@ -71,9 +71,11 @@ export const ENDPOINTS = {
   },
 };
 
-export default {
+const apiConfig = {
   SITE_ORIGIN,
   API_BASE_URL,
   PUZZLE_BASE_URL,
   ENDPOINTS,
 };
+
+export default apiConfig;

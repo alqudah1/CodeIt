@@ -84,8 +84,8 @@ const PageLoader = () => (
   }}>
     <div style={{
       width: 36, height: 36, borderRadius: '50%',
-      border: '4px solid rgba(86,54,211,0.15)',
-      borderTopColor: '#5636d3',
+      border: '4px solid rgba(255,122,77,0.18)',
+      borderTopColor: '#e8692d',
       animation: 'page-spin 0.7s linear infinite',
     }} />
     <style>{`@keyframes page-spin { to { transform: rotate(360deg); } }`}</style>

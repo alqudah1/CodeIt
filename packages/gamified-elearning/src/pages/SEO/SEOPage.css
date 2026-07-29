@@ -1,7 +1,7 @@
 /* ════════════════════════════════════════════════════════════
    SEO Landing Pages — CodeIt brand-aligned
    Palette: #FF8A3D primary · #FFD166 accent · #4CC9F0 secondary
-            #1F2A44 text  · #FFF7ED background
+            #38291F text  · #FFF7ED background
    ════════════════════════════════════════════════════════════ */
 
 /* ── Page shell ──────────────────────────────────────────── */
@@ -195,7 +195,7 @@
 .seo-related {
   margin-top: 3rem;
   padding-top: 2rem;
-  border-top: 1.5px solid rgba(31,42,68,0.10);
+  border-top: 1.5px solid rgba(59, 42, 34,0.10);
 }
 
 .seo-related__title {
@@ -271,12 +271,12 @@
 }
 
 .seo-faq__item {
-  border-bottom: 1px solid rgba(31, 42, 68, 0.10);
+  border-bottom: 1px solid rgba(59, 42, 34, 0.10);
   padding: 1.25rem 0;
 }
 
 .seo-faq__item:first-of-type {
-  border-top: 1px solid rgba(31, 42, 68, 0.10);
+  border-top: 1px solid rgba(59, 42, 34, 0.10);
 }
 
 .seo-faq__q {
