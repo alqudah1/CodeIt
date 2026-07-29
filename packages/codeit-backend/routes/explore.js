@@ -5,6 +5,7 @@ const router     = express.Router();
 const pool       = require('../db');
 const jwt        = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
+const { SHOWCASE_PROJECTS, findShowcaseProject } = require('../showcaseProjects');
 
 function optionalAuth(req, res, next) {
   const header = req.headers['authorization'];
@@ -39,6 +40,7 @@ function formatProject(row, likedSet) {
     primaryColor: primary,
     accentColor:  accent,
     liked:        likedSet ? likedSet.has(row.id) : false,
+    isShowcase:   Boolean(row.is_showcase),
   };
   if (row.gender) {
     out.creator = {
@@ -102,12 +104,18 @@ router.get('/', optionalAuth, async (req, res) => {
       }
     }
 
+    const studioRows = SHOWCASE_PROJECTS.map((project) => ({
+      ...project,
+      code_sample: project.generated_code,
+    }));
+    const withStudioFallback = (rows) => rows.length ? rows : studioRows;
+
     res.json({
       success:     true,
-      trending:    trending.map(r    => formatProject(r, likedSet)),
-      newest:      newest.map(r      => formatProject(r, likedSet)),
-      mostPlayed:  mostPlayed.map(r  => formatProject(r, likedSet)),
-      mostRemixed: mostRemixed.map(r => formatProject(r, likedSet)),
+      trending:    withStudioFallback(trending).map(r    => formatProject(r, likedSet)),
+      newest:      withStudioFallback(newest).map(r      => formatProject(r, likedSet)),
+      mostPlayed:  withStudioFallback(mostPlayed).map(r  => formatProject(r, likedSet)),
+      mostRemixed: withStudioFallback(mostRemixed).map(r => formatProject(r, likedSet)),
     });
   } catch (err) {
     console.error('Explore feed error:', err.message);
@@ -123,6 +131,9 @@ router.post('/like/:publicId', optionalAuth, async (req, res) => {
   const userId = req.user.user_id;
 
   try {
+    if (findShowcaseProject(publicId)) {
+      return res.status(400).json({ error: 'Studio examples are ready to remix instead.' });
+    }
     const [rows] = await pool.query(
       'SELECT id FROM ai_projects WHERE public_id = ? AND is_public = 1',
       [publicId]

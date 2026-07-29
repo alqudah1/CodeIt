@@ -67,13 +67,15 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
           {TYPE_LABEL[project.projectType] || project.projectType || 'Project'}
         </span>
         <span className="exp-card__thumb-title">{project.title}</span>
-        <button
-          className={`exp-card__heart${project.liked ? ' exp-card__heart--liked' : ''}`}
-          onClick={e => { e.stopPropagation(); onLike(project); }}
-          aria-label={project.liked ? 'Unlike' : 'Like'}
-        >
-          {project.liked ? '♥' : '♡'}
-        </button>
+        {!project.isShowcase && (
+          <button
+            className={`exp-card__heart${project.liked ? ' exp-card__heart--liked' : ''}`}
+            onClick={e => { e.stopPropagation(); onLike(project); }}
+            aria-label={project.liked ? 'Unlike' : 'Like'}
+          >
+            {project.liked ? '♥' : '♡'}
+          </button>
+        )}
       </div>
 
       {/* Meta */}
@@ -85,7 +87,7 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
         </div>
         <div className="exp-card__stats">
           <StatBadge icon="▶" count={project.plays} />
-          <StatBadge icon="♥" count={project.likes} />
+          {!project.isShowcase && <StatBadge icon="♥" count={project.likes} />}
           <StatBadge icon="⤴" count={project.remixes} />
         </div>
       </div>

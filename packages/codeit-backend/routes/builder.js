@@ -9,6 +9,7 @@ const { recordEvent } = require('../analytics');
 const { projectCategory, normalizeJourneyId } = require('../analyticsEvents');
 const { recordAIUsage } = require('../aiUsage');
 const { recordMilestoneAndNotify } = require('../progressNotifications');
+const { findShowcaseProject } = require('../showcaseProjects');
 
 const client     = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const MAX_PROMPT_LENGTH = 1000;
@@ -2324,8 +2325,9 @@ router.get('/pub/:publicId', async (req, res) => {
        WHERE public_id = ? AND is_public = 1`,
       [publicId]
     );
-    if (!rows.length) return res.status(404).json({ error: 'Project not found or not public.' });
-    res.json({ success: true, project: rows[0] });
+    const project = rows[0] || findShowcaseProject(publicId);
+    if (!project) return res.status(404).json({ error: 'Project not found or not public.' });
+    res.json({ success: true, project });
   } catch (err) {
     console.error('Get public project error:', err.message);
     res.status(500).json({ error: 'Could not load project.' });
@@ -2336,6 +2338,7 @@ router.get('/pub/:publicId', async (req, res) => {
 router.post('/pub/:publicId/view', async (req, res) => {
   const { publicId } = req.params;
   try {
+    if (findShowcaseProject(publicId)) return res.json({ success: true });
     await pool.query(
       'UPDATE ai_projects SET view_count = view_count + 1 WHERE public_id = ? AND is_public = 1',
       [publicId]
@@ -2357,8 +2360,8 @@ router.post('/pub/:publicId/remix', requireAuth, async (req, res) => {
        WHERE public_id = ? AND is_public = 1`,
       [publicId]
     );
-    if (!rows.length) return res.status(404).json({ error: 'Project not found or not public.' });
-    const original = rows[0];
+    const original = rows[0] || findShowcaseProject(publicId);
+    if (!original) return res.status(404).json({ error: 'Project not found or not public.' });
 
     const [result] = await pool.query(
       `INSERT INTO ai_projects (user_id, title, prompt, generated_code, project_type, creator_name)
@@ -2382,10 +2385,12 @@ router.post('/pub/:publicId/remix', requireAuth, async (req, res) => {
     ).catch(() => {});
 
     // Increment remix_count on original
-    await pool.query(
-      'UPDATE ai_projects SET remix_count = remix_count + 1 WHERE public_id = ? AND is_public = 1',
-      [publicId]
-    ).catch(() => {});
+    if (!original.is_showcase) {
+      await pool.query(
+        'UPDATE ai_projects SET remix_count = remix_count + 1 WHERE public_id = ? AND is_public = 1',
+        [publicId]
+      ).catch(() => {});
+    }
 
     void recordEvent('project_remix', {
       userId,
