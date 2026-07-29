@@ -127,6 +127,62 @@
   color: #3B2A22;
 }
 
+.lb-how-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.35rem;
+  border: 2px solid rgba(59, 42, 34, 0.12);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 14px 34px rgba(59, 42, 34, 0.08);
+}
+
+.lb-how-card h2,
+.lb-how-card p {
+  margin: 0;
+}
+
+.lb-how-card h2 {
+  margin-top: 0.25rem;
+  font-size: 1.45rem;
+}
+
+.lb-how-card p,
+.lb-how-card small {
+  color: rgba(59, 42, 34, 0.72);
+  line-height: 1.55;
+}
+
+.lb-eyebrow {
+  color: #d84f0f;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.lb-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.lb-action-row button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.72rem 1rem;
+  background: #ff6b20;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.lb-action-row button + button {
+  background: #fff3e8;
+  color: #7b3412;
+  border: 1.5px solid rgba(216, 79, 15, 0.24);
+}
+
 /* ── State cards (loading / error / empty) ────────────────── */
 .lb-state-card {
   background: rgba(255, 255, 255, 0.78);
@@ -391,5 +447,23 @@
 
   .lb-title {
     font-size: 1.7rem;
+  }
+
+  .lb-container {
+    width: 100%;
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  .lb-avatar {
+    display: none;
+  }
+
+  .lb-xp strong {
+    font-size: 1rem;
+  }
+
+  .lb-action-row {
+    display: grid;
   }
 }

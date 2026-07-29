@@ -17,6 +17,8 @@ describe('trust pages', () => {
     expect(screen.getByText('Projects are private by default')).toBeInTheDocument();
     expect(screen.getByText(/does not claim that email confirmation alone proves legal identity/i)).toBeInTheDocument();
     expect(screen.getByText(/does not collect a child email address/i)).toBeInTheDocument();
+    expect(screen.getByText(/kept only in that browser for up to seven days/i)).toBeInTheDocument();
+    expect(screen.getByText(/not uploaded as a saved account project/i)).toBeInTheDocument();
     expect(useSEO).toHaveBeenCalledWith(expect.objectContaining({ canonical: '/privacy' }));
   });
 

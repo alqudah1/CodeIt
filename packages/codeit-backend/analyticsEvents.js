@@ -9,6 +9,7 @@ const EVENT_META = Object.freeze({
   signup_complete: new Set(['student', 'educator']),
   builder_start: new Set(['website', 'game', 'quiz', 'tool', 'other']),
   generation_complete: new Set(['ai', 'fallback']),
+  guest_draft_recovered: new Set(),
   project_personalize: new Set(),
   activation_account_gate: new Set(['save', 'publish']),
   project_save: new Set(['website', 'game', 'quiz', 'tool', 'other']),
@@ -22,7 +23,7 @@ const EVENT_META = Object.freeze({
   pilot_join: new Set(['homepage', 'parents-guide', 'pricing']),
 });
 
-const CLIENT_REPORTED_EVENTS = new Set(['acquisition_visit', 'landing_cta_click', 'learning_start', 'parent_guide_view', 'parent_cta_click', 'project_personalize', 'activation_account_gate', 'activation_next_step', 'project_share', 'return_use', 'pricing_view']);
+const CLIENT_REPORTED_EVENTS = new Set(['acquisition_visit', 'landing_cta_click', 'learning_start', 'parent_guide_view', 'parent_cta_click', 'guest_draft_recovered', 'project_personalize', 'activation_account_gate', 'activation_next_step', 'project_share', 'return_use', 'pricing_view']);
 const JOURNEY_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function normalizeEventName(value) {

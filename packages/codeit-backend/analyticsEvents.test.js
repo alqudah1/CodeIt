@@ -18,6 +18,7 @@ test('accepts only the fixed product event vocabulary', () => {
   assert.equal(normalizeEventName('learning_start'), 'learning_start');
   assert.equal(normalizeEventName('parent_guide_view'), 'parent_guide_view');
   assert.equal(normalizeEventName('pilot_join'), 'pilot_join');
+  assert.equal(normalizeEventName('guest_draft_recovered'), 'guest_draft_recovered');
   assert.equal(normalizeEventName('prompt_submitted'), null);
   assert.equal(normalizeEventName({ event: 'return_use' }), null);
 });
@@ -56,6 +57,7 @@ test('limits browser-reported events to events the server cannot infer', () => {
   assert.equal(CLIENT_REPORTED_EVENTS.has('landing_cta_click'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('learning_start'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('parent_guide_view'), true);
+  assert.equal(CLIENT_REPORTED_EVENTS.has('guest_draft_recovered'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('parent_cta_click'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('return_use'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('pricing_view'), true);

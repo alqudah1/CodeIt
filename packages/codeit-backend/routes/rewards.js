@@ -3,6 +3,7 @@ const pool = require('../db');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
+const { publicLeaderboardRows } = require('../leaderboardIdentity');
 
 const TOTAL_QUIZZES  = 10;
 const TOTAL_LESSONS  = 10;
@@ -62,14 +63,14 @@ router.get('/progress-percentages', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/rewards/leaderboard  (public — no auth required)
-// XP = quiz XP + lesson XP + puzzle XP (computed live)
-router.get('/leaderboard', async (req, res) => {
+// GET /api/rewards/leaderboard (signed-in students only)
+// XP = quiz XP + lesson XP + puzzle XP (computed live).
+// Real names and database IDs never leave the server.
+router.get('/leaderboard', authenticateToken, async (req, res) => {
   try {
     const [rows] = await pool.query(`
       SELECT
         u.user_id AS student_id,
-        u.name,
         (
           COALESCE((SELECT SUM(xp_earned) FROM Student_Quiz_Attempt   WHERE student_id = u.user_id), 0) +
           COALESCE((SELECT SUM(xp_earned) FROM Student_Lesson_Progress WHERE user_id    = u.user_id), 0) +
@@ -79,9 +80,8 @@ router.get('/leaderboard', async (req, res) => {
       WHERE u.role = 'student'
       HAVING xp_points > 0
       ORDER BY xp_points DESC
-      LIMIT 20
     `);
-    res.json({ leaderboard: rows });
+    res.json(publicLeaderboardRows(rows, req.user.user_id));
   } catch (err) {
     console.error('❌ Error fetching leaderboard:', err);
     res.status(500).json({ error: err.message });

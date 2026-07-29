@@ -3,7 +3,7 @@ import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
 import './Legal.css';
 
-const UPDATED = 'July 28, 2026';
+const UPDATED = 'July 29, 2026';
 
 export default function Privacy() {
   useSEO({
@@ -53,7 +53,7 @@ export default function Privacy() {
             <section id="learning">
               <h2>Learning progress and projects</h2>
               <p>When someone uses a signed-in account, CodeIt may save lesson completion, quiz attempts and scores, puzzle progress, XP, game scores, avatar choices, and daily activity.</p>
-              <p>Saved projects can include the project title, original idea or prompt, later edit instructions, generated HTML/CSS/JavaScript, project versions, colours, project type, and timestamps. A guest project draft may be held temporarily in the browser so it can survive signup or login.</p>
+              <p>Saved projects can include the project title, original idea or prompt, later edit instructions, generated HTML/CSS/JavaScript, project versions, colours, project type, and timestamps. Before account signup, an unsaved guest project may be kept only in that browser for up to seven days so a refresh or later visit does not immediately erase the work. It is not uploaded as a saved account project unless the creator explicitly continues into an account-backed save, and it can be removed by starting a new project or clearing browser storage.</p>
             </section>
 
             <section id="ai">

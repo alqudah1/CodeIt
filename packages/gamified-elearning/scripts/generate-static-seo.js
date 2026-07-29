@@ -163,7 +163,7 @@ const BASE_PAGES = [
     h1: 'Clear information about what CodeIt collects—and why.',
     intro: 'CodeIt collects information needed to run accounts, save learning progress, and build projects. It does not sell personal information or run behavioural advertising.',
     sectionTitle: 'Privacy choices and controls',
-    detail: 'Saved projects are private until their owner chooses Publish. Parents and users can ask to access, correct, unpublish, or delete personal information.',
+    detail: 'Saved projects are private until their owner chooses Publish. An unsaved guest project can remain only in that browser for up to seven days and is not uploaded as an account project without an explicit save.',
     primaryLinkLabel: 'Read Privacy & Safety',
     type: 'WebPage',
   },

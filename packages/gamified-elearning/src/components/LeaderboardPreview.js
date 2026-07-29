@@ -106,20 +106,22 @@ const LeaderboardPreview = () => {
         <ol className="lb-prev-list" aria-label="Top 5 coders">
           {rows.map((row, idx) => (
             <li
-              key={row.student_id ?? idx}
-              className={`lb-prev-row${idx < 3 ? ` lb-prev-top${idx + 1}` : ''}`}
+              key={`${row.rank}-${row.display_name}`}
+              className={`lb-prev-row${idx < 3 ? ` lb-prev-top${idx + 1}` : ''}${row.is_current_user ? ' lb-prev-me' : ''}`}
             >
               <span className="lb-prev-rank">
-                {idx < 3 ? MEDALS[idx] : `#${idx + 1}`}
+                {row.rank <= 3 ? MEDALS[row.rank - 1] : `#${row.rank}`}
               </span>
               <span
                 className="lb-prev-avatar"
                 aria-hidden="true"
-                style={{ background: avatarColour(row.name) }}
+                style={{ background: avatarColour(row.display_name) }}
               >
-                {(row.name || 'P').charAt(0).toUpperCase()}
+                {(row.display_name || 'P').charAt(0).toUpperCase()}
               </span>
-              <span className="lb-prev-name">{row.name || 'Player'}</span>
+              <span className="lb-prev-name">
+                {row.is_current_user ? 'You' : (row.display_name || 'Coder')}
+              </span>
               <span className="lb-prev-xp">
                 <strong>{(Number(row.xp_points) || 0).toLocaleString()}</strong>
                 <small> XP</small>

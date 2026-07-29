@@ -8,6 +8,11 @@ import { useCharacter } from '../../context/CharacterContext';
 import { useSEO } from '../../hooks/useSEO';
 import { trackEvent } from '../../utils/trackEvent';
 import { journeyHeaders } from '../../utils/journey';
+import {
+  clearGuestProjectDraft,
+  readGuestProjectDraft,
+  saveGuestProjectDraft,
+} from '../../utils/guestProjectDraft';
 import './Builder.css';
 
 const QUICK_STARTS = [
@@ -639,6 +644,7 @@ export default function Builder() {
   const [error, setError]               = useState('');
   const [buildKey, setBuildKey]         = useState(0);
   const [hasPersonalized, setHasPersonalized] = useState(false);
+  const [guestDraftRecovered, setGuestDraftRecovered] = useState(false);
 
   // ── AI memory ──────────────────────────────────────────────────────────────
   const [promptHistory, setPromptHistory] = useState([]);
@@ -692,6 +698,7 @@ export default function Builder() {
   const resumeActionStartedRef = useRef(false);
   const saveInFlightRef = useRef(false);
   const personalizationTrackedRef = useRef(false);
+  const skipNextGuestDraftPersistRef = useRef(false);
 
   // ── Live element editor ────────────────────────────────────────────────────
   const [editModeOn, setEditModeOn]     = useState(false);
@@ -981,13 +988,13 @@ export default function Builder() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Restore guest draft saved before redirecting to /login ─────────────────
+  // ── Restore an account-handoff draft or a fresh device-only guest backup ───
   useEffect(() => {
     const raw = sessionStorage.getItem('codeit_builder_draft');
-    if (!raw) return;
-    try {
-      const draft = JSON.parse(raw);
-      if (draft.code) {
+    if (raw) {
+      try {
+        const draft = JSON.parse(raw);
+        if (!draft.code) return;
         setCode(draft.code);
         setPrompt(draft.prompt || '');
         setBuiltPrompt(draft.builtPrompt || '');
@@ -996,7 +1003,9 @@ export default function Builder() {
         setBuiltSummary(draft.builtSummary || '');
         setConceptsUsed(draft.conceptsUsed || []);
         setPromptHistory(draft.promptHistory || []);
-        personalizationTrackedRef.current = (draft.promptHistory || []).length > 1;
+        const personalized = draft.hasPersonalized === true || (draft.promptHistory || []).length > 1;
+        personalizationTrackedRef.current = personalized;
+        setHasPersonalized(personalized);
         setBuildKey(k => k + 1);
         const draftIsFresh = Number.isFinite(draft.savedAt) && Date.now() - draft.savedAt < 30 * 60 * 1000;
         const requestedAction = ['save', 'publish'].includes(location.state?.resumeBuilderAction)
@@ -1011,9 +1020,58 @@ export default function Builder() {
         if (requestedAction) {
           navigate('/builder', { replace: true, state: null });
         }
+        return;
+      } catch (_) {
+        sessionStorage.removeItem('codeit_builder_draft');
       }
-    } catch (_) {}
+    }
+
+    if (user) return;
+    const draft = readGuestProjectDraft(localStorage);
+    if (!draft || !isValidHtml(draft.code)) {
+      if (draft) clearGuestProjectDraft(localStorage);
+      return;
+    }
+    skipNextGuestDraftPersistRef.current = true;
+    setCode(draft.code);
+    setPrompt(draft.prompt || '');
+    setBuiltPrompt(draft.builtPrompt || '');
+    setProjectType(draft.projectType || 'website');
+    setAiTitle(draft.aiTitle || '');
+    setBuiltSummary(draft.builtSummary || '');
+    setConceptsUsed(draft.conceptsUsed || []);
+    setPromptHistory(draft.promptHistory || []);
+    const personalized = draft.hasPersonalized === true || (draft.promptHistory || []).length > 1;
+    personalizationTrackedRef.current = personalized;
+    setHasPersonalized(personalized);
+    setGuestDraftRecovered(true);
+    setBuildKey(k => k + 1);
+    void trackEvent('guest_draft_recovered');
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Keep unsaved guest work on this device for seven days. Nothing is uploaded
+  // until the creator explicitly continues into an account-backed save.
+  useEffect(() => {
+    if (user || !code || isSaved) return undefined;
+    if (skipNextGuestDraftPersistRef.current) {
+      skipNextGuestDraftPersistRef.current = false;
+      return undefined;
+    }
+    const timer = setTimeout(() => {
+      saveGuestProjectDraft(localStorage, {
+        code,
+        prompt,
+        builtPrompt,
+        projectType,
+        aiTitle,
+        builtSummary,
+        conceptsUsed,
+        promptHistory,
+        hasPersonalized,
+      });
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [aiTitle, builtPrompt, builtSummary, code, conceptsUsed, hasPersonalized, isSaved, projectType, prompt, promptHistory, user]);
 
   // ── Confetti (only on fresh builds, not edits) ─────────────────────────────
   const confettiParticles = useMemo(() => {
@@ -1209,6 +1267,7 @@ export default function Builder() {
   const callBuilder = async (text) => {
     personalizationTrackedRef.current = false;
     setHasPersonalized(false);
+    setGuestDraftRecovered(false);
     const previewType = detectProjectType(text);
     setLoadingPreviewType(previewType);
     setLoading(true);
@@ -1414,7 +1473,7 @@ export default function Builder() {
     try {
       sessionStorage.setItem('codeit_builder_draft', JSON.stringify({
         code, prompt, builtPrompt, projectType, aiTitle,
-        builtSummary, conceptsUsed, promptHistory, savedAt: Date.now(),
+        builtSummary, conceptsUsed, promptHistory, hasPersonalized, savedAt: Date.now(),
       }));
     } catch (_) {}
     void trackEvent('activation_account_gate', action, token);
@@ -1477,6 +1536,7 @@ export default function Builder() {
       setIsSaved(true);
       setSaveStatus('saved');
       sessionStorage.removeItem('codeit_builder_draft');
+      clearGuestProjectDraft(localStorage);
       awardXP(15); popXp(15, 'Saved!');
       setTimeout(() => setSaveStatus(null), 2500);
     } catch (err) {
@@ -1660,6 +1720,7 @@ export default function Builder() {
   };
 
   const clearEditor = () => {
+    clearGuestProjectDraft(localStorage);
     personalizationTrackedRef.current = false;
     setPrompt('');
     setCode('');
@@ -1698,6 +1759,7 @@ export default function Builder() {
     setGameTimer(30);
     setEditModeOn(false);
     setHasPersonalized(false);
+    setGuestDraftRecovered(false);
     setSelectedEl(null);
     setShowElPanel(false);
     setPatchError('');
@@ -1789,6 +1851,7 @@ export default function Builder() {
       setIsPublished(true);
       setPublicId(data.public_id);
       sessionStorage.removeItem('codeit_builder_draft');
+      clearGuestProjectDraft(localStorage);
       const url = `https://codeitlearn.com/project/${data.public_id}?utm_source=project-share`;
       try { await navigator.clipboard.writeText(url); } catch (_) {}
       setPublishStatus('copied');
@@ -2138,6 +2201,24 @@ export default function Builder() {
                 {builtSummary && <p className="bldr-success-banner__summary">{builtSummary}</p>}
               </div>
             </div>
+
+            {!user && (
+              <aside id="guest-project-recovery" className={`bldr-guest-backup${guestDraftRecovered ? ' is-recovered' : ''}`} aria-label="Guest project recovery">
+                <div>
+                  <strong>
+                    {guestDraftRecovered
+                      ? 'Welcome back—your project was recovered.'
+                      : 'Backed up in this browser.'}
+                  </strong>
+                  <span>
+                    It stays only on this device for up to 7 days. Keep it in a free account to use it on another device.
+                  </span>
+                </div>
+                <button type="button" onClick={handleSaveProject}>
+                  Keep it in a free account
+                </button>
+              </aside>
+            )}
 
             {!isSaved && (
               <section className="bldr-activation-card" aria-labelledby="bldr-next-step-title">

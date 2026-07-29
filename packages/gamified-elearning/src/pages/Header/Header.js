@@ -17,7 +17,7 @@ const PUBLIC_NAV = [
 
 const MEMBER_NAV = [
   ...PUBLIC_NAV.slice(0, 4),
-  { to: "/pricing", label: "Pricing" },
+  { to: "/leaderboard", label: "Compete" },
   { to: "/character", label: "Avatar" },
   { to: "/MainPage", label: "Progress" },
 ];

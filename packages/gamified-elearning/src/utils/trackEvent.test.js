@@ -84,6 +84,17 @@ describe("trackEvent", () => {
     );
   });
 
+  test("records device-only recovery without sending project content", async () => {
+    await expect(trackEvent("guest_draft_recovered")).resolves.toBe(true);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/api/analytics/event"),
+      expect.objectContaining({
+        body: JSON.stringify({ event_name: "guest_draft_recovered", meta: null }),
+      })
+    );
+  });
+
   test("records only a fixed post-save choice", async () => {
     await expect(trackEvent("activation_next_step", "publish")).resolves.toBe(true);
 

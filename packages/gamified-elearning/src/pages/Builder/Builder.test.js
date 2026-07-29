@@ -2,6 +2,11 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import Builder from './Builder';
 import { trackEvent } from '../../utils/trackEvent';
 import { AuthContext } from '../../context/AuthContext';
+import {
+  GUEST_PROJECT_DRAFT_KEY,
+  GUEST_PROJECT_DRAFT_TTL_MS,
+  saveGuestProjectDraft,
+} from '../../utils/guestProjectDraft';
 
 const mockNavigate = jest.fn();
 const mockBuilderLocation = { search: '', state: null };
@@ -148,6 +153,54 @@ describe('project studio opening', () => {
     expect(screen.getByRole('button', { name: 'Make another change' })).toBeInTheDocument();
     expect(trackEvent).toHaveBeenCalledTimes(1);
     expect(trackEvent).toHaveBeenCalledWith('project_personalize', null, null);
+  });
+
+  test('backs up a generated guest project only in the current browser', async () => {
+    render(<Builder />);
+
+    fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
+    await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
+
+    expect(screen.getByLabelText('Guest project recovery')).toHaveTextContent('Backed up in this browser');
+    expect(screen.getByLabelText('Guest project recovery')).toHaveTextContent('only on this device for up to 7 days');
+    await waitFor(() => expect(JSON.parse(localStorage.getItem(GUEST_PROJECT_DRAFT_KEY))).toEqual(expect.objectContaining({
+      code: expect.stringContaining('My game'),
+      projectType: 'game',
+    })));
+  });
+
+  test('recovers a fresh guest project on a later visit and offers account backup', async () => {
+    saveGuestProjectDraft(localStorage, {
+      code: '<!doctype html><html><head><style>body{background:#fffaf4;color:#432c23;padding:2rem}</style></head><body><h1>Recovered idea</h1><p>A complete local project that can return safely on this device.</p><button>Play</button></body></html>',
+      prompt: 'a recovered idea',
+      builtPrompt: 'a recovered idea',
+      projectType: 'website',
+      aiTitle: 'Recovered idea',
+      promptHistory: ['a recovered idea'],
+      hasPersonalized: true,
+    });
+
+    render(<Builder />);
+
+    expect(await screen.findByText('Welcome back—your project was recovered.')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Save this project before you leave.' })).toBeInTheDocument();
+    expect(trackEvent).toHaveBeenCalledWith('guest_draft_recovered');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Keep it in a free account' }));
+    expect(mockNavigate).toHaveBeenCalledWith('/register?from=builder&action=save', {
+      state: { from: '/builder', resumeBuilderAction: 'save' },
+    });
+  });
+
+  test('removes an expired guest recovery copy instead of restoring it', () => {
+    saveGuestProjectDraft(localStorage, {
+      code: '<!doctype html><html><head><style>body{color:#432c23}</style></head><body><h1>Expired idea</h1><p>This should not return after the recovery window.</p></body></html>',
+    }, Date.now() - GUEST_PROJECT_DRAFT_TTL_MS - 1);
+
+    render(<Builder />);
+
+    expect(screen.queryByText('Welcome back—your project was recovered.')).not.toBeInTheDocument();
+    expect(localStorage.getItem(GUEST_PROJECT_DRAFT_KEY)).toBeNull();
   });
 
   test('gives a signed-in creator one clear publish step after saving', async () => {

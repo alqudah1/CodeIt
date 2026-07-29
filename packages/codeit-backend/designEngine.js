@@ -1295,7 +1295,9 @@ function classifyProject(prompt) {
     if (/\bbasketball\b|\bhoop\b|\bthrow\b/.test(p)) return { category: 'game', type: 'basketball' };
     return { category: 'game', type: 'clicker' };
   }
-  if (isSportsSite) return { category: 'website', type: 'sports' };
+  if (isSportsSite && /\b(soccer|football|basketball|sports?)\b/.test(p)) {
+    return { category: 'website', type: 'sports' };
+  }
 
   // ── SPECIFIC GAME TYPES ────────────────────────────────────────────────────
   // Each anchors to a distinctive concept so only the right prompt matches.
@@ -1342,7 +1344,7 @@ function classifyProject(prompt) {
   // Shop: checked BEFORE sports so "soccer store" → shop not sports
   if (/\bshop\b|\bstore\b|\bsell\b|\be.?commerce\b|\bproduct\s*catalog\b|\bpet.?shop\b|\bclothing\b/.test(p)) return { category: 'website', type: 'shop' };
   // Generic sports word with no prior game/site hard phrase → treat as fan site
-  if (/\bsoccer\b|\bfootball\b|\bbasketball\b|\bsports?\b|\bteam\b|\bclub\b|\bleague\b/.test(p)) return { category: 'website', type: 'sports' };
+  if (/\bsoccer\b|\bfootball\b|\bbasketball\b|\bsports?\b|\bleague\b/.test(p)) return { category: 'website', type: 'sports' };
   if (/\bblog\b|\bnews\b|\barticle\b|\bjournal\b/.test(p)) return { category: 'website', type: 'blog' };
   if (/\blanding\s*page\b|\blaunch\s*page\b|\bstartup\s*site\b|\bpromo\s*page\b|\bproduct\s*page\b/.test(p)) return { category: 'website', type: 'landing' };
   if (isSiteWord || isAppWord) return { category: 'website', type: 'portfolio' };

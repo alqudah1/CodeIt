@@ -1433,6 +1433,8 @@ CRITICAL REQUIREMENTS:
 • No placeholder text, no static mockups, no dead buttons
 ${designConfig.category === 'game' ? '• Game must be startable, playable, scored, and restartable' : designConfig.category === 'website' ? '• Buttons must update visible content, nav must scroll, forms must give feedback' : '• Inputs must connect to logic, results must display immediately'}
 • Include viewport meta tag for mobile
+• Keep the complete response under 16KB: use compact CSS and JavaScript, short copy, and no repeated markup
+• Finish every opened tag and ALWAYS end with </script></body></html>
 • Output the exact <META>...</META><HTML>...</HTML> format specified`;
 
     const maxTok = 8192;
@@ -1488,6 +1490,7 @@ ${designConfig.category === 'game' ? '• Game must be startable, playable, scor
 
     // Check for missing script section BEFORE repair (repair adds </script> which hides truncation)
     const missingScript = !/<\/script>/i.test(parsed.html);
+    const wasTruncated = !/<\/html>/i.test(parsed.html);
 
     // Try to repair truncated output before quality check
     if (parsed.html && !/<\/html>/i.test(parsed.html)) {
@@ -1498,16 +1501,11 @@ ${designConfig.category === 'game' ? '• Game must be startable, playable, scor
       }
     }
 
-    // No </script> on first attempt means JS was cut off or never generated — skip retry, serve rich fallback
-    if (missingScript) {
-      console.log('Builder: no </script> on attempt1, using rich fallback for type:', designConfig.type);
-      const fbHtml = getRichFallback(designConfig, prompt.trim());
-      const fbTitle = derivePromptTitle(prompt.trim());
-      return res.json({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready — AI polish can be added next', isFallback: true, conceptsUsed: [] });
-    }
-
     // Quality check — retry once with correction prompt if validation fails
-    const isValid = validateHtml(parsed.html) && validateInteractivity(parsed.html, designConfig.type);
+    const isValid = !missingScript
+      && !wasTruncated
+      && validateHtml(parsed.html)
+      && validateInteractivity(parsed.html, designConfig.type);
     const qualityCheck = designEngine.validateOutput(parsed.html);
 
     if (!isValid || !qualityCheck.valid) {
@@ -1522,10 +1520,9 @@ ${designConfig.category === 'game' ? '• Game must be startable, playable, scor
         ...(qualityCheck.issues || []),
       ].filter(Boolean);
 
-      const wasTruncated = !/<\/html>/i.test(parsed.html);
-      const compactConstraint = wasTruncated && designConfig.category === 'website'
+      const compactConstraint = (wasTruncated || missingScript)
         ? `\n\nCRITICAL: Your output was truncated. This retry MUST be under 12KB total.
-- Include ONLY: nav + hero + ONE main section + contact/CTA + footer
+- Include ONLY the essential playable/usable experience and its controls
 - Skip extra sections, testimonials, galleries, long descriptions
 - Keep all text SHORT (2–4 words per label)
 - Output MUST end with </body></html>` : '';
