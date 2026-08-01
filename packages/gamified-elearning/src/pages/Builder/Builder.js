@@ -630,6 +630,8 @@ export default function Builder() {
   const { awardXP }     = useCharacter();
   const navigate        = useNavigate();
   const location        = useLocation();
+  const isNewAccountWelcome = Boolean(user)
+    && new URLSearchParams(location.search || '').get('welcome') === '1';
 
   // ── Build state ────────────────────────────────────────────────────────────
   const [prompt, setPrompt]             = useState('');
@@ -1993,6 +1995,13 @@ export default function Builder() {
             change the code, and learn how it works.
           </p>
         </section>
+
+        {isNewAccountWelcome && !code && (
+          <aside className="bldr-account-ready" role="status">
+            <strong>Your account is ready.</strong>
+            <span>Choose a starter below or describe your own idea. Your first saved project will stay in this account.</span>
+          </aside>
+        )}
 
         {/* Ambient studio particles — paused while editing for performance */}
         {hasResult && !editing && (

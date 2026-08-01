@@ -1,7 +1,7 @@
 export function defaultAuthDestination(role, { newAccount = false } = {}) {
   const normalizedRole = String(role || '').trim().toLowerCase();
   if (normalizedRole === 'admin') return '/admin';
-  if (normalizedRole === 'student') return '/MainPage';
+  if (normalizedRole === 'student') return newAccount ? '/builder?welcome=1' : '/MainPage';
   return newAccount ? '/profile#family-controls' : '/profile';
 }
 

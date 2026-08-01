@@ -68,6 +68,28 @@
   animation: bldr-pulse 1.8s ease-in-out infinite;
 }
 
+.bldr-account-ready {
+  display: flex;
+  width: min(760px, calc(100% - 32px));
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  margin: -1.2rem auto 1.5rem;
+  border: 1px solid #b7ead2;
+  border-radius: 14px;
+  background: #f0fdf6;
+  padding: .75rem 1rem;
+  color: #527062;
+  font-size: .82rem;
+  line-height: 1.45;
+  text-align: center;
+}
+.bldr-account-ready strong { color: #176b4d; }
+
+@media (max-width: 620px) {
+  .bldr-account-ready { align-items: flex-start; flex-direction: column; text-align: left; }
+}
+
 @keyframes bldr-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50%       { opacity: 0.4; transform: scale(0.7); }

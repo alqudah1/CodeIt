@@ -3,6 +3,7 @@ import { defaultAuthDestination, resolveAuthDestination } from './authDestinatio
 describe('authentication destinations', () => {
   test('sends learners to progress, adults to family setup, and admins to admin', () => {
     expect(defaultAuthDestination('Student')).toBe('/MainPage');
+    expect(defaultAuthDestination('Student', { newAccount: true })).toBe('/builder?welcome=1');
     expect(defaultAuthDestination('Educator', { newAccount: true })).toBe('/profile#family-controls');
     expect(defaultAuthDestination('Educator')).toBe('/profile');
     expect(defaultAuthDestination('Admin')).toBe('/admin');

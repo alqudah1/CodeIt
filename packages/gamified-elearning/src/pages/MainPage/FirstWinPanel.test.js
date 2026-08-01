@@ -13,18 +13,18 @@ jest.mock('../../utils/trackEvent', () => ({ trackEvent: jest.fn(() => Promise.r
 describe('FirstWinPanel', () => {
   beforeEach(() => trackEvent.mockClear());
 
-  test('offers one guided learning start and a creative alternative', () => {
+  test('leads with a first project and keeps a guided lesson alternative', () => {
     render(<FirstWinPanel token="student-token" />);
 
-    expect(screen.getByRole('heading', { name: 'Get your first win in about 10 minutes.' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Start Lesson 1/ })).toHaveAttribute('href', '/lesson/1');
-    expect(screen.getByRole('link', { name: 'I want to build first' })).toHaveAttribute('href', '/builder');
-    expect(screen.getByText('Finish Lesson 1')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Make something you can play in about 10 minutes.' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Build my first project/ })).toHaveAttribute('href', '/builder?welcome=1');
+    expect(screen.getByRole('link', { name: 'Start with Lesson 1' })).toHaveAttribute('href', '/lesson/1');
+    expect(screen.getByText('Change it and save it')).toBeInTheDocument();
   });
 
   test('measures the selected lesson start without storing lesson content', () => {
     render(<FirstWinPanel token="student-token" />);
-    fireEvent.click(screen.getByRole('link', { name: /Start Lesson 1/ }));
+    fireEvent.click(screen.getByRole('link', { name: 'Start with Lesson 1' }));
 
     expect(trackEvent).toHaveBeenCalledWith('learning_start', 'lesson-one', 'student-token');
   });

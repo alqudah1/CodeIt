@@ -237,7 +237,7 @@ export default function Register() {
             <p>
               {hasBuilderDraft
                 ? 'Your project will be waiting when this short setup is finished.'
-                : 'Pick a username and start your coding journey.'}
+                : 'Pick a username, then turn your first idea into a project.'}
             </p>
           </header>
 
@@ -313,7 +313,7 @@ export default function Register() {
             <button type="submit" className="auth-button">
               {hasBuilderDraft
                 ? `Create account and ${builderActionWord} project`
-                : 'Create Account and Play'}
+                : 'Create account and build'}
             </button>
           </form>
 

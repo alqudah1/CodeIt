@@ -89,6 +89,19 @@ describe('project studio opening', () => {
     expect(screen.queryByText(/AI Builder/i)).not.toBeInTheDocument();
   });
 
+  test('welcomes a new account directly into a savable first project', () => {
+    mockBuilderLocation.search = '?welcome=1';
+    render(
+      <AuthContext.Provider value={{ user: { id: 17, name: 'New Coder', role: 'Student' }, token: 'student-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    expect(screen.getByRole('status')).toHaveTextContent('Your account is ready.');
+    expect(screen.getByRole('status')).toHaveTextContent('Your first saved project will stay in this account.');
+    expect(screen.getByRole('button', { name: /Build a Game/i })).toBeInTheDocument();
+  });
+
   test('preserves a guest project before opening the save account gate', async () => {
     render(<Builder />);
 

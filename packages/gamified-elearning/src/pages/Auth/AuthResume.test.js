@@ -95,7 +95,7 @@ describe('builder authentication return', () => {
     }));
   });
 
-  test('a new student with no requested action lands on the first-win dashboard', async () => {
+  test('a new student with no requested action lands in the project studio', async () => {
     mockLocationState.from = '/';
     delete mockLocationState.resumeBuilderAction;
     axios.post.mockResolvedValueOnce({
@@ -107,12 +107,12 @@ describe('builder authentication return', () => {
     fireEvent.change(screen.getByPlaceholderText('e.g. coder_alex42'), { target: { value: 'learner_9' } });
     fireEvent.change(screen.getByPlaceholderText('Choose a password'), { target: { value: 'test-password' } });
     fireEvent.change(document.querySelector('input[type="date"]'), { target: { value: '2010-01-01' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Create Account and Play' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Create account and build' }));
 
     await screen.findByRole('heading', { name: 'Add a parent or guardian email?' });
     fireEvent.click(screen.getByRole('button', { name: 'Skip for now' }));
 
-    expect(mockNavigate).toHaveBeenCalledWith('/MainPage', {
+    expect(mockNavigate).toHaveBeenCalledWith('/builder?welcome=1', {
       replace: true,
       state: null,
     });
