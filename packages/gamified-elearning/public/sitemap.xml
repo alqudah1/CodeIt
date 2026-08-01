@@ -4,7 +4,7 @@
   <!-- ── Core public pages ──────────────────────────────────── -->
   <url>
     <loc>https://codeitlearn.com/</loc>
-    <lastmod>2026-07-29</lastmod>
+    <lastmod>2026-08-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -34,7 +34,7 @@
   </url>
   <url>
     <loc>https://codeitlearn.com/builder</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-08-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>

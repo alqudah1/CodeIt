@@ -128,11 +128,12 @@ router.post('/signup', async (req, res) => {
 // ── POST /api/login ────────────────────────────────────────────────────────────
 router.post('/login', async (req, res) => {
   // Accept 'identifier' (username or email) OR legacy 'email' field
-  const identifier = (req.body.identifier || req.body.email || '').trim();
+  const rawIdentifier = req.body?.identifier ?? req.body?.email;
+  const identifier = typeof rawIdentifier === 'string' ? rawIdentifier.trim() : '';
   const { password } = req.body;
 
   if (!identifier) return res.status(400).json({ error: 'Username or email is required' });
-  if (!password)   return res.status(400).json({ error: 'Password is required' });
+  if (typeof password !== 'string' || !password) return res.status(400).json({ error: 'Password is required' });
 
   let connection;
   try {
