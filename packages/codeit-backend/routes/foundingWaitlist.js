@@ -85,6 +85,10 @@ router.post('/', rateLimit, optionalAuth, async (req, res) => {
   }
 
   const confirmation = await sendFoundingPilotConfirmation(normalized.value.email);
+  await recordEvent('pilot_confirmation', {
+    ...analyticsContext,
+    meta: confirmation.sent ? 'sent' : 'not-sent',
+  });
   return res.status(201).json({ saved: true, confirmationSent: confirmation.sent });
 });
 

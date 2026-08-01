@@ -31,6 +31,8 @@ describe('admin acquisition funnel', () => {
             { event_name: 'project_save', event_count: 4, unique_users: 2, unique_journeys: 3, attributed_events: 3 },
             { event_name: 'project_remix', event_count: 2, unique_users: 2, unique_journeys: 2, attributed_events: 2 },
             { event_name: 'activation_next_step', event_count: 3, unique_users: 2, unique_journeys: 2, attributed_events: 3 },
+            { event_name: 'pilot_join', event_count: 3, unique_users: 1, unique_journeys: 3, attributed_events: 3 },
+            { event_name: 'pilot_confirmation', event_count: 3, unique_users: 1, unique_journeys: 3, attributed_events: 3 },
           ],
           breakdown: [
             { event_name: 'acquisition_visit', meta: 'instagram', event_count: 9 },
@@ -47,6 +49,8 @@ describe('admin acquisition funnel', () => {
             { event_name: 'landing_cta_click', meta: 'hero-idea', event_count: 5 },
             { event_name: 'landing_cta_click', meta: 'member-resume-project', event_count: 3 },
             { event_name: 'landing_cta_click', meta: 'hero-lessons', event_count: 2 },
+            { event_name: 'pilot_confirmation', meta: 'sent', event_count: 2 },
+            { event_name: 'pilot_confirmation', meta: 'not-sent', event_count: 1 },
           ],
           daily: [],
           source_funnel: [
@@ -109,6 +113,11 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('What visitors chose on the homepage')).toBeInTheDocument();
     expect(screen.getByText('Started with their own idea').parentElement).toHaveTextContent('5');
     expect(screen.getByText('Continued a saved project').parentElement).toHaveTextContent('3');
+    expect(screen.getByText('Pilot request → setup email').parentElement).toHaveTextContent('67%');
+    expect(screen.getByText('Family pilot follow-up')).toBeInTheDocument();
+    expect(screen.getByText('Setup emails sent').parentElement).toHaveTextContent('2');
+    expect(screen.getByText('Setup emails not sent').parentElement).toHaveTextContent('1');
+    expect(screen.getByText(/Contact addresses stay in the separate consented lead list/i)).toBeInTheDocument();
     expect(screen.getByText('Opened beginner lessons').parentElement).toHaveTextContent('2');
     expect(screen.getByText(/idea itself is never stored in analytics/i)).toBeInTheDocument();
     expect(screen.getByText('Instagram', { selector: 'span' }).parentElement).toHaveTextContent('9');

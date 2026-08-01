@@ -25,6 +25,7 @@ const STAGES = [
   ['pricing_view', 'Pricing views'],
   ['pricing_interest', 'Plan interest'],
   ['pilot_join', 'Pilot joins'],
+  ['pilot_confirmation', 'Pilot confirmation attempts'],
 ];
 
 const PARENT_ACTIONS = [
@@ -133,6 +134,9 @@ export default function AdminFunnel() {
   const pilotJoinSources = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'pilot_join').map((row) => [row.meta, Number(row.event_count) || 0])
   ), [data]);
+  const pilotConfirmations = useMemo(() => Object.fromEntries(
+    (data?.breakdown || []).filter((row) => row.event_name === 'pilot_confirmation').map((row) => [row.meta, Number(row.event_count) || 0])
+  ), [data]);
   const acquisitionSources = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'acquisition_visit').map((row) => [row.meta, Number(row.event_count) || 0])
   ), [data]);
@@ -161,6 +165,7 @@ export default function AdminFunnel() {
     ['Shared visitors → remixed', ratio(journeyMetric('project_remix'), acquisitionSources.project || 0)],
     ['New accounts → return days', ratio(journeyMetric('return_use'), journeyMetric('signup_complete'))],
     ['Pricing view → interest', ratio(journeyMetric('pricing_interest'), journeyMetric('pricing_view'))],
+    ['Pilot request → setup email', ratio(pilotConfirmations.sent || 0, counts.pilot_join || 0)],
     ['Parent guide → pilot join', ratio(pilotJoinSources['parents-guide'] || 0, journeyMetric('parent_guide_view'))],
   ] : [];
 
@@ -242,6 +247,13 @@ export default function AdminFunnel() {
             ))}
           </div>
           <p className="funnel-parent-note">“Started with their own idea” records only that the Build it button was used. The idea itself is never stored in analytics.</p>
+
+          <div className="adm-section-head">Family pilot follow-up</div>
+          <div className="funnel-parent-grid">
+            <article><span>Setup emails sent</span><strong>{fmt(pilotConfirmations.sent)}</strong></article>
+            <article><span>Setup emails not sent</span><strong>{fmt(pilotConfirmations['not-sent'])}</strong></article>
+          </div>
+          <p className="funnel-parent-note">This records only delivery status. Contact addresses stay in the separate consented lead list and are never placed in analytics.</p>
 
           <div className="adm-section-head">How visitors found CodeIt</div>
           <div className="funnel-parent-grid">

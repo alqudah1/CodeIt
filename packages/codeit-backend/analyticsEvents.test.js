@@ -18,6 +18,7 @@ test('accepts only the fixed product event vocabulary', () => {
   assert.equal(normalizeEventName('learning_start'), 'learning_start');
   assert.equal(normalizeEventName('parent_guide_view'), 'parent_guide_view');
   assert.equal(normalizeEventName('pilot_join'), 'pilot_join');
+  assert.equal(normalizeEventName('pilot_confirmation'), 'pilot_confirmation');
   assert.equal(normalizeEventName('guest_draft_recovered'), 'guest_draft_recovered');
   assert.equal(normalizeEventName('prompt_submitted'), null);
   assert.equal(normalizeEventName({ event: 'return_use' }), null);
@@ -43,6 +44,9 @@ test('accepts only allowlisted metadata and never arbitrary content', () => {
   assert.equal(normalizeMeta('pricing_interest', 'custom enterprise plan'), null);
   assert.equal(normalizeMeta('pilot_join', 'parents-guide'), 'parents-guide');
   assert.equal(normalizeMeta('pilot_join', 'parent@example.com'), null);
+  assert.equal(normalizeMeta('pilot_confirmation', 'sent'), 'sent');
+  assert.equal(normalizeMeta('pilot_confirmation', 'not-sent'), 'not-sent');
+  assert.equal(normalizeMeta('pilot_confirmation', 'parent@example.com'), null);
   assert.equal(normalizeMeta('project_share', 'creator'), 'creator');
   assert.equal(normalizeMeta('project_share', 'a private project title'), null);
   assert.equal(normalizeMeta('project_remix', 'game'), 'game');
@@ -66,6 +70,7 @@ test('limits browser-reported events to events the server cannot infer', () => {
   assert.equal(CLIENT_REPORTED_EVENTS.has('pricing_view'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('pricing_interest'), false);
   assert.equal(CLIENT_REPORTED_EVENTS.has('pilot_join'), false);
+  assert.equal(CLIENT_REPORTED_EVENTS.has('pilot_confirmation'), false);
   assert.equal(CLIENT_REPORTED_EVENTS.has('project_share'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('project_personalize'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('activation_account_gate'), true);
