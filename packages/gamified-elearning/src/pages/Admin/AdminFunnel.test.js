@@ -44,6 +44,8 @@ describe('admin acquisition funnel', () => {
             { event_name: 'activation_next_step', meta: 'improve', event_count: 1 },
             { event_name: 'generation_complete', meta: 'ai', event_count: 8 },
             { event_name: 'generation_complete', meta: 'fallback', event_count: 2 },
+            { event_name: 'landing_cta_click', meta: 'hero-idea', event_count: 5 },
+            { event_name: 'landing_cta_click', meta: 'hero-lessons', event_count: 2 },
           ],
           daily: [],
           source_funnel: [
@@ -103,6 +105,10 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Published → shared')).toBeInTheDocument();
     expect(screen.getByText('Shared visitors → remixed')).toBeInTheDocument();
     expect(screen.getByText('How visitors found CodeIt')).toBeInTheDocument();
+    expect(screen.getByText('What visitors chose on the homepage')).toBeInTheDocument();
+    expect(screen.getByText('Started with their own idea').parentElement).toHaveTextContent('5');
+    expect(screen.getByText('Opened beginner lessons').parentElement).toHaveTextContent('2');
+    expect(screen.getByText(/idea itself is never stored in analytics/i)).toBeInTheDocument();
     expect(screen.getByText('Instagram', { selector: 'span' }).parentElement).toHaveTextContent('9');
     expect(screen.getByText('LinkedIn', { selector: 'span' }).parentElement).toHaveTextContent('3');
     expect(screen.getByText('Shared projects').parentElement).toHaveTextContent('5');

@@ -42,6 +42,13 @@ const FINISH_ACTIONS = [
   ['share', 'Shared a live project'],
 ];
 
+const HOMEPAGE_ACTIONS = [
+  ['hero-idea', 'Started with their own idea'],
+  ['hero-build', 'Opened the project studio'],
+  ['hero-lessons', 'Opened beginner lessons'],
+  ['final-build', 'Used the final build button'],
+];
+
 const ACQUISITION_SOURCES = [
   ['google', 'Google'],
   ['youtube', 'YouTube'],
@@ -118,6 +125,9 @@ export default function AdminFunnel() {
   ), [data]);
   const finishActions = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'activation_next_step').map((row) => [row.meta, Number(row.event_count) || 0])
+  ), [data]);
+  const homepageActions = useMemo(() => Object.fromEntries(
+    (data?.breakdown || []).filter((row) => row.event_name === 'landing_cta_click').map((row) => [row.meta, Number(row.event_count) || 0])
   ), [data]);
   const pilotJoinSources = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'pilot_join').map((row) => [row.meta, Number(row.event_count) || 0])
@@ -220,6 +230,17 @@ export default function AdminFunnel() {
               </article>
             ))}
           </div>
+
+          <div className="adm-section-head">What visitors chose on the homepage</div>
+          <div className="funnel-parent-grid">
+            {HOMEPAGE_ACTIONS.map(([key, label]) => (
+              <article key={key}>
+                <span>{label}</span>
+                <strong>{fmt(homepageActions[key])}</strong>
+              </article>
+            ))}
+          </div>
+          <p className="funnel-parent-note">“Started with their own idea” records only that the Build it button was used. The idea itself is never stored in analytics.</p>
 
           <div className="adm-section-head">How visitors found CodeIt</div>
           <div className="funnel-parent-grid">
