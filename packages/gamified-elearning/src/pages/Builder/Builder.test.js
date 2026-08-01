@@ -161,8 +161,11 @@ describe('project studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
     const nextStepHeading = await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
     const projectPreview = screen.getByTitle('Project preview');
+    const immediateSave = screen.getByRole('button', { name: 'Save this project now' });
 
     expect(projectPreview.compareDocumentPosition(nextStepHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(immediateSave.compareDocumentPosition(projectPreview) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(immediateSave).toHaveTextContent('Keep it free');
 
     expect(screen.getByRole('group', { name: 'Choose a color theme' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Keep this project' })).toHaveClass('bldr-activation-card__primary');

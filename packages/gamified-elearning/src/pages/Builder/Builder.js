@@ -1955,6 +1955,7 @@ export default function Builder() {
   // ── Derived ────────────────────────────────────────────────────────────────
   const hasResult   = !loading && code;
   const hasError    = !loading && error;
+  const earnsProjectXp = String(user?.role || '').toLowerCase() === 'student';
   const activeBuildSteps = getBuildSteps(loadingPreviewType);
   const loadingTitle = loadingPreviewType === 'quiz' ? 'Building your quiz...'
     : loadingPreviewType === 'game' ? 'Building your game...'
@@ -2247,6 +2248,22 @@ export default function Builder() {
                 </p>
                 {builtSummary && <p className="bldr-success-banner__summary">{builtSummary}</p>}
               </div>
+              {!isSaved && (
+                <button
+                  type="button"
+                  className="bldr-success-banner__save"
+                  onClick={handleSaveProject}
+                  disabled={saveStatus === 'saving' || editing}
+                  aria-label="Save this project now"
+                >
+                  <span>{saveStatus === 'saving' ? 'Saving…' : user ? 'Save now' : 'Keep it free'}</span>
+                  <small>
+                    {user
+                      ? earnsProjectXp ? 'Keep it + earn 25 XP' : 'Keep it in your account'
+                      : 'Use it on another device'}
+                  </small>
+                </button>
+              )}
             </div>
 
             {!user && (

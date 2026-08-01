@@ -764,6 +764,52 @@
   animation: bldr-reveal 0.4s ease 0.45s both;
 }
 
+.bldr-success-banner__save {
+  position: relative;
+  z-index: 2;
+  align-self: center;
+  flex: 0 0 auto;
+  min-width: 168px;
+  min-height: 52px;
+  display: grid;
+  place-items: center;
+  gap: 0.08rem;
+  padding: 0.62rem 1rem;
+  border: 0;
+  border-radius: 13px;
+  background: #e8692d;
+  color: #fff;
+  box-shadow: 0 5px 0 rgba(123, 55, 25, 0.16), 0 10px 22px rgba(123, 55, 25, 0.14);
+  font-family: 'Nunito', sans-serif;
+  cursor: pointer;
+  transition: background 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.bldr-success-banner__save span {
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.bldr-success-banner__save small {
+  font-size: 0.66rem;
+  font-weight: 800;
+  opacity: 0.88;
+}
+
+.bldr-success-banner__save:hover:not(:disabled) {
+  background: #b94718;
+  box-shadow: 0 4px 0 rgba(123, 55, 25, 0.2), 0 12px 26px rgba(123, 55, 25, 0.18);
+  transform: translateY(-1px);
+}
+
+.bldr-success-banner__save:focus-visible { outline: 3px solid #f6c453; outline-offset: 2px; }
+.bldr-success-banner__save:disabled { cursor: wait; opacity: 0.58; }
+
+@media (max-width: 680px) {
+  .bldr-success-banner { flex-wrap: wrap; }
+  .bldr-success-banner__save { width: 100%; }
+}
+
 /* ── Footer action buttons (below preview) ───────────────────── */
 .bldr-result__footer {
   display: flex;
