@@ -40,6 +40,21 @@ const CONTENT_FORMATS = [
   },
 ];
 
+const VIDEO_SCRIPT = [
+  ['0–2 sec', 'Show the finished project', '“A student described this idea—and CodeIt turned it into a working project.”'],
+  ['2–9 sec', 'Play it', 'Click, score, answer, or trigger the part that makes the result feel real.'],
+  ['9–18 sec', 'Change one thing', '“Now they can change the colour, rule, words, or behaviour instead of stopping at generation.”'],
+  ['18–26 sec', 'Open the code', '“CodeIt connects what changed on screen to the code behind it.”'],
+  ['26–32 sec', 'Use one call to action', '“Start with your own idea at codeitlearn.com.”'],
+];
+
+const LAUNCH_PLAN = [
+  ['Day 1', 'Project reveal', 'Post the finished result first. Use the link for that social platform.'],
+  ['Day 3', 'Change one thing', 'Show a visible before-and-after edit and the matching code.'],
+  ['Day 5', 'Parent value', 'Show a project milestone and explain the parent-approved progress update.'],
+  ['Day 7', 'Follow-up', 'Answer the best audience question by building or changing another project.'],
+];
+
 export default function CreatorBrief() {
   const [copied, setCopied] = useState('');
 
@@ -147,6 +162,43 @@ export default function CreatorBrief() {
               </article>
             ))}
           </div>
+        </section>
+
+        <section className="creator-brief__section" aria-labelledby="script-title">
+          <div className="creator-brief__section-heading">
+            <p className="creator-brief__eyebrow">Ready-to-record script</p>
+            <h2 id="script-title">One 30-second video that explains the whole product.</h2>
+            <p>Record the screen vertically, keep the project visible, and use captions. The creator can use these words naturally rather than reading them exactly.</p>
+          </div>
+          <ol className="creator-brief__script">
+            {VIDEO_SCRIPT.map(([time, action, words]) => (
+              <li key={time}>
+                <span>{time}</span>
+                <strong>{action}</strong>
+                <p>{words}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section className="creator-brief__section" aria-labelledby="launch-title">
+          <div className="creator-brief__section-heading">
+            <p className="creator-brief__eyebrow">Seven-day creator test</p>
+            <h2 id="launch-title">Four posts. One learning question at a time.</h2>
+            <p>This is a test, not a promise. Keep the same message and call to action long enough to learn what actually works.</p>
+          </div>
+          <div className="creator-brief__launch-grid">
+            {LAUNCH_PLAN.map(([day, title, copy]) => (
+              <article key={day}><span>{day}</span><h3>{title}</h3><p>{copy}</p></article>
+            ))}
+          </div>
+          <aside className="creator-brief__targets" aria-label="First campaign decision targets">
+            <div><span>100</span><strong>qualified visits</strong></div>
+            <div><span>20</span><strong>own-idea starts</strong></div>
+            <div><span>10</span><strong>projects generated</strong></div>
+            <div><span>3</span><strong>accounts or parent leads</strong></div>
+            <p>Decision targets for the first test—not guaranteed results. If visits arrive but idea starts do not, fix the landing message. If ideas start but projects do not finish, fix generation. If projects finish but nobody returns or signs up, fix the reason to come back.</p>
+          </aside>
         </section>
 
         <section className="creator-brief__section creator-brief__claims" aria-labelledby="claims-title">

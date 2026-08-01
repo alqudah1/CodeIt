@@ -64,4 +64,16 @@ describe('CreatorBrief', () => {
     expect(screen.getByText(/billing is not live/i)).toBeInTheDocument();
     expect(screen.getByText(/confirmed parents can receive selected milestone emails/i)).toBeInTheDocument();
   });
+
+  test('provides an exact launch script and measurable seven-day test', () => {
+    render(<CreatorBrief />);
+
+    expect(screen.getByText('One 30-second video that explains the whole product.')).toBeInTheDocument();
+    expect(screen.getByText('Show the finished project')).toBeInTheDocument();
+    expect(screen.getByText(/Start with your own idea at codeitlearn.com/i)).toBeInTheDocument();
+    expect(screen.getByText('Four posts. One learning question at a time.')).toBeInTheDocument();
+    expect(screen.getByLabelText('First campaign decision targets')).toHaveTextContent('100qualified visits');
+    expect(screen.getByLabelText('First campaign decision targets')).toHaveTextContent('20own-idea starts');
+    expect(screen.getByText(/Decision targets for the first test/i)).toBeInTheDocument();
+  });
 });
