@@ -17,6 +17,7 @@ describe('acquisition attribution', () => {
     expect(getAcquisitionSource('?utm_source=instagram&utm_campaign=private-name', '')).toBe('instagram');
     expect(getAcquisitionSource('?utm_source=linkedin&utm_campaign=investor-name', '')).toBe('linkedin');
     expect(getAcquisitionSource('?utm_source=project-share&project=private-title', '')).toBe('project');
+    expect(getAcquisitionSource('?utm_source=referral&utm_medium=creator', '')).toBe('referral');
     expect(getAcquisitionSource('', 'https://www.google.com/search?q=private+query')).toBe('google');
     expect(getAcquisitionSource('', 'https://www.linkedin.com/feed/update/private-post')).toBe('linkedin');
     expect(getAcquisitionSource('', 'https://example.org/private/path')).toBe('referral');

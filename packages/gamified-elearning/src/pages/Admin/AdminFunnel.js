@@ -63,6 +63,7 @@ const ACQUISITION_SOURCES = [
   ['project', 'Shared projects'],
   ['referral', 'Other websites'],
   ['direct', 'Direct / unknown'],
+  ['other', 'Other tagged sources'],
 ];
 
 const fmt = (value) => (Number(value) || 0).toLocaleString();
@@ -290,16 +291,19 @@ export default function AdminFunnel() {
                   <th>Visits</th>
                   <th>Generated</th>
                   <th>Signed up</th>
+                  <th>Pilot requests</th>
+                  <th>Setup emails</th>
                   <th>Learner profile</th>
                   <th>Saved</th>
                   <th>Published</th>
                   <th>Remixed</th>
                   <th>Visit → build</th>
+                  <th>Visit → pilot</th>
                 </tr>
               </thead>
               <tbody>
                 {sourceFunnel.length === 0 && (
-                  <tr><td colSpan={9} className="adm-loading">Journey attribution starts with the next new visitor session.</td></tr>
+                  <tr><td colSpan={12} className="adm-loading">Journey attribution starts with the next new visitor session.</td></tr>
                 )}
                 {sourceFunnel.map((source) => (
                   <tr key={source.source}>
@@ -307,11 +311,14 @@ export default function AdminFunnel() {
                     <td><strong>{fmt(source.visits)}</strong></td>
                     <td>{fmt(source.generated_projects)}</td>
                     <td>{fmt(source.completed_signups)}</td>
+                    <td>{fmt(source.pilot_requests)}</td>
+                    <td>{fmt(source.setup_emails_sent)}</td>
                     <td>{fmt(source.managed_profiles)}</td>
                     <td>{fmt(source.saved_projects)}</td>
                     <td>{fmt(source.published_projects)}</td>
                     <td>{fmt(source.remixed_projects)}</td>
                     <td>{ratio(Number(source.generated_projects), Number(source.visits))}</td>
+                    <td>{ratio(Number(source.pilot_requests), Number(source.visits))}</td>
                   </tr>
                 ))}
               </tbody>

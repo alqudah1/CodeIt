@@ -93,6 +93,8 @@ async function getFunnelReport(requestedDays = 30) {
                 SUM(generated_count) AS generated_projects,
                 SUM(signup_count) AS completed_signups,
                 SUM(family_profile_count) AS managed_profiles,
+                SUM(pilot_count) AS pilot_requests,
+                SUM(pilot_confirmation_count) AS setup_emails_sent,
                 SUM(save_count) AS saved_projects,
                 SUM(publish_count) AS published_projects,
                 SUM(remix_count) AS remixed_projects
@@ -102,6 +104,8 @@ async function getFunnelReport(requestedDays = 30) {
                   MAX(event_name = 'generation_complete') AS generated_count,
                   MAX(event_name = 'signup_complete') AS signup_count,
                   MAX(event_name = 'family_child_created') AS family_profile_count,
+                  MAX(event_name = 'pilot_join') AS pilot_count,
+                  MAX(event_name = 'pilot_confirmation' AND meta = 'sent') AS pilot_confirmation_count,
                   MAX(event_name = 'project_save') AS save_count,
                   MAX(event_name = 'project_publish') AS publish_count,
                   MAX(event_name = 'project_remix') AS remix_count

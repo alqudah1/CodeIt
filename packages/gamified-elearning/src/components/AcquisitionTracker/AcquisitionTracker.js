@@ -28,6 +28,7 @@ function namedChannel(value = '') {
   if (source.includes('tiktok')) return 'tiktok';
   if (source.includes('facebook') || source === 'fb') return 'facebook';
   if (source.includes('linkedin')) return 'linkedin';
+  if (source === 'referral') return 'referral';
   if (source.includes('bing') || source.includes('duckduckgo') || source.includes('yahoo')) return 'search';
   return 'other';
 }

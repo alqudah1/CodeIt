@@ -64,6 +64,8 @@ describe('admin acquisition funnel', () => {
               visits: 8,
               generated_projects: 4,
               completed_signups: 2,
+              pilot_requests: 3,
+              setup_emails_sent: 2,
               managed_profiles: 1,
               saved_projects: 1,
               published_projects: 1,
@@ -138,8 +140,11 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Shared projects').parentElement).toHaveTextContent('5');
     expect(screen.getByText('Which sources create activated visitors')).toBeInTheDocument();
     expect(screen.getByText('Visit → build')).toBeInTheDocument();
+    expect(screen.getByText('Visit → pilot')).toBeInTheDocument();
+    expect(screen.getByText('Pilot requests', { selector: 'th' })).toBeInTheDocument();
+    expect(screen.getByText('Setup emails', { selector: 'th' })).toBeInTheDocument();
     expect(screen.getByText('Remixed', { selector: 'th' })).toBeInTheDocument();
-    expect(screen.getByRole('row', { name: /Instagram 8 4 2 1 1 1 2 50%/i })).toBeInTheDocument();
+    expect(screen.getByRole('row', { name: /Instagram 8 4 2 3 2 1 1 1 2 50% 38%/i })).toBeInTheDocument();
     expect(screen.getByText('Started family account setup').parentElement).toHaveTextContent('4');
     expect(screen.getByText('Tried a project').parentElement).toHaveTextContent('4');
     expect(screen.getByText('Viewed family pricing').parentElement).toHaveTextContent('2');
