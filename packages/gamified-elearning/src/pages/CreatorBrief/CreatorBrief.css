@@ -35,6 +35,8 @@
 .creator-brief__hero h1 span { color: var(--cb-orange); }
 .creator-brief__lead { max-width: 700px; margin: 1.8rem 0 0; color: var(--cb-muted); font-size: clamp(1.05rem, 2vw, 1.24rem); line-height: 1.7; }
 .creator-brief blockquote { max-width: 880px; margin: 3rem 0 0; border-left: 5px solid var(--cb-orange); padding: .35rem 0 .35rem 1.4rem; font: 700 clamp(1.2rem, 2.5vw, 1.7rem)/1.5 Arvo, Georgia, serif; }
+.creator-brief__offer { max-width: 760px; margin: 1.5rem 0 0; border: 1px solid var(--cb-line); border-radius: 14px; padding: 1rem 1.15rem; background: #fff; color: var(--cb-muted); line-height: 1.6; }
+.creator-brief__offer strong { color: var(--cb-ink); }
 .creator-brief__hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2.2rem; }
 .creator-brief__hero-actions a, .creator-brief__final a {
   min-height: 50px;

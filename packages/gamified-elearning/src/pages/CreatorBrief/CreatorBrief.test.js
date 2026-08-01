@@ -33,14 +33,14 @@ describe('CreatorBrief', () => {
     expect(screen.getByText('Young creators ages 8–18')).toBeInTheDocument();
     expect(screen.getByText(/Parents can create private managed profiles for ages 8–12/i)).toBeInTheDocument();
     expect(screen.getByText('Five links. One website.')).toBeInTheDocument();
-    expect(screen.getByText(/LinkedIn for founder or investor posts/i)).toBeInTheDocument();
+    expect(screen.getByText(/LinkedIn for founder posts/i)).toBeInTheDocument();
     expect(screen.getByText(/Direct sharing for WhatsApp, email, or messages/i)).toBeInTheDocument();
     const instagram = screen.getByLabelText('Instagram campaign link');
     const tiktok = screen.getByLabelText('TikTok campaign link');
     const linkedin = screen.getByLabelText('LinkedIn campaign link');
-    expect(instagram).toHaveValue('https://codeitlearn.com/?utm_source=instagram&utm_medium=creator');
-    expect(tiktok).toHaveValue('https://codeitlearn.com/?utm_source=tiktok&utm_medium=creator');
-    expect(linkedin).toHaveValue('https://codeitlearn.com/?utm_source=linkedin&utm_medium=founder');
+    expect(instagram).toHaveValue('https://codeitlearn.com/pricing?utm_source=instagram&utm_medium=creator');
+    expect(tiktok).toHaveValue('https://codeitlearn.com/pricing?utm_source=tiktok&utm_medium=creator');
+    expect(linkedin).toHaveValue('https://codeitlearn.com/pricing?utm_source=linkedin&utm_medium=founder');
     expect(instagram.value).not.toContain('utm_campaign');
   });
 
@@ -51,7 +51,7 @@ describe('CreatorBrief', () => {
     fireEvent.click(buttons[0]);
 
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-      'https://codeitlearn.com/?utm_source=instagram&utm_medium=creator'
+      'https://codeitlearn.com/pricing?utm_source=instagram&utm_medium=creator'
     );
     expect(await screen.findByRole('status')).toHaveTextContent('Copied');
   });
@@ -62,6 +62,7 @@ describe('CreatorBrief', () => {
     expect(screen.getByText('Say this')).toBeInTheDocument();
     expect(screen.getByText('Label this as planned')).toBeInTheDocument();
     expect(screen.getByText(/billing is not live/i)).toBeInTheDocument();
+    expect(screen.getByText(/free family pilot requests are open with no card/i)).toBeInTheDocument();
     expect(screen.getByText(/confirmed parents can receive selected milestone emails/i)).toBeInTheDocument();
   });
 
@@ -70,10 +71,11 @@ describe('CreatorBrief', () => {
 
     expect(screen.getByText('One 30-second video that explains the whole product.')).toBeInTheDocument();
     expect(screen.getByText('Show the finished project')).toBeInTheDocument();
-    expect(screen.getByText(/Start with your own idea at codeitlearn.com/i)).toBeInTheDocument();
+    expect(screen.getByText(/Parents can request a free family pilot spot at codeitlearn.com/i)).toBeInTheDocument();
     expect(screen.getByText('Four posts. One learning question at a time.')).toBeInTheDocument();
     expect(screen.getByLabelText('First campaign decision targets')).toHaveTextContent('100qualified visits');
     expect(screen.getByLabelText('First campaign decision targets')).toHaveTextContent('20own-idea starts');
+    expect(screen.getByLabelText('First campaign decision targets')).toHaveTextContent('3family pilot requests');
     expect(screen.getByText(/Decision targets for the first test/i)).toBeInTheDocument();
   });
 });

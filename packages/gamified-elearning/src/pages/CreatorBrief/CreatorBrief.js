@@ -5,11 +5,11 @@ import { useSEO } from '../../hooks/useSEO';
 import './CreatorBrief.css';
 
 const CHANNEL_LINKS = [
-  ['instagram', 'Instagram', 'https://codeitlearn.com/?utm_source=instagram&utm_medium=creator'],
-  ['tiktok', 'TikTok', 'https://codeitlearn.com/?utm_source=tiktok&utm_medium=creator'],
-  ['youtube', 'YouTube', 'https://codeitlearn.com/?utm_source=youtube&utm_medium=creator'],
-  ['linkedin', 'LinkedIn', 'https://codeitlearn.com/?utm_source=linkedin&utm_medium=founder'],
-  ['referral', 'Direct sharing', 'https://codeitlearn.com/?utm_source=referral&utm_medium=creator'],
+  ['instagram', 'Instagram', 'https://codeitlearn.com/pricing?utm_source=instagram&utm_medium=creator'],
+  ['tiktok', 'TikTok', 'https://codeitlearn.com/pricing?utm_source=tiktok&utm_medium=creator'],
+  ['youtube', 'YouTube', 'https://codeitlearn.com/pricing?utm_source=youtube&utm_medium=creator'],
+  ['linkedin', 'LinkedIn', 'https://codeitlearn.com/pricing?utm_source=linkedin&utm_medium=founder'],
+  ['referral', 'Direct sharing', 'https://codeitlearn.com/pricing?utm_source=referral&utm_medium=creator'],
 ];
 
 const DEMO_STEPS = [
@@ -36,7 +36,7 @@ const CONTENT_FORMATS = [
     label: 'Parent value',
     hook: '“This shows parents what a student actually built.”',
     sequence: 'Project milestone → parent-approved update → what the student made',
-    cta: 'Join the Founding Family pilot.',
+    cta: 'Request a free family pilot spot.',
   },
 ];
 
@@ -45,7 +45,7 @@ const VIDEO_SCRIPT = [
   ['2–9 sec', 'Play it', 'Click, score, answer, or trigger the part that makes the result feel real.'],
   ['9–18 sec', 'Change one thing', '“Now they can change the colour, rule, words, or behaviour instead of stopping at generation.”'],
   ['18–26 sec', 'Open the code', '“CodeIt connects what changed on screen to the code behind it.”'],
-  ['26–32 sec', 'Use one call to action', '“Start with your own idea at codeitlearn.com.”'],
+  ['26–32 sec', 'Use one call to action', '“Parents can request a free family pilot spot at codeitlearn.com.”'],
 ];
 
 const LAUNCH_PLAN = [
@@ -93,6 +93,10 @@ export default function CreatorBrief() {
             CodeIt helps students turn an idea into a real website, game, or quiz—then learn,
             edit, save, and share the code behind what they built.
           </blockquote>
+          <p className="creator-brief__offer">
+            <strong>Offer to promote:</strong> free family pilot requests are open. There is no card,
+            charge, or subscription. The planned paid family plan is US$12/month after testing.
+          </p>
           <div className="creator-brief__hero-actions">
             <Link to="/builder">Open the project studio <span aria-hidden="true">→</span></Link>
             <a href="#campaign-links">Get your tracked link</a>
@@ -130,8 +134,8 @@ export default function CreatorBrief() {
             <h2 id="links-title">Five links. One website.</h2>
             <p>
               Use the Instagram link on Instagram, TikTok on TikTok, YouTube in video descriptions,
-              LinkedIn for founder or investor posts, and Direct sharing for WhatsApp, email, or messages. Each opens the same CodeIt homepage;
-              the tag only tells the dashboard which channel brought the visit.
+              LinkedIn for founder posts, and Direct sharing for WhatsApp, email, or messages. Each opens the same family-pilot page;
+              the tag only tells the dashboard which channel brought the visit. It does not identify the visitor.
             </p>
           </div>
           <div className="creator-brief__link-grid">
@@ -196,8 +200,8 @@ export default function CreatorBrief() {
             <div><span>100</span><strong>qualified visits</strong></div>
             <div><span>20</span><strong>own-idea starts</strong></div>
             <div><span>10</span><strong>projects generated</strong></div>
-            <div><span>3</span><strong>accounts or parent leads</strong></div>
-            <p>Decision targets for the first test—not guaranteed results. If visits arrive but idea starts do not, fix the landing message. If ideas start but projects do not finish, fix generation. If projects finish but nobody returns or signs up, fix the reason to come back.</p>
+            <div><span>3</span><strong>family pilot requests</strong></div>
+            <p>Decision targets for the first test—not guaranteed results. If visits arrive but pilot requests do not, improve the offer or parent proof. If visitors request the pilot but do not register, improve the setup email. If students register but do not finish a project, improve generation and onboarding.</p>
           </aside>
         </section>
 
@@ -213,6 +217,7 @@ export default function CreatorBrief() {
                 <li>Students can build, edit, save, and publish projects.</li>
                 <li>CodeIt connects visible project behaviour to coding concepts.</li>
                 <li>The core beginner experience has a free starting option.</li>
+                <li>Free family pilot requests are open with no card, charge, or subscription.</li>
                 <li>Confirmed parents can receive selected milestone emails from a student profile.</li>
                 <li>Parents can create private managed profiles for learners ages 8–12.</li>
               </ul>
@@ -235,8 +240,9 @@ export default function CreatorBrief() {
           </div>
           <ol>
             <li><span>01</span><strong>Qualified visits</strong><small>Did the right audience reach CodeIt?</small></li>
-            <li><span>02</span><strong>Projects started</strong><small>Did visitors try the core experience?</small></li>
-            <li><span>03</span><strong>Parent interest</strong><small>Did adults view pricing or join the pilot?</small></li>
+            <li><span>02</span><strong>Pilot requests</strong><small>Did parents ask for a free family spot?</small></li>
+            <li><span>03</span><strong>Setup email delivery</strong><small>Did each request receive the next steps?</small></li>
+            <li><span>04</span><strong>Student activation</strong><small>Did the family register and finish a first project?</small></li>
           </ol>
         </section>
 
@@ -244,7 +250,8 @@ export default function CreatorBrief() {
           <p className="creator-brief__eyebrow">The one-line close</p>
           <h2>Start with an idea. Leave with something real.</h2>
           <div>
-            <Link to="/builder">Rehearse the demo <span aria-hidden="true">→</span></Link>
+            <Link to="/pricing">Open the family-pilot page <span aria-hidden="true">→</span></Link>
+            <Link to="/builder">Rehearse the demo</Link>
             <a href="mailto:hello@codeitlearn.com?subject=CodeIt%20creator%20collaboration">Ask a collaboration question</a>
           </div>
         </section>
