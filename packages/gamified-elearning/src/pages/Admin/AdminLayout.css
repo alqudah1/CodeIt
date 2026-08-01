@@ -288,6 +288,16 @@
   color: #718096;
   font-size: 0.9rem;
 }
+.adm-inline-link {
+  color: #c54b0b;
+  font-weight: 800;
+  text-underline-offset: 3px;
+}
+.adm-inline-link:hover { color: #9e3804; }
+.adm-inline-link:focus-visible {
+  outline: 3px solid rgba(255, 122, 0, 0.28);
+  outline-offset: 3px;
+}
 .adm-error {
   padding: 1rem 1.5rem;
   color: #e53e3e;

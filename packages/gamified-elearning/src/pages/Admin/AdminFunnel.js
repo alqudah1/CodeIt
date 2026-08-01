@@ -362,7 +362,11 @@ export default function AdminFunnel() {
               </thead>
               <tbody>
                 {campaignFunnel.length === 0 && (
-                  <tr><td colSpan={9} className="adm-loading">Use a campaign-coded creator link to start this comparison.</td></tr>
+                  <tr>
+                    <td colSpan={9} className="adm-loading">
+                      No creator traffic yet. <a className="adm-inline-link" href="/creator-brief#campaign-links">Create and copy a tracked link →</a>
+                    </td>
+                  </tr>
                 )}
                 {campaignFunnel.map((campaign) => (
                   <tr key={`${campaign.campaign_code}-${campaign.source}`}>
