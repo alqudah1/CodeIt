@@ -108,7 +108,7 @@ test('private application pages are crawlable but excluded with X-Robots-Tag', (
   assert.doesNotMatch(robots, /Disallow:\s*\/(login|register|MainPage|admin|character|leaderboard|quiz)/);
   assert.match(htaccess, /X-Robots-Tag "noindex, nofollow"/);
 
-  for (const route of ['login', 'register', 'MainPage', 'admin', 'character', 'leaderboard', 'quiz']) {
+  for (const route of ['login', 'register', 'MainPage', 'admin', 'character', 'leaderboard', 'quiz', 'project']) {
     assert.match(htaccess, new RegExp(`\\|${route}\\||\\(${route}\\||\\|${route}\\)`));
   }
 });
