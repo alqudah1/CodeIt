@@ -73,6 +73,7 @@ const POPULAR_LESSONS = [
   [4, "Making decisions with if statements"],
   [6, "Repeating ideas with loops"],
 ];
+const HOME_VIEW_SESSION_KEY = "codeit_homepage_view_recorded";
 
 function StudioPreview() {
   const [activeId, setActiveId] = useState(PROJECT_IDEAS[0].id);
@@ -133,6 +134,16 @@ export default function Home() {
   const ideaInputRef = useRef(null);
   const [heroIdea, setHeroIdea] = useState("");
   const [latestProject, setLatestProject] = useState(null);
+
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem(HOME_VIEW_SESSION_KEY) === "yes") return;
+      sessionStorage.setItem(HOME_VIEW_SESSION_KEY, "yes");
+      void trackEvent("homepage_view", null, token);
+    } catch (_) {
+      // Measurement must never interrupt the homepage.
+    }
+  }, [token]);
 
   useEffect(() => {
     if (!user || !token) {

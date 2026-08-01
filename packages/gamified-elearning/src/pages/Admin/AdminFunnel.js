@@ -6,6 +6,7 @@ import './AdminLayout.css';
 import './AdminFunnel.css';
 
 const STAGES = [
+  ['homepage_view', 'Homepage views'],
   ['landing_cta_click', 'Landing clicks'],
   ['learning_start', 'Learning starts'],
   ['parent_guide_view', 'Parent guide views'],
@@ -159,6 +160,7 @@ export default function AdminFunnel() {
   const foundingLeads = data?.founding_leads || [];
   const sourceFunnel = data?.source_funnel || [];
   const campaignFunnel = data?.campaign_funnel || [];
+  const homepageFunnel = data?.homepage_funnel || {};
   const journeyMetric = (key) => uniqueJourneys[key] || 0;
   const measuredVisits = journeyMetric('acquisition_visit');
   const builderAttribution = counts.builder_start
@@ -167,6 +169,9 @@ export default function AdminFunnel() {
   const sampleReady = measuredVisits >= 20;
 
   const signals = data ? [
+    ['Homepage → action', ratio(Number(homepageFunnel.clicked) || 0, Number(homepageFunnel.views) || 0)],
+    ['Homepage → project', ratio(Number(homepageFunnel.generated_projects) || 0, Number(homepageFunnel.views) || 0)],
+    ['Homepage → signup', ratio(Number(homepageFunnel.completed_signups) || 0, Number(homepageFunnel.views) || 0)],
     ['Visit → learning', ratio(journeyMetric('learning_start'), journeyMetric('acquisition_visit'))],
     ['Build completion', ratio(journeyMetric('generation_complete'), journeyMetric('builder_start'))],
     ['Generated → personalized', ratio(journeyMetric('project_personalize'), journeyMetric('generation_complete'))],

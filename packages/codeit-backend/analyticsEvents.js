@@ -2,6 +2,7 @@
 
 const EVENT_META = Object.freeze({
   acquisition_visit: new Set(['google', 'youtube', 'instagram', 'tiktok', 'facebook', 'linkedin', 'search', 'project', 'referral', 'direct', 'other']),
+  homepage_view: new Set(),
   landing_cta_click: new Set(['hero-build', 'hero-idea', 'hero-lessons', 'final-build', 'member-resume-project']),
   learning_start: new Set(['lesson-one', 'playground']),
   parent_guide_view: new Set(),
@@ -27,7 +28,7 @@ const EVENT_META = Object.freeze({
   family_child_created: new Set(),
 });
 
-const CLIENT_REPORTED_EVENTS = new Set(['acquisition_visit', 'landing_cta_click', 'learning_start', 'parent_guide_view', 'parent_cta_click', 'new_account_studio_view', 'new_account_family_setup_view', 'guest_draft_recovered', 'project_personalize', 'activation_account_gate', 'activation_next_step', 'project_share', 'return_use', 'pricing_view']);
+const CLIENT_REPORTED_EVENTS = new Set(['acquisition_visit', 'homepage_view', 'landing_cta_click', 'learning_start', 'parent_guide_view', 'parent_cta_click', 'new_account_studio_view', 'new_account_family_setup_view', 'guest_draft_recovered', 'project_personalize', 'activation_account_gate', 'activation_next_step', 'project_share', 'return_use', 'pricing_view']);
 const JOURNEY_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const CAMPAIGN_PATTERN = /^[a-z0-9][a-z0-9-]{1,23}$/;
 

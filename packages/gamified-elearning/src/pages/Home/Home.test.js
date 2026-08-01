@@ -27,6 +27,7 @@ jest.mock('../../utils/trackEvent', () => ({ trackEvent: jest.fn() }));
 describe('Home', () => {
   beforeEach(() => {
     mockHomeAuth = { user: null, token: null };
+    sessionStorage.clear();
     trackEvent.mockReset().mockResolvedValue(true);
   });
 
@@ -47,6 +48,14 @@ describe('Home', () => {
 
     fireEvent.click(pilotLink);
     expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'view-pricing');
+  });
+
+  test('records one privacy-safe homepage view per browser session', () => {
+    const { rerender } = render(<Home />);
+
+    expect(trackEvent).toHaveBeenCalledWith('homepage_view', null, null);
+    rerender(<Home />);
+    expect(trackEvent).toHaveBeenCalledTimes(1);
   });
 
   test('shows rounded, defensible traction without claiming active users', () => {

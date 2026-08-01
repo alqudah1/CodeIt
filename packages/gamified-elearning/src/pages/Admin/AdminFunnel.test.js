@@ -22,6 +22,7 @@ describe('admin acquisition funnel', () => {
         ok: true,
         json: async () => ({
           events: [
+            { event_name: 'homepage_view', event_count: 10, unique_users: 0, unique_journeys: 10, attributed_events: 10 },
             { event_name: 'acquisition_visit', event_count: 14, unique_users: 0, unique_journeys: 14, attributed_events: 14 },
             { event_name: 'learning_start', event_count: 8, unique_users: 0, unique_journeys: 7, attributed_events: 8 },
             { event_name: 'parent_cta_click', event_count: 11, unique_users: 0, unique_journeys: 7, attributed_events: 9 },
@@ -59,6 +60,7 @@ describe('admin acquisition funnel', () => {
             { event_name: 'pilot_confirmation', meta: 'not-sent', event_count: 1 },
           ],
           daily: [],
+          homepage_funnel: { views: 10, clicked: 6, generated_projects: 4, completed_signups: 2, saved_projects: 1 },
           activation_entry_tracking_since: '2026-08-01',
           progress_email_delivery: [
             { status: 'sent', delivery_count: 4 },
@@ -128,6 +130,9 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Projects shared')).toBeInTheDocument();
     expect(screen.getByText('Learning starts')).toBeInTheDocument();
     expect(screen.getByText('Visit → learning').parentElement).toHaveTextContent('50%');
+    expect(screen.getByText('Homepage → action').parentElement).toHaveTextContent('60%');
+    expect(screen.getByText('Homepage → project').parentElement).toHaveTextContent('40%');
+    expect(screen.getByText('Homepage → signup').parentElement).toHaveTextContent('20%');
     expect(screen.getByText('Projects personalized')).toBeInTheDocument();
     expect(screen.getByText('Projects remixed')).toBeInTheDocument();
     expect(screen.getByText('Finish steps chosen')).toBeInTheDocument();

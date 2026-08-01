@@ -70,6 +70,7 @@ test('limits browser-reported events to events the server cannot infer', () => {
   assert.equal(CLIENT_REPORTED_EVENTS.has('parent_cta_click'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('new_account_studio_view'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('new_account_family_setup_view'), true);
+  assert.equal(CLIENT_REPORTED_EVENTS.has('homepage_view'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('return_use'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('pricing_view'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('pricing_interest'), false);

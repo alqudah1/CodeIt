@@ -40,6 +40,15 @@ describe("trackEvent", () => {
     );
   });
 
+  test("records a homepage view without page content", async () => {
+    await expect(trackEvent("homepage_view")).resolves.toBe(true);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/api/analytics/event"),
+      expect.objectContaining({ body: JSON.stringify({ event_name: "homepage_view", meta: null }) })
+    );
+  });
+
   test("records a fixed learning entry point without lesson content", async () => {
     await expect(trackEvent("learning_start", "lesson-one")).resolves.toBe(true);
 
