@@ -74,6 +74,18 @@ describe('admin acquisition funnel', () => {
               remixed_projects: 2,
             },
           ],
+          campaign_funnel: [
+            {
+              campaign_code: 'creator-01',
+              source: 'instagram',
+              visits: 8,
+              generated_projects: 4,
+              completed_signups: 2,
+              pilot_requests: 3,
+              saved_projects: 1,
+              published_projects: 1,
+            },
+          ],
           student_age_audit: {},
           founding_leads: [
             {
@@ -144,11 +156,14 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Shared projects').parentElement).toHaveTextContent('5');
     expect(screen.getByText('Which sources create activated visitors')).toBeInTheDocument();
     expect(screen.getByText('Visit → build')).toBeInTheDocument();
-    expect(screen.getByText('Visit → pilot')).toBeInTheDocument();
-    expect(screen.getByText('Pilot requests', { selector: 'th' })).toBeInTheDocument();
+    expect(screen.getAllByText('Visit → pilot')).toHaveLength(2);
+    expect(screen.getAllByText('Pilot requests', { selector: 'th' })).toHaveLength(2);
     expect(screen.getByText('Setup emails', { selector: 'th' })).toBeInTheDocument();
     expect(screen.getByText('Remixed', { selector: 'th' })).toBeInTheDocument();
     expect(screen.getByRole('row', { name: /Instagram 8 4 2 3 2 1 1 1 2 50% 38%/i })).toBeInTheDocument();
+    expect(screen.getByText('Which creator campaigns convert')).toBeInTheDocument();
+    expect(screen.getByRole('row', { name: /creator-01 Instagram 8 4 2 3 1 1 38%/i })).toBeInTheDocument();
+    expect(screen.getByText(/campaign code identifies the promotion, not the visitor/i)).toBeInTheDocument();
     expect(screen.getByText('Started family account setup').parentElement).toHaveTextContent('4');
     expect(screen.getByText('Tried a project').parentElement).toHaveTextContent('4');
     expect(screen.getByText('Viewed family pricing').parentElement).toHaveTextContent('2');

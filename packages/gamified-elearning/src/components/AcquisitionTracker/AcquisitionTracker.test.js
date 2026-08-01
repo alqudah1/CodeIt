@@ -34,6 +34,14 @@ describe('acquisition attribution', () => {
     expect(trackEvent).toHaveBeenCalledTimes(1);
   });
 
+  test('captures a campaign code before recording the acquisition visit', async () => {
+    window.history.replaceState({}, '', '/?utm_source=instagram&utm_campaign=creator-01');
+    render(<AcquisitionTracker />);
+
+    await waitFor(() => expect(trackEvent).toHaveBeenCalledTimes(1));
+    expect(sessionStorage.getItem('codeit_session_campaign')).toBe('creator-01');
+  });
+
   test('excludes account, evidence, and administration screens from acquisition totals', () => {
     expect(shouldTrackAcquisition('/admin/funnel')).toBe(false);
     expect(shouldTrackAcquisition('/login')).toBe(false);

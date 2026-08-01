@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BrandLogo from '../../components/BrandLogo/BrandLogo';
 import { useSEO } from '../../hooks/useSEO';
@@ -11,6 +11,26 @@ const CHANNEL_LINKS = [
   ['linkedin', 'LinkedIn', 'https://codeitlearn.com/pricing?utm_source=linkedin&utm_medium=founder#family-pilot'],
   ['referral', 'Direct sharing', 'https://codeitlearn.com/pricing?utm_source=referral&utm_medium=creator#family-pilot'],
 ];
+
+const CAMPAIGN_PATTERN = /^[a-z0-9][a-z0-9-]{1,23}$/;
+
+export function cleanCampaignCode(value = '') {
+  return value.toLowerCase()
+    .replace(/[^a-z0-9-]+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-{2,}/g, '-')
+    .slice(0, 24);
+}
+
+export function campaignLinks(code) {
+  const normalizedCode = code.replace(/-+$/, '');
+  const validCode = CAMPAIGN_PATTERN.test(normalizedCode) ? normalizedCode : 'creator-01';
+  return CHANNEL_LINKS.map(([channel, label, rawUrl]) => {
+    const url = new URL(rawUrl);
+    url.searchParams.set('utm_campaign', validCode);
+    return [channel, label, url.toString()];
+  });
+}
 
 const DEMO_STEPS = [
   ['01', 'Start with the finished result', 'Open a working quiz, game, or website before explaining features.'],
@@ -57,6 +77,8 @@ const LAUNCH_PLAN = [
 
 export default function CreatorBrief() {
   const [copied, setCopied] = useState('');
+  const [campaignCode, setCampaignCode] = useState('creator-01');
+  const trackedLinks = useMemo(() => campaignLinks(campaignCode), [campaignCode]);
 
   useSEO({
     title: 'CodeIt Creator Brief',
@@ -131,15 +153,28 @@ export default function CreatorBrief() {
         <section id="campaign-links" className="creator-brief__section creator-brief__links" aria-labelledby="links-title">
           <div className="creator-brief__section-heading">
             <p className="creator-brief__eyebrow">Tracked campaign links</p>
-            <h2 id="links-title">Five links. One website.</h2>
+            <h2 id="links-title">Five links. One measurable campaign.</h2>
             <p>
               Use the Instagram link on Instagram, TikTok on TikTok, YouTube in video descriptions,
               LinkedIn for founder posts, and Direct sharing for WhatsApp, email, or messages. Each opens the same family-pilot page;
-              the tag only tells the dashboard which channel brought the visit. It does not identify the visitor.
+              the tags tell the dashboard which channel and campaign brought the visit. They never identify the visitor.
             </p>
           </div>
+          <div className="creator-brief__campaign-code">
+            <label htmlFor="creator-campaign-code">Campaign code</label>
+            <input
+              id="creator-campaign-code"
+              aria-label="Campaign code"
+              value={campaignCode}
+              onChange={(event) => setCampaignCode(cleanCampaignCode(event.target.value))}
+              maxLength={24}
+              autoComplete="off"
+              spellCheck="false"
+            />
+            <p>Give each creator or launch a different internal code, such as <strong>creator-01</strong> or <strong>summer-test</strong>. Do not enter an email, phone number, or visitor information.</p>
+          </div>
           <div className="creator-brief__link-grid">
-            {CHANNEL_LINKS.map(([channel, label, url]) => (
+            {trackedLinks.map(([channel, label, url]) => (
               <article key={channel}>
                 <div><span>{label}</span>{copied === channel && <strong role="status">Copied</strong>}</div>
                 <input aria-label={`${label} campaign link`} value={url} readOnly onFocus={(event) => event.target.select()} />

@@ -8,6 +8,7 @@ const {
   eventRequiresMeta,
   normalizeMeta,
   normalizeJourneyId,
+  normalizeCampaignCode,
   projectCategory,
 } = require('./analyticsEvents');
 
@@ -102,4 +103,13 @@ test('accepts only anonymous version-four journey identifiers', () => {
   );
   assert.equal(normalizeJourneyId('parent@example.com'), null);
   assert.equal(normalizeJourneyId('123e4567-e89b-12d3-a456-426614174000'), null);
+});
+
+test('accepts only short privacy-safe campaign codes', () => {
+  assert.equal(normalizeCampaignCode('Creator-01'), 'creator-01');
+  assert.equal(normalizeCampaignCode('ig-july-26'), 'ig-july-26');
+  assert.equal(normalizeCampaignCode('parent@example.com'), null);
+  assert.equal(normalizeCampaignCode('a private full name'), null);
+  assert.equal(normalizeCampaignCode('x'), null);
+  assert.equal(normalizeCampaignCode('creator-code-that-is-far-too-long'), null);
 });

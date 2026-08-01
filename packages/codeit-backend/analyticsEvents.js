@@ -28,6 +28,7 @@ const EVENT_META = Object.freeze({
 
 const CLIENT_REPORTED_EVENTS = new Set(['acquisition_visit', 'landing_cta_click', 'learning_start', 'parent_guide_view', 'parent_cta_click', 'new_account_studio_view', 'guest_draft_recovered', 'project_personalize', 'activation_account_gate', 'activation_next_step', 'project_share', 'return_use', 'pricing_view']);
 const JOURNEY_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const CAMPAIGN_PATTERN = /^[a-z0-9][a-z0-9-]{1,23}$/;
 
 function normalizeEventName(value) {
   return typeof value === 'string' && Object.hasOwn(EVENT_META, value) ? value : null;
@@ -60,11 +61,18 @@ function normalizeJourneyId(value) {
   return JOURNEY_PATTERN.test(normalized) ? normalized : null;
 }
 
+function normalizeCampaignCode(value) {
+  if (typeof value !== 'string') return null;
+  const normalized = value.trim().toLowerCase();
+  return CAMPAIGN_PATTERN.test(normalized) ? normalized : null;
+}
+
 module.exports = {
   CLIENT_REPORTED_EVENTS,
   normalizeEventName,
   normalizeMeta,
   normalizeJourneyId,
+  normalizeCampaignCode,
   eventRequiresMeta,
   projectCategory,
 };

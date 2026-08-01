@@ -1,5 +1,7 @@
 const JOURNEY_KEY = 'codeit_session_journey';
+const CAMPAIGN_KEY = 'codeit_session_campaign';
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const CAMPAIGN_PATTERN = /^[a-z0-9][a-z0-9-]{1,23}$/;
 
 function createJourneyId() {
   const browserCrypto = typeof window !== 'undefined' ? window.crypto : null;
@@ -33,7 +35,36 @@ export function getJourneyId() {
   }
 }
 
+export function normalizeCampaignCode(value) {
+  if (typeof value !== 'string') return null;
+  const normalized = value.trim().toLowerCase();
+  return CAMPAIGN_PATTERN.test(normalized) ? normalized : null;
+}
+
+export function captureCampaignCode(search = '') {
+  try {
+    const code = normalizeCampaignCode(new URLSearchParams(search).get('utm_campaign'));
+    if (!code) return null;
+    sessionStorage.setItem(CAMPAIGN_KEY, code);
+    return code;
+  } catch (_) {
+    return null;
+  }
+}
+
+export function getCampaignCode() {
+  try {
+    return normalizeCampaignCode(sessionStorage.getItem(CAMPAIGN_KEY));
+  } catch (_) {
+    return null;
+  }
+}
+
 export function journeyHeaders() {
   const journeyId = getJourneyId();
-  return journeyId ? { 'X-CodeIt-Journey': journeyId } : {};
+  const campaignCode = getCampaignCode();
+  return {
+    ...(journeyId ? { 'X-CodeIt-Journey': journeyId } : {}),
+    ...(campaignCode ? { 'X-CodeIt-Campaign': campaignCode } : {}),
+  };
 }

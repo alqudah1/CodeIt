@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { trackEvent } from '../../utils/trackEvent';
+import { captureCampaignCode } from '../../utils/journey';
 
 const SESSION_KEY = 'codeit_acquisition_visit_recorded';
 const OWN_HOSTS = new Set(['codeitlearn.com', 'www.codeitlearn.com']);
@@ -64,6 +65,7 @@ export default function AcquisitionTracker() {
     try {
       if (!shouldTrackAcquisition(pathname)) return;
       if (sessionStorage.getItem(SESSION_KEY) === 'yes') return;
+      captureCampaignCode(window.location.search);
       const source = getAcquisitionSource(window.location.search, document.referrer);
       sessionStorage.setItem(SESSION_KEY, 'yes');
       void trackEvent('acquisition_visit', source);

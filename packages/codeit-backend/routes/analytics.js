@@ -11,6 +11,7 @@ const {
   eventRequiresMeta,
   normalizeMeta,
   normalizeJourneyId,
+  normalizeCampaignCode,
 } = require('../analyticsEvents');
 
 const router = express.Router();
@@ -97,6 +98,7 @@ router.post('/event', rateLimit, optionalAuth, async (req, res) => {
   const recorded = await recordEvent(eventName, {
     userId: req.user?.user_id,
     journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')),
+    campaignCode: normalizeCampaignCode(req.get('X-CodeIt-Campaign')),
     meta,
   });
 

@@ -1,7 +1,7 @@
 'use strict';
 
 const pool = require('./db');
-const { normalizeEventName, normalizeMeta, normalizeJourneyId } = require('./analyticsEvents');
+const { normalizeEventName, normalizeMeta, normalizeJourneyId, normalizeCampaignCode } = require('./analyticsEvents');
 const { listFoundingFamilyLeads } = require('./foundingWaitlist');
 const { ready: legacyParentReviewReady } = require('./legacyParentReview');
 
@@ -25,6 +25,14 @@ const tableReady = pool.query(`
         'ALTER TABLE analytics_events ADD COLUMN journey_id CHAR(36) NULL AFTER user_id, ADD INDEX idx_analytics_journey_event (journey_id, event_name)'
       );
     }
+    const [campaignColumns] = await pool.query(
+      "SHOW COLUMNS FROM analytics_events LIKE 'campaign_code'"
+    );
+    if (!campaignColumns.length) {
+      await pool.query(
+        'ALTER TABLE analytics_events ADD COLUMN campaign_code VARCHAR(24) NULL AFTER journey_id, ADD INDEX idx_analytics_campaign_event (campaign_code, event_name)'
+      );
+    }
     await pool.query(
       'DELETE FROM analytics_events WHERE created_at < DATE_SUB(NOW(), INTERVAL 13 MONTH)'
     );
@@ -37,7 +45,7 @@ const tableReady = pool.query(`
   return false;
 });
 
-async function recordEvent(eventName, { userId = null, journeyId = null, meta = null } = {}) {
+async function recordEvent(eventName, { userId = null, journeyId = null, campaignCode = null, meta = null } = {}) {
   const normalizedEvent = normalizeEventName(eventName);
   if (!normalizedEvent) return false;
 
@@ -46,12 +54,15 @@ async function recordEvent(eventName, { userId = null, journeyId = null, meta = 
     : null;
   const normalizedMeta = normalizeMeta(normalizedEvent, meta);
   const normalizedJourneyId = normalizeJourneyId(journeyId);
+  const normalizedCampaignCode = normalizedEvent === 'acquisition_visit'
+    ? normalizeCampaignCode(campaignCode)
+    : null;
 
   try {
     if (!await tableReady) return false;
     await pool.query(
-      'INSERT INTO analytics_events (event_name, user_id, journey_id, meta) VALUES (?, ?, ?, ?)',
-      [normalizedEvent, normalizedUserId, normalizedJourneyId, normalizedMeta]
+      'INSERT INTO analytics_events (event_name, user_id, journey_id, campaign_code, meta) VALUES (?, ?, ?, ?, ?)',
+      [normalizedEvent, normalizedUserId, normalizedJourneyId, normalizedCampaignCode, normalizedMeta]
     );
     return true;
   } catch (err) {
@@ -67,7 +78,7 @@ async function getFunnelReport(requestedDays = 30) {
     if (!await tableReady) return null;
     await legacyParentReviewReady;
     const windowSql = `created_at >= DATE_SUB(NOW(), INTERVAL ${days} DAY)`;
-    const [[events], [daily], [breakdown], [sourceFunnel], [studentAgeRows], [progressDeliveries], [accountLeads], directLeads] = await Promise.all([
+    const [[events], [daily], [breakdown], [sourceFunnel], [campaignFunnel], [studentAgeRows], [progressDeliveries], [accountLeads], directLeads] = await Promise.all([
       pool.query(
         `SELECT event_name, COUNT(*) AS event_count, COUNT(DISTINCT user_id) AS unique_users,
                 COUNT(DISTINCT journey_id) AS unique_journeys,
@@ -116,6 +127,31 @@ async function getFunnelReport(requestedDays = 30) {
          WHERE source IS NOT NULL
          GROUP BY source
          ORDER BY visits DESC`
+      ),
+      pool.query(
+        `SELECT campaign_code, source,
+                COUNT(*) AS visits,
+                SUM(generated_count) AS generated_projects,
+                SUM(signup_count) AS completed_signups,
+                SUM(pilot_count) AS pilot_requests,
+                SUM(save_count) AS saved_projects,
+                SUM(publish_count) AS published_projects
+         FROM (
+           SELECT journey_id,
+                  MAX(CASE WHEN event_name = 'acquisition_visit' THEN campaign_code END) AS campaign_code,
+                  MAX(CASE WHEN event_name = 'acquisition_visit' THEN meta END) AS source,
+                  MAX(event_name = 'generation_complete') AS generated_count,
+                  MAX(event_name = 'signup_complete') AS signup_count,
+                  MAX(event_name = 'pilot_join') AS pilot_count,
+                  MAX(event_name = 'project_save') AS save_count,
+                  MAX(event_name = 'project_publish') AS publish_count
+           FROM analytics_events
+           WHERE ${windowSql} AND journey_id IS NOT NULL
+           GROUP BY journey_id
+         ) journeys
+         WHERE campaign_code IS NOT NULL
+         GROUP BY campaign_code, source
+         ORDER BY visits DESC, campaign_code ASC`
       ),
       pool.query(
         `SELECT
@@ -191,6 +227,7 @@ async function getFunnelReport(requestedDays = 30) {
       daily,
       breakdown,
       source_funnel: sourceFunnel,
+      campaign_funnel: campaignFunnel,
       student_age_audit: studentAgeRows[0] || null,
       progress_email_delivery: progressDeliveries,
       founding_leads: foundingLeads,

@@ -152,6 +152,7 @@ export default function AdminFunnel() {
   ), [data]);
   const foundingLeads = data?.founding_leads || [];
   const sourceFunnel = data?.source_funnel || [];
+  const campaignFunnel = data?.campaign_funnel || [];
   const journeyMetric = (key) => uniqueJourneys[key] || 0;
   const measuredVisits = journeyMetric('acquisition_visit');
   const builderAttribution = counts.builder_start
@@ -282,7 +283,7 @@ export default function AdminFunnel() {
               </article>
             ))}
           </div>
-          <p className="funnel-parent-note">One privacy-safe source bucket per browser session. Campaign names, search terms, and referring URLs are never stored.</p>
+          <p className="funnel-parent-note">One privacy-safe source bucket per browser session. Search terms and referring URLs are never stored.</p>
 
           <div className="adm-section-head">Which sources create activated visitors</div>
           <div className="adm-table-wrap">
@@ -327,6 +328,44 @@ export default function AdminFunnel() {
             </table>
           </div>
           <p className="funnel-parent-note">A random number connects actions only inside one browser session. It contains no prompt, project content, name, email, IP address, or cross-site tracking data.</p>
+
+          <div className="adm-section-head">Which creator campaigns convert</div>
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead>
+                <tr>
+                  <th>Campaign code</th>
+                  <th>Channel</th>
+                  <th>Visits</th>
+                  <th>Generated</th>
+                  <th>Signed up</th>
+                  <th>Pilot requests</th>
+                  <th>Saved</th>
+                  <th>Published</th>
+                  <th>Visit → pilot</th>
+                </tr>
+              </thead>
+              <tbody>
+                {campaignFunnel.length === 0 && (
+                  <tr><td colSpan={9} className="adm-loading">Use a campaign-coded creator link to start this comparison.</td></tr>
+                )}
+                {campaignFunnel.map((campaign) => (
+                  <tr key={`${campaign.campaign_code}-${campaign.source}`}>
+                    <td><strong>{campaign.campaign_code}</strong></td>
+                    <td>{ACQUISITION_SOURCES.find(([key]) => key === campaign.source)?.[1] || campaign.source}</td>
+                    <td><strong>{fmt(campaign.visits)}</strong></td>
+                    <td>{fmt(campaign.generated_projects)}</td>
+                    <td>{fmt(campaign.completed_signups)}</td>
+                    <td>{fmt(campaign.pilot_requests)}</td>
+                    <td>{fmt(campaign.saved_projects)}</td>
+                    <td>{fmt(campaign.published_projects)}</td>
+                    <td>{ratio(Number(campaign.pilot_requests), Number(campaign.visits))}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="funnel-parent-note">The campaign code identifies the promotion, not the visitor. Use internal codes only—never a visitor name, email address, phone number, or private message detail.</p>
 
           <div className="adm-section-head">Parent acquisition actions</div>
           <div className="funnel-parent-grid">
