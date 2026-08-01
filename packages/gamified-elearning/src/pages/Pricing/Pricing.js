@@ -126,6 +126,14 @@ export default function Pricing() {
           <p className="pricing-kicker">Simple, honest pricing</p>
           <h1 id="pricing-title">Start free. Join the family pilot when you want more support.</h1>
           <p>Try CodeIt today, then request a free family pilot spot for guided setup, learner profiles, and parent progress.</p>
+          <a
+            className="pricing-hero__pilot-link"
+            href="#family-pilot"
+            onClick={() => void trackEvent('parent_cta_click', 'join-pilot')}
+          >
+            Request a free family pilot spot <span aria-hidden="true">↓</span>
+          </a>
+          <p className="pricing-hero__pilot-note">About 30 seconds · immediate setup email · no credit card</p>
           <div className="pricing-status"><span aria-hidden="true" /> No payment is being collected today</div>
         </section>
 
@@ -139,7 +147,7 @@ export default function Pricing() {
             <Link className="pricing-button pricing-button--quiet" to="/builder">Start building free</Link>
           </article>
 
-          <article className="pricing-card pricing-card--founding">
+          <article id="family-pilot" className="pricing-card pricing-card--founding">
             <div className="pricing-card__flag">Free pilot requests open</div>
             <p className="pricing-card__eyebrow">For parents and guardians</p>
             <h2>Founding Family Pilot</h2>

@@ -38,9 +38,9 @@ describe('CreatorBrief', () => {
     const instagram = screen.getByLabelText('Instagram campaign link');
     const tiktok = screen.getByLabelText('TikTok campaign link');
     const linkedin = screen.getByLabelText('LinkedIn campaign link');
-    expect(instagram).toHaveValue('https://codeitlearn.com/pricing?utm_source=instagram&utm_medium=creator');
-    expect(tiktok).toHaveValue('https://codeitlearn.com/pricing?utm_source=tiktok&utm_medium=creator');
-    expect(linkedin).toHaveValue('https://codeitlearn.com/pricing?utm_source=linkedin&utm_medium=founder');
+    expect(instagram).toHaveValue('https://codeitlearn.com/pricing?utm_source=instagram&utm_medium=creator#family-pilot');
+    expect(tiktok).toHaveValue('https://codeitlearn.com/pricing?utm_source=tiktok&utm_medium=creator#family-pilot');
+    expect(linkedin).toHaveValue('https://codeitlearn.com/pricing?utm_source=linkedin&utm_medium=founder#family-pilot');
     expect(instagram.value).not.toContain('utm_campaign');
   });
 
@@ -51,7 +51,7 @@ describe('CreatorBrief', () => {
     fireEvent.click(buttons[0]);
 
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-      'https://codeitlearn.com/pricing?utm_source=instagram&utm_medium=creator'
+      'https://codeitlearn.com/pricing?utm_source=instagram&utm_medium=creator#family-pilot'
     );
     expect(await screen.findByRole('status')).toHaveTextContent('Copied');
   });

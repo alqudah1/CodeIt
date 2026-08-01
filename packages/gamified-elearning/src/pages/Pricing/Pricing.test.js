@@ -40,6 +40,17 @@ describe('Pricing', () => {
     expect(screen.getByText('planned plan: US$12/month after testing')).toBeInTheDocument();
     expect(screen.getByText('No payment is being collected today')).toBeInTheDocument();
     expect(screen.getByText('Try the current family experience. Nothing paid starts automatically.')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Request a free family pilot spot/i })).toHaveAttribute('href', '#family-pilot');
+    expect(screen.getByText(/About 30 seconds · immediate setup email · no credit card/i)).toBeInTheDocument();
+  });
+
+  test('measures the hero jump to the pilot form', async () => {
+    renderPricing();
+    const pilotLink = screen.getByRole('link', { name: /Request a free family pilot spot/i });
+    pilotLink.addEventListener('click', (event) => event.preventDefault());
+    fireEvent.click(pilotLink);
+
+    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'join-pilot');
   });
 
   test('saves an adult lead through the waitlist endpoint', async () => {

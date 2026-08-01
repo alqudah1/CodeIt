@@ -5,11 +5,11 @@ import { useSEO } from '../../hooks/useSEO';
 import './CreatorBrief.css';
 
 const CHANNEL_LINKS = [
-  ['instagram', 'Instagram', 'https://codeitlearn.com/pricing?utm_source=instagram&utm_medium=creator'],
-  ['tiktok', 'TikTok', 'https://codeitlearn.com/pricing?utm_source=tiktok&utm_medium=creator'],
-  ['youtube', 'YouTube', 'https://codeitlearn.com/pricing?utm_source=youtube&utm_medium=creator'],
-  ['linkedin', 'LinkedIn', 'https://codeitlearn.com/pricing?utm_source=linkedin&utm_medium=founder'],
-  ['referral', 'Direct sharing', 'https://codeitlearn.com/pricing?utm_source=referral&utm_medium=creator'],
+  ['instagram', 'Instagram', 'https://codeitlearn.com/pricing?utm_source=instagram&utm_medium=creator#family-pilot'],
+  ['tiktok', 'TikTok', 'https://codeitlearn.com/pricing?utm_source=tiktok&utm_medium=creator#family-pilot'],
+  ['youtube', 'YouTube', 'https://codeitlearn.com/pricing?utm_source=youtube&utm_medium=creator#family-pilot'],
+  ['linkedin', 'LinkedIn', 'https://codeitlearn.com/pricing?utm_source=linkedin&utm_medium=founder#family-pilot'],
+  ['referral', 'Direct sharing', 'https://codeitlearn.com/pricing?utm_source=referral&utm_medium=creator#family-pilot'],
 ];
 
 const DEMO_STEPS = [
