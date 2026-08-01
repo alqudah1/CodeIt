@@ -63,6 +63,7 @@ const Privacy       = lazy(() => import('./pages/Legal/Privacy'));
 const Terms         = lazy(() => import('./pages/Legal/Terms'));
 const CreatorBrief  = lazy(() => import('./pages/CreatorBrief/CreatorBrief'));
 const InvestorBrief = lazy(() => import('./pages/InvestorBrief/InvestorBrief'));
+const FirstGameChallenge = lazy(() => import('./pages/Challenge/FirstGameChallenge'));
 
 const BlogIndex         = lazy(() => import('./pages/Blog/BlogIndex'));
 const BlogPost          = lazy(() => import('./pages/Blog/BlogPost'));
@@ -178,6 +179,7 @@ const App = () => (
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/creator-brief" element={<CreatorBrief />} />
               <Route path="/investor-brief" element={<InvestorBrief />} />
+              <Route path="/first-game-challenge" element={<FirstGameChallenge />} />
 
               {/* ── Trust & legal ── */}
               <Route path="/privacy" element={<Privacy />} />

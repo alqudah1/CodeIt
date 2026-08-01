@@ -56,6 +56,16 @@ const BASE_PAGES = [
     type: 'SoftwareApplication',
   },
   {
+    route: '/first-game-challenge',
+    title: 'Build Your First Game Free | 10-Minute Coding Challenge | CodeIt',
+    description: 'Choose a game idea, build a playable first version, change it, save it, and earn XP. A free coding challenge for young creators ages 8–18.',
+    eyebrow: 'Free first-game challenge · Ages 8–18',
+    h1: 'Build your first game. Make it yours.',
+    intro: 'Choose a reaction game, football penalty game, or pet-catching game. CodeIt creates a playable starting point, then the learner changes it, tests it, and saves it.',
+    detail: 'The complete mission is to build, personalize, test, and save. Student accounts earn 25 XP for a first saved project and compete through privacy-safe coder aliases instead of real names.',
+    type: 'LearningResource',
+  },
+  {
     route: '/lessons',
     title: 'Beginner Coding Lessons for Kids | CodeIt',
     description: 'Follow short beginner coding lessons covering Python variables, strings, decisions, loops, lists, and functions.',

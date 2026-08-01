@@ -39,6 +39,12 @@
     <priority>0.95</priority>
   </url>
   <url>
+    <loc>https://codeitlearn.com/first-game-challenge</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
     <loc>https://codeitlearn.com/ai-website-builder-for-kids</loc>
     <lastmod>2026-07-29</lastmod>
     <changefreq>monthly</changefreq>

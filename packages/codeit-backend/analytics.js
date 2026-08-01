@@ -79,7 +79,7 @@ async function getFunnelReport(requestedDays = 30) {
     if (!await tableReady) return null;
     await legacyParentReviewReady;
     const windowSql = `created_at >= DATE_SUB(NOW(), INTERVAL ${days} DAY)`;
-    const [[events], [daily], [breakdown], [sourceFunnel], [campaignFunnel], [homepageFunnelRows], [studentAgeRows], [progressDeliveries], [accountLeads], directLeads] = await Promise.all([
+    const [[events], [daily], [breakdown], [sourceFunnel], [campaignFunnel], [homepageFunnelRows], [challengeFunnelRows], [studentAgeRows], [progressDeliveries], [accountLeads], directLeads] = await Promise.all([
       pool.query(
         `SELECT event_name, COUNT(*) AS event_count, COUNT(DISTINCT user_id) AS unique_users,
                 COUNT(DISTINCT journey_id) AS unique_journeys,
@@ -176,6 +176,23 @@ async function getFunnelReport(requestedDays = 30) {
          WHERE homepage_count = 1`
       ),
       pool.query(
+        `SELECT COUNT(*) AS views,
+                SUM(started_count) AS started,
+                SUM(generated_count) AS generated_projects,
+                SUM(save_count) AS saved_projects
+         FROM (
+           SELECT journey_id,
+                  MAX(event_name = 'challenge_view') AS challenge_count,
+                  MAX(event_name = 'challenge_start') AS started_count,
+                  MAX(event_name = 'generation_complete') AS generated_count,
+                  MAX(event_name = 'project_save') AS save_count
+           FROM analytics_events
+           WHERE ${windowSql} AND journey_id IS NOT NULL
+           GROUP BY journey_id
+         ) journeys
+         WHERE challenge_count = 1`
+      ),
+      pool.query(
         `SELECT
            COUNT(*) AS students,
            SUM(dob IS NULL) AS missing_dob,
@@ -251,6 +268,7 @@ async function getFunnelReport(requestedDays = 30) {
       source_funnel: sourceFunnel,
       campaign_funnel: campaignFunnel,
       homepage_funnel: homepageFunnelRows[0] || null,
+      challenge_funnel: challengeFunnelRows[0] || null,
       activation_entry_tracking_since: ACTIVATION_ENTRY_TRACKING_SINCE,
       student_age_audit: studentAgeRows[0] || null,
       progress_email_delivery: progressDeliveries,

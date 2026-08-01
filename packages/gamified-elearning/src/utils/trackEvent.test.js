@@ -49,6 +49,17 @@ describe("trackEvent", () => {
     );
   });
 
+  test("records only a fixed first-game challenge choice", async () => {
+    await expect(trackEvent("challenge_start", "reaction")).resolves.toBe(true);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/api/analytics/event"),
+      expect.objectContaining({
+        body: JSON.stringify({ event_name: "challenge_start", meta: "reaction" }),
+      })
+    );
+  });
+
   test("records a fixed learning entry point without lesson content", async () => {
     await expect(trackEvent("learning_start", "lesson-one")).resolves.toBe(true);
 

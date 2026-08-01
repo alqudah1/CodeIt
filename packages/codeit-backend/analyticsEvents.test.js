@@ -21,6 +21,8 @@ test('accepts only the fixed product event vocabulary', () => {
   assert.equal(normalizeEventName('pilot_join'), 'pilot_join');
   assert.equal(normalizeEventName('pilot_confirmation'), 'pilot_confirmation');
   assert.equal(normalizeEventName('family_child_created'), 'family_child_created');
+  assert.equal(normalizeEventName('challenge_view'), 'challenge_view');
+  assert.equal(normalizeEventName('challenge_start'), 'challenge_start');
   assert.equal(normalizeEventName('guest_draft_recovered'), 'guest_draft_recovered');
   assert.equal(normalizeEventName('prompt_submitted'), null);
   assert.equal(normalizeEventName({ event: 'return_use' }), null);
@@ -59,6 +61,8 @@ test('accepts only allowlisted metadata and never arbitrary content', () => {
   assert.equal(normalizeMeta('activation_next_step', 'publish'), 'publish');
   assert.equal(normalizeMeta('activation_next_step', 'private project title'), null);
   assert.equal(normalizeMeta('landing_cta_click', 'hero-idea'), 'hero-idea');
+  assert.equal(normalizeMeta('challenge_start', 'reaction'), 'reaction');
+  assert.equal(normalizeMeta('challenge_start', 'my private idea'), null);
 });
 
 test('limits browser-reported events to events the server cannot infer', () => {
@@ -71,6 +75,8 @@ test('limits browser-reported events to events the server cannot infer', () => {
   assert.equal(CLIENT_REPORTED_EVENTS.has('new_account_studio_view'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('new_account_family_setup_view'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('homepage_view'), true);
+  assert.equal(CLIENT_REPORTED_EVENTS.has('challenge_view'), true);
+  assert.equal(CLIENT_REPORTED_EVENTS.has('challenge_start'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('return_use'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('pricing_view'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('pricing_interest'), false);
