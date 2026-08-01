@@ -2,7 +2,7 @@
 
 const EVENT_META = Object.freeze({
   acquisition_visit: new Set(['google', 'youtube', 'instagram', 'tiktok', 'facebook', 'linkedin', 'search', 'project', 'referral', 'direct', 'other']),
-  landing_cta_click: new Set(['hero-build', 'hero-idea', 'hero-lessons', 'final-build']),
+  landing_cta_click: new Set(['hero-build', 'hero-idea', 'hero-lessons', 'final-build', 'member-resume-project']),
   learning_start: new Set(['lesson-one', 'playground']),
   parent_guide_view: new Set(),
   parent_cta_click: new Set(['create-family-account', 'try-project', 'join-pilot', 'view-pricing', 'pilot-email']),

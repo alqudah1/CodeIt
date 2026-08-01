@@ -25,6 +25,7 @@ test('accepts only the fixed product event vocabulary', () => {
 
 test('accepts only allowlisted metadata and never arbitrary content', () => {
   assert.equal(normalizeMeta('landing_cta_click', 'hero-build'), 'hero-build');
+  assert.equal(normalizeMeta('landing_cta_click', 'member-resume-project'), 'member-resume-project');
   assert.equal(normalizeMeta('acquisition_visit', 'instagram'), 'instagram');
   assert.equal(normalizeMeta('acquisition_visit', 'linkedin'), 'linkedin');
   assert.equal(normalizeMeta('acquisition_visit', 'project'), 'project');
@@ -34,6 +35,7 @@ test('accepts only allowlisted metadata and never arbitrary content', () => {
   assert.equal(normalizeMeta('parent_cta_click', 'join-pilot'), 'join-pilot');
   assert.equal(normalizeMeta('parent_cta_click', 'parent@example.com'), null);
   assert.equal(normalizeMeta('landing_cta_click', 'my private project idea'), null);
+  assert.equal(normalizeMeta('landing_cta_click', 'Mission Control Quiz'), null);
   assert.equal(normalizeMeta('learning_start', 'lesson-one'), 'lesson-one');
   assert.equal(normalizeMeta('learning_start', 'private lesson title'), null);
   assert.equal(normalizeMeta('return_use', 'anything'), null);
