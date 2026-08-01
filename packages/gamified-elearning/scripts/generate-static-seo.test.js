@@ -89,6 +89,25 @@ test('homepage search copy leads with creating and learning, not AI', () => {
   assert.doesNotMatch(`${title} ${description}`, /\bAI\b/);
 });
 
+test('homepage fallback explains the family offer and links to commercial pages', () => {
+  const template = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
+
+  assert.match(template, /Students ages 8–18 can build, edit, save/);
+  assert.match(template, /managed learner profiles for children ages 8–12/);
+  assert.match(template, /No card or paid subscription starts automatically/);
+  for (const route of ['/coding-for-kids', '/ai-website-builder-for-kids', '/pricing', '/blog']) {
+    assert.match(template, new RegExp(`href="${route}"`));
+  }
+});
+
+test('generated public routes link back to high-value discovery pages', () => {
+  const lesson = renderRouteDocument(TEMPLATE, PAGES.find((item) => item.route === '/lesson/1'));
+
+  for (const route of ['/coding-for-kids', '/ai-website-builder-for-kids', '/pricing', '/blog']) {
+    assert.match(lesson, new RegExp(`href="${route}"`));
+  }
+});
+
 test('legal search documents use trust-specific copy', () => {
   const privacy = renderRouteDocument(TEMPLATE, PAGES.find((item) => item.route === '/privacy'));
   const terms = renderRouteDocument(TEMPLATE, PAGES.find((item) => item.route === '/terms'));

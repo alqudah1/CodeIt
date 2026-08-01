@@ -231,6 +231,16 @@ function replaceMeta(html, page) {
 }
 
 function staticContent(page) {
+  const relatedLinks = [
+    ['/coding-for-kids', 'Coding for kids: parent guide'],
+    ['/ai-website-builder-for-kids', 'How project building works'],
+    ['/pricing', 'Free access and family pilot'],
+    ['/blog', 'Coding guides'],
+  ]
+    .filter(([route]) => route !== page.route)
+    .map(([route, label]) => `<a href="${route}">${label}</a>`)
+    .join('\n        ');
+
   return `<main class="static-home-shell static-route-shell" data-static-route="${escapeHtml(page.route)}">
     <div class="static-home-shell__inner">
       <p class="static-route-kicker">${escapeHtml(page.eyebrow)}</p>
@@ -242,6 +252,7 @@ function staticContent(page) {
         <a href="${escapeHtml(page.route)}">${escapeHtml(page.primaryLinkLabel || 'Open this page')}</a>
         <a href="/builder">Build a project</a>
         <a href="/lessons">Browse lessons</a>
+        ${relatedLinks}
       </nav>
     </div>
   </main>`;
