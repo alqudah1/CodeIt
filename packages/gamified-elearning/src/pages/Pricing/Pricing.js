@@ -21,7 +21,7 @@ const FOUNDING_FEATURES = [
   '20 assisted project builds each month',
   'Two learner profiles with a parent view',
   'A simple monthly progress summary',
-  'Early access and a direct feedback channel',
+  'Guided setup and a direct feedback channel',
 ];
 
 const PILOT_EMAIL_HREF = [
@@ -32,7 +32,8 @@ const PILOT_EMAIL_HREF = [
 
 const FAQ = [
   ['Can we use CodeIt for free?', 'Yes. The lessons, playground, coding games, and core project tools will keep a useful free option.'],
-  ['Will I be charged today?', 'No. We are measuring interest before opening billing. Clicking the interest button does not start a trial or subscription.'],
+  ['Is the family pilot free?', 'Yes. Requesting a pilot spot and using the current pilot are free. No card, trial, or subscription starts automatically.'],
+  ['What happens after I request a spot?', 'We email immediate setup steps so you can try the current family experience. We may also invite a small number of families to share feedback before billing opens.'],
   ['Why is the paid plan not unlimited?', 'Project generation has a real usage cost. A clear monthly allowance keeps the plan predictable for families and sustainable for CodeIt.'],
   ['Who is the family plan for?', 'Parents or guardians who want more project creation, a view of learning progress, and room for two young learners.'],
 ];
@@ -46,10 +47,11 @@ export default function Pricing() {
   const [leadEmail, setLeadEmail] = useState(user?.email || '');
   const [adultConsent, setAdultConsent] = useState(false);
   const [waitlistReady, setWaitlistReady] = useState(false);
+  const [confirmationSent, setConfirmationSent] = useState(false);
 
   useSEO({
-    title: 'CodeIt Pricing: Free Coding & Founding Family Plan',
-    description: 'Start coding for free. Preview the planned CodeIt Founding Family plan for more project builds, parent visibility, and two learner profiles.',
+    title: 'CodeIt Pricing: Free Coding & Family Pilot',
+    description: 'Start coding for free, then request a free CodeIt family pilot spot with guided setup, parent progress, and two learner profiles.',
     canonical: '/pricing',
   });
 
@@ -105,9 +107,11 @@ export default function Pricing() {
           company: '',
         }),
       });
+      const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error('waitlist request failed');
 
       localStorage.setItem('codeit_founding_waitlist_contacted', 'yes');
+      setConfirmationSent(result.confirmationSent === true);
       setInterestStatus('saved');
     } catch {
       setInterestStatus('error');
@@ -120,8 +124,8 @@ export default function Pricing() {
       <main>
         <section className="pricing-hero" aria-labelledby="pricing-title">
           <p className="pricing-kicker">Simple, honest pricing</p>
-          <h1 id="pricing-title">Start free. Pay when your family needs more room to build.</h1>
-          <p>CodeIt is free while we learn what families value most. We are testing one paid plan before adding billing.</p>
+          <h1 id="pricing-title">Start free. Join the family pilot when you want more support.</h1>
+          <p>Try CodeIt today, then request a free family pilot spot for guided setup, learner profiles, and parent progress.</p>
           <div className="pricing-status"><span aria-hidden="true" /> No payment is being collected today</div>
         </section>
 
@@ -136,18 +140,18 @@ export default function Pricing() {
           </article>
 
           <article className="pricing-card pricing-card--founding">
-            <div className="pricing-card__flag">Pilot waitlist · no charge</div>
+            <div className="pricing-card__flag">Free pilot requests open</div>
             <p className="pricing-card__eyebrow">For parents and guardians</p>
-            <h2>Founding Family</h2>
-            <div className="pricing-price"><strong>US$12</strong><span>per month · planned</span></div>
+            <h2>Founding Family Pilot</h2>
+            <div className="pricing-price"><strong>Free pilot</strong><span>planned plan: US$12/month after testing</span></div>
             <p className="pricing-card__summary">More project creation, two learner profiles, and a clearer view of progress.</p>
             <ul>{FOUNDING_FEATURES.map((feature) => <li key={feature}>{feature}</li>)}</ul>
-            <div className="pricing-next" aria-label="What happens after joining the waitlist">
+            <div className="pricing-next" aria-label="What happens after requesting a family pilot spot">
               <strong>What happens next</strong>
               <ol>
-                <li>Leave an adult email and join the pilot waitlist.</li>
-                <li>We contact you when a small testing group opens.</li>
-                <li>You decide whether to participate. Nothing starts automatically.</li>
+                <li>Leave an adult email and request a pilot spot.</li>
+                <li>Get immediate setup steps by email.</li>
+                <li>Try the current family experience. Nothing paid starts automatically.</li>
               </ol>
             </div>
             {waitlistReady ? (
@@ -185,8 +189,8 @@ export default function Pricing() {
                   disabled={interestStatus === 'saving' || interestStatus === 'saved'}
                 >
                   {interestStatus === 'saving' && 'Saving…'}
-                  {interestStatus === 'saved' && 'Interest saved — thank you'}
-                  {(interestStatus === 'idle' || interestStatus === 'error' || interestStatus === 'parent-required' || interestStatus === 'consent-required') && 'Join the pilot waitlist — no charge'}
+                  {interestStatus === 'saved' && 'Pilot request saved — thank you'}
+                  {(interestStatus === 'idle' || interestStatus === 'error' || interestStatus === 'parent-required' || interestStatus === 'consent-required') && 'Request a free family pilot spot'}
                 </button>
               </form>
             ) : (
@@ -211,7 +215,7 @@ export default function Pricing() {
             {interestStatus === 'consent-required' && <p className="pricing-card__error" role="alert">Please confirm that you are an adult and want pilot updates.</p>}
             {interestStatus === 'parent-required' && (
               <p className="pricing-card__error" role="alert">
-                This waitlist is for parents or guardians. Ask an adult to use a Parent / Educator account.
+                Family pilot requests are for parents or guardians. Ask an adult to use a Parent / Educator account.
               </p>
             )}
             <small>
@@ -224,8 +228,10 @@ export default function Pricing() {
         {interestStatus === 'saved' && (
           <section className="pricing-thanks" aria-live="polite">
             <div>
-              <strong>You are on the founding family waitlist.</strong>
-              <p>We will use the submitted email only for this pilot. Nothing starts and no billing happens automatically.</p>
+              <strong>Your family pilot request is saved.</strong>
+              <p>{confirmationSent
+                ? 'Check your inbox for immediate setup steps. Nothing paid starts automatically.'
+                : 'We will use the submitted email only for this pilot. Nothing paid starts automatically.'}</p>
             </div>
             <Link to="/builder">Start a free project <span aria-hidden="true">→</span></Link>
           </section>

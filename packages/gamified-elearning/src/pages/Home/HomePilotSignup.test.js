@@ -19,7 +19,10 @@ describe('HomePilotSignup', () => {
     localStorage.clear();
     sessionStorage.clear();
     mockAuth = { user: null, token: null };
-    global.fetch = jest.fn().mockResolvedValue({ ok: true });
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ saved: true, confirmationSent: true }),
+    });
   });
 
   afterEach(() => delete global.fetch);
@@ -30,9 +33,11 @@ describe('HomePilotSignup', () => {
       target: { value: 'parent@example.com' },
     });
     fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot list' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Request pilot spot' }));
 
-    await waitFor(() => expect(screen.getByText(/You’re on the Founding Family pilot list/i)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(/Your Founding Family pilot request is saved/i)).toBeInTheDocument());
+    expect(screen.getByText(/Check your inbox for immediate family setup steps/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Create a family account' })).toHaveAttribute('href', '/register?for=family');
     expect(global.fetch).toHaveBeenCalledWith('/api/founding-waitlist', expect.objectContaining({
       method: 'POST',
       headers: expect.objectContaining({
@@ -55,7 +60,7 @@ describe('HomePilotSignup', () => {
       target: { value: 'guide-parent@example.com' },
     });
     fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot list' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Request pilot spot' }));
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalledWith('/api/founding-waitlist', expect.objectContaining({
       body: JSON.stringify({
@@ -72,7 +77,7 @@ describe('HomePilotSignup', () => {
     fireEvent.change(screen.getByLabelText('Adult email'), {
       target: { value: 'parent@example.com' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot list' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Request pilot spot' }));
 
     expect(screen.getByRole('alert')).toHaveTextContent('confirm that you are an adult');
     expect(global.fetch).not.toHaveBeenCalled();
@@ -85,7 +90,7 @@ describe('HomePilotSignup', () => {
       target: { value: 'parent@example.com' },
     });
     fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot list' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Request pilot spot' }));
 
     expect(screen.getByRole('alert')).toHaveTextContent('Ask a parent, guardian, or educator');
     expect(global.fetch).not.toHaveBeenCalled();

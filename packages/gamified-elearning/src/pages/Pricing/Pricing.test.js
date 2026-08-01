@@ -36,19 +36,23 @@ describe('Pricing', () => {
     renderPricing();
     await screen.findByRole('checkbox');
 
-    expect(screen.getByText('Pilot waitlist · no charge')).toBeInTheDocument();
-    expect(screen.getByText('per month · planned')).toBeInTheDocument();
+    expect(screen.getByText('Free pilot requests open')).toBeInTheDocument();
+    expect(screen.getByText('planned plan: US$12/month after testing')).toBeInTheDocument();
     expect(screen.getByText('No payment is being collected today')).toBeInTheDocument();
-    expect(screen.getByText('You decide whether to participate. Nothing starts automatically.')).toBeInTheDocument();
+    expect(screen.getByText('Try the current family experience. Nothing paid starts automatically.')).toBeInTheDocument();
   });
 
   test('saves an adult lead through the waitlist endpoint', async () => {
+    global.fetch
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ ready: true }) })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ saved: true, confirmationSent: true }) });
     renderPricing();
     fireEvent.click(await screen.findByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot waitlist — no charge' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Request a free family pilot spot' }));
 
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Interest saved — thank you' })).toBeDisabled());
-    expect(screen.getByText('You are on the founding family waitlist.')).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Pilot request saved — thank you' })).toBeDisabled());
+    expect(screen.getByText('Your family pilot request is saved.')).toBeInTheDocument();
+    expect(screen.getByText(/Check your inbox for immediate setup steps/i)).toBeInTheDocument();
     expect(global.fetch).toHaveBeenLastCalledWith(
       expect.stringMatching(/\/api\/founding-waitlist$/),
       expect.objectContaining({
@@ -73,11 +77,11 @@ describe('Pricing', () => {
       .mockResolvedValueOnce({ ok: false });
     renderPricing();
     fireEvent.click(await screen.findByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot waitlist — no charge' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Request a free family pilot spot' }));
 
     expect(await screen.findByRole('alert')).toHaveTextContent('We could not save that just now');
-    expect(screen.getByRole('button', { name: 'Join the pilot waitlist — no charge' })).toBeEnabled();
-    expect(screen.queryByText('You are on the founding family waitlist.')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Request a free family pilot spot' })).toBeEnabled();
+    expect(screen.queryByText('Your family pilot request is saved.')).not.toBeInTheDocument();
   });
 
   test('lets an adult join without creating an account', async () => {
@@ -87,7 +91,7 @@ describe('Pricing', () => {
       target: { value: 'newparent@example.com' },
     });
     fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot waitlist — no charge' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Request a free family pilot spot' }));
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
     expect(global.fetch.mock.calls[1][1].headers).not.toHaveProperty('Authorization');
@@ -97,7 +101,7 @@ describe('Pricing', () => {
   test('requires explicit adult consent before submitting contact information', async () => {
     renderPricing();
     await screen.findByRole('checkbox');
-    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot waitlist — no charge' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Request a free family pilot spot' }));
 
     expect(screen.getByRole('alert')).toHaveTextContent('confirm that you are an adult');
     expect(global.fetch).toHaveBeenCalledTimes(1);

@@ -33,7 +33,7 @@ Primary audience: Young creators ages 8–18, families, and beginner coders. A p
 
 ## Current product status
 
-CodeIt's core learning and project-building experience is available free. A paid family plan is described on the pricing page, but checkout and paid billing are not currently active. Project creation has an enhanced AI mode when service credit is available and a built-in starter mode so visitors can still demonstrate the creation workflow without paid AI credit.
+CodeIt's core learning and project-building experience is available free. Free Founding Family pilot requests are open, but checkout and paid billing are not currently active. Project creation has an enhanced AI mode when service credit is available and a built-in starter mode so visitors can still demonstrate the creation workflow without paid AI credit.
 
 ## How to describe CodeIt
 

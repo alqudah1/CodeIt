@@ -7,6 +7,7 @@ const { recordEvent } = require('../analytics');
 const { isFoundingWaitlistReady, saveFoundingFamilyLead } = require('../foundingWaitlist');
 const { normalizeFoundingLead } = require('../foundingWaitlistUtils');
 const { normalizeJourneyId } = require('../analyticsEvents');
+const { sendFoundingPilotConfirmation } = require('../foundingPilotEmail');
 
 const router = express.Router();
 const RATE_WINDOW_MS = 10 * 60 * 1000;
@@ -83,7 +84,8 @@ router.post('/', rateLimit, optionalAuth, async (req, res) => {
     });
   }
 
-  return res.status(201).json({ saved: true });
+  const confirmation = await sendFoundingPilotConfirmation(normalized.value.email);
+  return res.status(201).json({ saved: true, confirmationSent: confirmation.sent });
 });
 
 module.exports = router;

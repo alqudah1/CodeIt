@@ -147,12 +147,12 @@ const BASE_PAGES = [
   },
   {
     route: '/pricing',
-    title: 'CodeIt Pricing: Free Coding & Founding Family Plan',
-    description: 'Start coding for free. Preview the planned CodeIt Founding Family plan for more project builds, parent visibility, and two learner profiles.',
-    eyebrow: 'Simple, honest pricing',
-    h1: 'Start free. Pay when your family needs more room to build.',
-    intro: 'CodeIt keeps a useful free option for beginners. We are testing one straightforward family plan before opening billing.',
-    detail: 'The proposed Founding Family plan adds more assisted project builds, two learner profiles, parent visibility, and a simple progress summary.',
+    title: 'CodeIt Pricing: Free Coding & Family Pilot',
+    description: 'Start coding for free, then request a free CodeIt family pilot spot with guided setup, parent progress, and two learner profiles.',
+    eyebrow: 'Free family pilot',
+    h1: 'Start free. Join the family pilot when you want more support.',
+    intro: 'CodeIt keeps a useful free option for beginners. Families can now request a free pilot spot before paid billing opens.',
+    detail: 'The Founding Family pilot offers guided setup, more assisted project building, learner profiles, parent visibility, and a direct feedback channel. No card or subscription starts automatically.',
     type: 'WebPage',
   },
   {

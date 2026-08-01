@@ -19,6 +19,7 @@ export default function HomePilotSignup({ source = 'homepage', showHeading = tru
   const [email, setEmail] = useState(user?.email || '');
   const [consent, setConsent] = useState(false);
   const [company, setCompany] = useState('');
+  const [confirmationSent, setConfirmationSent] = useState(false);
   const [status, setStatus] = useState(() => (
     localStorage.getItem('codeit_founding_waitlist_contacted') === 'yes' ? 'saved' : 'idle'
   ));
@@ -55,9 +56,11 @@ export default function HomePilotSignup({ source = 'homepage', showHeading = tru
           company,
         }),
       });
+      const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error('waitlist request failed');
 
       localStorage.setItem('codeit_founding_waitlist_contacted', 'yes');
+      setConfirmationSent(result.confirmationSent === true);
       setStatus('saved');
     } catch {
       setStatus('error');
@@ -67,9 +70,11 @@ export default function HomePilotSignup({ source = 'homepage', showHeading = tru
   if (status === 'saved') {
     return (
       <div className="founding-signup founding-signup--saved" aria-live="polite">
-        <strong>You’re on the Founding Family pilot list.</strong>
-        <p>Nothing starts automatically. We’ll contact the adult email you submitted when a small testing group opens.</p>
-        <Link to="/builder">Try a free project now <span aria-hidden="true">→</span></Link>
+        <strong>Your Founding Family pilot request is saved.</strong>
+        <p>{confirmationSent
+          ? 'Check your inbox for immediate family setup steps. Nothing paid starts automatically.'
+          : 'Nothing paid starts automatically. We’ll contact the adult email you submitted about the pilot.'}</p>
+        <Link to="/register?for=family">Create a family account <span aria-hidden="true">→</span></Link>
       </div>
     );
   }
@@ -79,7 +84,7 @@ export default function HomePilotSignup({ source = 'homepage', showHeading = tru
       {showHeading && (
         <div className="founding-signup__heading">
           <strong>Parent, guardian, or educator?</strong>
-          <span>Join the small Founding Family pilot list. No charge and no subscription.</span>
+          <span>Request a free family pilot spot and receive immediate setup steps. No card or subscription.</span>
         </div>
       )}
       <label htmlFor={emailId}>Adult email</label>
@@ -99,7 +104,7 @@ export default function HomePilotSignup({ source = 'homepage', showHeading = tru
           disabled={status === 'saving'}
         />
         <button type="submit" disabled={status === 'saving'}>
-          {status === 'saving' ? 'Joining…' : 'Join the pilot list'}
+          {status === 'saving' ? 'Saving…' : 'Request pilot spot'}
         </button>
       </div>
       <label className="founding-signup__consent">
