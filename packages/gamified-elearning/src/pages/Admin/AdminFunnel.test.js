@@ -42,6 +42,8 @@ describe('admin acquisition funnel', () => {
             { event_name: 'parent_cta_click', meta: 'pilot-email', event_count: 1 },
             { event_name: 'activation_next_step', meta: 'publish', event_count: 2 },
             { event_name: 'activation_next_step', meta: 'improve', event_count: 1 },
+            { event_name: 'generation_complete', meta: 'ai', event_count: 8 },
+            { event_name: 'generation_complete', meta: 'fallback', event_count: 2 },
           ],
           daily: [],
           source_funnel: [
@@ -74,7 +76,7 @@ describe('admin acquisition funnel', () => {
       })
       .mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ totals: { estimated_usd: 0, calls: 0, input_tokens: 0, output_tokens: 0 } }),
+        json: async () => ({ totals: { estimated_usd: 0.08, calls: 8, input_tokens: 1200, output_tokens: 2400 } }),
       });
   });
 
@@ -121,5 +123,10 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByRole('link', { name: 'parent@example.com' })).toHaveAttribute('href', 'mailto:parent@example.com');
     expect(screen.getByRole('link', { name: 'direct@example.com' })).toHaveAttribute('href', 'mailto:direct@example.com');
     expect(screen.getByText(/waitlist form or an adult account/i)).toBeInTheDocument();
+    expect(screen.getByText('AI-built projects').parentElement).toHaveTextContent('8');
+    expect(screen.getByText('Safe fallback projects').parentElement).toHaveTextContent('2');
+    expect(screen.getByText('AI generation rate').parentElement).toHaveTextContent('80%');
+    expect(screen.getByText('Cost / AI-built project').parentElement).toHaveTextContent('$0.010');
+    expect(screen.getByText(/cost per working AI result is not understated/i)).toBeInTheDocument();
   });
 });

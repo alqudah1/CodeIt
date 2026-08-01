@@ -125,6 +125,9 @@ export default function AdminFunnel() {
   const acquisitionSources = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'acquisition_visit').map((row) => [row.meta, Number(row.event_count) || 0])
   ), [data]);
+  const generationResults = useMemo(() => Object.fromEntries(
+    (data?.breakdown || []).filter((row) => row.event_name === 'generation_complete').map((row) => [row.meta, Number(row.event_count) || 0])
+  ), [data]);
   const foundingLeads = data?.founding_leads || [];
   const sourceFunnel = data?.source_funnel || [];
   const journeyMetric = (key) => uniqueJourneys[key] || 0;
@@ -151,8 +154,10 @@ export default function AdminFunnel() {
   ] : [];
 
   const recentDaily = (data?.daily || []).slice(-35).reverse();
-  const costPerGenerated = counts.generation_complete && costs?.totals?.estimated_usd != null
-    ? costs.totals.estimated_usd / counts.generation_complete
+  const aiGeneratedProjects = generationResults.ai || 0;
+  const fallbackProjects = generationResults.fallback || 0;
+  const costPerAiGenerated = aiGeneratedProjects && costs?.totals?.estimated_usd != null
+    ? costs.totals.estimated_usd / aiGeneratedProjects
     : null;
 
   return (
@@ -322,10 +327,13 @@ export default function AdminFunnel() {
           <div className="funnel-cost-grid">
             <article><span>Estimated API cost</span><strong>{usd(costs?.totals?.estimated_usd)}</strong></article>
             <article><span>AI calls</span><strong>{fmt(costs?.totals?.calls)}</strong></article>
-            <article><span>Cost / generated project</span><strong>{usd(costPerGenerated)}</strong></article>
+            <article><span>AI-built projects</span><strong>{fmt(aiGeneratedProjects)}</strong></article>
+            <article><span>Safe fallback projects</span><strong>{fmt(fallbackProjects)}</strong></article>
+            <article><span>AI generation rate</span><strong>{ratio(aiGeneratedProjects, aiGeneratedProjects + fallbackProjects)}</strong></article>
+            <article><span>Cost / AI-built project</span><strong>{usd(costPerAiGenerated)}</strong></article>
             <article><span>Input / output tokens</span><strong>{fmt(costs?.totals?.input_tokens)} / {fmt(costs?.totals?.output_tokens)}</strong></article>
           </div>
-          <p className="funnel-cost-note">Estimate uses the standard Claude Haiku 4.5 list price. Timed-out calls are still counted when Anthropic finishes them.</p>
+          <p className="funnel-cost-note">AI-built projects and safe fallbacks are shown separately so the cost per working AI result is not understated. The estimate uses the standard Claude Haiku 4.5 list price; timed-out calls are still counted when Anthropic finishes them.</p>
 
           <div className="adm-section-head">Recent event activity</div>
           <div className="adm-table-wrap">
