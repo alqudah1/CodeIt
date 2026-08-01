@@ -141,7 +141,10 @@ describe('project studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
-    await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
+    const nextStepHeading = await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
+    const projectPreview = screen.getByTitle('Project preview');
+
+    expect(projectPreview.compareDocumentPosition(nextStepHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
     expect(screen.getByRole('group', { name: 'Choose a color theme' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Save for later' })).toHaveClass('bldr-activation-card__secondary');

@@ -2220,6 +2220,103 @@ export default function Builder() {
               </aside>
             )}
 
+            {/* Project description — inline editable */}
+            <div className="bldr-project-desc">
+              {editingDesc ? (
+                <textarea
+                  className="bldr-project-desc__input"
+                  value={projectDesc}
+                  onChange={e => setProjectDesc(e.target.value)}
+                  onBlur={() => setEditingDesc(false)}
+                  placeholder="Add a description of your project..."
+                  rows={2}
+                  autoFocus
+                />
+              ) : (
+                <p
+                  className={`bldr-project-desc__text${projectDesc ? '' : ' bldr-project-desc__text--empty'}`}
+                  onClick={() => setEditingDesc(true)}
+                  title="Click to add a description"
+                >
+                  {projectDesc || 'Add a description...'}
+                </p>
+              )}
+            </div>
+
+            {/* Interactivity badges */}
+            {interactivityBadges.length > 0 && (
+              <div className="bldr-interact-badges">
+                {interactivityBadges.map(b => (
+                  <span key={b.label} className={`bldr-interact-badge bldr-interact-badge--${b.cls}`}>
+                    {b.label}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Device preview bar */}
+            <div className="bldr-device-bar">
+              <div className="bldr-device-bar__left">
+                <span className="bldr-device-bar__project">{projectName}</span>
+                {isSaved && <span className="bldr-device-bar__saved-badge">Saved</span>}
+              </div>
+              <div className="bldr-device-bar__devices">
+                {[
+                  { id: 'desktop', label: 'Desktop' },
+                  { id: 'tablet',  label: 'Tablet'  },
+                  { id: 'mobile',  label: 'Mobile'  },
+                ].map(d => (
+                  <button
+                    key={d.id}
+                    className={`bldr-device-btn${deviceView === d.id ? ' bldr-device-btn--active' : ''}`}
+                    onClick={() => setDeviceView(d.id)}
+                    title={`Preview as ${d.label}`}
+                  >
+                    {d.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Live interactive iframe preview */}
+            <div className={`bldr-browser bldr-browser--${deviceView}${isPlayMode ? ' bldr-browser--play' : ''}`}>
+              <div className="bldr-browser__chrome">
+                <div className="bldr-browser__dots">
+                  <span className="bldr-browser__dot bldr-browser__dot--red" />
+                  <span className="bldr-browser__dot bldr-browser__dot--yellow" />
+                  <span className="bldr-browser__dot bldr-browser__dot--green" />
+                </div>
+                <div className="bldr-browser__bar">
+                  {editing
+                    ? <><span className="bldr-browser__bar-spinner" />Applying changes...</>
+                    : `CodeIt Studio — ${projectName}`}
+                </div>
+                <button
+                  className="bldr-browser__play-btn"
+                  onClick={() => setIsPlayMode(p => !p)}
+                  title={isPlayMode ? 'Compact view' : 'Expand to play mode'}
+                >
+                  {isPlayMode ? 'Compact' : 'Play'}
+                </button>
+                <button
+                  className="bldr-browser__fullscreen-btn"
+                  onClick={handleFullscreen}
+                  title="Open in full screen tab"
+                >
+                  Full screen
+                </button>
+              </div>
+              {/* sandbox="allow-scripts allow-forms allow-pointer-lock" — enables JS, forms, and pointer lock for games */}
+              <iframe
+                ref={iframeRef}
+                srcDoc={injectBridge(code)}
+                className={`bldr-iframe${editing ? ' bldr-iframe--updating' : ''}${isPlayMode ? ' bldr-iframe--play' : ''}${editModeOn ? ' bldr-iframe--editmode' : ''}`}
+                title="Project preview"
+                sandbox="allow-scripts allow-forms allow-pointer-lock"
+              />
+            </div>
+
+            {/* Show the finished result before asking the student to change, save, or share it. */}
             {!isSaved && (
               <section className="bldr-activation-card" aria-labelledby="bldr-next-step-title">
                 <div className="bldr-activation-card__copy">
@@ -2385,102 +2482,6 @@ export default function Builder() {
                 </div>
               </section>
             )}
-
-            {/* Project description — inline editable */}
-            <div className="bldr-project-desc">
-              {editingDesc ? (
-                <textarea
-                  className="bldr-project-desc__input"
-                  value={projectDesc}
-                  onChange={e => setProjectDesc(e.target.value)}
-                  onBlur={() => setEditingDesc(false)}
-                  placeholder="Add a description of your project..."
-                  rows={2}
-                  autoFocus
-                />
-              ) : (
-                <p
-                  className={`bldr-project-desc__text${projectDesc ? '' : ' bldr-project-desc__text--empty'}`}
-                  onClick={() => setEditingDesc(true)}
-                  title="Click to add a description"
-                >
-                  {projectDesc || 'Add a description...'}
-                </p>
-              )}
-            </div>
-
-            {/* Interactivity badges */}
-            {interactivityBadges.length > 0 && (
-              <div className="bldr-interact-badges">
-                {interactivityBadges.map(b => (
-                  <span key={b.label} className={`bldr-interact-badge bldr-interact-badge--${b.cls}`}>
-                    {b.label}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Device preview bar */}
-            <div className="bldr-device-bar">
-              <div className="bldr-device-bar__left">
-                <span className="bldr-device-bar__project">{projectName}</span>
-                {isSaved && <span className="bldr-device-bar__saved-badge">Saved</span>}
-              </div>
-              <div className="bldr-device-bar__devices">
-                {[
-                  { id: 'desktop', label: 'Desktop' },
-                  { id: 'tablet',  label: 'Tablet'  },
-                  { id: 'mobile',  label: 'Mobile'  },
-                ].map(d => (
-                  <button
-                    key={d.id}
-                    className={`bldr-device-btn${deviceView === d.id ? ' bldr-device-btn--active' : ''}`}
-                    onClick={() => setDeviceView(d.id)}
-                    title={`Preview as ${d.label}`}
-                  >
-                    {d.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Live interactive iframe preview */}
-            <div className={`bldr-browser bldr-browser--${deviceView}${isPlayMode ? ' bldr-browser--play' : ''}`}>
-              <div className="bldr-browser__chrome">
-                <div className="bldr-browser__dots">
-                  <span className="bldr-browser__dot bldr-browser__dot--red" />
-                  <span className="bldr-browser__dot bldr-browser__dot--yellow" />
-                  <span className="bldr-browser__dot bldr-browser__dot--green" />
-                </div>
-                <div className="bldr-browser__bar">
-                  {editing
-                    ? <><span className="bldr-browser__bar-spinner" />Applying changes...</>
-                    : `CodeIt Studio — ${projectName}`}
-                </div>
-                <button
-                  className="bldr-browser__play-btn"
-                  onClick={() => setIsPlayMode(p => !p)}
-                  title={isPlayMode ? 'Compact view' : 'Expand to play mode'}
-                >
-                  {isPlayMode ? 'Compact' : 'Play'}
-                </button>
-                <button
-                  className="bldr-browser__fullscreen-btn"
-                  onClick={handleFullscreen}
-                  title="Open in full screen tab"
-                >
-                  Full screen
-                </button>
-              </div>
-              {/* sandbox="allow-scripts allow-forms allow-pointer-lock" — enables JS, forms, and pointer lock for games */}
-              <iframe
-                ref={iframeRef}
-                srcDoc={injectBridge(code)}
-                className={`bldr-iframe${editing ? ' bldr-iframe--updating' : ''}${isPlayMode ? ' bldr-iframe--play' : ''}${editModeOn ? ' bldr-iframe--editmode' : ''}`}
-                title="Project preview"
-                sandbox="allow-scripts allow-forms allow-pointer-lock"
-              />
-            </div>
 
             {/* ── Creative Studio Toolbar ─────────────────────────────── */}
             <div className="bldr-studio-bar" ref={studioRef}>
