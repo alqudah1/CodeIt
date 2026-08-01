@@ -1621,10 +1621,14 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
       return res.json({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready — AI polish can be added next', isFallback: true, conceptsUsed: [] });
     }
 
-    // ── Polish pass — visual improvements only, JS preserved ──────────────
-    const polished = await runPolishPass(parsed.html, designConfig.type);
-    if (polished && validateHtml(polished)) {
-      parsed.html = polished;
+    // The first pass already follows the full visual system and is validated.
+    // Keep the costly second pass opt-in so students get their project sooner;
+    // they can still choose "Make the design better" from the studio upgrades.
+    if (process.env.BUILDER_AUTO_POLISH === 'true') {
+      const polished = await runPolishPass(parsed.html, designConfig.type);
+      if (polished && validateHtml(polished)) {
+        parsed.html = polished;
+      }
     }
 
     const { html, title, summary, conceptsUsed } = parsed;
