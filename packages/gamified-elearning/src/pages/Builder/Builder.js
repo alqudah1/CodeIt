@@ -2346,12 +2346,14 @@ export default function Builder() {
                   <span className="bldr-activation-card__kicker">Your next step</span>
                   <h3 id="bldr-next-step-title">
                     {!isPersonalized
-                      ? 'Change one thing so this project becomes yours.'
+                      ? 'Keep this project, or change it first.'
                       : 'Save this project before you leave.'}
                   </h3>
                   <p>
                     {!isPersonalized
-                      ? 'Start with a color theme that changes instantly and works without AI credits. Then test how your project feels.'
+                      ? user
+                        ? 'Save it now so it is ready when you come back. You can still change the colors, words, and code after saving.'
+                        : 'Keep it in a free account so it is not limited to this browser. You can also change the look before continuing.'
                       : user
                         ? 'Save this version so it appears in My Creations and is ready when you come back.'
                         : 'We’ll keep this version in this browser while you sign in or choose an eligible account option, then bring you back here.'}
@@ -2360,7 +2362,15 @@ export default function Builder() {
                 <div className="bldr-activation-card__actions">
                   {!isPersonalized ? (
                     <>
+                      <button
+                        className="bldr-activation-card__primary"
+                        onClick={handleSaveProject}
+                        disabled={saveStatus === 'saving' || editing}
+                      >
+                        {saveStatus === 'saving' ? 'Saving…' : user ? 'Save this project' : 'Keep this project'}
+                      </button>
                       <div className="bldr-activation-themes" role="group" aria-label="Choose a color theme">
+                        <span className="bldr-activation-themes__label">Optional: change the look first</span>
                         {FIRST_CHANGE_THEMES.map(theme => (
                           <button
                             key={theme.name}
@@ -2387,13 +2397,6 @@ export default function Builder() {
                           More colors
                         </button>
                       </div>
-                      <button
-                        className="bldr-activation-card__secondary"
-                        onClick={handleSaveProject}
-                        disabled={saveStatus === 'saving' || editing}
-                      >
-                        {saveStatus === 'saving' ? 'Saving…' : 'Save for later'}
-                      </button>
                     </>
                   ) : (
                     <>

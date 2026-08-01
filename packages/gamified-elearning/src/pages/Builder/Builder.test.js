@@ -106,8 +106,8 @@ describe('project studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
-    await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
-    fireEvent.click(screen.getByRole('button', { name: 'Save for later' }));
+    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
+    fireEvent.click(screen.getByRole('button', { name: 'Keep this project' }));
 
     const draft = JSON.parse(sessionStorage.getItem('codeit_builder_draft'));
     expect(draft.code).toContain('My game');
@@ -127,7 +127,7 @@ describe('project studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
-    await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
+    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
 
     fireEvent.click(screen.getByRole('button', { name: 'Save project to a free account' }));
 
@@ -141,7 +141,7 @@ describe('project studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Quiz/i }));
-    await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
+    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
     fireEvent.click(screen.getByRole('button', { name: 'Share' }));
 
     expect(JSON.parse(sessionStorage.getItem('codeit_builder_draft')).code).toContain('My game');
@@ -151,17 +151,18 @@ describe('project studio opening', () => {
     expect(trackEvent).toHaveBeenCalledWith('activation_account_gate', 'publish', null);
   });
 
-  test('moves a first-time guest from creating to personalizing before save becomes primary', async () => {
+  test('makes keeping the project primary while personalization stays optional', async () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
-    const nextStepHeading = await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
+    const nextStepHeading = await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
     const projectPreview = screen.getByTitle('Project preview');
 
     expect(projectPreview.compareDocumentPosition(nextStepHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
     expect(screen.getByRole('group', { name: 'Choose a color theme' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Save for later' })).toHaveClass('bldr-activation-card__secondary');
+    expect(screen.getByRole('button', { name: 'Keep this project' })).toHaveClass('bldr-activation-card__primary');
+    expect(screen.getByText('Optional: change the look first')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Apply Candy theme' }));
 
@@ -176,7 +177,7 @@ describe('project studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
-    await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
+    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
 
     expect(screen.getByLabelText('Guest project recovery')).toHaveTextContent('Backed up in this browser');
     expect(screen.getByLabelText('Guest project recovery')).toHaveTextContent('only on this device for up to 7 days');
@@ -228,8 +229,8 @@ describe('project studio opening', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
-    await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
-    fireEvent.click(screen.getByRole('button', { name: 'Save for later' }));
+    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
+    fireEvent.click(screen.getByRole('button', { name: 'Save this project' }));
 
     await screen.findByRole('heading', { name: 'Ready to show someone what you made?' });
     fireEvent.click(screen.getByRole('button', { name: 'Publish and get a link' }));
@@ -247,8 +248,8 @@ describe('project studio opening', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Quiz/i }));
-    await screen.findByRole('heading', { name: 'Change one thing so this project becomes yours.' });
-    fireEvent.click(screen.getByRole('button', { name: 'Save for later' }));
+    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
+    fireEvent.click(screen.getByRole('button', { name: 'Save this project' }));
 
     await screen.findByRole('heading', { name: 'Now learn one thing your project uses.' });
     expect(screen.queryByRole('button', { name: 'Publish and get a link' })).not.toBeInTheDocument();

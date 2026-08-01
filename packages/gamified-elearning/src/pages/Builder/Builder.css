@@ -4034,6 +4034,16 @@
   gap: 0.45rem;
 }
 
+.bldr-activation-themes__label {
+  flex: 1 1 100%;
+  color: #8a6b58;
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
 .bldr-activation-theme {
   min-height: 42px;
   padding: 0.48rem 0.62rem;
@@ -4131,6 +4141,7 @@
   .bldr-activation-card { grid-template-columns: 1fr; gap: 1rem; }
   .bldr-activation-card__actions { justify-content: stretch; }
   .bldr-activation-themes { flex: 1 1 100%; justify-content: stretch; }
+  .bldr-activation-themes__label { text-align: left; }
   .bldr-activation-theme { flex: 1 1 82px; }
   .bldr-activation-card__primary,
   .bldr-activation-card__secondary { flex: 1 1 180px; }
