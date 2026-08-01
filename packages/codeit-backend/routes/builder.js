@@ -17,6 +17,7 @@ const MAX_PROMPT_LENGTH = 1000;
 const MAX_CODE_LENGTH = 250000;
 const MAX_INSTRUCTION_LENGTH = 2000;
 const MAX_ELEMENT_HTML_LENGTH = 25000;
+const POLISH_TIMEOUT_MS = 12000;
 
 function createRequestLimiter({ anonymous, authenticated, windowMs = 60 * 60 * 1000 }) {
   const requests = new Map();
@@ -53,8 +54,8 @@ function createRequestLimiter({ anonymous, authenticated, windowMs = 60 * 60 * 1
 const generationLimiter = createRequestLimiter({ anonymous: 5, authenticated: 20 });
 const helperLimiter = createRequestLimiter({ anonymous: 15, authenticated: 60 });
 
-async function createTrackedMessage(operation, params) {
-  const message = await client.messages.create(params);
+async function createTrackedMessage(operation, params, requestOptions) {
+  const message = await client.messages.create(params, requestOptions);
   void recordAIUsage(operation, message);
   return message;
 }
@@ -588,6 +589,9 @@ async function runPolishPass(html, type) {
         role:    'user',
         content: `Polish the visual presentation of this ${categoryHint} (type: ${type}). Improve spacing, typography, animations, button states, shadows, and responsiveness. Keep all JavaScript and IDs untouched.\n\nHTML to polish:\n\`\`\`html\n${html}\n\`\`\`\n\nReturn the complete polished file inside <CODE>...</CODE>.`,
       }],
+    }, {
+      timeout: POLISH_TIMEOUT_MS,
+      maxRetries: 0,
     });
 
     const raw = message.content[0]?.text || '';
