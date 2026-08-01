@@ -64,7 +64,7 @@ router.get('/progress-percentages', authenticateToken, async (req, res) => {
 });
 
 // GET /api/rewards/leaderboard (signed-in students only)
-// XP = quiz XP + lesson XP + puzzle XP (computed live).
+// XP = project creation + publishing + lessons + quizzes + puzzles (computed live).
 // Real names and database IDs never leave the server.
 router.get('/leaderboard', authenticateToken, async (req, res) => {
   try {
@@ -74,7 +74,8 @@ router.get('/leaderboard', authenticateToken, async (req, res) => {
         (
           COALESCE(q.quiz_xp, 0) +
           COALESCE(l.lesson_xp, 0) +
-          COALESCE(p.puzzle_xp, 0)
+          COALESCE(p.puzzle_xp, 0) +
+          COALESCE(b.project_xp, 0)
         ) AS xp_points
       FROM Users u
       LEFT JOIN (
@@ -104,6 +105,11 @@ router.get('/leaderboard', authenticateToken, async (req, res) => {
         ) puzzle_best
         GROUP BY user_id
       ) p ON p.user_id = u.user_id
+      LEFT JOIN (
+        SELECT user_id, SUM(xp_earned) AS project_xp
+        FROM ai_project_xp_awards
+        GROUP BY user_id
+      ) b ON b.user_id = u.user_id
       WHERE u.role = 'student'
       HAVING xp_points > 0
       ORDER BY xp_points DESC

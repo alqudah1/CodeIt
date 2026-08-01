@@ -9,6 +9,7 @@ import {
 } from '../../utils/guestProjectDraft';
 
 const mockNavigate = jest.fn();
+const mockAwardXP = jest.fn();
 const mockBuilderLocation = { search: '', state: null };
 
 jest.mock('react-router-dom', () => {
@@ -26,7 +27,7 @@ jest.mock('../../context/AuthContext', () => {
   return { AuthContext: React.createContext({ user: null, token: null }) };
 });
 jest.mock('../../context/CharacterContext', () => ({
-  useCharacter: () => ({ awardXP: jest.fn() }),
+  useCharacter: () => ({ awardXP: mockAwardXP }),
 }));
 jest.mock('../../hooks/useSEO', () => ({ useSEO: jest.fn() }));
 jest.mock('../../utils/trackEvent', () => ({
@@ -39,6 +40,7 @@ describe('project studio opening', () => {
     localStorage.clear();
     sessionStorage.clear();
     mockNavigate.mockClear();
+    mockAwardXP.mockClear();
     mockBuilderLocation.search = '';
     mockBuilderLocation.state = null;
     trackEvent.mockClear();
@@ -51,11 +53,12 @@ describe('project studio opening', () => {
         body = {
           success: true,
           project: { id: 99, title: 'My Project', project_type: 'game' },
+          xp_awarded: 25,
         };
       } else if (target.includes('/versions')) {
         body = { success: true };
       } else if (target.endsWith('/publish')) {
-        body = { success: true, public_id: 'public-99' };
+        body = { success: true, public_id: 'public-99', xp_awarded: 25 };
       } else if (target.endsWith('/api/builder/explain')) {
         body = { explanation: 'This project uses variables and click events.' };
       } else {
@@ -231,12 +234,15 @@ describe('project studio opening', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
     await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
+    expect(mockAwardXP).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: 'Save this project' }));
 
     await screen.findByRole('heading', { name: 'Ready to show someone what you made?' });
+    expect(mockAwardXP).toHaveBeenCalledWith(25);
     fireEvent.click(screen.getByRole('button', { name: 'Publish and get a link' }));
 
     await screen.findByRole('heading', { name: 'Invite someone to play it.' });
+    expect(mockAwardXP).toHaveBeenCalledTimes(2);
     expect(trackEvent).toHaveBeenCalledWith('activation_next_step', 'publish', 'creator-token');
     expect(screen.getByRole('button', { name: 'Share your project' })).toBeInTheDocument();
   });

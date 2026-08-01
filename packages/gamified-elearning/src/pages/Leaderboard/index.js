@@ -21,7 +21,7 @@ const avatarColour = (name) => {
 const Leaderboard = () => {
   useSEO({
     title:       'Leaderboard | CodeIt',
-    description: 'See the top Python coders on CodeIt. Earn XP through lessons, quizzes, and puzzles to climb the global rankings.',
+    description: 'See CodeIt creators climb the rankings by building projects, publishing their work, and completing coding challenges.',
     canonical:   '/leaderboard',
     robots:      'noindex,nofollow',
   });
@@ -84,7 +84,7 @@ const Leaderboard = () => {
           </button>
           <h1 className="lb-title">🏆 Leaderboard</h1>
           <p className="lb-subtitle">
-            Top coders ranked by total XP earned across lessons, quizzes &amp; puzzles.
+            CodeIt creators ranked by XP from projects, lessons, quizzes, and puzzles.
           </p>
           {!loading && !error && rows.length > 0 && (
             <span className="lb-count-badge">
@@ -119,7 +119,7 @@ const Leaderboard = () => {
             <span className="lb-my-rank-icon">🌱</span>
             <span className="lb-my-rank-text">
               You&apos;re not on the board yet —{' '}
-              complete lessons &amp; quizzes to earn XP and climb the ranks!
+              save a project or complete a lesson to earn XP and climb the ranks!
             </span>
           </div>
         )}
@@ -140,11 +140,11 @@ const Leaderboard = () => {
             <div>
               <span className="lb-eyebrow">HOW TO MOVE UP</span>
               <h2 id="lb-how-title">Learn. Solve. Climb.</h2>
-              <p>Complete lessons, quizzes, and coding puzzles. Your XP updates the all-time board automatically.</p>
+              <p>Save original projects, publish eligible work, and complete coding challenges. Your XP updates the all-time board automatically.</p>
             </div>
             <div className="lb-action-row">
+              <button onClick={() => navigate('/builder')}>Build a project</button>
               <button onClick={() => navigate('/lessons')}>Earn XP in a lesson</button>
-              <button onClick={() => navigate('/playground')}>Practice your code</button>
             </div>
             <small>For student privacy, everyone else sees a fun coder alias—not your real name.</small>
           </section>

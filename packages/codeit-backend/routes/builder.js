@@ -10,6 +10,7 @@ const { projectCategory, normalizeJourneyId } = require('../analyticsEvents');
 const { recordAIUsage } = require('../aiUsage');
 const { recordMilestoneAndNotify } = require('../progressNotifications');
 const { findShowcaseProject } = require('../showcaseProjects');
+const { initializeProjectRewards, awardProjectXp: persistProjectXp } = require('../projectRewards');
 
 const client     = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const MAX_PROMPT_LENGTH = 1000;
@@ -81,6 +82,15 @@ async function createTrackedMessage(operation, params) {
     console.error('ai_project_versions table init error:', err.message);
   }
 })();
+
+const projectXpReady = initializeProjectRewards(pool).catch((error) => {
+  console.error('Project XP table init error:', error.message);
+  throw error;
+});
+
+async function awardProjectXp(userId, projectId, awardType) {
+  return persistProjectXp(pool, projectXpReady, userId, projectId, awardType);
+}
 
 // ── Response parsing helpers ──────────────────────────────────────────────────
 function parseBuilderResponse(rawText) {
@@ -1795,6 +1805,12 @@ router.post('/projects', requireAuth, async (req, res) => {
        VALUES (?, ?, ?, ?, ?)`,
       [userId, title.trim(), prompt.trim(), generated_code.trim(), (project_type || 'website').trim()]
     );
+    let xpAwarded = 0;
+    try {
+      xpAwarded = await awardProjectXp(userId, result.insertId, 'created');
+    } catch (rewardError) {
+      console.error('Project creation XP error:', rewardError.message);
+    }
     const [rows] = await pool.query('SELECT * FROM ai_projects WHERE id = ?', [result.insertId]);
     void recordEvent('project_save', {
       userId,
@@ -1808,7 +1824,7 @@ router.post('/projects', requireAuth, async (req, res) => {
       title: title.trim(),
       detail: `${projectCategory(project_type)} project created`,
     }).catch(error => console.error('Project milestone error:', error.message));
-    res.status(201).json({ success: true, project: rows[0] });
+    res.status(201).json({ success: true, project: rows[0], xp_awarded: xpAwarded });
   } catch (err) {
     console.error('Save project error:', err.message);
     res.status(500).json({ error: 'Could not save project. Please try again.' });
@@ -2269,7 +2285,13 @@ router.post('/projects/:id/publish', requireAuth, async (req, res) => {
       [public_id, creatorName, id]
     );
 
+    let xpAwarded = 0;
     if (!wasPublic) {
+      try {
+        xpAwarded = await awardProjectXp(userId, id, 'published');
+      } catch (rewardError) {
+        console.error('Project publishing XP error:', rewardError.message);
+      }
       void recordEvent('project_publish', {
         userId,
         journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')),
@@ -2286,7 +2308,7 @@ router.post('/projects/:id/publish', requireAuth, async (req, res) => {
     }
 
     const publicUrl = `https://codeitlearn.com/project/${public_id}`;
-    res.json({ success: true, public_id, public_url: publicUrl });
+    res.json({ success: true, public_id, public_url: publicUrl, xp_awarded: xpAwarded });
   } catch (err) {
     console.error('Publish project error:', err.message);
     res.status(500).json({ error: 'Could not publish project.' });

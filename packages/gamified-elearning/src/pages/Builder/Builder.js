@@ -1331,7 +1331,6 @@ export default function Builder() {
       setPromptHistory([text]);
       setBuildKey(k => k + 1);
       setShowEditPanel(false);
-      awardXP(20); popXp(20, 'First Build');
       const builtType = data.type || 'website';
       // Auto-enter play mode for games and quizzes
       if (/game|clicker|runner|memory|reaction|quiz|soccer/.test(builtType)) {
@@ -1395,7 +1394,6 @@ export default function Builder() {
       setIsSaved(false);
       setSaveStatus(null);
       setEditInstruction('');
-      awardXP(10); popXp(10, 'Edit Applied');
       pushLocalVersion(`Edit: ${instruction.slice(0, 45)}`, html, [...promptHistory, instruction.trim()], aiTitle);
       trackPersonalizationOnce();
       // Don't rebuildKey — keeps iframe alive; srcdoc update re-renders the content
@@ -1549,7 +1547,11 @@ export default function Builder() {
       setSaveStatus('saved');
       sessionStorage.removeItem('codeit_builder_draft');
       clearGuestProjectDraft(localStorage);
-      awardXP(15); popXp(15, 'Saved!');
+      const earnedXp = Number(data.xp_awarded) || 0;
+      if (earnedXp > 0) {
+        awardXP(earnedXp);
+        popXp(earnedXp, 'Project saved');
+      }
       setTimeout(() => setSaveStatus(null), 2500);
     } catch (err) {
       setSaveStatus('error');
@@ -1674,6 +1676,12 @@ export default function Builder() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Publish failed');
+
+      const earnedXp = Number(data.xp_awarded) || 0;
+      if (earnedXp > 0) {
+        awardXP(earnedXp);
+        popXp(earnedXp, 'Project published');
+      }
 
       setSavedProjects(prev => prev.map(saved => (
         saved.id === project.id
@@ -1844,6 +1852,7 @@ export default function Builder() {
 
     // Save first if not saved
     let projectId = savedProjectId;
+    let earnedXp = 0;
     if (!projectId) {
       const title = (builtPrompt ? deriveProjectName(builtPrompt) : '') || 'My Project';
       try {
@@ -1858,6 +1867,7 @@ export default function Builder() {
         setSavedProjectId(projectId);
         setSavedProjects(prev => [data.project, ...prev]);
         setIsSaved(true);
+        earnedXp += Number(data.xp_awarded) || 0;
       } catch (err) {
         setPublishStatus('error');
         setTimeout(() => setPublishStatus(null), 3000);
@@ -1873,6 +1883,11 @@ export default function Builder() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Publish failed');
+      earnedXp += Number(data.xp_awarded) || 0;
+      if (earnedXp > 0) {
+        awardXP(earnedXp);
+        popXp(earnedXp, earnedXp >= 50 ? 'Saved and published' : 'Project published');
+      }
       setIsPublished(true);
       setPublicId(data.public_id);
       sessionStorage.removeItem('codeit_builder_draft');
@@ -2361,7 +2376,7 @@ export default function Builder() {
                   <p>
                     {!isPersonalized
                       ? user
-                        ? 'Save it now so it is ready when you come back. You can still change the colors, words, and code after saving.'
+                        ? 'Save it now so it is ready when you come back. Student accounts earn 25 XP for a new saved project, and you can still change it later.'
                         : 'Keep it in a free account so it is not limited to this browser. You can also change the look before continuing.'
                       : user
                         ? 'Save this version so it appears in My Creations and is ready when you come back.'

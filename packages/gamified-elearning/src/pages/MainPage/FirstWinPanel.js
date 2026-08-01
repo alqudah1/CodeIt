@@ -9,7 +9,7 @@ export default function FirstWinPanel({ token }) {
         <h2 id="mp-first-win-title">Make something you can play in about 10 minutes.</h2>
         <p>
           Start with your own idea, get a working first version, then change it until
-          the project feels like yours.
+          the project feels like yours. Save it to earn your first 25 XP.
         </p>
       </div>
       <div className="mp-first-win__steps" aria-label="Your first CodeIt session">

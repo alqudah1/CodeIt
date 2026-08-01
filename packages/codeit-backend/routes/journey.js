@@ -24,7 +24,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 // GET /api/journey/progress
-// Returns total XP (authoritative sum from all three activity tables, same
+// Returns total XP (authoritative sum from learning and project activity, same
 // formula as /api/rewards/leaderboard) plus completed-item arrays.
 router.get('/progress', authenticateToken, async (req, res) => {
   const userId = req.user.user_id;
@@ -34,9 +34,10 @@ router.get('/progress', authenticateToken, async (req, res) => {
       SELECT
         COALESCE((SELECT SUM(xp_earned) FROM Student_Quiz_Attempt   WHERE student_id = ?), 0) +
         COALESCE((SELECT SUM(xp_earned) FROM Student_Lesson_Progress WHERE user_id    = ?), 0) +
-        COALESCE((SELECT SUM(xp_earned) FROM Student_Puzzle_Progress WHERE user_id    = ?), 0)
+        COALESCE((SELECT SUM(xp_earned) FROM Student_Puzzle_Progress WHERE user_id    = ?), 0) +
+        COALESCE((SELECT SUM(xp_earned) FROM ai_project_xp_awards    WHERE user_id    = ?), 0)
         AS total_xp
-    `, [userId, userId, userId]);
+    `, [userId, userId, userId, userId]);
 
     // Completed lessons
     const [lessonRows] = await pool.query(
