@@ -29,6 +29,7 @@ describe('admin acquisition funnel', () => {
             { event_name: 'generation_complete', event_count: 10, unique_users: 2, unique_journeys: 8, attributed_events: 8 },
             { event_name: 'signup_complete', event_count: 6, unique_users: 6, unique_journeys: 6, attributed_events: 6 },
             { event_name: 'new_account_studio_view', event_count: 5, unique_users: 5, unique_journeys: 5, attributed_events: 5 },
+            { event_name: 'new_account_family_setup_view', event_count: 1, unique_users: 1, unique_journeys: 1, attributed_events: 1 },
             { event_name: 'project_personalize', event_count: 6, unique_users: 2, unique_journeys: 5, attributed_events: 5 },
             { event_name: 'project_save', event_count: 4, unique_users: 2, unique_journeys: 3, attributed_events: 3 },
             { event_name: 'project_remix', event_count: 2, unique_users: 2, unique_journeys: 2, attributed_events: 2 },
@@ -38,6 +39,8 @@ describe('admin acquisition funnel', () => {
             { event_name: 'family_child_created', event_count: 2, unique_users: 2, unique_journeys: 2, attributed_events: 2 },
           ],
           breakdown: [
+            { event_name: 'signup_complete', meta: 'student', event_count: 5, unique_journeys: 5, activation_cohort_journeys: 5 },
+            { event_name: 'signup_complete', meta: 'educator', event_count: 1, unique_journeys: 1, activation_cohort_journeys: 1 },
             { event_name: 'acquisition_visit', meta: 'instagram', event_count: 9 },
             { event_name: 'acquisition_visit', meta: 'linkedin', event_count: 3 },
             { event_name: 'acquisition_visit', meta: 'project', event_count: 5 },
@@ -56,6 +59,7 @@ describe('admin acquisition funnel', () => {
             { event_name: 'pilot_confirmation', meta: 'not-sent', event_count: 1 },
           ],
           daily: [],
+          activation_entry_tracking_since: '2026-08-01',
           progress_email_delivery: [
             { status: 'sent', delivery_count: 4 },
             { status: 'failed', delivery_count: 1 },
@@ -128,8 +132,11 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Projects remixed')).toBeInTheDocument();
     expect(screen.getByText('Finish steps chosen')).toBeInTheDocument();
     expect(screen.getByText('Generated → personalized').parentElement).toHaveTextContent('63%');
-    expect(screen.getByText('New accounts reaching studio')).toBeInTheDocument();
-    expect(screen.getByText('New account → studio').parentElement).toHaveTextContent('83%');
+    expect(screen.getByText('New student accounts reaching studio')).toBeInTheDocument();
+    expect(screen.getByText('New adult accounts reaching family setup')).toBeInTheDocument();
+    expect(screen.getByText('Student signup → studio').parentElement).toHaveTextContent('100%');
+    expect(screen.getByText('Adult signup → family setup').parentElement).toHaveTextContent('100%');
+    expect(screen.getByText(/destination rates use signups since 2026-08-01/i)).toBeInTheDocument();
     expect(screen.getByText('Personalized → saved').parentElement).toHaveTextContent('60%');
     expect(screen.getByText('Published → shared')).toBeInTheDocument();
     expect(screen.getByText('Shared visitors → remixed')).toBeInTheDocument();

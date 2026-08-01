@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import Profile from './Profile';
+import { trackEvent } from '../../utils/trackEvent';
 
 const mockNavigate = jest.fn();
 const mockLogout = jest.fn();
@@ -17,6 +18,7 @@ jest.mock('react-router-dom', () => {
 jest.mock('../Header/Header', () => () => null);
 jest.mock('../../components/CharacterAvatar/CharacterAvatar', () => () => <div>Avatar</div>);
 jest.mock('../../hooks/useSEO', () => ({ useSEO: jest.fn() }));
+jest.mock('../../utils/trackEvent', () => ({ trackEvent: jest.fn() }));
 jest.mock('../../config/api', () => ({ API_BASE_URL: 'http://codeit.test' }));
 jest.mock('../../context/AuthContext', () => {
   const React = require('react');
@@ -51,6 +53,9 @@ describe('parent progress availability', () => {
     mockLogout.mockClear();
     mockProfileUser = { user_id: 8, name: 'Student Builder', username: 'student-builder', role: 'Student' };
     mockFamilyChildren = [];
+    sessionStorage.clear();
+    window.location.hash = '';
+    trackEvent.mockClear();
     global.fetch = jest.fn((url, options = {}) => {
       const requestUrl = String(url);
       if (requestUrl.endsWith('/api/builder/projects')) {
@@ -121,6 +126,22 @@ describe('parent progress availability', () => {
 
   afterEach(() => {
     delete global.fetch;
+    window.location.hash = '';
+  });
+
+  test('records a new adult reaching family setup once without personal details', async () => {
+    mockProfileUser = { id: 19, name: 'Parent Tester', role: 'Educator' };
+    window.location.hash = '#family-controls';
+
+    const { rerender } = render(<Profile />);
+    await waitFor(() => expect(trackEvent).toHaveBeenCalledWith(
+      'new_account_family_setup_view',
+      null,
+      'student-token'
+    ));
+
+    rerender(<Profile />);
+    expect(trackEvent).toHaveBeenCalledTimes(1);
   });
 
   test('explains when the running server does not provide parent updates', async () => {

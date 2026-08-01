@@ -7,6 +7,7 @@ import Header from '../Header/Header';
 import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
+import { trackEvent } from '../../utils/trackEvent';
 import './Profile.css';
 
 const XP_PER_LEVEL = 100;
@@ -66,6 +67,16 @@ export default function Profile() {
   const nextLevel  = level + 1;
   const title      = getLevelTitle(level);
   const nextTitle  = getLevelTitle(nextLevel);
+
+  useEffect(() => {
+    if (!user || !token || String(user.role).toLowerCase() === 'student') return;
+    if (window.location.hash !== '#family-controls') return;
+    const accountKey = user.id || user.user_id || 'account';
+    const storageKey = `codeit_new_account_family_setup_${accountKey}`;
+    if (sessionStorage.getItem(storageKey)) return;
+    sessionStorage.setItem(storageKey, '1');
+    void trackEvent('new_account_family_setup_view', null, token);
+  }, [token, user]);
 
   useEffect(() => {
     if (!user) {

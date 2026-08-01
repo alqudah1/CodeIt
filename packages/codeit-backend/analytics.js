@@ -4,6 +4,7 @@ const pool = require('./db');
 const { normalizeEventName, normalizeMeta, normalizeJourneyId, normalizeCampaignCode } = require('./analyticsEvents');
 const { listFoundingFamilyLeads } = require('./foundingWaitlist');
 const { ready: legacyParentReviewReady } = require('./legacyParentReview');
+const ACTIVATION_ENTRY_TRACKING_SINCE = '2026-08-01';
 
 const tableReady = pool.query(`
   CREATE TABLE IF NOT EXISTS analytics_events (
@@ -93,7 +94,9 @@ async function getFunnelReport(requestedDays = 30) {
          ORDER BY DATE(created_at) ASC`
       ),
       pool.query(
-        `SELECT event_name, meta, COUNT(*) AS event_count
+        `SELECT event_name, meta, COUNT(*) AS event_count,
+                COUNT(DISTINCT journey_id) AS unique_journeys,
+                COUNT(DISTINCT CASE WHEN created_at >= '${ACTIVATION_ENTRY_TRACKING_SINCE}' THEN journey_id END) AS activation_cohort_journeys
          FROM analytics_events WHERE ${windowSql} AND meta IS NOT NULL
          GROUP BY event_name, meta
          ORDER BY event_name, event_count DESC`
@@ -228,6 +231,7 @@ async function getFunnelReport(requestedDays = 30) {
       breakdown,
       source_funnel: sourceFunnel,
       campaign_funnel: campaignFunnel,
+      activation_entry_tracking_since: ACTIVATION_ENTRY_TRACKING_SINCE,
       student_age_audit: studentAgeRows[0] || null,
       progress_email_delivery: progressDeliveries,
       founding_leads: foundingLeads,

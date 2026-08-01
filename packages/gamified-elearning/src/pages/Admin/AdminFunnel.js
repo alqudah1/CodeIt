@@ -16,7 +16,8 @@ const STAGES = [
   ['project_personalize', 'Projects personalized'],
   ['activation_account_gate', 'Account gates reached'],
   ['signup_complete', 'Accounts created'],
-  ['new_account_studio_view', 'New accounts reaching studio'],
+  ['new_account_studio_view', 'New student accounts reaching studio'],
+  ['new_account_family_setup_view', 'New adult accounts reaching family setup'],
   ['project_save', 'Projects saved'],
   ['activation_next_step', 'Finish steps chosen'],
   ['project_publish', 'Projects published'],
@@ -150,6 +151,11 @@ export default function AdminFunnel() {
   const generationResults = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'generation_complete').map((row) => [row.meta, Number(row.event_count) || 0])
   ), [data]);
+  const signupJourneys = useMemo(() => Object.fromEntries(
+    (data?.breakdown || [])
+      .filter((row) => row.event_name === 'signup_complete')
+      .map((row) => [row.meta, Number(row.activation_cohort_journeys) || 0])
+  ), [data]);
   const foundingLeads = data?.founding_leads || [];
   const sourceFunnel = data?.source_funnel || [];
   const campaignFunnel = data?.campaign_funnel || [];
@@ -166,7 +172,8 @@ export default function AdminFunnel() {
     ['Generated → personalized', ratio(journeyMetric('project_personalize'), journeyMetric('generation_complete'))],
     ['Recovered → saved', ratio(journeyMetric('project_save'), journeyMetric('guest_draft_recovered'))],
     ['Account gate → signup', ratio(journeyMetric('signup_complete'), journeyMetric('activation_account_gate'))],
-    ['New account → studio', ratio(journeyMetric('new_account_studio_view'), journeyMetric('signup_complete'))],
+    ['Student signup → studio', ratio(journeyMetric('new_account_studio_view'), signupJourneys.student || 0)],
+    ['Adult signup → family setup', ratio(journeyMetric('new_account_family_setup_view'), signupJourneys.educator || 0)],
     ['Personalized → saved', ratio(journeyMetric('project_save'), journeyMetric('project_personalize'))],
     ['Generated → saved', ratio(journeyMetric('project_save'), journeyMetric('generation_complete'))],
     ['Saved → published', ratio(journeyMetric('project_publish'), journeyMetric('project_save'))],
@@ -246,6 +253,9 @@ export default function AdminFunnel() {
               </article>
             ))}
           </div>
+          <p className="funnel-parent-note">
+            Student and adult destination rates use signups since {data.activation_entry_tracking_since || 'tracking began'}, when destination tracking became available.
+          </p>
 
           <div className="adm-section-head">What visitors chose on the homepage</div>
           <div className="funnel-parent-grid">
