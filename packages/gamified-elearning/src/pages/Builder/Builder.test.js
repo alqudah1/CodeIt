@@ -35,6 +35,7 @@ jest.mock('../../utils/trackEvent', () => ({
 
 describe('project studio opening', () => {
   beforeEach(() => {
+    window.scrollTo = jest.fn();
     localStorage.clear();
     sessionStorage.clear();
     mockNavigate.mockClear();
@@ -349,6 +350,54 @@ describe('project studio opening', () => {
       expect.objectContaining({ method: 'POST' })
     );
     expect(trackEvent).toHaveBeenCalledWith('activation_next_step', 'publish', 'creator-token');
+  });
+
+  test('opens the exact saved project linked from the returning-student homepage', async () => {
+    mockBuilderLocation.search = '?project=42';
+    const savedProject = {
+      id: 42,
+      title: 'Mission Control Quiz',
+      prompt: 'A colorful space quiz',
+      project_type: 'quiz',
+      is_public: 0,
+      public_id: null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    global.fetch = jest.fn((url) => {
+      const target = String(url);
+      if (target.endsWith('/api/builder/projects')) {
+        return Promise.resolve({ ok: true, json: async () => ({ success: true, projects: [savedProject] }) });
+      }
+      if (target.endsWith('/api/builder/projects/42')) {
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({
+            success: true,
+            project: {
+              ...savedProject,
+              generated_code: '<!doctype html><html><body><h1>Mission Control Quiz</h1></body></html>',
+            },
+          }),
+        });
+      }
+      if (target.includes('/api/builder/projects/42/versions')) {
+        return Promise.resolve({ ok: true, json: async () => ({ success: true, versions: [] }) });
+      }
+      return Promise.resolve({ ok: true, json: async () => ({ success: true }) });
+    });
+
+    render(
+      <AuthContext.Provider value={{ user: { id: 7, name: 'Alex', role: 'student' }, token: 'creator-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    expect(await screen.findByRole('heading', { name: 'Mission Control Quiz' })).toBeInTheDocument();
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://codeit.test/api/builder/projects/42',
+      expect.objectContaining({ headers: { Authorization: 'Bearer creator-token' } })
+    );
   });
 
   test('shares a live saved project directly from My Creations', async () => {

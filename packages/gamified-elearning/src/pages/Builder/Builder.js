@@ -696,6 +696,7 @@ export default function Builder() {
   const iframeRef  = useRef(null);
   const studioRef  = useRef(null);
   const resumeActionStartedRef = useRef(false);
+  const queryProjectOpenedRef = useRef(false);
   const saveInFlightRef = useRef(false);
   const personalizationTrackedRef = useRef(false);
   const skipNextGuestDraftPersistRef = useRef(false);
@@ -1616,6 +1617,19 @@ export default function Builder() {
       setProjectOpeningId(null);
     }
   };
+
+  // A returning student can resume the exact project offered on the homepage.
+  // The project still comes from the authenticated list, so changing the URL
+  // cannot open another learner's work.
+  useEffect(() => {
+    if (projectsLoading || queryProjectOpenedRef.current) return;
+    const requestedId = new URLSearchParams(location.search).get('project');
+    if (!requestedId) return;
+    const project = savedProjects.find(item => String(item.id) === requestedId);
+    if (!project) return;
+    queryProjectOpenedRef.current = true;
+    void handleLoadProject(project);
+  }, [location.search, projectsLoading, savedProjects]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Delete saved project ───────────────────────────────────────────────────
   const handleDeleteProject = async (id) => {

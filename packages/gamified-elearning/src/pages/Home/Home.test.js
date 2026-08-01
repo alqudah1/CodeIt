@@ -2,24 +2,36 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import Home from './Home';
 import { trackEvent } from '../../utils/trackEvent';
 
+let mockHomeAuth = { user: null, token: null };
+
 jest.mock('react-router-dom', () => {
   const React = require('react');
   const navigate = jest.fn();
   return {
-    Link: ({ children, to, ...props }) => React.createElement('a', { href: to, ...props }, children),
+    Link: ({ children, to, onClick, ...props }) => React.createElement('a', {
+      href: to,
+      onClick: (event) => { event.preventDefault(); onClick?.(event); },
+      ...props,
+    }, children),
     useNavigate: () => navigate,
     __navigate: navigate,
   };
 }, { virtual: true });
 jest.mock('../Header/Header', () => () => null);
 jest.mock('../../components/BrandLogo/BrandLogo', () => ({ alt = 'CodeIt', ...props }) => <img alt={alt} {...props} />);
-jest.mock('../../context/AuthContext', () => ({ useAuth: () => ({ user: null }) }));
+jest.mock('../../context/AuthContext', () => ({ useAuth: () => mockHomeAuth }));
+jest.mock('../../config/api', () => ({ API_BASE_URL: 'http://codeit.test' }));
 jest.mock('../../hooks/useSEO', () => ({ useSEO: jest.fn() }));
 jest.mock('../../utils/trackEvent', () => ({ trackEvent: jest.fn() }));
 
 describe('Home', () => {
   beforeEach(() => {
+    mockHomeAuth = { user: null, token: null };
     trackEvent.mockReset().mockResolvedValue(true);
+  });
+
+  afterEach(() => {
+    delete global.fetch;
   });
 
   test('gives parents a direct, measurable path to the family pilot', () => {
@@ -59,5 +71,24 @@ describe('Home', () => {
     expect(trackEvent).toHaveBeenCalledWith('landing_cta_click', 'hero-idea');
     expect(trackEvent).not.toHaveBeenCalledWith(expect.anything(), 'A space quiz about planets');
     expect(__navigate).toHaveBeenCalledWith('/builder?prompt=A%20space%20quiz%20about%20planets');
+  });
+
+  test('lets a returning student continue their latest project from the homepage', async () => {
+    mockHomeAuth = { user: { name: 'Alex' }, token: 'creator-token' };
+    global.fetch = jest.fn(() => Promise.resolve({
+      ok: true,
+      json: async () => ({
+        success: true,
+        projects: [{ id: 42, title: 'Mission Control Quiz' }],
+      }),
+    }));
+
+    render(<Home />);
+
+    const continueLink = await screen.findByRole('link', { name: 'Continue Mission Control Quiz' });
+    expect(continueLink).toHaveAttribute('href', '/builder?project=42');
+    fireEvent.click(continueLink);
+    expect(trackEvent).toHaveBeenCalledWith('landing_cta_click', 'member-resume-project', 'creator-token');
+    expect(trackEvent).not.toHaveBeenCalledWith(expect.anything(), 'Mission Control Quiz', expect.anything());
   });
 });

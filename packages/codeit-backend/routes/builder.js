@@ -1821,7 +1821,7 @@ router.get('/projects', requireAuth, async (req, res) => {
   try {
     const [rows] = await pool.query(
       `SELECT id, title, prompt, project_type, created_at, updated_at, public_id, is_public, view_count
-       FROM ai_projects WHERE user_id = ? ORDER BY created_at DESC`,
+       FROM ai_projects WHERE user_id = ? ORDER BY COALESCE(updated_at, created_at) DESC, created_at DESC`,
       [userId]
     );
     res.json({ success: true, projects: rows });

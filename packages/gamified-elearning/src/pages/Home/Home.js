@@ -1,6 +1,7 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { API_BASE_URL } from "../../config/api";
 import Header from "../Header/Header";
 import BrandLogo from "../../components/BrandLogo/BrandLogo";
 import { useSEO } from "../../hooks/useSEO";
@@ -127,10 +128,31 @@ function StudioPreview() {
 }
 
 export default function Home() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const navigate = useNavigate();
   const ideaInputRef = useRef(null);
   const [heroIdea, setHeroIdea] = useState("");
+  const [latestProject, setLatestProject] = useState(null);
+
+  useEffect(() => {
+    if (!user || !token) {
+      setLatestProject(null);
+      return undefined;
+    }
+
+    const controller = new AbortController();
+    fetch(`${API_BASE_URL}/api/builder/projects`, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: controller.signal,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success && data.projects?.length) setLatestProject(data.projects[0]);
+      })
+      .catch(() => {});
+
+    return () => controller.abort();
+  }, [user, token]);
 
   const startHeroIdea = (event) => {
     event.preventDefault();
@@ -186,6 +208,15 @@ export default function Home() {
                 <small>No account needed to try. Keep names and personal details private.</small>
               </form>
               <div className="studio-hero__actions">
+                {latestProject && (
+                  <Link
+                    to={`/builder?project=${encodeURIComponent(latestProject.id)}`}
+                    className="studio-button studio-button--primary"
+                    onClick={() => trackEvent("landing_cta_click", "member-resume-project", token)}
+                  >
+                    Continue {latestProject.title} <span aria-hidden="true">→</span>
+                  </Link>
+                )}
                 <Link
                   to={user ? "/MainPage" : "#how-it-works"}
                   className="studio-button studio-button--quiet"
