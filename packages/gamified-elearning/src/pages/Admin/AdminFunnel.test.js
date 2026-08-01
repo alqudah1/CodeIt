@@ -54,6 +54,10 @@ describe('admin acquisition funnel', () => {
             { event_name: 'pilot_confirmation', meta: 'not-sent', event_count: 1 },
           ],
           daily: [],
+          progress_email_delivery: [
+            { status: 'sent', delivery_count: 4 },
+            { status: 'failed', delivery_count: 1 },
+          ],
           source_funnel: [
             {
               source: 'instagram',
@@ -122,6 +126,11 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Setup emails sent').parentElement).toHaveTextContent('2');
     expect(screen.getByText('Setup emails not sent').parentElement).toHaveTextContent('1');
     expect(screen.getByText(/Contact addresses stay in the separate consented lead list/i)).toBeInTheDocument();
+    expect(screen.getByText('Parent progress email delivery')).toBeInTheDocument();
+    expect(screen.getByText('Delivery attempts').parentElement).toHaveTextContent('5');
+    expect(screen.getByText('Progress emails sent').parentElement).toHaveTextContent('4');
+    expect(screen.getByText('Progress emails failed').parentElement).toHaveTextContent('1');
+    expect(screen.getByText(/Parent addresses, learner names, and project titles are not included/i)).toBeInTheDocument();
     expect(screen.getByText('Opened beginner lessons').parentElement).toHaveTextContent('2');
     expect(screen.getByText(/idea itself is never stored in analytics/i)).toBeInTheDocument();
     expect(screen.getByText('Instagram', { selector: 'span' }).parentElement).toHaveTextContent('9');

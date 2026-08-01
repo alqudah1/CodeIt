@@ -67,7 +67,7 @@ async function getFunnelReport(requestedDays = 30) {
     if (!await tableReady) return null;
     await legacyParentReviewReady;
     const windowSql = `created_at >= DATE_SUB(NOW(), INTERVAL ${days} DAY)`;
-    const [[events], [daily], [breakdown], [sourceFunnel], [studentAgeRows], [accountLeads], directLeads] = await Promise.all([
+    const [[events], [daily], [breakdown], [sourceFunnel], [studentAgeRows], [progressDeliveries], [accountLeads], directLeads] = await Promise.all([
       pool.query(
         `SELECT event_name, COUNT(*) AS event_count, COUNT(DISTINCT user_id) AS unique_users,
                 COUNT(DISTINCT journey_id) AS unique_journeys,
@@ -145,6 +145,13 @@ async function getFunnelReport(requestedDays = 30) {
          FROM Users WHERE LOWER(role) = 'student'`
       ),
       pool.query(
+        `SELECT status, COUNT(*) AS delivery_count
+           FROM parent_notification_deliveries
+          WHERE created_at >= DATE_SUB(NOW(), INTERVAL ${days} DAY)
+          GROUP BY status
+          ORDER BY status`
+      ),
+      pool.query(
         `SELECT u.user_id, u.name, u.email, MAX(a.created_at) AS interested_at
          FROM analytics_events a
          INNER JOIN Users u ON u.user_id = a.user_id
@@ -181,6 +188,7 @@ async function getFunnelReport(requestedDays = 30) {
       breakdown,
       source_funnel: sourceFunnel,
       student_age_audit: studentAgeRows[0] || null,
+      progress_email_delivery: progressDeliveries,
       founding_leads: foundingLeads,
     };
   } catch (err) {

@@ -138,6 +138,10 @@ export default function AdminFunnel() {
   const pilotConfirmations = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'pilot_confirmation').map((row) => [row.meta, Number(row.event_count) || 0])
   ), [data]);
+  const progressDeliveries = useMemo(() => Object.fromEntries(
+    (data?.progress_email_delivery || []).map((row) => [row.status, Number(row.delivery_count) || 0])
+  ), [data]);
+  const progressDeliveryAttempts = Object.values(progressDeliveries).reduce((total, value) => total + value, 0);
   const acquisitionSources = useMemo(() => Object.fromEntries(
     (data?.breakdown || []).filter((row) => row.event_name === 'acquisition_visit').map((row) => [row.meta, Number(row.event_count) || 0])
   ), [data]);
@@ -256,6 +260,15 @@ export default function AdminFunnel() {
             <article><span>Setup emails not sent</span><strong>{fmt(pilotConfirmations['not-sent'])}</strong></article>
           </div>
           <p className="funnel-parent-note">This records only delivery status. Contact addresses stay in the separate consented lead list and are never placed in analytics.</p>
+
+          <div className="adm-section-head">Parent progress email delivery</div>
+          <div className="funnel-parent-grid">
+            <article><span>Delivery attempts</span><strong>{fmt(progressDeliveryAttempts)}</strong></article>
+            <article><span>Progress emails sent</span><strong>{fmt(progressDeliveries.sent)}</strong></article>
+            <article><span>Progress emails failed</span><strong>{fmt(progressDeliveries.failed)}</strong></article>
+            <article><span>Email service unavailable</span><strong>{fmt(progressDeliveries.not_configured)}</strong></article>
+          </div>
+          <p className="funnel-parent-note">Counts only delivery status for selected learner milestones. Parent addresses, learner names, and project titles are not included in this report.</p>
 
           <div className="adm-section-head">How visitors found CodeIt</div>
           <div className="funnel-parent-grid">
