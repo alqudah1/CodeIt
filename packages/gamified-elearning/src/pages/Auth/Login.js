@@ -10,13 +10,15 @@ import { resolveAuthDestination } from '../../utils/authDestination';
 import './Auth.css';
 
 export default function Login() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const location = useLocation();
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: { identifier: location.state?.managedUsername || '' },
+  });
   const [error, setError] = useState(null);
   const [showPw, setShowPw] = useState(false);
   const [role, setRole] = useState('student'); // 'student' | 'educator'
   const { login } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const searchParams = new URLSearchParams(location.search || '');
   const requestedPath = location.state?.from || (searchParams.get('from') === 'builder' ? '/builder' : null);
   const returnTo = typeof requestedPath === 'string' && requestedPath.startsWith('/') && !requestedPath.startsWith('//')

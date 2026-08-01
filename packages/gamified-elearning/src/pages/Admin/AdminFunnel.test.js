@@ -33,6 +33,7 @@ describe('admin acquisition funnel', () => {
             { event_name: 'activation_next_step', event_count: 3, unique_users: 2, unique_journeys: 2, attributed_events: 3 },
             { event_name: 'pilot_join', event_count: 3, unique_users: 1, unique_journeys: 3, attributed_events: 3 },
             { event_name: 'pilot_confirmation', event_count: 3, unique_users: 1, unique_journeys: 3, attributed_events: 3 },
+            { event_name: 'family_child_created', event_count: 2, unique_users: 2, unique_journeys: 2, attributed_events: 2 },
           ],
           breakdown: [
             { event_name: 'acquisition_visit', meta: 'instagram', event_count: 9 },
@@ -59,6 +60,7 @@ describe('admin acquisition funnel', () => {
               visits: 8,
               generated_projects: 4,
               completed_signups: 2,
+              managed_profiles: 1,
               saved_projects: 1,
               published_projects: 1,
               remixed_projects: 2,
@@ -114,6 +116,8 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Started with their own idea').parentElement).toHaveTextContent('5');
     expect(screen.getByText('Continued a saved project').parentElement).toHaveTextContent('3');
     expect(screen.getByText('Pilot request → setup email').parentElement).toHaveTextContent('67%');
+    expect(screen.getByText('Pilot request → learner profile').parentElement).toHaveTextContent('67%');
+    expect(screen.getByText('Managed learner profiles')).toBeInTheDocument();
     expect(screen.getByText('Family pilot follow-up')).toBeInTheDocument();
     expect(screen.getByText('Setup emails sent').parentElement).toHaveTextContent('2');
     expect(screen.getByText('Setup emails not sent').parentElement).toHaveTextContent('1');
@@ -126,7 +130,7 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Which sources create activated visitors')).toBeInTheDocument();
     expect(screen.getByText('Visit → build')).toBeInTheDocument();
     expect(screen.getByText('Remixed', { selector: 'th' })).toBeInTheDocument();
-    expect(screen.getByRole('row', { name: /Instagram 8 4 2 1 1 2 50%/i })).toBeInTheDocument();
+    expect(screen.getByRole('row', { name: /Instagram 8 4 2 1 1 1 2 50%/i })).toBeInTheDocument();
     expect(screen.getByText('Started family account setup').parentElement).toHaveTextContent('4');
     expect(screen.getByText('Tried a project').parentElement).toHaveTextContent('4');
     expect(screen.getByText('Viewed family pricing').parentElement).toHaveTextContent('2');

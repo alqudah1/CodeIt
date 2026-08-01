@@ -30,6 +30,7 @@ describe('builder authentication return', () => {
   beforeEach(() => {
     mockLocationState.from = '/builder';
     mockLocationState.resumeBuilderAction = 'publish';
+    delete mockLocationState.managedUsername;
     mockLocationSearch = '';
     mockNavigate.mockClear();
     mockLogin.mockClear();
@@ -63,6 +64,17 @@ describe('builder authentication return', () => {
     expect(screen.getByRole('heading', { name: 'Parent / Educator sign in' })).toBeInTheDocument();
     expect(screen.getByText('Access your account, projects, and available learning tools.')).toBeInTheDocument();
     expect(screen.queryByText(/class dashboard/i)).not.toBeInTheDocument();
+  });
+
+  test('a managed learner handoff prefills the username and returns to the builder', () => {
+    mockLocationState.from = '/builder';
+    delete mockLocationState.resumeBuilderAction;
+    mockLocationState.managedUsername = 'creative_coder';
+
+    render(<Login />);
+
+    expect(screen.getByLabelText('Username')).toHaveValue('creative_coder');
+    expect(screen.getByRole('heading', { name: 'Sign in to your account' })).toBeInTheDocument();
   });
 
   test('a returning student with no requested action lands on progress', async () => {

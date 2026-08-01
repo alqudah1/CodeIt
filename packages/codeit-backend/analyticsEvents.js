@@ -22,6 +22,7 @@ const EVENT_META = Object.freeze({
   pricing_interest: new Set(['founding-family']),
   pilot_join: new Set(['homepage', 'parents-guide', 'pricing']),
   pilot_confirmation: new Set(['sent', 'not-sent']),
+  family_child_created: new Set(),
 });
 
 const CLIENT_REPORTED_EVENTS = new Set(['acquisition_visit', 'landing_cta_click', 'learning_start', 'parent_guide_view', 'parent_cta_click', 'guest_draft_recovered', 'project_personalize', 'activation_account_gate', 'activation_next_step', 'project_share', 'return_use', 'pricing_view']);

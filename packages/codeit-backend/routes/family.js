@@ -12,6 +12,8 @@ const {
   verifyAdultEmail,
 } = require('../familyAccounts');
 const { JWT_SECRET } = require('../config');
+const { recordEvent } = require('../analytics');
+const { normalizeJourneyId } = require('../analyticsEvents');
 const {
   claimLegacyChild,
   getClaimPreview,
@@ -118,6 +120,10 @@ router.post('/legacy-review/claim', requireAuth, limited, async (req, res) => {
 router.post('/children', requireAuth, limited, async (req, res) => {
   try {
     const child = await createManagedChild(req.user.user_id, req.body);
+    void recordEvent('family_child_created', {
+      userId: req.user.user_id,
+      journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')),
+    });
     res.status(201).json({ success: true, child, status: await getFamilyStatus(req.user.user_id) });
   } catch (error) {
     res.status(error.statusCode || 500).json({

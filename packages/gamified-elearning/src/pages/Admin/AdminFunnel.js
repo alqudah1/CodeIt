@@ -26,6 +26,7 @@ const STAGES = [
   ['pricing_interest', 'Plan interest'],
   ['pilot_join', 'Pilot joins'],
   ['pilot_confirmation', 'Pilot confirmation attempts'],
+  ['family_child_created', 'Managed learner profiles'],
 ];
 
 const PARENT_ACTIONS = [
@@ -166,6 +167,7 @@ export default function AdminFunnel() {
     ['New accounts → return days', ratio(journeyMetric('return_use'), journeyMetric('signup_complete'))],
     ['Pricing view → interest', ratio(journeyMetric('pricing_interest'), journeyMetric('pricing_view'))],
     ['Pilot request → setup email', ratio(pilotConfirmations.sent || 0, counts.pilot_join || 0)],
+    ['Pilot request → learner profile', ratio(journeyMetric('family_child_created'), journeyMetric('pilot_join'))],
     ['Parent guide → pilot join', ratio(pilotJoinSources['parents-guide'] || 0, journeyMetric('parent_guide_view'))],
   ] : [];
 
@@ -275,6 +277,7 @@ export default function AdminFunnel() {
                   <th>Visits</th>
                   <th>Generated</th>
                   <th>Signed up</th>
+                  <th>Learner profile</th>
                   <th>Saved</th>
                   <th>Published</th>
                   <th>Remixed</th>
@@ -283,7 +286,7 @@ export default function AdminFunnel() {
               </thead>
               <tbody>
                 {sourceFunnel.length === 0 && (
-                  <tr><td colSpan={8} className="adm-loading">Journey attribution starts with the next new visitor session.</td></tr>
+                  <tr><td colSpan={9} className="adm-loading">Journey attribution starts with the next new visitor session.</td></tr>
                 )}
                 {sourceFunnel.map((source) => (
                   <tr key={source.source}>
@@ -291,6 +294,7 @@ export default function AdminFunnel() {
                     <td><strong>{fmt(source.visits)}</strong></td>
                     <td>{fmt(source.generated_projects)}</td>
                     <td>{fmt(source.completed_signups)}</td>
+                    <td>{fmt(source.managed_profiles)}</td>
                     <td>{fmt(source.saved_projects)}</td>
                     <td>{fmt(source.published_projects)}</td>
                     <td>{fmt(source.remixed_projects)}</td>

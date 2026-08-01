@@ -486,7 +486,13 @@
   gap: 0.45rem;
 }
 
-.profile-family__child-actions button:first-child {
+.profile-family__child-actions button.is-primary {
+  border-color: #f87824;
+  background: #f87824;
+  color: #fff;
+}
+
+.profile-family__child-actions button.is-secondary {
   border-color: #e2c7a7;
   background: #fff9ef;
   color: #8b5b00;

@@ -6,6 +6,7 @@ import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
 import Header from '../Header/Header';
 import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
+import { journeyHeaders } from '../../utils/journey';
 import './Profile.css';
 
 const XP_PER_LEVEL = 100;
@@ -33,7 +34,7 @@ export default function Profile() {
     robots: 'noindex,nofollow',
   });
 
-  const { user, token }          = useContext(AuthContext);
+  const { user, token, logout }  = useContext(AuthContext);
   const { character, stats }     = useCharacter();
   const navigate                 = useNavigate();
   const [projectCount, setProjectCount] = useState(null);
@@ -196,6 +197,7 @@ export default function Profile() {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
+          ...journeyHeaders(),
         },
         body: JSON.stringify({
           ...childForm,
@@ -213,7 +215,7 @@ export default function Profile() {
         consent: false,
         progressEmails: false,
       });
-      setFamilyMessage(`Private learner profile “${data.child.username}” created. They can now sign in with that username.`);
+      setFamilyMessage(`Private learner profile “${data.child.username}” created. Use “Switch to learner” below to open their first project.`);
     } catch (error) {
       setFamilyMessage(error.message);
     } finally {
@@ -290,6 +292,17 @@ export default function Profile() {
     } finally {
       setFamilySaving(false);
     }
+  };
+
+  const switchToLearner = (child) => {
+    const confirmed = window.confirm(
+      `Switch to ${child.username}? This signs out the parent account on this device and opens the learner sign-in.`
+    );
+    if (!confirmed) return;
+    logout();
+    navigate('/login', {
+      state: { managedUsername: child.username, from: '/builder' },
+    });
   };
 
   if (!user) return null;
@@ -597,6 +610,15 @@ export default function Profile() {
                         </div>
                         <div className="profile-family__child-actions">
                           <button
+                            className="is-primary"
+                            type="button"
+                            onClick={() => switchToLearner(child)}
+                            disabled={familySaving}
+                          >
+                            Switch to learner
+                          </button>
+                          <button
+                            className="is-secondary"
                             type="button"
                             onClick={() => toggleChildProgressEmails(child)}
                             disabled={familySaving}

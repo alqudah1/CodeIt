@@ -19,6 +19,7 @@ test('accepts only the fixed product event vocabulary', () => {
   assert.equal(normalizeEventName('parent_guide_view'), 'parent_guide_view');
   assert.equal(normalizeEventName('pilot_join'), 'pilot_join');
   assert.equal(normalizeEventName('pilot_confirmation'), 'pilot_confirmation');
+  assert.equal(normalizeEventName('family_child_created'), 'family_child_created');
   assert.equal(normalizeEventName('guest_draft_recovered'), 'guest_draft_recovered');
   assert.equal(normalizeEventName('prompt_submitted'), null);
   assert.equal(normalizeEventName({ event: 'return_use' }), null);
@@ -71,6 +72,7 @@ test('limits browser-reported events to events the server cannot infer', () => {
   assert.equal(CLIENT_REPORTED_EVENTS.has('pricing_interest'), false);
   assert.equal(CLIENT_REPORTED_EVENTS.has('pilot_join'), false);
   assert.equal(CLIENT_REPORTED_EVENTS.has('pilot_confirmation'), false);
+  assert.equal(CLIENT_REPORTED_EVENTS.has('family_child_created'), false);
   assert.equal(CLIENT_REPORTED_EVENTS.has('project_share'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('project_personalize'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('activation_account_gate'), true);
