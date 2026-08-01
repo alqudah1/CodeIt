@@ -633,6 +633,15 @@ export default function Builder() {
   const isNewAccountWelcome = Boolean(user)
     && new URLSearchParams(location.search || '').get('welcome') === '1';
 
+  useEffect(() => {
+    if (!isNewAccountWelcome || !token) return;
+    const accountKey = user?.id || user?.userId || 'account';
+    const storageKey = `codeit_new_account_studio_${accountKey}`;
+    if (sessionStorage.getItem(storageKey)) return;
+    sessionStorage.setItem(storageKey, '1');
+    void trackEvent('new_account_studio_view', null, token);
+  }, [isNewAccountWelcome, token, user?.id, user?.userId]);
+
   // ── Build state ────────────────────────────────────────────────────────────
   const [prompt, setPrompt]             = useState('');
   const [builtPrompt, setBuiltPrompt]   = useState('');

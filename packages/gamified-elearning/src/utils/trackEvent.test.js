@@ -95,6 +95,18 @@ describe("trackEvent", () => {
     );
   });
 
+  test("records a new account reaching the studio without account details", async () => {
+    await expect(trackEvent("new_account_studio_view", null, "student-token")).resolves.toBe(true);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/api/analytics/event"),
+      expect.objectContaining({
+        headers: expect.objectContaining({ Authorization: "Bearer student-token" }),
+        body: JSON.stringify({ event_name: "new_account_studio_view", meta: null }),
+      })
+    );
+  });
+
   test("records only a fixed post-save choice", async () => {
     await expect(trackEvent("activation_next_step", "publish")).resolves.toBe(true);
 

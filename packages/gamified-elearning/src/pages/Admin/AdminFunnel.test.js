@@ -27,6 +27,8 @@ describe('admin acquisition funnel', () => {
             { event_name: 'parent_cta_click', event_count: 11, unique_users: 0, unique_journeys: 7, attributed_events: 9 },
             { event_name: 'builder_start', event_count: 12, unique_users: 2, unique_journeys: 10, attributed_events: 10 },
             { event_name: 'generation_complete', event_count: 10, unique_users: 2, unique_journeys: 8, attributed_events: 8 },
+            { event_name: 'signup_complete', event_count: 6, unique_users: 6, unique_journeys: 6, attributed_events: 6 },
+            { event_name: 'new_account_studio_view', event_count: 5, unique_users: 5, unique_journeys: 5, attributed_events: 5 },
             { event_name: 'project_personalize', event_count: 6, unique_users: 2, unique_journeys: 5, attributed_events: 5 },
             { event_name: 'project_save', event_count: 4, unique_users: 2, unique_journeys: 3, attributed_events: 3 },
             { event_name: 'project_remix', event_count: 2, unique_users: 2, unique_journeys: 2, attributed_events: 2 },
@@ -105,7 +107,7 @@ describe('admin acquisition funnel', () => {
     await waitFor(() => expect(screen.getByText('Parent acquisition actions')).toBeInTheDocument());
     expect(screen.getByText('Measurement health')).toBeInTheDocument();
     expect(screen.getByText('14 attributable visitor journeys')).toBeInTheDocument();
-    expect(screen.getByText('83%')).toBeInTheDocument();
+    expect(screen.getByText('Builder events connected to a journey').parentElement).toHaveTextContent('83%');
     expect(screen.getByText(/6 more needed/i)).toBeInTheDocument();
     expect(screen.getByText('Projects shared')).toBeInTheDocument();
     expect(screen.getByText('Learning starts')).toBeInTheDocument();
@@ -114,6 +116,8 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Projects remixed')).toBeInTheDocument();
     expect(screen.getByText('Finish steps chosen')).toBeInTheDocument();
     expect(screen.getByText('Generated → personalized').parentElement).toHaveTextContent('63%');
+    expect(screen.getByText('New accounts reaching studio')).toBeInTheDocument();
+    expect(screen.getByText('New account → studio').parentElement).toHaveTextContent('83%');
     expect(screen.getByText('Personalized → saved').parentElement).toHaveTextContent('60%');
     expect(screen.getByText('Published → shared')).toBeInTheDocument();
     expect(screen.getByText('Shared visitors → remixed')).toBeInTheDocument();

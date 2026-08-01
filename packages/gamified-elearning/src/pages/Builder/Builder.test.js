@@ -100,6 +100,7 @@ describe('project studio opening', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Your account is ready.');
     expect(screen.getByRole('status')).toHaveTextContent('Your first saved project will stay in this account.');
     expect(screen.getByRole('button', { name: /Build a Game/i })).toBeInTheDocument();
+    expect(trackEvent).toHaveBeenCalledWith('new_account_studio_view', null, 'student-token');
   });
 
   test('preserves a guest project before opening the save account gate', async () => {
