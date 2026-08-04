@@ -27,7 +27,10 @@ describe('parent acquisition page', () => {
     useSEO.mockClear();
     useFAQSchema.mockClear();
     trackEvent.mockClear();
-    global.fetch = jest.fn().mockResolvedValue({ ok: true });
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ saved: true, confirmationSent: true }),
+    });
   });
 
   afterEach(() => delete global.fetch);
@@ -40,8 +43,8 @@ describe('parent acquisition page', () => {
     expect(screen.getByRole('link', { name: 'Try a free project together' })).toHaveAttribute('href', '/builder');
     expect(screen.getByRole('link', { name: 'Join the free parent pilot' })).toHaveAttribute('href', '#parent-pilot');
     expect(screen.getByText('Saved projects stay private until Publish.')).toBeInTheDocument();
-    expect(screen.getByText('Private parent-managed profiles begin at age 8.')).toBeInTheDocument();
-    expect(screen.getByText(/Ages 8–12 start through a free parent or guardian account/i)).toBeInTheDocument();
+    expect(screen.getByText('Private parent-managed profiles begin at age 5.')).toBeInTheDocument();
+    expect(screen.getByText(/Ages 5–12 start through a free parent or guardian account/i)).toBeInTheDocument();
     expect(screen.queryByText(/ages 8–14/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/everything is free/i)).not.toBeInTheDocument();
   });
@@ -76,9 +79,9 @@ describe('parent acquisition page', () => {
       target: { value: 'parent@example.com' },
     });
     fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: 'Join the pilot list' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Request pilot spot' }));
 
-    await waitFor(() => expect(screen.getByText(/You’re on the Founding Family pilot list/i)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(/Your Founding Family pilot request is saved/i)).toBeInTheDocument());
     expect(global.fetch).toHaveBeenCalledWith('/api/founding-waitlist', expect.objectContaining({
       method: 'POST',
       body: JSON.stringify({
@@ -88,7 +91,7 @@ describe('parent acquisition page', () => {
         company: '',
       }),
     }));
-    expect(screen.getByText(/Nothing starts automatically/i)).toBeInTheDocument();
+    expect(screen.getByText(/Nothing paid starts automatically/i)).toBeInTheDocument();
     expect(useSEO).toHaveBeenCalledWith(expect.objectContaining({ canonical: '/coding-for-kids' }));
     expect(useFAQSchema).toHaveBeenCalledWith(expect.arrayContaining([
       expect.objectContaining({ q: 'What age is CodeIt for?' }),

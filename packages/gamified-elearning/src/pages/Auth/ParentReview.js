@@ -7,7 +7,7 @@ import { useSEO } from '../../hooks/useSEO';
 import BrandLogo from '../../components/BrandLogo/BrandLogo';
 import './Auth.css';
 
-const NOTICE_VERSION = '2026-07-28';
+const NOTICE_VERSION = '2026-08-04';
 const CLAIM_STORAGE_KEY = 'codeit_parent_claim_token';
 const REVIEW_STORAGE_KEY = 'codeit_parent_review_token';
 

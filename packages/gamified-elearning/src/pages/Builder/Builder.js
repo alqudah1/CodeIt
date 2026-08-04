@@ -568,6 +568,39 @@ const EDIT_STEPS = [
   'Almost done',
 ];
 
+const EASY_EDIT_IDEAS = {
+  game: [
+    { icon: '🎨', label: 'Change the colors', instruction: 'Change the game to bright rainbow colors.' },
+    { icon: '⭐', label: 'Add a power-up', instruction: 'Add a fun star power-up that helps the player.' },
+    { icon: '🏆', label: 'Add a win screen', instruction: 'Add a colorful celebration screen when the player wins.' },
+  ],
+  website: [
+    { icon: '🎨', label: 'Change the colors', instruction: 'Change the website to bright rainbow colors.' },
+    { icon: '🖼️', label: 'Add a picture spot', instruction: 'Add a big friendly picture section near the top.' },
+    { icon: '✨', label: 'Make buttons move', instruction: 'Add a fun bounce animation when buttons are pressed.' },
+  ],
+  default: [
+    { icon: '🎨', label: 'Change the colors', instruction: 'Change the project to bright rainbow colors.' },
+    { icon: '🔤', label: 'Make words bigger', instruction: 'Make the important words bigger and easier to read.' },
+    { icon: '✨', label: 'Add movement', instruction: 'Add a fun gentle animation to the main button.' },
+  ],
+};
+
+function getEasyEditIdeas(type) {
+  return /game|quiz|clicker|runner|memory|reaction|soccer/.test(type || '')
+    ? EASY_EDIT_IDEAS.game
+    : /website|portfolio|restaurant|shop|sports|blog|landing/.test(type || '')
+      ? EASY_EDIT_IDEAS.website
+      : EASY_EDIT_IDEAS.default;
+}
+
+function friendlyWait(seconds) {
+  const safeSeconds = Math.max(0, Number(seconds) || 0);
+  if (safeSeconds < 60) return `${safeSeconds} second${safeSeconds === 1 ? '' : 's'}`;
+  const minutes = Math.ceil(safeSeconds / 60);
+  return `${minutes} minute${minutes === 1 ? '' : 's'}`;
+}
+
 // Bridge script injected into the iframe for live element editing via postMessage
 const EDITOR_BRIDGE = `(function(){if(window.self===window.top)return;var em=false,sel=null,hov=null;function eid(el){if(!el.id)el.id='ce-'+Math.random().toString(36).slice(2,8);return el.id;}function isEl(el){return el&&el!==document.body&&el!==document.documentElement&&el.nodeType===1;}function clrHov(){if(hov){hov.style.outline='';hov.style.outlineOffset='';hov=null;}}function onOver(e){clrHov();if(!em||!isEl(e.target))return;hov=e.target;hov.style.outline='2.5px solid #FF7A00';hov.style.outlineOffset='2px';}function onClk(e){if(!em)return;e.preventDefault();e.stopPropagation();var el=e.target;if(!isEl(el))return;if(sel&&sel!==el){sel.style.outline='';}sel=el;sel.style.outline='2.5px solid #A855F7';var r=el.getBoundingClientRect();var cs=window.getComputedStyle(el);var t=el.tagName.toLowerCase();window.parent.postMessage({type:'CODEIT_SELECTED',id:eid(el),tag:t,text:el.textContent.slice(0,300),rect:{top:r.top+window.scrollY,left:r.left,w:r.width,h:r.height},styles:{color:cs.color,bg:cs.backgroundColor,fs:cs.fontSize,fw:cs.fontWeight,br:cs.borderRadius,anim:cs.animationName,pt:cs.paddingTop,pb:cs.paddingBottom,pl:cs.paddingLeft,pr:cs.paddingRight},isText:['p','h1','h2','h3','h4','h5','h6','span','li','a','label','td','th','button'].includes(t),isBtn:['button','a'].includes(t),isImg:t==='img'},'*');}function sync(){setTimeout(function(){window.parent.postMessage({type:'CODEIT_SYNC',html:document.documentElement.outerHTML},'*');},80);}window.addEventListener('message',function(e){if(e.source!==window.parent||!e.data||e.data.type!=='CODEIT_CMD')return;var d=e.data,p=d.payload||{};if(d.cmd==='ENABLE'){em=true;document.body.style.cursor='crosshair';document.addEventListener('mouseover',onOver,true);document.addEventListener('click',onClk,true);}if(d.cmd==='DISABLE'){em=false;document.body.style.cursor='';clrHov();if(sel){sel.style.outline='';sel=null;}document.removeEventListener('mouseover',onOver,true);document.removeEventListener('click',onClk,true);window.parent.postMessage({type:'CODEIT_HTML',html:document.documentElement.outerHTML},'*');}if(d.cmd==='SET_TEXT'){var el=document.getElementById(p.id)||(sel);if(el){el.textContent=p.v;}sync();}if(d.cmd==='SET_STYLE'){var el=document.getElementById(p.id)||(sel);if(el)Object.assign(el.style,p.styles);sync();}if(d.cmd==='SET_PATCH'){var el=document.getElementById(p.id);if(el){var tmp=document.createElement('div');tmp.innerHTML=p.html;var newEl=tmp.firstElementChild||tmp;el.replaceWith(newEl);}sync();}if(d.cmd==='GET_HTML'){window.parent.postMessage({type:'CODEIT_HTML',html:document.documentElement.outerHTML},'*');}if(d.cmd==='DESELECT'){if(sel){sel.style.outline='';sel=null;}}if(d.cmd==='SET_ROOT_VARS'){var sv=document.getElementById('__ci_vars');if(!sv){sv=document.createElement('style');sv.id='__ci_vars';document.head.appendChild(sv);}var css=':root{';Object.keys(p.vars||{}).forEach(function(k){css+=k+':'+p.vars[k]+';';});css+='}';sv.textContent=css;}if(d.cmd==='RUN_SCRIPT'){try{(new Function(p.js||''))();}catch(e){}}});window.parent.postMessage({type:'CODEIT_READY'},'*');})();`;
 
@@ -673,6 +706,7 @@ export default function Builder() {
   const [editing, setEditing]                 = useState(false);
   const [editStep, setEditStep]               = useState(0);
   const [editError, setEditError]             = useState('');
+  const [editRetrySeconds, setEditRetrySeconds] = useState(0);
 
   // ── Explain ────────────────────────────────────────────────────────────────
   const [explanation, setExplanation]   = useState('');
@@ -1135,6 +1169,14 @@ export default function Builder() {
     return () => timers.forEach(clearTimeout);
   }, [editing]);
 
+  useEffect(() => {
+    if (editRetrySeconds <= 0) return undefined;
+    const timer = setTimeout(() => {
+      setEditRetrySeconds(seconds => Math.max(0, seconds - 1));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [editRetrySeconds]);
+
   // ── Auto-focus edit textarea when panel opens ──────────────────────────────
   useEffect(() => {
     if (showEditPanel) editRef.current?.focus();
@@ -1363,7 +1405,7 @@ export default function Builder() {
 
   // ── Edit with AI — modifies existing code, never starts from scratch ───────
   const applyEdit = async (instruction) => {
-    if (!code || !instruction.trim() || editing) return;
+    if (!code || !instruction.trim() || editing || editRetrySeconds > 0) return;
     setEditing(true);
     setEditError('');
     const snapshot = code; // save fallback before we touch anything
@@ -1373,7 +1415,11 @@ export default function Builder() {
       const res  = await fetch(`${API_BASE_URL}/api/builder/edit`, {
         method:  'POST',
         signal:  controller.signal,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...journeyHeaders(),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body:    JSON.stringify({
           currentCode:    code,
           currentTitle:   aiTitle || projectName,
@@ -1383,6 +1429,12 @@ export default function Builder() {
       });
       clearTimeout(timeoutId);
       const data = await res.json();
+      if (res.status === 429) {
+        const headerSeconds = Number(res.headers?.get?.('retry-after'));
+        setEditRetrySeconds(Number(data.retryAfterSeconds) || headerSeconds || 60);
+        setEditError('AI_LIMIT');
+        return;
+      }
       if (!res.ok) throw new Error(data.error || 'Edit failed');
       const html = data.html || data.code;
       if (!isValidHtml(html)) throw new Error('The builder returned invalid code — your project was not changed.');
@@ -1394,6 +1446,7 @@ export default function Builder() {
       setIsSaved(false);
       setSaveStatus(null);
       setEditInstruction('');
+      setEditRetrySeconds(0);
       pushLocalVersion(`Edit: ${instruction.slice(0, 45)}`, html, [...promptHistory, instruction.trim()], aiTitle);
       trackPersonalizationOnce();
       // Don't rebuildKey — keeps iframe alive; srcdoc update re-renders the content
@@ -2850,7 +2903,7 @@ export default function Builder() {
                 onClick={() => { setShowEditPanel(p => !p); setEditError(''); if (editModeOn) toggleEditMode(); }}
                 disabled={editing}
               >
-                {showEditPanel ? 'Close changes' : 'Describe a change'}
+                {showEditPanel ? 'Close changes' : 'Change my project'}
               </button>
 
               <button
@@ -2904,30 +2957,67 @@ export default function Builder() {
             {showEditPanel && (
               <div className="bldr-edit-panel">
                 <div className="bldr-edit-panel__header">
-                  <span className="bldr-edit-panel__title">Describe a change</span>
+                  <span className="bldr-edit-panel__title">What should we change?</span>
                   {promptHistory.length > 0 && (
-                    <span className="bldr-edit-panel__badge">{promptHistory.length} prompt{promptHistory.length > 1 ? 's' : ''} in memory</span>
+                    <span className="bldr-edit-panel__badge">We remember {promptHistory.length} change{promptHistory.length > 1 ? 's' : ''}</span>
                   )}
                 </div>
 
+                <div className="bldr-edit-panel__guide" role="group" aria-label="How to change your project">
+                  <span><b>1</b> Pick an idea</span>
+                  <span><b>2</b> Press the purple button</span>
+                  <span><b>3</b> Play it again</span>
+                </div>
+
+                <div className="bldr-edit-panel__ideas" aria-label="Easy change ideas">
+                  {getEasyEditIdeas(projectType).map(idea => (
+                    <button
+                      key={idea.label}
+                      type="button"
+                      className="bldr-edit-panel__idea"
+                      onClick={() => { setEditInstruction(idea.instruction); setEditError(''); }}
+                      disabled={editing}
+                    >
+                      <span aria-hidden="true">{idea.icon}</span>{idea.label}
+                    </button>
+                  ))}
+                </div>
+
                 <div className="bldr-edit-panel__input-wrap">
+                  <label className="bldr-edit-panel__label" htmlFor="codeit-change-box">Or type your own idea</label>
                   <textarea
+                    id="codeit-change-box"
                     ref={editRef}
                     className="bldr-edit-panel__textarea"
-                    placeholder="Describe a change — e.g. make it harder, add a sound effect placeholder, change the color to blue, add a high score..."
+                    placeholder="Example: Make the game blue and add stars"
                     value={editInstruction}
                     onChange={e => setEditInstruction(e.target.value)}
                     onKeyDown={handleEditKeyDown}
                     rows={3}
                     disabled={editing}
                   />
-                  <div className="bldr-textarea-hint">Ctrl+Enter to apply</div>
+                  <div className="bldr-textarea-hint">Tell CodeIt one change at a time</div>
                 </div>
 
-                {editError && (
+                {editError === 'AI_LIMIT' && (
+                  <div className="bldr-edit-panel__pause" role="status">
+                    <span className="bldr-edit-panel__pause-icon" aria-hidden="true">🪄</span>
+                    <div>
+                      <p className="bldr-edit-panel__pause-title">Your project is safe!</p>
+                      <p>The magic helper needs a break. Try it again in <strong>{friendlyWait(editRetrySeconds)}</strong>.</p>
+                      <p>You can keep playing or change the colors while you wait.</p>
+                    </div>
+                    <div className="bldr-edit-panel__pause-actions">
+                      <button type="button" onClick={() => { setIsPlayMode(true); setShowEditPanel(false); }}>▶ Play my project</button>
+                      <button type="button" onClick={() => { setStudioPanel('colors'); setShowEditPanel(false); }}>🎨 Change colors</button>
+                    </div>
+                  </div>
+                )}
+
+                {editError && editError !== 'AI_LIMIT' && (
                   <div className="bldr-edit-panel__error-block">
                     <p className="bldr-edit-panel__error-main">
-                      That edit didn't work.{previousCode ? ' Your last working version is preserved.' : ''}
+                      We could not make that change.{previousCode ? ' Your project is still safe.' : ''}
                     </p>
                     <p className="bldr-edit-panel__error-detail">{editError}</p>
                     {previousCode && (
@@ -2942,11 +3032,13 @@ export default function Builder() {
                   <button
                     className="bldr-edit-panel__apply-btn"
                     onClick={() => applyEdit(editInstruction)}
-                    disabled={!editInstruction.trim() || editing}
+                    disabled={!editInstruction.trim() || editing || editRetrySeconds > 0}
                   >
                     {editing
                       ? <><span className="bldr-spinner bldr-spinner--btn" />{EDIT_STEPS[editStep] || 'Applying...'}...</>
-                      : 'Apply changes'}
+                      : editRetrySeconds > 0
+                        ? `Wait ${friendlyWait(editRetrySeconds)}`
+                        : 'Make my change'}
                   </button>
 
                   {previousCode && !editError && (

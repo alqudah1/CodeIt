@@ -10,10 +10,11 @@ const {
 
 const TODAY = new Date('2026-07-28T12:00:00Z');
 
-test('accepts only managed learners ages 8 through 12', () => {
+test('accepts only managed learners ages 5 through 12', () => {
+  assert.deepEqual(managedChildEligibility('2021-07-28', TODAY), { allowed: true, reason: 'managed', age: 5 });
   assert.deepEqual(managedChildEligibility('2018-07-28', TODAY), { allowed: true, reason: 'managed', age: 8 });
   assert.deepEqual(managedChildEligibility('2013-07-29', TODAY), { allowed: true, reason: 'managed', age: 12 });
-  assert.deepEqual(managedChildEligibility('2019-07-29', TODAY), { allowed: false, reason: 'too_young', age: 6 });
+  assert.deepEqual(managedChildEligibility('2022-07-29', TODAY), { allowed: false, reason: 'too_young', age: 3 });
   assert.deepEqual(managedChildEligibility('2013-07-28', TODAY), { allowed: false, reason: 'independent_account', age: 13 });
 });
 

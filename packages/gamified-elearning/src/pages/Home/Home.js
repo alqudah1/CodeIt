@@ -178,7 +178,7 @@ export default function Home() {
 
   useSEO({
     title: "CodeIt: Build Websites, Learn Code & Share Projects",
-    description: "CodeIt helps students ages 8–18 build real websites, games, and quizzes, then learn, edit, save, and share the code behind them.",
+    description: "CodeIt helps students ages 5–18 build real websites, games, and quizzes, then learn, edit, save, and share the code behind them.",
     canonical: "/",
   });
 
@@ -323,7 +323,7 @@ export default function Home() {
               <small>Available from a student profile. Emails begin only after a parent confirms and chooses the updates they receive.</small>
               <div className="studio-family__setup">
                 <div>
-                  <strong>Using CodeIt with a learner ages 8–12?</strong>
+                  <strong>Using CodeIt with a learner ages 5–12?</strong>
                   <span>Create a free adult account, confirm your email, and make their private profile.</span>
                 </div>
                 <Link

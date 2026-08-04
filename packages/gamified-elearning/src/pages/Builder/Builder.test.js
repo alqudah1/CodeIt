@@ -180,6 +180,61 @@ describe('project studio opening', () => {
     expect(trackEvent).toHaveBeenCalledWith('project_personalize', null, null);
   });
 
+  test('guides a young creator through one-tap change ideas and sends their signed-in identity', async () => {
+    render(
+      <AuthContext.Provider value={{ user: { id: 17, name: 'Young Coder', role: 'Student' }, token: 'student-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
+    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
+    fireEvent.click(screen.getByRole('button', { name: 'Change my project' }));
+
+    expect(screen.getByRole('group', { name: 'How to change your project' })).toHaveTextContent('Pick an idea');
+    fireEvent.click(screen.getByRole('button', { name: /Change the colors/i }));
+    expect(screen.getByLabelText('Or type your own idea')).toHaveValue('Change the game to bright rainbow colors.');
+    fireEvent.click(screen.getByRole('button', { name: 'Make my change' }));
+
+    await waitFor(() => {
+      const editRequest = global.fetch.mock.calls.find(([url]) => url === 'http://codeit.test/api/builder/edit');
+      expect(editRequest[1].headers).toEqual(expect.objectContaining({
+        Authorization: 'Bearer student-token',
+        'X-CodeIt-Journey': expect.stringMatching(/^[0-9a-f-]{36}$/i),
+      }));
+    });
+  });
+
+  test('turns an AI limit into a clear wait time with useful non-AI choices', async () => {
+    render(<Builder />);
+
+    fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
+    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
+
+    const normalFetch = global.fetch.getMockImplementation();
+    global.fetch.mockImplementation((url, options = {}) => {
+      if (String(url).endsWith('/api/builder/edit')) {
+        return Promise.resolve({
+          ok: false,
+          status: 429,
+          headers: { get: name => name.toLowerCase() === 'retry-after' ? '120' : 'application/json' },
+          json: async () => ({ code: 'AI_LIMIT_REACHED', retryAfterSeconds: 120 }),
+        });
+      }
+      return normalFetch(url, options);
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Change my project' }));
+    fireEvent.click(screen.getByRole('button', { name: /Add a power-up/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'Make my change' }));
+
+    expect(await screen.findByRole('status')).toHaveTextContent('Your project is safe!');
+    expect(screen.getByRole('status')).toHaveTextContent('2 minutes');
+    expect(screen.getByRole('button', { name: /Play my project/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Change colors/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Wait 2 minutes/i })).toBeDisabled();
+  }, 10000);
+
   test('backs up a generated guest project only in the current browser', async () => {
     render(<Builder />);
 

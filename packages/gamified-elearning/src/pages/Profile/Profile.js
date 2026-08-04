@@ -492,7 +492,7 @@ export default function Profile() {
             <div className="profile-parent__heading">
               <div>
                 <p className="profile-parent__eyebrow">Parent-managed access</p>
-                <h2 id="family-controls-title">Private profiles for ages 8–12</h2>
+                <h2 id="family-controls-title">Private profiles for ages 5–12</h2>
               </div>
               {familyStatus && (
                 <span className={`profile-parent__status ${familyStatus.emailVerified ? 'is-verified' : 'is-pending'}`}>

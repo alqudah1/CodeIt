@@ -195,7 +195,7 @@ export default function Register() {
               <span className="auth-path-card__title">
                 {hasBuilderDraft ? 'Continue with a Parent or Educator' : 'I am a Parent or Educator'}
               </span>
-              <span className="auth-path-card__desc">Required to manage a private profile for ages 8–12</span>
+              <span className="auth-path-card__desc">Required to manage a private profile for ages 5–12</span>
             </button>
 
             <button className="auth-path-card auth-path-card--guest" onClick={() => navigate('/builder')}>
@@ -209,7 +209,7 @@ export default function Register() {
           </div>
 
           <div className="auth-educator-note">
-            Ages 8–12: ask a parent or legal guardian to create a private managed profile.
+            Ages 5–12: ask a parent or legal guardian to create a private managed profile.
           </div>
 
           <div className="auth-footer">
@@ -305,7 +305,7 @@ export default function Register() {
               />
               {errS.dob && <span className="error">{errS.dob.message}</span>}
               {!errS.dob && (
-                <span className="auth-hint">Independent student accounts are for ages 13–18. A parent or guardian can create a private profile for ages 8–12.</span>
+                <span className="auth-hint">Independent student accounts are for ages 13–18. A parent or guardian can create a private profile for ages 5–12.</span>
               )}
             </div>
 
@@ -400,13 +400,13 @@ export default function Register() {
                 : hasBuilderDraft
                   ? 'Your project is safe. After this setup, we’ll bring you back to finish.'
                 : familyEntry
-                  ? 'Start with your adult account. After confirming your email, you can create a private profile for a learner ages 8–12.'
+                  ? 'Start with your adult account. After confirming your email, you can create a private profile for a learner ages 5–12.'
                   : 'Create an adult account for family or classroom use.'}
             </p>
           </header>
 
           <div className="auth-educator-note">
-            After signup, confirm your adult email to create a private learner profile for ages 8–12.
+            After signup, confirm your adult email to create a private learner profile for ages 5–12.
           </div>
 
           <form className="auth-form" onSubmit={submitE(onEducatorSubmit)}>

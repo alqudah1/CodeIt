@@ -135,13 +135,13 @@ async function sendVerificationEmail(adult, token) {
       from: EMAIL_FROM,
       to: [adult.email],
       subject: 'Confirm your CodeIt family email',
-      text: `Confirm this email before creating a private CodeIt profile for a learner ages 8–12: ${verifyUrl}`,
+      text: `Confirm this email before creating a private CodeIt profile for a learner ages 5–12: ${verifyUrl}`,
       html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;color:#3d302b">
           <div style="font-size:24px;font-weight:800;color:#f87824">CodeIt</div>
           <h1 style="font-size:24px">Confirm your family email</h1>
           <p>Hello ${String(adult.name || 'there').replace(/[<>&"']/g, '')},</p>
-          <p>Confirm that you control this adult account before creating a private CodeIt profile for a learner ages 8–12.</p>
+          <p>Confirm that you control this adult account before creating a private CodeIt profile for a learner ages 5–12.</p>
           <p>The child profile uses a non-identifying username, birthday, password hash, learning progress, and private projects. Public publishing stays off for managed younger profiles.</p>
           <p><a href="${verifyUrl}" style="display:inline-block;padding:13px 20px;border-radius:10px;background:#f87824;color:white;text-decoration:none;font-weight:700">Confirm family email</a></p>
           <p style="font-size:12px;color:#72594d">This link expires in 48 hours. If you did not request it, ignore this email.</p>

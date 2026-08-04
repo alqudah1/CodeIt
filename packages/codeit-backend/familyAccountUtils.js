@@ -2,8 +2,8 @@
 
 const { ageOnDate } = require('./studentAge');
 
-const FAMILY_NOTICE_VERSION = '2026-07-28';
-const MIN_MANAGED_AGE = 8;
+const FAMILY_NOTICE_VERSION = '2026-08-04';
+const MIN_MANAGED_AGE = 5;
 const MAX_MANAGED_AGE = 12;
 
 function normalizeUsername(value) {
@@ -39,7 +39,7 @@ function validateManagedChildInput(input = {}, now = new Date()) {
   }
   if (!eligibility.allowed) {
     const error = eligibility.reason === 'too_young'
-      ? 'Managed profiles currently begin at age 8.'
+      ? 'Managed profiles currently begin at age 5.'
       : eligibility.reason === 'independent_account'
         ? 'Learners 13–18 can create their own student account.'
         : 'Enter a valid birthday.';

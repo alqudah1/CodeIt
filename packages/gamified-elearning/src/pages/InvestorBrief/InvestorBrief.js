@@ -16,7 +16,7 @@ const CURRENT_PRODUCT = [
   'Editable code and live project preview',
   'Project saving and public sharing',
   'Beginner lessons, quizzes, games, and progress',
-  'Private parent-managed profiles for ages 8–12',
+  'Private parent-managed profiles for ages 5–12',
   'Privacy-safe acquisition and activation analytics',
 ];
 
@@ -47,7 +47,7 @@ export default function InvestorBrief() {
           <p className="creator-brief__eyebrow">CodeIt investor overview</p>
           <h1>Students already have ideas.<br /><span>CodeIt turns them into builders.</span></h1>
           <p className="creator-brief__lead">
-            CodeIt is a creative coding studio for young people ages 8–18. Students build something
+            CodeIt is a creative coding studio for young people ages 5–18. Students build something
             exciting first, then learn how the code works by changing and owning the result.
           </p>
           <div className="creator-brief__hero-actions">
@@ -111,8 +111,8 @@ export default function InvestorBrief() {
             </ul>
             <aside>
               <span>Who it serves</span>
-              <strong>Young creators ages 8–18</strong>
-              <p>Parents can create private managed profiles for ages 8–12. Independent student accounts begin at 13.</p>
+              <strong>Young creators ages 5–18</strong>
+              <p>Parents can create private managed profiles for ages 5–12. Independent student accounts begin at 13.</p>
               <Link to="/creator-brief">Open the three-minute demonstration guide →</Link>
             </aside>
           </div>
@@ -196,7 +196,7 @@ export default function InvestorBrief() {
                 <li>The product combines creation with lessons and coding concepts.</li>
                 <li>The funnel can measure acquisition and core activation events.</li>
                 <li>A confirmed parent can choose and receive student milestone emails.</li>
-                <li>A confirmed adult account can create a private managed profile for ages 8–12.</li>
+                <li>A confirmed adult account can create a private managed profile for ages 5–12.</li>
               </ul>
             </article>
             <article className="is-planned">

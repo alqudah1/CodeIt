@@ -16,11 +16,11 @@ const FAQS = [
   },
   {
     q: 'What ages can use the CodeIt project studio?',
-    a: 'Parents and legal guardians can create private managed profiles for learners ages 8–12. Independent student accounts are for ages 13–18. Anyone can try the project studio without creating an account.',
+    a: 'Parents and legal guardians can create private managed profiles for learners ages 5–12. Independent student accounts are for ages 13–18. Anyone can try the project studio without creating an account.',
   },
   {
     q: 'Can a child publish a website publicly?',
-    a: 'Managed profiles ages 8–12 stay private and cannot publish. Eligible independent accounts save privately by default and must choose Publish before a project receives a public link.',
+    a: 'Managed profiles ages 5–12 stay private and cannot publish. Eligible independent accounts save privately by default and must choose Publish before a project receives a public link.',
   },
   {
     q: 'Is the AI website builder free?',
@@ -51,7 +51,7 @@ export default function AIWebsiteBuilderForKids() {
           <Link to="/" className="seo-back">&larr; Back to Home</Link>
 
           <header className="seo-hero">
-            <span className="seo-eyebrow">Creative coding for ages 8–18</span>
+            <span className="seo-eyebrow">Creative coding for ages 5–18</span>
             <h1 className="seo-h1">An AI website builder for kids that teaches the code.</h1>
             <p className="seo-hero-desc">
               CodeIt helps a young creator turn an idea into a website, game, or quiz—then change
@@ -122,7 +122,7 @@ export default function AIWebsiteBuilderForKids() {
               <h2 className="seo-h2">Private by default, with clear age rules</h2>
               <p className="seo-p">
                 Anyone can try the builder without an account. Parents and legal guardians can
-                create private managed profiles for learners ages 8–12. Those profiles cannot
+                create private managed profiles for learners ages 5–12. Those profiles cannot
                 publish projects publicly. Independent student accounts begin at age 13, and saved
                 projects remain private unless an eligible owner deliberately chooses Publish.
               </p>

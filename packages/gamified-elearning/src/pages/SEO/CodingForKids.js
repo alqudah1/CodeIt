@@ -11,7 +11,7 @@ import './CodingForKids.css';
 const FAQS = [
   {
     q: 'What age is CodeIt for?',
-    a: 'Parents and legal guardians can create private managed profiles for learners ages 8–12 after confirming the adult account email. Independent student accounts are for ages 13–18.',
+    a: 'Parents and legal guardians can create private managed profiles for learners ages 5–12 after confirming the adult account email. Independent student accounts are for ages 13–18.',
   },
   {
     q: 'Do I need to know how to code to help?',
@@ -27,7 +27,7 @@ const FAQS = [
   },
   {
     q: 'Are projects public?',
-    a: 'Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly. Managed profiles ages 8–12 cannot publish projects.',
+    a: 'Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly. Managed profiles ages 5–12 cannot publish projects.',
   },
 ];
 
@@ -61,7 +61,7 @@ const PATHS = [
 export default function CodingForKids() {
   useSEO({
     title: 'Coding for Kids: Projects, Python & Parent Guide | CodeIt',
-    description: 'A project-first coding platform for ages 8–18, with private parent-managed profiles for ages 8–12. Build websites, games and quizzes, then learn the code.',
+    description: 'A project-first coding platform for ages 5–18, with private parent-managed profiles for ages 5–12. Build websites, games and quizzes, then learn the code.',
     canonical: '/coding-for-kids',
   });
   useFAQSchema(FAQS);
@@ -102,7 +102,7 @@ export default function CodingForKids() {
                 </a>
               </div>
               <p className="parents-hero__note">
-                Ages 8–12 start through a free parent or guardian account.{' '}
+                Ages 5–12 start through a free parent or guardian account.{' '}
                 <Link
                   to="/register?for=family"
                   onClick={() => void trackEvent('parent_cta_click', 'create-family-account')}
@@ -138,7 +138,7 @@ export default function CodingForKids() {
           <div className="parents-wrap parents-trust__grid">
             <p><strong>No ads</strong><span>We do not sell personal data.</span></p>
             <p><strong>Private first</strong><span>Saved projects stay private until Publish.</span></p>
-            <p><strong>Clear age rules</strong><span>Private parent-managed profiles begin at age 8.</span></p>
+            <p><strong>Clear age rules</strong><span>Private parent-managed profiles begin at age 5.</span></p>
           </div>
         </section>
 

@@ -2,7 +2,7 @@
 
 ## The 45-second opening
 
-CodeIt is a creative coding studio for young people ages 8–17. Most coding
+CodeIt is a creative coding studio for young people ages 5–18. Most coding
 products ask beginners to learn syntax before they make anything exciting.
 General AI builders make things quickly, but they often hide the learning.
 CodeIt connects both sides: a student begins with an idea for a website, game,
@@ -32,9 +32,9 @@ The core story is one idea becoming one understandable project.
 
 ## The honest business explanation
 
-- Primary user: young creators ages 8–17.
+- Primary user: young creators ages 5–18.
 - Primary buyer: parents and guardians.
-- Ages 8–12: parent-guided public exploration until the verified
+- Ages 5–12: parent-guided public exploration until the verified
   parent-managed account flow is complete.
 - Free experience: lets a family try the core creation-and-learning loop.
 - Planned family plan: US$12 per month. Billing is not live yet.

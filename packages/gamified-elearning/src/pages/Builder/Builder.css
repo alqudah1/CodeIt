@@ -1276,6 +1276,72 @@
   font-weight: 800;
 }
 
+.bldr-edit-panel__guide {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.bldr-edit-panel__guide span {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 46px;
+  padding: 0.55rem 0.65rem;
+  border: 1.5px solid #EAD9CB;
+  border-radius: 12px;
+  background: #FFFCF8;
+  color: #4F392C;
+  font-size: 0.8rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.bldr-edit-panel__guide b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #FF7A00;
+  color: #fff;
+  font-size: 0.75rem;
+}
+
+.bldr-edit-panel__ideas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.bldr-edit-panel__idea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 50px;
+  padding: 0.65rem 0.75rem;
+  border: 2px solid rgba(168,85,247,0.18);
+  border-radius: 13px;
+  background: #fff;
+  color: #4F392C;
+  font: 800 0.82rem/1.2 'Nunito', 'Arvo', sans-serif;
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.12s, background 0.12s;
+}
+
+.bldr-edit-panel__idea:hover:not(:disabled),
+.bldr-edit-panel__idea:focus-visible {
+  border-color: #A855F7;
+  background: #FAF5FF;
+  transform: translateY(-1px);
+}
+
+.bldr-edit-panel__idea span { font-size: 1.15rem; }
+.bldr-edit-panel__idea:disabled { opacity: 0.55; cursor: not-allowed; }
+
 /* Prompt history list */
 .bldr-edit-panel__history {
   display: flex;
@@ -1318,6 +1384,14 @@
 /* Textarea inside edit panel */
 .bldr-edit-panel__input-wrap {
   position: relative;
+}
+
+.bldr-edit-panel__label {
+  display: block;
+  margin: 0 0 0.4rem 0.1rem;
+  color: #4F392C;
+  font-size: 0.82rem;
+  font-weight: 900;
 }
 
 .bldr-edit-panel__textarea {
@@ -1405,6 +1479,37 @@
   background: rgba(192, 57, 43, 0.15);
 }
 
+.bldr-edit-panel__pause {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.65rem 0.75rem;
+  padding: 0.9rem;
+  border: 2px solid #F4C84A;
+  border-radius: 14px;
+  background: #FFF8D8;
+  color: #4F392C;
+}
+
+.bldr-edit-panel__pause-icon { font-size: 1.55rem; line-height: 1; }
+.bldr-edit-panel__pause p { margin: 0 0 0.2rem; font-size: 0.84rem; line-height: 1.4; }
+.bldr-edit-panel__pause-title { font-size: 0.95rem !important; font-weight: 900; }
+.bldr-edit-panel__pause-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.bldr-edit-panel__pause-actions button {
+  min-height: 44px;
+  padding: 0.55rem 0.85rem;
+  border: 1.5px solid #C99518;
+  border-radius: 10px;
+  background: #fff;
+  color: #4F392C;
+  font: 900 0.82rem/1 'Nunito', 'Arvo', sans-serif;
+  cursor: pointer;
+}
+
 /* Action buttons inside edit panel */
 .bldr-edit-panel__actions {
   display: flex;
@@ -1460,6 +1565,17 @@
 }
 
 .bldr-edit-panel__undo-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+@media (max-width: 680px) {
+  .bldr-edit-panel { padding: 1rem; }
+  .bldr-edit-panel__guide,
+  .bldr-edit-panel__ideas { grid-template-columns: 1fr; }
+  .bldr-edit-panel__guide span,
+  .bldr-edit-panel__idea { justify-content: flex-start; }
+  .bldr-edit-panel__apply-btn { width: 100%; justify-content: center; min-height: 48px; }
+  .bldr-edit-panel__pause-actions { flex-direction: column; }
+  .bldr-edit-panel__pause-actions button { width: 100%; }
+}
 
 /* ════════════════════════════════════════════════════════════
    MY PROJECTS

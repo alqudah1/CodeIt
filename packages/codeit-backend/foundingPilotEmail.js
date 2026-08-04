@@ -35,7 +35,7 @@ async function sendFoundingPilotConfirmation(email) {
             <p><strong>You can start now:</strong></p>
             <ol style="line-height:1.65">
               <li>Create an adult family account and confirm the adult email.</li>
-              <li>Create a private learner profile for ages 8–12, or use an independent learner account for ages 13+.</li>
+              <li>Create a private learner profile for ages 5–12, or use an independent learner account for ages 13+.</li>
               <li>Build a first website, game, or quiz together.</li>
             </ol>
             <p><a href="${familyAccountUrl}" style="display:inline-block;padding:13px 20px;border-radius:10px;background:#f87824;color:white;text-decoration:none;font-weight:700">Create a family account</a></p>

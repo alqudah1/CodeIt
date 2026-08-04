@@ -12,7 +12,7 @@ const FAQS = [
   },
   {
     q: 'What ages can use CodeIt?',
-    a: 'Parents and legal guardians can create private managed profiles for learners ages 8–12 after confirming the adult account email. Independent student accounts are for ages 13–18. The lessons also work for older beginners.',
+    a: 'Parents and legal guardians can create private managed profiles for learners ages 5–12 after confirming the adult account email. Independent student accounts are for ages 13–18. The lessons also work for older beginners.',
   },
   {
     q: 'Do kids need prior coding experience to use CodeIt?',
@@ -196,7 +196,7 @@ export default function LearnPythonForKids() {
               <h2 className="seo-h2">Who Is This For?</h2>
               <p className="seo-p">
                 Parents and legal guardians can create private managed profiles for learners ages
-                8–12 after confirming the adult account email. Independent student accounts are
+                5–12 after confirming the adult account email. Independent student accounts are
                 designed for ages 13–18. No coding experience is needed—the first lesson starts from zero,
                 the language is simple, the instructions
                 are friendly, and there's nothing to install.

@@ -46,7 +46,7 @@ export default function Privacy() {
             <section id="accounts">
               <h2>Account information</h2>
               <p>Independent student accounts collect a username, password, and birthday, plus an optional parent or guardian email. Student passwords are stored as one-way password hashes, not readable passwords. Parent and educator accounts collect a name, email address, and hashed password.</p>
-              <p>After confirming the adult account email and accepting the current family notice, a parent or legal guardian may create a private profile for a learner ages 8–12. The managed profile uses a non-identifying username, birthday, hashed password, the adult account email, relationship type, consent date, and notice version. It does not collect a child email address.</p>
+              <p>After confirming the adult account email and accepting the current family notice, a parent or legal guardian may create a private profile for a learner ages 5–12. The managed profile uses a non-identifying username, birthday, hashed password, the adult account email, relationship type, consent date, and notice version. It does not collect a child email address.</p>
               <p>The browser keeps the signed-in session token and basic account display information in local storage so the account remains signed in. Signing out removes that local session information.</p>
             </section>
 
@@ -77,13 +77,13 @@ export default function Privacy() {
 
             <section id="sharing">
               <h2>Publishing and community sharing</h2>
-              <p>Projects are not listed publicly until an eligible owner selects Publish. A public project may display its title, working code, project type, generic creator label, creation date, and play/like/remix counts. Anyone with the public link may open it, and signed-in users may remix a copy. Unpublishing removes it from public access. Public publishing is disabled for managed profiles ages 8–12.</p>
+              <p>Projects are not listed publicly until an eligible owner selects Publish. A public project may display its title, working code, project type, generic creator label, creation date, and play/like/remix counts. Anyone with the public link may open it, and signed-in users may remix a copy. Unpublishing removes it from public access. Public publishing is disabled for managed profiles ages 5–12.</p>
               <p>Before publishing, remove personal details from the project, title, visible content, and creator display name.</p>
             </section>
 
             <section id="children">
               <h2>Children, parents, and guardians</h2>
-              <p>Learners ages 13–18 may create independent student accounts. For ages 8–12, an adult must use a Parent / Educator account, confirm its email, identify as the parent or legal guardian, review this notice, and explicitly create the managed profile. Managed younger profiles stay private and cannot publish projects publicly.</p>
+              <p>Learners ages 13–18 may create independent student accounts. For ages 5–12, an adult must use a Parent / Educator account, confirm its email, identify as the parent or legal guardian, review this notice, and explicitly create the managed profile. Managed younger profiles stay private and cannot publish projects publicly.</p>
               <p>The adult may separately choose progress emails for a managed profile. When enabled, CodeIt sends the confirmed adult email selected lesson, exercise, quiz, and project-creation milestones. The adult can pause these emails from the family controls, and each email also includes an unsubscribe link.</p>
               <p>Email confirmation establishes control of the adult account email; CodeIt does not claim that email confirmation alone proves legal identity or satisfies every law in every location. A parent or guardian can view their linked profiles, delete a managed profile and its connected data, or contact us to ask for access, correction, or deletion.</p>
               <p>Some legacy accounts created before this flow may indicate that the learner is under 13. CodeIt does not treat an unverified parent email as consent. Those accounts are paused without deleting their saved work, and connected projects are kept private, until a parent or guardian completes the review and links the learner to a confirmed adult account.</p>

@@ -39,7 +39,7 @@ const BASE_PAGES = [
     route: '/ai-website-builder-for-kids',
     title: 'AI Website Builder for Kids: Build & Learn the Code | CodeIt',
     description: 'Kids can turn an idea into an editable website, game, or quiz, then inspect and change the HTML, CSS, and JavaScript behind it.',
-    eyebrow: 'Creative coding for ages 8–18',
+    eyebrow: 'Creative coding for ages 5–18',
     h1: 'An AI website builder for kids that teaches the code.',
     intro: 'CodeIt helps a young creator turn an idea into a website, game, or quiz, then change the design, inspect the real code, and understand how the project works.',
     detail: 'The first version stays editable. Learners can change the content, colors, layout, and behavior, compare the preview with the HTML, CSS, and JavaScript, save their work, and keep improving it.',
@@ -58,8 +58,8 @@ const BASE_PAGES = [
   {
     route: '/first-game-challenge',
     title: 'Build Your First Game Free | 10-Minute Coding Challenge | CodeIt',
-    description: 'Choose a game idea, build a playable first version, change it, save it, and earn XP. A free coding challenge for young creators ages 8–18.',
-    eyebrow: 'Free first-game challenge · Ages 8–18',
+    description: 'Choose a game idea, build a playable first version, change it, save it, and earn XP. A free coding challenge for young creators ages 5–18.',
+    eyebrow: 'Free first-game challenge · Ages 5–18',
     h1: 'Build your first game. Make it yours.',
     intro: 'Choose a reaction game, football penalty game, or pet-catching game. CodeIt creates a playable starting point, then the learner changes it, tests it, and saves it.',
     detail: 'The complete mission is to build, personalize, test, and save. Student accounts earn 25 XP for a first saved project and compete through privacy-safe coder aliases instead of real names.',
@@ -118,11 +118,11 @@ const BASE_PAGES = [
   {
     route: '/coding-for-kids',
     title: 'Coding for Kids: Projects, Python & Parent Guide | CodeIt',
-    description: 'A project-first coding platform for ages 8–18, with private parent-managed profiles for ages 8–12. Build websites, games and quizzes, then learn the code.',
+    description: 'A project-first coding platform for ages 5–18, with private parent-managed profiles for ages 5–12. Build websites, games and quizzes, then learn the code.',
     eyebrow: 'For parents & educators',
     h1: 'A first coding project they’ll want to keep improving.',
     intro: 'CodeIt helps a beginner turn an idea into a website, game, or quiz, then change the design, inspect the code, and understand what makes it work.',
-    detail: 'Parents can create private managed profiles for ages 8–12 after confirming the adult account email. Independent student accounts begin at 13. Managed younger profiles cannot publish publicly.',
+    detail: 'Parents can create private managed profiles for ages 5–12 after confirming the adult account email. Independent student accounts begin at 13. Managed younger profiles cannot publish publicly.',
     type: 'LearningResource',
   },
   {
@@ -132,7 +132,7 @@ const BASE_PAGES = [
     eyebrow: 'Beginner Python, in the browser',
     h1: 'Learn Python by making something work.',
     intro: 'Write a line, run it, and see what changed. CodeIt gives beginners a clear path through real Python without downloads or a wall of theory first.',
-    detail: 'Parents can create private managed profiles for ages 8–12 after confirming the adult account email. Independent student accounts begin at 13, and the lessons also work for older beginners.',
+    detail: 'Parents can create private managed profiles for ages 5–12 after confirming the adult account email. Independent student accounts begin at 13, and the lessons also work for older beginners.',
     type: 'LearningResource',
   },
   {

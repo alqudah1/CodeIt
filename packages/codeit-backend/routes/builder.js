@@ -37,7 +37,9 @@ function createRequestLimiter({ anonymous, authenticated, windowMs = 60 * 60 * 1
       const retryAfter = Math.max(1, Math.ceil((entry.resetAt - now) / 1000));
       res.set('Retry-After', String(retryAfter));
       return res.status(429).json({
-        error: 'You have made lots of AI creations. Take a short break, then try again.',
+        code: 'AI_LIMIT_REACHED',
+        error: 'The magic helper needs a short break. Your project is safe, and you can keep playing or use the studio tools.',
+        retryAfterSeconds: retryAfter,
       });
     }
 

@@ -27,7 +27,7 @@ test('replaces homepage fallback and metadata with route-specific content', () =
   const html = renderRouteDocument(TEMPLATE, page);
 
   assert.match(html, /A first coding project they’ll want to keep improving/);
-  assert.match(html, /private managed profiles for ages 8–12/);
+  assert.match(html, /private managed profiles for ages 5–12/);
   assert.match(html, /Independent student accounts begin at 13/);
   assert.match(html, /canonical" href="https:\/\/codeitlearn\.com\/coding-for-kids/);
   assert.match(html, /static-route-jsonld/);
@@ -74,8 +74,8 @@ test('public search documents use one accurate age range', () => {
   );
 
   for (const document of [template, llms, codingForKids]) {
-    assert.match(document, /ages 8–18/);
-    assert.doesNotMatch(document, /ages 8–17/);
+    assert.match(document, /ages 5–18/);
+    assert.doesNotMatch(document, /ages 8[–-](?:12|17|18)/);
   }
 });
 
@@ -92,8 +92,8 @@ test('homepage search copy leads with creating and learning, not AI', () => {
 test('homepage fallback explains the family offer and links to commercial pages', () => {
   const template = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
 
-  assert.match(template, /Students ages 8–18 can build, edit, save/);
-  assert.match(template, /managed learner profiles for children ages 8–12/);
+  assert.match(template, /Students ages 5–18 can build, edit, save/);
+  assert.match(template, /managed learner profiles for children ages 5–12/);
   assert.match(template, /No card or paid subscription starts automatically/);
   for (const route of ['/coding-for-kids', '/ai-website-builder-for-kids', '/pricing', '/blog']) {
     assert.match(template, new RegExp(`href="${route}"`));

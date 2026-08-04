@@ -27,7 +27,7 @@ Post on LinkedIn and one personal social account.
 >
 > The first version removes the blank screen. The real learning begins when they change the rules and explain what the code does.
 >
-> No payment. No download. Ages 8–12 use a parent-managed profile; independent student accounts begin at 13.
+> No payment. No download. Ages 5–12 use a parent-managed profile; independent student accounts begin at 13.
 >
 > Try the first-game challenge: [use the tracked link for this platform]
 
@@ -125,7 +125,7 @@ Use only for people you genuinely know or for people who explicitly invite proje
 
 ## Teacher, library, or coding-club message
 
-> Hi [name], I am the founder of CodeIt, a project-first coding platform for ages 8–18. I created a free first-game challenge that works in the browser with no download. Learners build a playable game, personalize it, test it, and connect the result to real code. Ages 8–12 use a parent-managed profile. Would you be willing to review the challenge and tell me whether it could fit a short club or classroom activity? [direct tracked link]
+> Hi [name], I am the founder of CodeIt, a project-first coding platform for ages 5–18. I created a free first-game challenge that works in the browser with no download. Learners build a playable game, personalize it, test it, and connect the result to real code. Ages 5–12 use a parent-managed profile. Would you be willing to review the challenge and tell me whether it could fit a short club or classroom activity? [direct tracked link]
 
 ## What to measure
 

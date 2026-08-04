@@ -40,7 +40,7 @@ function builderLink(prompt) {
 export default function FirstGameChallenge() {
   useSEO({
     title: 'Build Your First Game Free | 10-Minute Coding Challenge | CodeIt',
-    description: 'Choose a game idea, build a playable first version, change it, save it, and earn XP. A free coding challenge for young creators ages 8–18.',
+    description: 'Choose a game idea, build a playable first version, change it, save it, and earn XP. A free coding challenge for young creators ages 5–18.',
     canonical: '/first-game-challenge',
   });
 
@@ -58,7 +58,7 @@ export default function FirstGameChallenge() {
         <section className="fgc-hero">
           <div className="fgc-wrap fgc-hero__grid">
             <div className="fgc-hero__copy">
-              <p className="fgc-kicker">Free first-game challenge · Ages 8–18</p>
+              <p className="fgc-kicker">Free first-game challenge · Ages 5–18</p>
               <h1>Build your first game. Make it yours.</h1>
               <p className="fgc-hero__lead">
                 Pick one idea, get a playable first version, change one thing, and save what you made.
@@ -66,7 +66,7 @@ export default function FirstGameChallenge() {
               </p>
               <a className="fgc-button fgc-button--primary" href="#choose-game">Choose your game <span>↓</span></a>
               <p className="fgc-age-note">
-                Ages 8–12 participate through a parent-managed profile. Independent student accounts begin at 13.
+                Ages 5–12 participate through a parent-managed profile. Independent student accounts begin at 13.
               </p>
             </div>
 
