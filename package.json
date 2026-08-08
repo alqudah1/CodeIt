@@ -1,6 +1,7 @@
 {
   "name": "e-learning",
   "private": true,
+  "packageManager": "npm@11.6.0",
   "workspaces": [
     "packages/*"
   ],

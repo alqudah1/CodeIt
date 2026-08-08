@@ -14,7 +14,7 @@ function fakePool({ student = true, inserted = true } = {}) {
     query: async (sql, values) => {
       calls.push({ sql, values });
       if (sql.includes('SELECT user_id FROM Students')) return [student ? [{ user_id: values[0] }] : []];
-      if (sql.includes('INSERT IGNORE')) return [{ affectedRows: inserted ? 1 : 0 }];
+      if (sql.includes('INSERT INTO ai_project_xp_awards')) return [{ affectedRows: inserted ? 1 : 0 }];
       if (sql.includes('UPDATE Students')) return [{ affectedRows: 1 }];
       throw new Error('Unexpected query');
     },
@@ -43,7 +43,7 @@ test('does not award XP twice for the same project milestone', async () => {
 test('does not award competition XP to an adult account', async () => {
   const { pool, calls } = fakePool({ student: false });
   assert.equal(await awardProjectXp(pool, Promise.resolve(), 9, 43, 'created'), 0);
-  assert.equal(calls.some((call) => call.sql?.includes('INSERT IGNORE')), false);
+  assert.equal(calls.some((call) => call.sql?.includes('INSERT INTO ai_project_xp_awards')), false);
 });
 
 test('uses a small fixed reward vocabulary', () => {

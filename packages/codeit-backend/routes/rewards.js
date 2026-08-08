@@ -111,7 +111,12 @@ router.get('/leaderboard', authenticateToken, async (req, res) => {
         GROUP BY user_id
       ) b ON b.user_id = u.user_id
       WHERE u.role = 'student'
-      HAVING xp_points > 0
+        AND (
+          COALESCE(q.quiz_xp, 0) +
+          COALESCE(l.lesson_xp, 0) +
+          COALESCE(p.puzzle_xp, 0) +
+          COALESCE(b.project_xp, 0)
+        ) > 0
       ORDER BY xp_points DESC
     `);
     res.json(publicLeaderboardRows(rows, req.user.user_id));

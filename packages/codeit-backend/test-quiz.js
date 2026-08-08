@@ -42,6 +42,9 @@ const configuredOrigins = (process.env.CORS_ORIGINS || '')
 const allowedOrigins = new Set([
   'https://codeitlearn.com',
   'https://www.codeitlearn.com',
+  ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
+  ...(process.env.VERCEL_PROJECT_PRODUCTION_URL ? [`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`] : []),
+  ...(process.env.VERCEL_BRANCH_URL ? [`https://${process.env.VERCEL_BRANCH_URL}`] : []),
   ...configuredOrigins,
 ]);
 
@@ -80,6 +83,10 @@ app.use('/api/family', familyRoutes);
 app.use('/api/activity', activityRoutes);
 
 const PORT = Number(process.env.PORT || 8080);
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;

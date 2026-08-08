@@ -10,7 +10,7 @@ const configuredAddress = DEFAULT_EMAIL_FROM.match(/<([^>]+)>/)?.[1] || DEFAULT_
 const EMAIL_FROM = `CodeIt Account <${configuredAddress}>`;
 const RESET_TTL_MINUTES = 30;
 
-const ready = (async () => {
+const ready = db.dialect === 'postgres' ? Promise.resolve(true) : (async () => {
   await db.query(`
     CREATE TABLE IF NOT EXISTS password_reset_tokens (
       id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -108,7 +108,7 @@ async function requestPasswordReset(rawEmail) {
   const token = crypto.randomBytes(32).toString('hex');
   await db.query(
     `INSERT INTO password_reset_tokens (user_id, token_hash, expires_at)
-     VALUES (?, ?, DATE_ADD(NOW(), INTERVAL ? MINUTE))`,
+     VALUES (?, ?, NOW() + (? * INTERVAL '1 minute'))`,
     [user.user_id, hashToken(token), RESET_TTL_MINUTES]
   );
 

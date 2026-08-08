@@ -73,7 +73,7 @@ router.post('/:id/complete', authenticateToken, async (req, res) => {
 
     // INSERT IGNORE prevents duplicates (UNIQUE KEY uq_user_lesson)
     const [result] = await pool.query(
-      'INSERT IGNORE INTO Student_Lesson_Progress (user_id, lesson_id, xp_earned) VALUES (?, ?, ?)',
+      'INSERT INTO Student_Lesson_Progress (user_id, lesson_id, xp_earned) VALUES (?, ?, ?) ON CONFLICT (user_id, lesson_id) DO NOTHING',
       [userId, lessonId, xpReward]
     );
 

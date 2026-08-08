@@ -6,6 +6,6 @@
     "start": "serve . -p 3002"
   },
   "dependencies": {
-    "serve": "^14.2.5"
+    "serve": "^14.2.6"
   }
 }

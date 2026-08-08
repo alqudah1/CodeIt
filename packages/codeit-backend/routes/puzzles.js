@@ -54,7 +54,7 @@ router.post('/:id/complete', authenticateToken, async (req, res) => {
     const isStudent = studentCheck.length > 0;
 
     const [result] = await pool.query(
-      'INSERT IGNORE INTO Student_Puzzle_Progress (user_id, puzzle_id, xp_earned) VALUES (?, ?, ?)',
+      'INSERT INTO Student_Puzzle_Progress (user_id, puzzle_id, xp_earned) VALUES (?, ?, ?) ON CONFLICT (user_id, puzzle_id) DO NOTHING',
       [userId, puzzleId, xpReward]
     );
 

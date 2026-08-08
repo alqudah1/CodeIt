@@ -2,7 +2,7 @@
 
 const pool = require('./db');
 
-const tableReady = pool.query(`
+const tableReady = pool.dialect === 'postgres' ? Promise.resolve(true) : pool.query(`
   CREATE TABLE IF NOT EXISTS founding_family_leads (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(254) NOT NULL,
@@ -29,9 +29,9 @@ async function saveFoundingFamilyLead({ email, source, userId = null }) {
     await pool.query(
       `INSERT INTO founding_family_leads (email, user_id, source)
        VALUES (?, ?, ?)
-       ON DUPLICATE KEY UPDATE
-         user_id = COALESCE(VALUES(user_id), user_id),
-         source = VALUES(source),
+       ON CONFLICT (email) DO UPDATE SET
+         user_id = COALESCE(EXCLUDED.user_id, founding_family_leads.user_id),
+         source = EXCLUDED.source,
          consented_at = CURRENT_TIMESTAMP`,
       [email, normalizedUserId, source]
     );

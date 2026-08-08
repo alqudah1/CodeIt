@@ -15,7 +15,7 @@ const DEFAULT_EMAIL_FROM = process.env.EMAIL_FROM || 'CodeIt <progress@codeitlea
 const configuredAddress = DEFAULT_EMAIL_FROM.match(/<([^>]+)>/)?.[1] || DEFAULT_EMAIL_FROM;
 const EMAIL_FROM = `CodeIt Family <${configuredAddress}>`;
 
-const ready = (async () => {
+const ready = db.dialect === 'postgres' ? Promise.resolve(true) : (async () => {
   await db.query(`
     CREATE TABLE IF NOT EXISTS adult_email_verifications (
       user_id INT NOT NULL PRIMARY KEY,
@@ -171,9 +171,9 @@ async function requestAdultVerification(userId) {
   await db.query(
     `INSERT INTO adult_email_verifications
        (user_id, email, verified_at, token_hash, expires_at)
-     VALUES (?, ?, NULL, ?, DATE_ADD(NOW(), INTERVAL 48 HOUR))
-     ON DUPLICATE KEY UPDATE email = VALUES(email), verified_at = NULL,
-       token_hash = VALUES(token_hash), expires_at = VALUES(expires_at)`,
+     VALUES (?, ?, NULL, ?, NOW() + INTERVAL '48 hours')
+     ON CONFLICT (user_id) DO UPDATE SET email = EXCLUDED.email, verified_at = NULL,
+       token_hash = EXCLUDED.token_hash, expires_at = EXCLUDED.expires_at`,
     [adult.user_id, email, hashToken(token)]
   );
   const delivery = await sendVerificationEmail({ ...adult, email }, token);
@@ -244,9 +244,9 @@ async function createManagedChild(adultUserId, input) {
            verification_expires_at, unsubscribe_token_hash, notify_lessons,
            notify_exercises, notify_projects, notify_publishing, enabled
          ) VALUES (?, ?, NOW(), NULL, NULL, ?, 1, 1, 1, 0, 1)
-         ON DUPLICATE KEY UPDATE parent_email = VALUES(parent_email),
+         ON CONFLICT (user_id) DO UPDATE SET parent_email = EXCLUDED.parent_email,
            verified_at = NOW(), verification_token_hash = NULL,
-           verification_expires_at = NULL, unsubscribe_token_hash = VALUES(unsubscribe_token_hash),
+           verification_expires_at = NULL, unsubscribe_token_hash = EXCLUDED.unsubscribe_token_hash,
            notify_lessons = 1, notify_exercises = 1, notify_projects = 1,
            notify_publishing = 0, enabled = 1`,
         [created.insertId, email, hashToken(createToken())]
@@ -293,9 +293,9 @@ async function setManagedProgressEmails(adultUserId, childUserId, enabled) {
          verification_expires_at, unsubscribe_token_hash, notify_lessons,
          notify_exercises, notify_projects, notify_publishing, enabled
        ) VALUES (?, ?, NOW(), NULL, NULL, ?, 1, 1, 1, 0, 1)
-       ON DUPLICATE KEY UPDATE parent_email = VALUES(parent_email),
+       ON CONFLICT (user_id) DO UPDATE SET parent_email = EXCLUDED.parent_email,
          verified_at = NOW(), verification_token_hash = NULL,
-         verification_expires_at = NULL, unsubscribe_token_hash = VALUES(unsubscribe_token_hash),
+         verification_expires_at = NULL, unsubscribe_token_hash = EXCLUDED.unsubscribe_token_hash,
          notify_lessons = 1, notify_exercises = 1, notify_projects = 1,
          notify_publishing = 0, enabled = 1`,
       [childUserId, email, hashToken(createToken())]
