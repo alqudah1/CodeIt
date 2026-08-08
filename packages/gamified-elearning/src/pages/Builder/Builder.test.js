@@ -34,6 +34,13 @@ jest.mock('../../utils/trackEvent', () => ({
   trackEvent: jest.fn(() => Promise.resolve(true)),
 }));
 
+async function finishProjectQualityCheck(theme = 'Candy') {
+  await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+  fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
+  fireEvent.click(screen.getByRole('button', { name: `Apply ${theme} theme` }));
+  fireEvent.click(screen.getByRole('button', { name: /Play my changes/i }));
+}
+
 describe('project studio opening', () => {
   beforeEach(() => {
     window.scrollTo = jest.fn();
@@ -106,12 +113,30 @@ describe('project studio opening', () => {
     expect(trackEvent).toHaveBeenCalledWith('new_account_studio_view', null, 'student-token');
   });
 
+  test('gives an early learner larger step-by-step help and lets an adult change the level', () => {
+    render(
+      <AuthContext.Provider value={{ user: { id: 5, name: 'Little Coder', role: 'student', learningMode: 'early' }, token: 'student-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    expect(screen.getByRole('button', { name: /Big help/i })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('status')).toHaveClass('bldr-coach--early');
+    expect(screen.getByRole('button', { name: /Show me/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Read to me/i })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /Explore myself/i }));
+    expect(screen.getByRole('button', { name: /Explore myself/i })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    expect(localStorage.getItem('codeit_guide_level')).toBe('independent');
+  });
+
   test('preserves a guest project before opening the save account gate', async () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
-    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
-    fireEvent.click(screen.getByRole('button', { name: 'Keep this project' }));
+    await finishProjectQualityCheck();
+    fireEvent.click(screen.getByRole('button', { name: /Keep my project/i }));
 
     const draft = JSON.parse(sessionStorage.getItem('codeit_builder_draft'));
     expect(draft.code).toContain('My game');
@@ -131,7 +156,7 @@ describe('project studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
-    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
+    await finishProjectQualityCheck();
 
     fireEvent.click(screen.getByRole('button', { name: 'Save project to a free account' }));
 
@@ -141,41 +166,32 @@ describe('project studio opening', () => {
     });
   });
 
-  test('preserves a guest project and remembers a request to publish', async () => {
+  test('keeps a guest project private until it is saved to an account', async () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Quiz/i }));
-    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
-    fireEvent.click(screen.getByRole('button', { name: 'Share' }));
-
-    expect(JSON.parse(sessionStorage.getItem('codeit_builder_draft')).code).toContain('My game');
-    expect(mockNavigate).toHaveBeenCalledWith('/register?from=builder&action=publish', {
-      state: { from: '/builder', resumeBuilderAction: 'publish' },
-    });
-    expect(trackEvent).toHaveBeenCalledWith('activation_account_gate', 'publish', null);
+    await finishProjectQualityCheck();
+    expect(screen.getByRole('button', { name: 'Share' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /Keep my project/i })).toBeEnabled();
   });
 
   test('makes keeping the project primary while personalization stays optional', async () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
-    const nextStepHeading = await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
+    const nextStepHeading = await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
     const projectPreview = screen.getByTitle('Project preview');
-    const immediateSave = screen.getByRole('button', { name: 'Save this project now' });
 
     expect(projectPreview.compareDocumentPosition(nextStepHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(immediateSave.compareDocumentPosition(projectPreview) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(immediateSave).toHaveTextContent('Keep it free');
+    expect(screen.queryByRole('button', { name: /Keep my project/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('list', { name: 'Project quality steps' })).toHaveTextContent('Play everything');
 
-    expect(screen.getByRole('group', { name: 'Choose a color theme' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Keep this project' })).toHaveClass('bldr-activation-card__primary');
-    expect(screen.getByText('Optional: change the look first')).toBeInTheDocument();
-
+    fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
     fireEvent.click(screen.getByRole('button', { name: 'Apply Candy theme' }));
 
-    await screen.findByRole('heading', { name: 'Save this project before you leave.' });
-    expect(screen.getByRole('button', { name: 'Save and continue' })).toHaveClass('bldr-activation-card__primary');
-    expect(screen.getByRole('button', { name: 'Make another change' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Play my changes/i })).toHaveClass('bldr-activation-card__primary');
+    fireEvent.click(screen.getByRole('button', { name: /Play my changes/i }));
+    expect(screen.getByRole('button', { name: /Keep my project/i })).toHaveClass('bldr-activation-card__primary');
     expect(trackEvent).toHaveBeenCalledTimes(1);
     expect(trackEvent).toHaveBeenCalledWith('project_personalize', null, null);
   });
@@ -188,7 +204,8 @@ describe('project studio opening', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
-    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
+    await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+    fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
     fireEvent.click(screen.getByRole('button', { name: 'Change my project' }));
 
     expect(screen.getByRole('group', { name: 'How to change your project' })).toHaveTextContent('Pick an idea');
@@ -209,7 +226,8 @@ describe('project studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
-    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
+    await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+    fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
 
     const normalFetch = global.fetch.getMockImplementation();
     global.fetch.mockImplementation((url, options = {}) => {
@@ -228,8 +246,8 @@ describe('project studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: /Add a power-up/i }));
     fireEvent.click(screen.getByRole('button', { name: 'Make my change' }));
 
-    expect(await screen.findByRole('status')).toHaveTextContent('Your project is safe!');
-    expect(screen.getByRole('status')).toHaveTextContent('2 minutes');
+    expect(await screen.findByText(/Your project is safe!/)).toBeInTheDocument();
+    expect(screen.getByText(/Your project is safe!/).closest('[role="status"]')).toHaveTextContent('2 minutes');
     expect(screen.getByRole('button', { name: /Play my project/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Change colors/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Wait 2 minutes/i })).toBeDisabled();
@@ -239,7 +257,7 @@ describe('project studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
-    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
+    await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
 
     expect(screen.getByLabelText('Guest project recovery')).toHaveTextContent('Backed up in this browser');
     expect(screen.getByLabelText('Guest project recovery')).toHaveTextContent('only on this device for up to 7 days');
@@ -263,7 +281,8 @@ describe('project studio opening', () => {
     render(<Builder />);
 
     expect(await screen.findByText('Welcome back—your project was recovered.')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Save this project before you leave.' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Keep my project/i })).toBeInTheDocument();
     expect(trackEvent).toHaveBeenCalledWith('guest_draft_recovered');
 
     fireEvent.click(screen.getByRole('button', { name: 'Keep it in a free account' }));
@@ -291,11 +310,11 @@ describe('project studio opening', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
-    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
+    await finishProjectQualityCheck();
     expect(mockAwardXP).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole('button', { name: 'Save this project' }));
+    fireEvent.click(screen.getByRole('button', { name: /Save my project/i }));
 
-    await screen.findByRole('heading', { name: 'Ready to show someone what you made?' });
+    await screen.findByRole('heading', { name: 'Now your project is ready to publish.' });
     expect(mockAwardXP).toHaveBeenCalledWith(25);
     fireEvent.click(screen.getByRole('button', { name: 'Publish and get a link' }));
 
@@ -313,10 +332,10 @@ describe('project studio opening', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Quiz/i }));
-    await screen.findByRole('heading', { name: 'Keep this project, or change it first.' });
-    fireEvent.click(screen.getByRole('button', { name: 'Save this project' }));
+    await finishProjectQualityCheck();
+    fireEvent.click(screen.getByRole('button', { name: /Save my project/i }));
 
-    await screen.findByRole('heading', { name: 'Now learn one thing your project uses.' });
+    await screen.findByRole('heading', { name: 'Great work — show your grown-up or teacher.' });
     expect(screen.queryByRole('button', { name: 'Publish and get a link' })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Learn how it works' }));
     expect(trackEvent).toHaveBeenCalledWith('activation_next_step', 'learn', 'managed-token');
@@ -331,6 +350,9 @@ describe('project studio opening', () => {
       projectType: 'website',
       aiTitle: 'Saved idea',
       promptHistory: ['a saved idea'],
+      hasPersonalized: true,
+      hasPlayedOnce: true,
+      hasTestedLatest: true,
       savedAt: Date.now(),
     }));
     mockBuilderLocation.state = { resumeBuilderAction: 'save' };
@@ -341,7 +363,7 @@ describe('project studio opening', () => {
       </AuthContext.Provider>
     );
 
-    await screen.findByRole('heading', { name: 'Ready to show someone what you made?' });
+    await screen.findByRole('heading', { name: 'Now your project is ready to publish.' });
     expect(sessionStorage.getItem('codeit_builder_draft')).toBeNull();
     expect(global.fetch).toHaveBeenCalledWith(
       'http://codeit.test/api/builder/projects',
@@ -361,6 +383,9 @@ describe('project studio opening', () => {
       projectType: 'website',
       aiTitle: 'Published idea',
       promptHistory: ['a published idea'],
+      hasPersonalized: true,
+      hasPlayedOnce: true,
+      hasTestedLatest: true,
       savedAt: Date.now(),
     }));
     mockBuilderLocation.state = { resumeBuilderAction: 'publish' };

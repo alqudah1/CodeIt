@@ -5,7 +5,7 @@ const jwt     = require('jsonwebtoken');
 const db      = require('../db');
 const { JWT_SECRET, JWT_EXPIRY } = require('../config');
 const { recordEvent } = require('../analytics');
-const { ageOnDate, studentAgeEligibility } = require('../studentAge');
+const { ageOnDate, learningModeForAge, studentAgeEligibility } = require('../studentAge');
 const { normalizeJourneyId } = require('../analyticsEvents');
 const { updateSettings } = require('../progressNotifications');
 const { requestPasswordReset, resetPassword, validPassword } = require('../passwordReset');
@@ -102,7 +102,8 @@ router.post('/signup', async (req, res) => {
 
     const user_id    = result.insertId;
     const displayName = isStudent ? username.trim() : name.trim();
-    const token = jwt.sign({ user_id, role, name: displayName }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+    const learningMode = isStudent ? learningModeForAge(studentAgeEligibility(dob).age) : 'independent';
+    const token = jwt.sign({ user_id, role, name: displayName, learningMode }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
     void recordUserActivity(user_id, 'login');
 
     res.json({
@@ -114,6 +115,7 @@ router.post('/signup', async (req, res) => {
         username: isStudent ? username.trim() : null,
         email:    isStudent ? null : email.trim().toLowerCase(),
         role,
+        learningMode,
       },
     });
   } catch (err) {
@@ -168,8 +170,11 @@ router.post('/login', async (req, res) => {
       });
     }
     const managedProfile = familyAccess.managedProfile;
+    const learningMode = String(user.role || '').toLowerCase() === 'student'
+      ? learningModeForAge(accountAge)
+      : 'independent';
     const token = jwt.sign(
-      { user_id: user.user_id, role: user.role, name: displayName, managedProfile },
+      { user_id: user.user_id, role: user.role, name: displayName, managedProfile, learningMode },
       JWT_SECRET,
       { expiresIn: JWT_EXPIRY }
     );
@@ -185,6 +190,7 @@ router.post('/login', async (req, res) => {
         email:    user.email,
         role:     user.role,
         managedProfile,
+        learningMode,
       },
     });
   } catch (err) {

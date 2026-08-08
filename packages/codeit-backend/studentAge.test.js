@@ -2,7 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { ageOnDate, parseDateOnly, studentAgeEligibility } = require('./studentAge');
+const { ageOnDate, learningModeForAge, parseDateOnly, studentAgeEligibility } = require('./studentAge');
 
 const TODAY = new Date('2026-07-21T12:00:00Z');
 
@@ -23,4 +23,13 @@ test('requires a parent-managed flow below 13 and an adult account above 18', ()
   assert.deepEqual(studentAgeEligibility('2010-01-01', TODAY), { allowed: true, reason: 'eligible', age: 16 });
   assert.deepEqual(studentAgeEligibility('2000-01-01', TODAY), { allowed: false, reason: 'adult_account', age: 26 });
   assert.deepEqual(studentAgeEligibility('not-a-date', TODAY), { allowed: false, reason: 'invalid', age: null });
+});
+
+test('selects instructions that match the learner age', () => {
+  assert.equal(learningModeForAge(5), 'early');
+  assert.equal(learningModeForAge(7), 'early');
+  assert.equal(learningModeForAge(8), 'guided');
+  assert.equal(learningModeForAge(12), 'guided');
+  assert.equal(learningModeForAge(13), 'independent');
+  assert.equal(learningModeForAge(null), 'independent');
 });

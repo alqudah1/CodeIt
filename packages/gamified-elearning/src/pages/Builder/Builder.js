@@ -601,6 +601,19 @@ function friendlyWait(seconds) {
   return `${minutes} minute${minutes === 1 ? '' : 's'}`;
 }
 
+const GUIDE_LEVELS = [
+  { id: 'early', icon: '🧸', label: 'Big help' },
+  { id: 'guided', icon: '🧭', label: 'Some help' },
+  { id: 'independent', icon: '🚀', label: 'Explore myself' },
+];
+
+function learnerGuideLevel(user) {
+  if (user?.learningMode === 'early') return 'early';
+  if (user?.learningMode === 'guided' || user?.managedProfile) return 'guided';
+  if (user?.learningMode === 'independent') return 'independent';
+  return user ? 'independent' : 'guided';
+}
+
 // Bridge script injected into the iframe for live element editing via postMessage
 const EDITOR_BRIDGE = `(function(){if(window.self===window.top)return;var em=false,sel=null,hov=null;function eid(el){if(!el.id)el.id='ce-'+Math.random().toString(36).slice(2,8);return el.id;}function isEl(el){return el&&el!==document.body&&el!==document.documentElement&&el.nodeType===1;}function clrHov(){if(hov){hov.style.outline='';hov.style.outlineOffset='';hov=null;}}function onOver(e){clrHov();if(!em||!isEl(e.target))return;hov=e.target;hov.style.outline='2.5px solid #FF7A00';hov.style.outlineOffset='2px';}function onClk(e){if(!em)return;e.preventDefault();e.stopPropagation();var el=e.target;if(!isEl(el))return;if(sel&&sel!==el){sel.style.outline='';}sel=el;sel.style.outline='2.5px solid #A855F7';var r=el.getBoundingClientRect();var cs=window.getComputedStyle(el);var t=el.tagName.toLowerCase();window.parent.postMessage({type:'CODEIT_SELECTED',id:eid(el),tag:t,text:el.textContent.slice(0,300),rect:{top:r.top+window.scrollY,left:r.left,w:r.width,h:r.height},styles:{color:cs.color,bg:cs.backgroundColor,fs:cs.fontSize,fw:cs.fontWeight,br:cs.borderRadius,anim:cs.animationName,pt:cs.paddingTop,pb:cs.paddingBottom,pl:cs.paddingLeft,pr:cs.paddingRight},isText:['p','h1','h2','h3','h4','h5','h6','span','li','a','label','td','th','button'].includes(t),isBtn:['button','a'].includes(t),isImg:t==='img'},'*');}function sync(){setTimeout(function(){window.parent.postMessage({type:'CODEIT_SYNC',html:document.documentElement.outerHTML},'*');},80);}window.addEventListener('message',function(e){if(e.source!==window.parent||!e.data||e.data.type!=='CODEIT_CMD')return;var d=e.data,p=d.payload||{};if(d.cmd==='ENABLE'){em=true;document.body.style.cursor='crosshair';document.addEventListener('mouseover',onOver,true);document.addEventListener('click',onClk,true);}if(d.cmd==='DISABLE'){em=false;document.body.style.cursor='';clrHov();if(sel){sel.style.outline='';sel=null;}document.removeEventListener('mouseover',onOver,true);document.removeEventListener('click',onClk,true);window.parent.postMessage({type:'CODEIT_HTML',html:document.documentElement.outerHTML},'*');}if(d.cmd==='SET_TEXT'){var el=document.getElementById(p.id)||(sel);if(el){el.textContent=p.v;}sync();}if(d.cmd==='SET_STYLE'){var el=document.getElementById(p.id)||(sel);if(el)Object.assign(el.style,p.styles);sync();}if(d.cmd==='SET_PATCH'){var el=document.getElementById(p.id);if(el){var tmp=document.createElement('div');tmp.innerHTML=p.html;var newEl=tmp.firstElementChild||tmp;el.replaceWith(newEl);}sync();}if(d.cmd==='GET_HTML'){window.parent.postMessage({type:'CODEIT_HTML',html:document.documentElement.outerHTML},'*');}if(d.cmd==='DESELECT'){if(sel){sel.style.outline='';sel=null;}}if(d.cmd==='SET_ROOT_VARS'){var sv=document.getElementById('__ci_vars');if(!sv){sv=document.createElement('style');sv.id='__ci_vars';document.head.appendChild(sv);}var css=':root{';Object.keys(p.vars||{}).forEach(function(k){css+=k+':'+p.vars[k]+';';});css+='}';sv.textContent=css;}if(d.cmd==='RUN_SCRIPT'){try{(new Function(p.js||''))();}catch(e){}}});window.parent.postMessage({type:'CODEIT_READY'},'*');})();`;
 
@@ -688,7 +701,13 @@ export default function Builder() {
   const [error, setError]               = useState('');
   const [buildKey, setBuildKey]         = useState(0);
   const [hasPersonalized, setHasPersonalized] = useState(false);
+  const [hasPlayedOnce, setHasPlayedOnce] = useState(false);
+  const [hasTestedLatest, setHasTestedLatest] = useState(false);
   const [guestDraftRecovered, setGuestDraftRecovered] = useState(false);
+  const [guideLevelOverride, setGuideLevelOverride] = useState(() => (
+    localStorage.getItem('codeit_guide_level') || ''
+  ));
+  const [coachOpen, setCoachOpen] = useState(() => learnerGuideLevel(user) !== 'independent');
 
   // ── AI memory ──────────────────────────────────────────────────────────────
   const [promptHistory, setPromptHistory] = useState([]);
@@ -810,15 +829,46 @@ export default function Builder() {
 
   function trackPersonalizationOnce() {
     setHasPersonalized(true);
+    setHasTestedLatest(false);
+    // A changed project must be opened again before it can pass the quality
+    // check. Leaving play mode makes that next action unambiguous.
+    setIsPlayMode(false);
     if (personalizationTrackedRef.current) return;
     personalizationTrackedRef.current = true;
     void trackEvent('project_personalize', null, token);
   }
 
-  function openStudioColors() {
-    setShowEditPanel(false);
-    setStudioPanel('colors');
-    setTimeout(() => studioRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' }), 0);
+  function handleTogglePlay() {
+    setIsPlayMode(current => {
+      const opening = !current;
+      if (opening) {
+        setHasPlayedOnce(true);
+        setHasTestedLatest(true);
+      }
+      return opening;
+    });
+  }
+
+  function changeGuideLevel(level) {
+    if (!GUIDE_LEVELS.some(option => option.id === level)) return;
+    localStorage.setItem('codeit_guide_level', level);
+    setGuideLevelOverride(level);
+    setCoachOpen(level !== 'independent');
+  }
+
+  function showCoachTarget() {
+    const target = document.querySelector('[data-codeit-coach="current"]');
+    target?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+    target?.focus?.({ preventScroll: true });
+  }
+
+  function readCoach(text) {
+    if (!text || !window.speechSynthesis || typeof window.SpeechSynthesisUtterance !== 'function') return;
+    window.speechSynthesis.cancel();
+    const message = new window.SpeechSynthesisUtterance(text);
+    message.rate = 0.82;
+    message.pitch = 1.08;
+    window.speechSynthesis.speak(message);
   }
 
   function applyColorsInstant(vars) {
@@ -1052,13 +1102,18 @@ export default function Builder() {
         const personalized = draft.hasPersonalized === true || (draft.promptHistory || []).length > 1;
         personalizationTrackedRef.current = personalized;
         setHasPersonalized(personalized);
-        setBuildKey(k => k + 1);
         const draftIsFresh = Number.isFinite(draft.savedAt) && Date.now() - draft.savedAt < 30 * 60 * 1000;
         const requestedAction = ['save', 'publish'].includes(location.state?.resumeBuilderAction)
           ? location.state.resumeBuilderAction
           : location.state?.resumeBuilderSave === true
             ? 'save'
             : null;
+        // A fresh account handoff came from the final quality-check button. Keep
+        // older handoff drafts working even though they predate these flags.
+        const handoffCompleted = Boolean(requestedAction && draftIsFresh);
+        setHasPlayedOnce(draft.hasPlayedOnce === true || handoffCompleted);
+        setHasTestedLatest(draft.hasTestedLatest === true || handoffCompleted);
+        setBuildKey(k => k + 1);
         setResumeAction(draftIsFresh ? requestedAction : null);
         if (!requestedAction || !draftIsFresh) {
           sessionStorage.removeItem('codeit_builder_draft');
@@ -1090,6 +1145,8 @@ export default function Builder() {
     const personalized = draft.hasPersonalized === true || (draft.promptHistory || []).length > 1;
     personalizationTrackedRef.current = personalized;
     setHasPersonalized(personalized);
+    setHasPlayedOnce(draft.hasPlayedOnce === true || personalized);
+    setHasTestedLatest(draft.hasTestedLatest === true || personalized);
     setGuestDraftRecovered(true);
     setBuildKey(k => k + 1);
     void trackEvent('guest_draft_recovered');
@@ -1114,10 +1171,12 @@ export default function Builder() {
         conceptsUsed,
         promptHistory,
         hasPersonalized,
+        hasPlayedOnce,
+        hasTestedLatest,
       });
     }, 250);
     return () => clearTimeout(timer);
-  }, [aiTitle, builtPrompt, builtSummary, code, conceptsUsed, hasPersonalized, isSaved, projectType, prompt, promptHistory, user]);
+  }, [aiTitle, builtPrompt, builtSummary, code, conceptsUsed, hasPersonalized, hasPlayedOnce, hasTestedLatest, isSaved, projectType, prompt, promptHistory, user]);
 
   // ── Confetti (only on fresh builds, not edits) ─────────────────────────────
   const confettiParticles = useMemo(() => {
@@ -1321,6 +1380,9 @@ export default function Builder() {
   const callBuilder = async (text) => {
     personalizationTrackedRef.current = false;
     setHasPersonalized(false);
+    setHasPlayedOnce(false);
+    setHasTestedLatest(false);
+    setCoachOpen(true);
     setGuestDraftRecovered(false);
     const previewType = detectProjectType(text);
     setLoadingPreviewType(previewType);
@@ -1374,10 +1436,8 @@ export default function Builder() {
       setBuildKey(k => k + 1);
       setShowEditPanel(false);
       const builtType = data.type || 'website';
-      // Auto-enter play mode for games and quizzes
-      if (/game|clicker|runner|memory|reaction|quiz|soccer/.test(builtType)) {
-        setIsPlayMode(true);
-      }
+      // Let the learner press Play themselves so the guide can teach the action.
+      setIsPlayMode(false);
       // Creator missions — show static pool immediately, then upgrade with AI-generated ones
       setMissions(getMissions(builtType));
       fetchAiMissions(html, builtType, data.title || '', token).then(aiMissions => {
@@ -1536,7 +1596,8 @@ export default function Builder() {
     try {
       sessionStorage.setItem('codeit_builder_draft', JSON.stringify({
         code, prompt, builtPrompt, projectType, aiTitle,
-        builtSummary, conceptsUsed, promptHistory, hasPersonalized, savedAt: Date.now(),
+        builtSummary, conceptsUsed, promptHistory, hasPersonalized,
+        hasPlayedOnce, hasTestedLatest, savedAt: Date.now(),
       }));
     } catch (_) {}
     void trackEvent('activation_account_gate', action, token);
@@ -1548,6 +1609,7 @@ export default function Builder() {
   // ── Save project ───────────────────────────────────────────────────────────
   const handleSaveProject = async () => {
     if (!code) return;
+    if (!isPersonalized || !hasTestedLatest) return;
     if (!user || !token) {
       continueAfterAuth('save');
       return;
@@ -1661,6 +1723,9 @@ export default function Builder() {
       setExplanation('');
       setPromptHistory(latestPromptHistory);
       personalizationTrackedRef.current = true;
+      setHasPersonalized(latestPromptHistory.length > 1);
+      setHasPlayedOnce(true);
+      setHasTestedLatest(true);
       setPreviousCode('');
       setIsSaved(true);
       setSaveStatus(null);
@@ -1845,6 +1910,8 @@ export default function Builder() {
     setGameTimer(30);
     setEditModeOn(false);
     setHasPersonalized(false);
+    setHasPlayedOnce(false);
+    setHasTestedLatest(false);
     setGuestDraftRecovered(false);
     setSelectedEl(null);
     setShowElPanel(false);
@@ -1894,6 +1961,10 @@ export default function Builder() {
   // ── Publish project ────────────────────────────────────────────────────────
   const handlePublish = async () => {
     if (!code) return;
+    if (!isPersonalized || !hasTestedLatest) {
+      setShowEditPanel(!isPersonalized);
+      return;
+    }
     if (!user || !token) {
       continueAfterAuth('publish');
       return;
@@ -2017,6 +2088,24 @@ export default function Builder() {
   const projectName = aiTitle || (builtPrompt ? deriveProjectName(builtPrompt) : '');
   const editCount   = promptHistory.length > 1 ? promptHistory.length - 1 : 0;
   const isPersonalized = hasPersonalized || editCount > 0;
+  const guideLevel = guideLevelOverride || learnerGuideLevel(user);
+  const coachStage = !code
+    ? prompt.trim()
+      ? { number: 2, icon: '🟣', title: 'Press “Build my project”', detail: 'The big purple button makes your idea.', target: 'build' }
+      : { number: 1, icon: '👇', title: 'Pick what you want to make', detail: 'Press Game, Website, or Quiz.', target: 'pick' }
+    : !hasPlayedOnce
+      ? { number: 2, icon: '▶️', title: 'Press Play', detail: 'Try every button. See what works.', target: 'play' }
+      : !isPersonalized
+        ? { number: 3, icon: '🎨', title: 'Change one thing', detail: 'Pick new colors or add a fun idea.', target: 'change' }
+        : !hasTestedLatest
+          ? { number: 4, icon: '🧪', title: 'Play it again', detail: 'Make sure your new change works.', target: 'play' }
+          : !isSaved
+            ? { number: 5, icon: '💾', title: 'Save your project', detail: 'Keep your work so it is here next time.', target: 'save' }
+            : user?.managedProfile
+              ? { number: 6, icon: '🙋', title: 'Show your grown-up or teacher', detail: 'Your project is ready for a safe review.', target: 'learn' }
+              : !isPublished
+                ? { number: 6, icon: '🌟', title: 'Publish when you are proud', detail: 'Your project is tested, saved, and ready to share.', target: 'publish' }
+                : { number: 7, icon: '🎉', title: 'Invite someone to play', detail: 'Share your finished project and ask what they think.', target: 'share' };
   const lessonChips = builtPrompt
     ? LESSON_CONCEPTS.filter(l => detectLessonIds(builtPrompt).includes(l.id))
     : [];
@@ -2081,6 +2170,47 @@ export default function Builder() {
           </aside>
         )}
 
+        <section className="bldr-help-level" aria-label="Choose how much guidance you want">
+          <span className="bldr-help-level__label">How much help do you want?</span>
+          <div className="bldr-help-level__options">
+            {GUIDE_LEVELS.map(option => (
+              <button
+                key={option.id}
+                type="button"
+                className={guideLevel === option.id ? 'is-active' : ''}
+                aria-pressed={guideLevel === option.id}
+                onClick={() => changeGuideLevel(option.id)}
+              >
+                <span aria-hidden="true">{option.icon}</span>{option.label}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {coachOpen ? (
+          <aside className={`bldr-coach bldr-coach--${guideLevel}`} role="status" aria-live="polite">
+            <div className="bldr-coach__face" aria-hidden="true">{coachStage.icon}</div>
+            <div className="bldr-coach__copy">
+              <span className="bldr-coach__step">CodeIt Guide · Step {coachStage.number}</span>
+              <strong>{coachStage.title}</strong>
+              <p>{coachStage.detail}</p>
+            </div>
+            <div className="bldr-coach__actions">
+              <button type="button" className="bldr-coach__show" onClick={showCoachTarget}>👆 Show me</button>
+              <button
+                type="button"
+                className="bldr-coach__read"
+                onClick={() => readCoach(`${coachStage.title}. ${coachStage.detail}`)}
+              >
+                🔊 Read to me
+              </button>
+              <button type="button" className="bldr-coach__hide" onClick={() => setCoachOpen(false)} aria-label="Hide CodeIt Guide">×</button>
+            </div>
+          </aside>
+        ) : (
+          <button type="button" className="bldr-coach-open" onClick={() => setCoachOpen(true)}>🧭 Open CodeIt Guide</button>
+        )}
+
         {/* Ambient studio particles — paused while editing for performance */}
         {hasResult && !editing && (
           <div className="bldr-studio-particles" aria-hidden="true">
@@ -2095,7 +2225,7 @@ export default function Builder() {
             HERO BUILD PICKS (first-time empty state)
         ════════════════════════════════════════ */}
         {!code && !loading && !error && (
-          <div className="bldr-hero-picks">
+          <div className="bldr-hero-picks" data-codeit-coach={coachStage.target === 'pick' ? 'current' : undefined}>
             <p className="bldr-hero-picks__label">What will you build today?</p>
             <div className="bldr-hero-picks__grid">
               {HERO_BUILDS.map(hb => (
@@ -2150,6 +2280,7 @@ export default function Builder() {
 
           <button
             className="bldr-build-btn"
+            data-codeit-coach={coachStage.target === 'build' ? 'current' : undefined}
             onClick={handleBuild}
             disabled={!prompt.trim() || loading || editing}
           >
@@ -2301,7 +2432,7 @@ export default function Builder() {
                 </p>
                 {builtSummary && <p className="bldr-success-banner__summary">{builtSummary}</p>}
               </div>
-              {!isSaved && (
+              {!isSaved && isPersonalized && hasTestedLatest && (
                 <button
                   type="button"
                   className="bldr-success-banner__save"
@@ -2410,7 +2541,8 @@ export default function Builder() {
                 </div>
                 <button
                   className="bldr-browser__play-btn"
-                  onClick={() => setIsPlayMode(p => !p)}
+                  onClick={handleTogglePlay}
+                  data-codeit-coach={coachStage.target === 'play' ? 'current' : undefined}
                   title={isPlayMode ? 'Compact view' : 'Expand to play mode'}
                 >
                   {isPlayMode ? 'Compact' : 'Play'}
@@ -2435,80 +2567,65 @@ export default function Builder() {
 
             {/* Show the finished result before asking the student to change, save, or share it. */}
             {!isSaved && (
-              <section className="bldr-activation-card" aria-labelledby="bldr-next-step-title">
+              <section className="bldr-activation-card bldr-activation-card--journey" aria-labelledby="bldr-next-step-title">
                 <div className="bldr-activation-card__copy">
-                  <span className="bldr-activation-card__kicker">Your next step</span>
-                  <h3 id="bldr-next-step-title">
-                    {!isPersonalized
-                      ? 'Keep this project, or change it first.'
-                      : 'Save this project before you leave.'}
-                  </h3>
+                  <span className="bldr-activation-card__kicker">Your first version is ready — it is not finished yet</span>
+                  <h3 id="bldr-next-step-title">Play it. Change it. Test it. Then save it.</h3>
                   <p>
-                    {!isPersonalized
-                      ? user
-                        ? 'Save it now so it is ready when you come back. Student accounts earn 25 XP for a new saved project, and you can still change it later.'
-                        : 'Keep it in a free account so it is not limited to this browser. You can also change the look before continuing.'
-                      : user
-                        ? 'Save this version so it appears in My Creations and is ready when you come back.'
-                        : 'We’ll keep this version in this browser while you sign in or choose an eligible account option, then bring you back here.'}
+                    {guideLevel === 'early'
+                      ? 'Follow the four picture steps. CodeIt will show you the next button.'
+                      : 'A strong project needs your ideas. Make at least one change and test it before you call it finished.'}
                   </p>
+                  <ol className="bldr-project-checklist" aria-label="Project quality steps">
+                    <li className={hasPlayedOnce ? 'is-done' : 'is-current'}><span>{hasPlayedOnce ? '✓' : '1'}</span>Play everything</li>
+                    <li className={isPersonalized ? 'is-done' : hasPlayedOnce ? 'is-current' : ''}><span>{isPersonalized ? '✓' : '2'}</span>Change one thing</li>
+                    <li className={isPersonalized && hasTestedLatest ? 'is-done' : isPersonalized ? 'is-current' : ''}><span>{isPersonalized && hasTestedLatest ? '✓' : '3'}</span>Play it again</li>
+                    <li className={isPersonalized && hasTestedLatest ? 'is-current' : ''}><span>4</span>Save your work</li>
+                  </ol>
                 </div>
                 <div className="bldr-activation-card__actions">
-                  {!isPersonalized ? (
-                    <>
-                      <button
-                        className="bldr-activation-card__primary"
-                        onClick={handleSaveProject}
-                        disabled={saveStatus === 'saving' || editing}
-                      >
-                        {saveStatus === 'saving' ? 'Saving…' : user ? 'Save this project' : 'Keep this project'}
-                      </button>
-                      <div className="bldr-activation-themes" role="group" aria-label="Choose a color theme">
-                        <span className="bldr-activation-themes__label">Optional: change the look first</span>
-                        {FIRST_CHANGE_THEMES.map(theme => (
-                          <button
-                            key={theme.name}
-                            className="bldr-activation-theme"
-                            type="button"
-                            aria-label={`Apply ${theme.name} theme`}
-                            onClick={() => handleApplyColors(theme.vars)}
-                            disabled={editing}
-                          >
-                            <span className="bldr-activation-theme__swatches" aria-hidden="true">
-                              {theme.swatches.map(color => (
-                                <span key={color} style={{ background: color }} />
-                              ))}
-                            </span>
-                            <span>{theme.name}</span>
-                          </button>
-                        ))}
+                  {!hasPlayedOnce ? (
+                    <button className="bldr-activation-card__primary" onClick={handleTogglePlay} data-codeit-coach="current">▶ Play it now</button>
+                  ) : !isPersonalized ? (
+                    <button
+                      className="bldr-activation-card__primary"
+                      onClick={() => { setShowEditPanel(true); setTimeout(() => editRef.current?.focus(), 0); }}
+                      data-codeit-coach="current"
+                      disabled={editing}
+                    >
+                      🎨 Change my project
+                    </button>
+                  ) : !hasTestedLatest ? (
+                    <button className="bldr-activation-card__primary" onClick={handleTogglePlay} data-codeit-coach="current">▶ Play my changes</button>
+                  ) : (
+                    <button
+                      className="bldr-activation-card__primary"
+                      onClick={handleSaveProject}
+                      data-codeit-coach="current"
+                      disabled={saveStatus === 'saving' || editing}
+                    >
+                      {saveStatus === 'saving' ? 'Saving…' : user ? '💾 Save my project' : '💾 Keep my project'}
+                    </button>
+                  )}
+                  {hasPlayedOnce && !isPersonalized && (
+                    <div className="bldr-activation-themes" role="group" aria-label="Quick color choices">
+                      <span className="bldr-activation-themes__label">Or pick colors now</span>
+                      {FIRST_CHANGE_THEMES.map(theme => (
                         <button
-                          className="bldr-activation-theme bldr-activation-theme--more"
+                          key={theme.name}
+                          className="bldr-activation-theme"
                           type="button"
-                          onClick={openStudioColors}
+                          aria-label={`Apply ${theme.name} theme`}
+                          onClick={() => handleApplyColors(theme.vars)}
                           disabled={editing}
                         >
-                          More colors
+                          <span className="bldr-activation-theme__swatches" aria-hidden="true">
+                            {theme.swatches.map(color => <span key={color} style={{ background: color }} />)}
+                          </span>
+                          <span>{theme.name}</span>
                         </button>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        className="bldr-activation-card__primary"
-                        onClick={handleSaveProject}
-                        disabled={saveStatus === 'saving' || editing}
-                      >
-                        {saveStatus === 'saving' ? 'Saving…' : user ? 'Save project' : 'Save and continue'}
-                      </button>
-                      <button
-                        className="bldr-activation-card__secondary"
-                        onClick={() => { setShowEditPanel(true); setTimeout(() => editRef.current?.focus(), 0); }}
-                        disabled={editing}
-                      >
-                        Make another change
-                      </button>
-                    </>
+                      ))}
+                    </div>
                   )}
                 </div>
               </section>
@@ -2517,16 +2634,16 @@ export default function Builder() {
             {isSaved && !isPublished && (
               <section className="bldr-activation-card bldr-activation-card--finish" aria-labelledby="bldr-finish-step-title">
                 <div className="bldr-activation-card__copy">
-                  <span className="bldr-activation-card__kicker">Saved — one more step</span>
+                  <span className="bldr-activation-card__kicker">Quality check complete</span>
                   <h3 id="bldr-finish-step-title">
                     {user?.managedProfile
-                      ? 'Now learn one thing your project uses.'
-                      : 'Ready to show someone what you made?'}
+                      ? 'Great work — show your grown-up or teacher.'
+                      : 'Now your project is ready to publish.'}
                   </h3>
                   <p>
                     {user?.managedProfile
-                      ? 'This project stays private in your family account. Open the explanation to connect what you see with the code behind it.'
-                      : 'Publish only when you are ready. CodeIt will create a link you can open on any phone and share with family or friends.'}
+                      ? 'You played it, improved it, tested it, and saved it. Your family-private project is ready for review.'
+                      : 'You played it, made it yours, tested the change, and saved it. Publishing creates a link other people can open.'}
                   </p>
                 </div>
                 <div className="bldr-activation-card__actions">
@@ -2537,6 +2654,7 @@ export default function Builder() {
                         void trackEvent('activation_next_step', 'learn', token);
                         handleExplain();
                       }}
+                      data-codeit-coach={coachStage.target === 'learn' ? 'current' : undefined}
                       disabled={explaining || editing}
                     >
                       {explaining ? 'Opening explanation…' : 'Learn how it works'}
@@ -2548,6 +2666,7 @@ export default function Builder() {
                         void trackEvent('activation_next_step', 'publish', token);
                         handlePublish();
                       }}
+                      data-codeit-coach={coachStage.target === 'publish' ? 'current' : undefined}
                       disabled={editing || publishStatus === 'publishing'}
                     >
                       {publishStatus === 'publishing' ? 'Publishing…' : 'Publish and get a link'}
@@ -2582,6 +2701,7 @@ export default function Builder() {
                       void trackEvent('activation_next_step', 'share', token);
                       handleShare();
                     }}
+                    data-codeit-coach={coachStage.target === 'share' ? 'current' : undefined}
                     disabled={editing}
                   >
                     {shareStatus === 'shared' ? 'Shared!'
@@ -2780,13 +2900,13 @@ export default function Builder() {
                     {user ? (
                       <button
                         className="bldr-studio-panel__apply-btn"
-                        disabled={saveStatus === 'saving' || isSaved || editing}
+                        disabled={saveStatus === 'saving' || isSaved || editing || !isPersonalized || !hasTestedLatest}
                         onClick={() => { handleSaveProject(); setStudioPanel(null); }}
                       >
                         {isSaved ? 'Saved to My Creations' : 'Save to My Creations'}
                       </button>
                     ) : (
-                      <button className="bldr-studio-panel__apply-btn" onClick={handleSaveProject}>
+                      <button className="bldr-studio-panel__apply-btn" onClick={handleSaveProject} disabled={!isPersonalized || !hasTestedLatest}>
                         Log in to save
                       </button>
                     )}
@@ -2888,7 +3008,7 @@ export default function Builder() {
                 <button
                   className="bldr-action-btn bldr-action-btn--publish"
                   onClick={handlePublish}
-                  disabled={editing || publishStatus === 'publishing' || user?.managedProfile}
+                  disabled={editing || publishStatus === 'publishing' || user?.managedProfile || !isSaved || !isPersonalized || !hasTestedLatest}
                   title={user?.managedProfile ? 'Parent-managed learner projects stay private' : 'Get a public link anyone can open'}
                 >
                   {publishStatus === 'publishing'
@@ -2931,7 +3051,7 @@ export default function Builder() {
                 <button
                   className={`bldr-action-btn bldr-action-btn--save${saveStatus === 'saved' ? ' bldr-action-btn--saved' : ''}`}
                   onClick={handleSaveProject}
-                  disabled={saveStatus === 'saving' || isSaved || editing}
+                  disabled={saveStatus === 'saving' || isSaved || editing || !isPersonalized || !hasTestedLatest}
                 >
                   {saveStatus === 'saving' && <><span className="bldr-spinner bldr-spinner--sm" />Saving...</>}
                   {saveStatus === 'saved'  && 'Saved!'}
@@ -2939,7 +3059,7 @@ export default function Builder() {
                   {!saveStatus && (isSaved ? 'Saved' : 'Save project')}
                 </button>
               ) : (
-                <button className="bldr-action-btn bldr-action-btn--login-hint" onClick={handleSaveProject}>
+                <button className="bldr-action-btn bldr-action-btn--login-hint" onClick={handleSaveProject} disabled={!isPersonalized || !hasTestedLatest}>
                   Log in to save
                 </button>
               )}
@@ -3008,7 +3128,7 @@ export default function Builder() {
                       <p>You can keep playing or change the colors while you wait.</p>
                     </div>
                     <div className="bldr-edit-panel__pause-actions">
-                      <button type="button" onClick={() => { setIsPlayMode(true); setShowEditPanel(false); }}>▶ Play my project</button>
+                      <button type="button" onClick={() => { setIsPlayMode(true); setHasPlayedOnce(true); setHasTestedLatest(true); setShowEditPanel(false); }}>▶ Play my project</button>
                       <button type="button" onClick={() => { setStudioPanel('colors'); setShowEditPanel(false); }}>🎨 Change colors</button>
                     </div>
                   </div>
@@ -3356,7 +3476,7 @@ export default function Builder() {
           <div className="bldr-mobile-play-bar">
             <button
               className="bldr-mobile-play-bar__btn bldr-mobile-play-bar__btn--play"
-              onClick={() => setIsPlayMode(p => !p)}
+              onClick={handleTogglePlay}
             >
               {isPlayMode ? 'Compact' : 'Play'}
             </button>
@@ -3370,7 +3490,7 @@ export default function Builder() {
             <button
               className="bldr-mobile-play-bar__btn bldr-mobile-play-bar__btn--save"
               onClick={handleSaveProject}
-              disabled={saveStatus === 'saving' || isSaved || editing}
+              disabled={saveStatus === 'saving' || isSaved || editing || !isPersonalized || !hasTestedLatest}
               aria-label={user ? 'Save project' : 'Save project to a free account'}
             >
               {isSaved ? 'Saved' : 'Save'}

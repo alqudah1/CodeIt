@@ -34,4 +34,11 @@ function studentAgeEligibility(dob, now = new Date()) {
   return { allowed: true, reason: 'eligible', age };
 }
 
-module.exports = { ageOnDate, parseDateOnly, studentAgeEligibility };
+function learningModeForAge(age) {
+  if (!Number.isInteger(age) || age < 0) return 'independent';
+  if (age <= 7) return 'early';
+  if (age <= 12) return 'guided';
+  return 'independent';
+}
+
+module.exports = { ageOnDate, learningModeForAge, parseDateOnly, studentAgeEligibility };
