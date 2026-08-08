@@ -35,9 +35,9 @@ async function awardProjectXp(pool, ready, userId, projectId, awardType) {
     }
 
     const [award] = await connection.query(
-      `INSERT IGNORE INTO ai_project_xp_awards
+      `INSERT INTO ai_project_xp_awards
          (user_id, project_id, award_type, xp_earned)
-       VALUES (?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?) ON CONFLICT (project_id, award_type) DO NOTHING`,
       [userId, projectId, awardType, xp]
     );
     if (!award.affectedRows) {

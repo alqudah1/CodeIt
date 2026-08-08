@@ -16,7 +16,7 @@ const EMAIL_FROM = `CodeIt Family <${configuredAddress}>`;
 const REVIEW_SECRET = `${JWT_SECRET}:legacy-parent-review`;
 const REVIEW_WINDOW_DAYS = 14;
 
-const ready = (async () => {
+const ready = db.dialect === 'postgres' ? Promise.resolve(true) : (async () => {
   await familyReady;
   await db.query(`
     CREATE TABLE IF NOT EXISTS legacy_parent_reviews (
@@ -38,19 +38,25 @@ const ready = (async () => {
   `);
   const [privacyUpdate] = await db.query(`
     UPDATE ai_projects p
-    JOIN Users child ON child.user_id = p.user_id
-    LEFT JOIN parent_child_links family ON family.child_user_id = child.user_id
-    LEFT JOIN Users adult ON adult.user_id = family.adult_user_id
-    LEFT JOIN adult_email_verifications verification
-      ON verification.user_id = adult.user_id
-     AND verification.email = LOWER(adult.email)
-     AND verification.verified_at IS NOT NULL
-       SET p.is_public = 0
-     WHERE LOWER(child.role) = 'student'
-       AND child.dob IS NOT NULL
-       AND TIMESTAMPDIFF(YEAR, child.dob, CURRENT_DATE()) < 13
-       AND verification.user_id IS NULL
-       AND p.is_public = 1
+       SET is_public = 0
+     WHERE p.is_public = 1
+       AND EXISTS (
+         SELECT 1 FROM Users child
+          WHERE child.user_id = p.user_id
+            AND LOWER(child.role) = 'student'
+            AND child.dob IS NOT NULL
+            AND EXTRACT(YEAR FROM AGE(CURRENT_DATE, child.dob)) < 13
+       )
+       AND NOT EXISTS (
+         SELECT 1
+           FROM parent_child_links family
+           JOIN Users adult ON adult.user_id = family.adult_user_id
+           JOIN adult_email_verifications verification
+             ON verification.user_id = adult.user_id
+            AND verification.email = LOWER(adult.email)
+            AND verification.verified_at IS NOT NULL
+          WHERE family.child_user_id = p.user_id
+       )
   `);
   if (privacyUpdate.affectedRows > 0) {
     console.log(`Made ${privacyUpdate.affectedRows} unverified under-13 project(s) private.`);
@@ -204,9 +210,9 @@ async function requestLegacyReview(rawReviewToken, suppliedEmail) {
   await db.query(
     `INSERT INTO legacy_parent_reviews
        (child_user_id, parent_email, token_hash, expires_at, status, requested_at, claimed_at, adult_user_id)
-     VALUES (?, ?, ?, DATE_ADD(NOW(), INTERVAL ${REVIEW_WINDOW_DAYS} DAY), 'pending', NOW(), NULL, NULL)
-     ON DUPLICATE KEY UPDATE parent_email = VALUES(parent_email),
-       token_hash = VALUES(token_hash), expires_at = VALUES(expires_at),
+     VALUES (?, ?, ?, NOW() + INTERVAL '${REVIEW_WINDOW_DAYS} days', 'pending', NOW(), NULL, NULL)
+     ON CONFLICT (child_user_id) DO UPDATE SET parent_email = EXCLUDED.parent_email,
+       token_hash = EXCLUDED.token_hash, expires_at = EXCLUDED.expires_at,
        status = 'pending', requested_at = NOW(), claimed_at = NULL, adult_user_id = NULL`,
     [child.user_id, parentEmail, hashToken(claimToken)]
   );
@@ -312,7 +318,7 @@ async function claimLegacyChild(adultUserId, rawClaimToken, input = {}) {
     await connection.query(
       `INSERT INTO adult_email_verifications (user_id, email, verified_at, token_hash, expires_at)
        VALUES (?, ?, NOW(), NULL, NULL)
-       ON DUPLICATE KEY UPDATE email = VALUES(email), verified_at = NOW(),
+       ON CONFLICT (user_id) DO UPDATE SET email = EXCLUDED.email, verified_at = NOW(),
          token_hash = NULL, expires_at = NULL`,
       [adult.user_id, String(adult.email).trim().toLowerCase()]
     );

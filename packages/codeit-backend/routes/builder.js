@@ -63,7 +63,7 @@ async function createTrackedMessage(operation, params, requestOptions) {
 }
 
 // ── Auto-create ai_project_versions table ─────────────────────────────────────
-(async () => {
+if (pool.dialect !== 'postgres') (async () => {
   try {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS ai_project_versions (
@@ -86,7 +86,7 @@ async function createTrackedMessage(operation, params, requestOptions) {
   }
 })();
 
-const projectXpReady = initializeProjectRewards(pool).catch((error) => {
+const projectXpReady = (pool.dialect === 'postgres' ? Promise.resolve(true) : initializeProjectRewards(pool)).catch((error) => {
   console.error('Project XP table init error:', error.message);
   throw error;
 });

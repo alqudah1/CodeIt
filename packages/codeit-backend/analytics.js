@@ -6,7 +6,7 @@ const { listFoundingFamilyLeads } = require('./foundingWaitlist');
 const { ready: legacyParentReviewReady } = require('./legacyParentReview');
 const ACTIVATION_ENTRY_TRACKING_SINCE = '2026-08-01';
 
-const tableReady = pool.query(`
+const tableReady = pool.dialect === 'postgres' ? Promise.resolve(true) : pool.query(`
   CREATE TABLE IF NOT EXISTS analytics_events (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     event_name VARCHAR(40) NOT NULL,
@@ -78,12 +78,12 @@ async function getFunnelReport(requestedDays = 30) {
   try {
     if (!await tableReady) return null;
     await legacyParentReviewReady;
-    const windowSql = `created_at >= DATE_SUB(NOW(), INTERVAL ${days} DAY)`;
+    const windowSql = `created_at >= NOW() - INTERVAL '${days} days'`;
     const [[events], [daily], [breakdown], [sourceFunnel], [campaignFunnel], [homepageFunnelRows], [challengeFunnelRows], [studentAgeRows], [progressDeliveries], [accountLeads], directLeads] = await Promise.all([
       pool.query(
         `SELECT event_name, COUNT(*) AS event_count, COUNT(DISTINCT user_id) AS unique_users,
                 COUNT(DISTINCT journey_id) AS unique_journeys,
-                SUM(journey_id IS NOT NULL) AS attributed_events
+                COUNT(journey_id) AS attributed_events
          FROM analytics_events WHERE ${windowSql}
          GROUP BY event_name`
       ),
@@ -115,14 +115,14 @@ async function getFunnelReport(requestedDays = 30) {
          FROM (
            SELECT journey_id,
                   MAX(CASE WHEN event_name = 'acquisition_visit' THEN meta END) AS source,
-                  MAX(event_name = 'generation_complete') AS generated_count,
-                  MAX(event_name = 'signup_complete') AS signup_count,
-                  MAX(event_name = 'family_child_created') AS family_profile_count,
-                  MAX(event_name = 'pilot_join') AS pilot_count,
-                  MAX(event_name = 'pilot_confirmation' AND meta = 'sent') AS pilot_confirmation_count,
-                  MAX(event_name = 'project_save') AS save_count,
-                  MAX(event_name = 'project_publish') AS publish_count,
-                  MAX(event_name = 'project_remix') AS remix_count
+                  MAX(CASE WHEN event_name = 'generation_complete' THEN 1 ELSE 0 END) AS generated_count,
+                  MAX(CASE WHEN event_name = 'signup_complete' THEN 1 ELSE 0 END) AS signup_count,
+                  MAX(CASE WHEN event_name = 'family_child_created' THEN 1 ELSE 0 END) AS family_profile_count,
+                  MAX(CASE WHEN event_name = 'pilot_join' THEN 1 ELSE 0 END) AS pilot_count,
+                  MAX(CASE WHEN event_name = 'pilot_confirmation' AND meta = 'sent' THEN 1 ELSE 0 END) AS pilot_confirmation_count,
+                  MAX(CASE WHEN event_name = 'project_save' THEN 1 ELSE 0 END) AS save_count,
+                  MAX(CASE WHEN event_name = 'project_publish' THEN 1 ELSE 0 END) AS publish_count,
+                  MAX(CASE WHEN event_name = 'project_remix' THEN 1 ELSE 0 END) AS remix_count
            FROM analytics_events
            WHERE ${windowSql} AND journey_id IS NOT NULL
            GROUP BY journey_id
@@ -143,11 +143,11 @@ async function getFunnelReport(requestedDays = 30) {
            SELECT journey_id,
                   MAX(CASE WHEN event_name = 'acquisition_visit' THEN campaign_code END) AS campaign_code,
                   MAX(CASE WHEN event_name = 'acquisition_visit' THEN meta END) AS source,
-                  MAX(event_name = 'generation_complete') AS generated_count,
-                  MAX(event_name = 'signup_complete') AS signup_count,
-                  MAX(event_name = 'pilot_join') AS pilot_count,
-                  MAX(event_name = 'project_save') AS save_count,
-                  MAX(event_name = 'project_publish') AS publish_count
+                  MAX(CASE WHEN event_name = 'generation_complete' THEN 1 ELSE 0 END) AS generated_count,
+                  MAX(CASE WHEN event_name = 'signup_complete' THEN 1 ELSE 0 END) AS signup_count,
+                  MAX(CASE WHEN event_name = 'pilot_join' THEN 1 ELSE 0 END) AS pilot_count,
+                  MAX(CASE WHEN event_name = 'project_save' THEN 1 ELSE 0 END) AS save_count,
+                  MAX(CASE WHEN event_name = 'project_publish' THEN 1 ELSE 0 END) AS publish_count
            FROM analytics_events
            WHERE ${windowSql} AND journey_id IS NOT NULL
            GROUP BY journey_id
@@ -164,11 +164,11 @@ async function getFunnelReport(requestedDays = 30) {
                 SUM(save_count) AS saved_projects
          FROM (
            SELECT journey_id,
-                  MAX(event_name = 'homepage_view') AS homepage_count,
-                  MAX(event_name = 'landing_cta_click') AS clicked_count,
-                  MAX(event_name = 'generation_complete') AS generated_count,
-                  MAX(event_name = 'signup_complete') AS signup_count,
-                  MAX(event_name = 'project_save') AS save_count
+                  MAX(CASE WHEN event_name = 'homepage_view' THEN 1 ELSE 0 END) AS homepage_count,
+                  MAX(CASE WHEN event_name = 'landing_cta_click' THEN 1 ELSE 0 END) AS clicked_count,
+                  MAX(CASE WHEN event_name = 'generation_complete' THEN 1 ELSE 0 END) AS generated_count,
+                  MAX(CASE WHEN event_name = 'signup_complete' THEN 1 ELSE 0 END) AS signup_count,
+                  MAX(CASE WHEN event_name = 'project_save' THEN 1 ELSE 0 END) AS save_count
            FROM analytics_events
            WHERE ${windowSql} AND journey_id IS NOT NULL
            GROUP BY journey_id
@@ -182,10 +182,10 @@ async function getFunnelReport(requestedDays = 30) {
                 SUM(save_count) AS saved_projects
          FROM (
            SELECT journey_id,
-                  MAX(event_name = 'challenge_view') AS challenge_count,
-                  MAX(event_name = 'challenge_start') AS started_count,
-                  MAX(event_name = 'generation_complete') AS generated_count,
-                  MAX(event_name = 'project_save') AS save_count
+                  MAX(CASE WHEN event_name = 'challenge_view' THEN 1 ELSE 0 END) AS challenge_count,
+                  MAX(CASE WHEN event_name = 'challenge_start' THEN 1 ELSE 0 END) AS started_count,
+                  MAX(CASE WHEN event_name = 'generation_complete' THEN 1 ELSE 0 END) AS generated_count,
+                  MAX(CASE WHEN event_name = 'project_save' THEN 1 ELSE 0 END) AS save_count
            FROM analytics_events
            WHERE ${windowSql} AND journey_id IS NOT NULL
            GROUP BY journey_id
@@ -195,13 +195,13 @@ async function getFunnelReport(requestedDays = 30) {
       pool.query(
         `SELECT
            COUNT(*) AS students,
-           SUM(dob IS NULL) AS missing_dob,
-           SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) < 13) AS under_13,
-           SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) < 13
+           COUNT(*) FILTER (WHERE dob IS NULL) AS missing_dob,
+           COUNT(*) FILTER (WHERE dob IS NOT NULL AND EXTRACT(YEAR FROM AGE(CURRENT_DATE, dob)) < 13) AS under_13,
+           COUNT(*) FILTER (WHERE dob IS NOT NULL AND EXTRACT(YEAR FROM AGE(CURRENT_DATE, dob)) < 13
              AND parent_email IS NOT NULL AND parent_email <> '') AS under_13_with_parent_email,
-           SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) < 13
+           COUNT(*) FILTER (WHERE dob IS NOT NULL AND EXTRACT(YEAR FROM AGE(CURRENT_DATE, dob)) < 13
              AND (parent_email IS NULL OR parent_email = '')) AS under_13_without_parent_email,
-           SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) < 13
+           COUNT(*) FILTER (WHERE dob IS NOT NULL AND EXTRACT(YEAR FROM AGE(CURRENT_DATE, dob)) < 13
              AND EXISTS (
                SELECT 1
                  FROM parent_child_links pcl
@@ -212,21 +212,21 @@ async function getFunnelReport(requestedDays = 30) {
                   AND aev.verified_at IS NOT NULL
                 WHERE pcl.child_user_id = Users.user_id
              )) AS under_13_verified_managed,
-           SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) < 13
+           COUNT(*) FILTER (WHERE dob IS NOT NULL AND EXTRACT(YEAR FROM AGE(CURRENT_DATE, dob)) < 13
              AND EXISTS (
                SELECT 1 FROM legacy_parent_reviews lpr
                 WHERE lpr.child_user_id = Users.user_id
                   AND lpr.status = 'pending'
                   AND lpr.expires_at > NOW()
              )) AS under_13_review_sent,
-           SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) BETWEEN 13 AND 18) AS age_13_18,
-           SUM(dob IS NOT NULL AND TIMESTAMPDIFF(YEAR, dob, CURDATE()) > 18) AS over_18
+           COUNT(*) FILTER (WHERE dob IS NOT NULL AND EXTRACT(YEAR FROM AGE(CURRENT_DATE, dob)) BETWEEN 13 AND 18) AS age_13_18,
+           COUNT(*) FILTER (WHERE dob IS NOT NULL AND EXTRACT(YEAR FROM AGE(CURRENT_DATE, dob)) > 18) AS over_18
          FROM Users WHERE LOWER(role) = 'student'`
       ),
       pool.query(
         `SELECT status, COUNT(*) AS delivery_count
            FROM parent_notification_deliveries
-          WHERE created_at >= DATE_SUB(NOW(), INTERVAL ${days} DAY)
+          WHERE created_at >= NOW() - INTERVAL '${days} days'
           GROUP BY status
           ORDER BY status`
       ),
@@ -236,7 +236,7 @@ async function getFunnelReport(requestedDays = 30) {
          INNER JOIN Users u ON u.user_id = a.user_id
          WHERE a.event_name = 'pricing_interest'
            AND a.meta = 'founding-family'
-           AND a.created_at >= DATE_SUB(NOW(), INTERVAL ${days} DAY)
+           AND a.created_at >= NOW() - INTERVAL '${days} days'
            AND u.email IS NOT NULL AND u.email <> ''
          GROUP BY u.user_id, u.name, u.email
          ORDER BY interested_at DESC

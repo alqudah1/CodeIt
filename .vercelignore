@@ -1,0 +1,8 @@
+yarn.lock
+.git
+.git/**
+node_modules
+**/node_modules
+**/.env
+**/.env.*
+!**/.env.example

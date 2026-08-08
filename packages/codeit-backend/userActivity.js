@@ -3,7 +3,7 @@
 const pool = require('./db');
 const { ACTIVE_USER_DEFINITION, normalizeUserId } = require('./userActivityDefinitions');
 
-const ready = process.env.NODE_ENV === 'test' ? Promise.resolve(true) : pool.query(`
+const ready = process.env.NODE_ENV === 'test' || pool.dialect === 'postgres' ? Promise.resolve(true) : pool.query(`
   CREATE TABLE IF NOT EXISTS user_activity_daily (
     user_id INT NOT NULL,
     activity_date DATE NOT NULL,
@@ -30,11 +30,11 @@ async function recordUserActivity(value, kind = 'visit') {
     await pool.query(`
       INSERT INTO user_activity_daily
         (user_id, activity_date, login_count, visit_count)
-      VALUES (?, CURRENT_DATE(), ?, ?)
-      ON DUPLICATE KEY UPDATE
+      VALUES (?, CURRENT_DATE, ?, ?)
+      ON CONFLICT (user_id, activity_date) DO UPDATE SET
         last_seen_at = CURRENT_TIMESTAMP,
-        login_count = login_count + VALUES(login_count),
-        visit_count = visit_count + VALUES(visit_count)
+        login_count = user_activity_daily.login_count + EXCLUDED.login_count,
+        visit_count = user_activity_daily.visit_count + EXCLUDED.visit_count
     `, [userId, isLogin, isVisit]);
     return true;
   } catch (error) {
@@ -50,7 +50,7 @@ async function getActivitySummary() {
     pool.query(`
       SELECT
         COUNT(DISTINCT CASE
-          WHEN activity_date = CURRENT_DATE()
+          WHEN activity_date = CURRENT_DATE
             AND COALESCE(u.is_admin, 0) = 0 AND LOWER(COALESCE(u.role, '')) <> 'admin'
           THEN a.user_id END
         ) AS daily_active_users,
@@ -65,7 +65,7 @@ async function getActivitySummary() {
           THEN a.user_id END
         ) AS monthly_active_users,
         COALESCE(SUM(CASE
-          WHEN activity_date = CURRENT_DATE()
+          WHEN activity_date = CURRENT_DATE
             AND COALESCE(u.is_admin, 0) = 0 AND LOWER(COALESCE(u.role, '')) <> 'admin'
           THEN login_count ELSE 0 END
         ), 0) AS logins_today,

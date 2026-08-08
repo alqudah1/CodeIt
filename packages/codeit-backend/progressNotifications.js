@@ -20,7 +20,9 @@ const EVENT_PREFERENCE_COLUMNS = Object.freeze({
 
 let transporter;
 
-const ready = process.env.SKIP_PROGRESS_DB_INIT === 'true' ? Promise.resolve() : (async () => {
+const ready = process.env.SKIP_PROGRESS_DB_INIT === 'true' || pool.dialect === 'postgres'
+  ? Promise.resolve(true)
+  : (async () => {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS parent_notification_preferences (
       user_id INT NOT NULL PRIMARY KEY,
@@ -216,17 +218,18 @@ async function updateSettings(userId, input) {
        user_id, parent_email, verified_at, verification_token_hash,
        verification_expires_at, unsubscribe_token_hash, notify_lessons,
        notify_exercises, notify_projects, notify_publishing, enabled
-     ) VALUES (?, ?, NULL, ?, DATE_ADD(NOW(), INTERVAL 48 HOUR), ?, ?, ?, ?, ?, 1)
-     ON DUPLICATE KEY UPDATE
-       parent_email = VALUES(parent_email),
-       verified_at = IF(VALUES(verification_token_hash) IS NULL, verified_at, NULL),
-       verification_token_hash = COALESCE(VALUES(verification_token_hash), verification_token_hash),
-       verification_expires_at = COALESCE(VALUES(verification_expires_at), verification_expires_at),
-       unsubscribe_token_hash = VALUES(unsubscribe_token_hash),
-       notify_lessons = VALUES(notify_lessons),
-       notify_exercises = VALUES(notify_exercises),
-       notify_projects = VALUES(notify_projects),
-       notify_publishing = VALUES(notify_publishing),
+     ) VALUES (?, ?, NULL, ?, NOW() + INTERVAL '48 hours', ?, ?, ?, ?, ?, 1)
+     ON CONFLICT (user_id) DO UPDATE SET
+       parent_email = EXCLUDED.parent_email,
+       verified_at = CASE WHEN EXCLUDED.verification_token_hash IS NULL
+         THEN parent_notification_preferences.verified_at ELSE NULL END,
+       verification_token_hash = COALESCE(EXCLUDED.verification_token_hash, parent_notification_preferences.verification_token_hash),
+       verification_expires_at = COALESCE(EXCLUDED.verification_expires_at, parent_notification_preferences.verification_expires_at),
+       unsubscribe_token_hash = EXCLUDED.unsubscribe_token_hash,
+       notify_lessons = EXCLUDED.notify_lessons,
+       notify_exercises = EXCLUDED.notify_exercises,
+       notify_projects = EXCLUDED.notify_projects,
+       notify_publishing = EXCLUDED.notify_publishing,
        enabled = 1`,
     [
       userId,
@@ -288,9 +291,9 @@ async function recordMilestoneAndNotify({ userId, eventType, eventKey, title, de
   await ready;
   if (!EVENT_PREFERENCE_COLUMNS[eventType]) throw new Error(`Unsupported milestone type: ${eventType}`);
   const [result] = await pool.query(
-    `INSERT IGNORE INTO student_milestones
+    `INSERT INTO student_milestones
        (user_id, event_type, event_key, title, detail, target_url)
-     VALUES (?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT (user_id, event_type, event_key) DO NOTHING`,
     [
       userId,
       eventType,
@@ -335,9 +338,9 @@ async function recordMilestoneAndNotify({ userId, eventType, eventKey, title, de
     `INSERT INTO parent_notification_deliveries
        (milestone_id, parent_email, status, provider_message_id, error_code, sent_at)
      VALUES (?, ?, ?, ?, ?, ?)
-     ON DUPLICATE KEY UPDATE status = VALUES(status),
-       provider_message_id = VALUES(provider_message_id),
-       error_code = VALUES(error_code), sent_at = VALUES(sent_at)`,
+     ON CONFLICT (milestone_id) DO UPDATE SET status = EXCLUDED.status,
+       provider_message_id = EXCLUDED.provider_message_id,
+       error_code = EXCLUDED.error_code, sent_at = EXCLUDED.sent_at`,
     [
       result.insertId,
       recipient.parent_email,
@@ -354,10 +357,10 @@ async function getProgressSummary(userId) {
   await ready;
   const [counts] = await pool.query(
     `SELECT
-       SUM(event_type = 'lesson_completed') AS lessons,
-       SUM(event_type IN ('exercise_completed','puzzle_completed','quiz_completed')) AS exercises,
-       SUM(event_type = 'project_created') AS projects,
-       SUM(event_type = 'project_published') AS published
+       COUNT(*) FILTER (WHERE event_type = 'lesson_completed') AS lessons,
+       COUNT(*) FILTER (WHERE event_type IN ('exercise_completed','puzzle_completed','quiz_completed')) AS exercises,
+       COUNT(*) FILTER (WHERE event_type = 'project_created') AS projects,
+       COUNT(*) FILTER (WHERE event_type = 'project_published') AS published
      FROM student_milestones WHERE user_id = ?`,
     [userId]
   );

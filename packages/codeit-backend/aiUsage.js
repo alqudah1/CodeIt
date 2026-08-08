@@ -14,7 +14,7 @@ const OPERATIONS = new Set([
   'missions',
 ]);
 
-const tableReady = pool.query(`
+const tableReady = pool.dialect === 'postgres' ? Promise.resolve(true) : pool.query(`
   CREATE TABLE IF NOT EXISTS ai_usage_events (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     operation VARCHAR(32) NOT NULL,
