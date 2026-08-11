@@ -8,7 +8,7 @@ import './AdminLayout.css';
 const fmt = (n) => (Number(n) || 0).toLocaleString();
 
 const AdminDashboard = () => {
-  const { token } = useContext(AuthContext);
+  const { token, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [data, setData]   = useState(null);
   const [error, setError] = useState(null);
@@ -17,13 +17,18 @@ const AdminDashboard = () => {
     fetch(`${API_BASE_URL}/api/admin/overview`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then(r => r.json())
-      .then(d => {
-        if (d.error) setError(d.error);
-        else setData(d);
+      .then(async r => ({ status: r.status, body: await r.json() }))
+      .then(({ status, body }) => {
+        if (status === 401) {
+          logout();
+          navigate('/login', { replace: true, state: { message: 'Your session expired. Please sign in again.' } });
+          return;
+        }
+        if (body.error) setError(body.error);
+        else setData(body);
       })
       .catch(() => setError('Failed to load overview'));
-  }, [token]);
+  }, [token, logout, navigate]);
 
   const t = data?.totals || {};
   const activity = data?.activity || {};
