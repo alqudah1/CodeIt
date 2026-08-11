@@ -1677,6 +1677,21 @@ export default function Builder() {
     }
   };
 
+  // The save action is also a child-friendly next-step button.  A first draft
+  // must be personalised and tested, but the button should never feel broken.
+  const handleSaveOrGuide = () => {
+    if (!isPersonalized) {
+      setShowEditPanel(true);
+      setTimeout(() => editRef.current?.focus(), 0);
+      return;
+    }
+    if (!hasTestedLatest) {
+      handleTogglePlay();
+      return;
+    }
+    handleSaveProject();
+  };
+
   // ── Load saved project ─────────────────────────────────────────────────────
   const handleLoadProject = async (project) => {
     try {
@@ -2088,6 +2103,13 @@ export default function Builder() {
   const projectName = aiTitle || (builtPrompt ? deriveProjectName(builtPrompt) : '');
   const editCount   = promptHistory.length > 1 ? promptHistory.length - 1 : 0;
   const isPersonalized = hasPersonalized || editCount > 0;
+  const saveActionLabel = isSaved
+    ? 'Saved to My Creations'
+    : !isPersonalized
+      ? 'First: change one thing'
+      : !hasTestedLatest
+        ? 'Next: test my changes'
+        : 'Save project';
   const guideLevel = guideLevelOverride || learnerGuideLevel(user);
   const coachStage = !code
     ? prompt.trim()
@@ -2900,14 +2922,14 @@ export default function Builder() {
                     {user ? (
                       <button
                         className="bldr-studio-panel__apply-btn"
-                        disabled={saveStatus === 'saving' || isSaved || editing || !isPersonalized || !hasTestedLatest}
-                        onClick={() => { handleSaveProject(); setStudioPanel(null); }}
+                        disabled={saveStatus === 'saving' || isSaved || editing}
+                        onClick={() => { handleSaveOrGuide(); setStudioPanel(null); }}
                       >
-                        {isSaved ? 'Saved to My Creations' : 'Save to My Creations'}
+                        {isSaved ? 'Saved to My Creations' : saveActionLabel}
                       </button>
                     ) : (
-                      <button className="bldr-studio-panel__apply-btn" onClick={handleSaveProject} disabled={!isPersonalized || !hasTestedLatest}>
-                        Log in to save
+                      <button className="bldr-studio-panel__apply-btn" onClick={handleSaveOrGuide}>
+                        {!isPersonalized || !hasTestedLatest ? saveActionLabel : 'Log in to save'}
                       </button>
                     )}
                     <button className="bldr-studio-panel__secondary-btn" onClick={handleFullscreen}>
@@ -3050,13 +3072,14 @@ export default function Builder() {
               {user ? (
                 <button
                   className={`bldr-action-btn bldr-action-btn--save${saveStatus === 'saved' ? ' bldr-action-btn--saved' : ''}`}
-                  onClick={handleSaveProject}
-                  disabled={saveStatus === 'saving' || isSaved || editing || !isPersonalized || !hasTestedLatest}
+                  onClick={handleSaveOrGuide}
+                  disabled={saveStatus === 'saving' || isSaved || editing}
+                  title={saveActionLabel}
                 >
                   {saveStatus === 'saving' && <><span className="bldr-spinner bldr-spinner--sm" />Saving...</>}
                   {saveStatus === 'saved'  && 'Saved!'}
                   {saveStatus === 'error'  && 'Try again'}
-                  {!saveStatus && (isSaved ? 'Saved' : 'Save project')}
+                  {!saveStatus && (isSaved ? 'Saved' : saveActionLabel)}
                 </button>
               ) : (
                 <button className="bldr-action-btn bldr-action-btn--login-hint" onClick={handleSaveProject} disabled={!isPersonalized || !hasTestedLatest}>
@@ -3489,8 +3512,8 @@ export default function Builder() {
             </button>
             <button
               className="bldr-mobile-play-bar__btn bldr-mobile-play-bar__btn--save"
-              onClick={handleSaveProject}
-              disabled={saveStatus === 'saving' || isSaved || editing || !isPersonalized || !hasTestedLatest}
+              onClick={handleSaveOrGuide}
+              disabled={saveStatus === 'saving' || isSaved || editing}
               aria-label={user ? 'Save project' : 'Save project to a free account'}
             >
               {isSaved ? 'Saved' : 'Save'}
