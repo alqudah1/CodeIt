@@ -278,6 +278,55 @@
   line-height: 1.28;
 }
 
+/* Young learners should never have to guess the next click. */
+.sl-now {
+  margin: 0 0 1.25rem;
+  padding: 1rem 1.1rem;
+  border: 2px solid #fed340;
+  border-radius: 16px;
+  background: #fff9df;
+  color: #38291f;
+}
+
+.sl-now__eyebrow {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a84c00;
+}
+
+.sl-now ol {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sl-now li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.sl-now li b {
+  display: grid;
+  place-items: center;
+  flex: 0 0 1.55rem;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 50%;
+  background: #ff7624;
+  color: #fff;
+  font-size: 0.84rem;
+}
+
 /* ══════════════════════════════════════════════════════════════
    CONCEPT STEP
    ══════════════════════════════════════════════════════════════ */
