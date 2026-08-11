@@ -9,7 +9,13 @@ import { AuthContext } from '../../context/AuthContext';
 const RequireAdmin = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
 
-  if (loading) return null;
+  if (loading) {
+    return (
+      <div style={styles.loading} role="status">
+        Checking your admin account…
+      </div>
+    );
+  }
 
   if (!user) return <Navigate to="/login" replace />;
 
@@ -27,6 +33,11 @@ const RequireAdmin = ({ children }) => {
 };
 
 const styles = {
+  loading: {
+    minHeight: '100vh', display: 'grid', placeItems: 'center',
+    background: '#fff8f1', color: '#38291f',
+    fontFamily: "'Nunito', sans-serif", fontWeight: 800,
+  },
   denied: {
     minHeight: '100vh', display: 'flex', flexDirection: 'column',
     alignItems: 'center', justifyContent: 'center',

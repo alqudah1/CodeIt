@@ -115,6 +115,7 @@ router.post('/signup', async (req, res) => {
         username: isStudent ? username.trim() : null,
         email:    isStudent ? null : email.trim().toLowerCase(),
         role,
+        is_admin: 0,
         learningMode,
       },
     });
@@ -189,6 +190,7 @@ router.post('/login', async (req, res) => {
         username: user.username,
         email:    user.email,
         role:     user.role,
+        is_admin: Number(user.is_admin) === 1 ? 1 : 0,
         managedProfile,
         learningMode,
       },

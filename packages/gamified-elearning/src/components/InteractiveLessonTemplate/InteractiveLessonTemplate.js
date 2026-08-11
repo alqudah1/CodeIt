@@ -18,6 +18,32 @@ import { usePlayerProgress } from '../../hooks/usePlayerProgress';
 const TYPE_LABEL  = { concept: 'Learn', example: 'Example', tryit: 'Try It', challenge: 'Challenge' };
 const TYPE_COLOR  = { concept: 'concept', example: 'example', tryit: 'tryit', challenge: 'challenge' };
 
+function childStepsFor(stepType, isDone) {
+  if (isDone) return [
+    'You did it!',
+    'Press the big Next button below to keep going.',
+  ];
+  if (stepType === 'concept') return [
+    'Look at the example in the box.',
+    'When you are ready, press the big “Got It — Next Step” button below.',
+  ];
+  if (stepType === 'example') return [
+    'You do not need to type yet.',
+    'Find the orange “Run” button above the code and click it once.',
+    'Look in the Output box for the computer’s answer.',
+  ];
+  if (stepType === 'tryit') return [
+    'Click inside the white code box.',
+    'Change the words between the quote marks. Ask for help with the keyboard if you need it.',
+    'Click the orange “Run” button, then press “Submit Answer”.',
+  ];
+  return [
+    'Click inside the white code box and change one message at a time.',
+    'Click the orange “Run” button to check what you made.',
+    'When it works, press “Submit Answer”.',
+  ];
+}
+
 const LESSON_BUILDER_PROMPTS = {
   1:  'Build a project that displays a welcome message and shows text on the screen.',
   2:  'Build a website that uses variables to store and display a name, score, and fun message.',
@@ -515,6 +541,15 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
 
           {/* Step title */}
           <h2 className="sl-card__title">{currentStep?.title}</h2>
+
+          <aside className="sl-now" aria-live="polite" aria-label="What to do now">
+            <span className="sl-now__eyebrow">What to do now</span>
+            <ol>
+              {childStepsFor(currentStep?.type, isCurrentDone).map((instruction, index) => (
+                <li key={instruction}><b>{index + 1}</b><span>{instruction}</span></li>
+              ))}
+            </ol>
+          </aside>
 
           {/* ────── CONCEPT step ───────────────────────── */}
           {currentStep?.type === 'concept' && (
