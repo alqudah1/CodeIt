@@ -4428,72 +4428,124 @@
 }
 
 /* ── "Make it mine" instant customization panel ───────────────────────────────
-   Every control here is a real, immediate change to the project. Sizes are
-   deliberately generous: the same panel is used by five-year-olds on a school
-   tablet and by teenagers on a laptop. */
+   Built on the CodeIt tokens in index.css: orange for the chosen thing, mint
+   for "it worked", cream surfaces, pill buttons, 800-weight labels. The same
+   panel serves a five-year-old on a school tablet and a teenager on a laptop,
+   so targets are large everywhere and larger again in Big help mode. */
+
+.bldr-mine {
+  gap: 1.15rem !important;
+}
+
+.bldr-mine__intro {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.7rem 0.95rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255, 138, 0, 0.13), rgba(61, 220, 151, 0.11));
+  border: 1.5px solid rgba(255, 138, 0, 0.22);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #6B4A32;
+}
+
+.bldr-mine__intro-icon { font-size: 1.35rem; line-height: 1; }
 
 .bldr-mine__group {
   border: none;
   margin: 0;
-  padding: 0 0 0.35rem;
+  padding: 0;
 }
 
 .bldr-mine__legend {
-  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
   font-weight: 800;
-  color: #4F392C;
-  letter-spacing: 0.01em;
+  color: #1A1A1A;
   padding: 0;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.6rem;
 }
+
+.bldr-mine__legend span { font-size: 1.1rem; }
 
 .bldr-mine__options {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.65rem;
 }
 
 .bldr-mine__option {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.3rem;
-  flex: 0 1 88px;
-  min-width: 78px;
-  min-height: 76px;
-  padding: 0.55rem 0.4rem;
-  background: #FFFCF8;
-  border: 2px solid #EAD9CB;
-  border-radius: 14px;
+  gap: 0.45rem;
+  flex: 0 1 104px;
+  min-width: 96px;
+  min-height: 100px;
+  padding: 0.75rem 0.5rem;
+  background: #fff;
+  border: 2.5px solid rgba(255, 138, 0, 0.18);
+  border-radius: 20px;
   font-family: inherit;
-  font-size: 0.76rem;
-  font-weight: 700;
-  color: #4F392C;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #1A1A1A;
   cursor: pointer;
-  transition: border-color 0.15s, transform 0.12s, background 0.15s;
+  box-shadow: 0 3px 12px rgba(59, 42, 34, 0.07);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 .bldr-mine__option:hover:not(:disabled) {
-  border-color: #FF7A00;
-  background: #fff;
-  transform: translateY(-2px);
+  border-color: #FF8A00;
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 12px 26px rgba(255, 138, 0, 0.26);
+}
+
+.bldr-mine__option:active:not(:disabled) {
+  transform: translateY(0) scale(0.96);
 }
 
 .bldr-mine__option:focus-visible {
   outline: 3px solid #A855F7;
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
 .bldr-mine__option--active {
-  border-color: #FF7A00;
-  background: rgba(255, 122, 0, 0.09);
-  box-shadow: inset 0 0 0 1px rgba(255, 122, 0, 0.35);
+  border-color: #FF8A00;
+  background: linear-gradient(160deg, #FFF6ED, #FFE9D2);
+  box-shadow: 0 0 0 4px rgba(255, 138, 0, 0.16), 0 8px 20px rgba(255, 138, 0, 0.20);
+}
+
+/* A tick a child can read at a glance, not a faint background tint. */
+.bldr-mine__option--active::after {
+  content: '✓';
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #3DDC97;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 900;
+  border: 2.5px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(26, 122, 80, 0.32);
 }
 
 .bldr-mine__option:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .bldr-mine__option-label { line-height: 1.15; text-align: center; }
@@ -4502,114 +4554,176 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 28px;
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: #38291F;
+  min-height: 38px;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #1A1A1A;
 }
 
 .bldr-mine__preview--swatch,
 .bldr-mine__preview--corner {
-  width: 38px;
-  height: 26px;
-  border: 1px solid #EAD9CB;
-  border-radius: 6px;
-  background-size: 10px 10px;
+  width: 52px;
+  height: 34px;
+  border: 2px solid rgba(26, 26, 26, 0.10);
+  border-radius: 10px;
+  background-color: #FFF6ED;
+  background-size: 11px 11px;
 }
 
-.bldr-mine__preview--corner { background: #FFD9B0; }
+.bldr-mine__preview--corner {
+  background: linear-gradient(135deg, #FF8A00, #FF5A5F);
+  border-color: transparent;
+}
 
 .bldr-mine__swatches {
   display: flex;
-  gap: 3px;
+  gap: 4px;
 }
 
 .bldr-mine__swatches span {
-  width: 14px;
-  height: 22px;
-  border-radius: 4px;
+  width: 15px;
+  height: 30px;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(59, 42, 34, 0.16);
 }
+
+/* ── Project name ──────────────────────────────────────────────────────────── */
 
 .bldr-mine__rename {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.55rem;
 }
 
 .bldr-mine__rename-label {
-  font-size: 0.78rem;
+  font-size: 0.88rem;
   font-weight: 700;
-  color: #785B49;
+  color: #6B4A32;
 }
 
 .bldr-mine__rename-input {
   width: 100%;
-  padding: 0.7rem 0.85rem;
-  border: 2px solid #EAD9CB;
-  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+  border: 2.5px solid rgba(255, 138, 0, 0.22);
+  border-radius: 999px;
   font-family: inherit;
-  font-size: 1rem;
-  color: #38291F;
-  background: #FFFCF8;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1A1A1A;
+  background: #fff;
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
-.bldr-mine__rename-input:focus { border-color: #FF7A00; }
+.bldr-mine__rename-input::placeholder { color: rgba(26, 26, 26, 0.34); font-weight: 600; }
+
+.bldr-mine__rename-input:focus {
+  border-color: #FF8A00;
+  box-shadow: 0 0 0 4px rgba(255, 138, 0, 0.16);
+}
+
+.bldr-mine .bldr-studio-panel__apply-btn {
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 0.85rem 1.4rem;
+  min-height: 48px;
+}
+
+/* ── "It worked" confirmation ──────────────────────────────────────────────── */
 
 .bldr-mine__notice {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.6rem;
-  margin: 0.3rem 0 0;
-  padding: 0.65rem 0.8rem;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.32);
-  border-radius: 12px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #0F5132;
+  gap: 0.7rem;
+  margin: 0.15rem 0 0;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(135deg, rgba(61, 220, 151, 0.20), rgba(61, 220, 151, 0.10));
+  border: 2px solid rgba(61, 220, 151, 0.45);
+  border-radius: 18px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #14603F;
+  animation: bldr-mine-pop 0.32s ease;
 }
 
 .bldr-mine__notice-btn {
   margin-left: auto;
-  padding: 0.5rem 0.9rem;
-  min-height: 40px;
-  background: #10B981;
+  padding: 0.65rem 1.25rem;
+  min-height: 46px;
+  background: #FF8A00;
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 999px;
   font-family: inherit;
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   font-weight: 800;
   cursor: pointer;
+  box-shadow: 0 6px 18px rgba(255, 138, 0, 0.34);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
-.bldr-mine__notice-btn:hover { opacity: 0.9; }
+.bldr-mine__notice-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(255, 138, 0, 0.44);
+}
+
+.bldr-mine__notice-btn:active { transform: translateY(0) scale(0.97); }
 
 .bldr-mine__notice-btn:focus-visible {
-  outline: 3px solid #38291F;
-  outline-offset: 2px;
+  outline: 3px solid #1A1A1A;
+  outline-offset: 3px;
 }
 
-/* Ages 5–7: fewer, larger targets and no dense rows. */
+@keyframes bldr-mine-pop {
+  0%   { transform: scale(0.94); opacity: 0; }
+  60%  { transform: scale(1.02); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ── Big help (roughly ages 5–7): fewer choices, much larger targets ───────── */
+
+.bldr-mine[data-guide-level="early"] { gap: 1.5rem !important; }
+
 .bldr-mine[data-guide-level="early"] .bldr-mine__option {
-  flex: 1 1 110px;
-  min-height: 96px;
-  font-size: 0.9rem;
+  flex: 1 1 132px;
+  min-height: 126px;
+  font-size: 1.05rem;
+  border-radius: 24px;
 }
 
-.bldr-mine[data-guide-level="early"] .bldr-mine__legend { font-size: 0.95rem; }
-.bldr-mine[data-guide-level="early"] .bldr-mine__preview { font-size: 1.35rem; min-height: 36px; }
-.bldr-mine[data-guide-level="early"] .bldr-mine__rename-input { font-size: 1.15rem; padding: 0.85rem; }
+.bldr-mine[data-guide-level="early"] .bldr-mine__legend { font-size: 1.15rem; }
+.bldr-mine[data-guide-level="early"] .bldr-mine__legend span { font-size: 1.4rem; }
+.bldr-mine[data-guide-level="early"] .bldr-mine__intro { font-size: 1rem; }
+.bldr-mine[data-guide-level="early"] .bldr-mine__preview { font-size: 1.7rem; min-height: 48px; }
+.bldr-mine[data-guide-level="early"] .bldr-mine__preview--swatch,
+.bldr-mine[data-guide-level="early"] .bldr-mine__preview--corner { width: 64px; height: 42px; }
+.bldr-mine[data-guide-level="early"] .bldr-mine__swatches span { width: 18px; height: 38px; }
+.bldr-mine[data-guide-level="early"] .bldr-mine__rename-input { font-size: 1.2rem; padding: 1rem 1.2rem; }
+.bldr-mine[data-guide-level="early"] .bldr-mine__rename-label { font-size: 1rem; }
 
 @media (max-width: 640px) {
-  .bldr-mine__option { flex: 1 1 84px; min-width: 72px; }
+  .bldr-mine__option { flex: 1 1 92px; min-width: 88px; }
   .bldr-mine__notice-btn { margin-left: 0; width: 100%; }
+  .bldr-mine[data-guide-level="early"] .bldr-mine__option { flex: 1 1 140px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bldr-mine__option { transition: none; }
-  .bldr-mine__option:hover:not(:disabled) { transform: none; }
+  .bldr-mine__option,
+  .bldr-mine__notice-btn { transition: none; }
+  .bldr-mine__option:hover:not(:disabled),
+  .bldr-mine__notice-btn:hover { transform: none; }
+  .bldr-mine__notice { animation: none; }
+}
+
+/* The guide card is sticky at the top of the studio; keep panels clear of it
+   when they are scrolled into view. */
+.bldr-studio-bar,
+.bldr-studio-panel { scroll-margin-top: 200px; }
+
+/* On phones a fixed action bar sits at the bottom of the viewport, so the last
+   control in a panel needs room to clear it. */
+@media (max-width: 900px) {
+  .bldr-mine { padding-bottom: 5.5rem !important; }
 }

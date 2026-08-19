@@ -950,7 +950,7 @@ export default function Builder() {
     // The panel is below the preview on phones; bring it into view so "Show me"
     // and the next-step coach point at something the student can actually see.
     setTimeout(() => {
-      studioRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+      studioRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
     }, 0);
   }
 
@@ -2865,15 +2865,16 @@ export default function Builder() {
 
                 {studioPanel === 'mine' && (
                   <div className="bldr-studio-panel__body bldr-mine" data-guide-level={guideLevel}>
-                    <p className="bldr-studio-panel__hint">
+                    <p className="bldr-mine__intro">
+                      <span className="bldr-mine__intro-icon" aria-hidden="true">✨</span>
                       {guideLevel === 'early'
-                        ? 'Tap a picture to change your project. It changes right away.'
+                        ? 'Tap a picture to change your project. It changes right away!'
                         : 'Every change here happens straight away — no waiting, no internet needed.'}
                     </p>
 
                     {instantControls.includes('theme') && (
                       <fieldset className="bldr-mine__group">
-                        <legend className="bldr-mine__legend">Colours</legend>
+                        <legend className="bldr-mine__legend"><span aria-hidden="true">🎨</span> Colours</legend>
                         <div className="bldr-mine__options bldr-mine__options--theme">
                           {mineThemes.map(theme => (
                             <button
@@ -2900,7 +2901,7 @@ export default function Builder() {
 
                     {instantControls.includes('textSize') && (
                       <fieldset className="bldr-mine__group">
-                        <legend className="bldr-mine__legend">Text size</legend>
+                        <legend className="bldr-mine__legend"><span aria-hidden="true">🔤</span> Text size</legend>
                         <div className="bldr-mine__options">
                           {optionsForGuideLevel(TEXT_SIZES, guideLevel).map(option => (
                             <button
@@ -2926,7 +2927,7 @@ export default function Builder() {
 
                     {instantControls.includes('font') && (
                       <fieldset className="bldr-mine__group">
-                        <legend className="bldr-mine__legend">Letter style</legend>
+                        <legend className="bldr-mine__legend"><span aria-hidden="true">✏️</span> Letter style</legend>
                         <div className="bldr-mine__options">
                           {optionsForGuideLevel(FONTS, guideLevel).map(option => (
                             <button
@@ -2952,7 +2953,7 @@ export default function Builder() {
 
                     {instantControls.includes('background') && (
                       <fieldset className="bldr-mine__group">
-                        <legend className="bldr-mine__legend">Background</legend>
+                        <legend className="bldr-mine__legend"><span aria-hidden="true">🖼️</span> Background</legend>
                         <div className="bldr-mine__options">
                           {optionsForGuideLevel(BACKGROUNDS, guideLevel).map(option => (
                             <button
@@ -2968,7 +2969,11 @@ export default function Builder() {
                                 `Background is now ${option.label.toLowerCase()}. Play it again to test your change.`
                               )}
                             >
-                              <span className="bldr-mine__preview bldr-mine__preview--swatch" aria-hidden="true" style={{ background: option.swatch }} />
+                              <span
+                                className="bldr-mine__preview bldr-mine__preview--swatch"
+                                aria-hidden="true"
+                                style={{ backgroundImage: option.swatch, backgroundSize: option.swatchSize || 'auto' }}
+                              />
                               <span className="bldr-mine__option-label">{option.label}</span>
                             </button>
                           ))}
@@ -2978,7 +2983,7 @@ export default function Builder() {
 
                     {instantControls.includes('corners') && (
                       <fieldset className="bldr-mine__group">
-                        <legend className="bldr-mine__legend">Corners</legend>
+                        <legend className="bldr-mine__legend"><span aria-hidden="true">⭐</span> Corners</legend>
                         <div className="bldr-mine__options">
                           {CORNERS.map(option => (
                             <button
@@ -3008,7 +3013,7 @@ export default function Builder() {
 
                     {instantControls.includes('title') && (
                       <fieldset className="bldr-mine__group">
-                        <legend className="bldr-mine__legend">Project name</legend>
+                        <legend className="bldr-mine__legend"><span aria-hidden="true">🏷️</span> Project name</legend>
                         <div className="bldr-mine__rename">
                           <label className="bldr-mine__rename-label" htmlFor="bldr-title-input">
                             {guideLevel === 'early' ? 'What is your project called?' : 'Give your project its own name'}
@@ -3981,7 +3986,7 @@ export default function Builder() {
         )}
 
         {/* ── AI Companion bubble ───────────────────────────────── */}
-        {companionVisible && companionTip && (
+        {companionVisible && companionTip && !studioPanel && (
           <div className="bldr-companion">
             <div className="bldr-companion__bubble">
               <p className="bldr-companion__text">{companionTip}</p>

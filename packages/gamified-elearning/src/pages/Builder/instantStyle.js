@@ -32,14 +32,19 @@ const FONTS = [
 ];
 
 const BACKGROUNDS = [
-  { id: 'plain',   label: 'Plain',   swatch: '#FFFFFF', image: null },
-  { id: 'glow',    label: 'Soft glow', swatch: 'radial-gradient(circle at 30% 20%, #FFD9B0, #FFF6ED)',
+  { id: 'plain', label: 'Plain', swatch: 'none', image: null },
+  { id: 'glow', label: 'Soft glow',
+    swatch: 'radial-gradient(circle at 28% 24%, rgba(255,138,0,.55), transparent 60%), radial-gradient(circle at 76% 74%, rgba(168,85,247,.45), transparent 62%)',
     image: 'radial-gradient(circle at 15% 12%, rgba(255,122,0,.18), transparent 42%), radial-gradient(circle at 85% 78%, rgba(168,85,247,.16), transparent 45%)' },
-  { id: 'dots',    label: 'Dots',    swatch: 'radial-gradient(circle, #FF7A00 2px, #FFF6ED 2px)',
+  { id: 'dots', label: 'Dots',
+    swatch: 'radial-gradient(rgba(56,41,31,.42) 2px, transparent 2px)', swatchSize: '10px 10px',
     image: 'radial-gradient(rgba(56,41,31,.13) 1.6px, transparent 1.6px)', size: '22px 22px' },
-  { id: 'stripes', label: 'Stripes', swatch: 'repeating-linear-gradient(45deg, #FF7A00 0 6px, #FFF6ED 6px 12px)',
+  { id: 'stripes', label: 'Stripes',
+    swatch: 'repeating-linear-gradient(45deg, rgba(255,138,0,.45) 0 5px, transparent 5px 10px)',
     image: 'repeating-linear-gradient(45deg, rgba(56,41,31,.06) 0 14px, transparent 14px 28px)' },
-  { id: 'grid',    label: 'Grid',    swatch: 'linear-gradient(#FF7A00 1px, #FFF6ED 1px)',
+  { id: 'grid', label: 'Grid',
+    swatch: 'linear-gradient(rgba(56,41,31,.30) 1px, transparent 1px), linear-gradient(90deg, rgba(56,41,31,.30) 1px, transparent 1px)',
+    swatchSize: '11px 11px',
     image: 'linear-gradient(rgba(56,41,31,.09) 1px, transparent 1px), linear-gradient(90deg, rgba(56,41,31,.09) 1px, transparent 1px)', size: '26px 26px' },
 ];
 
