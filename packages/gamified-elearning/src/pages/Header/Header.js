@@ -15,11 +15,17 @@ const PUBLIC_NAV = [
   { to: "/coding-for-kids", label: "For parents" },
 ];
 
+// Listed in full rather than sliced from PUBLIC_NAV: the slice silently
+// dropped Pricing, so signed-in parents had no way to reach the plan page.
 const MEMBER_NAV = [
-  ...PUBLIC_NAV.slice(0, 4),
+  { to: "/builder", label: "Build", primary: true },
+  { to: "/explore", label: "Explore" },
+  { to: "/lessons", label: "Learn" },
+  { to: "/playground", label: "Playground" },
   { to: "/leaderboard", label: "Compete" },
   { to: "/character", label: "Avatar" },
   { to: "/MainPage", label: "Progress" },
+  { to: "/pricing", label: "Plan", adultsOnly: true },
 ];
 
 const XP_PER_LEVEL = 100;
@@ -33,7 +39,11 @@ export default function Header() {
   const [dropOpen, setDropOpen] = useState(false);
   const dropRef = useRef(null);
 
-  const navLinks = user ? MEMBER_NAV : PUBLIC_NAV;
+  // CodeIt does not sell to children, so a managed child profile never sees
+  // the plan link. The page itself refuses them too; this just avoids
+  // dangling a price in front of a nine-year-old.
+  const navLinks = (user ? MEMBER_NAV : PUBLIC_NAV)
+    .filter(link => !link.adultsOnly || !user?.managedProfile);
   const level = stats?.totalXP >= 0 ? Math.floor(stats.totalXP / XP_PER_LEVEL) + 1 : null;
 
   useEffect(() => {
