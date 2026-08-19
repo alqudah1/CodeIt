@@ -573,4 +573,87 @@ describe('project studio opening', () => {
     expect(screen.getByText(/only your family account can open it/i)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Publish Private Space Quiz' })).not.toBeInTheDocument();
   });
+  test('lets a student change, test and save a project without any AI call', async () => {
+    render(<Builder />);
+
+    fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
+    await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+    fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
+
+    const editCallsBefore = global.fetch.mock.calls.filter(([url]) => String(url).includes('/edit')).length;
+
+    fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);
+    fireEvent.click(await screen.findByRole('button', { name: 'Text size: Big' }));
+
+    // The change is real and immediate, and it never leaves the browser.
+    expect(screen.getByRole('button', { name: 'Text size: Big' })).toHaveAttribute('aria-pressed', 'true');
+    const editCallsAfter = global.fetch.mock.calls.filter(([url]) => String(url).includes('/edit')).length;
+    expect(editCallsAfter).toBe(editCallsBefore);
+
+    fireEvent.click(screen.getAllByRole('button', { name: /Play my changes/i })[0]);
+    expect(screen.getAllByRole('button', { name: /Keep my project/i })[0]).toBeEnabled();
+  });
+
+  test('remembers instant choices when the panel is reopened', async () => {
+    render(<Builder />);
+
+    fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
+    await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+    fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
+    fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Letter style: Bubbly' }));
+    fireEvent.click(screen.getAllByRole('button', { name: '\u00d7' })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Make it mine' })[0]);
+
+    expect(await screen.findByRole('button', { name: 'Letter style: Bubbly' }))
+      .toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('renames the project from the panel and saves the name the student chose', async () => {
+    render(
+      <AuthContext.Provider value={{ user: { id: 21, name: 'Sara', role: 'Student' }, token: 'student-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
+    await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+    fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
+    fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);
+
+    fireEvent.change(await screen.findByLabelText(/Give your project its own name/i), {
+      target: { value: 'Star Catcher' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Use this name' }));
+    fireEvent.click(screen.getAllByRole('button', { name: /Play my changes/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /Save my project/i })[0]);
+
+    await waitFor(() => {
+      const save = global.fetch.mock.calls.find(
+        ([url, options]) => String(url).endsWith('/api/builder/projects') && options?.method === 'POST'
+      );
+      expect(save).toBeDefined();
+      expect(JSON.parse(save[1].body).title).toBe('Star Catcher');
+    });
+  });
+
+  test('shows an early learner fewer, picture-led choices and no advanced controls', async () => {
+    render(
+      <AuthContext.Provider value={{ user: { id: 5, name: 'Little Coder', role: 'student', learningMode: 'early' }, token: 'student-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
+    await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+    fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
+    fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);
+
+    expect(await screen.findByText(/Tap a picture to change your project/i)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Corners: / })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Letter style: / })).not.toBeInTheDocument();
+    // No typing route is offered as the way forward at this age.
+    expect(screen.queryByRole('button', { name: /describe a change in words/i })).not.toBeInTheDocument();
+  });
 });

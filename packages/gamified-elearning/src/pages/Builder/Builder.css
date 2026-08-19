@@ -4426,3 +4426,190 @@
   .bldr-activation-card__primary,
   .bldr-activation-card__secondary { flex: 1 1 180px; }
 }
+
+/* ── "Make it mine" instant customization panel ───────────────────────────────
+   Every control here is a real, immediate change to the project. Sizes are
+   deliberately generous: the same panel is used by five-year-olds on a school
+   tablet and by teenagers on a laptop. */
+
+.bldr-mine__group {
+  border: none;
+  margin: 0;
+  padding: 0 0 0.35rem;
+}
+
+.bldr-mine__legend {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #4F392C;
+  letter-spacing: 0.01em;
+  padding: 0;
+  margin-bottom: 0.4rem;
+}
+
+.bldr-mine__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bldr-mine__option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  flex: 0 1 88px;
+  min-width: 78px;
+  min-height: 76px;
+  padding: 0.55rem 0.4rem;
+  background: #FFFCF8;
+  border: 2px solid #EAD9CB;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #4F392C;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.12s, background 0.15s;
+}
+
+.bldr-mine__option:hover:not(:disabled) {
+  border-color: #FF7A00;
+  background: #fff;
+  transform: translateY(-2px);
+}
+
+.bldr-mine__option:focus-visible {
+  outline: 3px solid #A855F7;
+  outline-offset: 2px;
+}
+
+.bldr-mine__option--active {
+  border-color: #FF7A00;
+  background: rgba(255, 122, 0, 0.09);
+  box-shadow: inset 0 0 0 1px rgba(255, 122, 0, 0.35);
+}
+
+.bldr-mine__option:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bldr-mine__option-label { line-height: 1.15; text-align: center; }
+
+.bldr-mine__preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #38291F;
+}
+
+.bldr-mine__preview--swatch,
+.bldr-mine__preview--corner {
+  width: 38px;
+  height: 26px;
+  border: 1px solid #EAD9CB;
+  border-radius: 6px;
+  background-size: 10px 10px;
+}
+
+.bldr-mine__preview--corner { background: #FFD9B0; }
+
+.bldr-mine__swatches {
+  display: flex;
+  gap: 3px;
+}
+
+.bldr-mine__swatches span {
+  width: 14px;
+  height: 22px;
+  border-radius: 4px;
+}
+
+.bldr-mine__rename {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.bldr-mine__rename-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #785B49;
+}
+
+.bldr-mine__rename-input {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border: 2px solid #EAD9CB;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #38291F;
+  background: #FFFCF8;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.bldr-mine__rename-input:focus { border-color: #FF7A00; }
+
+.bldr-mine__notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.3rem 0 0;
+  padding: 0.65rem 0.8rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.32);
+  border-radius: 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0F5132;
+}
+
+.bldr-mine__notice-btn {
+  margin-left: auto;
+  padding: 0.5rem 0.9rem;
+  min-height: 40px;
+  background: #10B981;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.bldr-mine__notice-btn:hover { opacity: 0.9; }
+
+.bldr-mine__notice-btn:focus-visible {
+  outline: 3px solid #38291F;
+  outline-offset: 2px;
+}
+
+/* Ages 5–7: fewer, larger targets and no dense rows. */
+.bldr-mine[data-guide-level="early"] .bldr-mine__option {
+  flex: 1 1 110px;
+  min-height: 96px;
+  font-size: 0.9rem;
+}
+
+.bldr-mine[data-guide-level="early"] .bldr-mine__legend { font-size: 0.95rem; }
+.bldr-mine[data-guide-level="early"] .bldr-mine__preview { font-size: 1.35rem; min-height: 36px; }
+.bldr-mine[data-guide-level="early"] .bldr-mine__rename-input { font-size: 1.15rem; padding: 0.85rem; }
+
+@media (max-width: 640px) {
+  .bldr-mine__option { flex: 1 1 84px; min-width: 72px; }
+  .bldr-mine__notice-btn { margin-left: 0; width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bldr-mine__option { transition: none; }
+  .bldr-mine__option:hover:not(:disabled) { transform: none; }
+}

@@ -13,6 +13,20 @@ import {
   readGuestProjectDraft,
   saveGuestProjectDraft,
 } from '../../utils/guestProjectDraft';
+import {
+  BACKGROUNDS,
+  CORNERS,
+  DEFAULT_PREFS,
+  FONTS,
+  TEXT_SIZES,
+  bakeInstantStyle,
+  buildInstantCss,
+  controlsForGuideLevel,
+  optionsForGuideLevel,
+  readInstantPrefs,
+  readProjectHeading,
+  setProjectHeading,
+} from './instantStyle';
 import './Builder.css';
 
 const QUICK_STARTS = [
@@ -124,6 +138,7 @@ const HERO_BUILDS = [
 ];
 
 const STUDIO_TOOLS = [
+  { id: 'mine',     label: 'Make it mine', desc: 'Instant changes — no waiting' },
   { id: 'colors',   label: 'Colors',   desc: 'Pick a color theme' },
   { id: 'text',     label: 'Text',     desc: 'Change writing style' },
   { id: 'effects',  label: 'Effects',  desc: 'Add visual effects' },
@@ -795,6 +810,11 @@ export default function Builder() {
   const [customAccent, setCustomAccent]   = useState('#A855F7');
   const [customText, setCustomText]       = useState('#38291F');
 
+  // ── Instant customization (no AI, no network) ──────────────────────────────
+  const [instantPrefs, setInstantPrefs] = useState(DEFAULT_PREFS);
+  const [titleDraft, setTitleDraft]     = useState('');
+  const [instantNotice, setInstantNotice] = useState('');
+
   // ── Creator missions ───────────────────────────────────────────────────────
   const [missions, setMissions]           = useState([]);
   const [missionActive, setMissionActive] = useState(null);
@@ -900,6 +920,48 @@ export default function Builder() {
     setSaveStatus(null);
     pushLocalVersion('Color change', newCode, promptHistory, aiTitle);
     trackPersonalizationOnce();
+  }
+
+  // ── Instant customization ──────────────────────────────────────────────────
+  // Rewrites the project's own HTML in the browser. No AI call, so this keeps
+  // working when generation is unavailable, and lands in well under a second.
+
+  function commitInstantChange(nextCode, versionLabel, noticeText) {
+    setCode(nextCode);
+    setIsSaved(false);
+    setSaveStatus(null);
+    pushLocalVersion(versionLabel, nextCode, promptHistory, aiTitle);
+    trackPersonalizationOnce();
+    setInstantNotice(noticeText);
+  }
+
+  function applyInstantChange(change, versionLabel, noticeText) {
+    if (!code) return;
+    const merged = { ...instantPrefs, ...change };
+    setInstantPrefs(merged);
+    const nextCode = bakeInstantStyle(code, buildInstantCss(merged));
+    if (nextCode === code) return;
+    commitInstantChange(nextCode, versionLabel, noticeText);
+    popXp(10, 'Made it yours');
+  }
+
+  function openInstantPanel() {
+    setStudioPanel('mine');
+    // The panel is below the preview on phones; bring it into view so "Show me"
+    // and the next-step coach point at something the student can actually see.
+    setTimeout(() => {
+      studioRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+    }, 0);
+  }
+
+  function handleRenameProject() {
+    const nextTitle = titleDraft.trim();
+    if (!code || !nextTitle) return;
+    const nextCode = setProjectHeading(code, nextTitle);
+    setAiTitle(nextTitle);
+    if (nextCode === code) return;
+    commitInstantChange(nextCode, `Renamed: ${nextTitle.slice(0, 40)}`, `Your project is now called "${nextTitle}".`);
+    popXp(10, 'Named it');
   }
 
   // Inject JS + CSS into iframe instantly — NO reload, NO AI call
@@ -1248,6 +1310,13 @@ export default function Builder() {
       setCustomPrimary(code.match(/--primary:\s*(#[\da-fA-F]{3,8})/)?.[1] || '#FF7A00');
       setCustomAccent(code.match(/--accent:\s*(#[\da-fA-F]{3,8})/)?.[1] || '#A855F7');
       setCustomText(code.match(/--text:\s*(#[\da-fA-F]{3,8})/)?.[1] || '#38291F');
+    }
+    if (studioPanel === 'mine' && code) {
+      // Read the choices back out of the project so reopening the panel — or
+      // loading a saved project — shows what the student actually picked.
+      setInstantPrefs(readInstantPrefs(code));
+      setTitleDraft(readProjectHeading(code));
+      setInstantNotice('');
     }
   }, [studioPanel]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -1624,7 +1693,8 @@ export default function Builder() {
     saveInFlightRef.current = true;
     setSaveStatus('saving');
     setSaveError('');
-    const title = (builtPrompt ? deriveProjectName(builtPrompt) : '') || 'My Project';
+    // Prefer the name the student chose over one derived from their prompt.
+    const title = projectName || 'My Project';
     try {
       const isUpdating = Boolean(savedProjectId);
       const projectUrl = isUpdating
@@ -1999,7 +2069,8 @@ export default function Builder() {
     let projectId = savedProjectId;
     let earnedXp = 0;
     if (!projectId) {
-      const title = (builtPrompt ? deriveProjectName(builtPrompt) : '') || 'My Project';
+      // Prefer the name the student chose over one derived from their prompt.
+      const title = projectName || 'My Project';
       try {
         const res  = await fetch(`${API_BASE_URL}/api/builder/projects`, {
           method:  'POST',
@@ -2117,6 +2188,10 @@ export default function Builder() {
         ? 'Next: test my changes'
         : 'Save project';
   const guideLevel = guideLevelOverride || learnerGuideLevel(user);
+  // Same panel for everyone, sized to the learner: ages 5–7 get three big
+  // picture choices, teenagers get the full set.
+  const instantControls = controlsForGuideLevel(guideLevel);
+  const mineThemes = guideLevel === 'early' ? FIRST_CHANGE_THEMES : PRESET_PALETTES;
   const coachStage = !code
     ? prompt.trim()
       ? { number: 2, icon: '🟣', title: 'Press “Build my project”', detail: 'The big purple button makes your idea.', target: 'build' }
@@ -2617,7 +2692,7 @@ export default function Builder() {
                   ) : !isPersonalized ? (
                     <button
                       className="bldr-activation-card__primary"
-                      onClick={() => { setShowEditPanel(true); setTimeout(() => editRef.current?.focus(), 0); }}
+                      onClick={openInstantPanel}
                       data-codeit-coach="current"
                       disabled={editing}
                     >
@@ -2633,6 +2708,16 @@ export default function Builder() {
                       disabled={saveStatus === 'saving' || editing}
                     >
                       {saveStatus === 'saving' ? 'Saving…' : user ? '💾 Save my project' : '💾 Keep my project'}
+                    </button>
+                  )}
+                  {hasPlayedOnce && !isPersonalized && guideLevel !== 'early' && (
+                    <button
+                      className="bldr-activation-card__secondary"
+                      type="button"
+                      onClick={() => { setShowEditPanel(true); setTimeout(() => editRef.current?.focus(), 0); }}
+                      disabled={editing}
+                    >
+                      💬 Or describe a change in words
                     </button>
                   )}
                   {hasPlayedOnce && !isPersonalized && (
@@ -2777,6 +2862,193 @@ export default function Builder() {
                   </span>
                   <button className="bldr-studio-panel__close" onClick={() => setStudioPanel(null)}>×</button>
                 </div>
+
+                {studioPanel === 'mine' && (
+                  <div className="bldr-studio-panel__body bldr-mine" data-guide-level={guideLevel}>
+                    <p className="bldr-studio-panel__hint">
+                      {guideLevel === 'early'
+                        ? 'Tap a picture to change your project. It changes right away.'
+                        : 'Every change here happens straight away — no waiting, no internet needed.'}
+                    </p>
+
+                    {instantControls.includes('theme') && (
+                      <fieldset className="bldr-mine__group">
+                        <legend className="bldr-mine__legend">Colours</legend>
+                        <div className="bldr-mine__options bldr-mine__options--theme">
+                          {mineThemes.map(theme => (
+                            <button
+                              key={theme.name}
+                              type="button"
+                              className="bldr-mine__option"
+                              aria-label={`Apply ${theme.name} colours`}
+                              disabled={editing}
+                              onClick={() => {
+                                handleApplyColors(theme.vars);
+                                setInstantNotice(`${theme.name} colours applied. Play it again to test your change.`);
+                                popXp(10, 'Made it yours');
+                              }}
+                            >
+                              <span className="bldr-mine__swatches" aria-hidden="true">
+                                {theme.swatches.map(color => <span key={color} style={{ background: color }} />)}
+                              </span>
+                              <span className="bldr-mine__option-label">{theme.name}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </fieldset>
+                    )}
+
+                    {instantControls.includes('textSize') && (
+                      <fieldset className="bldr-mine__group">
+                        <legend className="bldr-mine__legend">Text size</legend>
+                        <div className="bldr-mine__options">
+                          {optionsForGuideLevel(TEXT_SIZES, guideLevel).map(option => (
+                            <button
+                              key={option.id}
+                              type="button"
+                              className={`bldr-mine__option${instantPrefs.textSize === option.id ? ' bldr-mine__option--active' : ''}`}
+                              aria-label={`Text size: ${option.label}`}
+                              aria-pressed={instantPrefs.textSize === option.id}
+                              disabled={editing}
+                              onClick={() => applyInstantChange(
+                                { textSize: option.id },
+                                `Text size: ${option.label}`,
+                                `Text is now ${option.label.toLowerCase()}. Play it again to test your change.`
+                              )}
+                            >
+                              <span className="bldr-mine__preview" aria-hidden="true" style={{ fontSize: `${option.scale}rem` }}>Aa</span>
+                              <span className="bldr-mine__option-label">{option.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </fieldset>
+                    )}
+
+                    {instantControls.includes('font') && (
+                      <fieldset className="bldr-mine__group">
+                        <legend className="bldr-mine__legend">Letter style</legend>
+                        <div className="bldr-mine__options">
+                          {optionsForGuideLevel(FONTS, guideLevel).map(option => (
+                            <button
+                              key={option.id}
+                              type="button"
+                              className={`bldr-mine__option${instantPrefs.font === option.id ? ' bldr-mine__option--active' : ''}`}
+                              aria-label={`Letter style: ${option.label}`}
+                              aria-pressed={instantPrefs.font === option.id}
+                              disabled={editing}
+                              onClick={() => applyInstantChange(
+                                { font: option.id },
+                                `Letter style: ${option.label}`,
+                                `Letters are now ${option.label.toLowerCase()}. Play it again to test your change.`
+                              )}
+                            >
+                              <span className="bldr-mine__preview" aria-hidden="true" style={{ fontFamily: option.stack || 'inherit' }}>Abc</span>
+                              <span className="bldr-mine__option-label">{option.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </fieldset>
+                    )}
+
+                    {instantControls.includes('background') && (
+                      <fieldset className="bldr-mine__group">
+                        <legend className="bldr-mine__legend">Background</legend>
+                        <div className="bldr-mine__options">
+                          {optionsForGuideLevel(BACKGROUNDS, guideLevel).map(option => (
+                            <button
+                              key={option.id}
+                              type="button"
+                              className={`bldr-mine__option${instantPrefs.background === option.id ? ' bldr-mine__option--active' : ''}`}
+                              aria-label={`Background: ${option.label}`}
+                              aria-pressed={instantPrefs.background === option.id}
+                              disabled={editing}
+                              onClick={() => applyInstantChange(
+                                { background: option.id },
+                                `Background: ${option.label}`,
+                                `Background is now ${option.label.toLowerCase()}. Play it again to test your change.`
+                              )}
+                            >
+                              <span className="bldr-mine__preview bldr-mine__preview--swatch" aria-hidden="true" style={{ background: option.swatch }} />
+                              <span className="bldr-mine__option-label">{option.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </fieldset>
+                    )}
+
+                    {instantControls.includes('corners') && (
+                      <fieldset className="bldr-mine__group">
+                        <legend className="bldr-mine__legend">Corners</legend>
+                        <div className="bldr-mine__options">
+                          {CORNERS.map(option => (
+                            <button
+                              key={option.id}
+                              type="button"
+                              className={`bldr-mine__option${instantPrefs.corners === option.id ? ' bldr-mine__option--active' : ''}`}
+                              aria-label={`Corners: ${option.label}`}
+                              aria-pressed={instantPrefs.corners === option.id}
+                              disabled={editing}
+                              onClick={() => applyInstantChange(
+                                { corners: option.id },
+                                `Corners: ${option.label}`,
+                                `Corners are now ${option.label.toLowerCase()}. Play it again to test your change.`
+                              )}
+                            >
+                              <span
+                                className="bldr-mine__preview bldr-mine__preview--corner"
+                                aria-hidden="true"
+                                style={{ borderRadius: option.radius || '6px' }}
+                              />
+                              <span className="bldr-mine__option-label">{option.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </fieldset>
+                    )}
+
+                    {instantControls.includes('title') && (
+                      <fieldset className="bldr-mine__group">
+                        <legend className="bldr-mine__legend">Project name</legend>
+                        <div className="bldr-mine__rename">
+                          <label className="bldr-mine__rename-label" htmlFor="bldr-title-input">
+                            {guideLevel === 'early' ? 'What is your project called?' : 'Give your project its own name'}
+                          </label>
+                          <input
+                            id="bldr-title-input"
+                            className="bldr-mine__rename-input"
+                            type="text"
+                            maxLength={80}
+                            value={titleDraft}
+                            placeholder="My awesome project"
+                            onChange={e => setTitleDraft(e.target.value)}
+                            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleRenameProject(); } }}
+                          />
+                          <button
+                            type="button"
+                            className="bldr-studio-panel__apply-btn"
+                            disabled={editing || !titleDraft.trim() || titleDraft.trim() === readProjectHeading(code)}
+                            onClick={handleRenameProject}
+                          >
+                            Use this name
+                          </button>
+                        </div>
+                      </fieldset>
+                    )}
+
+                    {instantNotice && (
+                      <p className="bldr-mine__notice" role="status" aria-live="polite">
+                        {instantNotice}
+                        <button
+                          type="button"
+                          className="bldr-mine__notice-btn"
+                          onClick={() => { setStudioPanel(null); handleTogglePlay(); }}
+                        >
+                          ▶ Play my changes
+                        </button>
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 {studioPanel === 'colors' && (
                   <div className="bldr-studio-panel__body">
