@@ -7,6 +7,13 @@ import { trackEvent } from '../../utils/trackEvent';
 import { useAuth } from '../../context/AuthContext';
 import { ENDPOINTS } from '../../config/api';
 import { journeyHeaders } from '../../utils/journey';
+import {
+  DEFAULT_BILLING_STATE,
+  fetchBillingStatus,
+  isPlusMember,
+  openBillingPortal,
+  startCheckout,
+} from '../../utils/billing';
 import './Pricing.css';
 
 const FREE_FEATURES = [
@@ -22,6 +29,14 @@ const FOUNDING_FEATURES = [
   'Two learner profiles with a parent view',
   'A simple monthly progress summary',
   'Guided setup and a direct feedback channel',
+];
+
+const PLUS_FEATURES = [
+  'Unlimited AI project builds and edits',
+  'Publish projects to a public CodeIt link',
+  'See how many people played what your child made',
+  'Up to four learner profiles with a parent view',
+  'Everything in the free plan stays free',
 ];
 
 const PILOT_EMAIL_HREF = [
@@ -48,12 +63,38 @@ export default function Pricing() {
   const [adultConsent, setAdultConsent] = useState(false);
   const [waitlistReady, setWaitlistReady] = useState(false);
   const [confirmationSent, setConfirmationSent] = useState(false);
+  const [billing, setBilling] = useState(DEFAULT_BILLING_STATE);
+  const [billingBusy, setBillingBusy] = useState(false);
+  const [billingError, setBillingError] = useState('');
 
   useSEO({
     title: 'CodeIt Pricing: Free Coding & Family Pilot',
     description: 'Start coding for free, then request a free CodeIt family pilot spot with guided setup, parent progress, and two learner profiles.',
     canonical: '/pricing',
   });
+
+  useEffect(() => {
+    if (!token) { setBilling(DEFAULT_BILLING_STATE); return undefined; }
+    let cancelled = false;
+    fetchBillingStatus(token)
+      .then((state) => { if (!cancelled) setBilling(state); })
+      // Pricing must still render if billing is unreachable — the free plan is
+      // the honest fallback.
+      .catch(() => { if (!cancelled) setBilling(DEFAULT_BILLING_STATE); });
+    return () => { cancelled = true; };
+  }, [token]);
+
+  async function handleBillingAction(action, eventName) {
+    setBillingBusy(true);
+    setBillingError('');
+    try {
+      void trackEvent(eventName, null, token);
+      await action(token);
+    } catch (error) {
+      setBillingError(error.message || 'Something went wrong. Please try again.');
+      setBillingBusy(false);
+    }
+  }
 
   useEffect(() => {
     const key = 'codeit_pricing_viewed';
@@ -146,6 +187,72 @@ export default function Pricing() {
             <ul>{FREE_FEATURES.map((feature) => <li key={feature}>{feature}</li>)}</ul>
             <Link className="pricing-button pricing-button--quiet" to="/builder">Start building free</Link>
           </article>
+
+          {billing.billingEnabled && (
+            <article id="codeit-plus" className="pricing-card pricing-card--plus">
+              <div className="pricing-card__flag">
+                {isPlusMember(billing) ? 'Your plan' : 'For parents and guardians'}
+              </div>
+              <p className="pricing-card__eyebrow">Paid plan</p>
+              <h2>CodeIt Plus</h2>
+              <div className="pricing-price">
+                <strong>CA$12</strong><span>per month, cancel any time</span>
+              </div>
+              <p className="pricing-card__summary">
+                For families who build a lot. Lessons, the playground and saving stay free for everyone.
+              </p>
+              <ul>{PLUS_FEATURES.map((feature) => <li key={feature}>{feature}</li>)}</ul>
+
+              {isPlusMember(billing) ? (
+                <>
+                  <p className="pricing-plan-state" role="status">
+                    {billing.willLoseAccessAt
+                      ? `Your plan ends on ${new Date(billing.willLoseAccessAt).toLocaleDateString()}.`
+                      : billing.status === 'past_due'
+                        ? 'We could not take the last payment. Update your card to keep CodeIt Plus.'
+                        : billing.currentPeriodEnd
+                          ? `Renews on ${new Date(billing.currentPeriodEnd).toLocaleDateString()}.`
+                          : 'CodeIt Plus is active on this account.'}
+                  </p>
+                  <button
+                    type="button"
+                    className="pricing-button pricing-button--primary"
+                    disabled={billingBusy}
+                    onClick={() => handleBillingAction(openBillingPortal, 'billing_portal_open')}
+                  >
+                    {billingBusy ? 'Opening…' : 'Manage billing'}
+                  </button>
+                  <p className="pricing-card__note">
+                    Card changes and cancellation happen on Stripe. CodeIt never stores your card.
+                  </p>
+                </>
+              ) : isStudentAccount ? (
+                <p className="pricing-plan-state" role="status">
+                  Ask a parent or guardian to set this up from their own account. CodeIt does not sell to children.
+                </p>
+              ) : !user ? (
+                <Link className="pricing-button pricing-button--primary" to="/login?from=pricing">
+                  Log in to subscribe
+                </Link>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="pricing-button pricing-button--primary"
+                    disabled={billingBusy}
+                    onClick={() => handleBillingAction(startCheckout, 'billing_checkout_start')}
+                  >
+                    {billingBusy ? 'Opening secure checkout…' : 'Subscribe for CA$12/month'}
+                  </button>
+                  <p className="pricing-card__note">
+                    Payment is handled by Stripe. You will be asked to confirm before anything is charged.
+                  </p>
+                </>
+              )}
+
+              {billingError && <p className="pricing-plan-error" role="alert">{billingError}</p>}
+            </article>
+          )}
 
           <article id="family-pilot" className="pricing-card pricing-card--founding">
             <div className="pricing-card__flag">Free pilot requests open</div>

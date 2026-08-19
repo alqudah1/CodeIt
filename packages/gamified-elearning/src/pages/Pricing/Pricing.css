@@ -106,3 +106,34 @@
 @media (prefers-reduced-motion: reduce) {
   .pricing-button { transition: none; }
 }
+
+/* ── CodeIt Plus card ─────────────────────────────────────────────────────── */
+
+.pricing-card--plus {
+  border-color: rgba(255, 138, 0, 0.4);
+  box-shadow: 0 10px 30px rgba(255, 138, 0, 0.16);
+}
+
+.pricing-plan-state {
+  margin: 0 0 0.75rem;
+  padding: 0.7rem 0.9rem;
+  background: rgba(61, 220, 151, 0.12);
+  border: 1px solid rgba(61, 220, 151, 0.35);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #14603F;
+}
+
+.pricing-plan-error {
+  margin: 0.6rem 0 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #C62A2F;
+}
+
+.pricing-card__note {
+  margin: 0.6rem 0 0;
+  font-size: 0.8rem;
+  color: rgba(26, 26, 26, 0.62);
+}

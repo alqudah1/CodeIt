@@ -25,10 +25,12 @@ describe('Pricing', () => {
     localStorage.clear();
     sessionStorage.clear();
     trackEvent.mockReset().mockResolvedValue(true);
-    global.fetch = jest.fn().mockResolvedValue({
+    global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
       ok: true,
-      json: async () => ({ ready: true }),
-    });
+      json: async () => (String(url).includes('/api/billing/')
+        ? { billingEnabled: false, plan: 'free' }
+        : { ready: true }),
+    }));
     mockAuth = { user: { id: 12, role: 'Educator', email: 'parent@example.com' }, token: 'parent-token' };
   });
 
@@ -54,9 +56,11 @@ describe('Pricing', () => {
   });
 
   test('saves an adult lead through the waitlist endpoint', async () => {
-    global.fetch
-      .mockResolvedValueOnce({ ok: true, json: async () => ({ ready: true }) })
-      .mockResolvedValueOnce({ ok: true, json: async () => ({ saved: true, confirmationSent: true }) });
+    global.fetch.mockImplementation((url) => Promise.resolve(
+      /\/api\/founding-waitlist$/.test(String(url))
+        ? { ok: true, json: async () => ({ saved: true, confirmationSent: true }) }
+        : { ok: true, json: async () => ({ ready: true, billingEnabled: false, plan: 'free' }) }
+    ));
     renderPricing();
     fireEvent.click(await screen.findByRole('checkbox'));
     fireEvent.click(screen.getByRole('button', { name: 'Request a free family pilot spot' }));
@@ -83,9 +87,11 @@ describe('Pricing', () => {
   });
 
   test('shows a retryable error instead of claiming an unsaved interest', async () => {
-    global.fetch
-      .mockResolvedValueOnce({ ok: true, json: async () => ({ ready: true }) })
-      .mockResolvedValueOnce({ ok: false });
+    global.fetch.mockImplementation((url) => Promise.resolve(
+      /\/api\/founding-waitlist$/.test(String(url))
+        ? { ok: false }
+        : { ok: true, json: async () => ({ ready: true, billingEnabled: false, plan: 'free' }) }
+    ));
     renderPricing();
     fireEvent.click(await screen.findByRole('checkbox'));
     fireEvent.click(screen.getByRole('button', { name: 'Request a free family pilot spot' }));
@@ -104,9 +110,12 @@ describe('Pricing', () => {
     fireEvent.click(screen.getByRole('checkbox'));
     fireEvent.click(screen.getByRole('button', { name: 'Request a free family pilot spot' }));
 
-    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
-    expect(global.fetch.mock.calls[1][1].headers).not.toHaveProperty('Authorization');
-    expect(global.fetch.mock.calls[1][1].body).toContain('newparent@example.com');
+    await waitFor(() => expect(
+      global.fetch.mock.calls.some(([url]) => /\/api\/founding-waitlist$/.test(String(url)))
+    ).toBe(true));
+    const [, options] = global.fetch.mock.calls.find(([url]) => /\/api\/founding-waitlist$/.test(String(url)));
+    expect(options.headers).not.toHaveProperty('Authorization');
+    expect(options.body).toContain('newparent@example.com');
   });
 
   test('requires explicit adult consent before submitting contact information', async () => {
@@ -115,7 +124,8 @@ describe('Pricing', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Request a free family pilot spot' }));
 
     expect(screen.getByRole('alert')).toHaveTextContent('confirm that you are an adult');
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    // No contact details leave the browser without consent.
+    expect(global.fetch.mock.calls.filter(([url]) => /\/api\/founding-waitlist$/.test(String(url)))).toHaveLength(0);
   });
 
   test('offers adults a low-friction email path without sending automatically', async () => {
@@ -140,5 +150,79 @@ describe('Pricing', () => {
     const fallback = await screen.findByRole('link', { name: 'Email us to join the pilot' });
     expect(fallback).toHaveAttribute('href', expect.stringMatching(/^mailto:hello@codeitlearn\.com/));
     expect(screen.queryByLabelText('Your email for pilot updates')).not.toBeInTheDocument();
+  });
+  function mockBilling(billingState) {
+    global.fetch.mockImplementation((url) => Promise.resolve({
+      ok: true,
+      json: async () => (String(url).includes('/api/billing/')
+        ? { billingEnabled: true, plan: 'free', canPublish: false, ...billingState }
+        : { ready: true }),
+    }));
+  }
+
+  test('hides the paid plan entirely until billing is switched on', async () => {
+    renderPricing();
+    await screen.findByRole('checkbox');
+    expect(screen.queryByText('CodeIt Plus')).not.toBeInTheDocument();
+    expect(screen.queryByText(/CA\$12/)).not.toBeInTheDocument();
+  });
+
+  test('offers an adult the CA$12 plan once billing is on', async () => {
+    mockBilling({});
+    renderPricing();
+
+    expect(await screen.findByRole('heading', { name: 'CodeIt Plus' })).toBeInTheDocument();
+    expect(screen.getByText('CA$12')).toBeInTheDocument();
+    expect(screen.getByText('per month, cancel any time')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Subscribe for CA\$12\/month/i })).toBeEnabled();
+    expect(screen.getByText(/CodeIt never stores your card|confirm before anything is charged/i)).toBeInTheDocument();
+  });
+
+  test('never asks a child to pay', async () => {
+    mockAuth = { user: { id: 3, role: 'Student', name: 'Sara' }, token: 'student-token' };
+    mockBilling({});
+    renderPricing();
+
+    expect(await screen.findByRole('heading', { name: 'CodeIt Plus' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Subscribe/i })).not.toBeInTheDocument();
+    expect(screen.getByText(/Ask a parent or guardian/i)).toBeInTheDocument();
+  });
+
+  test('shows a subscriber their renewal date and a way to cancel', async () => {
+    mockBilling({ plan: 'plus', status: 'active', currentPeriodEnd: '2026-09-19T00:00:00.000Z' });
+    renderPricing();
+
+    expect(await screen.findByRole('button', { name: 'Manage billing' })).toBeEnabled();
+    expect(screen.getByRole('status')).toHaveTextContent(/Renews on/);
+    expect(screen.queryByRole('button', { name: /Subscribe/i })).not.toBeInTheDocument();
+  });
+
+  test('warns a subscriber whose payment failed', async () => {
+    mockBilling({ plan: 'plus', status: 'past_due', currentPeriodEnd: '2026-09-19T00:00:00.000Z' });
+    renderPricing();
+
+    expect(await screen.findByRole('status')).toHaveTextContent(/could not take the last payment/i);
+  });
+
+  test('tells a cancelling family when access actually ends', async () => {
+    mockBilling({
+      plan: 'plus', status: 'active', cancelAtPeriodEnd: true,
+      currentPeriodEnd: '2026-09-19T00:00:00.000Z', willLoseAccessAt: '2026-09-19T00:00:00.000Z',
+    });
+    renderPricing();
+
+    expect(await screen.findByRole('status')).toHaveTextContent(/Your plan ends on/);
+  });
+
+  test('keeps the page usable when the billing API is down', async () => {
+    global.fetch.mockImplementation((url) => (String(url).includes('/api/billing/')
+      ? Promise.reject(new Error('network'))
+      : Promise.resolve({ ok: true, json: async () => ({ ready: true }) })));
+    renderPricing();
+
+    // The free plan is the honest fallback; nothing paid is offered.
+    await screen.findByRole('checkbox');
+    expect(screen.queryByText('CodeIt Plus')).not.toBeInTheDocument();
+    expect(screen.getByText('Free pilot requests open')).toBeInTheDocument();
   });
 });

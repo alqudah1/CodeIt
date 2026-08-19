@@ -25,6 +25,7 @@ const foundingWaitlistRoutes = require('./routes/foundingWaitlist');
 const adminRoutes = require('./routes/admin');
 const familyRoutes = require('./routes/family');
 const activityRoutes = require('./routes/activity');
+const billingRoutes = require('./routes/billing');
 const { legacyAccessGuard } = require('./legacyParentReview');
 
 const app = express();
@@ -64,6 +65,14 @@ app.use(cors({
   credentials: true,
 }));
 
+// Stripe signs the raw request body, so this route is mounted before
+// express.json and before the account guard — the caller is Stripe, not a user.
+app.post(
+  '/api/billing/webhook',
+  express.raw({ type: 'application/json', limit: '1mb' }),
+  billingRoutes.handleWebhook
+);
+
 app.use(express.json({ limit: '512kb' }));
 app.use('/api', legacyAccessGuard());
 
@@ -81,6 +90,7 @@ app.use('/api/founding-waitlist', foundingWaitlistRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/family', familyRoutes);
 app.use('/api/activity', activityRoutes);
+app.use('/api/billing', billingRoutes);
 
 const PORT = Number(process.env.PORT || 8080);
 if (require.main === module) {

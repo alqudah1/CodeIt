@@ -11,6 +11,9 @@ const { recordAIUsage } = require('../aiUsage');
 const { recordMilestoneAndNotify } = require('../progressNotifications');
 const { findShowcaseProject } = require('../showcaseProjects');
 const { initializeProjectRewards, awardProjectXp: persistProjectXp } = require('../projectRewards');
+const { checkAiBuildAllowance } = require('../entitlements');
+const billingStore = require('../billingStore');
+const { assertCanPublish, isBillingConfigured } = require('./billing');
 
 const client     = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const MAX_PROMPT_LENGTH = 1000;
@@ -1425,8 +1428,32 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
         journeyId: analyticsContext.journeyId,
         meta: generationMode,
       });
+      // Only a real AI generation costs a build. A student who received the
+      // offline starter template has not spent one.
+      if (generationMode === 'ai' && analyticsContext.userId) {
+        void billingStore.recordAiBuild(analyticsContext.userId)
+          .catch(error => console.error('AI build usage error:', error.message));
+      }
     }
   });
+
+  // Monthly AI allowance for signed-in accounts. Anonymous visitors are held by
+  // the hourly rate limiter above. Falls open if billing is not configured.
+  if (isBillingConfigured() && req.user?.user_id) {
+    try {
+      const [subscription, buildsThisMonth] = await Promise.all([
+        billingStore.getSubscriptionByUserId(req.user.user_id),
+        billingStore.countAiBuildsThisMonth(req.user.user_id),
+      ]);
+      const allowance = checkAiBuildAllowance(subscription, buildsThisMonth);
+      if (!allowance.allowed) {
+        return res.status(402).json({ code: allowance.code, error: allowance.message });
+      }
+    } catch (error) {
+      // A billing fault must never stop a child building something.
+      console.error('AI allowance check failed, allowing build:', error.message);
+    }
+  }
 
   if (!process.env.ANTHROPIC_API_KEY) {
     console.log('Builder: ANTHROPIC_API_KEY missing, serving fallback for type:', designConfig.type);
@@ -2270,6 +2297,13 @@ router.post('/projects/:id/publish', requireAuth, async (req, res) => {
         code: 'MANAGED_PROFILE_PRIVATE',
         error: 'Projects from managed younger profiles stay private. A parent can still view progress from the family account.',
       });
+    }
+
+    // Publishing publicly is part of CodeIt Plus. The age rule above wins over
+    // this one: a paid plan never makes a younger child's work public.
+    const publishAllowance = await assertCanPublish(userId, { studentAge: rows[0].student_age });
+    if (!publishAllowance.allowed) {
+      return res.status(403).json({ code: publishAllowance.code, error: publishAllowance.message });
     }
 
     const wasPublic = Boolean(rows[0].is_public);
