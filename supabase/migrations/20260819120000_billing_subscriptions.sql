@@ -44,6 +44,9 @@ create table if not exists public.ai_build_usage (
 
 create index if not exists idx_ai_build_usage_user on public.ai_build_usage(user_id, created_at);
 
+-- Postgres has no "create trigger if not exists", so drop first to keep this
+-- migration safe to re-run.
+drop trigger if exists set_subscriptions_updated_at on public.subscriptions;
 create trigger set_subscriptions_updated_at before update on public.subscriptions
 for each row execute function public.set_updated_at();
 
