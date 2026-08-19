@@ -167,8 +167,15 @@ router.post('/checkout', authenticateToken, async (req, res) => {
 
     res.json({ url: session.url });
   } catch (error) {
-    console.error('Checkout session error:', error.message);
-    res.status(502).json({ error: 'Could not open the payment page. Please try again.' });
+    // Stripe's own error code is safe to surface and is the difference between
+    // "something broke" and a five-second fix. The human-readable message stays
+    // generic; the code is for whoever is debugging.
+    console.error('Checkout session error:', error.type, error.code, error.message);
+    res.status(502).json({
+      error: 'Could not open the payment page. Please try again.',
+      stripeCode: error.code || error.type || null,
+      stripeMessage: process.env.BILLING_DEBUG === 'true' ? error.message : undefined,
+    });
   }
 });
 
