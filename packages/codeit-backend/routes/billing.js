@@ -231,6 +231,21 @@ async function handleWebhook(req, res) {
   }
 }
 
+/**
+ * Is this subscription actually for CodeIt Plus?
+ *
+ * A Stripe sandbox can be shared with another product, and every destination
+ * receives every event type it subscribes to — including the other app's. Both
+ * apps also use client_reference_id for their own user ids, so a neighbouring
+ * checkout for user "7" would otherwise grant CodeIt Plus to CodeIt's user 7.
+ * The price id is the only reliable discriminator.
+ */
+function belongsToCodeIt(fields) {
+  const ourPrice = billingConfig().priceId;
+  if (!ourPrice) return false;
+  return fields?.priceId === ourPrice;
+}
+
 async function applyEvent(event) {
   const client = stripe();
   const object = event.data.object;
@@ -245,7 +260,8 @@ async function applyEvent(event) {
     if (!userId || !subscriptionId) return;
     const subscription = await client.subscriptions.retrieve(subscriptionId);
     const fields = subscriptionFields(subscription);
-    if (fields) await store.upsertSubscription(userId, fields);
+    if (!fields || !belongsToCodeIt(fields)) return;
+    await store.upsertSubscription(userId, fields);
     return;
   }
 
@@ -268,7 +284,7 @@ async function applyEvent(event) {
 
   // customer.subscription.created / updated / deleted
   const fields = subscriptionFields(object);
-  if (!fields) return;
+  if (!fields || !belongsToCodeIt(fields)) return;
 
   let userId = userIdFromEvent(event);
   if (!userId && fields.stripeCustomerId) {
@@ -299,3 +315,6 @@ module.exports = router;
 module.exports.assertCanPublish = assertCanPublish;
 module.exports.handleWebhook = handleWebhook;
 module.exports.isBillingConfigured = isConfigured;
+// Exported for tests: the shared-sandbox guard is worth asserting directly.
+module.exports.applyEvent = applyEvent;
+module.exports.belongsToCodeIt = belongsToCodeIt;

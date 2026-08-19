@@ -106,3 +106,71 @@ test('publishing falls open when billing is switched off', async () => {
   const billing = freshBilling();
   assert.deepStrictEqual(await billing.assertCanPublish(1, {}), { allowed: true });
 });
+
+// ── Shared-sandbox isolation ─────────────────────────────────────────────────
+//
+// The Stripe sandbox is shared with another product (LYNQ). Every webhook
+// destination in a sandbox receives every event type it subscribes to, so
+// CodeIt's endpoint sees the neighbouring app's subscription events too. Both
+// apps put their own user id in client_reference_id, so without a discriminator
+// a neighbouring checkout for "user 7" would grant CodeIt Plus to CodeIt's
+// user 7. The price id is the discriminator.
+
+const OUR_PRICE = CONFIGURED.STRIPE_PRICE_ID;
+
+function stubStore() {
+  const store = require('./billingStore');
+  const writes = [];
+  store.upsertSubscription = async (userId, fields) => { writes.push({ userId, fields }); };
+  store.getSubscriptionByCustomerId = async () => null;
+  store.claimWebhookEvent = async () => true;
+  return writes;
+}
+
+function subscriptionEvent(priceId, { type = 'customer.subscription.updated', userId = '7' } = {}) {
+  return {
+    id: `evt_${priceId}_${userId}`,
+    type,
+    data: {
+      object: {
+        id: 'sub_neighbour',
+        customer: 'cus_neighbour',
+        status: 'active',
+        client_reference_id: userId,
+        items: { data: [{ price: { id: priceId } }] },
+      },
+    },
+  };
+}
+
+test('a subscription to our own price is applied', async () => {
+  const writes = stubStore();
+  const billing = freshBilling(CONFIGURED);
+  await billing.applyEvent(subscriptionEvent(OUR_PRICE));
+  assert.strictEqual(writes.length, 1);
+  assert.strictEqual(writes[0].userId, 7);
+});
+
+test("a neighbouring app's subscription never grants CodeIt access", async () => {
+  const writes = stubStore();
+  const billing = freshBilling(CONFIGURED);
+  // Same shape, same client_reference_id — only the price differs.
+  await billing.applyEvent(subscriptionEvent('price_lynq_something_else'));
+  assert.strictEqual(writes.length, 0, 'nothing was written for another product');
+});
+
+test('a cancellation for another product does not revoke our access', async () => {
+  const writes = stubStore();
+  const billing = freshBilling(CONFIGURED);
+  await billing.applyEvent(
+    subscriptionEvent('price_lynq_something_else', { type: 'customer.subscription.deleted' })
+  );
+  assert.strictEqual(writes.length, 0);
+});
+
+test('an unconfigured price id matches nothing rather than everything', async () => {
+  const billing = freshBilling({ ...CONFIGURED, STRIPE_PRICE_ID: '' });
+  assert.strictEqual(billing.belongsToCodeIt({ priceId: 'price_anything' }), false);
+  assert.strictEqual(billing.belongsToCodeIt({ priceId: undefined }), false);
+  assert.strictEqual(billing.belongsToCodeIt(null), false);
+});
