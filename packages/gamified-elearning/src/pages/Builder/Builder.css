@@ -4727,3 +4727,12 @@
 @media (max-width: 900px) {
   .bldr-mine { padding-bottom: 5.5rem !important; }
 }
+
+/* How many people actually played a published project. Shown only when the
+   project is live — a private project has no audience to report. */
+.bldr-project-card__plays {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #1A7A50;
+}

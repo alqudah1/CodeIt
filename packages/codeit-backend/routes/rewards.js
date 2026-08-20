@@ -5,9 +5,30 @@ const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
 const { publicLeaderboardRows } = require('../leaderboardIdentity');
 
-const TOTAL_QUIZZES  = 10;
-const TOTAL_LESSONS  = 10;
-const TOTAL_GAMES    = 10;
+// How much content exists is a question for the database, not a constant.
+// These were hardcoded at 10 while the site shipped 16 lessons, so every
+// student's progress ring has been wrong: 16 of 16 lessons read as 100% when
+// it was really 160% clamped, and 10 of 16 read as complete.
+const FALLBACK_TOTALS = { quizzes: 10, lessons: 16, games: 10 };
+
+async function contentTotals() {
+  try {
+    const [[lessons], [puzzles], [quizzes]] = await Promise.all([
+      pool.query('SELECT COUNT(*) AS total FROM lessons').then(([rows]) => rows),
+      pool.query('SELECT COUNT(*) AS total FROM puzzles').then(([rows]) => rows),
+      pool.query('SELECT COUNT(DISTINCT quiz_id) AS total FROM quiz_questions').then(([rows]) => rows),
+    ]);
+    return {
+      // A zero total would divide by zero and report NaN%, so fall back.
+      lessons: Number(lessons?.total) || FALLBACK_TOTALS.lessons,
+      games:   Number(puzzles?.total) || FALLBACK_TOTALS.games,
+      quizzes: Number(quizzes?.total) || FALLBACK_TOTALS.quizzes,
+    };
+  } catch (error) {
+    console.error('Content totals lookup failed, using fallbacks:', error.message);
+    return { ...FALLBACK_TOTALS };
+  }
+}
 
 // Middleware
 const authenticateToken = (req, res, next) => {
@@ -25,13 +46,15 @@ const authenticateToken = (req, res, next) => {
 router.get('/progress-percentages', authenticateToken, async (req, res) => {
   const userId = req.user.user_id;
   try {
+    const totals = await contentTotals();
+
     // Quizzes attempted (distinct)
     const [quizRows] = await pool.query(
       'SELECT COUNT(DISTINCT quiz_id) AS quiz_count FROM Student_Quiz_Attempt WHERE student_id = ?',
       [userId]
     );
     const quizCount = quizRows[0]?.quiz_count ?? 0;
-    const quizPct = Math.min(100, Math.round((quizCount / TOTAL_QUIZZES) * 100));
+    const quizPct = Math.min(100, Math.round((quizCount / totals.quizzes) * 100));
 
     // Lessons completed (distinct)
     const [lessonRows] = await pool.query(
@@ -39,7 +62,7 @@ router.get('/progress-percentages', authenticateToken, async (req, res) => {
       [userId]
     );
     const lessonCount = lessonRows[0]?.lesson_count ?? 0;
-    const lessonPct = Math.min(100, Math.round((lessonCount / TOTAL_LESSONS) * 100));
+    const lessonPct = Math.min(100, Math.round((lessonCount / totals.lessons) * 100));
 
     // Puzzles completed (distinct)
     const [puzzleRows] = await pool.query(
@@ -47,7 +70,7 @@ router.get('/progress-percentages', authenticateToken, async (req, res) => {
       [userId]
     );
     const puzzleCount = puzzleRows[0]?.puzzle_count ?? 0;
-    const gamePct = Math.min(100, Math.round((puzzleCount / TOTAL_GAMES) * 100));
+    const gamePct = Math.min(100, Math.round((puzzleCount / totals.games) * 100));
 
     res.json({
       success: true,

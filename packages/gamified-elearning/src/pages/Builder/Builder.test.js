@@ -656,4 +656,111 @@ describe('project studio opening', () => {
     // No typing route is offered as the way forward at this age.
     expect(screen.queryByRole('button', { name: /describe a change in words/i })).not.toBeInTheDocument();
   });
+  test('shows a creator how many people played their published project', async () => {
+    global.fetch.mockImplementation((url) => {
+      const target = String(url);
+      if (target.includes('/missions')) {
+        return Promise.resolve({ ok: true, headers: { get: () => 'application/json' }, json: async () => ({ missions: [] }) });
+      }
+      if (target.endsWith('/api/builder/projects')) {
+        return Promise.resolve({
+          ok: true,
+          headers: { get: () => 'application/json' },
+          json: async () => ({
+            success: true,
+            projects: [
+              {
+                id: 1, title: 'Star Catcher', prompt: 'a star game', project_type: 'game',
+                is_public: 1, public_id: 'abc123', view_count: 42, remix_count: 3,
+                created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+              },
+              {
+                id: 2, title: 'Secret Quiz', prompt: 'a quiz', project_type: 'quiz',
+                is_public: 0, public_id: null, view_count: 0, remix_count: 0,
+                created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+              },
+            ],
+          }),
+        });
+      }
+      return Promise.resolve({ ok: true, headers: { get: () => 'application/json' }, json: async () => ({}) });
+    });
+
+    render(
+      <AuthContext.Provider value={{ user: { id: 9, name: 'Sara', role: 'Student' }, token: 'student-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    expect(await screen.findByText(/42 plays/)).toBeInTheDocument();
+    expect(screen.getByText(/3 remixed/)).toBeInTheDocument();
+    // A private project has no audience, so no count is claimed for it.
+    await screen.findByText('Secret Quiz');
+    expect(screen.queryByText(/No plays yet/)).not.toBeInTheDocument();
+  });
+
+  test('tells a creator plainly when nobody has played it yet', async () => {
+    global.fetch.mockImplementation((url) => {
+      const target = String(url);
+      if (target.includes('/missions')) {
+        return Promise.resolve({ ok: true, headers: { get: () => 'application/json' }, json: async () => ({ missions: [] }) });
+      }
+      if (target.endsWith('/api/builder/projects')) {
+        return Promise.resolve({
+          ok: true,
+          headers: { get: () => 'application/json' },
+          json: async () => ({
+            success: true,
+            projects: [{
+              id: 3, title: 'Brand New', prompt: 'x', project_type: 'game',
+              is_public: 1, public_id: 'zzz999', view_count: 0, remix_count: 0,
+              created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+            }],
+          }),
+        });
+      }
+      return Promise.resolve({ ok: true, headers: { get: () => 'application/json' }, json: async () => ({}) });
+    });
+
+    render(
+      <AuthContext.Provider value={{ user: { id: 9, name: 'Sara', role: 'Student' }, token: 'student-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    // "0 plays" reads as failure; this reads as an invitation.
+    expect(await screen.findByText(/No plays yet — share your link/)).toBeInTheDocument();
+  });
+
+  test('a single play is not pluralised', async () => {
+    global.fetch.mockImplementation((url) => {
+      const target = String(url);
+      if (target.includes('/missions')) {
+        return Promise.resolve({ ok: true, headers: { get: () => 'application/json' }, json: async () => ({ missions: [] }) });
+      }
+      if (target.endsWith('/api/builder/projects')) {
+        return Promise.resolve({
+          ok: true,
+          headers: { get: () => 'application/json' },
+          json: async () => ({
+            success: true,
+            projects: [{
+              id: 4, title: 'One Player', prompt: 'x', project_type: 'game',
+              is_public: 1, public_id: 'one111', view_count: 1, remix_count: 0,
+              created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+            }],
+          }),
+        });
+      }
+      return Promise.resolve({ ok: true, headers: { get: () => 'application/json' }, json: async () => ({}) });
+    });
+
+    render(
+      <AuthContext.Provider value={{ user: { id: 9, name: 'Sara', role: 'Student' }, token: 'student-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    expect(await screen.findByText(/1 play$/)).toBeInTheDocument();
+  });
 });

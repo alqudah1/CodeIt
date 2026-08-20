@@ -1873,7 +1873,7 @@ router.get('/projects', requireAuth, async (req, res) => {
   const userId = req.user.user_id;
   try {
     const [rows] = await pool.query(
-      `SELECT id, title, prompt, project_type, created_at, updated_at, public_id, is_public, view_count
+      `SELECT id, title, prompt, project_type, created_at, updated_at, public_id, is_public, view_count, remix_count
        FROM ai_projects WHERE user_id = ? ORDER BY COALESCE(updated_at, created_at) DESC, created_at DESC`,
       [userId]
     );
