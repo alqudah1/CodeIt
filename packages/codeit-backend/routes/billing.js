@@ -72,7 +72,14 @@ function stripe() {
   // Required lazily so the backend still boots when Stripe is not installed or
   // not configured — every other route must keep working.
   const Stripe = require('stripe');
-  stripeClient = new Stripe(secretKey, { apiVersion: '2024-06-20' });
+  // Must match the account's API version. Managed Payments does not exist on
+  // older versions, and Checkout rejects the session outright rather than
+  // degrading: "Managed Payments is not supported on API version 2024-06-20".
+  // This is also the version the webhook destination sends, so event payloads
+  // and API responses share one shape.
+  stripeClient = new Stripe(secretKey, {
+    apiVersion: process.env.STRIPE_API_VERSION || '2026-07-29.dahlia',
+  });
   return stripeClient;
 }
 
