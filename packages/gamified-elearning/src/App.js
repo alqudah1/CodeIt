@@ -17,22 +17,7 @@ import ActivityTracker from './components/ActivityTracker/ActivityTracker';
 const MainPage       = lazy(() => import('./pages/MainPage/MainPage'));
 const LessonMap      = lazy(() => import('./pages/Lessons/LessonMap'));
 
-const Lesson1Interactive  = lazy(() => import('./pages/Lessons/Lesson1Interactive'));
-const Lesson2Interactive  = lazy(() => import('./pages/Lessons/Lesson2Interactive'));
-const Lesson3Interactive  = lazy(() => import('./pages/Lessons/Lesson3Interactive'));
-const Lesson4Interactive  = lazy(() => import('./pages/Lessons/Lesson4Interactive'));
-const Lesson5Interactive  = lazy(() => import('./pages/Lessons/Lesson5Interactive'));
-const Lesson6Interactive  = lazy(() => import('./pages/Lessons/Lesson6Interactive'));
-const Lesson7Interactive  = lazy(() => import('./pages/Lessons/Lesson7Interactive'));
-const Lesson8Interactive  = lazy(() => import('./pages/Lessons/Lesson8Interactive'));
-const Lesson9Interactive  = lazy(() => import('./pages/Lessons/Lesson9Interactive'));
-const Lesson10Interactive = lazy(() => import('./pages/Lessons/Lesson10Interactive'));
-const Lesson11Interactive = lazy(() => import('./pages/Lessons/Lesson11Interactive'));
-const Lesson12Interactive = lazy(() => import('./pages/Lessons/Lesson12Interactive'));
-const Lesson13Interactive = lazy(() => import('./pages/Lessons/Lesson13Interactive'));
-const Lesson14Interactive = lazy(() => import('./pages/Lessons/Lesson14Interactive'));
-const Lesson15Interactive = lazy(() => import('./pages/Lessons/Lesson15Interactive'));
-const Lesson16Interactive = lazy(() => import('./pages/Lessons/Lesson16Interactive'));
+const LessonRoute    = lazy(() => import('./pages/Lessons/LessonRoute'));
 
 const Quiz         = lazy(() => import('./pages/Quizzes/Quiz'));
 
@@ -126,22 +111,7 @@ const App = () => (
 
               {/* ── Lessons ── */}
               <Route path="/lessons"    element={<LessonMap />} />
-              <Route path="/lesson/1"  element={<Lesson1Interactive />} />
-              <Route path="/lesson/2"  element={<Lesson2Interactive />} />
-              <Route path="/lesson/3"  element={<Lesson3Interactive />} />
-              <Route path="/lesson/4"  element={<Lesson4Interactive />} />
-              <Route path="/lesson/5"  element={<Lesson5Interactive />} />
-              <Route path="/lesson/6"  element={<Lesson6Interactive />} />
-              <Route path="/lesson/7"  element={<Lesson7Interactive />} />
-              <Route path="/lesson/8"  element={<Lesson8Interactive />} />
-              <Route path="/lesson/9"  element={<Lesson9Interactive />} />
-              <Route path="/lesson/10" element={<Lesson10Interactive />} />
-              <Route path="/lesson/11" element={<Lesson11Interactive />} />
-              <Route path="/lesson/12" element={<Lesson12Interactive />} />
-              <Route path="/lesson/13" element={<Lesson13Interactive />} />
-              <Route path="/lesson/14" element={<Lesson14Interactive />} />
-              <Route path="/lesson/15" element={<Lesson15Interactive />} />
-              <Route path="/lesson/16" element={<Lesson16Interactive />} />
+              <Route path="/lesson/:lessonId" element={<LessonRoute />} />
 
               {/* ── Quiz ── */}
               <Route path="/quiz/:quizId" element={<QuizWrapper />} />

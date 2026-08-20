@@ -3,6 +3,7 @@ const lesson16 = {
   title: "String Methods",
   subtitle: "Clean, search, and reshape text using Python's built-in string tools!",
   emoji: "🧵",
+  story: "Cleaning up messy text is most of what real programs do all day.",
   steps: [
     {
       type: 'concept',
@@ -11,6 +12,18 @@ const lesson16 = {
       body: 'Python strings come with methods — functions you call with a dot. The most useful ones are: .strip() removes leading and trailing spaces. .replace(old, new) swaps one piece of text for another. .split() breaks a string into a list of words. .join(list) glues a list of strings back together. .find(text) returns the position of the first match (-1 if not found). .count(text) counts how many times something appears.',
       highlight: '"  hello  ".strip()      # "hello"\n"a,b,c".split(",")       # ["a", "b", "c"]\n",".join(["a","b","c"])  # "a,b,c"',
       code: 'print("  hello  ".strip())\nprint("a,b,c".split(","))\nprint(",".join(["a", "b", "c"]))',
+    },
+    {
+      type: 'predict',
+      id: 'predict-methods',
+      title: 'Cleaning Up Text',
+      question: 'What does this print?',
+      code: 'messy = "  hello world  "\nprint(messy.strip())\nprint(messy.strip().replace("world", "there"))',
+      choices: ['hello world\nhello there', '  hello world  \nhello there', 'hello world\nhello world', 'helloworld\nhellothere'],
+      correct: 0,
+      explain: 'Yes. .strip() removes the spaces at the ends, and .replace() swaps one piece of text for another.',
+      wrongHint: '.strip() only takes spaces off the outside, not from the middle.',
+      hints: ['strip removes whitespace from the start and the end.', 'The methods run left to right: strip first, then replace.'],
     },
     {
       type: 'example',

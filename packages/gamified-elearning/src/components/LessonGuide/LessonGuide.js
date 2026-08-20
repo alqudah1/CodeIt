@@ -19,8 +19,16 @@ const getHint = (stepType, isCurrentDone, isLastStep) => {
       return 'Try writing the code yourself, then press Run.';
     case 'challenge':
       return 'This is your challenge. Give it your best try!';
+    // The steps with no Run button at all. Telling a child to press Run when
+    // there is nothing to press is how they get stuck and give up.
+    case 'predict':
+      return 'Read the code and tap the answer you think is right.';
+    case 'fillblank':
+      return 'Tap a word below to drop it into a yellow gap.';
+    case 'order':
+      return 'Use the arrows to move each line up or down.';
     default:
-      return 'Follow the instructions above and press Run.';
+      return 'Follow the instructions above.';
   }
 };
 

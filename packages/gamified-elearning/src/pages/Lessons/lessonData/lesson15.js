@@ -3,6 +3,7 @@ const lesson15 = {
   title: "String Formatting",
   subtitle: "Build polished messages by embedding variables directly inside strings!",
   emoji: "✏️",
+  story: "Neat output is what makes a program look finished instead of half-built.",
   steps: [
     {
       type: 'concept',
@@ -11,6 +12,18 @@ const lesson15 = {
       body: 'An f-string starts with the letter f before the opening quote: f"...". Inside the string you put variable names (or expressions) inside curly braces {}. Python replaces them with their values at runtime. You can also control formatting: {price:.2f} formats a float to 2 decimal places. f-strings are cleaner than joining strings with +.',
       highlight: 'name = "Alex"\nage = 14\nprint(f"Hello, {name}! You are {age} years old.")',
       code: 'name = "Alex"\nage = 14\nprint(f"Hello, {name}! You are {age} years old.")',
+    },
+    {
+      type: 'predict',
+      id: 'predict-fstring',
+      title: 'What Goes In The Braces?',
+      question: 'What does this print?',
+      code: 'name = "Ada"\nscore = 42\nprint(f"{name} scored {score}")',
+      choices: ['{name} scored {score}', 'Ada scored 42', 'f Ada scored 42', 'name scored score'],
+      correct: 1,
+      explain: 'Right — the f tells Python to swap each pair of braces for the value inside it.',
+      wrongHint: 'The f before the quote is the important bit. It makes the braces get filled in.',
+      hints: ['Without the f, the braces would be printed as they are.', 'Whatever is inside the braces gets looked up and swapped in.'],
     },
     {
       type: 'example',

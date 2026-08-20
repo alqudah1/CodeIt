@@ -31,7 +31,7 @@ const FAQS = [
 export default function LearnPythonForKids() {
   useSEO({
     title:       'Free Python for Kids Online | 16 Interactive Lessons | CodeIt',
-    description: 'Start learning Python for free with 16 interactive browser lessons, real code, quizzes, and projects. No download or signup is needed to open Lesson 1.',
+    description: 'Start learning Python for free with 31 interactive browser lessons, real code, quizzes, and projects. No download or signup is needed to open Lesson 1.',
     canonical:   '/learn-python-for-kids',
   });
   useFAQSchema(FAQS);
@@ -76,7 +76,7 @@ export default function LearnPythonForKids() {
           <section className="seo-answer-box" aria-label="Quick answer">
             <span className="seo-answer-box__label">Quick Answer</span>
             <p className="seo-answer-box__answer">
-              CodeIt helps kids, teens, and other beginners learn Python through 16 interactive
+              CodeIt helps kids, teens, and other beginners learn Python through 31 interactive
               lessons, each covering one concept at a time — no experience or downloads needed.
             </p>
             <p className="seo-answer-box__detail">
@@ -119,7 +119,7 @@ export default function LearnPythonForKids() {
             <section className="seo-section">
               <h2 className="seo-h2">What Kids Learn in CodeIt's Python Lessons</h2>
               <p className="seo-p">
-                CodeIt teaches Python through 16 beginner lessons, each focused on one core concept.
+                CodeIt teaches Python through 31 beginner lessons, each focused on one core concept.
                 By the end, kids have a solid foundation in real Python programming:
               </p>
               <ul className="seo-list">
@@ -260,7 +260,7 @@ export default function LearnPythonForKids() {
           <div className="seo-bottom-cta">
             <h2>Ready to Learn Python?</h2>
             <p>
-              16 free beginner lessons, no downloads, no credit card. Start Lesson 1 in under a
+              31 free beginner lessons, no downloads, no credit card. Start Lesson 1 in under a
               minute — or try the playground first to see Python in action.
             </p>
             <Link

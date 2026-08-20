@@ -3,6 +3,7 @@ const lesson14 = {
   title: "Type Casting",
   subtitle: "Convert between numbers and text so your data is always the right shape!",
   emoji: "🔁",
+  story: "A number typed by a person arrives as text. Converting it is the difference between 2 + 2 and \"22\".",
   steps: [
     {
       type: 'concept',
@@ -11,6 +12,18 @@ const lesson14 = {
       body: 'Every value in Python has a type — int, float, str, bool. Sometimes you need to switch types. int() converts to a whole number. float() converts to a decimal. str() converts to text. type() tells you what type a value currently is. Note: in this browser environment, we use variables instead of input() to simulate user data.',
       highlight: 'text = "42"\nnumber = int(text)   # "42" → 42\nprint(type(number))  # <class \'int\'>',
       code: 'text = "42"\nnumber = int(text)\nprint(number)\nprint(type(number))',
+    },
+    {
+      type: 'predict',
+      id: 'predict-cast',
+      title: 'Text Plus Text',
+      question: 'What does this print?',
+      code: 'a = "2"\nb = "3"\nprint(a + b)\nprint(int(a) + int(b))',
+      choices: ['5\n5', '23\n5', '23\n23', '5\n23'],
+      correct: 1,
+      explain: 'Correct — adding two strings joins them, but int() turns them into real numbers first.',
+      wrongHint: 'Look at the quote marks. "2" is text, not the number 2. What does + do to two pieces of text?',
+      hints: ['+ on text means "stick together".', 'int() converts text into a number.'],
     },
     {
       type: 'example',

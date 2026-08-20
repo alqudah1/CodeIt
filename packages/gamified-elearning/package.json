@@ -24,7 +24,8 @@
     "postbuild": "node scripts/generate-static-seo.js",
     "seo:notify": "node scripts/submit-indexnow.js",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "verify:lessons": "node scripts/verify-lesson-python.js"
   },
   "eslintConfig": {
     "extends": [

@@ -3,6 +3,7 @@ const lesson12 = {
   title: "Booleans & Comparisons",
   subtitle: "Python can decide if something is True or False — and act on it!",
   emoji: "⚖️",
+  story: "Before Python can choose, it has to answer a yes-or-no question. That answer is True or False.",
   steps: [
     {
       type: 'concept',
@@ -11,6 +12,18 @@ const lesson12 = {
       body: 'A boolean is a value that is either True or False. You create booleans by comparing things. The comparison operators are: == (equal to), != (not equal), < (less than), > (greater than), <= (less than or equal), and >= (greater than or equal). These comparisons are used inside if statements to make decisions.',
       highlight: 'age = 13\nprint(age >= 13)  # True\nprint(age == 14)  # False',
       code: 'age = 13\nprint(age >= 13)\nprint(age == 14)',
+    },
+    {
+      type: 'predict',
+      id: 'predict-compare',
+      title: 'One Equals or Two?',
+      question: 'What does this print?',
+      code: 'score = 10\nprint(score == 10)\nprint(score != 10)\nprint(score > 10)',
+      choices: ['True\nFalse\nFalse', 'True\nTrue\nFalse', 'False\nTrue\nFalse', '10\n10\n10'],
+      correct: 0,
+      explain: 'Correct. == asks "is it equal", != asks "is it different", and 10 is not greater than 10.',
+      wrongHint: 'One = sets a value. Two == asks a question, and the answer is always True or False.',
+      hints: ['Is 10 equal to 10?', 'Careful with the last one: greater than does not include equal to.'],
     },
     {
       type: 'example',

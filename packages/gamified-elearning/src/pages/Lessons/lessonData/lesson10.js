@@ -3,6 +3,7 @@ const lesson10 = {
   title: "Combining Concepts",
   subtitle: "Put it all together — variables, strings, loops, lists, and functions!",
   emoji: "🎯",
+  story: "Functions, loops and lists were three separate ideas. Now they become one program.",
   steps: [
     {
       type: 'concept',
@@ -11,6 +12,18 @@ const lesson10 = {
       body: 'You have learned print, variables, strings, if/else, for loops, lists, and functions. Now combine them! A function can take a list, loop through it, and do something useful with each item.',
       highlight: 'def shout_all(items):\n    for item in items:\n        print(item.upper())\n\nshout_all(["hello", "world"])',
       code: 'def shout_all(items):\n    for item in items:\n        print(item.upper())\n\nshout_all(["hello", "world"])',
+    },
+    {
+      type: 'predict',
+      id: 'predict-combined',
+      title: 'Three Ideas At Once',
+      question: 'What does this print?',
+      code: 'def shout(word):\n    return word.upper() + "!"\n\nwords = ["go", "win"]\nfor word in words:\n    print(shout(word))',
+      choices: ['go!\nwin!', 'GO!\nWIN!', 'GO WIN', 'shout(go)\nshout(win)'],
+      correct: 1,
+      explain: 'Correct — the loop calls the function once per word, and the function shouts each one.',
+      wrongHint: 'The function does two things to each word: capitals, and an exclamation mark.',
+      hints: ['.upper() makes capitals.', 'The loop runs the function once for each item in the list.'],
     },
     {
       type: 'example',

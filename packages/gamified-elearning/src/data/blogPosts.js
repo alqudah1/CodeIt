@@ -384,7 +384,7 @@ const BLOG_POSTS = [
         body: [
           'CodeIt is a free, gamified platform built specifically for kids learning Python. Lessons are short, interactive, and structured so each one builds directly on the last.',
           'The journey starts at Lesson 1: Hello Python — one lesson, one concept, one line of code. It takes about 15 minutes and leaves kids with a working programme they wrote themselves.',
-          'From there, quizzes and coding puzzles reinforce each concept before the next one is introduced. The current beginner journey includes 16 lessons, matching quizzes, and coding puzzles, with the learning activities available free today.',
+          'From there, quizzes and coding puzzles reinforce each concept before the next one is introduced. The current beginner journey includes 31 lessons, matching quizzes, and coding puzzles, with the learning activities available free today.',
         ],
       },
     ],

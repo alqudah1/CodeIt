@@ -3,6 +3,7 @@ const lesson9 = {
   title: "Basic Functions",
   subtitle: "Write code once, use it many times — make your own Python commands!",
   emoji: "⚙️",
+  story: "When you catch yourself writing the same lines twice, that is the moment to make a function.",
   steps: [
     {
       type: 'concept',
@@ -11,6 +12,18 @@ const lesson9 = {
       body: 'A function is a reusable block of code. You define it once with def, then call it by name whenever you need it. You can pass values in (called parameters) and get a value back with return!',
       highlight: 'def greet(name):\n    print("Hello,", name)\n\ngreet("Alex")   →   Hello, Alex\ngreet("Sam")    →   Hello, Sam',
       code: 'def greet(name):\n    print("Hello,", name)\n\ngreet("Alex")\ngreet("Sam")',
+    },
+    {
+      type: 'predict',
+      id: 'predict-return',
+      title: 'What Comes Back?',
+      question: 'What does this print?',
+      code: 'def double(n):\n    return n * 2\n\nprint(double(4) + 1)',
+      choices: ['8', '9', '10', '4'],
+      correct: 1,
+      explain: 'Yes — double(4) hands back 8, and then 1 is added to it.',
+      wrongHint: 'Work out what the function gives back first, then do what the rest of the line says.',
+      hints: ['double(4) becomes 8.', 'Now read the line again with 8 in place of double(4).'],
     },
     {
       type: 'example',

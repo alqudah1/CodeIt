@@ -3,6 +3,7 @@ const lesson7 = {
   title: "Basic Lists",
   subtitle: "Store many values in one place — then grab any one you need!",
   emoji: "📋",
+  story: "One variable holds one thing. A list holds a whole team, a whole inventory, a whole scoreboard.",
   steps: [
     {
       type: 'concept',
@@ -11,6 +12,18 @@ const lesson7 = {
       body: 'A list stores many items inside square brackets, separated by commas. Each item has an index — the first item is index 0. You can add new items to a list with .append()!',
       highlight: 'fruits = ["apple", "banana", "mango"]\nprint(fruits[0])   →   apple\nprint(fruits[1])   →   banana',
       code: 'fruits = ["apple", "banana", "mango"]\nprint(fruits[0])\nprint(fruits[1])\nprint(fruits[2])',
+    },
+    {
+      type: 'predict',
+      id: 'predict-index',
+      title: 'Which One Is Number 1?',
+      question: 'What does this print?',
+      code: 'pets = ["cat", "dog", "fish"]\nprint(pets[1])\nprint(len(pets))',
+      choices: ['cat\n3', 'dog\n3', 'dog\n2', 'cat\n2'],
+      correct: 1,
+      explain: 'Correct. Position 1 is the second item, because counting starts at 0. And there are three pets.',
+      wrongHint: 'Lists start counting at 0, so position 1 is not the first item.',
+      hints: ['pets[0] is "cat". So what is pets[1]?', 'len() counts the items, and counting items does start at 1.'],
     },
     {
       type: 'example',

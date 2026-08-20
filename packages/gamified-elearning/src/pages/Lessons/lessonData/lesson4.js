@@ -3,6 +3,7 @@ const lesson4 = {
   title: "Making Decisions with If Statements",
   subtitle: "Teach Python to choose different paths — like a Choose-Your-Own-Adventure story!",
   emoji: "🔀",
+  story: "A game with no choices is a film. if is where your program starts making decisions.",
   steps: [
     {
       type: 'concept',
@@ -11,6 +12,18 @@ const lesson4 = {
       body: 'If statements let your code choose what to do based on a condition. Is the age over 13? Take one path. Is it not? Take another. Python checks the condition and picks the right path!',
       highlight: 'if age >= 13:\n    print("Teen!")   # runs when TRUE\nelse:\n    print("Kid!")    # runs when FALSE',
       code: 'age = 15\nif age >= 13:\n    print("Teen!")\nelse:\n    print("Kid!")',
+    },
+    {
+      type: 'predict',
+      id: 'predict-branch',
+      title: 'Which Path Does It Take?',
+      question: 'What does this print?',
+      code: 'age = 10\nif age >= 13:\n    print("Teen")\nelif age >= 8:\n    print("Kid")\nelse:\n    print("Little")',
+      choices: ['Teen', 'Kid', 'Little', 'Kid\nLittle'],
+      correct: 1,
+      explain: 'Correct. 10 is not 13 or more, but it is 8 or more, so the elif wins — and once one branch runs, the rest are skipped.',
+      wrongHint: 'Check each condition in order from the top. The first one that is True is the only one that runs.',
+      hints: ['Is 10 greater than or equal to 13?', 'Only one branch of an if/elif/else ever runs.'],
     },
     {
       type: 'example',

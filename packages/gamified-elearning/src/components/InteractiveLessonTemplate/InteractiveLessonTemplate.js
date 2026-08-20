@@ -14,9 +14,86 @@ import { useSEO } from '../../hooks/useSEO';
 import { API_BASE_URL } from '../../config/api';
 import { getNextUnlock, getNextUnlockLabel } from '../../data/unlocks';
 import { usePlayerProgress } from '../../hooks/usePlayerProgress';
+import { TOTAL_LESSONS, builderPromptFor, seoFor } from '../../pages/Lessons/lessonRegistry';
+import { effectiveGuideLevel } from '../../utils/guideLevel';
+import { PredictOutput, FillBlank, OrderSteps } from './LessonInteractions';
+import {
+  blankCount,
+  checkCodeStep,
+  checkFillBlank,
+  checkOrder,
+  checkPredict,
+  codeFeedback,
+  isInteractionStep,
+} from './interactionGrading';
 
-const TYPE_LABEL  = { concept: 'Learn', example: 'Example', tryit: 'Try It', challenge: 'Challenge' };
-const TYPE_COLOR  = { concept: 'concept', example: 'example', tryit: 'tryit', challenge: 'challenge' };
+const TYPE_LABEL = {
+  concept:   'Learn',
+  example:   'Example',
+  tryit:     'Try It',
+  challenge: 'Challenge',
+  predict:   'Guess',
+  fillblank: 'Build It',
+  order:     'Put In Order',
+};
+
+const TYPE_COLOR = {
+  concept:   'concept',
+  example:   'example',
+  tryit:     'tryit',
+  challenge: 'challenge',
+  predict:   'predict',
+  fillblank: 'fillblank',
+  order:     'order',
+};
+
+// XP is only ever displayed from this table, never invented per step, so what a
+// child sees on screen is what the server actually banked for them.
+const STEP_XP = {
+  example:   5,
+  predict:   10,
+  fillblank: 10,
+  order:     10,
+  tryit:     15,
+  challenge: 20,
+};
+
+function xpForStep(step) {
+  return step?.type === 'concept' ? 0 : (STEP_XP[step?.type] || 10);
+}
+
+// ── Progress that survives a closed laptop ───────────────────────────────────
+//
+// A lesson used to lose every finished step on refresh. For a child working in
+// twenty-minute slots at school that meant starting Lesson 9 from scratch on
+// Tuesday. Server progress still decides what counts as complete; this is only
+// so the lesson reopens where they left it.
+const stepStateKey = (lessonId) => `codeit.lesson.${lessonId}.steps`;
+
+function loadStepState(lessonId) {
+  try {
+    const raw = window.localStorage.getItem(stepStateKey(lessonId));
+    const saved = raw ? JSON.parse(raw) : null;
+    if (!saved || typeof saved !== 'object') return null;
+    return {
+      stepIdx:   Number(saved.stepIdx) || 0,
+      stepsDone: saved.stepsDone && typeof saved.stepsDone === 'object' ? saved.stepsDone : {},
+      picks:     saved.picks && typeof saved.picks === 'object' ? saved.picks : {},
+    };
+  } catch {
+    // Private browsing, a full quota, a corrupted value — none of which should
+    // stop the lesson from opening.
+    return null;
+  }
+}
+
+function saveStepState(lessonId, state) {
+  try {
+    window.localStorage.setItem(stepStateKey(lessonId), JSON.stringify(state));
+  } catch {
+    // Nothing to do: progress is a convenience here, not the source of truth.
+  }
+}
 
 function childStepsFor(stepType, isDone) {
   if (isDone) return [
@@ -32,6 +109,21 @@ function childStepsFor(stepType, isDone) {
     'Find the orange “Run” button above the code and click it once.',
     'Look in the Output box for the computer’s answer.',
   ];
+  if (stepType === 'predict') return [
+    'Read the code in the dark box.',
+    'Work out what it will print.',
+    'Tap the answer you think is right, then press “Check my answer”.',
+  ];
+  if (stepType === 'fillblank') return [
+    'Some pieces are missing from the code.',
+    'Tap a word from the row below to drop it into the yellow gap.',
+    'Tap a filled gap to take the word back out.',
+  ];
+  if (stepType === 'order') return [
+    'These lines are in the wrong order.',
+    'Use the ↑ and ↓ buttons to move a line up or down.',
+    'When the order looks right, press “Check my answer”.',
+  ];
   if (stepType === 'tryit') return [
     'Click inside the white code box.',
     'Change the words between the quote marks. Ask for help with the keyboard if you need it.',
@@ -44,43 +136,9 @@ function childStepsFor(stepType, isDone) {
   ];
 }
 
-const LESSON_BUILDER_PROMPTS = {
-  1:  'Build a project that displays a welcome message and shows text on the screen.',
-  2:  'Build a website that uses variables to store and display a name, score, and fun message.',
-  3:  'Build a project that works with text — display names, format messages, and show user input.',
-  4:  'Build an interactive project that uses conditions to decide what happens when you click a button.',
-  5:  'Build a project that uses a loop to create a countdown timer or repeat an action.',
-  6:  'Build a text tool that goes through each word or letter and does something with it.',
-  7:  'Build a project that uses a list to store and display multiple items like names or scores.',
-  8:  'Build a project that loops through a list to display and process a collection of items.',
-  9:  'Build a project with buttons where each button calls a different function to do something.',
-  10: 'Build a mini-game that combines functions, loops, and lists all in one project.',
-  11: 'Build a calculator or math quiz that uses numbers and arithmetic operations.',
-  12: 'Build a quiz game that uses true or false questions and comparison operators.',
-  13: 'Build a logic puzzle that uses and, or, and not conditions to decide answers.',
-  14: 'Build a converter tool that transforms between different types like numbers and text.',
-  15: 'Build a project that displays nicely formatted messages using templates and variables.',
-  16: 'Build a text tool that cleans and transforms user text in different ways.',
-};
-
-const LESSON_SEO = {
-  1:  { title: 'Hello Python',                            desc: 'Write your first Python print statement and make the computer say something. Free beginner lesson — runs in your browser.'              },
-  2:  { title: 'Variables in Python',                    desc: 'Learn how to store names, numbers, and messages in Python variables. Free beginner Python lesson on CodeIt — no download needed.'   },
-  3:  { title: 'Python Strings',                         desc: 'Explore Python strings — concatenation, .upper(), .lower(), and len(). Free interactive lesson for beginners, runs in browser.'       },
-  4:  { title: 'If Statements in Python',                desc: 'Learn to make decisions in code with Python if statements and conditionals. Free beginner lesson — no install required.'              },
-  5:  { title: 'For Loops with range()',                 desc: 'Repeat code automatically with Python for loops and range(). Free beginner lesson — write and run code in your browser.'               },
-  6:  { title: 'For Loops over Strings',                 desc: 'Loop over every character in a string using Python for loops. Free interactive coding lesson for beginners on CodeIt.'                },
-  7:  { title: 'Python Lists',                           desc: 'Create and use Python lists — indexing, .append(), and len(). Free beginner lesson — code runs in your browser, no install needed.'  },
-  8:  { title: 'Loops with Lists in Python',             desc: 'Combine Python loops and lists to process collections of data. Free beginner coding lesson — runs instantly in your browser.'         },
-  9:  { title: 'Python Functions',                       desc: 'Write reusable Python functions with def, parameters, and return values. Free interactive lesson for beginners on CodeIt.'            },
-  10: { title: 'Combining Python Concepts',              desc: 'Put it all together — functions, loops, and lists in one Python project. Final free beginner lesson on CodeIt.'                       },
-  11: { title: 'Numbers and Arithmetic',                desc: 'Learn Python integer and float arithmetic — add, subtract, multiply, divide, floor division, and modulo. Free beginner lesson on CodeIt.'    },
-  12: { title: 'Booleans and Comparisons',              desc: 'Understand Python True/False values and comparison operators like ==, !=, <, >. Free interactive beginner lesson — runs in your browser.'   },
-  13: { title: 'Logical Operators in Python',           desc: 'Combine conditions with Python and, or, and not. Free beginner lesson — write and test logical expressions in your browser.'                 },
-  14: { title: 'Type Casting in Python',                desc: 'Convert between int, float, str, and bool in Python. Free beginner coding lesson — no install needed, runs in your browser.'                },
-  15: { title: 'String Formatting with f-Strings',      desc: 'Build polished Python output using f-strings and format specifiers. Free interactive beginner lesson — runs directly in your browser.'       },
-  16: { title: 'Python String Methods',                 desc: 'Clean and transform text with strip(), replace(), split(), join(), find(), and count(). Free Python beginner lesson on CodeIt.'              },
-};
+// The builder prompt and the page title used to live in two hardcoded maps here,
+// keyed 1..16. A seventeenth lesson would have been routable and invisible to
+// Google, with no project to build afterwards. Both now come from the registry.
 
 // JSON-LD: inject LearningResource + HowTo schema per lesson for Google Rich Snippets
 function useLessonJsonLd(lessonData, seoTitle, seoDesc) {
@@ -109,7 +167,7 @@ function useLessonJsonLd(lessonData, seoTitle, seoDesc) {
         isAccessibleForFree: true,
         isPartOf: {
           '@type': 'Course',
-          name:    'Python for Beginners — 16 Free Interactive Lessons',
+          name:    `Python for Beginners — ${TOTAL_LESSONS} Free Interactive Lessons`,
           url:     `${BASE}/lessons`,
         },
         provider: { '@type': 'Organization', name: 'CodeIt', url: BASE },
@@ -145,7 +203,11 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const { xp, level, xpToNext } = usePlayerProgress(token);
   const firstName  = (user?.name || 'Coder').split(' ')[0];
 
-  const seo = LESSON_SEO[lessonId] || {};
+  // The same setting the Project Studio writes. A child who asked for "Big
+  // help" there was still getting small text and dense choices in lessons.
+  const guideLevel = effectiveGuideLevel(user);
+
+  const seo = seoFor(lessonId);
   const seoTitle = seo.title ? `Lesson ${lessonData.id}: ${seo.title} — Python for Beginners | CodeIt` : undefined;
   useSEO({
     title:       seoTitle,
@@ -157,11 +219,25 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const confettiRef       = useRef(null);
   const hasMarkedComplete = useRef(false);
 
-  const [stepIdx,     setStepIdx]     = useState(0);
-  const [stepsDone,      setStepsDone]      = useState({});  // { [idx]: true }
+  // Restored synchronously on first render so the lesson never flashes step 1
+  // before jumping to where the student actually was.
+  const restored = useRef(loadStepState(lessonId)).current;
+
+  const [stepIdx,     setStepIdx]     = useState(restored?.stepIdx || 0);
+  const [stepsDone,      setStepsDone]      = useState(restored?.stepsDone || {}); // { [idx]: true }
   const [stepHintCounts, setStepHintCounts] = useState({});  // { [idx]: number revealed }
   const [lastOutputs,    setLastOutputs]    = useState({});  // { [idx]: string } — output from last Run
+  const [lastCode,       setLastCode]       = useState({});  // { [idx]: string } — code from last Run
   const [feedback,       setFeedback]       = useState({});  // { [idx]: 'incorrect' | null }
+  const [feedbackText,   setFeedbackText]   = useState({});  // { [idx]: string } — why it was wrong
+  const [picks,          setPicks]          = useState(restored?.picks || {}); // non-typing answers
+  const [xpToast,        setXpToast]        = useState(null); // { amount, label }
+
+  // Keep the saved position in step with what is on screen.
+  useEffect(() => {
+    if (!lessonId) return;
+    saveStepState(lessonId, { stepIdx, stepsDone, picks });
+  }, [lessonId, stepIdx, stepsDone, picks]);
 
   // ── Gate: lesson N requires lesson N-1 complete (logged-in users only) ──
   const [gateStatus, setGateStatus] = useState(lessonId === 1 ? 'open' : 'checking');
@@ -247,8 +323,15 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
       trackExerciseCompletion(
         id,
         idx,
-        step.title || `${TYPE_LABEL[step.type] || 'Coding'} exercise ${idx + 1}`
-      ).catch(err => console.error(`Exercise ${id}:${idx} completion error:`, err));
+        step.title || `${TYPE_LABEL[step.type] || 'Coding'} exercise ${idx + 1}`,
+        xpForStep(step)
+      )
+        .then(result => {
+          // Only celebrate XP the server says it actually banked. Re-doing a
+          // step you already finished is fine, it just does not pay twice.
+          if (result?.xpEarned > 0) setXpToast({ amount: result.xpEarned, label: TYPE_LABEL[step.type] });
+        })
+        .catch(err => console.error(`Exercise ${id}:${idx} completion error:`, err));
     }
     setStepsDone(prev => ({ ...prev, [idx]: true }));
   };
@@ -259,8 +342,9 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   // ── Code output handler — fires on every Run ───────────────
   // Stores the latest output so Submit can validate it.
   // Example steps (observational) auto-pass on any non-empty output.
-  const handleCodeOutput = (idx, step, output) => {
+  const handleCodeOutput = (idx, step, output, code) => {
     setLastOutputs(prev => ({ ...prev, [idx]: output }));
+    setLastCode(prev => ({ ...prev, [idx]: code || '' }));
     setFeedback(prev => ({ ...prev, [idx]: null })); // clear stale feedback on re-run
 
     if (step.type === 'example') {
@@ -273,24 +357,55 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   };
 
   // ── Submit handler — explicit validation ────────────────────
-  const submitAnswer = (idx, step) => {
-    const output = lastOutputs[idx] ?? '';
-    const passed = step.successPattern.test(output.trim());
+  /**
+   * Grade whatever kind of step this is.
+   *
+   * Code steps used to be checked with `step.successPattern.test(output)`, and
+   * most lessons carried patterns loose enough that running the untouched
+   * starter code passed. checkCodeStep also asks whether the concept the step
+   * is teaching appears in the code, so "change one word and run" no longer
+   * counts as having written a loop.
+   */
+  const gradeStep = (idx, step) => {
+    if (step.type === 'predict')   return { passed: checkPredict(step, picks[idx]) };
+    if (step.type === 'fillblank') return { passed: checkFillBlank(step, picks[idx] || []) };
+    if (step.type === 'order')     return { passed: checkOrder(step, picks[idx] || []) };
+    return checkCodeStep(step, { code: lastCode[idx] || '', output: lastOutputs[idx] ?? '' });
+  };
 
-    if (passed) {
+  const submitAnswer = (idx, step) => {
+    const result = gradeStep(idx, step);
+
+    if (result.passed) {
       setFeedback(prev => ({ ...prev, [idx]: null }));
+      setFeedbackText(prev => ({ ...prev, [idx]: '' }));
       markStepDone(idx);
       setStepHintCounts(prev => ({ ...prev, [idx]: 0 }));
       triggerConfetti(1400);
-    } else {
-      setFeedback(prev => ({ ...prev, [idx]: 'incorrect' }));
-      // Reveal next hint on each wrong submission
-      const maxHints = getStepHints(step).length;
-      setStepHintCounts(prev => ({
-        ...prev,
-        [idx]: Math.min((prev[idx] || 0) + 1, maxHints),
-      }));
+      return;
     }
+
+    setFeedback(prev => ({ ...prev, [idx]: 'incorrect' }));
+    setFeedbackText(prev => ({
+      ...prev,
+      [idx]: isInteractionStep(step)
+        ? (step.wrongHint || 'Not that one. Have another look and try again.')
+        : codeFeedback(result, step),
+    }));
+    // Reveal one more hint on each wrong try, so a stuck child is always moving
+    // towards the answer rather than guessing in the dark.
+    const maxHints = getStepHints(step).length;
+    setStepHintCounts(prev => ({
+      ...prev,
+      [idx]: Math.min((prev[idx] || 0) + 1, maxHints),
+    }));
+  };
+
+  // Optional steps are the stretch goal. A child who is tired or out of time
+  // can move on without being blocked, and without it looking like failure.
+  const skipOptional = (idx) => {
+    setStepsDone(prev => ({ ...prev, [idx]: true }));
+    setFeedback(prev => ({ ...prev, [idx]: null }));
   };
 
   // ── Navigation ──────────────────────────────────────────────
@@ -353,6 +468,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
     if (currentStep?.type === 'concept') return 'Got It — Next Step';
     if (canProceed) return 'Step Complete — Next';
     if (currentStep?.type === 'example') return 'Run the code to continue';
+    if (isInteractionStep(currentStep)) return 'Check your answer to advance';
     return 'Submit your answer to advance';
   };
 
@@ -450,10 +566,10 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               >
                 {completionData.fromJourney ? 'Back to Journey' : `Start Quiz ${completionData.quizId}`}
               </button>
-              {LESSON_BUILDER_PROMPTS[id] && (
+              {builderPromptFor(id) && (
                 <button
                   className="sl-completion-card__btn sl-completion-card__btn--builder"
-                  onClick={() => navigate(`/builder?prompt=${encodeURIComponent(LESSON_BUILDER_PROMPTS[id])}`)}
+                  onClick={() => navigate(`/builder?prompt=${encodeURIComponent(builderPromptFor(id))}`)}
                 >
                   Use this in Project Studio
                 </button>
@@ -472,9 +588,15 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   }
 
   return (
-    <div className="sl-lesson">
+    <div className={`sl-lesson sl-lesson--${guideLevel}`}>
       {/* Confetti */}
       <canvas ref={confettiRef} className="sl-confetti" />
+
+      {xpToast && (
+        <div className="sl-xp-toast" role="status" onAnimationEnd={() => setXpToast(null)}>
+          +{xpToast.amount} XP
+        </div>
+      )}
 
       {/* Fixed header: global nav + compact lesson strip */}
       <div className="sl-fixed-header">
@@ -551,6 +673,15 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
             </ol>
           </aside>
 
+          {/* A reason to care, before the code. Every step may set its own; the
+              lesson's own story line opens step one. */}
+          {(currentStep?.story || (stepIdx === 0 && lessonData.story)) && (
+            <p className="sl-story">
+              <span className="sl-story__icon" aria-hidden="true">💬</span>
+              {currentStep?.story || lessonData.story}
+            </p>
+          )}
+
           {/* ────── CONCEPT step ───────────────────────── */}
           {currentStep?.type === 'concept' && (
             <div className="sl-concept">
@@ -574,15 +705,77 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
             </div>
           )}
 
+          {/* ────── NON-TYPING steps (predict / fill blank / order) ── */}
+          {isInteractionStep(currentStep) && (
+            <div className="sl-code-step">
+              {currentStep.description && (
+                <p className="sl-code-step__desc">{currentStep.description}</p>
+              )}
+
+              {currentStep.type === 'predict' && (
+                <PredictOutput
+                  step={currentStep}
+                  chosen={picks[stepIdx]}
+                  onChoose={(choice) => setPicks(prev => ({ ...prev, [stepIdx]: choice }))}
+                  locked={isCurrentDone}
+                />
+              )}
+
+              {currentStep.type === 'fillblank' && (
+                <FillBlank
+                  step={currentStep}
+                  filled={picks[stepIdx] || Array(blankCount(currentStep.template)).fill(null)}
+                  onFill={(filled) => setPicks(prev => ({ ...prev, [stepIdx]: filled }))}
+                  locked={isCurrentDone}
+                />
+              )}
+
+              {currentStep.type === 'order' && (
+                <OrderSteps
+                  step={currentStep}
+                  arranged={picks[stepIdx] || currentStep.shuffled || currentStep.correctOrder}
+                  onArrange={(arranged) => setPicks(prev => ({ ...prev, [stepIdx]: arranged }))}
+                  locked={isCurrentDone}
+                />
+              )}
+
+              {!isCurrentDone && (
+                <button
+                  className="sl-submit-btn"
+                  onClick={() => submitAnswer(stepIdx, currentStep)}
+                  disabled={picks[stepIdx] === undefined && currentStep.type === 'predict'}
+                >
+                  Check my answer
+                </button>
+              )}
+
+              {feedback[stepIdx] === 'incorrect' && !isCurrentDone && (
+                <div className="sl-feedback sl-feedback--incorrect">
+                  <span className="sl-feedback__icon" aria-hidden="true">✗</span>
+                  <div>{feedbackText[stepIdx] || 'Not quite — try again.'}</div>
+                </div>
+              )}
+
+              {isCurrentDone && (
+                <div className="sl-success">
+                  <span>
+                    <strong>{currentStep.explain || 'Correct!'}</strong>
+                    <span className="sl-success__xp">+{xpForStep(currentStep)} XP</span>
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* ────── CODE steps (example / tryit / challenge) ── */}
-          {currentStep?.type !== 'concept' && (
+          {currentStep?.type !== 'concept' && !isInteractionStep(currentStep) && (
             <div className="sl-code-step">
               <p className="sl-code-step__desc">{currentStep?.description}</p>
 
               {/* All code-step editors mounted; only current one shown */}
               <div className="sl-editors">
                 {steps.map((step, i) => {
-                  if (step.type === 'concept') return null;
+                  if (step.type === 'concept' || isInteractionStep(step)) return null;
                   return (
                     <div
                       key={step.id || i}
@@ -596,7 +789,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                       <CodeRunnerPython
                         starterCode={step.code}
                         title={step.title}
-                        onOutput={(out) => handleCodeOutput(i, step, out)}
+                        onOutput={(out, ranCode) => handleCodeOutput(i, step, out, ranCode)}
                       />
                     </div>
                   );
@@ -619,9 +812,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               {feedback[stepIdx] === 'incorrect' && !isCurrentDone && (
                 <div className="sl-feedback sl-feedback--incorrect">
                   <span className="sl-feedback__icon" aria-hidden="true">✗</span>
-                  <div>
-                    <strong>Not quite.</strong> Check your output above and try again.
-                  </div>
+                  <div>{feedbackText[stepIdx] || 'Not quite. Check your output above and try again.'}</div>
                 </div>
               )}
 
@@ -665,13 +856,18 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                         ? `Lesson ${id} complete, ${firstName}! Quiz ${id} is now unlocked.`
                         : 'Step complete. Advance to the next one.'}
                     </strong>
-                    {currentStep?.xp && (
-                      <span className="sl-success__xp">+{currentStep.xp} XP earned</span>
-                    )}
+                    <span className="sl-success__xp">+{xpForStep(currentStep)} XP</span>
                   </span>
                 </div>
               )}
             </div>
+          )}
+
+          {/* A stretch step should never be the reason a lesson goes unfinished. */}
+          {currentStep?.optional && !isCurrentDone && (
+            <button className="sl-skip-optional" onClick={() => skipOptional(stepIdx)}>
+              Skip this extra challenge
+            </button>
           )}
 
           {/* ────── Navigation ─────────────────────────── */}
@@ -704,11 +900,11 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
         )}
 
         {/* ── Use this in AI Builder ─────────────────────────── */}
-        {LESSON_BUILDER_PROMPTS[id] && (
+        {builderPromptFor(id) && (
           <div className="sl-builder-link">
             <span className="sl-builder-link__label">Want to see this in action?</span>
             <a
-              href={`/builder?prompt=${encodeURIComponent(LESSON_BUILDER_PROMPTS[id])}`}
+              href={`/builder?prompt=${encodeURIComponent(builderPromptFor(id))}`}
               className="sl-builder-link__btn"
             >
               Use this in Project Studio

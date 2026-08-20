@@ -3,6 +3,7 @@ const lesson3 = {
   title: "Strings",
   subtitle: "Text is everywhere in Python — learn to combine, change, and measure it!",
   emoji: "🔤",
+  story: "Names, messages, secret codes — all of it is text, and Python has tools for bending text into shape.",
   steps: [
     {
       type: 'concept',
@@ -11,6 +12,18 @@ const lesson3 = {
       body: 'A string is any text wrapped in quotes. You can join two strings together with + (called concatenation), make them UPPERCASE or lowercase, and count how many letters they have with len()!',
       highlight: 'name = "Alex"\ngreeting = "Hello, " + name\nprint(greeting)   →   Hello, Alex',
       code: 'first = "Hello"\nlast = "Python"\nprint(first + " " + last)',
+    },
+    {
+      type: 'predict',
+      id: 'predict-len',
+      title: 'How Long Is It?',
+      question: 'What does this print?',
+      code: 'word = "Python"\nprint(len(word))\nprint(word.upper())',
+      choices: ['6\nPYTHON', '5\nPYTHON', '6\npython', 'Python\nPYTHON'],
+      correct: 0,
+      explain: 'Yes — six letters, and .upper() shouts the whole word.',
+      wrongHint: 'Count the letters in Python, then decide what .upper() does.',
+      hints: ['P-y-t-h-o-n. Count them.', '.upper() makes capitals; .lower() makes small letters.'],
     },
     {
       type: 'example',

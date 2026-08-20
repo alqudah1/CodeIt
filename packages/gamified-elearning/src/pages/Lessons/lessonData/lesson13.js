@@ -3,6 +3,7 @@ const lesson13 = {
   title: "Logical Operators",
   subtitle: "Combine conditions with and, or, and not to make smarter decisions!",
   emoji: "🔗",
+  story: "One condition makes a simple choice. Joining them makes a rule: over 12 AND has a ticket.",
   steps: [
     {
       type: 'concept',
@@ -11,6 +12,18 @@ const lesson13 = {
       body: 'Python has three logical operators. "and" requires both conditions to be True. "or" requires at least one to be True. "not" flips a boolean — True becomes False, False becomes True. These let you write richer conditions without nesting lots of if statements inside each other.',
       highlight: 'x = 15\nif x > 10 and x < 20:\n    print("x is between 10 and 20")',
       code: 'x = 15\nif x > 10 and x < 20:\n    print("x is between 10 and 20")',
+    },
+    {
+      type: 'predict',
+      id: 'predict-logic',
+      title: 'And Means Both',
+      question: 'What does this print?',
+      code: 'age = 14\nticket = False\nprint(age > 12 and ticket)\nprint(age > 12 or ticket)\nprint(not ticket)',
+      choices: ['True\nTrue\nTrue', 'False\nTrue\nTrue', 'False\nFalse\nTrue', 'True\nTrue\nFalse'],
+      correct: 1,
+      explain: 'Yes. and needs both to be true, or needs just one, and not flips whatever it is given.',
+      wrongHint: 'age > 12 is True but ticket is False. Now work through and, or, and not in turn.',
+      hints: ['and is the strict one: both sides must be True.', 'not False is True.'],
     },
     {
       type: 'example',

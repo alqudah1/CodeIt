@@ -3,6 +3,7 @@ const lesson11 = {
   title: "Numbers & Arithmetic",
   subtitle: "Use Python as a calculator — add, subtract, divide, and more!",
   emoji: "🔢",
+  story: "Scores, prices, damage, timers — every game is really just numbers being pushed around.",
   steps: [
     {
       type: 'concept',
@@ -11,6 +12,18 @@ const lesson11 = {
       body: 'Integers (int) are whole numbers like 5 or -3. Floats are decimals like 3.14. The basic operators are + (add), - (subtract), * (multiply), and / (divide). Dividing always gives a float. Two extra operators: // gives you the integer part of a division (floor division), and % gives you the remainder (modulo).',
       highlight: '10 // 3   # → 3  (whole part only)\n10 % 3    # → 1  (what is left over)',
       code: 'print(10 // 3)\nprint(10 % 3)',
+    },
+    {
+      type: 'predict',
+      id: 'predict-divide',
+      title: 'Two Kinds of Divide',
+      question: 'What does this print?',
+      code: 'print(7 / 2)\nprint(7 // 2)\nprint(7 % 2)',
+      choices: ['3.5\n3\n1', '3.5\n3.5\n1', '3\n3\n1', '3.5\n4\n1'],
+      correct: 0,
+      explain: 'Right. / gives the exact answer, // throws away the fraction, and % gives what is left over.',
+      wrongHint: 'Three different divides. One is exact, one rounds down, one gives the remainder.',
+      hints: ['7 divided by 2 is 3.5 exactly.', '// chops off everything after the dot. % is what would not fit.'],
     },
     {
       type: 'example',

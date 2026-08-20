@@ -22,7 +22,40 @@ const LESSONS = [
   ['type-casting', 'Type Casting', 'converting safely between text and number values'],
   ['string-formatting', 'String Formatting', 'building readable messages with modern f-strings'],
   ['string-methods', 'String Methods', 'cleaning, searching, and reshaping text'],
+  ['while-loops', 'While Loops', 'repeating until a condition changes, and avoiding endless loops'],
+  ['break-and-continue', 'Break & Continue', 'leaving a loop early or skipping a single pass'],
+  ['import-and-random', 'Import & Random', 'borrowing ready-made modules and adding dice rolls'],
+  ['dictionaries', 'Dictionaries', 'storing and looking data up by name instead of by position'],
+  ['looping-dictionaries', 'Looping Through Dictionaries', 'visiting every key and value in turn'],
+  ['tuples-and-sets', 'Tuples & Sets', 'values that cannot change, and collections without duplicates'],
+  ['slicing', 'Slicing', 'taking part of a list or string, including counting from the end'],
+  ['list-comprehensions', 'List Comprehensions', 'building and filtering a whole list in one line'],
+  ['return-values', 'Return Values', 'default arguments, several returns, and what None means'],
+  ['variable-scope', 'Variable Scope', 'where a variable lives and why it disappears'],
+  ['try-and-except', 'Try & Except', 'recovering from errors instead of crashing'],
+  ['enumerate-and-zip', 'Enumerate & Zip', 'counting while you loop and walking two lists together'],
+  ['classes-and-objects', 'Classes & Objects', 'writing your own type with methods and its own data'],
+  ['recursion', 'Recursion', 'functions that call themselves, and the base case that stops them'],
+  ['capstone-project', 'Capstone Project', 'combining loops, dictionaries, classes, and error handling into one game'],
 ];
+
+// The wording above is hand-written rather than generated from the lesson data,
+// because it is what Google indexes and these pages have been indexed under
+// their current titles for a while.
+//
+// The cost of hand-writing it is that the list can fall behind the curriculum,
+// and a lesson with no static page is a lesson search engines cannot see. So it
+// is checked against the real lesson files: add lesson 32 and forget this list,
+// and the build stops instead of quietly shipping an invisible lesson.
+const lessonDataDir = path.join(__dirname, '..', 'src', 'pages', 'Lessons', 'lessonData');
+const lessonFileCount = fs.readdirSync(lessonDataDir).filter(name => /^lesson\d+\.js$/.test(name)).length;
+if (LESSONS.length !== lessonFileCount) {
+  throw new Error(
+    `generate-static-seo: ${LESSONS.length} entries in the LESSONS list above, but `
+    + `${lessonFileCount} lessons exist in ${path.relative(process.cwd(), lessonDataDir)}. `
+    + 'Every lesson needs a line here or it gets no static page.'
+  );
+}
 
 const BLOG_POSTS = [
   ['learn-python-for-kids', 'How Kids Can Start Learning Python', 'A practical guide to helping a child begin Python with short, interactive projects.'],
@@ -128,7 +161,7 @@ const BASE_PAGES = [
   {
     route: '/learn-python-for-kids',
     title: 'Free Python for Kids Online | 16 Interactive Lessons | CodeIt',
-    description: 'Start learning Python for free with 16 interactive browser lessons, real code, quizzes, and projects. No download or signup is needed to open Lesson 1.',
+    description: 'Start learning Python for free with 31 interactive browser lessons, real code, quizzes, and projects. No download or signup is needed to open Lesson 1.',
     eyebrow: 'Beginner Python, in the browser',
     h1: 'Learn Python by making something work.',
     intro: 'Write a line, run it, and see what changed. CodeIt gives beginners a clear path through real Python without downloads or a wall of theory first.',
