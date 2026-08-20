@@ -28,6 +28,12 @@ import {
   setProjectHeading,
 } from './instantStyle';
 import './Builder.css';
+import {
+  GUIDE_LEVELS,
+  learnerGuideLevel,
+  storeGuideLevelOverride,
+  storedGuideLevelOverride,
+} from '../../utils/guideLevel';
 
 const QUICK_STARTS = [
   // Games
@@ -616,18 +622,8 @@ function friendlyWait(seconds) {
   return `${minutes} minute${minutes === 1 ? '' : 's'}`;
 }
 
-const GUIDE_LEVELS = [
-  { id: 'early', icon: '🧸', label: 'Big help' },
-  { id: 'guided', icon: '🧭', label: 'Some help' },
-  { id: 'independent', icon: '🚀', label: 'Explore myself' },
-];
-
-function learnerGuideLevel(user) {
-  if (user?.learningMode === 'early') return 'early';
-  if (user?.learningMode === 'guided' || user?.managedProfile) return 'guided';
-  if (user?.learningMode === 'independent') return 'independent';
-  return user ? 'independent' : 'guided';
-}
+// GUIDE_LEVELS and learnerGuideLevel now live in utils/guideLevel.js, so the
+// lesson pages read the same setting this panel writes.
 
 // Bridge script injected into the iframe for live element editing via postMessage
 const EDITOR_BRIDGE = `(function(){if(window.self===window.top)return;var em=false,sel=null,hov=null;function eid(el){if(!el.id)el.id='ce-'+Math.random().toString(36).slice(2,8);return el.id;}function isEl(el){return el&&el!==document.body&&el!==document.documentElement&&el.nodeType===1;}function clrHov(){if(hov){hov.style.outline='';hov.style.outlineOffset='';hov=null;}}function onOver(e){clrHov();if(!em||!isEl(e.target))return;hov=e.target;hov.style.outline='2.5px solid #FF7A00';hov.style.outlineOffset='2px';}function onClk(e){if(!em)return;e.preventDefault();e.stopPropagation();if(noClick){noClick=false;return;}var el=e.target;if(!isEl(el))return;if(sel&&sel!==el){sel.style.outline='';}sel=el;sel.style.outline='2.5px solid #A855F7';var r=el.getBoundingClientRect();var cs=window.getComputedStyle(el);var t=el.tagName.toLowerCase();window.parent.postMessage({type:'CODEIT_SELECTED',id:eid(el),tag:t,text:el.textContent.slice(0,300),rect:{top:r.top+window.scrollY,left:r.left,w:r.width,h:r.height},styles:{color:cs.color,bg:cs.backgroundColor,fs:cs.fontSize,fw:cs.fontWeight,br:cs.borderRadius,anim:cs.animationName,pt:cs.paddingTop,pb:cs.paddingBottom,pl:cs.paddingLeft,pr:cs.paddingRight},isText:['p','h1','h2','h3','h4','h5','h6','span','li','a','label','td','th','button'].includes(t),isBtn:['button','a'].includes(t),isImg:t==='img'},'*');}function sync(){setTimeout(function(){window.parent.postMessage({type:'CODEIT_SYNC',html:document.documentElement.outerHTML},'*');},80);}var dEl=null,dSX=0,dSY=0,dBX=0,dBY=0,dMoved=false,noClick=false;function baseXY(el){var m=/translate\((-?[\d.]+)px,\s*(-?[\d.]+)px\)/.exec(el.style.transform||'');return m?[parseFloat(m[1]),parseFloat(m[2])]:[0,0];}function clearOutlines(){var o=[];if(sel){o.push([sel,sel.style.outline]);sel.style.outline='';}if(hov){o.push([hov,hov.style.outline]);hov.style.outline='';}return o;}function restoreOutlines(o){o.forEach(function(p){p[0].style.outline=p[1];});}function serialize(){var o=clearOutlines();var h=document.documentElement.outerHTML;restoreOutlines(o);return h;}function onDown(e){if(!em||!isEl(e.target))return;dEl=e.target;dMoved=false;dSX=e.clientX;dSY=e.clientY;var b=baseXY(dEl);dBX=b[0];dBY=b[1];}function onMove(e){if(!dEl)return;var dx=e.clientX-dSX,dy=e.clientY-dSY;if(!dMoved&&Math.abs(dx)<4&&Math.abs(dy)<4)return;dMoved=true;e.preventDefault();dEl.style.transform='translate('+(dBX+dx)+'px, '+(dBY+dy)+'px)';}function onUp(){if(!dEl)return;var moved=dMoved,el=dEl;dEl=null;dMoved=false;if(!moved)return;noClick=true;el.style.cursor='';window.parent.postMessage({type:'CODEIT_MOVED',html:serialize()},'*');}var played=false;function markPlayed(){if(em||played)return;played=true;window.parent.postMessage({type:'CODEIT_PLAYED'},'*');}document.addEventListener('click',markPlayed,true);document.addEventListener('keydown',markPlayed,true);document.addEventListener('touchstart',markPlayed,true);window.addEventListener('message',function(e){if(e.source!==window.parent||!e.data||e.data.type!=='CODEIT_CMD')return;var d=e.data,p=d.payload||{};if(d.cmd==='ENABLE'){em=true;document.body.style.cursor='move';document.addEventListener('mouseover',onOver,true);document.addEventListener('click',onClk,true);document.addEventListener('pointerdown',onDown,true);document.addEventListener('pointermove',onMove,true);document.addEventListener('pointerup',onUp,true);document.addEventListener('pointercancel',onUp,true);}if(d.cmd==='DISABLE'){em=false;document.body.style.cursor='';clrHov();if(sel){sel.style.outline='';sel=null;}document.removeEventListener('mouseover',onOver,true);document.removeEventListener('click',onClk,true);document.removeEventListener('pointerdown',onDown,true);document.removeEventListener('pointermove',onMove,true);document.removeEventListener('pointerup',onUp,true);document.removeEventListener('pointercancel',onUp,true);window.parent.postMessage({type:'CODEIT_HTML',html:serialize()},'*');}if(d.cmd==='SET_TEXT'){var el=document.getElementById(p.id)||(sel);if(el){el.textContent=p.v;}sync();}if(d.cmd==='SET_STYLE'){var el=document.getElementById(p.id)||(sel);if(el)Object.assign(el.style,p.styles);sync();}if(d.cmd==='SET_PATCH'){var el=document.getElementById(p.id);if(el){var tmp=document.createElement('div');tmp.innerHTML=p.html;var newEl=tmp.firstElementChild||tmp;el.replaceWith(newEl);}sync();}if(d.cmd==='GET_HTML'){window.parent.postMessage({type:'CODEIT_HTML',html:document.documentElement.outerHTML},'*');}if(d.cmd==='DESELECT'){if(sel){sel.style.outline='';sel=null;}}if(d.cmd==='SET_ROOT_VARS'){var sv=document.getElementById('__ci_vars');if(!sv){sv=document.createElement('style');sv.id='__ci_vars';document.head.appendChild(sv);}var css=':root{';Object.keys(p.vars||{}).forEach(function(k){css+=k+':'+p.vars[k]+';';});css+='}';sv.textContent=css;}if(d.cmd==='RUN_SCRIPT'){try{(new Function(p.js||''))();}catch(e){}}});window.parent.postMessage({type:'CODEIT_READY'},'*');})();`;
@@ -719,9 +715,7 @@ export default function Builder() {
   const [hasPlayedOnce, setHasPlayedOnce] = useState(false);
   const [hasTestedLatest, setHasTestedLatest] = useState(false);
   const [guestDraftRecovered, setGuestDraftRecovered] = useState(false);
-  const [guideLevelOverride, setGuideLevelOverride] = useState(() => (
-    localStorage.getItem('codeit_guide_level') || ''
-  ));
+  const [guideLevelOverride, setGuideLevelOverride] = useState(storedGuideLevelOverride);
   const [coachOpen, setCoachOpen] = useState(() => learnerGuideLevel(user) !== 'independent');
 
   // ── AI memory ──────────────────────────────────────────────────────────────
@@ -872,7 +866,7 @@ export default function Builder() {
 
   function changeGuideLevel(level) {
     if (!GUIDE_LEVELS.some(option => option.id === level)) return;
-    localStorage.setItem('codeit_guide_level', level);
+    storeGuideLevelOverride(level);
     setGuideLevelOverride(level);
     setCoachOpen(level !== 'independent');
   }

@@ -79,13 +79,17 @@ export const trackStaticLessonCompletion = async (lessonNumber) => {
 
 // Record a completed lesson exercise once. The backend de-duplicates repeated
 // runs, so refreshing or retrying an exercise never creates duplicate updates.
-export const trackExerciseCompletion = async (lessonId, exerciseIndex, title) => {
+// `xp` is a request, not an instruction: the server decides what a step is worth
+// and refuses to pay twice for the same one. Returns { xpEarned } so the lesson
+// only ever celebrates XP that was really banked.
+export const trackExerciseCompletion = async (lessonId, exerciseIndex, title, xp) => {
   const token = getAuthToken();
-  if (!token) return { recorded: false, reason: 'guest' };
+  if (!token) return { recorded: false, reason: 'guest', xpEarned: 0 };
   const response = await apiClient.post('/api/progress-notifications/exercise-complete', {
     lessonId,
     exerciseIndex,
     title,
+    xp,
   });
   return response.data;
 };

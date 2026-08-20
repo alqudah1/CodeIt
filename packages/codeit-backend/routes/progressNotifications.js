@@ -13,6 +13,7 @@ const {
   updateSettings,
   verifyParent,
 } = require('../progressNotifications');
+const { awardStepXp } = require('../stepXp');
 
 const router = express.Router();
 
@@ -68,7 +69,7 @@ router.get('/summary', requireAuth, async (req, res) => {
 });
 
 router.post('/exercise-complete', requireAuth, async (req, res) => {
-  const { lessonId, exerciseIndex, title } = req.body || {};
+  const { lessonId, exerciseIndex, title, xp } = req.body || {};
   if (!Number.isInteger(Number(lessonId)) || !Number.isInteger(Number(exerciseIndex))) {
     return res.status(400).json({ error: 'lessonId and exerciseIndex are required' });
   }
@@ -80,7 +81,22 @@ router.post('/exercise-complete', requireAuth, async (req, res) => {
       title: String(title || `Lesson ${lessonId} exercise ${Number(exerciseIndex) + 1}`).slice(0, 255),
       detail: `Completed in lesson ${lessonId}`,
     });
-    res.json({ success: true, ...result });
+
+    // The XP a step promised on screen is now actually banked. The amount the
+    // browser asks for is clamped and paid at most once per step — see stepXp.js.
+    // A failure here must not lose the milestone that was just recorded, so the
+    // award is allowed to come back as zero rather than failing the request.
+    const award = await awardStepXp(
+      req.user.user_id,
+      Number(lessonId),
+      Number(exerciseIndex),
+      xp
+    ).catch(error => {
+      console.error('Step XP award failed:', error.message);
+      return { xpEarned: 0 };
+    });
+
+    res.json({ success: true, ...result, xpEarned: award.xpEarned });
   } catch (error) {
     res.status(500).json({ error: 'Could not record exercise completion' });
   }

@@ -87,7 +87,10 @@ router.get('/progress-percentages', authenticateToken, async (req, res) => {
 });
 
 // GET /api/rewards/leaderboard (signed-in students only)
-// XP = project creation + publishing + lessons + quizzes + puzzles (computed live).
+// XP = project creation + publishing + lessons + lesson steps + quizzes + puzzles
+// (computed live). Step XP is included so the number in the header and the
+// number in the ranking are the same number — a child who earns 15 XP for a
+// step and does not move on the board learns that the board is lying.
 // Real names and database IDs never leave the server.
 router.get('/leaderboard', authenticateToken, async (req, res) => {
   try {
@@ -97,6 +100,7 @@ router.get('/leaderboard', authenticateToken, async (req, res) => {
         (
           COALESCE(q.quiz_xp, 0) +
           COALESCE(l.lesson_xp, 0) +
+          COALESCE(s.step_xp, 0) +
           COALESCE(p.puzzle_xp, 0) +
           COALESCE(b.project_xp, 0)
         ) AS xp_points
@@ -120,6 +124,11 @@ router.get('/leaderboard', authenticateToken, async (req, res) => {
         GROUP BY user_id
       ) l ON l.user_id = u.user_id
       LEFT JOIN (
+        SELECT user_id, SUM(xp_earned) AS step_xp
+        FROM lesson_step_xp
+        GROUP BY user_id
+      ) s ON s.user_id = u.user_id
+      LEFT JOIN (
         SELECT user_id, SUM(best_xp) AS puzzle_xp
         FROM (
           SELECT user_id, puzzle_id, MAX(xp_earned) AS best_xp
@@ -137,6 +146,7 @@ router.get('/leaderboard', authenticateToken, async (req, res) => {
         AND (
           COALESCE(q.quiz_xp, 0) +
           COALESCE(l.lesson_xp, 0) +
+          COALESCE(s.step_xp, 0) +
           COALESCE(p.puzzle_xp, 0) +
           COALESCE(b.project_xp, 0)
         ) > 0
