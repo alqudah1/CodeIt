@@ -4,6 +4,7 @@ import Header from '../Header/Header';
 import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
 import { trackEvent } from '../../utils/trackEvent';
+import { REFUND_WINDOW_DAYS } from '../../config/pricing';
 import { useAuth } from '../../context/AuthContext';
 import { ENDPOINTS } from '../../config/api';
 import { journeyHeaders } from '../../utils/journey';
@@ -248,9 +249,15 @@ export default function Pricing() {
                   Ask a parent or guardian to set this up from their own account. CodeIt does not sell to children.
                 </p>
               ) : !user ? (
-                <Link className="pricing-button pricing-button--primary" to="/login?from=pricing">
-                  Log in to subscribe
-                </Link>
+                <>
+                  <Link className="pricing-button pricing-button--primary" to="/login?from=pricing">
+                    Log in to subscribe
+                  </Link>
+                  <p className="pricing-card__note">
+                    Renews monthly until you cancel, and there is a{' '}
+                    <Link to="/terms#refunds">{REFUND_WINDOW_DAYS}-day refund window</Link> on a first payment.
+                  </p>
+                </>
               ) : (
                 <>
                   <button
@@ -263,6 +270,9 @@ export default function Pricing() {
                   </button>
                   <p className="pricing-card__note">
                     Payment is handled by Stripe. You will be asked to confirm before anything is charged.
+                    {' '}Renews monthly until you cancel — see{' '}
+                    <Link to="/terms#billing">billing</Link> and{' '}
+                    <Link to="/terms#refunds">cancelling and refunds</Link>.
                   </p>
                 </>
               )}

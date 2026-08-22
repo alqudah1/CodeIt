@@ -1,9 +1,16 @@
 import Header from '../Header/Header';
 import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
+import {
+  FREE_MONTHLY_AI_BUILDS,
+  INTERVAL,
+  PRICE,
+  PRICE_PER_INTERVAL,
+  REFUND_WINDOW_DAYS,
+} from '../../config/pricing';
 import './Legal.css';
 
-const UPDATED = 'July 28, 2026';
+const UPDATED = 'August 22, 2026';
 
 export default function Terms() {
   useSEO({
@@ -33,6 +40,8 @@ export default function Terms() {
             <a href="#acceptable">Acceptable use</a>
             <a href="#ai">AI-generated results</a>
             <a href="#plans">Free and paid plans</a>
+            <a href="#billing">Billing and renewal</a>
+            <a href="#refunds">Cancelling and refunds</a>
             <a href="#availability">Availability</a>
             <a href="#contact">Contact</a>
           </nav>
@@ -72,8 +81,29 @@ export default function Terms() {
             </section>
 
             <section id="plans">
-              <h2>Free access and planned paid features</h2>
-              <p>CodeIt currently offers free access and is testing interest in a Founding Family plan. No subscription starts from an interest button. Before taking payment, CodeIt will show the price, included usage, renewal terms, cancellation method, taxes if applicable, and any trial conditions for confirmation.</p>
+              <h2>Free and paid plans</h2>
+              <p>Every lesson, quiz and puzzle is free. So is the playground, editing your own project by hand, and saving your work privately. A classroom should never meet a paywall in the middle of a lesson, and none of that is behind one.</p>
+              <p>The free plan includes {FREE_MONTHLY_AI_BUILDS} AI project builds each month and does not include publishing a project to a public link. <strong>CodeIt Plus</strong> costs {PRICE_PER_INTERVAL} and adds unlimited AI builds and edits, publishing to a public CodeIt link, play counts on published projects, and up to four learner profiles under one adult account.</p>
+              <p>Requesting a family pilot spot is free and never starts a subscription. Nothing is charged unless an adult goes through checkout and confirms.</p>
+            </section>
+
+            <section id="billing">
+              <h2>Billing and renewal</h2>
+              <p>CodeIt Plus is a subscription. It costs {PRICE} per {INTERVAL}, charged when you subscribe and again on the same day each month until you cancel. Prices are in Canadian dollars. Any sales tax that applies is shown at checkout before you confirm.</p>
+              <p>Only an adult account can subscribe. CodeIt does not sell to children: a managed learner profile, or an account whose date of birth indicates the holder is under 18, cannot start a subscription.</p>
+              <p>Payment is processed by Stripe. Card details go to Stripe and never reach CodeIt — we store only Stripe's identifiers for your subscription, never a card number. Access to paid features is granted by Stripe's confirmation that a payment succeeded, not by anything your browser sends us.</p>
+              <p>If a renewal payment fails, Stripe retries it. Your family keeps access to CodeIt Plus during those retries so that work your child already published does not disappear while you sort out a card. If payment never succeeds, the subscription ends and the account returns to the free plan. Saved projects are not deleted when a plan ends, and a project your child already published stays reachable at its link — we do not take a child's shared work offline because a card expired. What ends is the ability to publish new projects and the higher AI build allowance.</p>
+              <p>If the price changes, existing subscribers will be told before it applies to them, with enough notice to cancel first.</p>
+            </section>
+
+            <section id="refunds">
+              <h2>Cancelling and refunds</h2>
+              <p><strong>Cancel any time.</strong> Open the plan page and choose Manage billing, which takes you to Stripe's own page. Cancelling stops the next payment. You keep CodeIt Plus until the end of the month you have already paid for, and then the account returns to the free plan. You do not need to email anyone or give a reason.</p>
+              <p><strong>{REFUND_WINDOW_DAYS} days to change your mind.</strong> If you cancel within {REFUND_WINDOW_DAYS} days of your first payment, email us and we will refund that payment in full, no reason needed.</p>
+              <p><strong>After that,</strong> a cancellation stops future payments but the month already paid for is not refunded pro rata — you keep the access you paid for until it runs out.</p>
+              <p><strong>If something went wrong,</strong> we refund it. That includes a payment taken after you cancelled, a duplicate charge, a charge on an account you did not authorise, and a month in which CodeIt Plus features were substantially unavailable. Contact us and we will put it right.</p>
+              <p>Refunds are returned to the card that paid, through Stripe. They usually appear within five to ten business days, depending on your bank.</p>
+              <p>Nothing here reduces the rights you have under the consumer protection law where you live.</p>
             </section>
 
             <section id="availability">
@@ -84,7 +114,8 @@ export default function Terms() {
 
             <section id="contact">
               <h2>Questions</h2>
-              <p>Email <a href="mailto:hello@codeitlearn.com">hello@codeitlearn.com</a>. Company registration, governing-law, and formal notice details will be completed before paid subscriptions open.</p>
+              <p>Email <a href="mailto:hello@codeitlearn.com">hello@codeitlearn.com</a> for anything about your account, a payment, or a refund.</p>
+              <p>Company registration details, the governing law for these terms, and a formal notice address will be published here before paid subscriptions open to the public.</p>
             </section>
           </div>
         </div>
