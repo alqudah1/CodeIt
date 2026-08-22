@@ -10,6 +10,7 @@ import { journeyHeaders } from '../../utils/journey';
 import {
   DEFAULT_BILLING_STATE,
   fetchBillingStatus,
+  fetchPublicPlan,
   isPlusMember,
   openBillingPortal,
   startCheckout,
@@ -74,8 +75,19 @@ export default function Pricing() {
   });
 
   useEffect(() => {
-    if (!token) { setBilling(DEFAULT_BILLING_STATE); return undefined; }
     let cancelled = false;
+
+    // Signed out, there is no account to ask about — but whether subscriptions
+    // are open is public, and hiding it meant a parent comparing CodeIt on
+    // their phone saw no paid plan at all. Ask the public endpoint instead of
+    // giving up and rendering the free plan alone.
+    if (!token) {
+      fetchPublicPlan()
+        .then((plan) => { if (!cancelled) setBilling({ ...DEFAULT_BILLING_STATE, billingEnabled: plan.billingEnabled }); })
+        .catch(() => { if (!cancelled) setBilling(DEFAULT_BILLING_STATE); });
+      return () => { cancelled = true; };
+    }
+
     fetchBillingStatus(token)
       .then((state) => { if (!cancelled) setBilling(state); })
       // Pricing must still render if billing is unreachable — the free plan is
@@ -175,7 +187,12 @@ export default function Pricing() {
             Request a free family pilot spot <span aria-hidden="true">↓</span>
           </a>
           <p className="pricing-hero__pilot-note">About 30 seconds · immediate setup email · no credit card</p>
-          <div className="pricing-status"><span aria-hidden="true" /> No payment is being collected today</div>
+          <div className="pricing-status">
+            <span aria-hidden="true" />
+            {billing.billingEnabled
+              ? 'The pilot is free — no card needed to request a spot'
+              : 'No payment is being collected today'}
+          </div>
         </section>
 
         <section className="pricing-plans" aria-label="CodeIt plan comparison">
@@ -258,7 +275,7 @@ export default function Pricing() {
             <div className="pricing-card__flag">Free pilot requests open</div>
             <p className="pricing-card__eyebrow">For parents and guardians</p>
             <h2>Founding Family Pilot</h2>
-            <div className="pricing-price"><strong>Free pilot</strong><span>planned plan: US$12/month after testing</span></div>
+            <div className="pricing-price"><strong>Free pilot</strong><span>planned plan: CA$12/month after testing</span></div>
             <p className="pricing-card__summary">More project creation, two learner profiles, and a clearer view of progress.</p>
             <ul>{FOUNDING_FEATURES.map((feature) => <li key={feature}>{feature}</li>)}</ul>
             <div className="pricing-next" aria-label="What happens after requesting a family pilot spot">

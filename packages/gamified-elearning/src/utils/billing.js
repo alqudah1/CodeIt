@@ -28,6 +28,23 @@ function authHeaders(token) {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+/**
+ * What a signed-out visitor may know: whether subscriptions are open and what
+ * they cost. Never fails the page — if it cannot be reached, the caller keeps
+ * the default and simply shows less.
+ */
+export async function fetchPublicPlan() {
+  const response = await fetch(`${BILLING_BASE}/plan`);
+  if (!response.ok) throw new Error('Could not load plan information.');
+  const data = await response.json();
+  return {
+    billingEnabled: !!data.billingEnabled,
+    amount: data.amount ?? 12,
+    currency: data.currency || 'CAD',
+    interval: data.interval || 'month',
+  };
+}
+
 export async function fetchBillingStatus(token) {
   if (!token) return { ...DEFAULT_BILLING_STATE };
   const response = await fetch(`${BILLING_BASE}/status`, { headers: authHeaders(token) });

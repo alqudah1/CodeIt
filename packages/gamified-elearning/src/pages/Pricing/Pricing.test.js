@@ -39,7 +39,7 @@ describe('Pricing', () => {
     await screen.findByRole('checkbox');
 
     expect(screen.getByText('Free pilot requests open')).toBeInTheDocument();
-    expect(screen.getByText('planned plan: US$12/month after testing')).toBeInTheDocument();
+    expect(screen.getByText('planned plan: CA$12/month after testing')).toBeInTheDocument();
     expect(screen.getByText('No payment is being collected today')).toBeInTheDocument();
     expect(screen.getByText('Try the current family experience. Nothing paid starts automatically.')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Request a free family pilot spot/i })).toHaveAttribute('href', '#family-pilot');
@@ -164,7 +164,43 @@ describe('Pricing', () => {
     renderPricing();
     await screen.findByRole('checkbox');
     expect(screen.queryByText('CodeIt Plus')).not.toBeInTheDocument();
-    expect(screen.queryByText(/CA\$12/)).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'CodeIt Plus' })).not.toBeInTheDocument();
+    expect(screen.queryByText('CA$12')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Subscribe/i })).not.toBeInTheDocument();
+  });
+
+  test('shows the paid plan to a visitor who is not signed in', async () => {
+    // The paid plan used to be invisible to anyone without an account, because
+    // the only source of billingEnabled needed a token. A parent comparing
+    // CodeIt on their phone saw no business model at all.
+    mockAuth = { user: null, token: null };
+    global.fetch.mockImplementation((url) => Promise.resolve({
+      ok: true,
+      json: async () => (String(url).includes('/api/billing/plan')
+        ? { billingEnabled: true, currency: 'CAD', amount: 12, interval: 'month' }
+        : { ready: true }),
+    }));
+    renderPricing();
+
+    expect(await screen.findByRole('heading', { name: 'CodeIt Plus' })).toBeInTheDocument();
+    expect(screen.getByText('CA$12')).toBeInTheDocument();
+    // Signed out, the call to action is to sign in — never a checkout they
+    // cannot complete.
+    expect(screen.getByRole('link', { name: /Log in to subscribe/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Subscribe for/i })).not.toBeInTheDocument();
+  });
+
+  test('a visitor still gets the free plan if the plan endpoint is down', async () => {
+    mockAuth = { user: null, token: null };
+    // Only billing is down; the rest of the page must still work.
+    global.fetch.mockImplementation((url) => (String(url).includes('/api/billing/')
+      ? Promise.reject(new Error('offline'))
+      : Promise.resolve({ ok: true, json: async () => ({ ready: true }) })));
+    renderPricing();
+
+    await screen.findByRole('checkbox');
+    expect(screen.queryByRole('heading', { name: 'CodeIt Plus' })).not.toBeInTheDocument();
+    expect(screen.getByText('Free')).toBeInTheDocument();
   });
 
   test('offers an adult the CA$12 plan once billing is on', async () => {

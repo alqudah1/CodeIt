@@ -94,6 +94,26 @@ function authenticateToken(req, res, next) {
   });
 }
 
+// ── Public plan info ─────────────────────────────────────────────────────────
+//
+// Whether subscriptions are open, and what they cost, is not private — it is on
+// the pricing page. But /status needs a token, so a signed-out visitor got
+// billingEnabled: false and the paid plan vanished from the page entirely. A
+// parent comparing CodeIt against Tynker on their phone, not signed in, saw no
+// business model at all.
+//
+// Deliberately returns nothing account-specific: no customer, no subscription,
+// no usage. Just what is already printed on the pricing page.
+
+router.get('/plan', (req, res) => {
+  res.json({
+    billingEnabled: isConfigured(),
+    currency: 'CAD',
+    amount: 12,
+    interval: 'month',
+  });
+});
+
 // ── Status ───────────────────────────────────────────────────────────────────
 
 // Always answers, configured or not, so the frontend has one place to ask what
