@@ -6,7 +6,6 @@ import {
   INTERVAL,
   PRICE,
   PRICE_PER_INTERVAL,
-  REFUND_WINDOW_DAYS,
 } from '../../config/pricing';
 import './Legal.css';
 
@@ -99,8 +98,7 @@ export default function Terms() {
             <section id="refunds">
               <h2>Cancelling and refunds</h2>
               <p><strong>Cancel any time.</strong> Open the plan page and choose Manage billing, which takes you to Stripe's own page. Cancelling stops the next payment. You keep CodeIt Plus until the end of the month you have already paid for, and then the account returns to the free plan. You do not need to email anyone or give a reason.</p>
-              <p><strong>{REFUND_WINDOW_DAYS} days to change your mind.</strong> If you cancel within {REFUND_WINDOW_DAYS} days of your first payment, email us and we will refund that payment in full, no reason needed.</p>
-              <p><strong>After that,</strong> a cancellation stops future payments but the month already paid for is not refunded pro rata — you keep the access you paid for until it runs out.</p>
+              <p><strong>A cancellation stops future payments</strong> but the month already paid for is not refunded pro rata — you keep the access you paid for until it runs out. Because CodeIt Plus is billed one month at a time and can be cancelled before the next charge, you are never committed beyond the month you are in.</p>
               <p><strong>If something went wrong,</strong> we refund it. That includes a payment taken after you cancelled, a duplicate charge, a charge on an account you did not authorise, and a month in which CodeIt Plus features were substantially unavailable. Contact us and we will put it right.</p>
               <p>Refunds are returned to the card that paid, through Stripe. They usually appear within five to ten business days, depending on your bank.</p>
               <p>Nothing here reduces the rights you have under the consumer protection law where you live.</p>

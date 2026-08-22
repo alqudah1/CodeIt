@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import Privacy from './Privacy';
 import Terms from './Terms';
 import { useSEO } from '../../hooks/useSEO';
-import { PRICE, PRICE_PER_INTERVAL, REFUND_WINDOW_DAYS } from '../../config/pricing';
+import { PRICE, PRICE_PER_INTERVAL } from '../../config/pricing';
 
 jest.mock('../Header/Header', () => () => null);
 jest.mock('../../components/SiteFooter/SiteFooter', () => () => null);
@@ -58,8 +58,13 @@ describe('trust pages', () => {
       expect(screen.getByText(/until the end of the month you have already paid for/i)).toBeInTheDocument();
     });
 
-    test('gives a refund window and says refunds go back to the card', () => {
-      expect(screen.getByText(new RegExp(`${REFUND_WINDOW_DAYS} days of your first payment`, 'i'))).toBeInTheDocument();
+  test('promises no cooling-off window it does not offer', () => {
+      // Deliberately no "N days to change your mind". A monthly subscription
+      // cancelled before the next charge is the protection; inventing a window
+      // and then not honouring it would be worse than offering none.
+      expect(screen.queryByText(/days of your first payment/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/change your mind/i)).not.toBeInTheDocument();
+      expect(screen.getByText(/never committed beyond the month you are in/i)).toBeInTheDocument();
       expect(screen.getByText(/returned to the card that paid/i)).toBeInTheDocument();
     });
 

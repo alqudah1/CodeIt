@@ -4,7 +4,6 @@ import Header from '../Header/Header';
 import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
 import { trackEvent } from '../../utils/trackEvent';
-import { REFUND_WINDOW_DAYS } from '../../config/pricing';
 import { useAuth } from '../../context/AuthContext';
 import { ENDPOINTS } from '../../config/api';
 import { journeyHeaders } from '../../utils/journey';
@@ -254,8 +253,8 @@ export default function Pricing() {
                     Log in to subscribe
                   </Link>
                   <p className="pricing-card__note">
-                    Renews monthly until you cancel, and there is a{' '}
-                    <Link to="/terms#refunds">{REFUND_WINDOW_DAYS}-day refund window</Link> on a first payment.
+                    Renews monthly until you cancel. See{' '}
+                    <Link to="/terms#refunds">cancelling and refunds</Link>.
                   </p>
                 </>
               ) : (

@@ -21,11 +21,6 @@ const PRICE = `${CURRENCY_SYMBOL}${AMOUNT}`;
 /** "CA$12/month" — for running text and buttons. */
 const PRICE_PER_INTERVAL = `${PRICE}/${INTERVAL}`;
 
-// How long after a family's first payment they can ask for it back, no reason
-// needed. A business decision rather than a legal minimum — change it here and
-// the pricing page and the terms both follow.
-const REFUND_WINDOW_DAYS = 14;
-
 // What the free plan allows, mirrored from the server's entitlements module so
 // the terms can describe it accurately. If these ever disagree, the server wins.
 const FREE_MONTHLY_AI_BUILDS = 10;
@@ -38,5 +33,4 @@ export {
   INTERVAL,
   PRICE,
   PRICE_PER_INTERVAL,
-  REFUND_WINDOW_DAYS,
 };
