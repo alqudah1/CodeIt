@@ -29,6 +29,16 @@ import {
 } from './instantStyle';
 import './Builder.css';
 import {
+  EMPTY as EMPTY_HISTORY,
+  canRedo as historyCanRedo,
+  canUndo as historyCanUndo,
+  clearHistory,
+  redo as historyRedo,
+  remember as rememberEdit,
+  undo as historyUndo,
+  undoLabel as historyUndoLabel,
+} from './editHistory';
+import {
   GUIDE_LEVELS,
   learnerGuideLevel,
   storeGuideLevelOverride,
@@ -626,7 +636,7 @@ function friendlyWait(seconds) {
 // lesson pages read the same setting this panel writes.
 
 // Bridge script injected into the iframe for live element editing via postMessage
-const EDITOR_BRIDGE = `(function(){if(window.self===window.top)return;var em=false,sel=null,hov=null;function eid(el){if(!el.id)el.id='ce-'+Math.random().toString(36).slice(2,8);return el.id;}function isEl(el){return el&&el!==document.body&&el!==document.documentElement&&el.nodeType===1;}function clrHov(){if(hov){hov.style.outline='';hov.style.outlineOffset='';hov=null;}}function onOver(e){clrHov();if(!em||!isEl(e.target))return;hov=e.target;hov.style.outline='2.5px solid #FF7A00';hov.style.outlineOffset='2px';}function onClk(e){if(!em)return;e.preventDefault();e.stopPropagation();if(noClick){noClick=false;return;}var el=e.target;if(!isEl(el))return;if(sel&&sel!==el){sel.style.outline='';}sel=el;sel.style.outline='2.5px solid #A855F7';var r=el.getBoundingClientRect();var cs=window.getComputedStyle(el);var t=el.tagName.toLowerCase();window.parent.postMessage({type:'CODEIT_SELECTED',id:eid(el),tag:t,text:el.textContent.slice(0,300),rect:{top:r.top+window.scrollY,left:r.left,w:r.width,h:r.height},styles:{color:cs.color,bg:cs.backgroundColor,fs:cs.fontSize,fw:cs.fontWeight,br:cs.borderRadius,anim:cs.animationName,pt:cs.paddingTop,pb:cs.paddingBottom,pl:cs.paddingLeft,pr:cs.paddingRight},isText:['p','h1','h2','h3','h4','h5','h6','span','li','a','label','td','th','button'].includes(t),isBtn:['button','a'].includes(t),isImg:t==='img'},'*');}function sync(){setTimeout(function(){window.parent.postMessage({type:'CODEIT_SYNC',html:document.documentElement.outerHTML},'*');},80);}var dEl=null,dSX=0,dSY=0,dBX=0,dBY=0,dMoved=false,noClick=false;function baseXY(el){var m=/translate\((-?[\d.]+)px,\s*(-?[\d.]+)px\)/.exec(el.style.transform||'');return m?[parseFloat(m[1]),parseFloat(m[2])]:[0,0];}function clearOutlines(){var o=[];if(sel){o.push([sel,sel.style.outline]);sel.style.outline='';}if(hov){o.push([hov,hov.style.outline]);hov.style.outline='';}return o;}function restoreOutlines(o){o.forEach(function(p){p[0].style.outline=p[1];});}function serialize(){var o=clearOutlines();var h=document.documentElement.outerHTML;restoreOutlines(o);return h;}function onDown(e){if(!em||!isEl(e.target))return;dEl=e.target;dMoved=false;dSX=e.clientX;dSY=e.clientY;var b=baseXY(dEl);dBX=b[0];dBY=b[1];}function onMove(e){if(!dEl)return;var dx=e.clientX-dSX,dy=e.clientY-dSY;if(!dMoved&&Math.abs(dx)<4&&Math.abs(dy)<4)return;dMoved=true;e.preventDefault();dEl.style.transform='translate('+(dBX+dx)+'px, '+(dBY+dy)+'px)';}function onUp(){if(!dEl)return;var moved=dMoved,el=dEl;dEl=null;dMoved=false;if(!moved)return;noClick=true;el.style.cursor='';window.parent.postMessage({type:'CODEIT_MOVED',html:serialize()},'*');}var played=false;function markPlayed(){if(em||played)return;played=true;window.parent.postMessage({type:'CODEIT_PLAYED'},'*');}document.addEventListener('click',markPlayed,true);document.addEventListener('keydown',markPlayed,true);document.addEventListener('touchstart',markPlayed,true);window.addEventListener('message',function(e){if(e.source!==window.parent||!e.data||e.data.type!=='CODEIT_CMD')return;var d=e.data,p=d.payload||{};if(d.cmd==='ENABLE'){em=true;document.body.style.cursor='move';document.addEventListener('mouseover',onOver,true);document.addEventListener('click',onClk,true);document.addEventListener('pointerdown',onDown,true);document.addEventListener('pointermove',onMove,true);document.addEventListener('pointerup',onUp,true);document.addEventListener('pointercancel',onUp,true);}if(d.cmd==='DISABLE'){em=false;document.body.style.cursor='';clrHov();if(sel){sel.style.outline='';sel=null;}document.removeEventListener('mouseover',onOver,true);document.removeEventListener('click',onClk,true);document.removeEventListener('pointerdown',onDown,true);document.removeEventListener('pointermove',onMove,true);document.removeEventListener('pointerup',onUp,true);document.removeEventListener('pointercancel',onUp,true);window.parent.postMessage({type:'CODEIT_HTML',html:serialize()},'*');}if(d.cmd==='SET_TEXT'){var el=document.getElementById(p.id)||(sel);if(el){el.textContent=p.v;}sync();}if(d.cmd==='SET_STYLE'){var el=document.getElementById(p.id)||(sel);if(el)Object.assign(el.style,p.styles);sync();}if(d.cmd==='SET_PATCH'){var el=document.getElementById(p.id);if(el){var tmp=document.createElement('div');tmp.innerHTML=p.html;var newEl=tmp.firstElementChild||tmp;el.replaceWith(newEl);}sync();}if(d.cmd==='GET_HTML'){window.parent.postMessage({type:'CODEIT_HTML',html:document.documentElement.outerHTML},'*');}if(d.cmd==='DESELECT'){if(sel){sel.style.outline='';sel=null;}}if(d.cmd==='SET_ROOT_VARS'){var sv=document.getElementById('__ci_vars');if(!sv){sv=document.createElement('style');sv.id='__ci_vars';document.head.appendChild(sv);}var css=':root{';Object.keys(p.vars||{}).forEach(function(k){css+=k+':'+p.vars[k]+';';});css+='}';sv.textContent=css;}if(d.cmd==='RUN_SCRIPT'){try{(new Function(p.js||''))();}catch(e){}}});window.parent.postMessage({type:'CODEIT_READY'},'*');})();`;
+const EDITOR_BRIDGE = `(function(){if(window.self===window.top)return;var em=false,sel=null,hov=null;function eid(el){if(!el.id)el.id='ce-'+Math.random().toString(36).slice(2,8);return el.id;}function isEl(el){return el&&el!==document.body&&el!==document.documentElement&&el.nodeType===1;}function clrHov(){if(hov){hov.style.outline='';hov.style.outlineOffset='';hov=null;}}function onOver(e){clrHov();if(!em||!isEl(e.target))return;hov=e.target;hov.style.outline='2.5px solid #FF7A00';hov.style.outlineOffset='2px';}function onClk(e){if(!em)return;e.preventDefault();e.stopPropagation();if(noClick){noClick=false;return;}var el=e.target;if(!isEl(el))return;if(sel&&sel!==el){sel.style.outline='';}sel=el;sel.style.outline='2.5px solid #A855F7';var r=el.getBoundingClientRect();var cs=window.getComputedStyle(el);var t=el.tagName.toLowerCase();window.parent.postMessage({type:'CODEIT_SELECTED',id:eid(el),tag:t,text:el.textContent.slice(0,300),rect:{top:r.top+window.scrollY,left:r.left,w:r.width,h:r.height},styles:{color:cs.color,bg:cs.backgroundColor,fs:cs.fontSize,fw:cs.fontWeight,br:cs.borderRadius,anim:cs.animationName,pt:cs.paddingTop,pb:cs.paddingBottom,pl:cs.paddingLeft,pr:cs.paddingRight},isText:['p','h1','h2','h3','h4','h5','h6','span','li','a','label','td','th','button'].includes(t),isBtn:['button','a'].includes(t),isImg:t==='img'},'*');}function sync(){setTimeout(function(){window.parent.postMessage({type:'CODEIT_SYNC',html:serialize()},'*');},80);}var dEl=null,dSX=0,dSY=0,dBX=0,dBY=0,dMoved=false,noClick=false;function baseXY(el){var m=/translate\((-?[\d.]+)px,\s*(-?[\d.]+)px\)/.exec(el.style.transform||'');return m?[parseFloat(m[1]),parseFloat(m[2])]:[0,0];}function clearOutlines(){var o=[];if(sel){o.push([sel,sel.style.outline]);sel.style.outline='';}if(hov){o.push([hov,hov.style.outline]);hov.style.outline='';}return o;}function restoreOutlines(o){o.forEach(function(p){p[0].style.outline=p[1];});}function serialize(){var o=clearOutlines();var h=document.documentElement.outerHTML;restoreOutlines(o);return h;}function onDown(e){if(!em||!isEl(e.target))return;dEl=e.target;dMoved=false;dSX=e.clientX;dSY=e.clientY;var b=baseXY(dEl);dBX=b[0];dBY=b[1];}function onMove(e){if(!dEl)return;var dx=e.clientX-dSX,dy=e.clientY-dSY;if(!dMoved&&Math.abs(dx)<4&&Math.abs(dy)<4)return;dMoved=true;e.preventDefault();dEl.style.transform='translate('+(dBX+dx)+'px, '+(dBY+dy)+'px)';}function onUp(){if(!dEl)return;var moved=dMoved,el=dEl;dEl=null;dMoved=false;if(!moved)return;noClick=true;el.style.cursor='';window.parent.postMessage({type:'CODEIT_MOVED',html:serialize()},'*');}var played=false;function markPlayed(){if(em||played)return;played=true;window.parent.postMessage({type:'CODEIT_PLAYED'},'*');}document.addEventListener('click',markPlayed,true);document.addEventListener('keydown',markPlayed,true);document.addEventListener('touchstart',markPlayed,true);window.addEventListener('message',function(e){if(e.source!==window.parent||!e.data||e.data.type!=='CODEIT_CMD')return;var d=e.data,p=d.payload||{};if(d.cmd==='ENABLE'){em=true;document.body.style.cursor='move';document.addEventListener('mouseover',onOver,true);document.addEventListener('click',onClk,true);document.addEventListener('pointerdown',onDown,true);document.addEventListener('pointermove',onMove,true);document.addEventListener('pointerup',onUp,true);document.addEventListener('pointercancel',onUp,true);}if(d.cmd==='DISABLE'){em=false;document.body.style.cursor='';clrHov();if(sel){sel.style.outline='';sel=null;}document.removeEventListener('mouseover',onOver,true);document.removeEventListener('click',onClk,true);document.removeEventListener('pointerdown',onDown,true);document.removeEventListener('pointermove',onMove,true);document.removeEventListener('pointerup',onUp,true);document.removeEventListener('pointercancel',onUp,true);window.parent.postMessage({type:'CODEIT_HTML',html:serialize()},'*');}if(d.cmd==='SET_TEXT'){var el=document.getElementById(p.id)||(sel);if(el){el.textContent=p.v;}sync();}if(d.cmd==='SET_STYLE'){var el=document.getElementById(p.id)||(sel);if(el)Object.assign(el.style,p.styles);sync();}if(d.cmd==='SET_PATCH'){var el=document.getElementById(p.id);if(el){var tmp=document.createElement('div');tmp.innerHTML=p.html;var newEl=tmp.firstElementChild||tmp;el.replaceWith(newEl);}sync();}if(d.cmd==='DELETE'){var el=document.getElementById(p.id)||sel;if(el&&el!==document.body){if(el===sel)sel=null;el.remove();}sync();}if(d.cmd==='DUPLICATE'){var el=document.getElementById(p.id)||sel;if(el&&el.parentNode){var c=el.cloneNode(true);c.removeAttribute('id');var kids=c.querySelectorAll('[id]');for(var i=0;i<kids.length;i++){kids[i].removeAttribute('id');}c.style.outline='';var b=baseXY(el);c.style.transform='translate('+(b[0]+16)+'px, '+(b[1]+16)+'px)';el.parentNode.insertBefore(c,el.nextSibling);}sync();}if(d.cmd==='RESIZE'){var el=document.getElementById(p.id)||sel;if(el){var cs=window.getComputedStyle(el);var fs=parseFloat(cs.fontSize)||16;var next=Math.max(8,Math.min(160,fs*(p.factor||1)));el.style.fontSize=next+'px';var w=parseFloat(el.style.width);if(!isNaN(w)){el.style.width=Math.max(16,w*(p.factor||1))+'px';}var h=parseFloat(el.style.height);if(!isNaN(h)){el.style.height=Math.max(16,h*(p.factor||1))+'px';}}sync();}if(d.cmd==='GET_HTML'){window.parent.postMessage({type:'CODEIT_HTML',html:serialize()},'*');}if(d.cmd==='DESELECT'){if(sel){sel.style.outline='';sel=null;}}if(d.cmd==='SET_ROOT_VARS'){var sv=document.getElementById('__ci_vars');if(!sv){sv=document.createElement('style');sv.id='__ci_vars';document.head.appendChild(sv);}var css=':root{';Object.keys(p.vars||{}).forEach(function(k){css+=k+':'+p.vars[k]+';';});css+='}';sv.textContent=css;}if(d.cmd==='RUN_SCRIPT'){try{(new Function(p.js||''))();}catch(e){}}});window.parent.postMessage({type:'CODEIT_READY'},'*');})();`;
 
 const CONFETTI_COLORS = ['#FF7A00', '#A855F7', '#10B981', '#60A5FA', '#F59E0B'];
 
@@ -721,6 +731,12 @@ export default function Builder() {
   // ── AI memory ──────────────────────────────────────────────────────────────
   const [promptHistory, setPromptHistory] = useState([]);
   const [previousCode, setPreviousCode]   = useState('');
+
+  // Undo for edits made by hand. The AI-edit undo above keeps one snapshot;
+  // this keeps a stack, because a child dragging things around makes many small
+  // changes in a row and expects to be able to walk back through them.
+  const [editHistory, setEditHistory] = useState(EMPTY_HISTORY);
+  const codeRef = useRef('');
 
   // ── Play mode ──────────────────────────────────────────────────────────────
   const [isPlayMode, setIsPlayMode] = useState(false);
@@ -1355,6 +1371,40 @@ export default function Builder() {
     return () => clearTimeout(timer);
   }, [location.search, projectsLoading, savedProjects.length]);
 
+  useEffect(() => { codeRef.current = code; }, [code]);
+
+  /** Record the page as it is now, so the next hand edit can be undone. */
+  const recordHandEdit = (label) => {
+    setEditHistory(prev => rememberEdit(prev, codeRef.current, label));
+  };
+
+  const undoHandEdit = () => {
+    const result = historyUndo(editHistory, codeRef.current);
+    if (result.html === null) return;
+    setEditHistory(result.history);
+    setCode(result.html);
+    setIsSaved(false);
+    setSaveStatus(null);
+  };
+
+  const redoHandEdit = () => {
+    const result = historyRedo(editHistory, codeRef.current);
+    if (result.html === null) return;
+    setEditHistory(result.history);
+    setCode(result.html);
+    setIsSaved(false);
+    setSaveStatus(null);
+  };
+
+  /** One selected element, one verb. Each is undoable like any other edit. */
+  const elementAction = (cmd, label, payload = {}) => {
+    if (!selectedEl) return;
+    recordHandEdit(label);
+    sendBridgeCmd(cmd, { id: selectedEl.id, ...payload });
+    if (cmd === 'DELETE') { setShowElPanel(false); setSelectedEl(null); }
+    trackPersonalizationOnce();
+  };
+
   // ── Live element editor — postMessage bridge ───────────────────────────────
   useEffect(() => {
     function handleIframeMessage(e) {
@@ -1376,7 +1426,18 @@ export default function Builder() {
         setCode(d.html);
         setIsSaved(false);
       }
+      if (d.type === 'CODEIT_SYNC') {
+        // Text, colour, delete, duplicate and resize all end here. Until now
+        // this message was ignored, so those edits only reached the code when
+        // the student happened to leave edit mode — and a child who deleted
+        // something and pressed Save straight away lost the deletion.
+        setCode(d.html);
+        setIsSaved(false);
+        setSaveStatus(null);
+      }
       if (d.type === 'CODEIT_MOVED') {
+        // Snapshot before the move lands, so "Undo" puts it back where it was.
+        setEditHistory(prev => rememberEdit(prev, codeRef.current, 'Moved it'));
         // A drag is a real edit, so it lands in the code straight away and
         // counts towards the save gate. Baking it in reloads the iframe, which
         // is why CODEIT_READY re-enables edit mode below — otherwise moving one
@@ -1423,12 +1484,14 @@ export default function Builder() {
 
   function applyElTextChange() {
     if (!selectedEl) return;
+    recordHandEdit('Changed the words');
     sendBridgeCmd('SET_TEXT', { id: selectedEl.id, v: elText });
     trackPersonalizationOnce();
   }
 
   function applyElStyleChange(styles) {
     if (!selectedEl) return;
+    recordHandEdit('Changed how it looks');
     sendBridgeCmd('SET_STYLE', { id: selectedEl.id, styles });
     trackPersonalizationOnce();
   }
@@ -1484,6 +1547,7 @@ export default function Builder() {
     setUnsavedWarning(false);
     setPromptHistory([]);
     setPreviousCode('');
+    setEditHistory(clearHistory());
     setShowEditPanel(false);
     setEditError('');
     const buildController = new AbortController();
@@ -1828,6 +1892,7 @@ export default function Builder() {
       setHasPlayedOnce(true);
       setHasTestedLatest(true);
       setPreviousCode('');
+      setEditHistory(clearHistory());
       setIsSaved(true);
       setSaveStatus(null);
       setUnsavedWarning(false);
@@ -1989,6 +2054,7 @@ export default function Builder() {
     setUnsavedWarning(false);
     setPromptHistory([]);
     setPreviousCode('');
+    setEditHistory(clearHistory());
     setShowEditPanel(false);
     setEditInstruction('');
     setEditError('');
@@ -3568,9 +3634,30 @@ export default function Builder() {
             )}
 
             {/* ── Live Element Editor ──────────────────────────────────────────── */}
+            {editModeOn && (historyCanUndo(editHistory) || historyCanRedo(editHistory)) && (
+              <div className="bldr-hand-undo">
+                <button
+                  className="bldr-hand-undo__btn"
+                  onClick={undoHandEdit}
+                  disabled={!historyCanUndo(editHistory)}
+                  title={historyUndoLabel(editHistory) ? `Undo: ${historyUndoLabel(editHistory)}` : 'Nothing to undo'}
+                >
+                  ↩ Undo{historyUndoLabel(editHistory) ? ` — ${historyUndoLabel(editHistory)}` : ''}
+                </button>
+                <button
+                  className="bldr-hand-undo__btn bldr-hand-undo__btn--quiet"
+                  onClick={redoHandEdit}
+                  disabled={!historyCanRedo(editHistory)}
+                  title="Redo"
+                >
+                  ↪ Redo
+                </button>
+              </div>
+            )}
+
             {editModeOn && !showElPanel && (
               <div className="bldr-el-hint">
-                Click any element in the preview above to select and edit it directly.
+                Click anything in the preview to change it. Drag it to move it.
               </div>
             )}
 
@@ -3585,6 +3672,37 @@ export default function Builder() {
                     onClick={() => { setShowElPanel(false); sendBridgeCmd('DESELECT'); }}
                   >
                     ×
+                  </button>
+                </div>
+
+                <div className="bldr-el-verbs" role="group" aria-label="Change this element">
+                  <button
+                    className="bldr-el-verb"
+                    onClick={() => elementAction('RESIZE', 'Made it bigger', { factor: 1.25 })}
+                    title="Make it bigger"
+                  >
+                    <span aria-hidden="true">＋</span> Bigger
+                  </button>
+                  <button
+                    className="bldr-el-verb"
+                    onClick={() => elementAction('RESIZE', 'Made it smaller', { factor: 0.8 })}
+                    title="Make it smaller"
+                  >
+                    <span aria-hidden="true">－</span> Smaller
+                  </button>
+                  <button
+                    className="bldr-el-verb"
+                    onClick={() => elementAction('DUPLICATE', 'Made another one')}
+                    title="Make another one just like it"
+                  >
+                    <span aria-hidden="true">⧉</span> Copy
+                  </button>
+                  <button
+                    className="bldr-el-verb bldr-el-verb--danger"
+                    onClick={() => elementAction('DELETE', 'Deleted it')}
+                    title="Remove it — you can undo this"
+                  >
+                    <span aria-hidden="true">🗑</span> Delete
                   </button>
                 </div>
 

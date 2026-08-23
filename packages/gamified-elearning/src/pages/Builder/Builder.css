@@ -4736,3 +4736,95 @@
   font-weight: 800;
   color: #1A7A50;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   HAND EDITING — verbs on the selected element, and undo
+   Big targets: these are pressed by a five-year-old on a tablet.
+   ══════════════════════════════════════════════════════════════ */
+.bldr-el-verbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: 0.75rem 0.9rem 0;
+}
+
+.bldr-el-verb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  padding: 0.5rem 0.85rem;
+  border-radius: 12px;
+  border: 2px solid rgba(26, 26, 26, 0.12);
+  background: #FFFFFF;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #1A1A1A;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+
+.bldr-el-verb:hover {
+  border-color: #FF7A00;
+  background: #FFF6ED;
+}
+
+.bldr-el-verb:active {
+  transform: scale(0.97);
+}
+
+.bldr-el-verb--danger {
+  margin-left: auto;
+  color: #C62A2F;
+  border-color: rgba(198, 42, 47, 0.28);
+}
+
+.bldr-el-verb--danger:hover {
+  border-color: #C62A2F;
+  background: rgba(198, 42, 47, 0.07);
+}
+
+/* ── Undo, always reachable while editing by hand ─────────── */
+.bldr-hand-undo {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0.6rem 0;
+  flex-wrap: wrap;
+}
+
+.bldr-hand-undo__btn {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 122, 0, 0.35);
+  background: #FFF6ED;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #D46500;
+  cursor: pointer;
+}
+
+.bldr-hand-undo__btn:hover:not(:disabled) {
+  border-color: #FF7A00;
+  background: #FFEBD6;
+}
+
+.bldr-hand-undo__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.bldr-hand-undo__btn--quiet {
+  border-color: rgba(26, 26, 26, 0.14);
+  background: #FFFFFF;
+  color: #1A1A1A;
+}
+
+@media (max-width: 600px) {
+  .bldr-el-verb { font-size: 0.85rem; padding: 0.5rem 0.7rem; }
+  .bldr-el-verb--danger { margin-left: 0; }
+  .bldr-hand-undo__btn { flex: 1; text-align: center; }
+}
