@@ -96,9 +96,20 @@ router.get('/', optionalAuth, async (req, res) => {
         ...mostRemixed.map(r => r.id),
       ])];
       if (allIds.length) {
+        // One placeholder per id, not `IN (?)` with an array.
+        //
+        // `IN (?)` bound to an array is a mysql2 convenience: the driver expands
+        // it client-side. Postgres has no such thing, and our compatibility
+        // layer only rewrites ? into $n — so on production this threw, the
+        // catch below turned it into a 500, and every signed-in visitor saw
+        // "Could not load explore feed." while signed-out visitors saw a
+        // working page (userId is null, so this block never ran for them).
+        //
+        // Explicit placeholders are valid in both drivers.
+        const idSlots = allIds.map(() => '?').join(', ');
         const [likes] = await pool.query(
-          'SELECT project_id FROM ai_project_likes WHERE user_id = ? AND project_id IN (?)',
-          [userId, allIds]
+          `SELECT project_id FROM ai_project_likes WHERE user_id = ? AND project_id IN (${idSlots})`,
+          [userId, ...allIds]
         );
         likedSet = new Set(likes.map(l => l.project_id));
       }
