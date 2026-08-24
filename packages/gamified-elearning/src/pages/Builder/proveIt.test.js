@@ -278,3 +278,26 @@ describe('a real static website, which has almost no code', () => {
     expect(isEnoughToProve(null)).toBe(false);
   });
 });
+
+
+describe('declarations crammed onto one line', () => {
+  // Generated code does this constantly. Requiring a newline before let/const
+  // found the first declaration on a line and silently lost the rest.
+  const ONE_LINER = `<html><body><script>let score = 0; let shots = 3; let goalieSpeed = 4;<\/script></body></html>`;
+
+  test('all three are found, not just the first', () => {
+    expect(readProject(ONE_LINER).variables.map(v => v.name))
+      .toEqual(['score', 'shots', 'goalieSpeed']);
+  });
+
+  test('their values come through intact', () => {
+    expect(readProject(ONE_LINER).variables.map(v => v.value)).toEqual(['0', '3', '4']);
+  });
+
+  test('a mix of one-liners and separate lines all come through', () => {
+    const mixed = `<html><body><script>let a = 1; let b = 2;
+      let c = 3;
+        const d = 4;<\/script></body></html>`;
+    expect(readProject(mixed).variables.map(v => v.name)).toEqual(['a', 'b', 'c', 'd']);
+  });
+});

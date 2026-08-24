@@ -96,8 +96,17 @@ function sectionsOf(html) {
 function readProject(html) {
   const { source, scripts, styles } = sectionsOf(html);
 
-  // let/const/var with a plain number or string, at the top level of a line.
-  const variables = [...scripts.matchAll(/(?:^|\n)\s*(?:let|const|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(-?\d+(?:\.\d+)?|'[^']*'|"[^"]*")\s*;?/g)]
+  // let/const/var with a plain number or string.
+  //
+  // Anchored on a statement boundary rather than a line start: generated code
+  // regularly puts several declarations on one line, and requiring \n meant
+  // `let score = 0; let shots = 3;` found score and silently lost shots — so a
+  // football game with three counters offered ideas about one of them.
+  //
+  // The trailing semicolon is deliberately NOT consumed. It is the boundary the
+  // next declaration needs, and eating it made the matcher skip every second
+  // one: score and goalieSpeed came back, shots did not.
+  const variables = [...scripts.matchAll(/(?:^|[;{}\n])\s*(?:let|const|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(-?\d+(?:\.\d+)?|'[^']*'|"[^"]*")/g)]
     .map(match => ({ name: match[1], value: match[2].trim() }));
 
   // for (let i = 0; i < N; i++) — only the countable form.
