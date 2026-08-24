@@ -34,9 +34,22 @@ jest.mock('../../utils/trackEvent', () => ({
   trackEvent: jest.fn(() => Promise.resolve(true)),
 }));
 
+/**
+ * Open one of the studio's pages.
+ *
+ * The studio used to stack every panel down one screen. A real child using it
+ * said "I feel like it's crammed in a way maybe u can make like pages?", so the
+ * panels are sorted into Play / Change / The code / Keep. Reaching a tool now
+ * means tapping its page first, exactly as a child does.
+ */
+function openStudioPage(name) {
+  fireEvent.click(screen.getByRole('button', { name: new RegExp(`^${name}$`, 'i') }));
+}
+
 async function finishProjectQualityCheck(theme = 'Candy') {
   await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
   fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
+  openStudioPage('Change');
   fireEvent.click(screen.getByRole('button', { name: `Apply ${theme} theme` }));
   fireEvent.click(screen.getByRole('button', { name: /Play my changes/i }));
 }
@@ -171,6 +184,7 @@ describe('project studio opening', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Quiz/i }));
     await finishProjectQualityCheck();
+    openStudioPage('Keep');
     expect(screen.getByRole('button', { name: 'Share' })).toBeDisabled();
     expect(screen.getByRole('button', { name: /Keep my project/i })).toBeEnabled();
   });
@@ -206,6 +220,7 @@ describe('project studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
     await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
+    openStudioPage('Change');
     fireEvent.click(screen.getByRole('button', { name: 'Change my project' }));
 
     expect(screen.getByRole('group', { name: 'How to change your project' })).toHaveTextContent('Pick an idea');
@@ -242,6 +257,7 @@ describe('project studio opening', () => {
       return normalFetch(url, options);
     });
 
+    openStudioPage('Change');
     fireEvent.click(screen.getByRole('button', { name: 'Change my project' }));
     fireEvent.click(screen.getByRole('button', { name: /Add a power-up/i }));
     fireEvent.click(screen.getByRole('button', { name: 'Make my change' }));
@@ -314,6 +330,7 @@ describe('project studio opening', () => {
     expect(mockAwardXP).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: /Save my project/i }));
 
+    openStudioPage('Keep');
     await screen.findByRole('heading', { name: 'Now your project is ready to publish.' });
     expect(mockAwardXP).toHaveBeenCalledWith(25);
     fireEvent.click(screen.getByRole('button', { name: 'Publish and get a link' }));
@@ -335,10 +352,12 @@ describe('project studio opening', () => {
     await finishProjectQualityCheck();
     fireEvent.click(screen.getByRole('button', { name: /Save my project/i }));
 
+    openStudioPage('Keep');
     await screen.findByRole('heading', { name: 'Great work — show your grown-up or teacher.' });
     expect(screen.queryByRole('button', { name: 'Publish and get a link' })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Learn how it works' }));
     expect(trackEvent).toHaveBeenCalledWith('activation_next_step', 'learn', 'managed-token');
+    openStudioPage('The code');
     expect(await screen.findByText('This project uses variables and click events.')).toBeInTheDocument();
   });
 
@@ -363,6 +382,7 @@ describe('project studio opening', () => {
       </AuthContext.Provider>
     );
 
+    openStudioPage('Keep');
     await screen.findByRole('heading', { name: 'Now your project is ready to publish.' });
     expect(sessionStorage.getItem('codeit_builder_draft')).toBeNull();
     expect(global.fetch).toHaveBeenCalledWith(
@@ -396,6 +416,7 @@ describe('project studio opening', () => {
       </AuthContext.Provider>
     );
 
+    openStudioPage('Keep');
     await screen.findByRole('heading', { name: 'Invite someone to play it.' });
     expect(sessionStorage.getItem('codeit_builder_draft')).toBeNull();
     expect(global.fetch).toHaveBeenCalledWith(
@@ -582,6 +603,7 @@ describe('project studio opening', () => {
 
     const editCallsBefore = global.fetch.mock.calls.filter(([url]) => String(url).includes('/edit')).length;
 
+    openStudioPage('Change');
     fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);
     fireEvent.click(await screen.findByRole('button', { name: 'Text size: Big' }));
 
@@ -600,6 +622,7 @@ describe('project studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
     await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
+    openStudioPage('Change');
     fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);
 
     fireEvent.click(await screen.findByRole('button', { name: 'Letter style: Bubbly' }));
@@ -620,6 +643,7 @@ describe('project studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
     await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
+    openStudioPage('Change');
     fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);
 
     fireEvent.change(await screen.findByLabelText(/Give your project its own name/i), {
@@ -648,6 +672,7 @@ describe('project studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
     await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
+    openStudioPage('Change');
     fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);
 
     expect(await screen.findByText(/Tap a picture to change your project/i)).toBeInTheDocument();

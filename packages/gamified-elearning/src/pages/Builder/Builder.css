@@ -4828,3 +4828,136 @@
   .bldr-el-verb--danger { margin-left: 0; }
   .bldr-hand-undo__btn { flex: 1; text-align: center; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   PAGES — asked for by a child who said the studio felt crammed
+   The project preview stays put above these; everything below
+   belongs to whichever page is open.
+   ══════════════════════════════════════════════════════════════ */
+.bldr-tabs {
+  display: flex;
+  gap: 0.35rem;
+  margin: 1.1rem 0 0;
+  padding: 0.3rem;
+  background: rgba(26, 26, 26, 0.04);
+  border-radius: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.bldr-tabs::-webkit-scrollbar { display: none; }
+
+.bldr-tab {
+  position: relative;
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 48px;
+  padding: 0.55rem 0.7rem;
+  border: none;
+  border-radius: 13px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #55504B;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+.bldr-tab:hover { background: rgba(255, 255, 255, 0.7); color: #1A1A1A; }
+
+.bldr-tab--active {
+  background: #FFFFFF;
+  color: #1A1A1A;
+  box-shadow: 0 2px 8px rgba(56, 41, 31, 0.10);
+}
+
+.bldr-tab__icon { font-size: 1rem; }
+
+/* A quiet dot, not a red badge. This is a studio for children, not an inbox. */
+.bldr-tab__dot {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #FF7A00;
+}
+
+.bldr-tab-blurb {
+  margin: 0.6rem 0 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #55504B;
+}
+
+/* ── "Not sure what to change?" — concrete ideas from their own code ── */
+.bldr-ideas { margin: 0 0 1.1rem; }
+
+.bldr-ideas__label {
+  margin: 0 0 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1A1A1A;
+}
+
+.bldr-ideas__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.bldr-idea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 100%;
+  min-height: 56px;
+  padding: 0.7rem 0.95rem;
+  border-radius: 14px;
+  border: 2px solid rgba(255, 122, 0, 0.28);
+  background: #FFF6ED;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+
+.bldr-idea:hover:not(:disabled) { border-color: #FF7A00; background: #FFEBD6; }
+.bldr-idea:active:not(:disabled) { transform: scale(0.99); }
+.bldr-idea:disabled { opacity: 0.55; cursor: default; }
+
+.bldr-idea__label { font-size: 1rem; font-weight: 800; color: #1A1A1A; }
+.bldr-idea__why { font-size: 0.85rem; font-weight: 600; color: #6B635C; line-height: 1.4; }
+
+@media (max-width: 600px) {
+  .bldr-tab__label { font-size: 0.85rem; }
+  .bldr-tab { padding: 0.55rem 0.5rem; }
+}
+
+/* The four steps are now the way into the four pages, so they have to look and
+   behave like the buttons they became. */
+.bldr-project-checklist li > button {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bldr-project-checklist li > button:hover { text-decoration: underline; }

@@ -28,6 +28,8 @@ import {
   setProjectHeading,
 } from './instantStyle';
 import './Builder.css';
+import { changeIdeasFor } from './changeIdeas';
+import { initialTab, tabAfter, tabsFor } from './builderTabs';
 import {
   EMPTY as EMPTY_HISTORY,
   canRedo as historyCanRedo,
@@ -736,6 +738,13 @@ export default function Builder() {
   // this keeps a stack, because a child dragging things around makes many small
   // changes in a row and expects to be able to walk back through them.
   const [editHistory, setEditHistory] = useState(EMPTY_HISTORY);
+
+  // Which page of the studio is showing. Karam, a real child using it, asked
+  // for pages because sixteen panels stacked down one phone screen is a wall.
+  const [workspaceTab, setWorkspaceTab] = useState(initialTab);
+
+  /** Is this panel on the page the child is looking at? */
+  const onTab = (id) => workspaceTab === id;
   const codeRef = useRef('');
 
   // ── Play mode ──────────────────────────────────────────────────────────────
@@ -1548,6 +1557,7 @@ export default function Builder() {
     setPromptHistory([]);
     setPreviousCode('');
     setEditHistory(clearHistory());
+    setWorkspaceTab(prev => tabAfter('built', prev));
     setShowEditPanel(false);
     setEditError('');
     const buildController = new AbortController();
@@ -1893,6 +1903,7 @@ export default function Builder() {
       setHasTestedLatest(true);
       setPreviousCode('');
       setEditHistory(clearHistory());
+      setWorkspaceTab(prev => tabAfter('saved', prev));
       setIsSaved(true);
       setSaveStatus(null);
       setUnsavedWarning(false);
@@ -2055,6 +2066,7 @@ export default function Builder() {
     setPromptHistory([]);
     setPreviousCode('');
     setEditHistory(clearHistory());
+    setWorkspaceTab(prev => tabAfter('built', prev));
     setShowEditPanel(false);
     setEditInstruction('');
     setEditError('');
@@ -2267,6 +2279,19 @@ export default function Builder() {
   // Same panel for everyone, sized to the learner: ages 5–7 get three big
   // picture choices, teenagers get the full set.
   const instantControls = controlsForGuideLevel(guideLevel);
+
+  // The four pages, and what each one has to say right now.
+  const workspaceTabs = tabsFor({
+    hasPlayed: hasPlayedOnce,
+    hasChanged: isPersonalized,
+    hasTested: hasTestedLatest,
+    isSaved,
+  });
+  const activeTab = workspaceTabs.find(tab => tab.id === workspaceTab) || workspaceTabs[0];
+
+  // Concrete things to change in THIS project, for the child who asked what
+  // "change one thing" means.
+  const ideasForThisProject = code ? changeIdeasFor(code) : [];
   const mineThemes = guideLevel === 'early' ? FIRST_CHANGE_THEMES : PRESET_PALETTES;
   const coachStage = !code
     ? prompt.trim()
@@ -2366,7 +2391,11 @@ export default function Builder() {
           </div>
         </section>
 
-        {coachOpen ? (
+        {/* Once a project exists the pages carry the guidance, and each one
+            says what to do on it. Leaving the sticky coach up as well meant two
+            voices disagreeing: it read "Press Play" while the child was on the
+            Change page. Before a build there are no pages yet, so it stays. */}
+        {coachOpen && !code ? (
           <aside className={`bldr-coach bldr-coach--${guideLevel}`} role="status" aria-live="polite">
             <div className="bldr-coach__face" aria-hidden="true">{coachStage.icon}</div>
             <div className="bldr-coach__copy">
@@ -2756,10 +2785,30 @@ export default function Builder() {
                       : 'A strong project needs your ideas. Make at least one change and test it before you call it finished.'}
                   </p>
                   <ol className="bldr-project-checklist" aria-label="Project quality steps">
-                    <li className={hasPlayedOnce ? 'is-done' : 'is-current'}><span>{hasPlayedOnce ? '✓' : '1'}</span>Play everything</li>
-                    <li className={isPersonalized ? 'is-done' : hasPlayedOnce ? 'is-current' : ''}><span>{isPersonalized ? '✓' : '2'}</span>Change one thing</li>
-                    <li className={isPersonalized && hasTestedLatest ? 'is-done' : isPersonalized ? 'is-current' : ''}><span>{isPersonalized && hasTestedLatest ? '✓' : '3'}</span>Play it again</li>
-                    <li className={isPersonalized && hasTestedLatest ? 'is-current' : ''}><span>4</span>Save your work</li>
+                    {/* The four steps and the four pages were two versions of
+                        the same journey sitting on top of each other. Now a step
+                        is the way to its page: tap "Change one thing" and you
+                        land on Change, where the ideas are. */}
+                    <li className={hasPlayedOnce ? 'is-done' : 'is-current'}>
+                      <button type="button" onClick={() => setWorkspaceTab('play')}>
+                        <span>{hasPlayedOnce ? '✓' : '1'}</span>Play everything
+                      </button>
+                    </li>
+                    <li className={isPersonalized ? 'is-done' : hasPlayedOnce ? 'is-current' : ''}>
+                      <button type="button" onClick={() => setWorkspaceTab('change')}>
+                        <span>{isPersonalized ? '✓' : '2'}</span>Change one thing
+                      </button>
+                    </li>
+                    <li className={isPersonalized && hasTestedLatest ? 'is-done' : isPersonalized ? 'is-current' : ''}>
+                      <button type="button" onClick={() => setWorkspaceTab('play')}>
+                        <span>{isPersonalized && hasTestedLatest ? '✓' : '3'}</span>Play it again
+                      </button>
+                    </li>
+                    <li className={isPersonalized && hasTestedLatest ? 'is-current' : ''}>
+                      <button type="button" onClick={() => setWorkspaceTab('keep')}>
+                        <span>4</span>Save your work
+                      </button>
+                    </li>
                   </ol>
                 </div>
                 <div className="bldr-activation-card__actions">
@@ -2820,7 +2869,7 @@ export default function Builder() {
               </section>
             )}
 
-            {isSaved && !isPublished && (
+            {onTab('keep') && isSaved && !isPublished && (
               <section className="bldr-activation-card bldr-activation-card--finish" aria-labelledby="bldr-finish-step-title">
                 <div className="bldr-activation-card__copy">
                   <span className="bldr-activation-card__kicker">Quality check complete</span>
@@ -2876,7 +2925,7 @@ export default function Builder() {
               </section>
             )}
 
-            {isSaved && isPublished && (
+            {onTab('keep') && isSaved && isPublished && (
               <section className="bldr-activation-card bldr-activation-card--live" aria-labelledby="bldr-live-step-title">
                 <div className="bldr-activation-card__copy">
                   <span className="bldr-activation-card__kicker">Your project is live</span>
@@ -2912,7 +2961,38 @@ export default function Builder() {
               </section>
             )}
 
+            {/* ── Pages ────────────────────────────────────────────────
+                 One thing at a time. Everything below this bar belongs to
+                 whichever page is open; the project preview above it never
+                 moves, because it is the point. */}
+            {/* The dot is decorative and the hint rides on title. An aria-label
+                on the dot became part of the button's accessible name, so the
+                Change tab announced itself as "Change something to do here". */}
+            <nav className="bldr-tabs" aria-label="Studio pages">
+              {workspaceTabs.map(tab => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  className={`bldr-tab${workspaceTab === tab.id ? ' bldr-tab--active' : ''}`}
+                  onClick={() => setWorkspaceTab(tab.id)}
+                  aria-current={workspaceTab === tab.id ? 'page' : undefined}
+                  title={tab.hint || tab.blurb}
+                >
+                  <span className="bldr-tab__icon" aria-hidden="true">{tab.icon}</span>
+                  <span className="bldr-tab__label">{tab.label}</span>
+                  {tab.attention && workspaceTab !== tab.id && (
+                    <span className="bldr-tab__dot" aria-hidden="true" />
+                  )}
+                </button>
+              ))}
+            </nav>
+
+            <p className="bldr-tab-blurb">
+              {activeTab?.hint || activeTab?.blurb}
+            </p>
+
             {/* ── Creative Studio Toolbar ─────────────────────────────── */}
+            {onTab('change') && (
             <div className="bldr-studio-bar" ref={studioRef}>
               <span className="bldr-studio-bar__label">Studio:</span>
               {STUDIO_TOOLS
@@ -2928,9 +3008,10 @@ export default function Builder() {
                   </button>
                 ))}
             </div>
+            )}
 
             {/* Studio contextual panel */}
-            {studioPanel && (
+            {onTab('change') && studioPanel && (
               <div className="bldr-studio-panel">
                 <div className="bldr-studio-panel__header">
                   <span className="bldr-studio-panel__title">
@@ -3305,7 +3386,7 @@ export default function Builder() {
             )}
 
             {/* ── Creator Missions ─────────────────────────────── */}
-            {missions.length > 0 && (
+            {onTab('play') && missions.length > 0 && (
               <div className="bldr-missions">
                 <span className="bldr-missions__label">Upgrade missions</span>
                 <div className="bldr-missions__row">
@@ -3325,7 +3406,32 @@ export default function Builder() {
               </div>
             )}
 
+            {/* The answer to "what does it mean by the change it" — real
+                 things in this child's own project, each with the words to
+                 send, so nothing has to be invented. */}
+            {onTab('change') && ideasForThisProject.length > 0 && (
+              <div className="bldr-ideas">
+                <p className="bldr-ideas__label">Not sure what to change? Try one of these.</p>
+                <ul className="bldr-ideas__list">
+                  {ideasForThisProject.map(idea => (
+                    <li key={idea.id}>
+                      <button
+                        type="button"
+                        className="bldr-idea"
+                        onClick={() => handleModifier(idea.prompt)}
+                        disabled={editing}
+                      >
+                        <span className="bldr-idea__label">{idea.label}</span>
+                        <span className="bldr-idea__why">{idea.why}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {/* One-click upgrades — visible immediately after preview */}
+            {onTab('change') && (
             <div className="bldr-modifiers">
               <span className="bldr-modifiers__label">
                 {/game|clicker|runner|memory|reaction|quiz/.test(projectType) ? 'Power-ups:' : 'Upgrades:'}
@@ -3342,10 +3448,11 @@ export default function Builder() {
                 </button>
               ))}
             </div>
+            )}
 
             {/* Action bar */}
             <div className="bldr-result__footer">
-              <button
+              {onTab('learn') && <button
                 className="bldr-action-btn bldr-action-btn--explain-primary"
                 onClick={handleExplain}
                 disabled={explaining || editing}
@@ -3353,9 +3460,9 @@ export default function Builder() {
                 {explaining
                   ? <><span className="bldr-spinner bldr-spinner--sm" />Explaining...</>
                   : 'How does this work?'}
-              </button>
+              </button>}
 
-              {isPublished ? (
+              {onTab('keep') && (isPublished ? (
                 <div className="bldr-share-group">
                   <button
                     className="bldr-action-btn bldr-action-btn--publish"
@@ -3397,26 +3504,26 @@ export default function Builder() {
                     : publishStatus === 'error' ? 'Try again'
                     : user?.managedProfile ? 'Private profile' : 'Share'}
                 </button>
-              )}
+              ))}
 
-              <button
+              {onTab('change') && <button
                 className={`bldr-action-btn bldr-action-btn--edit${showEditPanel ? ' bldr-action-btn--edit-active' : ''}`}
                 onClick={() => { setShowEditPanel(p => !p); setEditError(''); if (editModeOn) toggleEditMode(); }}
                 disabled={editing}
               >
                 {showEditPanel ? 'Close changes' : 'Change my project'}
-              </button>
+              </button>}
 
-              <button
+              {onTab('change') && <button
                 className={`bldr-action-btn bldr-action-btn--livedit${editModeOn ? ' bldr-action-btn--livedit-active' : ''}`}
                 onClick={toggleEditMode}
                 disabled={editing}
                 title={editModeOn ? 'Exit element editor — saves changes' : 'Click any element in the preview to edit it directly'}
               >
                 {editModeOn ? 'Exit element editor' : 'Edit elements'}
-              </button>
+              </button>}
 
-              <button
+              {onTab('keep') && <button
                 className={`bldr-action-btn bldr-action-btn--history${showHistory ? ' bldr-action-btn--history-active' : ''}`}
                 onClick={() => {
                   const next = !showHistory;
@@ -3426,9 +3533,9 @@ export default function Builder() {
                 disabled={editing || restoringVersion}
               >
                 History{allVersions.length > 0 ? ` (${allVersions.length})` : ''}
-              </button>
+              </button>}
 
-              {user ? (
+              {onTab('keep') && (user ? (
                 <button
                   className={`bldr-action-btn bldr-action-btn--save${saveStatus === 'saved' ? ' bldr-action-btn--saved' : ''}`}
                   onClick={handleSaveOrGuide}
@@ -3444,19 +3551,19 @@ export default function Builder() {
                 <button className="bldr-action-btn bldr-action-btn--login-hint" onClick={handleSaveProject} disabled={!isPersonalized || !hasTestedLatest}>
                   Log in to save
                 </button>
-              )}
+              ))}
 
               <button className="bldr-action-btn bldr-action-btn--new" onClick={handleNewBuild} disabled={editing}>
                 New build
               </button>
             </div>
 
-            {saveStatus === 'error' && saveError && (
+            {onTab('keep') && saveStatus === 'error' && saveError && (
               <p className="bldr-error-inline">{saveError}</p>
             )}
 
             {/* ── Edit-with-AI panel ─────────────────────────────────────── */}
-            {showEditPanel && (
+            {onTab('change') && showEditPanel && (
               <div className="bldr-edit-panel">
                 <div className="bldr-edit-panel__header">
                   <span className="bldr-edit-panel__title">What should we change?</span>
@@ -3553,7 +3660,7 @@ export default function Builder() {
             )}
 
             {/* ── Version History Panel ──────────────────────────────────────── */}
-            {showHistory && (
+            {onTab('keep') && showHistory && (
               <div className="bldr-history-panel">
                 <div className="bldr-history-panel__header">
                   <span className="bldr-history-panel__title">Version History</span>
@@ -3634,7 +3741,7 @@ export default function Builder() {
             )}
 
             {/* ── Live Element Editor ──────────────────────────────────────────── */}
-            {editModeOn && (historyCanUndo(editHistory) || historyCanRedo(editHistory)) && (
+            {onTab('change') && editModeOn && (historyCanUndo(editHistory) || historyCanRedo(editHistory)) && (
               <div className="bldr-hand-undo">
                 <button
                   className="bldr-hand-undo__btn"
@@ -3655,13 +3762,13 @@ export default function Builder() {
               </div>
             )}
 
-            {editModeOn && !showElPanel && (
+            {onTab('change') && editModeOn && !showElPanel && (
               <div className="bldr-el-hint">
                 Click anything in the preview to change it. Drag it to move it.
               </div>
             )}
 
-            {editModeOn && showElPanel && selectedEl && (
+            {onTab('change') && editModeOn && showElPanel && selectedEl && (
               <div className="bldr-el-panel">
                 <div className="bldr-el-panel__header">
                   <span className="bldr-el-panel__title">
@@ -3857,7 +3964,7 @@ export default function Builder() {
             )}
 
             {/* Concepts used by AI */}
-            {conceptsUsed.length > 0 && (
+            {onTab('learn') && conceptsUsed.length > 0 && (
               <div className="bldr-concepts-used">
                 <span className="bldr-concepts-used__label">Concepts in this build:</span>
                 <div className="bldr-concepts-used__tags">
@@ -3869,7 +3976,7 @@ export default function Builder() {
             )}
 
             {/* Lessons used in this build */}
-            {lessonChips.length > 0 && (
+            {onTab('learn') && lessonChips.length > 0 && (
               <div className="bldr-lessons-used">
                 <div className="bldr-lessons-used__header">
                   <span className="bldr-lessons-used__title">What you just used</span>
@@ -3894,7 +4001,7 @@ export default function Builder() {
 
             {/* Explanation */}
             {explainError && <p className="bldr-error-inline">{explainError}</p>}
-            {explanation && (
+            {onTab('learn') && explanation && (
               <div className="bldr-explanation">
                 <div className="bldr-explanation__label">What this build does</div>
                 <p className="bldr-explanation__text">{explanation}</p>
@@ -4175,6 +4282,7 @@ export default function Builder() {
         {/* ════════════════════════════════════════
             PARENT / TRUST STRIP
         ════════════════════════════════════════ */}
+        {!code && (
         <section className="bldr-trust" aria-label="About the project studio">
           <div className="bldr-trust__inner">
             <h2 className="bldr-trust__title">
@@ -4192,6 +4300,7 @@ export default function Builder() {
             </div>
           </div>
         </section>
+        )}
 
       </div>
     </>
