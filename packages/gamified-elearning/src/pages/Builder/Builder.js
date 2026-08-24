@@ -29,6 +29,13 @@ import {
 } from './instantStyle';
 import './Builder.css';
 import { changeIdeasFor } from './changeIdeas';
+import {
+  injectPreviewStorage,
+  isStorageMessage,
+  loadPreviewStorage,
+  savePreviewStorage,
+  stripPreviewScripts,
+} from './previewStorage';
 import { initialTab, tabAfter, tabsFor } from './builderTabs';
 import {
   EMPTY as EMPTY_HISTORY,
@@ -680,6 +687,16 @@ function injectBridge(html) {
   return html.includes('</body>') ? html.replace('</body>', tag + '</body>') : html + tag;
 }
 
+/**
+ * Everything the preview needs wrapped around the child's own code.
+ *
+ * The storage shim has to go first — a game reads its high score on the line it
+ * starts on, and the editor bridge does not run until something is clicked.
+ */
+function preparePreview(html, seed) {
+  return injectBridge(injectPreviewStorage(html, seed));
+}
+
 function rgbToHex(rgb) {
   if (!rgb) return '#000000';
   if (rgb.startsWith('#')) return rgb;
@@ -792,6 +809,14 @@ export default function Builder() {
   const promptRef  = useRef(null);
   const editRef    = useRef(null);
   const iframeRef  = useRef(null);
+
+  // Which project's saved data the preview should be given.
+  //
+  // A ref, not state, because it is read by the message handler below and
+  // baked into the iframe's srcDoc — making it reactive would reload the frame
+  // every time a game saved its score, resetting the game the instant a child
+  // beat their record.
+  const previewKeyRef = useRef('draft');
   const editModeOnRef = useRef(false);
   const studioRef  = useRef(null);
   const resumeActionStartedRef = useRef(false);
@@ -1432,7 +1457,11 @@ export default function Builder() {
         setShowElPanel(true);
       }
       if (d.type === 'CODEIT_HTML') {
-        setCode(d.html);
+        // stripPreviewScripts, here and below: the frame serialises the whole
+        // live document, which contains the editor bridge and the storage shim
+        // we injected. Saving that would grow the project on every edit and
+        // ship one child's high score to everyone who plays their game.
+        setCode(stripPreviewScripts(d.html));
         setIsSaved(false);
       }
       if (d.type === 'CODEIT_SYNC') {
@@ -1440,7 +1469,7 @@ export default function Builder() {
         // this message was ignored, so those edits only reached the code when
         // the student happened to leave edit mode — and a child who deleted
         // something and pressed Save straight away lost the deletion.
-        setCode(d.html);
+        setCode(stripPreviewScripts(d.html));
         setIsSaved(false);
         setSaveStatus(null);
       }
@@ -1451,7 +1480,7 @@ export default function Builder() {
         // counts towards the save gate. Baking it in reloads the iframe, which
         // is why CODEIT_READY re-enables edit mode below — otherwise moving one
         // thing would silently kick the student out of the editor.
-        setCode(d.html);
+        setCode(stripPreviewScripts(d.html));
         setIsSaved(false);
         setSaveStatus(null);
         trackPersonalizationOnce();
@@ -1459,6 +1488,13 @@ export default function Builder() {
       }
       if (d.type === 'CODEIT_READY' && editModeOnRef.current) {
         sendBridgeCmd('ENABLE');
+      }
+      if (isStorageMessage(d)) {
+        // The preview saved something — a high score, a level, a name. It runs
+        // on an opaque origin with no storage of its own, so we keep it here,
+        // scoped to this one project.
+        savePreviewStorage(previewKeyRef.current, d.data);
+        return;
       }
       if (d.type === 'CODEIT_PLAYED') {
         // Students naturally test by using the buttons inside their game or
@@ -2313,6 +2349,21 @@ export default function Builder() {
   const lessonChips = builtPrompt
     ? LESSON_CONCEPTS.filter(l => detectLessonIds(builtPrompt).includes(l.id))
     : [];
+  // ── What actually goes into the preview frame ──────────────────────────────
+  //
+  // Scoped per project, so two games do not fight over one high score, and so a
+  // child's saved progress follows the project rather than the browser tab.
+  const previewKey = savedProjectId ? `p${savedProjectId}` : publicId ? `x${publicId}` : 'draft';
+  previewKeyRef.current = previewKey;
+  // Seeded at the moment the frame is built, not in an effect: effects run
+  // after the iframe already has its srcDoc, and by then the game has read its
+  // high score and found nothing. Re-read on every rebuild so an edit does not
+  // roll a child's score back to whatever it was when they opened the page.
+  const previewDoc = useMemo(
+    () => preparePreview(code, loadPreviewStorage(previewKey)),
+    [code, previewKey]
+  );
+
   const allVersions = useMemo(() => [...localVersions, ...serverVersions], [localVersions, serverVersions]);
   const activeModifiers = useMemo(() => {
     const t = (projectType || '').toLowerCase();
@@ -2766,7 +2817,7 @@ export default function Builder() {
               {/* sandbox="allow-scripts allow-forms allow-pointer-lock" — enables JS, forms, and pointer lock for games */}
               <iframe
                 ref={iframeRef}
-                srcDoc={injectBridge(code)}
+                srcDoc={previewDoc}
                 className={`bldr-iframe${editing ? ' bldr-iframe--updating' : ''}${isPlayMode ? ' bldr-iframe--play' : ''}${editModeOn ? ' bldr-iframe--editmode' : ''}`}
                 title="Project preview"
                 sandbox="allow-scripts allow-forms allow-pointer-lock"

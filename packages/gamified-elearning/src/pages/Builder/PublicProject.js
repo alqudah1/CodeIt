@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useMemo, useRef, useContext } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
@@ -6,6 +6,12 @@ import Header from '../Header/Header';
 import { trackEvent } from '../../utils/trackEvent';
 import { journeyHeaders } from '../../utils/journey';
 import './PublicProject.css';
+import {
+  injectPreviewStorage,
+  isStorageMessage,
+  loadPreviewStorage,
+  savePreviewStorage,
+} from './previewStorage';
 
 export default function PublicProject() {
   const { publicId }        = useParams();
@@ -17,6 +23,30 @@ export default function PublicProject() {
   const [error, setError]           = useState('');
   const [remixStatus, setRemixStatus] = useState(null); // null | 'remixing' | 'error'
   const [shareStatus, setShareStatus] = useState(null); // null | 'copied' | 'shared'
+
+  // A published game runs in the same sandboxed, opaque-origin frame as the
+  // studio preview, so `localStorage` throws there too — and this is the page
+  // where a child's friends actually play it. Same shim, same reasoning: the
+  // frame keeps its isolation and gets storage that works, scoped to this
+  // project and kept on the visitor's own device.
+  const frameRef = useRef(null);
+  const storageSeed = useRef(null);
+  if (storageSeed.current === null) storageSeed.current = loadPreviewStorage(`x${publicId}`);
+
+  useEffect(() => {
+    function onMessage(event) {
+      if (event.source !== frameRef.current?.contentWindow) return;
+      if (!isStorageMessage(event.data)) return;
+      savePreviewStorage(`x${publicId}`, event.data.data);
+    }
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, [publicId]);
+
+  const playableCode = useMemo(
+    () => injectPreviewStorage(project?.generated_code || '', storageSeed.current),
+    [project?.generated_code]
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -177,8 +207,9 @@ export default function PublicProject() {
               </div>
             </div>
             <iframe
+              ref={frameRef}
               className="pp-iframe"
-              srcDoc={project.generated_code}
+              srcDoc={playableCode}
               title={project.title}
               sandbox="allow-scripts allow-forms allow-pointer-lock"
             />
