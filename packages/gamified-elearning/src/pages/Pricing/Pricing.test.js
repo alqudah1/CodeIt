@@ -209,9 +209,12 @@ describe('Pricing', () => {
 
     expect(await screen.findByRole('heading', { name: 'CodeIt Plus' })).toBeInTheDocument();
     expect(screen.getByText('CA$12')).toBeInTheDocument();
-    expect(screen.getByText('per month, cancel any time')).toBeInTheDocument();
+    // The receipt a family gets says CA$13.56 in Ontario, not CA$12. The card has to
+    // say so before any card details are typed, not only in the terms.
+    expect(screen.getByText('plus tax, per month, cancel any time')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Subscribe for CA\$12\/month/i })).toBeEnabled();
-    expect(screen.getByText(/CodeIt never stores your card|confirm before anything is charged/i)).toBeInTheDocument();
+    expect(screen.getByText(/Sales tax is added at checkout/i)).toBeInTheDocument();
+    expect(screen.getByText(/confirm the full total before anything is charged/i)).toBeInTheDocument();
   });
 
   test('never asks a child to pay', async () => {

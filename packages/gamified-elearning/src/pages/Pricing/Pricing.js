@@ -6,6 +6,7 @@ import { useSEO } from '../../hooks/useSEO';
 import { trackEvent } from '../../utils/trackEvent';
 import { useAuth } from '../../context/AuthContext';
 import { ENDPOINTS } from '../../config/api';
+import { PRICE } from '../../config/pricing';
 import { journeyHeaders } from '../../utils/journey';
 import {
   DEFAULT_BILLING_STATE,
@@ -213,7 +214,7 @@ export default function Pricing() {
               <p className="pricing-card__eyebrow">Paid plan</p>
               <h2>CodeIt Plus</h2>
               <div className="pricing-price">
-                <strong>CA$12</strong><span>per month, cancel any time</span>
+                <strong>{PRICE}</strong><span>plus tax, per month, cancel any time</span>
               </div>
               <p className="pricing-card__summary">
                 For families who build a lot. Lessons, the playground and saving stay free for everyone.
@@ -268,7 +269,8 @@ export default function Pricing() {
                     {billingBusy ? 'Opening secure checkout…' : 'Subscribe for CA$12/month'}
                   </button>
                   <p className="pricing-card__note">
-                    Payment is handled by Stripe. You will be asked to confirm before anything is charged.
+                    Payment is handled by Stripe. Sales tax is added at checkout based on where
+                    you live, and you confirm the full total before anything is charged.
                     {' '}Renews monthly until you cancel — see{' '}
                     <Link to="/terms#billing">billing</Link> and{' '}
                     <Link to="/terms#refunds">cancelling and refunds</Link>.
