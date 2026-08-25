@@ -8,6 +8,8 @@ import { useSEO } from "../../hooks/useSEO";
 import { trackEvent } from "../../utils/trackEvent";
 import HomePilotSignup from "./HomePilotSignup";
 import { STARTER_GAMES } from "../Builder/starterGames";
+import YourShelf from "./YourShelf";
+import { listProjects, migrateLegacyDraft } from "../../utils/projectShelf";
 import "./Home.css";
 import "./HomeStudio.css";
 
@@ -166,6 +168,21 @@ export default function Home() {
     return () => controller.abort();
   }, [user, token]);
 
+  // What this child has already made, on this device. Read once on mount: a
+  // returning child should see their own work before they see anything we have
+  // to say about ourselves.
+  const [shelf, setShelf] = useState([]);
+  useEffect(() => {
+    try {
+      migrateLegacyDraft(window.localStorage);
+      setShelf(listProjects(window.localStorage));
+    } catch {
+      // No storage (private window, locked-down device). The picker below still
+      // works; there is simply nothing to carry on with.
+      setShelf([]);
+    }
+  }, []);
+
   const startHeroIdea = (event) => {
     event.preventDefault();
     const idea = heroIdea.trim();
@@ -192,14 +209,30 @@ export default function Home() {
             <div className="studio-hero__copy">
               <p className="studio-kicker">A creative coding studio for students</p>
               {user && <p className="studio-welcome">Welcome back, {user.name || "Builder"}.</p>}
-              <h1 id="studio-title">
-                Make a real game.
-                <span>Then change the code inside it.</span>
-              </h1>
-              <p className="studio-hero__lead">
-                Games, quizzes and websites you actually play — then open them up, see how they
-                work, and make them yours.
-              </p>
+              {/* A returning child does not need the pitch. They have already
+                  bought it — they made something. On a phone this headline is
+                  350px tall, which pushed their own work off the first screen,
+                  so when there is work to come back to it steps aside.
+
+                  Search engines and first-time visitors still get the full
+                  heading: the shelf only fills from this device's storage, so
+                  a crawler never has one. */}
+              {shelf.length ? (
+                <h1 id="studio-title" className="studio-hero__title--compact">
+                  Welcome back. Your work is right here.
+                </h1>
+              ) : (
+                <>
+                  <h1 id="studio-title">
+                    Make a real game.
+                    <span>Then change the code inside it.</span>
+                  </h1>
+                  <p className="studio-hero__lead">
+                    Games, quizzes and websites you actually play — then open them up, see how they
+                    work, and make them yours.
+                  </p>
+                </>
+              )}
               {/* ── Pick one. No typing. ──────────────────────────────────
                   This used to be an empty text box, and an empty text box is
                   where a nine-year-old stops. Being asked to describe what you
@@ -211,9 +244,18 @@ export default function Home() {
                   Typing is still here for the older ones who arrive with an
                   idea already in their head; it is just no longer the toll gate
                   everyone has to pay first. */}
+              <YourShelf
+                projects={shelf}
+                onOpen={(project) => trackEvent("landing_cta_click", `shelf-${project.projectType}`)}
+              />
+
               <div className="pick">
                 <p className="pick__ask" id="pick-ask">
-                  {user ? "What do you want to make next?" : "Pick one and it starts right now"}
+                  {shelf.length
+                    ? "Or start something new"
+                    : user
+                      ? "What do you want to make next?"
+                      : "Pick one and it starts right now"}
                 </p>
                 <ul className="pick__row" aria-labelledby="pick-ask">
                   {STARTER_GAMES.map((game) => (

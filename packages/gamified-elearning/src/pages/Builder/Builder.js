@@ -14,6 +14,11 @@ import {
   saveGuestProjectDraft,
 } from '../../utils/guestProjectDraft';
 import {
+  getProject as getShelfProject,
+  migrateLegacyDraft,
+  saveProject as saveToShelf,
+} from '../../utils/projectShelf';
+import {
   BACKGROUNDS,
   CORNERS,
   DEFAULT_PREFS,
@@ -839,6 +844,7 @@ export default function Builder() {
   // animation frames and the game quietly stopped running.
   const [showStartOver, setShowStartOver] = useState(false);
 
+  const shelfIdRef = useRef(null);
   const previewKeyRef = useRef('draft');
 
   // What the running project has complained about, and the last version of it
@@ -1194,6 +1200,25 @@ export default function Builder() {
     const pre = params.get('prompt');
     if (pre) setPrompt(pre);
 
+    // ?shelf=<id> — a project the child made before, tapped from the front page.
+    //
+    // Checked before ?start, so returning to something you made always wins
+    // over starting something new.
+    migrateLegacyDraft(localStorage);
+    const shelved = getShelfProject(localStorage, params.get('shelf'));
+    if (shelved) {
+      shelfIdRef.current = shelved.id;
+      setPrompt(shelved.prompt);
+      setBuiltPrompt(shelved.prompt);
+      setProjectType(shelved.projectType);
+      setAiTitle(shelved.title);
+      setCode(shelved.code);
+      setPromptHistory([shelved.prompt].filter(Boolean));
+      setBuildKey(k => k + 1);
+      void trackEvent('shelf_project_reopened');
+      return;
+    }
+
     // ?start=catch-stars — a game the child tapped on the front page.
     //
     // It is already written, so it appears now rather than after twenty
@@ -1281,6 +1306,15 @@ export default function Builder() {
     }
 
     if (user) return;
+
+    // A child who has just tapped a game on the front page, or tapped a project
+    // on their shelf, has said which project they want. Restoring the old draft
+    // over the top of it would hand them yesterday's game and quietly discard
+    // the one they asked for — which is exactly what happened before this
+    // check: tapping "Penalty shootout" gave you the star catcher back.
+    const asked = new URLSearchParams(location.search || '');
+    if (asked.get('start') || asked.get('shelf')) return;
+
     const draft = readGuestProjectDraft(localStorage);
     if (!draft || !isValidHtml(draft.code)) {
       if (draft) clearGuestProjectDraft(localStorage);
@@ -1327,6 +1361,19 @@ export default function Builder() {
         hasPlayedOnce,
         hasTestedLatest,
       });
+
+      // And onto the shelf, which unlike the single draft above can hold more
+      // than one thing — so tomorrow's game does not delete today's. The id is
+      // kept so that editing keeps writing to the same entry instead of filling
+      // the shelf with eight copies of one project.
+      const stored = saveToShelf(localStorage, {
+        id: shelfIdRef.current,
+        title: aiTitle || deriveProjectName(builtPrompt || prompt || 'My project'),
+        prompt: builtPrompt || prompt,
+        projectType,
+        code,
+      });
+      if (stored) shelfIdRef.current = stored.id;
     }, 250);
     return () => clearTimeout(timer);
   }, [aiTitle, builtPrompt, builtSummary, code, conceptsUsed, hasPersonalized, hasPlayedOnce, hasTestedLatest, isSaved, projectType, prompt, promptHistory, user]);

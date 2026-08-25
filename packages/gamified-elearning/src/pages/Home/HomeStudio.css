@@ -674,3 +674,21 @@
   .pick__label { flex: 1; }
   .pick__blurb { flex-basis: 100%; }
 }
+
+/* The returning-visitor heading. Same element, a fraction of the height, so
+   what the child made is the first thing on the screen instead of the fourth.
+
+   Written as `.studio-hero h1.…` because the plain-class version lost to
+   `.studio-hero h1` on specificity and the heading stayed full height — which
+   is the whole thing this rule exists to prevent. */
+.studio-hero h1.studio-hero__title--compact {
+  font-size: clamp(1.35rem, 5.4vw, 1.85rem);
+  line-height: 1.25;
+  margin: 0 0 16px;
+}
+
+@media (max-width: 700px) {
+  .studio-hero h1.studio-hero__title--compact {
+    font-size: clamp(1.35rem, 5.4vw, 1.85rem);
+  }
+}
