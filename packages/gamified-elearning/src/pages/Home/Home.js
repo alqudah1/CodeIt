@@ -9,6 +9,7 @@ import { trackEvent } from "../../utils/trackEvent";
 import HomePilotSignup from "./HomePilotSignup";
 import { STARTER_GAMES } from "../Builder/starterGames";
 import YourShelf from "./YourShelf";
+import Evidence from "./Evidence";
 import { listProjects, migrateLegacyDraft } from "../../utils/projectShelf";
 import "./Home.css";
 import "./HomeStudio.css";
@@ -298,6 +299,8 @@ export default function Home() {
 
                 <small className="pick__note">No account needed. Nothing to download.</small>
               </div>
+              <Evidence />
+
               <div className="studio-hero__actions">
                 {latestProject && (
                   <Link

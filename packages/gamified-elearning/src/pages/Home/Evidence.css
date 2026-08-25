@@ -1,0 +1,67 @@
+/* The parent-facing panel. Calmer and plainer than the rest of the page — it is
+   the one thing here written for an adult. */
+
+.evidence {
+  margin: 22px 0 0;
+  padding: 16px;
+  border: 2px solid #dfe6e2;
+  border-radius: 18px;
+  background: #f8fbf9;
+}
+
+.evidence__title {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #6b7f72;
+}
+
+.evidence__summary {
+  margin: 8px 0 0;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #24382d;
+}
+
+.evidence__skills {
+  margin: 12px 0 0;
+  padding: 0 0 0 20px;
+  display: grid;
+  gap: 5px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #3c5548;
+}
+
+.evidence__projects {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.evidence__projects li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  font-size: 0.85rem;
+}
+
+.evidence__project {
+  font-weight: 700;
+  color: #24382d;
+}
+
+.evidence__when { color: #7d9188; }
+
+.evidence__note {
+  margin: 12px 0 0;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: #6b7f72;
+}

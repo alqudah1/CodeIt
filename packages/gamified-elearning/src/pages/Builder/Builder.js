@@ -43,6 +43,8 @@ import {
 } from './previewStorage';
 import CodePanel from './CodePanel';
 import { starterGameById } from './starterGames';
+import ProveItPanel from './ProveItPanel';
+import { hasUnderstood, recordUnderstanding } from '../../utils/understanding';
 import {
   collapseErrors,
   describeError,
@@ -2887,6 +2889,25 @@ export default function Builder() {
                   Keep it in a free account
                 </button>
               </aside>
+            )}
+
+            {/* The understanding check. On Keep, because "is this mine?" is the
+                question you ask when you are about to keep something — and
+                because a parent's reason to pay is made here, not on Play. */}
+            {onTab('keep') && code && (
+              <ProveItPanel
+                code={code}
+                projectTitle={projectName}
+                alreadyProved={hasUnderstood(localStorage, shelfIdRef.current)}
+                onProved={({ skills }) => {
+                  recordUnderstanding(localStorage, {
+                    projectId: shelfIdRef.current || previewKeyRef.current,
+                    projectTitle: projectName,
+                    skills,
+                  });
+                  void trackEvent('project_explained', String(skills.length), token);
+                }}
+              />
             )}
 
             {/* Project description — inline editable. On Keep, because writing
