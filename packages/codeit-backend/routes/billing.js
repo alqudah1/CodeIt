@@ -23,6 +23,8 @@ const router = express.Router();
 // checkout button. Secrets live in Vercel environment variables and are never
 // read by, or sent to, the frontend.
 
+const { billingReadiness, readinessMessage } = require('../billingReadiness');
+
 const PUBLIC_SITE_URL = process.env.PUBLIC_SITE_URL || 'https://codeitlearn.com';
 
 function billingConfig() {
@@ -40,10 +42,22 @@ function isTestModeOnly() {
 }
 
 let warnedAboutLiveKey = false;
+let warnedAboutWebhookSecret = false;
 
 function isConfigured() {
   const config = billingConfig();
   if (!config.enabled || !config.secretKey || !config.priceId) return false;
+
+  // The webhook secret is part of being configured, not an extra. See
+  // billingReadiness.js for why, and for the rule itself.
+  if (!config.webhookSecret) {
+    if (!warnedAboutWebhookSecret) {
+      warnedAboutWebhookSecret = true;
+      console.error(readinessMessage(billingReadiness(process.env)));
+    }
+    return false;
+  }
+
   if (isTestModeOnly() && !config.secretKey.startsWith('sk_test_')) {
     // Treat a live key as "not configured" rather than throwing. Billing stays
     // completely inert, so a misconfigured deploy cannot charge a real family.
@@ -348,6 +362,9 @@ async function assertCanPublish(userId, context) {
 module.exports = router;
 module.exports.assertCanPublish = assertCanPublish;
 module.exports.handleWebhook = handleWebhook;
+// Exported so the rule that decides whether a family may be charged can be
+// tested directly, rather than inferred from an endpoint's response.
+module.exports.isConfigured = isConfigured;
 module.exports.isBillingConfigured = isConfigured;
 // Exported for tests: the shared-sandbox guard is worth asserting directly.
 module.exports.applyEvent = applyEvent;
