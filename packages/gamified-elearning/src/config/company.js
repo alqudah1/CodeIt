@@ -21,7 +21,11 @@
 
 const COMPANY = {
   name: 'CodeIt',
-  alternateNames: ['CodeItLearn', 'Code It Learn'],
+  // 'CodeIt Learn' is what the public profiles are named. On LinkedIn there
+  // are ten other companies called CodeIt and this site did not appear at all;
+  // adding the second word makes the name findable by a person, not just
+  // resolvable by a model. Every alias used anywhere is declared here.
+  alternateNames: ['CodeIt Learn', 'CodeItLearn', 'Code It Learn'],
   url: 'https://codeitlearn.com',
 
   // Stated by the owner. Safe to publish.
@@ -54,6 +58,7 @@ const COMPANY = {
    */
   sameAs: [
     'https://www.linkedin.com/company/codeitlearn',
+    'https://www.youtube.com/@CodeItLearn1',
   ],
 };
 
