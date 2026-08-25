@@ -4729,9 +4729,27 @@
 .bldr-studio-panel { scroll-margin-top: 200px; }
 
 /* On phones a fixed action bar sits at the bottom of the viewport, so the last
-   control in a panel needs room to clear it. */
+   control in a panel needs room to clear it.
+ *
+ * This used to name only .bldr-mine, and every other panel had the same
+ * problem unnoticed. On a 320px screen the browser check found the speed
+ * slider at y=524 with the play bar drawn over it: elementFromPoint at the
+ * middle of the slider returned the play bar, so a child pressing exactly on
+ * the control would press Play instead. Not subtly wrong — the bottom control
+ * of every panel was unreachable.
+ *
+ * scroll-margin-bottom matters as much as the padding: scrollIntoView does the
+ * smallest scroll that works, which parks the element flush against the bottom
+ * edge, which is where the bar is. */
 @media (max-width: 900px) {
+  .bldr-studio-panel__body { padding-bottom: 5.5rem; }
   .bldr-mine { padding-bottom: 5.5rem !important; }
+
+  .bldr-control,
+  .bldr-control input,
+  .bldr-control button {
+    scroll-margin-bottom: 7rem;
+  }
 }
 
 /* How many people actually played a published project. Shown only when the
@@ -4998,4 +5016,274 @@
   /* The fake browser chrome is charming on a laptop and is 68px of nothing on a
      phone, directly above the game. */
   .bldr-browser__bar { padding-top: 8px; padding-bottom: 8px; font-size: 0.72rem; }
+}
+
+/* ── The controls a game actually has ────────────────────────────────────────
+ *
+ * Generated from the child's own settings block, so the number of rows and the
+ * mix of types is unknown until the project loads. Everything here has to work
+ * for one row or eight, on a 320px phone or a 1680px desktop, with a fingertip
+ * or a mouse.
+ *
+ * The slider is deliberately large. WCAG's 44px floor is about hitting a
+ * control at all; dragging one accurately with a child's finger, on a moving
+ * game, needs more than the minimum.
+ */
+.bldr-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.bldr-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 0.85rem;
+  border: 1.5px solid rgba(56, 41, 31, 0.12);
+  border-radius: 14px;
+  background: #FFFDF9;
+}
+
+.bldr-control__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.bldr-control__label {
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #38291F;
+}
+
+/* The child's own variable name. Quiet, monospaced, and always next to the
+ * friendly label — this is the word they will meet in the code tab and be
+ * asked about in Prove It, and pairing them costs nothing. */
+.bldr-control__var {
+  font-family: 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #785B49;
+  background: rgba(56, 41, 31, 0.06);
+  padding: 0.1rem 0.4rem;
+  border-radius: 6px;
+}
+
+.bldr-control__val {
+  margin-left: auto;
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #FF7A00;
+  font-variant-numeric: tabular-nums;   /* so the number stops jittering mid-drag */
+  display: inline-flex;
+  align-items: center;
+}
+
+.bldr-control__chip {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid rgba(56, 41, 31, 0.2);
+  display: inline-block;
+}
+
+/* ── The slider is 44px of hit area wearing an 8px track ─────────────────────
+ *
+ * The shared .bldr-studio-range sets height: 5px, which makes the *element*
+ * 5px tall. A pointer only hits the element's box, so the thumb drawn outside
+ * it is decoration: the sweep measured this control at 8px and a child would
+ * have had to land a finger inside an 8px band to drag it at all.
+ *
+ * So the input is 44px and transparent, and the thin line a child sees is the
+ * track pseudo-element inside it. The look is unchanged; the target is five
+ * times bigger.
+ *
+ * The thumb needs its own vertical centring on WebKit — the track is 8px and
+ * the thumb 30px, so it sits (8 - 30) / 2 = -11px above the track. Firefox
+ * centres it for us, which is why only the WebKit rule carries the margin.
+ */
+.bldr-control .bldr-studio-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 44px;
+  background: transparent;
+  border-radius: 0;
+}
+
+.bldr-control .bldr-studio-range::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(56, 41, 31, 0.16);
+}
+
+.bldr-control .bldr-studio-range::-moz-range-track {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(56, 41, 31, 0.16);
+}
+
+.bldr-control .bldr-studio-range::-moz-range-progress {
+  height: 8px;
+  border-radius: 4px;
+  background: #FF7A00;
+}
+
+/* A thumb big enough for a nine-year-old to drag while watching the game, not
+ * while watching the slider. Both vendor forms are needed; there is no shared
+ * selector for this. */
+.bldr-control .bldr-studio-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -11px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #FF7A00;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 6px rgba(56, 41, 31, 0.28);
+  cursor: pointer;
+}
+
+.bldr-control .bldr-studio-range::-moz-range-thumb {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #FF7A00;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 6px rgba(56, 41, 31, 0.28);
+  cursor: pointer;
+}
+
+.bldr-control__colours {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.bldr-control__swatch {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 3px solid rgba(56, 41, 31, 0.14);
+  cursor: pointer;
+  padding: 0;
+}
+
+.bldr-control__swatch--on {
+  border-color: #38291F;
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.35);
+}
+
+.bldr-control__picker {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 3px dashed rgba(56, 41, 31, 0.28);
+  background: #fff;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.bldr-control__text {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.5rem 0.8rem;
+  border: 1.5px solid rgba(56, 41, 31, 0.16);
+  border-radius: 10px;
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #38291F;
+}
+
+.bldr-control__toggle {
+  min-height: 44px;
+  min-width: 96px;
+  border-radius: 12px;
+  border: 2px solid rgba(56, 41, 31, 0.16);
+  background: #fff;
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-weight: 800;
+  color: #785B49;
+  cursor: pointer;
+}
+
+.bldr-control__toggle--on {
+  background: #FF7A00;
+  border-color: #FF7A00;
+  color: #fff;
+}
+
+.bldr-control__foot {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  min-height: 1.2rem;
+}
+
+.bldr-control__help {
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-size: 0.82rem;
+  color: #785B49;
+}
+
+/* Only appears once the value has moved. A permanent "reset" on an untouched
+ * control is an invitation to worry about breaking something. */
+.bldr-control__reset {
+  margin-left: auto;
+  background: none;
+  border: none;
+  padding: 0.2rem 0.1rem;
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #A855F7;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.bldr-el-panel--game .bldr-el-panel__hint {
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-size: 0.87rem;
+  color: #785B49;
+  margin: 0 0 0.7rem;
+}
+
+.bldr-el-panel__jump {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 12px;
+  border: none;
+  background: #FF7A00;
+  color: #fff;
+  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* On the narrowest phones the label, variable name and value stop fitting on
+ * one line. Wrapping is fine; the value moving to its own line is not, because
+ * it is the thing being watched while dragging. */
+@media (max-width: 380px) {
+  .bldr-control {
+    padding: 0.65rem 0.6rem;
+  }
+
+  .bldr-control__var {
+    font-size: 0.68rem;
+  }
+
+  .bldr-control__swatch,
+  .bldr-control__picker {
+    width: 40px;
+    height: 40px;
+  }
 }
