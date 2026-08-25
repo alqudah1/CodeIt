@@ -13,6 +13,100 @@
 
 const GUIDE_PAGES = [
   {
+    slug: "glitch-for-classrooms",
+    title: "Glitch for Classrooms: What Teachers Use Now",
+    description: "Glitch ended hosting in July 2025. A teacher's replacement guide: remixable starters, age gates, Chromebook fit, and what to do with old projects.",
+    h1: "My class used Glitch. What do we use now?",
+    lastVerified: "2026-08-25",
+    targetQueries: ["my class used Glitch for coding projects what should we use now", "glitch alternative for classroom", "glitch shut down what do teachers use", "free coding platform for middle school no installs", "remixable starter project for a class like glitch", "coding site for students under 13 chromebook", "replacement for glitch and replit teams for education", "student web hosting age requirements school"],
+    markdown: `**Short answer:** for most classes, the closest working replacements are [CodeHS Free](https://codehs.com/free) if you want a full course and roster in one place, [Pickcode](https://pickcode.io/) if you want a lighter tool with starter code and assignments, and [Neocities](https://neocities.org/) or the [p5.js Web Editor](https://editor.p5js.org/) if you only need students to build and share small web projects. None of them reproduce the exact Glitch loop — one link, thirty remixes, thirty live URLs in a minute — and it is worth knowing that before you plan the unit.
+
+This page is only about classroom use. If you are looking for general hosting for your own projects, that is a different question, covered separately in [Glitch shut down: where beginner web projects live now](/glitch-shutdown).
+
+## Two more deadlines land this week
+
+Before anything else, two things that affect teachers right now, in August 2026:
+
+- **GitHub Classroom shuts down on 28 August 2026.** No new classrooms can be created, and classroom-specific data — assignment definitions, autograding tests, submission history — is deleted after 4 September 2026. GitHub accounts, repositories and organizations are unaffected. There is an export utility; use it this week if you have anything in there. ([GitHub community FAQ](https://github.com/orgs/community/discussions/145312))
+- **Trinket shuts down on 31 August 2026.** The code was open-sourced, but as the team put it, open source does not mean the site stays online. A community-run instance exists at [trinket.strivemath.org](https://trinket.strivemath.org/), which Trinket does not guarantee. Download your trinkets from Account Settings before the date. ([Trinket announcement](https://trinket.io/announcement))
+
+Add these to Glitch (July 2025) and Replit's Teams for Education (retired 1 August 2024), and four of the browser-based classroom tools teachers relied on have closed inside two years. That is the context you are planning in, and it is a reasonable argument for choosing tools that either charge money or are backed by a foundation, rather than free products from venture-funded startups.
+
+## What Glitch actually gave you
+
+It helps to separate the four things Glitch did, because they replace separately.
+
+1. **Remixable starters.** You posted one link; every student clicked Remix and had a private, working copy. No accounts to pre-create, no zip files, no git.
+2. **Instant hosting.** Every project had a live URL from the first save, so students could show each other and take the link home.
+3. **Zero-install editing.** It ran in a browser tab on a locked-down Chromebook with no admin rights.
+4. **Small server-side projects.** Node and Express apps, not just static pages.
+
+Point 1 is the hard one. Almost every replacement below asks the student to sign in before they can fork anything, and the sign-in is where age policy stops you.
+
+## The age gates, which usually decide it
+
+For a middle-school class this is the deciding constraint, not features. Verified today against each platform's own terms:
+
+| Platform | Age minimum | Account required | School email or admin needed | Remix / fork flow | Live URL | Managed Chromebook | Cost |
+|---|---|---|---|---|---|---|---|
+| [CodeHS Free](https://codehs.com/free) | Teacher creates student accounts; no public age gate found (unverified) | Yes, teacher-issued | No | Starter code in assignments; sandbox for free builds | Web projects run in CodeHS | Browser only | Free, no card |
+| [Pickcode](https://pickcode.io/) | Unverified | Yes, teacher-issued | No | Lessons with starter code | Shareable project links (unverified) | Browser only | Free tier for unlimited projects; Pro $500/teacher/yr + ~$5/student/semester |
+| [Scratch](https://scratch.mit.edu/educators/) | Teacher Accounts create student accounts without student email | Yes | No | "Remix" is native and closest in spirit to Glitch | Project page URL | Browser only | Free |
+| [p5.js Web Editor](https://editor.p5js.org/) | Unverified | To save; not to view or run | No | Duplicate a sketch (sign-in needed to save) | Yes, sketch URL | Browser only | Free |
+| [Neocities](https://neocities.org/) | Terms state no minimum for account creation | Yes, one per site | No | None — upload files | Yes, free subdomain | Browser only | Free: 1 GB, 200 GB bandwidth, file-type limits. Supporter $5/mo |
+| [GitHub Pages](https://pages.github.com/) + template repos | **13+** | Yes | No | "Use this template" is the nearest true remix | Yes | Browser only | Free |
+| [GitHub Codespaces](https://github.com/features/codespaces) | **13+** | Yes | No | Open any repo in a browser VS Code | Port forwarding, not permanent hosting | Browser only | Free personal tier: 120 core-hours, 15 GB-months/mo |
+| [Classroom 50](https://classroom50.org/) | 13+ (rides on GitHub accounts) | Yes | You own a GitHub org | Assignment repos, autograded | Via GitHub Pages | Browser + CLI | Free, open source |
+| [CodeSandbox](https://codesandbox.io/) | Unverified | Yes | No | Fork | Yes | Browser only | Free: 400 credits/mo, 20 sandboxes; freezes when credits run out |
+| [StackBlitz](https://stackblitz.com/) | Unverified | To save | No | Fork | Yes | Browser only | Free tier |
+| [Netlify](https://www.netlify.com/) | **13+** | Yes | No | Drag-and-drop deploy | Yes | Browser only | Free tier, no card |
+| [Vercel](https://vercel.com/) | **16+** | Yes | No | Deploy from repo | Yes | Browser only | Free tier |
+| [CodePen](https://codepen.io/) | Terms state services are **not available to minors under 18**; 13–17 require a guardian-created and guardian-managed account | Yes, to save | No | Fork a pen | Pen URL, not a site | Browser only | Free tier |
+| [itch.io](https://itch.io/) | 13+ to use; **18+ or parental consent to publish** | Yes | No | None | Yes, game page | Browser only | Free |
+
+Two entries in that table surprise most teachers. **Vercel is 16+, not 13+** — most guides get this wrong, and it quietly rules out every middle school. **CodePen's terms are stricter than its reputation**: they state the service is not available to minors, with 13–17-year-olds requiring a guardian-managed account. Read that clause yourself before you put thirty student sign-ups through it.
+
+"Managed Chromebook" above means the tool is browser-only and needs no local install. It does not mean your district has allowlisted the domain. Ask your admin to allow the site and any preview subdomains before the lesson, not during it.
+
+## Choosing by what you used Glitch for
+
+**You posted one starter link and everyone remixed it.** Scratch is the only mainstream tool where remix works exactly as it did on Glitch, but it is blocks, not HTML. For text-based work, the honest closest match is a **GitHub template repository** — you build one repo, tick "Template repository" in settings, and students click "Use this template" to get their own copy. That requires 13+ accounts and about twenty minutes of setup pain the first time. For under-13 classes, CodeHS and Pickcode solve it a different way: the teacher issues the accounts and attaches starter code to an assignment, so no student ever signs up for anything.
+
+**Students needed a live URL to share.** Neocities is the least encumbered option: a free account, 1 GB, a real URL, no card, and terms that set no account minimum age. GitHub Pages is better if you want version history and are 13+. Skip Vercel for school-age classes on the age rule alone.
+
+**No installs on locked-down machines.** Every option here is browser-only. If you just need students to edit files without any account at all, [vscode.dev](https://vscode.dev/) opens a full editor in a tab and can open a local folder — no sign-in, no hosting.
+
+**Small Node or Express projects.** Be prepared for disappointment. Free hosting for student-run servers has largely gone; [Render](https://render.com/), [Railway](https://railway.com/) and [Fly.io](https://fly.io/) all want a repo, an account and usually a card, and their free tiers sleep or expire. GitHub Codespaces is the closest thing left, and its forwarded ports are for development, not for a public class showcase. If your unit depended on a live Node backend per student, plan to rewrite it as front-end JavaScript or budget for hosting.
+
+## Your old class projects
+
+Glitch code was downloadable from the dashboard through the end of 2025; that route is closed now. Redirects had to be configured before 31 December 2025 and were promised to work "at least through the end of 2026" — so any glitch.me link in a course page, handout, LMS module or student portfolio is on a clock that runs out within months. Repoint them now. Note that glitch.com itself now redirects to the company blog, which is why searching for classroom guidance still surfaces a dead product's own marketing.
+
+If you did not export, check whether projects were ever pushed to GitHub, and check the Internet Archive for the rendered page — that gets you the front-end HTML and CSS of a static project, though not a Node backend or its data.
+
+---
+
+### Disclosure: about CodeIt
+
+**CodeIt is not a schools product, and this page would be dishonest if it implied otherwise.** There is no rostering, no LMS integration, no standards alignment, no teacher dashboard, no class management and no bulk account creation. A teacher with thirty students cannot run CodeIt the way they ran Glitch. If you are the teacher this page is written for, the recommendation above stands: CodeHS, Pickcode, Classroom 50 with GitHub Pages, Neocities or the p5.js editor.
+
+CodeIt is a browser-based studio for ages 5–18. A learner describes a website, game or quiz, AI builds a working first version, and the learner then edits the real HTML, CSS and JavaScript behind it. Profiles for ages 5–12 are parent-managed and email-verified, and **managed under-13 profiles cannot publish publicly**; independent accounts start at 13. The free plan does not expire, needs no card, and includes ten assisted project builds a month across two learner profiles under one parent view. The family plan is CA$12/month, cancellable any time. There are 31 beginner Python lessons; there is no web curriculum, because the web side is the builder rather than a course. The honest fit is a homeschool parent, a small after-school club, or one or two children — not a class.
+
+---
+
+*Last verified: 25 August 2026. Age policies and free tiers change; check each platform's own terms before committing a class to it.*
+
+## Questions teachers ask
+
+**Is Glitch coming back for education?** No. Hosting and user app profiles ended on 8 July 2025, citing operational costs and misuse. The company still publishes, but there is nothing to remix.
+
+**What is the closest thing to Glitch's remix button?** Scratch for blocks, GitHub template repositories for text-based code, and teacher-issued starter code in CodeHS or Pickcode when students are under 13.
+
+**Can under-13 students publish a website?** Rarely under their own account. Neocities' terms set no account minimum; GitHub and Netlify require 13, Vercel 16, and CodePen's terms are stricter still. The usual workaround is a single teacher-owned host where student work is uploaded under the teacher's account.
+
+**We used Replit Teams for Education before Glitch. Is Replit an option again?** The K-12 classroom management product was retired on 1 August 2024 and has not returned in that form. Replit's current education page is oriented to universities and AI app building; treat any K-12 fit as unverified.`,
+  },
+  {
     slug: "after-scratch",
     title: "What to Use After Scratch, Before Python",
     description: "Your kid outgrew Scratch but isn't ready for Python. Here's how to tell if they're actually ready, why the Python jump fails, and what to pick instead.",
