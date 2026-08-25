@@ -1,6 +1,7 @@
 import Header from '../Header/Header';
 import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
+import COMPANY from '../../config/company';
 import {
   FREE_MONTHLY_AI_BUILDS,
   INTERVAL,
@@ -112,7 +113,7 @@ export default function Terms() {
 
             <section id="contact">
               <h2>Questions</h2>
-              <p>Email <a href="mailto:hello@codeitlearn.com">hello@codeitlearn.com</a> for anything about your account, a payment, or a refund.</p>
+              <p>Email <a href={`mailto:${COMPANY.contactEmail}`}>{COMPANY.contactEmail}</a> for anything about your account, a payment, or a refund.</p>
               <p>CodeIt is operated from Toronto, Ontario, Canada, and these terms are governed by the law of Ontario. CodeIt is not yet incorporated; the registered company name and a formal notice address will be published in this section as soon as registration is complete.</p>
               <p>Payments for CodeIt Plus are sold and processed through Stripe. For subscriptions taken through Stripe&rsquo;s managed payments, the seller of record shown on your receipt is Link, LLC, 354 Oyster Point Boulevard, South San Francisco, CA, United States, which also collects and remits any sales tax that applies. Your receipt and card statement come from them, not from CodeIt.</p>
             </section>

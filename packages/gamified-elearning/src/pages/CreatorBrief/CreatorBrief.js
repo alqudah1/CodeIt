@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import BrandLogo from '../../components/BrandLogo/BrandLogo';
 import { useSEO } from '../../hooks/useSEO';
 import './CreatorBrief.css';
+import COMPANY from '../../config/company';
 
 const CHANNEL_LINKS = [
   ['instagram', 'Instagram', 'https://codeitlearn.com/pricing?utm_source=instagram&utm_medium=creator#family-pilot'],
@@ -287,7 +288,7 @@ export default function CreatorBrief() {
           <div>
             <Link to="/pricing">Open the family-pilot page <span aria-hidden="true">→</span></Link>
             <Link to="/builder">Rehearse the demo</Link>
-            <a href="mailto:hello@codeitlearn.com?subject=CodeIt%20creator%20collaboration">Ask a collaboration question</a>
+            <a href={`mailto:${COMPANY.contactEmail}?subject=CodeIt%20creator%20collaboration`}>Ask a collaboration question</a>
           </div>
         </section>
       </main>

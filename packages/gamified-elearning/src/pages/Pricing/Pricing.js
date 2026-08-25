@@ -17,6 +17,7 @@ import {
   startCheckout,
 } from '../../utils/billing';
 import './Pricing.css';
+import COMPANY from '../../config/company';
 
 const FREE_FEATURES = [
   'Beginner Python lessons and coding games',
@@ -42,7 +43,7 @@ const PLUS_FEATURES = [
 ];
 
 const PILOT_EMAIL_HREF = [
-  'mailto:hello@codeitlearn.com',
+  `mailto:${COMPANY.contactEmail}`,
   '?subject=CodeIt%20Founding%20Family%20pilot',
   '&body=Hi%20CodeIt%2C%0A%0AI%27m%20interested%20in%20the%20Founding%20Family%20pilot.%0A%0AMy%20learner%27s%20age%20range%3A%0AWhat%20we%27d%20like%20to%20build%3A%0A%0AThanks!',
 ].join('');

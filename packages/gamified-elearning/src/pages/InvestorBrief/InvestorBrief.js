@@ -3,6 +3,7 @@ import BrandLogo from '../../components/BrandLogo/BrandLogo';
 import { useSEO } from '../../hooks/useSEO';
 import '../CreatorBrief/CreatorBrief.css';
 import './InvestorBrief.css';
+import COMPANY from '../../config/company';
 
 const PRODUCT_LOOP = [
   ['01', 'Imagine', 'A student starts with an idea for a website, game, or quiz.'],
@@ -219,7 +220,7 @@ export default function InvestorBrief() {
           </p>
           <div>
             <Link to="/builder">Experience CodeIt <span aria-hidden="true">→</span></Link>
-            <a href="mailto:hello@codeitlearn.com?subject=CodeIt%20investor%20conversation">Start a conversation</a>
+            <a href={`mailto:${COMPANY.contactEmail}?subject=CodeIt%20investor%20conversation`}>Start a conversation</a>
           </div>
         </section>
       </main>
