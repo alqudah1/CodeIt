@@ -275,6 +275,11 @@ describe('project studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
     await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
 
+    // On Keep, not on Play. Telling a child about browser storage before they
+    // have played the thing they just made is the wrong moment for a true
+    // message.
+    expect(screen.queryByLabelText('Guest project recovery')).not.toBeInTheDocument();
+    openStudioPage('Keep');
     expect(screen.getByLabelText('Guest project recovery')).toHaveTextContent('Backed up in this browser');
     expect(screen.getByLabelText('Guest project recovery')).toHaveTextContent('only on this device for up to 7 days');
     await waitFor(() => expect(JSON.parse(localStorage.getItem(GUEST_PROJECT_DRAFT_KEY))).toEqual(expect.objectContaining({

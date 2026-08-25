@@ -545,3 +545,132 @@
   .studio-footer__bottom { flex-wrap: wrap; }
   .studio-footer__bottom a:first-of-type { margin-left: 0; }
 }
+
+/* ── Pick one. No typing. ───────────────────────────────────────────────────
+   The front door for a child. Big targets, a picture on every one, and no
+   empty box anywhere in sight. */
+
+.pick {
+  margin: 18px 0 6px;
+}
+
+.pick__ask {
+  margin: 0 0 10px;
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: #3d302b;
+}
+
+.pick__row {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.pick__card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  height: 100%;
+  padding: 14px 14px 16px;
+  border: 2px solid #f0d8c5;
+  border-radius: 18px;
+  background: #fff;
+  text-decoration: none;
+  box-shadow: 0 4px 0 #f0d8c5;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+
+.pick__card:hover,
+.pick__card:focus-visible {
+  transform: translateY(-3px);
+  border-color: #f87824;
+  box-shadow: 0 7px 0 #f8b98a;
+}
+
+.pick__card:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 0 #f0d8c5;
+}
+
+.pick__emoji {
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.pick__label {
+  font-weight: 800;
+  font-size: 0.98rem;
+  color: #3d302b;
+  line-height: 1.25;
+}
+
+.pick__blurb {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: #7a6a60;
+}
+
+/* Typing is still here — it is just no longer the toll gate.
+
+   The display:none is not redundant. The browser hides a closed <details>'s
+   children with a UA rule, and .studio-hero__idea's own display beats it on
+   specificity — so without this the "empty box" this whole block exists to
+   remove was still sitting there in plain sight. */
+.pick__own:not([open]) .studio-hero__idea {
+  display: none;
+}
+
+.pick__own {
+  margin-top: 14px;
+}
+
+.pick__own > summary {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #8a7768;
+  padding: 6px 2px;
+}
+
+.pick__own > summary:hover {
+  color: #f87824;
+}
+
+.pick__own-label {
+  display: block;
+  margin: 8px 0 6px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #3d302b;
+}
+
+.pick__note {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: #8a7768;
+}
+
+@media (max-width: 560px) {
+  /* One per row on a phone: three cards side by side on a 390px screen makes
+     each one 110px wide, which is too small to read and too small to hit. */
+  .pick__row { grid-template-columns: 1fr; }
+
+  .pick__card {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    padding: 13px 14px;
+  }
+
+  .pick__emoji { font-size: 1.7rem; }
+  .pick__label { flex: 1; }
+  .pick__blurb { flex-basis: 100%; }
+}

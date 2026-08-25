@@ -37,6 +37,7 @@ import {
   stripPreviewScripts,
 } from './previewStorage';
 import CodePanel from './CodePanel';
+import { starterGameById } from './starterGames';
 import {
   collapseErrors,
   describeError,
@@ -831,6 +832,13 @@ export default function Builder() {
   // baked into the iframe's srcDoc — making it reactive would reload the frame
   // every time a game saved its score, resetting the game the instant a child
   // beat their record.
+  // Once a child has a project, everything about *starting* one is in the way.
+  // The studio used to keep the hero, the help-level chooser and the whole idea
+  // form on screen after the project existed, which pushed the game itself
+  // 1700px down a phone — far enough off-screen that the browser suspended its
+  // animation frames and the game quietly stopped running.
+  const [showStartOver, setShowStartOver] = useState(false);
+
   const previewKeyRef = useRef('draft');
 
   // What the running project has complained about, and the last version of it
@@ -1185,6 +1193,23 @@ export default function Builder() {
     const params = new URLSearchParams(location.search);
     const pre = params.get('prompt');
     if (pre) setPrompt(pre);
+
+    // ?start=catch-stars — a game the child tapped on the front page.
+    //
+    // It is already written, so it appears now rather than after twenty
+    // seconds of watching a spinner. That wait was the single longest gap
+    // between "I want a game" and "I have a game", and for a seven-year-old
+    // twenty seconds is a very long time to believe nothing is broken.
+    const starter = starterGameById(params.get('start'));
+    if (starter) {
+      setPrompt(starter.prompt);
+      setBuiltPrompt(starter.prompt);
+      setProjectType('game');
+      setAiTitle(starter.label);
+      setCode(starter.code);
+      setPromptHistory([starter.prompt]);
+      setBuildKey(k => k + 1);
+    }
 
     // Auto-load a remixed project (redirected from /project/:publicId after remix)
     const remixId = params.get('remix');
@@ -2469,6 +2494,7 @@ export default function Builder() {
         {/* ════════════════════════════════════════
             HERO
         ════════════════════════════════════════ */}
+        {(!hasResult || showStartOver) && (
         <section className="bldr-hero">
           <div className="bldr-hero__badge">Project studio</div>
           <h1 className="bldr-hero__title">
@@ -2480,6 +2506,7 @@ export default function Builder() {
             change the code, and learn how it works.
           </p>
         </section>
+        )}
 
         {isNewAccountWelcome && !code && (
           <aside className="bldr-account-ready" role="status">
@@ -2488,6 +2515,7 @@ export default function Builder() {
           </aside>
         )}
 
+        {(!hasResult || showStartOver) && (
         <section className="bldr-help-level" aria-label="Choose how much guidance you want">
           <span className="bldr-help-level__label">How much help do you want?</span>
           <div className="bldr-help-level__options">
@@ -2504,6 +2532,7 @@ export default function Builder() {
             ))}
           </div>
         </section>
+        )}
 
         {/* Once a project exists the pages carry the guidance, and each one
             says what to do on it. Leaving the sticky coach up as well meant two
@@ -2568,6 +2597,7 @@ export default function Builder() {
         {/* ════════════════════════════════════════
             INPUT CARD
         ════════════════════════════════════════ */}
+        {(!hasResult || showStartOver) && (
         <div className="bldr-input-card">
           <div className="bldr-textarea-wrap">
             <textarea
@@ -2614,6 +2644,20 @@ export default function Builder() {
             Keep personal details private. Do not enter your full name, email, school, address, or passwords.
           </p>
         </div>
+        )}
+
+        {/* One small way back to starting something new, instead of keeping the
+            whole build form on screen forever. */}
+        {hasResult && (
+          <button
+            type="button"
+            className="bldr-startover"
+            onClick={() => setShowStartOver(open => !open)}
+            aria-expanded={showStartOver}
+          >
+            {showStartOver ? 'Back to my project' : '+ Make something else'}
+          </button>
+        )}
 
         {/* ════════════════════════════════════════
             LOADING STATE
@@ -2772,7 +2816,15 @@ export default function Builder() {
               )}
             </div>
 
-            {!user && (
+            {/* The "keep it in a free account" nudge lives on Keep. It is true
+                and useful, but it was sitting between a child and the game they
+                had just made, and nobody wants to read about browser storage
+                before they have played the thing.
+
+                The recovery message is different and stays on Play: a child
+                coming back to find their project waiting needs to be told so at
+                the moment they arrive, not on a page they might not open. */}
+            {!user && (onTab('keep') || (guestDraftRecovered && onTab('play'))) && (
               <aside id="guest-project-recovery" className={`bldr-guest-backup${guestDraftRecovered ? ' is-recovered' : ''}`} aria-label="Guest project recovery">
                 <div>
                   <strong>
@@ -2790,7 +2842,10 @@ export default function Builder() {
               </aside>
             )}
 
-            {/* Project description — inline editable */}
+            {/* Project description — inline editable. On Keep, because writing
+                a description is something you do when you are keeping a thing,
+                not the first thing you meet after making it. */}
+            {onTab('keep') && (
             <div className="bldr-project-desc">
               {editingDesc ? (
                 <textarea
@@ -2812,6 +2867,7 @@ export default function Builder() {
                 </p>
               )}
             </div>
+            )}
 
             {/* Interactivity badges */}
             {interactivityBadges.length > 0 && (

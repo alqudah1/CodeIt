@@ -7,6 +7,7 @@ import BrandLogo from "../../components/BrandLogo/BrandLogo";
 import { useSEO } from "../../hooks/useSEO";
 import { trackEvent } from "../../utils/trackEvent";
 import HomePilotSignup from "./HomePilotSignup";
+import { STARTER_GAMES } from "../Builder/starterGames";
 import "./Home.css";
 import "./HomeStudio.css";
 
@@ -192,32 +193,69 @@ export default function Home() {
               <p className="studio-kicker">A creative coding studio for students</p>
               {user && <p className="studio-welcome">Welcome back, {user.name || "Builder"}.</p>}
               <h1 id="studio-title">
-                Make a website.
-                <span>Learn the code behind it.</span>
+                Make a real game.
+                <span>Then change the code inside it.</span>
               </h1>
               <p className="studio-hero__lead">
-                Turn an idea into a real website, game, or quiz. Then learn the code, change it, save it, and share it.
+                Games, quizzes and websites you actually play — then open them up, see how they
+                work, and make them yours.
               </p>
-              <form className="studio-hero__idea" onSubmit={startHeroIdea}>
-                <label htmlFor="studio-hero-idea">
-                  {user ? "What should we build next?" : "What do you want to build?"}
-                </label>
-                <div className="studio-hero__idea-row">
-                  <input
-                    ref={ideaInputRef}
-                    id="studio-hero-idea"
-                    value={heroIdea}
-                    onChange={(event) => setHeroIdea(event.target.value)}
-                    placeholder="A space quiz, a football game…"
-                    maxLength={240}
-                    autoComplete="off"
-                  />
-                  <button type="submit">
-                    Build it <span aria-hidden="true">→</span>
-                  </button>
-                </div>
-                <small>No account needed to try. Keep names and personal details private.</small>
-              </form>
+              {/* ── Pick one. No typing. ──────────────────────────────────
+                  This used to be an empty text box, and an empty text box is
+                  where a nine-year-old stops. Being asked to describe what you
+                  want is a writing task standing in front of a making task —
+                  and the children who most need this are the ones least likely
+                  to get past it.
+
+                  So: three games you can see, one tap, running immediately.
+                  Typing is still here for the older ones who arrive with an
+                  idea already in their head; it is just no longer the toll gate
+                  everyone has to pay first. */}
+              <div className="pick">
+                <p className="pick__ask" id="pick-ask">
+                  {user ? "What do you want to make next?" : "Pick one and it starts right now"}
+                </p>
+                <ul className="pick__row" aria-labelledby="pick-ask">
+                  {STARTER_GAMES.map((game) => (
+                    <li key={game.id}>
+                      <Link
+                        className="pick__card"
+                        to={`/builder?start=${game.id}`}
+                        onClick={() => trackEvent("landing_cta_click", `starter-${game.id}`)}
+                      >
+                        <span className="pick__emoji" aria-hidden="true">{game.emoji}</span>
+                        <span className="pick__label">{game.label}</span>
+                        <span className="pick__blurb">{game.blurb}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+
+                <details className="pick__own">
+                  <summary>Or type your own idea</summary>
+                  <form className="studio-hero__idea" onSubmit={startHeroIdea}>
+                    <label htmlFor="studio-hero-idea" className="pick__own-label">
+                      What do you want to build?
+                    </label>
+                    <div className="studio-hero__idea-row">
+                      <input
+                        ref={ideaInputRef}
+                        id="studio-hero-idea"
+                        value={heroIdea}
+                        onChange={(event) => setHeroIdea(event.target.value)}
+                        placeholder="A space quiz, a football game…"
+                        maxLength={240}
+                        autoComplete="off"
+                      />
+                      <button type="submit">
+                        Build it <span aria-hidden="true">→</span>
+                      </button>
+                    </div>
+                  </form>
+                </details>
+
+                <small className="pick__note">No account needed. Nothing to download.</small>
+              </div>
               <div className="studio-hero__actions">
                 {latestProject && (
                   <Link

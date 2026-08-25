@@ -1959,14 +1959,18 @@
 @media (max-width: 700px) {
   .bldr-hero__title { font-size: 2.2rem; }
   .bldr-result__header { flex-direction: column; align-items: flex-start; }
-  .bldr-iframe { height: 380px; }
+  /* Sized against the screen rather than a fixed number of pixels. A real game
+     in a 300px letterbox is not a real game, and 300px is what a phone used to
+     get — the starters are full-screen arcade games and were arriving in a
+     window shorter than the goal they were drawing. */
+  .bldr-iframe { height: 62vh; min-height: 420px; }
   .bldr-input-card { padding: 1.25rem; }
 }
 
 @media (max-width: 480px) {
   .bldr-hero__title { font-size: 1.9rem; }
   .bldr-build-btn { font-size: 1rem; }
-  .bldr-iframe { height: 300px; }
+  .bldr-iframe { height: 60vh; min-height: 400px; }
 }
 
 /* ═══════════════════════════════════
@@ -2625,15 +2629,17 @@
     padding-bottom: 7rem;
   }
 
-  /* Bigger iframe in play mode on mobile */
+  /* On the Play page the game is the point, so it gets the screen. */
   .bldr-iframe--play {
-    height: 520px;
+    height: 76vh;
+    min-height: 480px;
   }
 }
 
 @media (max-width: 480px) {
   .bldr-iframe--play {
-    height: 440px;
+    height: 74vh;
+    min-height: 460px;
   }
 }
 
@@ -4961,3 +4967,35 @@
 }
 
 .bldr-project-checklist li > button:hover { text-decoration: underline; }
+
+/* A quiet way back to starting something new. Quiet on purpose: the child
+   already has a project, and the loudest thing on screen should be the project,
+   not an invitation to abandon it. */
+.bldr-startover {
+  display: block;
+  margin: 14px auto 4px;
+  padding: 10px 18px;
+  border: 2px solid #f0d8c5;
+  border-radius: 99px;
+  background: #fff;
+  color: #8a7768;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.bldr-startover:hover {
+  border-color: #f87824;
+  color: #3d302b;
+}
+
+/* A desktop / tablet / mobile switcher on a phone is 71px of screen spent
+   telling a child they could look at their game on the device they are already
+   holding. It goes; the preview is already responsive. */
+@media (max-width: 700px) {
+  .bldr-device-bar__devices { display: none; }
+  .bldr-device-bar { padding-top: 8px; padding-bottom: 8px; }
+  /* The fake browser chrome is charming on a laptop and is 68px of nothing on a
+     phone, directly above the game. */
+  .bldr-browser__bar { padding-top: 8px; padding-bottom: 8px; font-size: 0.72rem; }
+}
