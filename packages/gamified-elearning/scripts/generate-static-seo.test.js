@@ -429,3 +429,43 @@ test('pages that state a price state exactly one, in one currency', () => {
     assert.ok(!/US\$/.test(text), `${page.route} states USD`);
   }
 });
+
+/* ─── Identity is actually present ─────────────────────────────────────────
+   The whole point of company.js is that a stranger — or a model — can tell
+   this CodeIt apart from MIT CodeIt and codeitlearning.com. These fail if the
+   identifying facts stop reaching the page. */
+
+test('/about names a real person and a reachable contact', () => {
+  const company = require('./content-loader').loadCompany();
+  const realTemplate = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
+  const text = bodyText(renderRouteDocument(realTemplate, PAGES.find((p) => p.route === '/about')));
+
+  assert.ok(company.hasIdentity(), 'company.js carries no identifying facts at all');
+  assert.ok(text.includes(company.founderName), '/about does not name the founder');
+  assert.ok(text.includes(company.contactEmail), '/about gives no contact address');
+});
+
+test('the Organization schema carries founder and contact', () => {
+  const company = require('./content-loader').loadCompany();
+  const realTemplate = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
+  const html = renderRouteDocument(realTemplate, PAGES.find((p) => p.route === '/about'));
+  const graph = JSON.parse(
+    /<script type="application\/ld\+json">\s*(\{[\s\S]*?\})\s*<\/script>/.exec(html)[1]
+  )['@graph'];
+  const org = graph.find((node) => node['@type'] === 'Organization');
+
+  assert.equal(org.founder.name, company.founderName);
+  assert.equal(org.email, company.contactEmail);
+  assert.ok(org.contactPoint, 'no contactPoint on the Organization node');
+  assert.equal(org.address.addressLocality, company.city);
+});
+
+test('no identity field is a placeholder', () => {
+  const company = require('./content-loader').loadCompany();
+  for (const [key, value] of Object.entries(company)) {
+    if (typeof value !== 'string' || !value) continue;
+    for (const pattern of [/\[.*?\]/, /\bTODO\b/i, /\bFILL[_ ]IN\b/i, /example\.com/i, /\bXXX\b/]) {
+      assert.ok(!pattern.test(value), `company.${key} looks like a placeholder: "${value}"`);
+    }
+  }
+});

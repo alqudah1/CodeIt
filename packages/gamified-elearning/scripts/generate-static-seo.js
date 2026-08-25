@@ -412,8 +412,19 @@ const IDENTITY_PAGES = [
         heading: 'Not to be confused with',
         paragraphs: [
           'CodeIt at codeitlearn.com is unrelated to CodeIT at codeitlearning.com (a coding tutoring company in London), MIT CodeIt (a youth outreach programme at MIT), CodeIT at codeit.us (a software engineering services company), or CodeIt.right (a C# code analysis tool).',
+          `CodeIt is built and run by ${COMPANY.founderName || 'its founder'} in ${COMPANY.locationLine()}.`,
         ],
       },
+      ...(COMPANY.contactEmail
+        ? [
+            {
+              heading: 'Contact',
+              paragraphs: [
+                `Email ${COMPANY.contactEmail}${COMPANY.founderName ? ` and it reaches ${COMPANY.founderName}` : ''}. Questions about safety, accounts, billing or anything a page here got wrong are all welcome.`,
+              ],
+            },
+          ]
+        : []),
     ],
   },
   {

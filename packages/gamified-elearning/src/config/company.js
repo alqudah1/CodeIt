@@ -30,11 +30,20 @@ const COMPANY = {
   country: 'Canada',
   countryCode: 'CA',
 
-  // Not yet available. Leave empty rather than guessing.
+  founderName: 'Mustafa AlQudah',
+
+  // Temporary: this is a personal business address on another domain, used
+  // until a codeitlearn.com mailbox exists. It is a real, monitored inbox, so
+  // it is better than no contact at all — but an address on the site's own
+  // domain is a stronger signal that the site and the organisation are the
+  // same thing. Swap it here when that mailbox is ready; nothing else changes.
+  contactEmail: 'mustafa@lynq.build',
+
+  // Not yet available. Leave empty rather than guessing — a fabricated
+  // founding date is exactly what a reader checks when deciding if a site is
+  // real, and the company is not registered yet.
   legalName: '',
   foundingDate: '',
-  founderName: '',
-  contactEmail: '',
 
   /**
    * External profiles. Each one is simultaneously a `sameAs` target and an
