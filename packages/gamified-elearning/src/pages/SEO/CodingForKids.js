@@ -4,32 +4,12 @@ import Header from '../Header/Header';
 import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
 import { useFAQSchema } from '../../hooks/useFAQSchema';
+import FAQS from '../../data/faqs';
 import { trackEvent } from '../../utils/trackEvent';
 import HomePilotSignup from '../Home/HomePilotSignup';
 import './CodingForKids.css';
 
-const FAQS = [
-  {
-    q: 'What age is CodeIt for?',
-    a: 'Parents and legal guardians can create private managed profiles for learners ages 5–12 after confirming the adult account email. Independent student accounts are for ages 13–18.',
-  },
-  {
-    q: 'Do I need to know how to code to help?',
-    a: 'No. The activities use plain-language instructions and visible results. A parent or educator can help by asking what changed, what the learner wants to try next, and how they solved a problem.',
-  },
-  {
-    q: 'What can a learner make?',
-    a: 'Learners can create and edit websites, small games, and quizzes in the project studio. They can also follow step-by-step Python lessons or experiment in the browser playground.',
-  },
-  {
-    q: 'Is CodeIt free?',
-    a: 'CodeIt has useful free activities. A Founding Family plan is being considered at CA$12 per month, but no payment starts from an interest button and no paid family subscription is live today.',
-  },
-  {
-    q: 'Are projects public?',
-    a: 'Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly. Managed profiles ages 5–12 cannot publish projects.',
-  },
-];
+// One source of truth, shared with /faq and the static-SEO build script.
 
 const PATHS = [
   {

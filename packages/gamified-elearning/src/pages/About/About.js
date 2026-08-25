@@ -92,10 +92,10 @@ export default function About() {
 
           <h2>What it costs</h2>
           <p>
-            CodeIt has useful free activities and no card is required to start. A paid family plan
-            is planned, but billing is not active today and no subscription starts automatically. We
-            will give clear notice before that changes. We are not going to promise it will
-            always be free, because we do not know that.
+            CodeIt has a free plan that does not expire and needs no card. A paid family
+            plan is available at CA$12 per month, cancellable at any time, and nothing starts
+            charging on its own. We are not going to promise the free plan will always be as
+            generous as it is now, because we do not know that.
           </p>
 
           <h2>Not to be confused with</h2>

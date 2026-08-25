@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const {
+  loadPricing,
   loadBlogPosts,
   loadLessons,
   loadGuidePages,
@@ -18,24 +19,10 @@ const SITE = 'https://codeitlearn.com';
 // builds of the same commit produce byte-identical files.
 const LAST_MODIFIED = '2026-08-25';
 
-/**
- * Single source of truth for the price shown anywhere on the site.
- *
- * NOTE: before this change the site stated three different things — JSON-LD
- * said price "0", /pricing said CA$12/mo, and the /coding-for-kids FAQ said
- * US$12/mo. Currency is a business decision, so this is set to the value that
- * appeared most often (CA$) and centralised here. CONFIRM THIS IS CORRECT and
- * change it in this one place if not.
- */
-const PRICING = {
-  currency: 'CAD',
-  symbol: 'CA$',
-  amount: '12',
-  period: 'month',
-  get label() {
-    return `${this.symbol}${this.amount} per ${this.period}`;
-  },
-};
+// Price and free-plan limits come from src/config/pricing.js — the same file
+// the pricing page reads. This script used to keep its own copy, which is how
+// the site ended up stating the price four different ways.
+const PRICING = loadPricing();
 
 // One source of truth, shared with the /faq page and the parent guide.
 const FAQS = loadFaqs();
@@ -348,14 +335,15 @@ function pricingSections() {
     {
       heading: 'Free access',
       paragraphs: [
-        'CodeIt keeps a useful free option. Beginners can open the project studio, follow the Python lessons, and use the browser playground without paying and without entering a card.',
+        `CodeIt keeps a useful free option. Beginners can open the project studio, follow the Python lessons, and use the browser playground without paying and without entering a card. The free plan includes ${PRICING.FREE_MONTHLY_AI_BUILDS} assisted project builds each month.`,
       ],
     },
     {
-      heading: 'Founding Family pilot',
+      heading: `The paid family plan: ${PRICING.PRICE_PER_INTERVAL}`,
       paragraphs: [
-        `The Founding Family plan is being considered at ${PRICING.label}. It is not live today: no card is required, no subscription starts automatically, and paid billing has not opened.`,
-        'The pilot includes guided setup, more assisted project building, learner profiles, parent visibility, and a direct feedback channel.',
+        `The family plan costs ${PRICING.PRICE_PER_INTERVAL} in ${PRICING.CURRENCY} and can be cancelled at any time. Tax is shown before card details are entered.`,
+        'It adds guided setup, more assisted project building, learner profiles, parent visibility, and a direct feedback channel.',
+        'The free plan does not expire and no card is needed to use it. Nothing starts charging on its own — a subscription begins only when someone chooses to start one.',
       ],
     },
     {
@@ -417,7 +405,7 @@ const IDENTITY_PAGES = [
       {
         heading: 'What it costs',
         paragraphs: [
-          'CodeIt has useful free activities and no card is required to start. A paid family plan is planned, but billing is not active today and no subscription starts automatically. We will give clear notice before that changes. We are not going to promise it will always be free, because we do not know that.',
+          `CodeIt has a free plan that does not expire and needs no card. A paid family plan is available at ${PRICING.PRICE_PER_INTERVAL}, cancellable at any time, and nothing starts charging on its own. We are not going to promise the free plan will always be as generous as it is now, because we do not know that.`,
         ],
       },
       {
@@ -621,7 +609,7 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'Paid features',
       paragraphs: [
-        'Paid billing is not currently active. No card is required to use CodeIt today, and no subscription starts automatically from an interest button. Any future paid plan will be introduced with clear notice before it applies.',
+        `A paid family plan is available at ${PRICING.PRICE_PER_INTERVAL}, cancellable at any time, with tax shown before card details are entered. The free plan does not expire and needs no card, and no subscription starts on its own — one begins only when someone chooses to start it.`,
       ],
     },
   ],
@@ -679,7 +667,7 @@ const HOME_PAGE = {
     {
       heading: 'What it costs',
       paragraphs: [
-        `CodeIt has useful free activities and no card is required to start. A Founding Family plan is being considered at ${PRICING.label}; paid billing is not currently active.`,
+        `CodeIt has a free plan that does not expire and needs no card, including ${PRICING.FREE_MONTHLY_AI_BUILDS} assisted project builds a month. A paid family plan is available at ${PRICING.PRICE_PER_INTERVAL}, cancellable at any time.`,
       ],
     },
     {

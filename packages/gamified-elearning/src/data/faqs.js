@@ -24,7 +24,7 @@ const FAQS = [
   },
   {
     q: 'Is CodeIt free?',
-    a: 'CodeIt has useful free activities and no card is required to start. A paid family plan is planned but billing is not active today, and no subscription starts automatically.',
+    a: 'There is a free plan that does not expire and needs no card, including ten assisted project builds a month. A paid family plan is available at CA$12 per month, cancellable at any time. Nothing starts charging on its own — a subscription begins only when someone chooses to start one.',
   },
   {
     q: 'Are projects public?',

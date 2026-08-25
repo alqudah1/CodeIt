@@ -25,9 +25,13 @@ const SRC = path.resolve(__dirname, '../src');
 function loadEsmDefault(filePath) {
   const source = fs.readFileSync(filePath, 'utf8');
 
-  // `export default foo;` -> `module.exports = foo;`
-  // Also tolerates `export default { ... };`
-  const cjs = source.replace(/export\s+default\s+/g, 'module.exports = ');
+  // `export default foo;`      -> `module.exports = foo;`
+  // `export { A, B };`          -> `module.exports = { A, B };`
+  // `export const X = ...;`     -> `const X = ...;` (collected by the block above)
+  const cjs = source
+    .replace(/export\s+default\s+/g, 'module.exports = ')
+    .replace(/export\s*\{([^}]*)\}\s*;/g, (_, names) => `module.exports = {${names}};`)
+    .replace(/export\s+(const|let|function|class)\s/g, '$1 ');
 
   const sandboxModule = { exports: {} };
   const context = vm.createContext({
@@ -117,7 +121,17 @@ function loadCompany() {
   return company;
 }
 
+/** Price constants, shared with the pricing page so there is one source. */
+function loadPricing() {
+  const pricing = loadEsmDefault(path.join(SRC, 'config/pricing.js'));
+  if (!pricing || !pricing.PRICE_PER_INTERVAL) {
+    throw new Error('content-loader: pricing.js did not export the expected constants');
+  }
+  return pricing;
+}
+
 module.exports = {
+  loadPricing,
   loadBlogPosts,
   loadLessons,
   loadGuidePages,

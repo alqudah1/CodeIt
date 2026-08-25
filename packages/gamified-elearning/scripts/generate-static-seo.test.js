@@ -174,15 +174,14 @@ test('homepage states what the product is, who it is for, and what it costs', ()
   assert.ok(text.length >= 2000, `homepage body text is only ${text.length} characters`);
   assert.match(text, /ages 5.18/i);
   assert.match(text, /HTML, CSS, and JavaScript/i);
-  assert.ok(text.includes(PRICING.symbol + PRICING.amount), 'homepage does not state the price');
+  assert.ok(text.includes(PRICING.PRICE_PER_INTERVAL), 'homepage does not state the price');
 });
 
 test('the price is stated in exactly one currency across all routes', () => {
-  const template = TEMPLATE;
-  const wrongCurrency = PRICING.symbol === 'CA$' ? /US\$\s?12/ : /CA\$\s?12/;
+  const wrong = PRICING.CURRENCY_SYMBOL === 'CA$' ? /US\$\s?\d/ : /CA\$\s?\d/;
   for (const page of [...PAGES, HOME_PAGE]) {
-    const html = renderRouteDocument(template, page);
-    assert.ok(!wrongCurrency.test(bodyText(html)), `${page.route} states a second currency`);
+    const text = bodyText(renderRouteDocument(TEMPLATE, page));
+    assert.ok(!wrong.test(text), `${page.route} states a second currency`);
   }
 });
 
@@ -281,13 +280,20 @@ test('guides name competitors — a page that recommends only us does not get ci
   }
 });
 
-test('no guide states a price or a build allowance — both are in flux', () => {
+test('any price a guide states is the live one', () => {
   for (const guide of PAGES.filter((page) => page.route.startsWith('/guide/'))) {
-    assert.ok(!/(CA|US)\$\s?\d/.test(guide.bodyHtml), `${guide.route} quotes a CodeIt price`);
-    assert.ok(
-      !/\b\d+\s+(assisted|AI)\s+(project\s+)?builds?\b/i.test(guide.bodyHtml),
-      `${guide.route} quotes a build allowance`
-    );
+    for (const quoted of guide.bodyHtml.match(/(?:CA|US)\$\s?\d+(?:\/[a-z]+)?/g) || []) {
+      assert.ok(
+        quoted.startsWith(PRICING.CURRENCY_SYMBOL) && quoted.includes(String(PRICING.AMOUNT)),
+        `${guide.route} quotes "${quoted}" but the live price is ${PRICING.PRICE_PER_INTERVAL}`
+      );
+    }
+    for (const allowance of guide.bodyHtml.match(/\b(\d+)\s+assisted\s+project\s+builds?\b/gi) || []) {
+      assert.ok(
+        allowance.startsWith(String(PRICING.FREE_MONTHLY_AI_BUILDS)),
+        `${guide.route} says "${allowance}" but the free allowance is ${PRICING.FREE_MONTHLY_AI_BUILDS}`
+      );
+    }
   }
 });
 
@@ -381,4 +387,45 @@ test('the FAQ answers what CodeIt does not do', () => {
   assert.match(combined, /no rostering|LMS/i, 'FAQ does not disclose the schools gap');
   assert.match(combined, /cannot publish/i, 'FAQ does not disclose the under-13 publishing limit');
   assert.match(combined, /Python only|no web curriculum/i, 'FAQ does not disclose the curriculum gap');
+});
+
+/* ─── Billing accuracy ──────────────────────────────────────────────────────
+   Billing went live on 25 August 2026. Copy saying otherwise is not a stale-
+   content problem — it is a page telling parents no subscription can start on
+   a site where one can. These fail loudly if that copy ever comes back. */
+
+test('no generated page claims billing is inactive', () => {
+  const STALE = [
+    /billing (is|are) not (currently )?(active|live|switched on)/i,
+    /paid billing has not opened/i,
+    /being considered at/i,
+    /not live today/i,
+  ];
+  for (const page of [...PAGES, HOME_PAGE]) {
+    const haystack = `${page.bodyHtml || ''} ${sectionsToTextSafe(page)} ${page.description} ${page.intro || ''}`;
+    for (const pattern of STALE) {
+      assert.ok(!pattern.test(haystack), `${page.route} still says billing is inactive (${pattern})`);
+    }
+  }
+});
+
+test('the price comes from src/config/pricing.js, not a second copy', () => {
+  const pricing = require('./content-loader').loadPricing();
+  assert.equal(PRICING.PRICE_PER_INTERVAL, pricing.PRICE_PER_INTERVAL);
+  const pricingPage = PAGES.find((page) => page.route === '/pricing');
+  const text = bodyText(renderRouteDocument(TEMPLATE, pricingPage));
+  assert.ok(text.includes(pricing.PRICE_PER_INTERVAL), '/pricing does not state the live price');
+  assert.ok(
+    text.includes(String(pricing.FREE_MONTHLY_AI_BUILDS)),
+    '/pricing does not state the free build allowance'
+  );
+});
+
+test('pages that state a price state exactly one, in one currency', () => {
+  for (const page of [...PAGES, HOME_PAGE]) {
+    const text = bodyText(renderRouteDocument(TEMPLATE, page));
+    const currencies = new Set((text.match(/(CA|US)\$/g) || []));
+    assert.ok(currencies.size <= 1, `${page.route} mixes currencies: ${[...currencies].join(', ')}`);
+    assert.ok(!/US\$/.test(text), `${page.route} states USD`);
+  }
 });
