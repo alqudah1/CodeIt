@@ -15,6 +15,7 @@ import { API_BASE_URL } from '../../config/api';
 import { getNextUnlock, getNextUnlockLabel } from '../../data/unlocks';
 import { usePlayerProgress } from '../../hooks/usePlayerProgress';
 import { TOTAL_LESSONS, builderPromptFor, seoFor } from '../../pages/Lessons/lessonRegistry';
+import { hasQuiz, loadQuizIds } from '../../utils/quizAvailability';
 import { effectiveGuideLevel } from '../../utils/guideLevel';
 import { PredictOutput, FillBlank, OrderSteps } from './LessonInteractions';
 import {
@@ -245,6 +246,13 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   // ── Completion screen ──────────────────────────────────────────────────
   const [completionData, setCompletionData] = useState(null); // { xpEarned, nextRoute }
 
+  // Which lessons actually end in a quiz. See utils/quizAvailability.js: fifteen
+  // of the thirty-one do not, and every one of them used to end on a button
+  // promising one.
+  const [quizIds, setQuizIds] = useState(null);
+  useEffect(() => { loadQuizIds().then(setQuizIds); }, []);
+  const quizExists = hasQuiz(quizIds, lessonId);
+
   // ── Confetti canvas resize ──────────────────────────────────
   useEffect(() => {
     const canvas = confettiRef.current;
@@ -450,10 +458,16 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
     const params      = new URLSearchParams(location.search);
     const fromJourney = params.get('from') === 'journey';
     const nodeId      = params.get('node');
+    // A lesson with no quiz sends them to the next lesson, or to the studio if
+    // this was the last one. Anything is better than a button that promises a
+    // quiz and delivers an error page.
+    const afterLesson = quizExists
+      ? `/quiz/${id}`
+      : (Number(id) < TOTAL_LESSONS ? `/lesson/${Number(id) + 1}` : '/builder');
     const nextRoute   = (fromJourney && nodeId)
       ? getJourneyNext(nodeId)
-      : `/quiz/${id}`;
-    setCompletionData({ xpEarned, quizId: id, nextRoute, fromJourney });
+      : afterLesson;
+    setCompletionData({ xpEarned, quizId: id, nextRoute, fromJourney, quizExists });
   };
 
   // Can the current step be proceeded past?
@@ -462,7 +476,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   // Next-button label
   const nextLabel = () => {
     if (isLastStep) {
-      if (canProceed) return `Complete Lesson. Unlock Quiz ${id}`;
+      if (canProceed) return quizExists ? `Complete Lesson. Unlock Quiz ${id}` : 'Finish this lesson';
       return 'Complete this step to advance';
     }
     if (currentStep?.type === 'concept') return 'Got It. Next Step';
@@ -557,14 +571,20 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
             <p className="sl-completion-card__cta-hint">
               {completionData.fromJourney
                 ? 'Head back to the Journey Map to continue your path.'
-                : `Quiz ${completionData.quizId} is now unlocked. Test what you just learned.`}
+                : completionData.quizExists
+                  ? `Quiz ${completionData.quizId} is now unlocked. Test what you just learned.`
+                  : 'Nice work. Carry straight on to the next lesson.'}
             </p>
             <div className="sl-completion-card__actions">
               <button
                 className="sl-completion-card__btn sl-completion-card__btn--primary"
                 onClick={() => navigate(completionData.nextRoute)}
               >
-                {completionData.fromJourney ? 'Back to Journey' : `Start Quiz ${completionData.quizId}`}
+                {completionData.fromJourney
+                  ? 'Back to Journey'
+                  : completionData.quizExists
+                    ? `Start Quiz ${completionData.quizId}`
+                    : (Number(completionData.quizId) < TOTAL_LESSONS ? 'Next lesson' : 'Go and build something')}
               </button>
               {builderPromptFor(id) && (
                 <button
