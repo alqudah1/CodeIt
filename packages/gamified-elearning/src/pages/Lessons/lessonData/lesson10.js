@@ -1,7 +1,7 @@
 const lesson10 = {
   id: 10,
   title: "Combining Concepts",
-  subtitle: "Put it all together — variables, strings, loops, lists, and functions!",
+  subtitle: "Put it all together. Variables, strings, loops, lists, and functions!",
   emoji: "🎯",
   story: "Functions, loops and lists were three separate ideas. Now they become one program.",
   steps: [
@@ -21,7 +21,7 @@ const lesson10 = {
       code: 'def shout(word):\n    return word.upper() + "!"\n\nwords = ["go", "win"]\nfor word in words:\n    print(shout(word))',
       choices: ['go!\nwin!', 'GO!\nWIN!', 'GO WIN', 'shout(go)\nshout(win)'],
       correct: 1,
-      explain: 'Correct — the loop calls the function once per word, and the function shouts each one.',
+      explain: 'Correct. The loop calls the function once per word, and the function shouts each one.',
       wrongHint: 'The function does two things to each word: capitals, and an exclamation mark.',
       hints: ['.upper() makes capitals.', 'The loop runs the function once for each item in the list.'],
     },
@@ -52,7 +52,7 @@ const lesson10 = {
       description: 'Run this mini program that uses functions, loops, and lists together!',
       code: 'def show_scores(names, scores):\n    for i in range(len(names)):\n        print(names[i], "scored", scores[i])\n\nnames = ["Alice", "Bob", "Charlie"]\nscores = [90, 85, 92]\nshow_scores(names, scores)',
       successPattern: /scored/i,
-      hint: 'Change the names and scores, then run again. range(len(names)) gives one index per name!',
+      hint: 'Change the names and scores, then run again. Range(len(names)) gives one index per name!',
       xp: 20,
     },
   ]

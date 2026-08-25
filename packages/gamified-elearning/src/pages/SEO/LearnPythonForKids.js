@@ -8,15 +8,15 @@ import './SEOPage.css';
 const FAQS = [
   {
     q: 'Is Python a good language for kids to learn?',
-    a: 'Yes — Python is consistently ranked the best first programming language for beginners and kids. It uses simple, English-like syntax with no unnecessary punctuation, so kids can focus on thinking like a programmer rather than fighting the language. Python is also used professionally at companies like Google, NASA, and YouTube, so skills learned now remain valuable long-term.',
+    a: 'Yes. Python is consistently ranked the best first programming language for beginners and kids. It uses simple, English-like syntax with no unnecessary punctuation, so kids can focus on thinking like a programmer rather than fighting the language. Python is also used professionally at companies like Google, NASA, and YouTube, so skills learned now remain valuable long-term.',
   },
   {
     q: 'What ages can use CodeIt?',
-    a: 'Parents and legal guardians can create private managed profiles for learners ages 5–12 after confirming the adult account email. Independent student accounts are for ages 13–18. The lessons also work for older beginners.',
+    a: 'Parents and legal guardians can create private managed profiles for learners ages 5 to 12 after confirming the adult account email. Independent student accounts are for ages 13 to 18. The lessons also work for older beginners.',
   },
   {
     q: 'Do kids need prior coding experience to use CodeIt?',
-    a: 'No experience is needed. CodeIt\'s Lesson 1 starts from absolute zero — the very first step is writing a single line of Python. Every concept is introduced before it is used, so there are no assumptions about what a child already knows. Nothing needs to be installed; Python runs directly in the browser.',
+    a: 'No experience is needed. CodeIt\'s Lesson 1 starts from absolute zero. The very first step is writing a single line of Python. Every concept is introduced before it is used, so there are no assumptions about what a child already knows. Nothing needs to be installed; Python runs directly in the browser.',
   },
   {
     q: 'How long does each Python lesson take?',
@@ -24,7 +24,7 @@ const FAQS = [
   },
   {
     q: 'Is CodeIt free to use?',
-    a: 'CodeIt has useful free lessons, practice, and project tools. A paid family plan is being tested, but it is not live and CodeIt does not collect payment today.',
+    a: 'Every lesson, the playground and building your own projects are free, and stay free. There is a paid plan, CodeIt Plus, at CA$12 a month plus tax, but you never need it to learn Python here.',
   },
 ];
 
@@ -52,7 +52,7 @@ export default function LearnPythonForKids() {
             </h1>
             <p className="seo-hero-desc">
               Write a line, run it, and see what changed. CodeIt gives beginners a clear path
-              through real Python—free to start, with no download or signup needed for Lesson 1.
+              through real Python, free to start, with no download or signup needed for Lesson 1.
             </p>
             <div className="seo-cta-row">
               <Link
@@ -60,7 +60,7 @@ export default function LearnPythonForKids() {
                 className="seo-cta-btn"
                 onClick={() => void trackEvent('learning_start', 'lesson-one')}
               >
-                Start Lesson 1 — no signup &rarr;
+                Start Lesson 1. no signup &rarr;
               </Link>
               <Link
                 to="/playground"
@@ -77,14 +77,14 @@ export default function LearnPythonForKids() {
             <span className="seo-answer-box__label">Quick Answer</span>
             <p className="seo-answer-box__answer">
               CodeIt helps kids, teens, and other beginners learn Python through 31 interactive
-              lessons, each covering one concept at a time — no experience or downloads needed.
+              lessons, each covering one concept at a time. No experience or downloads needed.
             </p>
             <p className="seo-answer-box__detail">
               Every lesson includes a live code editor built into the page, so kids write and run
               real Python directly in their browser. After each lesson, a short quiz locks in the
               learning, and a story-driven coding puzzle makes the concept feel real and rewarding.
               For example, after Lesson 1, kids use <code>print()</code> to guide a robot through
-              an adventure story — applying the skill immediately in a fun context.
+              an adventure story. Applying the skill immediately in a fun context.
             </p>
           </section>
 
@@ -96,7 +96,7 @@ export default function LearnPythonForKids() {
               <p className="seo-p">
                 Before a kid can build a game, a chatbot, or a calculator, they need a language that
                 doesn't get in the way. Python is that language. It reads almost like plain English,
-                so beginners can focus on learning how to think like a programmer — not fighting with
+                so beginners can focus on learning how to think like a programmer. Not fighting with
                 semicolons and curly braces.
               </p>
               <p className="seo-p">
@@ -111,7 +111,7 @@ export default function LearnPythonForKids() {
               </p>
               <p className="seo-p">
                 Python is also used everywhere: at Google, NASA, YouTube, and in data science and
-                machine learning. Learning Python today opens real doors tomorrow — but right now,
+                machine learning. Learning Python today opens real doors tomorrow. But right now,
                 the most important thing is that it's fun to learn.
               </p>
             </section>
@@ -123,28 +123,28 @@ export default function LearnPythonForKids() {
                 By the end, kids have a solid foundation in real Python programming:
               </p>
               <ul className="seo-list">
-                <li><strong>Lesson 1:</strong> Hello Python — using print() to display output</li>
-                <li><strong>Lesson 2:</strong> Variables — storing and updating information</li>
-                <li><strong>Lesson 3:</strong> Strings — working with text and basic string methods</li>
-                <li><strong>Lesson 4:</strong> If Statements — making decisions in code</li>
-                <li><strong>Lesson 5:</strong> Simple Loops — repeating actions with for and range()</li>
-                <li><strong>Lesson 6:</strong> For Loops — looping through strings and combining with if</li>
-                <li><strong>Lesson 7:</strong> Lists — creating and manipulating collections of data</li>
-                <li><strong>Lesson 8:</strong> Loops with Lists — combining loops and lists together</li>
-                <li><strong>Lesson 9:</strong> Functions — writing reusable blocks of code</li>
-                <li><strong>Lesson 10:</strong> Combining Concepts — functions, loops, and lists working together</li>
-                <li><strong>Lesson 11:</strong> Numbers &amp; Arithmetic — calculating with integers and decimals</li>
-                <li><strong>Lesson 12:</strong> Booleans &amp; Comparisons — testing whether something is true</li>
-                <li><strong>Lesson 13:</strong> Logical Operators — combining several conditions</li>
-                <li><strong>Lesson 14:</strong> Type Casting — converting between text and numbers</li>
-                <li><strong>Lesson 15:</strong> String Formatting — building messages with f-strings</li>
-                <li><strong>Lesson 16:</strong> String Methods — cleaning, searching, and changing text</li>
+                <li><strong>Lesson 1:</strong> Hello Python. Using print() to display output</li>
+                <li><strong>Lesson 2:</strong> Variables. Storing and updating information</li>
+                <li><strong>Lesson 3:</strong> Strings. Working with text and basic string methods</li>
+                <li><strong>Lesson 4:</strong> If Statements. Making decisions in code</li>
+                <li><strong>Lesson 5:</strong> Simple Loops. Repeating actions with for and range()</li>
+                <li><strong>Lesson 6:</strong> For Loops. Looping through strings and combining with if</li>
+                <li><strong>Lesson 7:</strong> Lists. Creating and manipulating collections of data</li>
+                <li><strong>Lesson 8:</strong> Loops with Lists. Combining loops and lists together</li>
+                <li><strong>Lesson 9:</strong> Functions. Writing reusable blocks of code</li>
+                <li><strong>Lesson 10:</strong> Combining Concepts. Functions, loops, and lists working together</li>
+                <li><strong>Lesson 11:</strong> Numbers &amp; Arithmetic. Calculating with integers and decimals</li>
+                <li><strong>Lesson 12:</strong> Booleans &amp; Comparisons. Testing whether something is true</li>
+                <li><strong>Lesson 13:</strong> Logical Operators. Combining several conditions</li>
+                <li><strong>Lesson 14:</strong> Type Casting. Converting between text and numbers</li>
+                <li><strong>Lesson 15:</strong> String Formatting. Building messages with f-strings</li>
+                <li><strong>Lesson 16:</strong> String Methods. Cleaning, searching, and changing text</li>
               </ul>
               <p className="seo-p">
-                Each lesson has an interactive code editor built right into the page — no downloads,
+                Each lesson has an interactive code editor built right into the page. No downloads,
                 no setup. Kids write Python, run it, and see results instantly. You can also
                 experiment freely in the <Link to="/playground">Python playground</Link> between
-                lessons — a blank editor with starter presets, no account required.
+                lessons. A blank editor with starter presets, no account required.
               </p>
             </section>
 
@@ -166,7 +166,7 @@ export default function LearnPythonForKids() {
                 <li>A coding puzzle that uses the new concept in a fun context</li>
               </ul>
               <p className="seo-p">
-                This structure means kids are never just watching — they're coding from the very first
+                This structure means kids are never just watching. They're coding from the very first
                 lesson. Active practice is the fastest way to build programming skills, especially for
                 young learners.
               </p>
@@ -176,7 +176,7 @@ export default function LearnPythonForKids() {
               <h2 className="seo-h2">Coding Puzzles That Reinforce Every Lesson</h2>
               <p className="seo-p">
                 After each lesson and quiz, a coding puzzle unlocks. These aren't abstract
-                exercises — they're story-driven challenges where the concept the kid just learned
+                exercises. They're story-driven challenges where the concept the kid just learned
                 is the key to solving the puzzle.
               </p>
               <p className="seo-p">
@@ -196,8 +196,8 @@ export default function LearnPythonForKids() {
               <h2 className="seo-h2">Who Is This For?</h2>
               <p className="seo-p">
                 Parents and legal guardians can create private managed profiles for learners ages
-                5–12 after confirming the adult account email. Independent student accounts are
-                designed for ages 13–18. No coding experience is needed—the first lesson starts from zero,
+                5 to 12 after confirming the adult account email. Independent student accounts are
+                designed for ages 13 to 18. No coding experience is needed, the first lesson starts from zero,
                 the language is simple, the instructions
                 are friendly, and there's nothing to install.
               </p>
@@ -211,7 +211,7 @@ export default function LearnPythonForKids() {
                 <li>Kids who've tried other platforms but found them too hard or too boring</li>
               </ul>
               <p className="seo-p">
-                The gamified format — XP, leaderboards, an avatar system, and a journey map — keeps
+                The gamified format. XP, leaderboards, an avatar system, and a journey map. Keeps
                 young learners motivated well past the first few lessons.
               </p>
             </section>
@@ -225,7 +225,7 @@ export default function LearnPythonForKids() {
               </p>
               <p className="seo-p">
                 Want to explore before signing up? Try the{' '}
-                <Link to="/playground">free Python playground</Link> — write and run Python in your
+                <Link to="/playground">free Python playground</Link>. write and run Python in your
                 browser instantly, no account needed. Read our{' '}
                 <Link to="/blog/learn-python-for-kids">guide to learning Python for kids</Link>
                 {' '}for more tips, or check the <Link to="/blog">CodeIt blog</Link> for articles on
@@ -261,14 +261,14 @@ export default function LearnPythonForKids() {
             <h2>Ready to Learn Python?</h2>
             <p>
               31 free beginner lessons, no downloads, no credit card. Start Lesson 1 in under a
-              minute — or try the playground first to see Python in action.
+              minute. Or try the playground first to see Python in action.
             </p>
             <Link
               to="/lesson/1"
               className="seo-cta-btn"
               onClick={() => void trackEvent('learning_start', 'lesson-one')}
             >
-              Open Lesson 1 — No Signup Needed &rarr;
+              Open Lesson 1. No Signup Needed &rarr;
             </Link>
           </div>
 

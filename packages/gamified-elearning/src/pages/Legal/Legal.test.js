@@ -14,7 +14,7 @@ describe('trust pages', () => {
   test('renders the current privacy and child-safety commitments', () => {
     render(<Privacy />);
 
-    expect(screen.getByRole('heading', { name: 'Clear information about what CodeIt collects—and why.' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Clear information about what CodeIt collects, and why.' })).toBeInTheDocument();
     expect(screen.getByText('Projects are private by default')).toBeInTheDocument();
     expect(screen.getByText(/does not claim that email confirmation alone proves legal identity/i)).toBeInTheDocument();
     expect(screen.getByText(/does not collect a child email address/i)).toBeInTheDocument();

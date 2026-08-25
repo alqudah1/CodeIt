@@ -1,16 +1,16 @@
 const lesson19 = {
   id: 19,
-  title: "Import and Random — Borrowing Superpowers",
-  subtitle: "Python comes with toolboxes. import opens one.",
+  title: "Import and Random. Borrowing Superpowers",
+  subtitle: "Python comes with toolboxes. Import opens one.",
   emoji: "🎲",
   xp: 50,
-  story: "No game is fun if it does the same thing every time. random is how you roll a dice, shuffle a deck, or pick a surprise.",
+  story: "No game is fun if it does the same thing every time. Random is how you roll a dice, shuffle a deck, or pick a surprise.",
   steps: [
     {
       type: 'concept',
       id: 'concept',
       title: 'Somebody Already Wrote It',
-      body: 'You do not have to build everything yourself. Python ships with modules — ready-made toolboxes of code. import brings one into your program, and then you use its tools with a dot.',
+      body: 'You do not have to build everything yourself. Python ships with modules. Ready-made toolboxes of code. Import brings one into your program, and then you use its tools with a dot.',
       highlight: 'import random\n\nrandom.randint(1, 6)      # a whole number, 1 to 6\nrandom.choice(["a", "b"])  # one item from a list',
       code: 'import random\n\ndice = random.randint(1, 6)\nprint("You rolled", dice)',
     },
@@ -22,7 +22,7 @@ const lesson19 = {
       template: '___ random\n\nheroes = ["Nova", "Blaze", "Echo"]\npicked = random.___(heroes)\nprint(picked)',
       options: ['import', 'from', 'choice', 'randint'],
       answers: ['import', 'choice'],
-      explain: 'That is it. randint gives you a number; choice picks an item out of a list.',
+      explain: 'That is it. Randint gives you a number; choice picks an item out of a list.',
       wrongHint: 'One word opens the toolbox. The other is the tool that picks from a list.',
       hints: [
         'The first line is how every module gets brought in.',
@@ -33,7 +33,7 @@ const lesson19 = {
       type: 'example',
       id: 'example',
       title: 'Roll the Dice',
-      description: 'Run this a few times. The number changes — that is the point.',
+      description: 'Run this a few times. The number changes. That is the point.',
       code: 'import random\n\nfor roll in range(5):\n    print("Roll", roll + 1, ":", random.randint(1, 6))',
       expectedOutput: /Roll/,
     },
@@ -41,7 +41,7 @@ const lesson19 = {
       type: 'concept',
       id: 'concept-math',
       title: 'The Maths Toolbox Too',
-      body: 'random is not the only one. math holds things like pi and square roots. Every module works the same way: import it, then reach for its tools with a dot.',
+      body: 'random is not the only one. Math holds things like pi and square roots. Every module works the same way: import it, then reach for its tools with a dot.',
       highlight: 'import math\n\nmath.pi          # 3.14159...\nmath.sqrt(16)    # 4.0\nmath.floor(2.7)  # 2',
       code: 'import math\n\nprint("Pi is about", round(math.pi, 2))\nprint("The square root of 81 is", math.sqrt(81))',
     },
@@ -56,7 +56,7 @@ const lesson19 = {
       wrongOutputHint: 'Keep the "The 8-ball says:" message and let random.choice pick the answer.',
       hints: [
         'random.choice takes a list and hands back one item from it.',
-        'Add a fifth answer to the list — the 8-ball can now say it too.',
+        'Add a fifth answer to the list. The 8-ball can now say it too.',
       ],
     },
     {

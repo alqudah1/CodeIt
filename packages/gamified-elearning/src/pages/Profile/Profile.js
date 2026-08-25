@@ -29,7 +29,7 @@ function getLevelTitle(level) {
 
 export default function Profile() {
   useSEO({
-    title: 'My Profile — CodeIt',
+    title: 'My Profile. CodeIt',
     description: 'Your avatar, XP, and level on CodeIt.',
     canonical: '/profile',
     robots: 'noindex,nofollow',
@@ -361,7 +361,7 @@ export default function Profile() {
         {/* ── Stats grid ── */}
         <div className="profile-stats">
           <div className="profile-stat">
-            <span className="profile-stat__num">{projectCount ?? '—'}</span>
+            <span className="profile-stat__num">{projectCount ?? ', '}</span>
             <span className="profile-stat__lbl">Projects built</span>
           </div>
           <div className="profile-stat">
@@ -492,7 +492,7 @@ export default function Profile() {
             <div className="profile-parent__heading">
               <div>
                 <p className="profile-parent__eyebrow">Parent-managed access</p>
-                <h2 id="family-controls-title">Private profiles for ages 5–12</h2>
+                <h2 id="family-controls-title">Private profiles for ages 5 to 12</h2>
               </div>
               {familyStatus && (
                 <span className={`profile-parent__status ${familyStatus.emailVerified ? 'is-verified' : 'is-pending'}`}>
@@ -528,7 +528,7 @@ export default function Profile() {
               <>
                 <form className="profile-family__form" onSubmit={createChildProfile}>
                   <h3>Create a private learner profile</h3>
-                  <p>Use a nickname—not the child’s full name. The learner signs in with this username and password.</p>
+                  <p>Use a nickname, not the child’s full name. The learner signs in with this username and password.</p>
                   <div className="profile-family__fields">
                     <label>
                       Learner username
@@ -685,7 +685,7 @@ export default function Profile() {
             <p className="profile-next__label">Next level</p>
             <p className="profile-next__title">{nextTitle}</p>
             <p className="profile-next__hint">
-              Earn {XP_PER_LEVEL - xpInLevel} more XP — build a project, edit it, or save it.
+              Earn {XP_PER_LEVEL - xpInLevel} more XP. Build a project, edit it, or save it.
             </p>
           </div>
         </div>

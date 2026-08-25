@@ -4,7 +4,7 @@ const lesson21 = {
   subtitle: "Visit every label and every value, one pair at a time.",
   emoji: "🔑",
   xp: 50,
-  story: "You have a scoreboard for the whole class. Printing them one at a time would take all day — a loop does it in three lines.",
+  story: "You have a scoreboard for the whole class. Printing them one at a time would take all day. A loop does it in three lines.",
   steps: [
     {
       type: 'concept',
@@ -42,7 +42,7 @@ const lesson21 = {
       code: 'ages = {"Sam": 9, "Ada": 11}\nfor thing in ages:\n    print(thing)',
       choices: ['9\n11', 'Sam\nAda', 'Sam 9\nAda 11', 'An error'],
       correct: 1,
-      explain: 'Correct — looping over a dictionary on its own gives you the keys.',
+      explain: 'Correct. Looping over a dictionary on its own gives you the keys.',
       wrongHint: 'Without .values() or .items(), a plain loop over a dictionary hands you the labels.',
       hints: ['There is no .values() or .items() here.', 'Python picks the keys as the sensible default.'],
     },

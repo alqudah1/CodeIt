@@ -6,17 +6,17 @@ import AdminLayout from './AdminLayout';
 import './AdminLayout.css';
 
 function fmtDate(dt) {
-  if (!dt) return '—';
+  if (!dt) return ', ';
   return new Date(dt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 function fmtDateTime(dt) {
-  if (!dt) return '—';
+  if (!dt) return ', ';
   return new Date(dt).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 function calcAge(dob) {
-  if (!dob) return '—';
+  if (!dob) return ', ';
   const birth = new Date(dob);
-  if (isNaN(birth)) return '—';
+  if (isNaN(birth)) return ', ';
   const today = new Date();
   let age = today.getFullYear() - birth.getFullYear();
   const m = today.getMonth() - birth.getMonth();
@@ -81,13 +81,13 @@ const AdminUserDetail = () => {
         {/* Profile */}
         <div className="adm-detail-card">
           <h3>Profile</h3>
-          <div className="adm-kv"><span className="k">Name</span>      <span className="v">{user.name || '—'}</span></div>
-          <div className="adm-kv"><span className="k">Username</span>  <span className="v">@{user.username || '—'}</span></div>
-          <div className="adm-kv"><span className="k">Email</span>     <span className="v">{user.email || '—'}</span></div>
-          <div className="adm-kv"><span className="k">Role</span>      <span className="v">{user.role || '—'}</span></div>
+          <div className="adm-kv"><span className="k">Name</span>      <span className="v">{user.name || ', '}</span></div>
+          <div className="adm-kv"><span className="k">Username</span>  <span className="v">@{user.username || ', '}</span></div>
+          <div className="adm-kv"><span className="k">Email</span>     <span className="v">{user.email || ', '}</span></div>
+          <div className="adm-kv"><span className="k">Role</span>      <span className="v">{user.role || ', '}</span></div>
           <div className="adm-kv"><span className="k">Birthday</span>  <span className="v">{fmtDate(user.dob)}</span></div>
           <div className="adm-kv"><span className="k">Age</span>       <span className="v">{calcAge(user.dob)}</span></div>
-          <div className="adm-kv"><span className="k">Parent email</span> <span className="v">{user.parent_email || '—'}</span></div>
+          <div className="adm-kv"><span className="k">Parent email</span> <span className="v">{user.parent_email || ', '}</span></div>
           <div className="adm-kv"><span className="k">Joined</span>    <span className="v">{fmtDate(user.created_at)}</span></div>
         </div>
 
@@ -97,7 +97,7 @@ const AdminUserDetail = () => {
             <h3>Progress</h3>
             <div className="adm-kv"><span className="k">Total XP</span>     <span className="v" style={{ color: '#6c63ff', fontWeight: 800 }}>{fmt(student.total_xp)}</span></div>
             <div className="adm-kv"><span className="k">Weekly XP</span>    <span className="v">{fmt(student.weekly_xp)}</span></div>
-            <div className="adm-kv"><span className="k">Level</span>        <span className="v">{student.level_id || '—'}</span></div>
+            <div className="adm-kv"><span className="k">Level</span>        <span className="v">{student.level_id || ', '}</span></div>
             <div className="adm-kv"><span className="k">Current streak</span> <span className="v">{student.current_streak || 0} days</span></div>
             <div className="adm-kv"><span className="k">Longest streak</span> <span className="v">{student.longest_streak || 0} days</span></div>
             <div className="adm-kv"><span className="k">Last active</span>  <span className="v">{fmtDate(student.last_active_date)}</span></div>
@@ -118,7 +118,7 @@ const AdminUserDetail = () => {
             ].map(([k, v]) => (
               <div className="adm-kv" key={k}>
                 <span className="k">{k}</span>
-                <span className="v">{v || '—'}</span>
+                <span className="v">{v || ', '}</span>
               </div>
             ))}
           </div>

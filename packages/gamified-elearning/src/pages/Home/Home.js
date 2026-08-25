@@ -7,7 +7,9 @@ import BrandLogo from "../../components/BrandLogo/BrandLogo";
 import { useSEO } from "../../hooks/useSEO";
 import { trackEvent } from "../../utils/trackEvent";
 import HomePilotSignup from "./HomePilotSignup";
-import { STARTER_GAMES } from "../Builder/starterGames";
+import { HOME_PICKS, STARTER_GAMES } from "../Builder/starterGames";
+import { TOTAL_LESSONS } from "../Lessons/lessonRegistry";
+import { CURRENCY_SYMBOL } from "../../config/pricing";
 import YourShelf from "./YourShelf";
 import Evidence from "./Evidence";
 import { listProjects, migrateLegacyDraft } from "../../utils/projectShelf";
@@ -197,7 +199,7 @@ export default function Home() {
 
   useSEO({
     title: "CodeIt: Build Websites, Learn Code & Share Projects",
-    description: "CodeIt helps students ages 5–18 build real websites, games, and quizzes, then learn, edit, save, and share the code behind them.",
+    description: "CodeIt helps students ages 5 to 18 build real websites, games, and quizzes, then learn, edit, save, and share the code behind them.",
     canonical: "/",
   });
 
@@ -208,10 +210,10 @@ export default function Home() {
         <main>
           <section className="studio-hero" aria-labelledby="studio-title">
             <div className="studio-hero__copy">
-              <p className="studio-kicker">A creative coding studio for students</p>
+              <p className="studio-kicker">Coding for ages 5 to 18</p>
               {user && <p className="studio-welcome">Welcome back, {user.name || "Builder"}.</p>}
               {/* A returning child does not need the pitch. They have already
-                  bought it — they made something. On a phone this headline is
+                  bought it. They made something. On a phone this headline is
                   350px tall, which pushed their own work off the first screen,
                   so when there is work to come back to it steps aside.
 
@@ -229,7 +231,7 @@ export default function Home() {
                     <span>Then change the code inside it.</span>
                   </h1>
                   <p className="studio-hero__lead">
-                    Games, quizzes and websites you actually play — then open them up, see how they
+                    Games, quizzes and websites you actually play. Then open them up, see how they
                     work, and make them yours.
                   </p>
                 </>
@@ -237,7 +239,7 @@ export default function Home() {
               {/* ── Pick one. No typing. ──────────────────────────────────
                   This used to be an empty text box, and an empty text box is
                   where a nine-year-old stops. Being asked to describe what you
-                  want is a writing task standing in front of a making task —
+                  want is a writing task standing in front of a making task , 
                   and the children who most need this are the ones least likely
                   to get past it.
 
@@ -259,7 +261,7 @@ export default function Home() {
                       : "Pick one and it starts right now"}
                 </p>
                 <ul className="pick__row" aria-labelledby="pick-ask">
-                  {STARTER_GAMES.map((game) => (
+                  {HOME_PICKS.map((game) => (
                     <li key={game.id}>
                       <Link
                         className="pick__card"
@@ -340,37 +342,39 @@ export default function Home() {
           </section>
 
           <section className="studio-proof" aria-label="What makes CodeIt different">
-            <p><strong>Build something real.</strong> Start from an idea instead of an intimidating blank file.</p>
-            <p><strong>Learn what powers it.</strong> Connect every visible result to the code behind it.</p>
-            <p><strong>Show meaningful progress.</strong> Save, publish, and keep parents informed.</p>
+            <p><strong>Make something real.</strong> You start with a game that already works, not an empty page.</p>
+            <p><strong>See how it works.</strong> Every colour, score and speed on the screen is a line you can find and change.</p>
+            <p><strong>Show someone.</strong> Save it, share a link, and your grown-up can see what you understood.</p>
           </section>
 
+          {/* ── What is true, rather than what sounds impressive ──────────────
+              This block used to carry five rounded usage numbers and the words
+              "verified in July 2026": a hard-coded date with nothing behind it,
+              on a page whose whole job is being believed. Every number here is
+              instead a fact about the product that a visitor can check in the
+              next sixty seconds without an account. */}
           <section className="studio-traction" aria-labelledby="studio-traction-title">
             <div className="studio-traction__heading">
-              <p className="studio-kicker">Real learning activity</p>
-              <h2 id="studio-traction-title">Learners are already building momentum.</h2>
-              <p>Rounded platform totals, verified in July 2026. Active usage is measured separately from these all-time milestones.</p>
+              <p className="studio-kicker">Free, and no account needed</p>
+              <h2 id="studio-traction-title">You can check every number here yourself.</h2>
+              <p>Nothing below asks for a card, an email, or a download. Open a game and it plays.</p>
             </div>
             <dl className="studio-traction__metrics">
               <div>
-                <dt>Registered accounts</dt>
-                <dd>200+</dd>
+                <dt>Beginner Python lessons</dt>
+                <dd>{TOTAL_LESSONS}</dd>
               </div>
               <div>
-                <dt>XP earned</dt>
-                <dd>140k+</dd>
+                <dt>Games you can open and change</dt>
+                <dd>{STARTER_GAMES.length}</dd>
               </div>
               <div>
-                <dt>Lessons completed</dt>
-                <dd>600+</dd>
+                <dt>Cost to start</dt>
+                <dd>{CURRENCY_SYMBOL}0</dd>
               </div>
               <div>
-                <dt>Quizzes &amp; puzzles completed</dt>
-                <dd>1,900+</dd>
-              </div>
-              <div>
-                <dt>Learners with a streak</dt>
-                <dd>50+</dd>
+                <dt>Things to install</dt>
+                <dd>None</dd>
               </div>
             </dl>
           </section>
@@ -379,7 +383,7 @@ export default function Home() {
             <div className="studio-section-heading">
               <p className="studio-kicker">What a student actually does</p>
               <h2 id="studio-start-title">From “I have an idea” to “I built this.”</h2>
-              <p>The AI-assisted builder removes the scary first step. The lessons and exercises turn that first version into real understanding.</p>
+              <p>Starting is the hard part, so CodeIt writes a first version that already works. The lessons turn it into something you understand and can change yourself.</p>
             </div>
             <div className="studio-start__grid">
               {STARTING_POINTS.map((item) => (
@@ -406,7 +410,7 @@ export default function Home() {
               <small>Available from a student profile. Emails begin only after a parent confirms and chooses the updates they receive.</small>
               <div className="studio-family__setup">
                 <div>
-                  <strong>Using CodeIt with a learner ages 5–12?</strong>
+                  <strong>Using CodeIt with a learner ages 5 to 12?</strong>
                   <span>Create a free adult account, confirm your email, and make their private profile.</span>
                 </div>
                 <Link

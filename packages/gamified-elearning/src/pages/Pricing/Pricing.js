@@ -6,7 +6,7 @@ import { useSEO } from '../../hooks/useSEO';
 import { trackEvent } from '../../utils/trackEvent';
 import { useAuth } from '../../context/AuthContext';
 import { ENDPOINTS } from '../../config/api';
-import { PRICE } from '../../config/pricing';
+import { CURRENCY_SYMBOL, PRICE, PRICE_PER_INTERVAL } from '../../config/pricing';
 import { journeyHeaders } from '../../utils/journey';
 import {
   DEFAULT_BILLING_STATE,
@@ -27,17 +27,17 @@ const FREE_FEATURES = [
 
 const FOUNDING_FEATURES = [
   'Everything in the free plan',
-  '20 assisted project builds each month',
-  'Two learner profiles with a parent view',
-  'A simple monthly progress summary',
-  'Guided setup and a direct feedback channel',
+  '20 new projects a month, built for you by AI',
+  'Two children, one adult account',
+  'One email a month: what your child made and understood',
+  'We help you set it up, and you can write to us directly',
 ];
 
 const PLUS_FEATURES = [
-  'Unlimited AI project builds and edits',
+  'As many AI-built projects and changes as you want',
   'Publish projects to a public CodeIt link',
   'See how many people played what your child made',
-  'Up to four learner profiles with a parent view',
+  'Up to four children, one adult account',
   'Everything in the free plan stays free',
 ];
 
@@ -50,8 +50,8 @@ const PILOT_EMAIL_HREF = [
 const FAQ = [
   ['Can we use CodeIt for free?', 'Yes. The lessons, playground, coding games, and core project tools will keep a useful free option.'],
   ['Is the family pilot free?', 'Yes. Requesting a pilot spot and using the current pilot are free. No card, trial, or subscription starts automatically.'],
-  ['What happens after I request a spot?', 'We email immediate setup steps so you can try the current family experience. We may also invite a small number of families to share feedback before billing opens.'],
-  ['Why is the paid plan not unlimited?', 'Project generation has a real usage cost. A clear monthly allowance keeps the plan predictable for families and sustainable for CodeIt.'],
+  ['What happens after I request a spot?', 'We email you the setup steps straight away, so you can try the family experience today.'],
+  ['Why is the paid plan not unlimited?', 'Every AI-built project costs us real money to make. A set number each month keeps the price the same every month for you, and keeps CodeIt running.'],
   ['Who is the family plan for?', 'Parents or guardians who want more project creation, a view of learning progress, and room for two young learners.'],
 ];
 
@@ -191,8 +191,8 @@ export default function Pricing() {
           <div className="pricing-status">
             <span aria-hidden="true" />
             {billing.billingEnabled
-              ? 'The pilot is free — no card needed to request a spot'
-              : 'No payment is being collected today'}
+              ? 'The pilot is free. No card needed to request a spot.'
+              : 'Paid plans are not open yet. Nothing is charged today.'}
           </div>
         </section>
 
@@ -200,7 +200,7 @@ export default function Pricing() {
           <article className="pricing-card">
             <p className="pricing-card__eyebrow">For every beginner</p>
             <h2>Free</h2>
-            <div className="pricing-price"><strong>$0</strong><span>to start</span></div>
+            <div className="pricing-price"><strong>{CURRENCY_SYMBOL}0</strong><span>free forever, no card</span></div>
             <p className="pricing-card__summary">Learn the basics and make a real first project without a credit card.</p>
             <ul>{FREE_FEATURES.map((feature) => <li key={feature}>{feature}</li>)}</ul>
             <Link className="pricing-button pricing-button--quiet" to="/builder">Start building free</Link>
@@ -266,12 +266,12 @@ export default function Pricing() {
                     disabled={billingBusy}
                     onClick={() => handleBillingAction(startCheckout, 'billing_checkout_start')}
                   >
-                    {billingBusy ? 'Opening secure checkout…' : 'Subscribe for CA$12/month'}
+                    {billingBusy ? 'Opening secure checkout…' : `Subscribe for ${PRICE_PER_INTERVAL}`}
                   </button>
                   <p className="pricing-card__note">
                     Payment is handled by Stripe. Sales tax is added at checkout based on where
                     you live, and you confirm the full total before anything is charged.
-                    {' '}Renews monthly until you cancel — see{' '}
+                    {' '}Renews monthly until you cancel. See{' '}
                     <Link to="/terms#billing">billing</Link> and{' '}
                     <Link to="/terms#refunds">cancelling and refunds</Link>.
                   </p>
@@ -286,7 +286,7 @@ export default function Pricing() {
             <div className="pricing-card__flag">Free pilot requests open</div>
             <p className="pricing-card__eyebrow">For parents and guardians</p>
             <h2>Founding Family Pilot</h2>
-            <div className="pricing-price"><strong>Free pilot</strong><span>planned plan: CA$12/month after testing</span></div>
+            <div className="pricing-price"><strong>Free pilot</strong><span>free while it lasts, then {PRICE_PER_INTERVAL} if you stay</span></div>
             <p className="pricing-card__summary">More project creation, two learner profiles, and a clearer view of progress.</p>
             <ul>{FOUNDING_FEATURES.map((feature) => <li key={feature}>{feature}</li>)}</ul>
             <div className="pricing-next" aria-label="What happens after requesting a family pilot spot">
@@ -332,7 +332,7 @@ export default function Pricing() {
                   disabled={interestStatus === 'saving' || interestStatus === 'saved'}
                 >
                   {interestStatus === 'saving' && 'Saving…'}
-                  {interestStatus === 'saved' && 'Pilot request saved — thank you'}
+                  {interestStatus === 'saved' && 'Pilot request saved. Thank you'}
                   {(interestStatus === 'idle' || interestStatus === 'error' || interestStatus === 'parent-required' || interestStatus === 'consent-required') && 'Request a free family pilot spot'}
                 </button>
               </form>
@@ -383,12 +383,12 @@ export default function Pricing() {
         <section className="pricing-principles" aria-labelledby="principles-title">
           <div>
             <p className="pricing-kicker">What we will protect</p>
-            <h2 id="principles-title">A paid plan should add value without making the free product useless.</h2>
+            <h2 id="principles-title">Paying should add something. It should never take away what was free.</h2>
           </div>
           <div className="pricing-principles__grid">
-            <article><span>01</span><strong>Learning stays accessible</strong><p>Beginner lessons and practice remain available without a subscription.</p></article>
-            <article><span>02</span><strong>Limits stay understandable</strong><p>No confusing tokens or surprise usage charges for families.</p></article>
-            <article><span>03</span><strong>Parents get useful context</strong><p>Progress information should explain what a learner made and understood.</p></article>
+            <article><span>01</span><strong>Learning stays free</strong><p>Every lesson, the playground and building your own projects cost nothing, and always will.</p></article>
+            <article><span>02</span><strong>One price, no surprises</strong><p>No credits, no top-ups, no usage charges. CA$12 a month plus tax, and you can stop any time.</p></article>
+            <article><span>03</span><strong>Progress you can read</strong><p>We tell you what your child made and what they understood, not how many minutes they were online.</p></article>
           </div>
         </section>
 

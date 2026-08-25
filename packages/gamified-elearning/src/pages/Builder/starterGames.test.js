@@ -1,11 +1,36 @@
-import { STARTER_GAMES, STARTER_IDS, starterGameById } from './starterGames';
+import { HOME_PICKS, STARTER_GAMES, STARTER_IDS, starterGameById } from './starterGames';
 import { readProject, questionsFor, isEnoughToProve } from './proveIt';
 import { changeIdeasFor } from './changeIdeas';
 
 describe('what a child is offered', () => {
-  test('there are enough to choose from, and few enough to choose between', () => {
-    expect(STARTER_GAMES.length).toBeGreaterThanOrEqual(3);
-    expect(STARTER_GAMES.length).toBeLessThanOrEqual(4);
+  test('the front page shows few enough to choose between', () => {
+    // Someone who has not decided to try this yet gets about two seconds. A
+    // menu is a decision, and a decision is where people leave.
+    expect(HOME_PICKS.length).toBeGreaterThanOrEqual(3);
+    expect(HOME_PICKS.length).toBeLessThanOrEqual(4);
+    HOME_PICKS.forEach(pick => expect(STARTER_GAMES).toContain(pick));
+  });
+
+  test('the studio has enough that a child does not run out', () => {
+    // The opposite problem. They are already in and have already had a go; the
+    // only question left is whether there is another one. Three was twenty
+    // minutes and then an empty text box.
+    expect(STARTER_GAMES.length).toBeGreaterThanOrEqual(6);
+  });
+
+  test('no two games are played the same way', () => {
+    // Six versions of "move left and right" is one game with six skins. Each
+    // starter has to ask the hands for something different, or the second one
+    // teaches nothing the first did not.
+    const controls = STARTER_GAMES.map(g => {
+      const c = g.code;
+      if (/pointerdown[\s\S]*?jump|' '\s*\|\|\s*e.key === 'ArrowUp'/.test(c)) return 'tap-to-jump';
+      if (/turn\(-1, 0\)|swipe/i.test(c)) return 'steer-four-ways';
+      if (/popAt|shootAt|aimAt/.test(c)) return 'aim-and-tap';
+      if (/pointermove/.test(c)) return 'slide';
+      return 'other';
+    });
+    expect(new Set(controls).size).toBeGreaterThanOrEqual(3);
   });
 
   test('every one is named like something you would want, not like a category', () => {

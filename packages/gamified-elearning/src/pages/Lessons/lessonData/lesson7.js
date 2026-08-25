@@ -1,7 +1,7 @@
 const lesson7 = {
   id: 7,
   title: "Basic Lists",
-  subtitle: "Store many values in one place — then grab any one you need!",
+  subtitle: "Store many values in one place. Then grab any one you need!",
   emoji: "📋",
   story: "One variable holds one thing. A list holds a whole team, a whole inventory, a whole scoreboard.",
   steps: [
@@ -9,7 +9,7 @@ const lesson7 = {
       type: 'concept',
       id: 'concept',
       title: 'Lists Hold Many Values',
-      body: 'A list stores many items inside square brackets, separated by commas. Each item has an index — the first item is index 0. You can add new items to a list with .append()!',
+      body: 'A list stores many items inside square brackets, separated by commas. Each item has an index. The first item is index 0. You can add new items to a list with .append()!',
       highlight: 'fruits = ["apple", "banana", "mango"]\nprint(fruits[0])   →   apple\nprint(fruits[1])   →   banana',
       code: 'fruits = ["apple", "banana", "mango"]\nprint(fruits[0])\nprint(fruits[1])\nprint(fruits[2])',
     },

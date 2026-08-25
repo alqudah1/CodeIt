@@ -1,9 +1,9 @@
 const lesson3 = {
   id: 3,
   title: "Strings",
-  subtitle: "Text is everywhere in Python — learn to combine, change, and measure it!",
+  subtitle: "Text is everywhere in Python. Learn to combine, change, and measure it!",
   emoji: "🔤",
-  story: "Names, messages, secret codes — all of it is text, and Python has tools for bending text into shape.",
+  story: "Names, messages, secret codes. All of it is text, and Python has tools for bending text into shape.",
   steps: [
     {
       type: 'concept',
@@ -21,7 +21,7 @@ const lesson3 = {
       code: 'word = "Python"\nprint(len(word))\nprint(word.upper())',
       choices: ['6\nPYTHON', '5\nPYTHON', '6\npython', 'Python\nPYTHON'],
       correct: 0,
-      explain: 'Yes — six letters, and .upper() shouts the whole word.',
+      explain: 'Yes. Six letters, and .upper() shouts the whole word.',
       wrongHint: 'Count the letters in Python, then decide what .upper() does.',
       hints: ['P-y-t-h-o-n. Count them.', '.upper() makes capitals; .lower() makes small letters.'],
     },

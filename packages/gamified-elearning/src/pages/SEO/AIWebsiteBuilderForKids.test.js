@@ -28,7 +28,7 @@ describe('AI website builder landing page', () => {
     })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Build a free project →' })).toHaveAttribute('href', '/builder');
     expect(screen.getByText(/Enhanced AI generation works when CodeIt's AI service has available credit/i)).toBeInTheDocument();
-    expect(screen.getByText(/Managed profiles ages 5–12 stay private/i)).toBeInTheDocument();
+    expect(screen.getByText(/Managed profiles ages 5 to 12 stay private/i)).toBeInTheDocument();
   });
 
   test('ships canonical metadata and answer-ready FAQs', () => {

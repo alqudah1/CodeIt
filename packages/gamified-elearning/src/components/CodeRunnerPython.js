@@ -160,7 +160,7 @@ const CodeRunnerPython = ({ lessonId, starterCode, title, height = '220px', onOu
         <pre
           className={`cr-output${output.startsWith('❌') ? ' cr-output--error' : ''}`}
         >
-          {output || '— run your code to see output here —'}
+          {output || ',  run your code to see output here , '}
         </pre>
       </div>
     </div>

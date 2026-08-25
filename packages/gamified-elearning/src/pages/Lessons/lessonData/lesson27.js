@@ -1,6 +1,6 @@
 const lesson27 = {
   id: 27,
-  title: "Try and Except — When Things Go Wrong",
+  title: "Try and Except. When Things Go Wrong",
   subtitle: "Catch the crash and keep the program running.",
   emoji: "🛡️",
   xp: 50,
@@ -11,7 +11,7 @@ const lesson27 = {
       id: 'concept',
       title: 'Attempt, Then Recover',
       body: 'Put the risky code in a try block. If it goes wrong, Python jumps straight to the except block instead of crashing. Name the kind of error you expect, so a different problem is not swallowed silently.',
-      highlight: 'try:\n    age = int("banana")\nexcept ValueError:\n    print("That is not a number")\n\n# common ones:\n# ValueError     — the wrong sort of value\n# ZeroDivisionError — divided by zero\n# KeyError       — no such key in a dictionary',
+      highlight: 'try:\n    age = int("banana")\nexcept ValueError:\n    print("That is not a number")\n\n# common ones:\n# ValueError. The wrong sort of value\n# ZeroDivisionError. Divided by zero\n# KeyError. No such key in a dictionary',
       code: 'try:\n    age = int("banana")\n    print("Age is", age)\nexcept ValueError:\n    print("That is not a number!")\n\nprint("The program is still running.")',
     },
     {
@@ -67,7 +67,7 @@ const lesson27 = {
       expectedKeywords: ['try', 'except'],
       wrongOutputHint: 'The two real numbers add up to 42, and the other two should be skipped with a message.',
       hints: [
-        'int("seven") raises a ValueError — that is the one to catch.',
+        'int("seven") raises a ValueError. That is the one to catch.',
         'The try goes inside the loop, so one bad answer does not end the whole thing.',
       ],
     },

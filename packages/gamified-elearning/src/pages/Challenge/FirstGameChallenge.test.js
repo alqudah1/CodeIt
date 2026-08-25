@@ -47,7 +47,7 @@ describe('first game challenge', () => {
   test('states the real age, privacy, and reward rules', () => {
     render(<FirstGameChallenge />);
 
-    expect(screen.getByText(/Ages 5–12 participate through a parent-managed profile/i)).toBeInTheDocument();
+    expect(screen.getByText(/Ages 5 to 12 participate through a parent-managed profile/i)).toBeInTheDocument();
     expect(screen.getByText(/The first save of a new project earns 25 XP/i)).toBeInTheDocument();
     expect(screen.getByText(/coder aliases instead of real names/i)).toBeInTheDocument();
   });

@@ -133,7 +133,7 @@ const LessonMap = () => {
                   role="button"
                   tabIndex={status === 'locked' ? -1 : 0}
                   onKeyDown={(e) => e.key === 'Enter' && handleLessonClick(lesson)}
-                  aria-label={`Lesson ${lesson.id}: ${lesson.title} — ${status}`}
+                  aria-label={`Lesson ${lesson.id}: ${lesson.title}. ${status}`}
                 >
                   {/* Number bubble */}
                   <div className={`lm-emoji lm-emoji--${status}`} aria-hidden="true">

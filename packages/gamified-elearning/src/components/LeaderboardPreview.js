@@ -97,7 +97,7 @@ const LeaderboardPreview = () => {
       {/* Empty */}
       {isLoggedIn && !loading && !errorMsg && rows.length === 0 && (
         <div className="lb-prev-state">
-          🌱 No scores yet — be the first on the board!
+          🌱 No scores yet. Be the first on the board!
         </div>
       )}
 

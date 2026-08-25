@@ -103,7 +103,7 @@ export default function ProveItPanel({ code, projectTitle = 'this project', onPr
         <h3 className="prove__title" id="prove-title">Show this one is yours</h3>
         <p className="prove__lead">
           {questions.length} questions about the code in <strong>{projectTitle}</strong>. Not
-          about coding in general — about the lines in your project.
+          about coding in general. About the lines in your project.
         </p>
         <button type="button" className="prove__start" onClick={begin}>
           I can explain it →
@@ -178,12 +178,12 @@ export default function ProveItPanel({ code, projectTitle = 'this project', onPr
 
       {answered && (
         <div className={`prove__after${right ? ' is-right' : ' is-wrong'}`} role="status">
-          <strong>{right ? 'That is it.' : 'Not that one — here is why.'}</strong>
+          <strong>{right ? 'That is it.' : 'Not that one. Here is why.'}</strong>
           <p>{question.explain}</p>
           <button type="button" className="prove__next" onClick={next}>
             {right
               ? (at + 1 >= order.length ? 'Finish' : 'Next question')
-              : (order.length > 1 ? 'Got it — carry on' : 'Have another go')}
+              : (order.length > 1 ? 'Got it. Carry on' : 'Have another go')}
           </button>
         </div>
       )}

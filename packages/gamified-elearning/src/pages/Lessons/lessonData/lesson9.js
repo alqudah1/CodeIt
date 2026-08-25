@@ -1,7 +1,7 @@
 const lesson9 = {
   id: 9,
   title: "Basic Functions",
-  subtitle: "Write code once, use it many times — make your own Python commands!",
+  subtitle: "Write code once, use it many times. Make your own Python commands!",
   emoji: "⚙️",
   story: "When you catch yourself writing the same lines twice, that is the moment to make a function.",
   steps: [
@@ -21,7 +21,7 @@ const lesson9 = {
       code: 'def double(n):\n    return n * 2\n\nprint(double(4) + 1)',
       choices: ['8', '9', '10', '4'],
       correct: 1,
-      explain: 'Yes — double(4) hands back 8, and then 1 is added to it.',
+      explain: 'Yes. Double(4) hands back 8, and then 1 is added to it.',
       wrongHint: 'Work out what the function gives back first, then do what the rest of the line says.',
       hints: ['double(4) becomes 8.', 'Now read the line again with 8 in place of double(4).'],
     },
@@ -32,7 +32,7 @@ const lesson9 = {
       description: 'Click Run to see a function defined and called twice with different names!',
       code: 'def say_hi(name):\n    print("Hi,", name + "!")\n\nsay_hi("Alex")\nsay_hi("Sam")',
       successPattern: /Hi.*Alex|Hi.*Sam/i,
-      hint: 'Click Run! say_hi() is defined once but called twice — each call uses a different name.',
+      hint: 'Click Run! say_hi() is defined once but called twice. Each call uses a different name.',
       xp: 10,
     },
     {

@@ -174,7 +174,7 @@ describe('parent progress availability', () => {
     mockProfileUser = { user_id: 9, name: 'Parent Builder', email: 'parent@example.com', role: 'Educator' };
     render(<Profile />);
 
-    expect(await screen.findByRole('heading', { name: 'Private profiles for ages 5–12' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Private profiles for ages 5 to 12' })).toBeInTheDocument();
     expect(await screen.findByText('Email confirmed')).toBeInTheDocument();
     expect(screen.getByLabelText('Learner username')).toBeInTheDocument();
     expect(screen.getByText(/public publishing is disabled/i)).toBeInTheDocument();

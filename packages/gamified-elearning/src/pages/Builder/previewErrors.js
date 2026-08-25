@@ -115,7 +115,7 @@ const RULES = [
     match: /Script error\.?$/,
     explain: () => ({
       title: 'Something went wrong in your project, but the browser would not say what.',
-      fix: 'Try playing it again — if it keeps happening, undo your last change.',
+      fix: 'Try playing it again. If it keeps happening, undo your last change.',
     }),
   },
 ];

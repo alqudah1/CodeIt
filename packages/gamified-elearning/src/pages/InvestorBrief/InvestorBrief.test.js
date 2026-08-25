@@ -28,7 +28,7 @@ describe('InvestorBrief', () => {
   test('explains the audience, business hypothesis, and validation needs', () => {
     render(<InvestorBrief />);
 
-    expect(screen.getByText(/creative coding studio for young people ages 5–18/i)).toBeInTheDocument();
+    expect(screen.getByText(/creative coding studio for young people ages 5 to 18/i)).toBeInTheDocument();
     expect(screen.getByText('CA$12 per month')).toBeInTheDocument();
     expect(screen.getByText(/Billing is not live yet/i)).toBeInTheDocument();
     expect(screen.getByText('144,275')).toBeInTheDocument();

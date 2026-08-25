@@ -1,9 +1,9 @@
 const lesson11 = {
   id: 11,
   title: "Numbers & Arithmetic",
-  subtitle: "Use Python as a calculator — add, subtract, divide, and more!",
+  subtitle: "Use Python as a calculator. Add, subtract, divide, and more!",
   emoji: "🔢",
-  story: "Scores, prices, damage, timers — every game is really just numbers being pushed around.",
+  story: "Scores, prices, damage, timers. Every game is really just numbers being pushed around.",
   steps: [
     {
       type: 'concept',

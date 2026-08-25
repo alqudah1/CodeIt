@@ -1,9 +1,9 @@
 const lesson4 = {
   id: 4,
   title: "Making Decisions with If Statements",
-  subtitle: "Teach Python to choose different paths — like a Choose-Your-Own-Adventure story!",
+  subtitle: "Teach Python to choose different paths. Like a Choose-Your-Own-Adventure story!",
   emoji: "🔀",
-  story: "A game with no choices is a film. if is where your program starts making decisions.",
+  story: "A game with no choices is a film. If is where your program starts making decisions.",
   steps: [
     {
       type: 'concept',
@@ -21,7 +21,7 @@ const lesson4 = {
       code: 'age = 10\nif age >= 13:\n    print("Teen")\nelif age >= 8:\n    print("Kid")\nelse:\n    print("Little")',
       choices: ['Teen', 'Kid', 'Little', 'Kid\nLittle'],
       correct: 1,
-      explain: 'Correct. 10 is not 13 or more, but it is 8 or more, so the elif wins — and once one branch runs, the rest are skipped.',
+      explain: 'Correct. 10 is not 13 or more, but it is 8 or more, so the elif wins. And once one branch runs, the rest are skipped.',
       wrongHint: 'Check each condition in order from the top. The first one that is True is the only one that runs.',
       hints: ['Is 10 greater than or equal to 13?', 'Only one branch of an if/elif/else ever runs.'],
     },
@@ -32,7 +32,7 @@ const lesson4 = {
       description: 'Click Run to see if/else in action. Then try changing age = 15 to age = 8 and click Run again!',
       code: 'age = 15\nif age >= 13:\n    print("Teen!")\nelse:\n    print("Kid!")',
       successPattern: /Teen|Kid/,
-      hint: 'Click Run first. Then change 15 to 8 and run again — Python picks the other message!',
+      hint: 'Click Run first. Then change 15 to 8 and run again. Python picks the other message!',
       xp: 10,
     },
     {
@@ -49,7 +49,7 @@ const lesson4 = {
       type: 'challenge',
       id: 'challenge',
       title: 'Secret Password Checker',
-      description: 'Run the code. Then change the password to something wrong — what happens? Change it back to see it work!',
+      description: 'Run the code. Then change the password to something wrong. What happens? Change it back to see it work!',
       code: 'password = "python123"\nif password == "python123":\n    print("Access granted!")\nelse:\n    print("Wrong password!")',
       successPattern: /Access|Wrong/,
       hint: 'Change "python123" to any other word and see the else branch run!',

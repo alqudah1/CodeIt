@@ -1,6 +1,6 @@
 const lesson23 = {
   id: 23,
-  title: "Slicing — Taking a Piece",
+  title: "Slicing. Taking a Piece",
   subtitle: "Grab part of a list or part of a word, without touching the rest.",
   emoji: "✂️",
   xp: 50,
@@ -11,7 +11,7 @@ const lesson23 = {
       id: 'concept',
       title: 'Start, Stop, Step',
       body: 'A slice uses square brackets with a colon: [start:stop]. It begins at start and stops just before stop. Leave a side empty to mean "all the way". A negative number counts backwards from the end.',
-      highlight: 'scores = [10, 20, 30, 40, 50]\n\nscores[0:3]   # [10, 20, 30]  — stops BEFORE 3\nscores[:2]    # [10, 20]      — from the start\nscores[3:]    # [40, 50]      — to the end\nscores[-1]    # 50            — the last one',
+      highlight: 'scores = [10, 20, 30, 40, 50]\n\nscores[0:3]   # [10, 20, 30]. stops BEFORE 3\nscores[:2]    # [10, 20]. from the start\nscores[3:]    # [40, 50]. to the end\nscores[-1]    # 50. the last one',
       code: 'scores = [10, 20, 30, 40, 50]\nprint(scores[0:3])\nprint(scores[-1])',
     },
     {
@@ -27,7 +27,7 @@ const lesson23 = {
         "['a', 'b', 'c']",
       ],
       correct: 1,
-      explain: 'Right. It starts at position 1 and stops just before position 4 — so b, c and d.',
+      explain: 'Right. It starts at position 1 and stops just before position 4. so b, c and d.',
       wrongHint: 'Counting starts at 0, and the stop number is not included.',
       hints: [
         'Position 0 is "a", position 1 is "b".',
@@ -42,7 +42,7 @@ const lesson23 = {
       template: 'scores = [95, 88, 74, 60, 51]\ntop = scores[___:___]\nprint(top)',
       options: ['0', '1', '3', '4'],
       answers: ['0', '3'],
-      explain: 'Correct — start at the beginning, stop just before position 3, which gives you three items.',
+      explain: 'Correct. Start at the beginning, stop just before position 3, which gives you three items.',
       wrongHint: 'You want the first three. Where does counting start, and where must it stop?',
       hints: ['Lists start counting at 0.', 'To get three items starting at 0, the stop number is 3.'],
     },
@@ -62,7 +62,7 @@ const lesson23 = {
       code: 'first = "Ada"\nlast = "Lovelace"\ninitials = first[0] + "." + last[0] + "."\nprint(initials)',
       expectedOutput: /A\.L\./,
       expectedKeywords: ['[0]'],
-      wrongOutputHint: 'You want A.L. — take position 0 from each name.',
+      wrongOutputHint: 'You want A.L.. take position 0 from each name.',
       hints: [
         'name[0] is the very first character.',
         'Try it with your own name and your family name.',
@@ -80,7 +80,7 @@ const lesson23 = {
       wrongOutputHint: 'The second line should print True for racecar. Check the step of -1.',
       hints: [
         '[::-1] means "everything, stepping backwards by one".',
-        'Try "hello" instead — it prints False.',
+        'Try "hello" instead. It prints False.',
       ],
     },
   ],

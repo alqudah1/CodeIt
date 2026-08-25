@@ -138,11 +138,11 @@ export default function BlogPost() {
                 <span className="blog-post__read-time">{post.readTime}</span>
               </div>
 
-              {/* H1 — primary keyword target */}
+              {/* H1. primary keyword target */}
               <h1 className="blog-post__title">{post.title}</h1>
               <p className="blog-post__excerpt">{post.excerpt}</p>
 
-              {/* Always-present internal links — homepage + journey */}
+              {/* Always-present internal links. Homepage + journey */}
               <div className="blog-post__nav-links">
                 <Link to="/"        className="blog-post__nav-link">CodeIt Home</Link>
                 <Link to="/journey" className="blog-post__nav-link">Start the Python Journey</Link>
@@ -177,7 +177,7 @@ export default function BlogPost() {
                   Start your coding journey with CodeIt
                 </h2>
                 <p className="blog-post__journey-cta__sub">
-                  Free interactive Python lessons, coding puzzles, and quizzes — built for kids and beginners.
+                  Free interactive Python lessons, coding puzzles, and quizzes. Built for kids and beginners.
                   No experience needed, nothing to install.
                 </p>
                 <div className="blog-post__journey-cta__actions">

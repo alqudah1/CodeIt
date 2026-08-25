@@ -1,17 +1,17 @@
 const lesson31 = {
   id: 31,
-  title: "Capstone — Build a Real Game",
+  title: "Capstone. Build a Real Game",
   subtitle: "Everything you have learned, in one program you can keep.",
   emoji: "🏆",
   xp: 100,
-  story: "This is the last lesson. There is nothing new in it — every piece is something you already know. Putting them together is what makes you a programmer.",
+  story: "This is the last lesson. There is nothing new in it. Every piece is something you already know. Putting them together is what makes you a programmer.",
   steps: [
     {
       type: 'concept',
       id: 'concept',
       title: 'How a Real Program Is Built',
       body: 'Nobody writes a whole game in one go. You build one small piece, run it, check it works, and only then add the next. Every game in this lesson grows the same way: data first, then one function, then the loop that ties them together.',
-      highlight: '# 1. the data       — dictionaries and lists\n# 2. the functions  — one job each\n# 3. the loop       — while the game is still going\n# 4. the ending     — print the result',
+      highlight: '# 1. the data. Dictionaries and lists\n# 2. the functions. One job each\n# 3. the loop. While the game is still going\n# 4. the ending. Print the result',
       code: 'rooms = {\n    "hall": "A dusty hall with two doors.",\n    "library": "Books everywhere. One looks new.",\n}\n\ndef describe(room):\n    return rooms.get(room, "Nothing here.")\n\nprint(describe("hall"))\nprint(describe("cellar"))',
     },
     {
@@ -31,7 +31,7 @@ const lesson31 = {
         'Add the loop that keeps the game going',
         'Print the ending when the loop stops',
       ],
-      explain: 'That is how real programs get built — smallest working piece first, then the next one.',
+      explain: 'That is how real programs get built. Smallest working piece first, then the next one.',
       wrongHint: 'You cannot write a function until you know what data it works on, and you cannot loop until the function works.',
     },
     {
@@ -57,7 +57,7 @@ const lesson31 = {
         'A tuple, which cannot change',
       ],
       correct: 1,
-      explain: 'Right — curly braces with key: value pairs, and .get() looking one up by name. Lesson 20.',
+      explain: 'Right. Curly braces with key: value pairs, and .get() looking one up by name. Lesson 20.',
       wrongHint: 'Look at the brackets, and look at what goes inside them.',
       hints: ['Sets have curly braces too, but no colons.', '.get() with a fallback is a dictionary method.'],
     },
@@ -65,7 +65,7 @@ const lesson31 = {
       type: 'tryit',
       id: 'tryit',
       title: 'Make It Yours',
-      description: 'Change the chests, change the prizes, change how much energy the player starts with. Break it and fix it — that is the lesson.',
+      description: 'Change the chests, change the prizes, change how much energy the player starts with. Break it and fix it. That is the lesson.',
       code: 'import random\n\nchests = ["gold", "empty", "gems", "trap"]\nprizes = {"gold": 50, "gems": 30, "empty": 0, "trap": -20}\n\ncoins = 0\nenergy = 4\n\nwhile energy > 0:\n    chest = random.choice(chests)\n    coins = coins + prizes.get(chest, 0)\n    energy = energy - 1\n    print("Opened", chest, "- coins now", coins)\n\nprint("Final score:", coins)',
       expectedOutput: /Final score:/,
       expectedKeywords: ['while', 'random'],

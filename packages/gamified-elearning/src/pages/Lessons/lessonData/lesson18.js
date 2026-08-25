@@ -1,6 +1,6 @@
 const lesson18 = {
   id: 18,
-  title: "Break and Continue — Stop or Skip",
+  title: "Break and Continue. Stop or Skip",
   subtitle: "Two words that let you take control of a loop mid-lap.",
   emoji: "🛑",
   xp: 50,
@@ -10,7 +10,7 @@ const lesson18 = {
       type: 'concept',
       id: 'concept',
       title: 'Two Escape Hatches',
-      body: 'break leaves the loop straight away — no more laps at all. continue skips the rest of this lap only, and jumps to the next one. Everything after them in the loop body is not run.',
+      body: 'break leaves the loop straight away. No more laps at all. Continue skips the rest of this lap only, and jumps to the next one. Everything after them in the loop body is not run.',
       highlight: 'for chest in chests:\n    if chest == "gold":\n        break      # leave the whole loop\n    if chest == "empty":\n        continue   # skip to the next chest',
       code: 'chests = ["empty", "rock", "gold", "rock"]\nfor chest in chests:\n    if chest == "gold":\n        print("Found the gold!")\n        break\n    print("Opened a", chest)',
     },
@@ -26,7 +26,7 @@ const lesson18 = {
       wrongHint: 'break happens before the print on that lap, and there are no laps after it.',
       hints: [
         'Read the loop body in order: the if comes first, the print comes second.',
-        'break does not just skip this lap — it ends the loop completely.',
+        'break does not just skip this lap. It ends the loop completely.',
       ],
     },
     {
@@ -37,7 +37,7 @@ const lesson18 = {
       code: 'for n in [1, 2, 3, 4, 5]:\n    if n == 3:\n        continue\n    print(n)',
       choices: ['1\n2', '1\n2\n4\n5', '1\n2\n3\n4\n5', '3'],
       correct: 1,
-      explain: 'Yes — continue skips only the lap where n is 3. The loop carries on with 4 and 5.',
+      explain: 'Yes. Continue skips only the lap where n is 3. The loop carries on with 4 and 5.',
       wrongHint: 'continue skips one lap. It does not end the loop.',
       hints: ['Which single number does the if catch?', 'Every other number reaches the print as usual.'],
     },
@@ -45,7 +45,7 @@ const lesson18 = {
       type: 'example',
       id: 'example',
       title: 'Skip the Empties',
-      description: 'Run it. continue quietly passes over the empty chests.',
+      description: 'Run it. Continue quietly passes over the empty chests.',
       code: 'chests = ["empty", "silver", "empty", "gold"]\nfor chest in chests:\n    if chest == "empty":\n        continue\n    print("You found", chest)',
       expectedOutput: /gold/,
     },
@@ -60,7 +60,7 @@ const lesson18 = {
       wrongOutputHint: 'The loop should announce that it stopped. Check the message inside the if.',
       hints: [
         'The if goes before the print, so a big score never gets printed.',
-        'Try changing 130 to 90 — now nothing stops the loop and every score prints.',
+        'Try changing 130 to 90. now nothing stops the loop and every score prints.',
       ],
     },
     {

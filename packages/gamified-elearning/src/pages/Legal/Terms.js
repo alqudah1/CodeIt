@@ -48,7 +48,7 @@ export default function Terms() {
           <div className="legal-content">
             <section id="eligibility">
               <h2>Eligibility and younger learners</h2>
-              <p>Independent student accounts are for learners ages 13–18. For a learner ages 5–12, a parent or legal guardian must use the Parent / Educator path, confirm the adult account email, review the family privacy notice, and explicitly create a managed profile. Managed younger profiles cannot publish projects publicly.</p>
+              <p>Independent student accounts are for learners ages 13 to 18. For a learner ages 5 to 12, a parent or legal guardian must use the Parent / Educator path, confirm the adult account email, review the family privacy notice, and explicitly create a managed profile. Managed younger profiles cannot publish projects publicly.</p>
             </section>
 
             <section id="accounts">
@@ -58,13 +58,13 @@ export default function Terms() {
 
             <section id="projects">
               <h2>Your ideas and projects</h2>
-              <p>You keep your rights in original prompts, text, images, and other material you provide. You give CodeIt permission to process that material only as needed to operate, secure, improve, save, and—when you choose—publish the project.</p>
+              <p>You keep your rights in original prompts, text, images, and other material you provide. You give CodeIt permission to process that material only as needed to operate, secure, improve, save, and, when you choose, publish the project.</p>
               <p>Only use material you have permission to use. Generated code may contain common patterns or resemble output available to others; CodeIt cannot promise exclusive rights in AI-generated material.</p>
             </section>
 
             <section id="public">
               <h2>Publishing and remixing</h2>
-              <p>Saved projects are private by default. For eligible accounts, selecting Publish makes the project and a generic creator label available to anyone with the link and may list it in Explore. Publishing gives other CodeIt users permission to view, play, and remix a separate copy inside CodeIt. You can unpublish your original project. Managed profiles ages 5–12 cannot publish.</p>
+              <p>Saved projects are private by default. For eligible accounts, selecting Publish makes the project and a generic creator label available to anyone with the link and may list it in Explore. Publishing gives other CodeIt users permission to view, play, and remix a separate copy inside CodeIt. You can unpublish your original project. Managed profiles ages 5 to 12 cannot publish.</p>
               <p>Do not publish personal contact information, school details, precise location, private images, passwords, or information about another person without permission.</p>
             </section>
 
@@ -90,15 +90,15 @@ export default function Terms() {
               <h2>Billing and renewal</h2>
               <p>CodeIt Plus is a subscription. It costs {PRICE} per {INTERVAL}, charged when you subscribe and again on the same day each month until you cancel. Prices are in Canadian dollars. Any sales tax that applies is shown at checkout before you confirm.</p>
               <p>Only an adult account can subscribe. CodeIt does not sell to children: a managed learner profile, or an account whose date of birth indicates the holder is under 18, cannot start a subscription.</p>
-              <p>Payment is processed by Stripe. Card details go to Stripe and never reach CodeIt — we store only Stripe's identifiers for your subscription, never a card number. Access to paid features is granted by Stripe's confirmation that a payment succeeded, not by anything your browser sends us.</p>
-              <p>If a renewal payment fails, Stripe retries it. Your family keeps access to CodeIt Plus during those retries so that work your child already published does not disappear while you sort out a card. If payment never succeeds, the subscription ends and the account returns to the free plan. Saved projects are not deleted when a plan ends, and a project your child already published stays reachable at its link — we do not take a child's shared work offline because a card expired. What ends is the ability to publish new projects and the higher AI build allowance.</p>
+              <p>Payment is processed by Stripe. Card details go to Stripe and never reach CodeIt. We store only Stripe's identifiers for your subscription, never a card number. Access to paid features is granted by Stripe's confirmation that a payment succeeded, not by anything your browser sends us.</p>
+              <p>If a renewal payment fails, Stripe retries it. Your family keeps access to CodeIt Plus during those retries so that work your child already published does not disappear while you sort out a card. If payment never succeeds, the subscription ends and the account returns to the free plan. Saved projects are not deleted when a plan ends, and a project your child already published stays reachable at its link. We do not take a child's shared work offline because a card expired. What ends is the ability to publish new projects and the higher AI build allowance.</p>
               <p>If the price changes, existing subscribers will be told before it applies to them, with enough notice to cancel first.</p>
             </section>
 
             <section id="refunds">
               <h2>Cancelling and refunds</h2>
               <p><strong>Cancel any time.</strong> Open the plan page and choose Manage billing, which takes you to Stripe's own page. Cancelling stops the next payment. You keep CodeIt Plus until the end of the month you have already paid for, and then the account returns to the free plan. You do not need to email anyone or give a reason.</p>
-              <p><strong>A cancellation stops future payments</strong> but the month already paid for is not refunded pro rata — you keep the access you paid for until it runs out. Because CodeIt Plus is billed one month at a time and can be cancelled before the next charge, you are never committed beyond the month you are in.</p>
+              <p><strong>A cancellation stops future payments</strong> but the month already paid for is not refunded pro rata. You keep the access you paid for until it runs out. Because CodeIt Plus is billed one month at a time and can be cancelled before the next charge, you are never committed beyond the month you are in.</p>
               <p><strong>If something went wrong,</strong> we refund it. That includes a payment taken after you cancelled, a duplicate charge, a charge on an account you did not authorise, and a month in which CodeIt Plus features were substantially unavailable. Contact us and we will put it right.</p>
               <p>Refunds are returned to the card that paid, through Stripe. They usually appear within five to ten business days, depending on your bank.</p>
               <p>Nothing here reduces the rights you have under the consumer protection law where you live.</p>
@@ -113,7 +113,8 @@ export default function Terms() {
             <section id="contact">
               <h2>Questions</h2>
               <p>Email <a href="mailto:hello@codeitlearn.com">hello@codeitlearn.com</a> for anything about your account, a payment, or a refund.</p>
-              <p>Company registration details, the governing law for these terms, and a formal notice address will be published here before paid subscriptions open to the public.</p>
+              <p>CodeIt is operated from Toronto, Ontario, Canada, and these terms are governed by the law of Ontario. CodeIt is not yet incorporated; the registered company name and a formal notice address will be published in this section as soon as registration is complete.</p>
+              <p>Payments for CodeIt Plus are sold and processed through Stripe. For subscriptions taken through Stripe&rsquo;s managed payments, the seller of record shown on your receipt is Link, LLC, 354 Oyster Point Boulevard, South San Francisco, CA, United States, which also collects and remits any sales tax that applies. Your receipt and card statement come from them, not from CodeIt.</p>
             </section>
           </div>
         </div>

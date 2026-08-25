@@ -9,7 +9,7 @@ const lesson16 = {
       type: 'concept',
       id: 'concept',
       title: 'Strings Have Built-In Superpowers',
-      body: 'Python strings come with methods — functions you call with a dot. The most useful ones are: .strip() removes leading and trailing spaces. .replace(old, new) swaps one piece of text for another. .split() breaks a string into a list of words. .join(list) glues a list of strings back together. .find(text) returns the position of the first match (-1 if not found). .count(text) counts how many times something appears.',
+      body: 'Python strings come with methods. Functions you call with a dot. The most useful ones are: .strip() removes leading and trailing spaces. .replace(old, new) swaps one piece of text for another. .split() breaks a string into a list of words. .join(list) glues a list of strings back together. .find(text) returns the position of the first match (-1 if not found). .count(text) counts how many times something appears.',
       highlight: '"  hello  ".strip()      # "hello"\n"a,b,c".split(",")       # ["a", "b", "c"]\n",".join(["a","b","c"])  # "a,b,c"',
       code: 'print("  hello  ".strip())\nprint("a,b,c".split(","))\nprint(",".join(["a", "b", "c"]))',
     },
@@ -32,7 +32,7 @@ const lesson16 = {
       description: 'Click Run to see strip(), lower(), and replace() working together on a messy piece of text.',
       code: 'text = "  Hello, World!  "\nclean = text.strip()\nprint(clean)\nprint(clean.lower())\nprint(clean.replace("World", "Python"))',
       successPattern: /Hello|python/i,
-      hint: 'Click Run! Notice that each method returns a new string — the original text variable is never changed.',
+      hint: 'Click Run! Notice that each method returns a new string. The original text variable is never changed.',
       xp: 10,
     },
     {
@@ -42,7 +42,7 @@ const lesson16 = {
       description: 'Split a sentence into a list of words and count them. Then modify the sentence and run again to see the count update.',
       code: 'sentence = "Python is fun and easy to learn"\nwords = sentence.split()\nprint("Word count:", len(words))\nprint("Words:", words)',
       successPattern: /Word count:|words/i,
-      hint: '.split() with no argument splits on any whitespace. len() counts the items in the resulting list. Try adding or removing words from the sentence.',
+      hint: '.split() with no argument splits on any whitespace. Len() counts the items in the resulting list. Try adding or removing words from the sentence.',
       xp: 15,
     },
     {

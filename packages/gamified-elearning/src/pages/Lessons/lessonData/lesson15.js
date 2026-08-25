@@ -8,8 +8,8 @@ const lesson15 = {
     {
       type: 'concept',
       id: 'concept',
-      title: 'f-Strings — The Modern Way',
-      body: 'An f-string starts with the letter f before the opening quote: f"...". Inside the string you put variable names (or expressions) inside curly braces {}. Python replaces them with their values at runtime. You can also control formatting: {price:.2f} formats a float to 2 decimal places. f-strings are cleaner than joining strings with +.',
+      title: 'f-Strings. The Modern Way',
+      body: 'An f-string starts with the letter f before the opening quote: f"...". Inside the string you put variable names (or expressions) inside curly braces {}. Python replaces them with their values at runtime. You can also control formatting: {price:.2f} formats a float to 2 decimal places. F-strings are cleaner than joining strings with +.',
       highlight: 'name = "Alex"\nage = 14\nprint(f"Hello, {name}! You are {age} years old.")',
       code: 'name = "Alex"\nage = 14\nprint(f"Hello, {name}! You are {age} years old.")',
     },
@@ -21,7 +21,7 @@ const lesson15 = {
       code: 'name = "Ada"\nscore = 42\nprint(f"{name} scored {score}")',
       choices: ['{name} scored {score}', 'Ada scored 42', 'f Ada scored 42', 'name scored score'],
       correct: 1,
-      explain: 'Right — the f tells Python to swap each pair of braces for the value inside it.',
+      explain: 'Right. The f tells Python to swap each pair of braces for the value inside it.',
       wrongHint: 'The f before the quote is the important bit. It makes the braces get filled in.',
       hints: ['Without the f, the braces would be printed as they are.', 'Whatever is inside the braces gets looked up and swapped in.'],
     },
@@ -32,7 +32,7 @@ const lesson15 = {
       description: 'Click Run to see an f-string that combines a name and a number into one clean sentence.',
       code: 'player = "Sam"\nscore = 1450\nprint(f"Player: {player}")\nprint(f"Score: {score}")\nprint(f"Well done, {player}! You earned {score} points.")',
       successPattern: /Sam|Score:/i,
-      hint: 'Click Run! Change player and score, then run again. f-strings update automatically — no + signs needed.',
+      hint: 'Click Run! Change player and score, then run again. F-strings update automatically. No + signs needed.',
       xp: 10,
     },
     {
@@ -44,7 +44,7 @@ const lesson15 = {
       // eslint-disable-next-line no-template-curly-in-string
       code: 'item = "Headphones"\nprice = 34.5\nprint(f"{item}: ${price:.2f}")\nprint(f"With 10% discount: ${price * 0.9:.2f}")',
       successPattern: /34\.50|\$|discount/i,
-      hint: ':.2f means "format as a float with 2 decimal places". Try price = 9.9 or price = 100 — the output always shows cents.',
+      hint: ':.2f means "format as a float with 2 decimal places". Try price = 9.9 or price = 100. the output always shows cents.',
       xp: 15,
     },
     {

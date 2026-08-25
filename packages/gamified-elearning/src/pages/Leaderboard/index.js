@@ -104,7 +104,7 @@ const Leaderboard = () => {
               <strong>
                 #{summary.currentRank}
               </strong>
-              &nbsp;—&nbsp;
+              &nbsp;, &nbsp;
               <strong>{summary.currentXp.toLocaleString()} XP</strong>
               {summary.xpToNextRank > 0 && (
                 <span> · {summary.xpToNextRank.toLocaleString()} XP to pass the next coder</span>
@@ -118,7 +118,7 @@ const Leaderboard = () => {
           <div className="lb-not-ranked-card">
             <span className="lb-my-rank-icon">🌱</span>
             <span className="lb-my-rank-text">
-              You&apos;re not on the board yet —{' '}
+              You&apos;re not on the board yet , {' '}
               save a project or complete a lesson to earn XP and climb the ranks!
             </span>
           </div>
@@ -146,7 +146,7 @@ const Leaderboard = () => {
               <button onClick={() => navigate('/builder')}>Build a project</button>
               <button onClick={() => navigate('/lessons')}>Earn XP in a lesson</button>
             </div>
-            <small>For student privacy, everyone else sees a fun coder alias—not your real name.</small>
+            <small>For student privacy, everyone else sees a fun coder alias, not your real name.</small>
           </section>
         )}
 
@@ -172,7 +172,7 @@ const Leaderboard = () => {
         {!loading && !error && isLoggedIn && rows.length === 0 && (
           <div className="lb-state-card">
             <span className="lb-state-icon">🌱</span>
-            <p>No scores yet — be the first on the board!</p>
+            <p>No scores yet. Be the first on the board!</p>
           </div>
         )}
 

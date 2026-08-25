@@ -97,7 +97,7 @@ function codeFeedback(result, step) {
     const missing = (result.missing || []).join(', ');
     return `Close! This one needs ${missing} in your code. Have another go.`;
   }
-  return step?.wrongOutputHint || 'Not quite — look at the output and compare it with what was asked.';
+  return step?.wrongOutputHint || 'Not quite. Look at the output and compare it with what was asked.';
 }
 
 const INTERACTION_TYPES = ['predict', 'fillblank', 'order'];

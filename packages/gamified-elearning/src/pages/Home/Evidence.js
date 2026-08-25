@@ -61,7 +61,7 @@ export default function Evidence({ records = null }) {
       </ul>
 
       <p className="evidence__note">
-        Each of these was a question generated from that child's own code — the answer was
+        Each of these was a question generated from that child's own code. The answer was
         whatever they had written, so it could not be guessed by someone who had not read it.
       </p>
     </section>

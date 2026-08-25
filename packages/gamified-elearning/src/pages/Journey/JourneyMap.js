@@ -252,7 +252,7 @@ export default function JourneyMap() {
         <div className="jm-banner">
           <span className="jm-banner__world">World 1</span>
           <h1 className="jm-banner__title">Hello Python</h1>
-          <p className="jm-banner__sub">Learn Python step by step — write real code, solve challenges, and build something you're proud of.</p>
+          <p className="jm-banner__sub">Learn Python step by step. Write real code, solve challenges, and build something you're proud of.</p>
 
           {!loading && user && currentNode && (
             <button className="jm-cta" onClick={() => {
@@ -289,7 +289,7 @@ export default function JourneyMap() {
                       ? `Only ${info.xpToNext} XP to Level ${info.level + 1}!`
                       : nu
                         ? `Next reward: ${getNextUnlockLabel(nu)} at Level ${nu.atLevel}`
-                        : `Level ${info.level} — ${info.xpToNext} XP to Level ${info.level + 1}`
+                        : `Level ${info.level}. ${info.xpToNext} XP to Level ${info.level + 1}`
                     }
                   </p>
                 )}
@@ -341,7 +341,7 @@ export default function JourneyMap() {
 
               return (
                 <React.Fragment key={node.id}>
-                  {/* Chapter header — injected before each chapter's first node */}
+                  {/* Chapter header. Injected before each chapter's first node */}
                   {chapter && (
                     <div className="jm-chapter">
                       <div className="jm-chapter__line" />
@@ -353,7 +353,7 @@ export default function JourneyMap() {
                       <div className="jm-chapter__line" />
                     </div>
                   )}
-                  {/* Checkpoint banner — above big quiz milestone nodes */}
+                  {/* Checkpoint banner. Above big quiz milestone nodes */}
                   {node.type === 'big_quiz' && (
                     <div className="jm-checkpoint">
                       <div className="jm-checkpoint__bar" />
@@ -383,7 +383,7 @@ export default function JourneyMap() {
                       onKeyDown={e => e.key === 'Enter' && handleNodeClick(node, state)}
                       role={!isLocked ? 'button' : undefined}
                       tabIndex={!isLocked ? 0 : -1}
-                      aria-label={`${node.title}: ${node.subtitle || ''} — ${state}`}
+                      aria-label={`${node.title}: ${node.subtitle || ''}. ${state}`}
                       aria-disabled={isLocked}
                     >
                       {/* Circle */}
@@ -401,8 +401,8 @@ export default function JourneyMap() {
                       <div className="jm-tl-text">
                         <span className="jm-tl-type-tag" style={!isLocked ? { color } : {}}>
                           {TYPE_LABEL[node.type]}
-                          {isCurrent && <span className="jm-tl-next-tag"> — Your next challenge</span>}
-                          {isLocked && node.type === 'boss' && <span className="jm-tl-boss-tag"> — Boss challenge</span>}
+                          {isCurrent && <span className="jm-tl-next-tag">. Your next challenge</span>}
+                          {isLocked && node.type === 'boss' && <span className="jm-tl-boss-tag">. Boss challenge</span>}
                         </span>
                         <strong className="jm-tl-title">{node.title}</strong>
                         {node.subtitle && (
@@ -414,7 +414,7 @@ export default function JourneyMap() {
                           <span className="jm-tl-lock-hint">{lockMsg}</span>
                         )}
                         {isLocked && getMissingCount(node, prog) === 1 && (
-                          <span className="jm-tl-almost">1 step away — almost there!</span>
+                          <span className="jm-tl-almost">1 step away. Almost there!</span>
                         )}
                       </div>
 

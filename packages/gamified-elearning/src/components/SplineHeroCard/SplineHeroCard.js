@@ -51,7 +51,7 @@ export default function SplineHeroCard({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Spotlight overlay — rendered via CSS custom properties */}
+      {/* Spotlight overlay. Rendered via CSS custom properties */}
       <div className="sphc-spotlight" aria-hidden="true" />
 
       {/* Left: text */}

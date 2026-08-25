@@ -5,7 +5,7 @@ import AdminLayout from './AdminLayout';
 import './AdminLayout.css';
 
 function fmtDate(dt) {
-  if (!dt) return '—';
+  if (!dt) return ', ';
   return new Date(dt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
@@ -114,10 +114,10 @@ const AdminAvatars = () => {
             {avatars.slice(0, 50).map(av => (
               <tr key={av.user_id}>
                 <td>
-                  <strong>{av.name || av.username || '—'}</strong>
+                  <strong>{av.name || av.username || ', '}</strong>
                   <span style={{ color: '#aaa', fontSize: '0.78rem', marginLeft: '0.3rem' }}>#{av.user_id}</span>
                 </td>
-                <td style={{ color: '#718096' }}>{av.nickname || '—'}</td>
+                <td style={{ color: '#718096' }}>{av.nickname || ', '}</td>
                 <td>
                   {av.gender && <span className="adm-chip">{av.gender}</span>}
                 </td>
@@ -125,7 +125,7 @@ const AdminAvatars = () => {
                   {av.outfit && <span className="adm-chip">{av.outfit}</span>}
                 </td>
                 <td style={{ color: '#4a5568', fontSize: '0.83rem' }}>
-                  {[av.hair_style, av.hair_color].filter(Boolean).join(' / ') || '—'}
+                  {[av.hair_style, av.hair_color].filter(Boolean).join(' / ') || ', '}
                 </td>
                 <td>
                   {av.expression && <span className="adm-chip">{av.expression}</span>}

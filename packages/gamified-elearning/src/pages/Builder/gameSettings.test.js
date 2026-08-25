@@ -198,7 +198,7 @@ test('the live script refuses anything it cannot write safely', () => {
 
 test('the live script really does run against the declared variable', () => {
   // The preview runs this through `new Function`, whose scope chain is the
-  // global environment — which is where a top-level `let` in a classic script
+  // global environment. which is where a top-level `let` in a classic script
   // lives. This asserts that assumption rather than trusting it.
   // eslint-disable-next-line no-new-func
   new Function('let fallSpeed = 3; globalThis.__t = () => fallSpeed;')();
