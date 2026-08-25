@@ -29,7 +29,7 @@ describe('InvestorBrief', () => {
     render(<InvestorBrief />);
 
     expect(screen.getByText(/creative coding studio for young people ages 5–18/i)).toBeInTheDocument();
-    expect(screen.getByText('US$12 per month')).toBeInTheDocument();
+    expect(screen.getByText('CA$12 per month')).toBeInTheDocument();
     expect(screen.getByText(/Billing is not live yet/i)).toBeInTheDocument();
     expect(screen.getByText('144,275')).toBeInTheDocument();
     expect(screen.getByText(/not verified paying customers/i)).toBeInTheDocument();

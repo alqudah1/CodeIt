@@ -3,52 +3,30 @@
 const fs = require('fs');
 const path = require('path');
 
-const { loadBlogPosts, loadLessons } = require('./content-loader');
+const {
+  loadPricing,
+  loadBlogPosts,
+  loadLessons,
+  loadGuidePages,
+  loadMarkdownRenderer,
+  loadFaqs,
+  loadCompany,
+} = require('./content-loader');
 
 const SITE = 'https://codeitlearn.com';
 
-/**
- * Single source of truth for the price shown anywhere on the site.
- *
- * NOTE: before this change the site stated three different things — JSON-LD
- * said price "0", /pricing said CA$12/mo, and the /coding-for-kids FAQ said
- * US$12/mo. Currency is a business decision, so this is set to the value that
- * appeared most often (CA$) and centralised here. CONFIRM THIS IS CORRECT and
- * change it in this one place if not.
- */
-const PRICING = {
-  currency: 'CAD',
-  symbol: 'CA$',
-  amount: '12',
-  period: 'month',
-  get label() {
-    return `${this.symbol}${this.amount} per ${this.period}`;
-  },
-};
+// Deterministic build output: derived from content, not from the clock, so two
+// builds of the same commit produce byte-identical files.
+const LAST_MODIFIED = '2026-08-25';
 
-// Mirrors FAQS in src/pages/SEO/CodingForKids.js so the answers are crawlable.
-const FAQS = [
-  {
-    q: 'What age is CodeIt for?',
-    a: 'Parents and legal guardians can create private managed profiles for learners ages 5\u201312 after confirming the adult account email. Independent student accounts are for ages 13\u201318.',
-  },
-  {
-    q: 'Do I need to know how to code to help?',
-    a: 'No. The activities use plain-language instructions and visible results. A parent or educator can help by asking what changed, what the learner wants to try next, and how they solved a problem.',
-  },
-  {
-    q: 'What can a learner make?',
-    a: 'Learners can create and edit websites, small games, and quizzes in the project studio. They can also follow step-by-step Python lessons or experiment in the browser playground.',
-  },
-  {
-    q: 'Is CodeIt free?',
-    a: `CodeIt has useful free activities. A Founding Family plan is being considered at ${PRICING.symbol}${PRICING.amount} per ${PRICING.period}, but no payment starts from an interest button and no paid family subscription is live today.`,
-  },
-  {
-    q: 'Are projects public?',
-    a: 'Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly. Managed profiles ages 5\u201312 cannot publish projects.',
-  },
-];
+// Price and free-plan limits come from src/config/pricing.js — the same file
+// the pricing page reads. This script used to keep its own copy, which is how
+// the site ended up stating the price four different ways.
+const PRICING = loadPricing();
+
+// One source of truth, shared with the /faq page and the parent guide.
+const FAQS = loadFaqs();
+const COMPANY = loadCompany();
 
 const LESSONS = [
   ['hello-python', 'Hello Python', 'print statements and your first working Python program'],
@@ -276,6 +254,8 @@ const BASE_PAGES = [
    React is invisible to them.
 ───────────────────────────────────────────────────────────── */
 
+const GUIDE_CONTENT = loadGuidePages();
+const renderMarkdown = loadMarkdownRenderer();
 const BLOG_CONTENT = loadBlogPosts();
 const LESSON_CONTENT = loadLessons();
 const BLOG_BY_SLUG = new Map(BLOG_CONTENT.map((post) => [post.slug, post]));
@@ -307,6 +287,13 @@ function lessonSections(lesson) {
 }
 
 /** Full plain-text body of a page, for schema articleBody / word counts. */
+function bodyTextOf(page) {
+  if (page.bodyHtml) {
+    return page.bodyHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  return sectionsToText(page.sections || []);
+}
+
 function sectionsToText(sections) {
   return sections
     .flatMap((section) => [section.heading, ...(section.paragraphs || []), section.code || ''])
@@ -348,14 +335,15 @@ function pricingSections() {
     {
       heading: 'Free access',
       paragraphs: [
-        'CodeIt keeps a useful free option. Beginners can open the project studio, follow the Python lessons, and use the browser playground without paying and without entering a card.',
+        `CodeIt keeps a useful free option. Beginners can open the project studio, follow the Python lessons, and use the browser playground without paying and without entering a card. The free plan includes ${PRICING.FREE_MONTHLY_AI_BUILDS} assisted project builds each month.`,
       ],
     },
     {
-      heading: 'Founding Family pilot',
+      heading: `The paid family plan: ${PRICING.PRICE_PER_INTERVAL}`,
       paragraphs: [
-        `The Founding Family plan is being considered at ${PRICING.label}. It is not live today: no card is required, no subscription starts automatically, and paid billing has not opened.`,
-        'The pilot includes guided setup, more assisted project building, learner profiles, parent visibility, and a direct feedback channel.',
+        `The family plan costs ${PRICING.PRICE_PER_INTERVAL} in ${PRICING.CURRENCY} and can be cancelled at any time. Tax is shown before card details are entered.`,
+        'It adds guided setup, more assisted project building, learner profiles, parent visibility, and a direct feedback channel.',
+        'The free plan does not expire and no card is needed to use it. Nothing starts charging on its own — a subscription begins only when someone chooses to start one.',
       ],
     },
     {
@@ -374,6 +362,74 @@ function pricingSections() {
  * crawler that does not run JavaScript saw ~450 characters per page. Everything
  * here is factual and matches what the React page actually renders.
  */
+const IDENTITY_PAGES = [
+  {
+    route: '/about',
+    title: 'About CodeIt',
+    description:
+      'CodeIt is a browser-based coding studio for ages 5–18, built in Toronto. Learners build websites, games and quizzes, then edit the real code behind them.',
+    eyebrow: 'About',
+    h1: 'About CodeIt',
+    intro: `CodeIt is a browser-based coding studio for learners aged 5 to 18, built in ${COMPANY.locationLine()}${COMPANY.founderName ? ` by ${COMPANY.founderName}` : ''}. A learner describes a website, game or quiz; CodeIt builds a working first version; and then the learner opens it up and changes it.`,
+    detail: 'The project stays editable rather than becoming a finished result you can only look at.',
+    type: 'AboutPage',
+    sections: [
+      {
+        heading: 'Why it exists',
+        paragraphs: [
+          'Most tools for young coders are block-based, and blocks are a good on-ramp — Scratch in particular has taught an enormous number of children to think in loops and conditionals. The gap is on the other side of it.',
+          'A ten-year-old who has outgrown blocks and wants to write real HTML has almost nowhere to go. Codecademy\u2019s terms of service require users to be sixteen. freeCodeCamp is free and excellent but was not designed for children. The platforms built for kids are, with few exceptions, blocks-first by design. CodeIt exists for that gap.',
+        ],
+      },
+      {
+        heading: 'How it works',
+        paragraphs: [
+          'The loop is: make something, see the code, change the code, save the project, and share what was built. Starting from a working project rather than an empty file means a beginner has something to be curious about on day one, and seeing the effect of a single change is where the understanding comes from. The typing was never the hard part.',
+          'CodeIt also asks questions drawn from the learner\u2019s own project, where the correct answer is whatever they actually wrote. Only questions answered correctly first time count. That is there so a parent can see what a child could explain, not only what got produced.',
+        ],
+      },
+      {
+        heading: 'Who it is for, and who it is not for',
+        paragraphs: [
+          'It suits a learner roughly between 8 and 16 who has outgrown block coding, or a beginner of any age who wants to build web projects and understand what they are made of. It also suits a parent who cannot code, because the activities use plain language and visible results.',
+          'It is not right for a pre-reading child — Kodable and codeSpark are built for that and are better at it. It is not right for a learner who mainly wants to keep making games, where CodeCombat or Roblox Studio fit better. And it is not a schools product: there is no rostering, no LMS integration, no standards alignment and no teacher dashboard.',
+        ],
+      },
+      {
+        heading: 'Accounts, ages and safety',
+        paragraphs: [
+          'Parents and legal guardians create private managed profiles for learners aged 5 to 12, after confirming the adult account email address. Independent student accounts begin at 13.',
+          'Saved projects are private by default, and eligible independent accounts must actively choose Publish before a project appears publicly. Managed profiles for ages 5 to 12 cannot publish projects at all. Leaderboards use coder aliases rather than real names.',
+        ],
+      },
+      {
+        heading: 'What it costs',
+        paragraphs: [
+          `CodeIt has a free plan that does not expire and needs no card. A paid family plan is available at ${PRICING.PRICE_PER_INTERVAL}, cancellable at any time, and nothing starts charging on its own. We are not going to promise the free plan will always be as generous as it is now, because we do not know that.`,
+        ],
+      },
+      {
+        heading: 'Not to be confused with',
+        paragraphs: [
+          'CodeIt at codeitlearn.com is unrelated to CodeIT at codeitlearning.com (a coding tutoring company in London), MIT CodeIt (a youth outreach programme at MIT), CodeIT at codeit.us (a software engineering services company), or CodeIt.right (a C# code analysis tool).',
+        ],
+      },
+    ],
+  },
+  {
+    route: '/faq',
+    title: 'CodeIt FAQ: Ages, Cost, Safety & What It Does Not Do',
+    description:
+      'Straight answers about CodeIt — age ranges, what it costs, whether projects are public, what it does not do, and how it differs from Scratch.',
+    eyebrow: 'Questions',
+    h1: 'Questions parents ask first',
+    intro: 'Including the ones with awkward answers. If something here is out of date, it is a bug.',
+    detail: 'These answers are kept in one place and used by every page that shows them.',
+    type: 'WebPage',
+    faqs: FAQS,
+  },
+];
+
 const SECTIONS_BY_ROUTE = {
   '/ai-website-builder-for-kids': [
     {
@@ -553,7 +609,7 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'Paid features',
       paragraphs: [
-        'Paid billing is not currently active. No card is required to use CodeIt today, and no subscription starts automatically from an interest button. Any future paid plan will be introduced with clear notice before it applies.',
+        `A paid family plan is available at ${PRICING.PRICE_PER_INTERVAL}, cancellable at any time, with tax shown before card details are entered. The free plan does not expire and needs no card, and no subscription starts on its own — one begins only when someone chooses to start it.`,
       ],
     },
   ],
@@ -611,7 +667,7 @@ const HOME_PAGE = {
     {
       heading: 'What it costs',
       paragraphs: [
-        `CodeIt has useful free activities and no card is required to start. A Founding Family plan is being considered at ${PRICING.label}; paid billing is not currently active.`,
+        `CodeIt has a free plan that does not expire and needs no card, including ${PRICING.FREE_MONTHLY_AI_BUILDS} assisted project builds a month. A paid family plan is available at ${PRICING.PRICE_PER_INTERVAL}, cancellable at any time.`,
       ],
     },
     {
@@ -626,6 +682,8 @@ const HOME_PAGE = {
 };
 
 const PAGES = [
+  ...IDENTITY_PAGES,
+
   ...BASE_PAGES.map((page) => {
     if (page.route === '/coding-for-kids') return { ...page, faqs: FAQS, sections: SECTIONS_BY_ROUTE[page.route] };
     if (SECTIONS_BY_ROUTE[page.route]) return { ...page, sections: SECTIONS_BY_ROUTE[page.route] };
@@ -662,6 +720,44 @@ const PAGES = [
       ],
     };
   }),
+
+  {
+    route: '/guide',
+    title: 'Coding Guides for Parents, Teachers & Beginners | CodeIt',
+    description:
+      'Practical, current guides on choosing coding tools, publishing a first project, and knowing whether a child actually learned anything.',
+    eyebrow: 'CodeIt guides',
+    h1: 'Straight answers about learning to code.',
+    intro:
+      'Written to be useful whether or not you ever use CodeIt. Several of these recommend another tool, because for a lot of readers another tool is the right answer.',
+    detail: 'Each guide is dated and says when it was last checked against the products it names.',
+    type: 'CollectionPage',
+    sections: GUIDE_CONTENT.map((guide) => ({
+      heading: guide.h1,
+      paragraphs: [guide.description],
+    })),
+  },
+
+  ...GUIDE_CONTENT.map((guide) => ({
+    route: `/guide/${guide.slug}`,
+    title: guide.title,
+    description: guide.description,
+    eyebrow: 'CodeIt guide',
+    h1: guide.h1,
+    intro: guide.description,
+    detail: `Last verified ${guide.lastVerified}.`,
+    type: 'Article',
+    slug: guide.slug,
+    datePublished: guide.lastVerified,
+    // Pre-rendered from the same Markdown the React page renders, so the
+    // crawlable HTML and the page a person sees are the same words.
+    bodyHtml: renderMarkdown(guide.markdown),
+    breadcrumbs: [
+      ['/', 'Home'],
+      ['/guide', 'Guides'],
+      [`/guide/${guide.slug}`, guide.h1],
+    ],
+  })),
 
   ...BLOG_POSTS.map(([slug, fallbackTitle, fallbackDescription]) => {
     const post = BLOG_BY_SLUG.get(slug);
@@ -783,7 +879,7 @@ function staticContent(page) {
       <h1>${escapeHtml(page.h1)}</h1>
       ${dateLine}
       <p>${paragraphHtml(page.intro)}</p>
-      ${sectionsHtml(page.sections)}
+      ${page.bodyHtml || sectionsHtml(page.sections)}
       ${faqHtml(page.faqs)}
       <h2>${escapeHtml(page.sectionTitle || 'What you can do on CodeIt')}</h2>
       <p>${paragraphHtml(page.detail)}</p>
@@ -800,7 +896,7 @@ function staticContent(page) {
 function pageSchema(page) {
   const graph = [];
   const url = `${SITE}${page.route}`;
-  const bodyText = sectionsToText(page.sections || []);
+  const bodyText = bodyTextOf(page);
 
   const primary = {
     '@context': 'https://schema.org',
@@ -831,7 +927,7 @@ function pageSchema(page) {
   }
 
   // Articles previously carried no headline, author or datePublished at all.
-  if (page.type === 'BlogPosting') {
+  if (page.type === 'BlogPosting' || page.type === 'Article') {
     primary.headline = page.h1;
     primary.author = { '@id': `${SITE}/#organization` };
     primary.mainEntityOfPage = { '@type': 'WebPage', '@id': url };
@@ -840,7 +936,7 @@ function pageSchema(page) {
       primary.dateModified = page.datePublished;
     }
     if (bodyText) primary.articleBody = bodyText;
-    if (page.sections?.length) primary.wordCount = bodyText.split(/\s+/).length;
+    if (bodyText) primary.wordCount = bodyText.split(/\s+/).length;
   }
 
   graph.push(primary);
@@ -905,8 +1001,23 @@ function pageSchema(page) {
   return JSON.stringify(graph.length === 1 ? graph[0] : graph);
 }
 
+/**
+ * The global @graph in public/index.html carries a hand-written Organization
+ * node. Replace it with the one built from src/config/company.js so identity
+ * facts live in exactly one file — adding a founder name or a sameAs profile
+ * should never mean editing HTML.
+ */
+function withOrganization(html) {
+  const schema = JSON.stringify(COMPANY.organizationSchema(), null, 10)
+    .replace(/\n/g, '\n  ');
+  return html.replace(
+    /\{\s*"@type": "Organization"[\s\S]*?\n\s{8}\}/,
+    schema.replace(/^\{/, '{').replace(/\}$/, '}')
+  );
+}
+
 function renderRouteDocument(template, page) {
-  let html = replaceMeta(template, page);
+  let html = replaceMeta(withOrganization(template), page);
   const content = staticContent(page);
   html = html.replace(/<div id="root">[\s\S]*?<\/body>/i, `<div id="root">${content}</div>\n  </body>`);
   const routeStyle = `<style id="static-route-style">
@@ -917,6 +1028,30 @@ function renderRouteDocument(template, page) {
   </style>`;
   const schema = `<script id="static-route-jsonld" type="application/ld+json">${pageSchema(page)}</script>`;
   return html.replace('</head>', `${routeStyle}\n    ${schema}\n  </head>`);
+}
+
+function writeSitemap(buildDir) {
+  const today = LAST_MODIFIED;
+  const urls = [{ route: '/', priority: '1.0' }, ...PAGES.map((page) => ({ route: page.route }))];
+  const seen = new Set();
+  const body = urls
+    .filter(({ route }) => (seen.has(route) ? false : seen.add(route)))
+    .map(
+      ({ route, priority }) =>
+        `  <url>\n` +
+        `    <loc>${SITE}${route === '/' ? '/' : route}</loc>\n` +
+        `    <lastmod>${today}</lastmod>\n` +
+        (priority ? `    <priority>${priority}</priority>\n` : '') +
+        `  </url>`
+    )
+    .join('\n');
+
+  const xml =
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
+
+  fs.writeFileSync(path.join(buildDir, 'sitemap.xml'), xml);
+  console.log(`Generated sitemap.xml with ${seen.size} URLs.`);
 }
 
 function generate(buildDir = path.resolve(__dirname, '../build')) {
@@ -931,6 +1066,11 @@ function generate(buildDir = path.resolve(__dirname, '../build')) {
     fs.writeFileSync(path.join(outputDir, 'index.html'), document);
     totalBodyChars += staticContent(page).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length;
   }
+
+  // The sitemap is generated from the same PAGES list rather than maintained
+  // by hand. A hand-written sitemap is how fifteen lessons went unlisted for
+  // months on a site whose entire problem was not being readable.
+  writeSitemap(buildDir);
 
   // Homepage last: it overwrites the template file itself.
   fs.writeFileSync(templatePath, renderRouteDocument(template, HOME_PAGE));

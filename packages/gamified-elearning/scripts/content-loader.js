@@ -25,9 +25,13 @@ const SRC = path.resolve(__dirname, '../src');
 function loadEsmDefault(filePath) {
   const source = fs.readFileSync(filePath, 'utf8');
 
-  // `export default foo;` -> `module.exports = foo;`
-  // Also tolerates `export default { ... };`
-  const cjs = source.replace(/export\s+default\s+/g, 'module.exports = ');
+  // `export default foo;`      -> `module.exports = foo;`
+  // `export { A, B };`          -> `module.exports = { A, B };`
+  // `export const X = ...;`     -> `const X = ...;` (collected by the block above)
+  const cjs = source
+    .replace(/export\s+default\s+/g, 'module.exports = ')
+    .replace(/export\s*\{([^}]*)\}\s*;/g, (_, names) => `module.exports = {${names}};`)
+    .replace(/export\s+(const|let|function|class)\s/g, '$1 ');
 
   const sandboxModule = { exports: {} };
   const context = vm.createContext({
@@ -81,4 +85,58 @@ function loadLessons() {
   return lessons;
 }
 
-module.exports = { loadBlogPosts, loadLessons, loadEsmDefault };
+/** Long-form guide pages, shared with the React GuidePage component. */
+function loadGuidePages() {
+  const guides = loadEsmDefault(path.join(SRC, 'data/guidePages.js'));
+  if (!Array.isArray(guides) || guides.length === 0) {
+    throw new Error('content-loader: guidePages.js did not export a non-empty array');
+  }
+  return guides;
+}
+
+/** The same Markdown renderer the React app uses, so both agree exactly. */
+function loadMarkdownRenderer() {
+  const render = loadEsmDefault(path.join(SRC, 'utils/markdown.js'));
+  if (typeof render !== 'function') {
+    throw new Error('content-loader: markdown.js did not export a function');
+  }
+  return render;
+}
+
+/** The single FAQ list shared with the /faq page and the parent guide. */
+function loadFaqs() {
+  const faqs = loadEsmDefault(path.join(SRC, 'data/faqs.js'));
+  if (!Array.isArray(faqs) || faqs.length === 0) {
+    throw new Error('content-loader: faqs.js did not export a non-empty array');
+  }
+  return faqs;
+}
+
+/** Company identity, so the Organization schema has exactly one source. */
+function loadCompany() {
+  const company = loadEsmDefault(path.join(SRC, 'config/company.js'));
+  if (!company || typeof company.organizationSchema !== 'function') {
+    throw new Error('content-loader: company.js did not export the expected object');
+  }
+  return company;
+}
+
+/** Price constants, shared with the pricing page so there is one source. */
+function loadPricing() {
+  const pricing = loadEsmDefault(path.join(SRC, 'config/pricing.js'));
+  if (!pricing || !pricing.PRICE_PER_INTERVAL) {
+    throw new Error('content-loader: pricing.js did not export the expected constants');
+  }
+  return pricing;
+}
+
+module.exports = {
+  loadPricing,
+  loadBlogPosts,
+  loadLessons,
+  loadGuidePages,
+  loadMarkdownRenderer,
+  loadFaqs,
+  loadCompany,
+  loadEsmDefault,
+};

@@ -117,7 +117,7 @@ export default function CreatorBrief() {
           </blockquote>
           <p className="creator-brief__offer">
             <strong>Offer to promote:</strong> free family pilot requests are open. There is no card,
-            charge, or subscription. The planned paid family plan is US$12/month after testing.
+            charge, or subscription. The paid family plan is CA$12/month and is now live.
           </p>
           <div className="creator-brief__hero-actions">
             <Link to="/builder">Open the project studio <span aria-hidden="true">→</span></Link>
@@ -260,7 +260,7 @@ export default function CreatorBrief() {
             <article className="is-planned">
               <h3>Label this as planned</h3>
               <ul>
-                <li>The Founding Family plan is proposed at US$12/month; billing is not live.</li>
+                <li>The family plan is CA$12/month, live and cancellable at any time.</li>
                 <li>Never promise grades, guaranteed learning, or career outcomes.</li>
               </ul>
             </article>
