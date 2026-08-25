@@ -59,6 +59,7 @@ import {
 } from './codeSafety';
 import { initialTab, tabAfter, tabsFor } from './builderTabs';
 import { liveUpdateScript, readSettings, setSetting } from './gameSettings';
+import { conceptSummary, conceptsIn } from './codeConcepts';
 import {
   EMPTY as EMPTY_HISTORY,
   canRedo as historyCanRedo,
@@ -154,14 +155,6 @@ function getBuildSteps(type) {
   ];
 }
 
-const LESSON_CONCEPTS = [
-  { id: 2,  title: 'Variables',     hint: 'Store scores, names, and data'         },
-  { id: 3,  title: 'Strings',       hint: 'Work with text and messages'            },
-  { id: 4,  title: 'If Statements', hint: 'Decide what happens next'               },
-  { id: 5,  title: 'For Loops',     hint: 'Repeat actions automatically'           },
-  { id: 7,  title: 'Lists',         hint: 'Store and show multiple items'          },
-  { id: 9,  title: 'Functions',     hint: 'Organize actions into reusable blocks'  },
-];
 
 const HERO_BUILDS = [
   {
@@ -607,14 +600,6 @@ function getProjectGradient(type) {
   return 'linear-gradient(135deg, #FF7A00 0%, #A855F7 100%)';
 }
 
-function detectLessonIds(prompt) {
-  const p = (prompt || '').toLowerCase();
-  if (/game|click|target|score|timer|play|hit|miss/.test(p)) return [2, 4, 5, 9];
-  if (/quiz|question|answer|multiple|choice/.test(p))        return [4, 7, 9];
-  if (/story|random|generator|maker/.test(p))                return [2, 3, 7];
-  if (/website|page|fan|about|profile|portfolio/.test(p))    return [3, 4];
-  return [2, 4, 9];
-}
 
 function detectProjectType(prompt) {
   const p = (prompt || '').toLowerCase();
@@ -2547,9 +2532,6 @@ export default function Builder() {
               : !isPublished
                 ? { number: 6, icon: '🌟', title: 'Publish when you are proud', detail: 'Your project is tested, saved, and ready to share.', target: 'publish' }
                 : { number: 7, icon: '🎉', title: 'Invite someone to play', detail: 'Share your finished project and ask what they think.', target: 'share' };
-  const lessonChips = builtPrompt
-    ? LESSON_CONCEPTS.filter(l => detectLessonIds(builtPrompt).includes(l.id))
-    : [];
   // ── What actually goes into the preview frame ──────────────────────────────
   //
   // Scoped per project, so two games do not fight over one high score, and so a
@@ -2573,6 +2555,9 @@ export default function Builder() {
   // before: the panel poked `spawnDelay`, `speed` and `gameSpeed`, and not one
   // of the three starter games declares any of them.
   const gameSettings = useMemo(() => readSettings(code), [code]);
+
+  // Read from the code, not from what the child asked for. See codeConcepts.js.
+  const conceptsFound = useMemo(() => conceptsIn(code), [code]);
 
   // A slider shows the draft if the child is mid-drag, otherwise the file.
   function settingValue(setting) {
@@ -4369,34 +4354,44 @@ export default function Builder() {
               />
             )}
 
-            {onTab('learn') && conceptsUsed.length > 0 && (
-              <div className="bldr-concepts-used">
-                <span className="bldr-concepts-used__label">Concepts in this project:</span>
-                <div className="bldr-concepts-used__tags">
-                  {conceptsUsed.map(c => (
-                    <span key={c} className="bldr-concepts-used__tag">{c}</span>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* ── What you actually used, read out of the code ──────────────
+                Both blocks here used to come from `detectLessonIds`, which
+                matched keywords in the child's PROMPT. Type "a space game" and
+                it announced variables, if statements, for loops and functions
+                whether or not one of them was in the file, then opened a lesson
+                teaching something the project did not contain.
 
-            {/* Lessons used in this project */}
-            {onTab('learn') && lessonChips.length > 0 && (
+                Now every row is something found in their own code, with the
+                line it is on and the line itself. */}
+            {onTab('learn') && conceptsFound.length > 0 && (
               <div className="bldr-lessons-used">
                 <div className="bldr-lessons-used__header">
-                  <span className="bldr-lessons-used__title">What you just used</span>
-                  <span className="bldr-lessons-used__sub">Each concept below made this project possible. Tap to learn how it works</span>
+                  <span className="bldr-lessons-used__title">What you used in this project</span>
+                  <span className="bldr-lessons-used__sub">
+                    {conceptSummary(conceptsFound)} Tap any one to learn it properly.
+                  </span>
                 </div>
-                <div className="bldr-lessons-used__chips">
-                  {lessonChips.map(lesson => (
-                    <div key={lesson.id} className="bldr-lesson-chip">
-                      <div className="bldr-lesson-chip__top">
-                        <span className="bldr-lesson-chip__num">L{lesson.id}</span>
-                        <span className="bldr-lesson-chip__name">{lesson.title}</span>
+                <div className="bldr-concept-list">
+                  {conceptsFound.map(concept => (
+                    <div key={concept.id} className="bldr-concept">
+                      <div className="bldr-concept__head">
+                        <span className="bldr-concept__name">{concept.label}</span>
+                        {concept.count > 1 && (
+                          <span className="bldr-concept__count">{concept.count} times</span>
+                        )}
                       </div>
-                      <p className="bldr-lesson-chip__hint">{lesson.hint}</p>
-                      <Link to={`/lesson/${lesson.id}`} className="bldr-lesson-chip__learn">
-                        Learn this
+                      <p className="bldr-concept__what">{concept.what}</p>
+
+                      {/* Their line, not an example. This is the whole point:
+                          a child can go and look at it. */}
+                      <div className="bldr-concept__proof">
+                        <span className="bldr-concept__line">Line {concept.line}</span>
+                        <code className="bldr-concept__code">{concept.snippet}</code>
+                      </div>
+
+                      <p className="bldr-concept__note">{concept.note}</p>
+                      <Link to={`/lesson/${concept.lessonId}`} className="bldr-lesson-chip__learn">
+                        Learn {concept.lessonTitle}
                       </Link>
                     </div>
                   ))}
