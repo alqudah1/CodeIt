@@ -567,9 +567,14 @@ const HOME_PAGE = {
   description:
     'CodeIt is a browser-based coding platform for ages 5–18. Build websites, games and quizzes, then inspect and edit the real HTML, CSS and JavaScript behind them.',
   eyebrow: 'Creative coding for ages 5–18',
-  h1: 'Make a website. Learn the code behind it.',
+  // Kept in step with the real page. The app's headline changed when the front
+  // door became three tappable games, and a crawlable copy that claims a
+  // different headline from the page a person sees is the one kind of drift
+  // worth avoiding at any SEO cost. "Website" is retained because it is what
+  // the page has been indexed under.
+  h1: 'Make a real game or website. Then change the code inside it.',
   intro:
-    'CodeIt helps kids and beginner coders create websites, games, and quizzes, inspect the code behind them, and keep improving every project.',
+    'CodeIt helps kids and beginner coders create websites, games, and quizzes, inspect the code behind them, and keep improving every project. Learners are then asked questions generated from their own code, so understanding is shown rather than assumed.',
   detail:
     'Students ages 5–18 can build, edit, save, and learn from real browser projects. Parents can create private managed learner profiles for children ages 5–12 and receive progress updates.',
   type: 'SoftwareApplication',
@@ -586,6 +591,14 @@ const HOME_PAGE = {
       heading: 'How the learning loop works',
       paragraphs: [
         'Make something, see the code, change the code, save the project, and share what was built. Seeing the effect of a single change is what turns a finished project into something a beginner actually understands.',
+        'Starting takes one tap. The front page offers three ready-made games — catching falling stars, a penalty shootout, and dodging asteroids — that open already running, with no typing and no account. Each one is written to be read: the settings that control it are plain named values at the top of the file, so a first change can be a single number.',
+      ],
+    },
+    {
+      heading: 'Showing the project is yours',
+      paragraphs: [
+        'When AI writes the first version of a project, finishing it proves nothing about whether the learner understood any of it. CodeIt asks. The questions are generated from the learner\'s own project rather than from a question bank: if their game has a variable called fallSpeed set to 3, the question asks what fallSpeed starts as, and the wrong answers are other numbers from the same file.',
+        'A question cannot be answered by someone who has not read their own code, and it cannot be passed by someone who did the last one. Only questions answered correctly at the first attempt are recorded, because a wrong answer shows the right one along with an explanation. What a parent sees is a plain sentence describing what their child worked out, not a score or a percentage.',
       ],
     },
     {
