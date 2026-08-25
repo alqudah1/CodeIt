@@ -493,6 +493,37 @@ ANIMATION KEYFRAMES — include these in your <style>:
 ${starterSection}
 
 UNIVERSAL RULES (enforced — no exceptions):
+0. YOUR <script> MUST OPEN WITH A SETTINGS BLOCK. This is the single most
+   important rule here, because it is the only part of the file a child can
+   change without reading any of the rest of it. Exactly this shape:
+
+     // ── Change these and watch what happens ──
+     let fallSpeed  = 3;
+     let starSize   = 18;
+     let starColour = '#FFD84D';
+     let startLives = 3;
+
+     (blank line, then the rest of the code)
+
+   Rules for the block:
+   • The comment line is copied exactly, including the words "Change these".
+   • 3 to 6 declarations, each on its own line, each a plain literal: a number,
+     a quoted string, a '#rrggbb' colour, or true/false. No expressions, no
+     function calls, no document.getElementById.
+   • Name them for what a child would want to change, in the project's own
+     vocabulary: fallSpeed, keeperSpeed, rockChance, shipColour, totalShots.
+     Not config, opts, SETTINGS, or single letters.
+   • Every one MUST actually be used further down. A setting that changes
+     nothing is worse than no setting.
+   • Then one blank line, then everything else.
+   • Include at least one colour and at least one number a child can feel:
+     a speed, a size, a count.
+
+   The studio reads this block and builds real sliders and colour swatches from
+   it, so a child changes the game by dragging rather than by typing, and it
+   generates the questions that ask what their own code does. Without the block
+   there are no controls at all, and the only way to change anything is to ask
+   for it in words and wait.
 1. Return ONE complete self-contained HTML file: <!DOCTYPE html><html>...<head>...<body>...</body></html>
 2. MUST include: <meta name="viewport" content="width=device-width, initial-scale=1.0">
 3. Use ONLY CSS variables from :root. Font: 'Segoe UI',system-ui,sans-serif. NO Times New Roman.
