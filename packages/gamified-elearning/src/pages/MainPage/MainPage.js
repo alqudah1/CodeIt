@@ -60,8 +60,8 @@ const buildAchievements = (lessons, quizzes, puzzles, streak) => [
 
 const MainPage = () => {
   useSEO({
-    title:       'My Dashboard | CodeIt. Python Learning Progress',
-    description: 'Track your Python lessons, quizzes, and coding challenges. See your XP, streak, achievements, and next mission on your CodeIt learner dashboard.',
+    title:       'Your progress | CodeIt. Python Learning Progress',
+    description: 'Track your Python lessons, quizzes, and coding challenges. See your XP, streak, achievements, and next mission on your CodeIt progress page.',
     canonical:   '/MainPage',
     robots:      'noindex,nofollow',
   });
@@ -288,7 +288,7 @@ const MainPage = () => {
       <main className="main-content">
         {/* Visually hidden H1 for SEO. Dashboard is auth-gated so content H1 is fine here */}
         <h1 className="seo-only">
-          {firstName ? `${firstName}'s Python Dashboard` : 'Python Learning Dashboard'}. CodeIt
+          {firstName ? `${firstName}'s Python Dashboard` : 'Your progress'}. CodeIt
         </h1>
 
         {showFirstWin && <FirstWinPanel token={token} />}
@@ -641,14 +641,14 @@ const MainPage = () => {
         ══════════════════════════════════════════════════════ */}
         <section className="mp-builder-cta">
           <div className="mp-builder-cta__copy">
-            <span className="mp-builder-cta__badge">Project Studio</span>
+            <span className="mp-builder-cta__badge">Studio</span>
             <h2 className="mp-builder-cta__title">Turn your idea into a real project</h2>
             <p className="mp-builder-cta__sub">
               Start with a quiz, game, or portfolio, then change the design and code until the project feels like yours.
             </p>
           </div>
           <Link to="/builder" className="mp-builder-cta__btn">
-            Open Project Studio &rarr;
+            Open the studio &rarr;
           </Link>
         </section>
 
@@ -661,7 +661,7 @@ const MainPage = () => {
 
       <footer className="main-footer">
         &copy; {new Date().getFullYear()} <strong>CodeIt</strong>. All rights reserved. |
-        <Link to="/builder"> Project studio</Link> |
+        <Link to="/builder"> Studio</Link> |
         <Link to="/privacy"> Privacy</Link> |
         <Link to="/terms"> Terms</Link>
       </footer>

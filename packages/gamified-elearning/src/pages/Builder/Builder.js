@@ -184,13 +184,20 @@ const HERO_BUILDS = [
   },
 ];
 
+// ── The tools on the Change page ─────────────────────────────────────────────
+//
+// There used to be a sixth, "Save", whose panel offered a save button, a
+// full-screen link and a duplicate button. Every one of those already existed
+// somewhere else on the same screen: saving on the Save page, on the action bar
+// and on the phone's bottom bar; full screen on the preview itself; duplicate
+// on the project card. It was a fourth button reading "Save" in one viewport,
+// and the only thing it added was a decision about which Save to press.
 const STUDIO_TOOLS = [
   { id: 'mine',     label: 'Make it mine', desc: 'Changes that happen straight away' },
   { id: 'colors',   label: 'Colours', desc: 'Pick a colour theme' },
   { id: 'text',     label: 'Text',     desc: 'Change writing style' },
   { id: 'effects',  label: 'Effects',  desc: 'Add visual effects' },
   { id: 'gameplay', label: 'Controls', desc: 'Change how it plays, straight away' },
-  { id: 'save',     label: 'Save',     desc: 'Save your creation' },
 ];
 
 // Swatches for a colour setting inside a game. Bright, high-contrast and
@@ -929,7 +936,7 @@ export default function Builder() {
   const [publicId, setPublicId]           = useState(null);
   const [publishStatus, setPublishStatus] = useState(null); // null | 'publishing' | 'copied' | 'error'
 
-  // ── My Creations — sort + favorites ───────────────────────────────────────
+  // ── My projects — sort + favorites ───────────────────────────────────────
   const [projectSort, setProjectSort]   = useState('recent');
   const [shareStatus, setShareStatus]   = useState(null); // null | 'copied' | 'shared'
   const [favoriteIds, setFavoriteIds]   = useState(() => {
@@ -1806,7 +1813,7 @@ export default function Builder() {
       clearTimeout(buildTimeout);
       const responseType = res.headers.get('content-type') || '';
       if (!responseType.includes('application/json')) {
-        throw new Error('The project studio is temporarily unavailable. Please try again in a moment.');
+        throw new Error('The studio is temporarily unavailable. Please try again in a moment.');
       }
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
@@ -2180,7 +2187,7 @@ export default function Builder() {
     } catch {}
   };
 
-  // ── Publish and share from My Creations ───────────────────────────────────
+  // ── Publish and share from My projects ───────────────────────────────────
   // Returning creators should not have to reopen a saved project and hunt for
   // its publishing controls. The server still enforces the under-13 privacy
   // rule; managed learner profiles never receive a public action here.
@@ -2271,7 +2278,7 @@ export default function Builder() {
     }
   };
 
-  // ── New build ──────────────────────────────────────────────────────────────
+  // ── New project ──────────────────────────────────────────────────────────────
   const handleNewBuild = () => {
     if (code && !isSaved) { setUnsavedWarning(true); return; }
     clearEditor();
@@ -2499,7 +2506,7 @@ export default function Builder() {
   const editCount   = promptHistory.length > 1 ? promptHistory.length - 1 : 0;
   const isPersonalized = hasPersonalized || editCount > 0;
   const saveActionLabel = isSaved
-    ? 'Saved to My Creations'
+    ? 'Saved to My projects'
     : !isPersonalized
       ? 'First: change one thing'
       : !hasTestedLatest
@@ -2617,7 +2624,7 @@ export default function Builder() {
         ════════════════════════════════════════ */}
         {(!hasResult || showStartOver) && (
         <section className="bldr-hero">
-          <div className="bldr-hero__badge">Project studio</div>
+          <div className="bldr-hero__badge">Studio</div>
           <h1 className="bldr-hero__title">
             Describe it. Build it.<br />
             <span className="bldr-hero__title-accent">Make it yours.</span>
@@ -2663,7 +2670,7 @@ export default function Builder() {
           <aside className={`bldr-coach bldr-coach--${guideLevel}`} role="status" aria-live="polite">
             <div className="bldr-coach__face" aria-hidden="true">{coachStage.icon}</div>
             <div className="bldr-coach__copy">
-              <span className="bldr-coach__step">CodeIt Guide · Step {coachStage.number}</span>
+              <span className="bldr-coach__step">Pixel · Step {coachStage.number}</span>
               <strong>{coachStage.title}</strong>
               <p>{coachStage.detail}</p>
             </div>
@@ -2676,11 +2683,11 @@ export default function Builder() {
               >
                 🔊 Read to me
               </button>
-              <button type="button" className="bldr-coach__hide" onClick={() => setCoachOpen(false)} aria-label="Hide CodeIt Guide">×</button>
+              <button type="button" className="bldr-coach__hide" onClick={() => setCoachOpen(false)} aria-label="Hide Pixel">×</button>
             </div>
           </aside>
         ) : (
-          <button type="button" className="bldr-coach-open" onClick={() => setCoachOpen(true)}>🧭 Open CodeIt Guide</button>
+          <button type="button" className="bldr-coach-open" onClick={() => setCoachOpen(true)}>🧭 Ask Pixel</button>
         )}
 
         {/* Ambient studio particles. Paused while editing for performance */}
@@ -2875,14 +2882,14 @@ export default function Builder() {
             {unsavedWarning && (
               <div className="bldr-unsaved-warning">
                 <span className="bldr-unsaved-warning__text">
-                  Start a new build? Save this project first if you want to keep it.
+                  Start a new project? Save this one first if you want to keep it.
                 </span>
                 <div className="bldr-unsaved-warning__actions">
                   <button className="bldr-action-btn bldr-action-btn--save bldr-action-btn--sm" onClick={handleSaveProject}>
                     Save first
                   </button>
                   <button className="bldr-action-btn bldr-action-btn--sm" onClick={clearEditor}>
-                    Start new build anyway
+                    Start a new one anyway
                   </button>
                   <button className="bldr-action-btn bldr-action-btn--sm" onClick={() => setUnsavedWarning(false)}>
                     Cancel
@@ -3728,33 +3735,6 @@ export default function Builder() {
                     })}
                   </div>
                 )}
-
-                {studioPanel === 'save' && (
-                  <div className="bldr-studio-panel__body">
-                    <p className="bldr-studio-panel__hint">Save and manage your creation</p>
-                    {user ? (
-                      <button
-                        className="bldr-studio-panel__apply-btn"
-                        disabled={saveStatus === 'saving' || isSaved || editing}
-                        onClick={() => { handleSaveOrGuide(); setStudioPanel(null); }}
-                      >
-                        {isSaved ? 'Saved to My Creations' : saveActionLabel}
-                      </button>
-                    ) : (
-                      <button className="bldr-studio-panel__apply-btn" onClick={handleSaveOrGuide}>
-                        {!isPersonalized || !hasTestedLatest ? saveActionLabel : 'Log in to save'}
-                      </button>
-                    )}
-                    <button className="bldr-studio-panel__secondary-btn" onClick={handleFullscreen}>
-                      Open full screen
-                    </button>
-                    {isSaved && savedProjectId && (
-                      <button className="bldr-studio-panel__secondary-btn" onClick={handleForkProject}>
-                        Duplicate project
-                      </button>
-                    )}
-                  </div>
-                )}
               </div>
             )}
 
@@ -3927,7 +3907,7 @@ export default function Builder() {
               ))}
 
               <button className="bldr-action-btn bldr-action-btn--new" onClick={handleNewBuild} disabled={editing}>
-                New build
+                New project
               </button>
             </div>
 
@@ -3986,7 +3966,7 @@ export default function Builder() {
                     <span className="bldr-edit-panel__pause-icon" aria-hidden="true">🪄</span>
                     <div>
                       <p className="bldr-edit-panel__pause-title">Your project is safe!</p>
-                      <p>The magic helper needs a break. Try it again in <strong>{friendlyWait(editRetrySeconds)}</strong>.</p>
+                      <p>Pixel needs a break. Try it again in <strong>{friendlyWait(editRetrySeconds)}</strong>.</p>
                       <p>You can keep playing or change the colours while you wait.</p>
                     </div>
                     <div className="bldr-edit-panel__pause-actions">
@@ -4391,7 +4371,7 @@ export default function Builder() {
 
             {onTab('learn') && conceptsUsed.length > 0 && (
               <div className="bldr-concepts-used">
-                <span className="bldr-concepts-used__label">Concepts in this build:</span>
+                <span className="bldr-concepts-used__label">Concepts in this project:</span>
                 <div className="bldr-concepts-used__tags">
                   {conceptsUsed.map(c => (
                     <span key={c} className="bldr-concepts-used__tag">{c}</span>
@@ -4400,12 +4380,12 @@ export default function Builder() {
               </div>
             )}
 
-            {/* Lessons used in this build */}
+            {/* Lessons used in this project */}
             {onTab('learn') && lessonChips.length > 0 && (
               <div className="bldr-lessons-used">
                 <div className="bldr-lessons-used__header">
                   <span className="bldr-lessons-used__title">What you just used</span>
-                  <span className="bldr-lessons-used__sub">Each concept below made this build possible. Tap to learn how it works</span>
+                  <span className="bldr-lessons-used__sub">Each concept below made this project possible. Tap to learn how it works</span>
                 </div>
                 <div className="bldr-lessons-used__chips">
                   {lessonChips.map(lesson => (
@@ -4428,7 +4408,7 @@ export default function Builder() {
             {explainError && <p className="bldr-error-inline">{explainError}</p>}
             {onTab('learn') && explanation && (
               <div className="bldr-explanation">
-                <div className="bldr-explanation__label">What this build does</div>
+                <div className="bldr-explanation__label">What this project does</div>
                 <p className="bldr-explanation__text">{explanation}</p>
               </div>
             )}
@@ -4486,7 +4466,7 @@ export default function Builder() {
         {user && (
           <section id="my-creations" className="bldr-projects" aria-label="My saved projects">
             <div className="bldr-projects__header">
-              <h2 className="bldr-projects__title">My Creations</h2>
+              <h2 className="bldr-projects__title">My projects</h2>
               {savedProjects.length > 0 && (
                 <span className="bldr-projects__count">{savedProjects.length}</span>
               )}
@@ -4729,7 +4709,7 @@ export default function Builder() {
             PARENT / TRUST STRIP
         ════════════════════════════════════════ */}
         {!code && (
-        <section className="bldr-trust" aria-label="About the project studio">
+        <section className="bldr-trust" aria-label="About the studio">
           <div className="bldr-trust__inner">
             <h2 className="bldr-trust__title">
               A guided place to build, change, and understand code

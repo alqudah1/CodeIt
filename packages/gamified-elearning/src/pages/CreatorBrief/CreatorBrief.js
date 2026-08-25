@@ -121,7 +121,7 @@ export default function CreatorBrief() {
             charge, or subscription. The paid family plan is CA$12/month and is now live.
           </p>
           <div className="creator-brief__hero-actions">
-            <Link to="/builder">Open the project studio <span aria-hidden="true">→</span></Link>
+            <Link to="/builder">Open the studio <span aria-hidden="true">→</span></Link>
             <a href="#campaign-links">Get your tracked link</a>
           </div>
         </section>

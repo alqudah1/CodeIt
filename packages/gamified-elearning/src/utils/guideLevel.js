@@ -5,7 +5,7 @@
 // everything at "Explore myself".
 //
 // This used to live inside Builder.js, which meant the setting a child chose in
-// the Project Studio had no effect on lessons — the place they spend most of
+// the Studio had no effect on lessons — the place they spend most of
 // their time. It is here so both read the same answer.
 
 const GUIDE_LEVELS = [

@@ -15,8 +15,8 @@ const FAQS = [
     a: 'No. The first version is a starting point. A learner can change the words, colors, layout, and behavior, inspect the code, save the project, and keep improving it.',
   },
   {
-    q: 'What ages can use the CodeIt project studio?',
-    a: 'Parents and legal guardians can create private managed profiles for learners ages 5 to 12. Independent student accounts are for ages 13 to 18. Anyone can try the project studio without creating an account.',
+    q: 'What ages can use the CodeIt studio?',
+    a: 'Parents and legal guardians can create private managed profiles for learners ages 5 to 12. Independent student accounts are for ages 13 to 18. Anyone can try the studio without creating an account.',
   },
   {
     q: 'Can a child publish a website publicly?',
@@ -24,7 +24,7 @@ const FAQS = [
   },
   {
     q: 'Is the AI website builder free?',
-    a: 'The project studio has a free experience. Enhanced AI generation depends on current service availability, and CodeIt also keeps starter projects available so visitors can try the make-edit-learn workflow.',
+    a: 'The studio has a free experience. Enhanced AI generation depends on current service availability, and CodeIt also keeps starter projects available so visitors can try the make-edit-learn workflow.',
   },
 ];
 
@@ -121,7 +121,7 @@ export default function AIWebsiteBuilderForKids() {
             <section className="seo-section">
               <h2 className="seo-h2">Private by default, with clear age rules</h2>
               <p className="seo-p">
-                Anyone can try the builder without an account. Parents and legal guardians can
+                Anyone can try the studio without an account. Parents and legal guardians can
                 create private managed profiles for learners ages 5 to 12. Those profiles cannot
                 publish projects publicly. Independent student accounts begin at age 13, and saved
                 projects remain private unless an eligible owner deliberately chooses Publish.
@@ -136,7 +136,7 @@ export default function AIWebsiteBuilderForKids() {
             <section className="seo-section">
               <h2 className="seo-h2">What is available right now</h2>
               <p className="seo-p">
-                The project studio, editable previews, code view, starter projects, saving, and
+                The studio, editable previews, code view, starter projects, saving, and
                 eligible publishing are part of the current product. Enhanced AI generation works
                 when CodeIt's AI service has available credit. Starter mode keeps the core
                 make-edit-learn demonstration available when enhanced generation is temporarily
@@ -168,7 +168,7 @@ export default function AIWebsiteBuilderForKids() {
           <section className="seo-bottom-cta">
             <h2>Start with an idea worth making.</h2>
             <p>Open the studio, try a project, and change the first version until it feels like yours.</p>
-            <Link to="/builder" className="seo-cta-btn">Open the project studio →</Link>
+            <Link to="/builder" className="seo-cta-btn">Open the studio →</Link>
           </section>
 
           <nav className="seo-related" aria-label="Related CodeIt pages">

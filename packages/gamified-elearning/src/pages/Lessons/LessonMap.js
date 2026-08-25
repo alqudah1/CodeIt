@@ -89,9 +89,9 @@ const LessonMap = () => {
         {/* ── Page header ───────────────────────────────── */}
         <div className="lm-header">
           <button className="lm-back-btn" onClick={() => navigate('/MainPage')}>
-            ← Back to Dashboard
+            ← Back to your progress
           </button>
-          <h1 className="lm-title">Lessons Map</h1>
+          <h1 className="lm-title">Lessons</h1>
           <p className="lm-subtitle">
             Complete each lesson to unlock the next. Earn XP and level up your Python skills!
           </p>

@@ -226,7 +226,7 @@ export default function Explore() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Remix failed');
-      showToast('Added to your builds! Opening builder...');
+      showToast('Added to your projects. Opening the studio...');
       setTimeout(() => navigate(`/builder?remix=${json.projectId}`), 1200);
     } catch (e) {
       showToast(e.message || 'Could not remix project.');
@@ -244,7 +244,7 @@ export default function Explore() {
 
   const EMPTY_MSGS = {
     trending:    'No trending projects yet. Be the first to publish!',
-    newest:      'Nothing published yet. Share your creation!',
+    newest:      'Nothing published yet. Share your project.',
     mostPlayed:  'No plays recorded yet.',
     mostRemixed: 'No remixed projects yet.',
   };
@@ -257,7 +257,7 @@ export default function Explore() {
       <div className="exp-hero">
         <div className="exp-hero__inner">
           <p className="exp-hero__eyebrow">Community</p>
-          <h1 className="exp-hero__title">Discover</h1>
+          <h1 className="exp-hero__title">Explore</h1>
           <p className="exp-hero__sub">Play, remix, and get inspired by projects shared by CodeIt learners.</p>
           <Link to="/builder" className="exp-hero__cta">Build Your Own</Link>
         </div>
@@ -298,7 +298,7 @@ export default function Explore() {
               <Section title="Trending Now" projects={data.trending} onLike={handleLike} onRemix={handleRemix} remixingId={remixingId} emptyMsg={EMPTY_MSGS.trending} />
             )}
             {activeTab === 'newest' && (
-              <Section title="Newest Creations" projects={data.newest} onLike={handleLike} onRemix={handleRemix} remixingId={remixingId} emptyMsg={EMPTY_MSGS.newest} />
+              <Section title="Newest projects" projects={data.newest} onLike={handleLike} onRemix={handleRemix} remixingId={remixingId} emptyMsg={EMPTY_MSGS.newest} />
             )}
             {activeTab === 'mostPlayed' && (
               <Section title="Most Played" projects={data.mostPlayed} onLike={handleLike} onRemix={handleRemix} remixingId={remixingId} emptyMsg={EMPTY_MSGS.mostPlayed} />

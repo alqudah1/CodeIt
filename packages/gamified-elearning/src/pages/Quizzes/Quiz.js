@@ -385,7 +385,7 @@ export default function Quiz() {
               </button>
             ) : (
               <button className="qz-btn-forward" onClick={() => navigate("/MainPage")}>
-                Back to Dashboard
+                Back to your progress
               </button>
             )}
           </div>

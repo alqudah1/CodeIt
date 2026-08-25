@@ -7,7 +7,7 @@ import BrandLogo from "../../components/BrandLogo/BrandLogo";
 import "./Header.css";
 
 const PUBLIC_NAV = [
-  { to: "/builder", label: "Build", primary: true },
+  { to: "/builder", label: "Studio", primary: true },
   { to: "/explore", label: "Explore" },
   { to: "/lessons", label: "Learn" },
   { to: "/playground", label: "Playground" },
@@ -18,7 +18,7 @@ const PUBLIC_NAV = [
 // Listed in full rather than sliced from PUBLIC_NAV: the slice silently
 // dropped Pricing, so signed-in parents had no way to reach the plan page.
 const MEMBER_NAV = [
-  { to: "/builder", label: "Build", primary: true },
+  { to: "/builder", label: "Studio", primary: true },
   { to: "/explore", label: "Explore" },
   { to: "/lessons", label: "Learn" },
   { to: "/playground", label: "Playground" },
@@ -116,8 +116,11 @@ export default function Header() {
           </nav>
 
           <div className="site-header__right">
+            {/* The nav item beside this one goes to the same place. Two labels
+                for one destination taught a child that the words are decoration,
+                so the button now says what it opens and the nav names it. */}
             <Link to="/builder" className="site-header__cta">
-              {user ? "Open studio" : "Start a project"}
+              {user ? "Open studio" : "Start building"}
             </Link>
 
             {user ? (

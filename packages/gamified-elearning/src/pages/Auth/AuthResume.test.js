@@ -95,7 +95,7 @@ describe('builder authentication return', () => {
     }));
   });
 
-  test('a new student with no requested action lands in the project studio', async () => {
+  test('a new student with no requested action lands in the studio', async () => {
     mockLocationState.from = '/';
     delete mockLocationState.resumeBuilderAction;
     axios.post.mockResolvedValueOnce({

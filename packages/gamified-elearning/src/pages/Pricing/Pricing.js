@@ -333,7 +333,7 @@ export default function Pricing() {
                   disabled={interestStatus === 'saving' || interestStatus === 'saved'}
                 >
                   {interestStatus === 'saving' && 'Saving…'}
-                  {interestStatus === 'saved' && 'Pilot request saved. Thank you'}
+                  {interestStatus === 'saved' && 'Pilot request saved. Thank you.'}
                   {(interestStatus === 'idle' || interestStatus === 'error' || interestStatus === 'parent-required' || interestStatus === 'consent-required') && 'Request a free family pilot spot'}
                 </button>
               </form>

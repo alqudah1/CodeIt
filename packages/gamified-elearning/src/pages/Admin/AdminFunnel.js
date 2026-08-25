@@ -52,7 +52,7 @@ const FINISH_ACTIONS = [
 const HOMEPAGE_ACTIONS = [
   ['hero-idea', 'Started with their own idea'],
   ['member-resume-project', 'Continued a saved project'],
-  ['hero-build', 'Opened the project studio'],
+  ['hero-build', 'Opened the studio'],
   ['hero-lessons', 'Opened beginner lessons'],
   ['final-build', 'Used the final build button'],
 ];

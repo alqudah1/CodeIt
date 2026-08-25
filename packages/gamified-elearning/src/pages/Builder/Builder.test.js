@@ -43,7 +43,16 @@ jest.mock('../../utils/trackEvent', () => ({
  * means tapping its page first, exactly as a child does.
  */
 function openStudioPage(name) {
-  fireEvent.click(screen.getByRole('button', { name: new RegExp(`^${name}$`, 'i') }));
+  // Scoped to the tab bar. "Save" is a page and also the button on the phone's
+  // bottom bar, and a test that grabs whichever one it finds first is a test
+  // that passes while the child presses the wrong thing.
+  // Matched on the label span, not the button: textContent includes the icon
+  // glyph, so "Play" is really "▶Play" and every match silently failed.
+  const tab = [...document.querySelectorAll('button.bldr-tab')]
+    .find(el => new RegExp(`^${name}$`, 'i')
+      .test((el.querySelector('.bldr-tab__label') || el).textContent.trim()));
+  if (!tab) throw new Error(`No studio tab called "${name}"`);
+  fireEvent.click(tab);
 }
 
 async function finishProjectQualityCheck(theme = 'Candy') {
@@ -54,7 +63,7 @@ async function finishProjectQualityCheck(theme = 'Candy') {
   fireEvent.click(screen.getByRole('button', { name: /Play my changes/i }));
 }
 
-describe('project studio opening', () => {
+describe('studio opening', () => {
   beforeEach(() => {
     window.scrollTo = jest.fn();
     localStorage.clear();
@@ -106,9 +115,9 @@ describe('project studio opening', () => {
     render(<Builder />);
 
     expect(screen.getByRole('heading', { name: 'Describe it. Build it. Make it yours.' })).toBeInTheDocument();
-    expect(screen.getByText('Project studio')).toBeInTheDocument();
+    expect(screen.getByText('Studio')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Build my project' })).toBeDisabled();
-    expect(screen.getByRole('region', { name: 'About the project studio' })).toHaveTextContent('Private until published');
+    expect(screen.getByRole('region', { name: 'About the studio' })).toHaveTextContent('Private until published');
     expect(screen.queryByText(/AI Builder/i)).not.toBeInTheDocument();
   });
 
@@ -184,7 +193,7 @@ describe('project studio opening', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Quiz/i }));
     await finishProjectQualityCheck();
-    openStudioPage('Keep');
+    openStudioPage('Save');
     expect(screen.getByRole('button', { name: 'Share' })).toBeDisabled();
     expect(screen.getByRole('button', { name: /Keep my project/i })).toBeEnabled();
   });
@@ -279,7 +288,7 @@ describe('project studio opening', () => {
     // have played the thing they just made is the wrong moment for a true
     // message.
     expect(screen.queryByLabelText('Guest project recovery')).not.toBeInTheDocument();
-    openStudioPage('Keep');
+    openStudioPage('Save');
     expect(screen.getByLabelText('Guest project recovery')).toHaveTextContent('Backed up in this browser');
     expect(screen.getByLabelText('Guest project recovery')).toHaveTextContent('only on this device for up to 7 days');
     await waitFor(() => expect(JSON.parse(localStorage.getItem(GUEST_PROJECT_DRAFT_KEY))).toEqual(expect.objectContaining({
@@ -335,7 +344,7 @@ describe('project studio opening', () => {
     expect(mockAwardXP).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: /Save my project/i }));
 
-    openStudioPage('Keep');
+    openStudioPage('Save');
     await screen.findByRole('heading', { name: 'Now your project is ready to publish.' });
     expect(mockAwardXP).toHaveBeenCalledWith(25);
     fireEvent.click(screen.getByRole('button', { name: 'Publish and get a link' }));
@@ -357,7 +366,7 @@ describe('project studio opening', () => {
     await finishProjectQualityCheck();
     fireEvent.click(screen.getByRole('button', { name: /Save my project/i }));
 
-    openStudioPage('Keep');
+    openStudioPage('Save');
     await screen.findByRole('heading', { name: 'Great work. Show your grown-up or teacher.' });
     expect(screen.queryByRole('button', { name: 'Publish and get a link' })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Learn how it works' }));
@@ -387,7 +396,7 @@ describe('project studio opening', () => {
       </AuthContext.Provider>
     );
 
-    openStudioPage('Keep');
+    openStudioPage('Save');
     await screen.findByRole('heading', { name: 'Now your project is ready to publish.' });
     expect(sessionStorage.getItem('codeit_builder_draft')).toBeNull();
     expect(global.fetch).toHaveBeenCalledWith(
@@ -421,7 +430,7 @@ describe('project studio opening', () => {
       </AuthContext.Provider>
     );
 
-    openStudioPage('Keep');
+    openStudioPage('Save');
     await screen.findByRole('heading', { name: 'Invite someone to play it.' });
     expect(sessionStorage.getItem('codeit_builder_draft')).toBeNull();
     expect(global.fetch).toHaveBeenCalledWith(
@@ -433,7 +442,7 @@ describe('project studio opening', () => {
     );
   });
 
-  test('lets a returning eligible creator publish directly from My Creations', async () => {
+  test('lets a returning eligible creator publish directly from My projects', async () => {
     const savedProject = {
       id: 42,
       title: 'Mission Control Quiz',
@@ -530,7 +539,7 @@ describe('project studio opening', () => {
     );
   });
 
-  test('shares a live saved project directly from My Creations', async () => {
+  test('shares a live saved project directly from My projects', async () => {
     const clipboardWrite = jest.fn(() => Promise.resolve());
     Object.defineProperty(navigator, 'share', { configurable: true, value: undefined });
     Object.defineProperty(navigator, 'clipboard', {
@@ -570,7 +579,7 @@ describe('project studio opening', () => {
     expect(trackEvent).toHaveBeenCalledWith('project_share', 'creator', 'creator-token');
   });
 
-  test('keeps managed saved projects family-private in My Creations', async () => {
+  test('keeps managed saved projects family-private in My projects', async () => {
     global.fetch = jest.fn(() => Promise.resolve({
       ok: true,
       json: async () => ({

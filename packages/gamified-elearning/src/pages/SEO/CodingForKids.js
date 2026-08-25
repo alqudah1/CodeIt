@@ -14,7 +14,7 @@ import './CodingForKids.css';
 const PATHS = [
   {
     number: '01',
-    label: 'Project studio',
+    label: 'Studio',
     title: 'Start with something worth making',
     body: 'Describe a website, game, or quiz. Then change the design, edit the code, and save a version that feels personal.',
     link: '/builder',

@@ -80,7 +80,7 @@ const Leaderboard = () => {
         {/* ── Page header ─────────────────────────────────── */}
         <div className="lb-header">
           <button className="lb-back-btn" onClick={() => navigate('/MainPage')}>
-            ← Back to Dashboard
+            ← Back to your progress
           </button>
           <h1 className="lb-title">🏆 Leaderboard</h1>
           <p className="lb-subtitle">

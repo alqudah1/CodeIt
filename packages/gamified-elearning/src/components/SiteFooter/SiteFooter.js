@@ -28,7 +28,7 @@ export default function SiteFooter() {
         <div className="site-footer__col">
           <strong>Build &amp; learn</strong>
           <ul>
-            <li><Link to="/builder">Project studio</Link></li>
+            <li><Link to="/builder">Studio</Link></li>
             <li><Link to="/ai-website-builder-for-kids">AI website builder for kids</Link></li>
             <li><Link to="/playground">Python playground</Link></li>
             <li><Link to="/lessons">All beginner lessons</Link></li>

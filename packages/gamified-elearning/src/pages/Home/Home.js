@@ -55,7 +55,7 @@ const STARTING_POINTS = [
     title: "Describe the idea",
     copy: "A student starts with a website, game, quiz, or school project they genuinely want to make.",
     link: "/builder",
-    linkLabel: "Try the project studio",
+    linkLabel: "Open the studio",
   },
   {
     number: "02",
@@ -319,7 +319,7 @@ export default function Home() {
                   data-cta={user ? "member-progress" : "hero-lessons"}
                   onClick={() => { if (!user) trackEvent("landing_cta_click", "hero-lessons"); }}
                 >
-                  {user ? "View my progress" : "See the student journey"}
+                  {user ? "View my progress" : "See how it works"}
                 </Link>
               </div>
               <ul className="studio-hero__audience" aria-label="Who CodeIt helps">
@@ -466,7 +466,7 @@ export default function Home() {
                 <li><span>2</span><div><strong>Build and play</strong><p>Use the working result immediately and notice what you want to change.</p></div></li>
                 <li><span>3</span><div><strong>Open the code</strong><p>Learn the concept behind the behaviour, then edit and test it yourself.</p></div></li>
               </ol>
-              <Link to="/builder" className="studio-text-link">See the builder in action <span aria-hidden="true">→</span></Link>
+              <Link to="/builder" className="studio-text-link">See the studio in action <span aria-hidden="true">→</span></Link>
             </div>
           </section>
 
@@ -476,7 +476,7 @@ export default function Home() {
               <h2 id="studio-trust-title">One place for the complete beginner journey.</h2>
             </div>
             <div className="studio-trust__points">
-              <article><strong>AI-assisted project studio</strong><p>Students quickly create a first version, then keep control of what changes next.</p></article>
+              <article><strong>AI studio</strong><p>Students quickly create a first version, then keep control of what changes next.</p></article>
               <article><strong>Lessons and hands-on exercises</strong><p>Python concepts are explained through code students can run and test immediately.</p></article>
               <article><strong>Projects that belong to the student</strong><p>Save versions, return later, improve the work, and publish when it is ready.</p></article>
               <article><strong>Parent-approved progress updates</strong><p>Confirmed parents can receive plain-language emails about completed learning and creative work.</p></article>
@@ -508,7 +508,7 @@ export default function Home() {
             </div>
             <div>
               <strong>Build</strong>
-              <Link to="/builder">Project studio</Link>
+              <Link to="/builder">Studio</Link>
               <Link to="/explore">Play and remix projects</Link>
               <Link to="/playground">Python playground</Link>
               <Link to="/lessons">Beginner lessons</Link>

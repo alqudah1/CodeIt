@@ -42,10 +42,13 @@ const TABS = [
     blurb: 'See what your project is made of and how it works.',
   },
   {
+    // The id stays 'keep' because it is written into saved state and analytics;
+    // the label is what a child reads, and every button on this tab says Save.
+    // A tab called Keep above a button called Save is two words for one act.
     id: 'keep',
-    label: 'Keep',
+    label: 'Save',
     icon: '💾',
-    blurb: 'Save your work, or share it so people can play it.',
+    blurb: 'Save your project, or share it so people can play it.',
   },
 ];
 

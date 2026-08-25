@@ -20,7 +20,7 @@ const FAQS = [
   },
   {
     q: 'What can a learner make?',
-    a: 'Learners can create and edit websites, small games, and quizzes in the project studio. They can also follow step-by-step Python lessons or experiment in the browser playground.',
+    a: 'Learners can create and edit websites, small games, and quizzes in the studio. They can also follow step-by-step Python lessons or experiment in the browser playground.',
   },
   {
     q: 'Is CodeIt free?',

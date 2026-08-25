@@ -203,7 +203,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const { xp, level, xpToNext } = usePlayerProgress(token);
   const firstName  = (user?.name || 'Coder').split(' ')[0];
 
-  // The same setting the Project Studio writes. A child who asked for "Big
+  // The same setting the Studio writes. A child who asked for "Big
   // help" there was still getting small text and dense choices in lessons.
   const guideLevel = effectiveGuideLevel(user);
 
@@ -571,7 +571,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                   className="sl-completion-card__btn sl-completion-card__btn--builder"
                   onClick={() => navigate(`/builder?prompt=${encodeURIComponent(builderPromptFor(id))}`)}
                 >
-                  Use this in Project Studio
+                  Open this in the studio
                 </button>
               )}
               <button
@@ -907,7 +907,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               href={`/builder?prompt=${encodeURIComponent(builderPromptFor(id))}`}
               className="sl-builder-link__btn"
             >
-              Use this in Project Studio
+              Open this in the studio
             </a>
           </div>
         )}
