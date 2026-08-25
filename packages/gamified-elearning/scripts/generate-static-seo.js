@@ -378,13 +378,13 @@ const IDENTITY_PAGES = [
         heading: 'Why it exists',
         paragraphs: [
           'Most tools for young coders are block-based, and blocks are a good on-ramp — Scratch in particular has taught an enormous number of children to think in loops and conditionals. The gap is on the other side of it.',
-          'A ten-year-old who has outgrown blocks and wants to write real HTML has almost nowhere to go. Codecademy\u2019s terms of service require users to be sixteen. freeCodeCamp is free and excellent but was not designed for children. The platforms built for kids are, with few exceptions, blocks-first by design. CodeIt exists for that gap.',
+          'A ten-year-old who has outgrown blocks is stuck. Block tools keep the real code hidden for good, and text editors ask a child to type code before they have made anything worth caring about. Codecademy\u2019s terms of service require users to be sixteen. freeCodeCamp is free and excellent but was not designed for children. The platforms built for kids are, with few exceptions, blocks-first by design. CodeIt exists for that gap.',
         ],
       },
       {
         heading: 'How it works',
         paragraphs: [
-          'The loop is: make something, see the code, change the code, save the project, and share what was built. Starting from a working project rather than an empty file means a beginner has something to be curious about on day one, and seeing the effect of a single change is where the understanding comes from. The typing was never the hard part.',
+          'The loop is: make something, play it, change it, see what it is made of, and publish it. Starting from a working project rather than an empty file means a beginner has something to be curious about on day one, and seeing the effect of a single change is where the understanding comes from. The typing was never the hard part.',
           'CodeIt also asks questions drawn from the learner\u2019s own project, where the correct answer is whatever they actually wrote. Only questions answered correctly first time count. That is there so a parent can see what a child could explain, not only what got produced.',
         ],
       },
@@ -639,7 +639,7 @@ const HOME_PAGE = {
   route: '/',
   title: 'Coding for Kids: Build Websites & Learn the Code | CodeIt',
   description:
-    'CodeIt is a browser-based coding platform for ages 5–18. Build websites, games and quizzes, then inspect and edit the real HTML, CSS and JavaScript behind them.',
+    'CodeIt is a browser-based coding platform for ages 5\u201318. Describe a website, game or quiz, play what comes back, change it by moving things and picking colours, then see what it is made of.',
   eyebrow: 'Creative coding for ages 5–18',
   // Kept in step with the real page. The app's headline changed when the front
   // door became three tappable games, and a crawlable copy that claims a
@@ -664,7 +664,7 @@ const HOME_PAGE = {
     {
       heading: 'How the learning loop works',
       paragraphs: [
-        'Make something, see the code, change the code, save the project, and share what was built. Seeing the effect of a single change is what turns a finished project into something a beginner actually understands.',
+        'Make something, play it, change it, see what it is made of, and publish it. Changing a project and watching what moves is what turns a finished thing into something a beginner actually understands.',
         'Starting takes one tap. The front page offers three ready-made games — catching falling stars, a penalty shootout, and dodging asteroids — that open already running, with no typing and no account. Each one is written to be read: the settings that control it are plain named values at the top of the file, so a first change can be a single number.',
       ],
     },

@@ -77,7 +77,7 @@ COMPANY.organizationSchema = function organizationSchema() {
     url: `${COMPANY.url}/`,
     logo: `${COMPANY.url}/brand/codeit-logo-trimmed.png`,
     description:
-      'CodeIt is a browser-based creative coding studio where learners aged 5 to 18 build websites, games and quizzes, then inspect and edit the real HTML, CSS and JavaScript behind them.',
+      'CodeIt is a browser-based creative coding studio where learners aged 5 to 18 build websites, games and quizzes by describing them, change them by moving things and picking colours, and see what the finished project is made of.',
     address: {
       '@type': 'PostalAddress',
       addressLocality: COMPANY.city,
