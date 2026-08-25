@@ -590,6 +590,13 @@ const SECTIONS_BY_ROUTE = {
   ],
   '/privacy': [
     {
+      heading: 'Payments',
+      paragraphs: [
+        "Subscriptions are processed by Stripe. Card details are entered on Stripe's own form and never reach CodeIt. What CodeIt stores is Stripe's identifiers for the customer and subscription, the plan status and the renewal date.",
+        'Only an adult account can subscribe. A managed learner profile, or an account whose date of birth indicates the holder is under 18, cannot start a subscription and is never asked for payment details.',
+      ],
+    },
+    {
       heading: 'What CodeIt collects',
       paragraphs: [
         'CodeIt collects the information needed to run accounts, save learning progress, and build projects. It does not sell personal information and does not run behavioural advertising.',

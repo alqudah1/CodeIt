@@ -1,9 +1,10 @@
 import Header from '../Header/Header';
 import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
+import COMPANY from '../../config/company';
 import './Legal.css';
 
-const UPDATED = 'July 29, 2026';
+const UPDATED = 'August 25, 2026';
 
 export default function Privacy() {
   useSEO({
@@ -69,6 +70,14 @@ export default function Privacy() {
               <p>Analytics events do not store prompts, generated code, email addresses, browser user-agent strings, or IP addresses. An IP address may be held in server memory for about 60 seconds solely to rate-limit analytics requests; it is not written to the analytics table.</p>
             </section>
 
+            <section id="payments">
+              <h2>Payments</h2>
+              <p>Subscriptions are processed by Stripe. Card details are entered on Stripe&rsquo;s own payment form and go directly to Stripe — they never reach CodeIt and are never stored on our servers. What CodeIt keeps is Stripe&rsquo;s identifiers for the customer and the subscription, the plan status, and the renewal date, so the account knows what it is entitled to.</p>
+              <p>Stripe is an independent controller of the payment information it collects and handles it under its own privacy policy. Billing email, such as a receipt or a failed-payment notice, may be sent by Stripe or by CodeIt to the adult account holder.</p>
+              <p>Only an adult account can start a subscription. A managed learner profile, or an account whose date of birth indicates the holder is under 18, cannot subscribe and is never asked for payment details.</p>
+              <p>Payment records are kept for as long as tax and accounting obligations require, which is longer than the 13 months that applies to product analytics.</p>
+            </section>
+
             <section id="waitlist">
               <h2>Founding Family waitlist</h2>
               <p>An adult may choose to submit an email address and consent to receive updates about the Founding Family pilot. That contact email is stored separately from product analytics and is used only for the pilot, not for unrelated marketing.</p>
@@ -92,14 +101,14 @@ export default function Privacy() {
 
             <section id="retention">
               <h2>Retention, security, and choices</h2>
-              <p>Account, progress, and saved-project information is retained while the account is active or as needed to provide the service. Product analytics and AI usage totals are automatically removed after 13 months. Waitlist contact information is kept until the adult opts out or the pilot outreach ends. Public projects remain available until they are unpublished or deleted.</p>
+              <p>Account, progress, and saved-project information is retained while the account is active or as needed to provide the service. Product analytics and AI usage totals are automatically removed after 13 months. Waitlist contact information is kept until the adult opts out or the pilot outreach ends. Payment records are kept as long as tax and accounting rules require. Public projects remain available until they are unpublished or deleted.</p>
               <p>CodeIt uses access controls, password hashing, authenticated routes, and encrypted HTTPS connections. No online service can promise perfect security. If you believe an account or project is exposed, contact us promptly.</p>
               <p>You may ask to access, correct, export, unpublish, or delete personal information by emailing the privacy contact below. We may need to verify the requester’s identity and, for a child’s account, their authority as parent or guardian.</p>
             </section>
 
             <section id="contact">
               <h2>Privacy contact</h2>
-              <p>Questions or requests can be sent to <a href="mailto:hello@codeitlearn.com">hello@codeitlearn.com</a> with “Privacy” in the subject line. CodeIt is operated from Toronto, Ontario, Canada. The registered company name and a mailing address will be added here as soon as registration is complete.</p>
+              <p>Questions or requests can be sent to <a href={`mailto:${COMPANY.contactEmail}`}>{COMPANY.contactEmail}</a> with “Privacy” in the subject line. CodeIt is operated from Toronto, Ontario, Canada. The registered company name and a mailing address will be added here as soon as registration is complete.</p>
             </section>
           </div>
         </div>

@@ -4,9 +4,10 @@ import { useAuth } from '../../context/AuthContext';
 import { ENDPOINTS } from '../../config/api';
 import { journeyHeaders } from '../../utils/journey';
 import './HomePilotSignup.css';
+import COMPANY from '../../config/company';
 
 const PILOT_EMAIL_HREF = [
-  'mailto:hello@codeitlearn.com',
+  `mailto:${COMPANY.contactEmail}`,
   '?subject=CodeIt%20Founding%20Family%20pilot',
   '&body=Hi%20CodeIt%2C%0A%0AI%27m%20a%20parent%2C%20guardian%2C%20or%20educator%20interested%20in%20the%20Founding%20Family%20pilot.%0A%0AThanks!',
 ].join('');

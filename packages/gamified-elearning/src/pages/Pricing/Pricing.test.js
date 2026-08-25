@@ -138,7 +138,7 @@ describe('Pricing', () => {
     const emailLink = await screen.findByRole('link', { name: 'Or email us about the pilot' });
     expect(emailLink).toHaveAttribute(
       'href',
-      expect.stringMatching(/^mailto:hello@codeitlearn\.com\?subject=/)
+      expect.stringMatching(/^mailto:mustafa@lynq\.build\?subject=/)
     );
     expect(screen.getByText(/email links open your email app; nothing is sent automatically/i)).toBeInTheDocument();
 
@@ -152,7 +152,7 @@ describe('Pricing', () => {
     renderPricing();
 
     const fallback = await screen.findByRole('link', { name: 'Email us to join the pilot' });
-    expect(fallback).toHaveAttribute('href', expect.stringMatching(/^mailto:hello@codeitlearn\.com/));
+    expect(fallback).toHaveAttribute('href', expect.stringMatching(/^mailto:mustafa@lynq\.build/));
     expect(screen.queryByLabelText('Your email for pilot updates')).not.toBeInTheDocument();
   });
   function mockBilling(billingState) {

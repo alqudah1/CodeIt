@@ -469,3 +469,50 @@ test('no identity field is a placeholder', () => {
     }
   }
 });
+
+/* ─── Legal pages track the live product ───────────────────────────────────
+   Billing went live 25 August 2026. A privacy policy that never mentions
+   payments, or a published contact address nobody reads, is a real defect
+   rather than stale copy. */
+
+function walkSource(dir) {
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) return walkSource(full);
+    return entry.isFile() && full.endsWith('.js') && !full.includes('.test.') ? [full] : [];
+  });
+}
+
+test('the privacy page discloses payment processing', () => {
+  const text = bodyText(renderRouteDocument(TEMPLATE, PAGES.find((p) => p.route === '/privacy')));
+  assert.match(text, /Stripe/, '/privacy does not name the payment processor');
+  assert.match(text, /never reach CodeIt/i, '/privacy does not say where card details go');
+  assert.match(text, /under 18|adult account/i, '/privacy does not say who may subscribe');
+});
+
+test('every published contact address is one that is actually read', () => {
+  const company = require('./content-loader').loadCompany();
+  assert.ok(company.contactEmail, 'company.js has no contact address to check against');
+  const srcDir = path.resolve(__dirname, '../src');
+  for (const file of walkSource(srcDir)) {
+    for (const address of fs.readFileSync(file, 'utf8').match(/[\w.+-]+@[\w.-]+\.\w+/g) || []) {
+      // example.com addresses are input placeholders, not published contacts.
+      if (address.endsWith('@example.com')) continue;
+      assert.equal(
+        address,
+        company.contactEmail,
+        `${path.relative(srcDir, file)} publishes ${address}, which nobody reads`
+      );
+    }
+  }
+});
+
+test('nothing is still deferred until billing opens', () => {
+  const srcDir = path.resolve(__dirname, '../src');
+  for (const file of walkSource(srcDir)) {
+    assert.ok(
+      !/before paid subscriptions open/i.test(fs.readFileSync(file, 'utf8')),
+      `${path.relative(srcDir, file)} still defers something until billing opens`
+    );
+  }
+});

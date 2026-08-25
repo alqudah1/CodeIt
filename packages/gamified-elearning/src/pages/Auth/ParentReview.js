@@ -6,6 +6,7 @@ import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import BrandLogo from '../../components/BrandLogo/BrandLogo';
 import './Auth.css';
+import COMPANY from '../../config/company';
 
 const NOTICE_VERSION = '2026-08-04';
 const CLAIM_STORAGE_KEY = 'codeit_parent_claim_token';
@@ -201,7 +202,7 @@ export default function ParentReview() {
               </button>
               <p className="parent-review-small">
                 To decline and request deletion instead, email{' '}
-                <a href="mailto:privacy@codeitlearn.com">privacy@codeitlearn.com</a>.
+                <a href={`mailto:${COMPANY.contactEmail}`}>{COMPANY.contactEmail}</a>.
               </p>
             </form>
           )}
@@ -253,7 +254,7 @@ export default function ParentReview() {
         {status && <p className="auth-success" role="status">{status}</p>}
         {error && <p className="error-message" role="alert">{error}</p>}
         <p className="parent-review-small">
-          Need help? Email <a href="mailto:privacy@codeitlearn.com">privacy@codeitlearn.com</a>.
+          Need help? Email <a href={`mailto:${COMPANY.contactEmail}`}>{COMPANY.contactEmail}</a>.
         </p>
       </main>
     </div>
