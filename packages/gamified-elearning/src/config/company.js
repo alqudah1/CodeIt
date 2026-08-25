@@ -52,7 +52,9 @@ const COMPANY = {
    * Add a URL only once the profile is actually live. An empty list is honest;
    * a link to a page that does not exist is a broken claim.
    */
-  sameAs: [],
+  sameAs: [
+    'https://www.linkedin.com/company/codeitlearn',
+  ],
 };
 
 /** True once there is enough here to identify the organisation to a stranger. */
