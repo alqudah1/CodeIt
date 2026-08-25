@@ -54,6 +54,9 @@ export default function SiteFooter() {
             <li><Link to="/games">Coding games</Link></li>
             <li><Link to="/journey">Learning journey</Link></li>
             <li><Link to="/blog">Guides and project ideas</Link></li>
+            <li><Link to="/guide">Coding guides for parents</Link></li>
+            <li><Link to="/about">About CodeIt</Link></li>
+            <li><Link to="/faq">Frequently asked questions</Link></li>
           </ul>
         </div>
 

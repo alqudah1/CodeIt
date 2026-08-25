@@ -141,7 +141,7 @@ test('private application pages are crawlable but excluded with X-Robots-Tag', (
    Assistants that retrieve this site do not execute JavaScript. These tests
    fail if substantive content stops being present in the static HTML. */
 
-const { HOME_PAGE, PRICING } = require('./generate-static-seo');
+const { HOME_PAGE, PRICING, FAQS } = require('./generate-static-seo');
 
 function bodyText(html) {
   const body = /<body[^>]*>([\s\S]*)<\/body>/i.exec(html)?.[1] ?? '';
@@ -320,4 +320,65 @@ test('the sitemap covers every generated route', () => {
       `${page.route} is missing from the sitemap`);
   }
   assert.ok(xml.includes('<loc>https://codeitlearn.com/</loc>'), 'homepage missing from sitemap');
+});
+
+/* ─── Identity ─────────────────────────────────────────────────────────────
+   The brand collides with MIT CodeIt, codeit.us and codeitlearning.com. These
+   assert the signals that let anything tell them apart actually ship. */
+
+test('/about and /faq exist and are substantial', () => {
+  for (const route of ['/about', '/faq']) {
+    const page = PAGES.find((entry) => entry.route === route);
+    assert.ok(page, `${route} is not generated`);
+    const text = bodyText(renderRouteDocument(TEMPLATE, page));
+    assert.ok(text.length >= 1500, `${route} has only ${text.length} characters`);
+  }
+});
+
+test('/about names the organisations CodeIt is confused with', () => {
+  const about = PAGES.find((entry) => entry.route === '/about');
+  const text = bodyText(renderRouteDocument(TEMPLATE, about));
+  for (const rival of ['codeitlearning.com', 'MIT CodeIt', 'codeit.us']) {
+    assert.ok(text.includes(rival), `/about does not disambiguate from ${rival}`);
+  }
+  assert.match(text, /Toronto/, '/about does not say where CodeIt is from');
+});
+
+test('/about carries no placeholder where a real fact belongs', () => {
+  const about = PAGES.find((entry) => entry.route === '/about');
+  const text = bodyText(renderRouteDocument(TEMPLATE, about));
+  for (const pattern of [/\[.*?NAME.*?\]/i, /\bTODO\b/, /\bFILL[_ ]IN\b/i, /\bXXX\b/]) {
+    assert.ok(!pattern.test(text), `/about contains a placeholder: ${pattern}`);
+  }
+});
+
+test('the Organization node is built from config, not hand-written HTML', () => {
+  // Uses the real template: the global @graph only exists in public/index.html.
+  const realTemplate = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
+  const html = renderRouteDocument(realTemplate, PAGES.find((entry) => entry.route === '/about'));
+  const graphRaw = /<script type="application\/ld\+json">\s*(\{[\s\S]*?\})\s*<\/script>/.exec(html);
+  const org = JSON.parse(graphRaw[1])['@graph'].find((node) => node['@type'] === 'Organization');
+  assert.ok(org, 'no Organization node in the graph');
+  assert.equal(org.address.addressLocality, 'Toronto');
+  assert.deepEqual(org.alternateName, ['CodeItLearn', 'Code It Learn']);
+  // sameAs must be absent while empty rather than shipped as []
+  assert.ok(!('sameAs' in org) || org.sameAs.length > 0, 'empty sameAs should be omitted');
+});
+
+test('the FAQ has one source and every answer is a real answer', () => {
+  const faqPage = PAGES.find((entry) => entry.route === '/faq');
+  assert.equal(faqPage.faqs.length, FAQS.length);
+  for (const { q, a } of FAQS) {
+    assert.ok(a.length > 80, `answer to "${q}" is too thin to be useful`);
+  }
+  const faqNode = jsonLd(renderRouteDocument(TEMPLATE, faqPage)).find((n) => n['@type'] === 'FAQPage');
+  assert.ok(faqNode, '/faq does not emit FAQPage schema');
+  assert.equal(faqNode.mainEntity.length, FAQS.length);
+});
+
+test('the FAQ answers what CodeIt does not do', () => {
+  const combined = FAQS.map(({ a }) => a).join(' ');
+  assert.match(combined, /no rostering|LMS/i, 'FAQ does not disclose the schools gap');
+  assert.match(combined, /cannot publish/i, 'FAQ does not disclose the under-13 publishing limit');
+  assert.match(combined, /Python only|no web curriculum/i, 'FAQ does not disclose the curriculum gap');
 });

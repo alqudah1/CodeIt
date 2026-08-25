@@ -99,4 +99,30 @@ function loadMarkdownRenderer() {
   return render;
 }
 
-module.exports = { loadBlogPosts, loadLessons, loadGuidePages, loadMarkdownRenderer, loadEsmDefault };
+/** The single FAQ list shared with the /faq page and the parent guide. */
+function loadFaqs() {
+  const faqs = loadEsmDefault(path.join(SRC, 'data/faqs.js'));
+  if (!Array.isArray(faqs) || faqs.length === 0) {
+    throw new Error('content-loader: faqs.js did not export a non-empty array');
+  }
+  return faqs;
+}
+
+/** Company identity, so the Organization schema has exactly one source. */
+function loadCompany() {
+  const company = loadEsmDefault(path.join(SRC, 'config/company.js'));
+  if (!company || typeof company.organizationSchema !== 'function') {
+    throw new Error('content-loader: company.js did not export the expected object');
+  }
+  return company;
+}
+
+module.exports = {
+  loadBlogPosts,
+  loadLessons,
+  loadGuidePages,
+  loadMarkdownRenderer,
+  loadFaqs,
+  loadCompany,
+  loadEsmDefault,
+};

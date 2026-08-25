@@ -8,6 +8,8 @@ const {
   loadLessons,
   loadGuidePages,
   loadMarkdownRenderer,
+  loadFaqs,
+  loadCompany,
 } = require('./content-loader');
 
 const SITE = 'https://codeitlearn.com';
@@ -35,29 +37,9 @@ const PRICING = {
   },
 };
 
-// Mirrors FAQS in src/pages/SEO/CodingForKids.js so the answers are crawlable.
-const FAQS = [
-  {
-    q: 'What age is CodeIt for?',
-    a: 'Parents and legal guardians can create private managed profiles for learners ages 5\u201312 after confirming the adult account email. Independent student accounts are for ages 13\u201318.',
-  },
-  {
-    q: 'Do I need to know how to code to help?',
-    a: 'No. The activities use plain-language instructions and visible results. A parent or educator can help by asking what changed, what the learner wants to try next, and how they solved a problem.',
-  },
-  {
-    q: 'What can a learner make?',
-    a: 'Learners can create and edit websites, small games, and quizzes in the project studio. They can also follow step-by-step Python lessons or experiment in the browser playground.',
-  },
-  {
-    q: 'Is CodeIt free?',
-    a: `CodeIt has useful free activities. A Founding Family plan is being considered at ${PRICING.symbol}${PRICING.amount} per ${PRICING.period}, but no payment starts from an interest button and no paid family subscription is live today.`,
-  },
-  {
-    q: 'Are projects public?',
-    a: 'Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly. Managed profiles ages 5\u201312 cannot publish projects.',
-  },
-];
+// One source of truth, shared with the /faq page and the parent guide.
+const FAQS = loadFaqs();
+const COMPANY = loadCompany();
 
 const LESSONS = [
   ['hello-python', 'Hello Python', 'print statements and your first working Python program'],
@@ -392,6 +374,74 @@ function pricingSections() {
  * crawler that does not run JavaScript saw ~450 characters per page. Everything
  * here is factual and matches what the React page actually renders.
  */
+const IDENTITY_PAGES = [
+  {
+    route: '/about',
+    title: 'About CodeIt',
+    description:
+      'CodeIt is a browser-based coding studio for ages 5–18, built in Toronto. Learners build websites, games and quizzes, then edit the real code behind them.',
+    eyebrow: 'About',
+    h1: 'About CodeIt',
+    intro: `CodeIt is a browser-based coding studio for learners aged 5 to 18, built in ${COMPANY.locationLine()}${COMPANY.founderName ? ` by ${COMPANY.founderName}` : ''}. A learner describes a website, game or quiz; CodeIt builds a working first version; and then the learner opens it up and changes it.`,
+    detail: 'The project stays editable rather than becoming a finished result you can only look at.',
+    type: 'AboutPage',
+    sections: [
+      {
+        heading: 'Why it exists',
+        paragraphs: [
+          'Most tools for young coders are block-based, and blocks are a good on-ramp — Scratch in particular has taught an enormous number of children to think in loops and conditionals. The gap is on the other side of it.',
+          'A ten-year-old who has outgrown blocks and wants to write real HTML has almost nowhere to go. Codecademy\u2019s terms of service require users to be sixteen. freeCodeCamp is free and excellent but was not designed for children. The platforms built for kids are, with few exceptions, blocks-first by design. CodeIt exists for that gap.',
+        ],
+      },
+      {
+        heading: 'How it works',
+        paragraphs: [
+          'The loop is: make something, see the code, change the code, save the project, and share what was built. Starting from a working project rather than an empty file means a beginner has something to be curious about on day one, and seeing the effect of a single change is where the understanding comes from. The typing was never the hard part.',
+          'CodeIt also asks questions drawn from the learner\u2019s own project, where the correct answer is whatever they actually wrote. Only questions answered correctly first time count. That is there so a parent can see what a child could explain, not only what got produced.',
+        ],
+      },
+      {
+        heading: 'Who it is for, and who it is not for',
+        paragraphs: [
+          'It suits a learner roughly between 8 and 16 who has outgrown block coding, or a beginner of any age who wants to build web projects and understand what they are made of. It also suits a parent who cannot code, because the activities use plain language and visible results.',
+          'It is not right for a pre-reading child — Kodable and codeSpark are built for that and are better at it. It is not right for a learner who mainly wants to keep making games, where CodeCombat or Roblox Studio fit better. And it is not a schools product: there is no rostering, no LMS integration, no standards alignment and no teacher dashboard.',
+        ],
+      },
+      {
+        heading: 'Accounts, ages and safety',
+        paragraphs: [
+          'Parents and legal guardians create private managed profiles for learners aged 5 to 12, after confirming the adult account email address. Independent student accounts begin at 13.',
+          'Saved projects are private by default, and eligible independent accounts must actively choose Publish before a project appears publicly. Managed profiles for ages 5 to 12 cannot publish projects at all. Leaderboards use coder aliases rather than real names.',
+        ],
+      },
+      {
+        heading: 'What it costs',
+        paragraphs: [
+          'CodeIt has useful free activities and no card is required to start. A paid family plan is planned, but billing is not active today and no subscription starts automatically. We will give clear notice before that changes. We are not going to promise it will always be free, because we do not know that.',
+        ],
+      },
+      {
+        heading: 'Not to be confused with',
+        paragraphs: [
+          'CodeIt at codeitlearn.com is unrelated to CodeIT at codeitlearning.com (a coding tutoring company in London), MIT CodeIt (a youth outreach programme at MIT), CodeIT at codeit.us (a software engineering services company), or CodeIt.right (a C# code analysis tool).',
+        ],
+      },
+    ],
+  },
+  {
+    route: '/faq',
+    title: 'CodeIt FAQ: Ages, Cost, Safety & What It Does Not Do',
+    description:
+      'Straight answers about CodeIt — age ranges, what it costs, whether projects are public, what it does not do, and how it differs from Scratch.',
+    eyebrow: 'Questions',
+    h1: 'Questions parents ask first',
+    intro: 'Including the ones with awkward answers. If something here is out of date, it is a bug.',
+    detail: 'These answers are kept in one place and used by every page that shows them.',
+    type: 'WebPage',
+    faqs: FAQS,
+  },
+];
+
 const SECTIONS_BY_ROUTE = {
   '/ai-website-builder-for-kids': [
     {
@@ -644,6 +694,8 @@ const HOME_PAGE = {
 };
 
 const PAGES = [
+  ...IDENTITY_PAGES,
+
   ...BASE_PAGES.map((page) => {
     if (page.route === '/coding-for-kids') return { ...page, faqs: FAQS, sections: SECTIONS_BY_ROUTE[page.route] };
     if (SECTIONS_BY_ROUTE[page.route]) return { ...page, sections: SECTIONS_BY_ROUTE[page.route] };
@@ -961,8 +1013,23 @@ function pageSchema(page) {
   return JSON.stringify(graph.length === 1 ? graph[0] : graph);
 }
 
+/**
+ * The global @graph in public/index.html carries a hand-written Organization
+ * node. Replace it with the one built from src/config/company.js so identity
+ * facts live in exactly one file — adding a founder name or a sameAs profile
+ * should never mean editing HTML.
+ */
+function withOrganization(html) {
+  const schema = JSON.stringify(COMPANY.organizationSchema(), null, 10)
+    .replace(/\n/g, '\n  ');
+  return html.replace(
+    /\{\s*"@type": "Organization"[\s\S]*?\n\s{8}\}/,
+    schema.replace(/^\{/, '{').replace(/\}$/, '}')
+  );
+}
+
 function renderRouteDocument(template, page) {
-  let html = replaceMeta(template, page);
+  let html = replaceMeta(withOrganization(template), page);
   const content = staticContent(page);
   html = html.replace(/<div id="root">[\s\S]*?<\/body>/i, `<div id="root">${content}</div>\n  </body>`);
   const routeStyle = `<style id="static-route-style">
