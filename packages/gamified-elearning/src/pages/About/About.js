@@ -38,8 +38,9 @@ export default function About() {
             conditionals. The gap is on the other side of it.
           </p>
           <p>
-            A ten-year-old who has outgrown blocks and wants to write real HTML has almost nowhere
-            to go. Codecademy&rsquo;s terms of service require users to be sixteen. freeCodeCamp is
+            A ten-year-old who has outgrown blocks is stuck. Block tools keep the real code
+            hidden for good, and text editors ask a child to type code before they have made
+            anything worth caring about. Codecademy&rsquo;s terms of service require users to be sixteen. freeCodeCamp is
             free and excellent but was not designed for children. The platforms built for kids are,
             with few exceptions, blocks-first by design. CodeIt exists for that gap.
           </p>

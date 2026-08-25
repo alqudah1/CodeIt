@@ -533,5 +533,31 @@ test('sameAs reaches the Organization node when populated', () => {
   const org = JSON.parse(
     /<script type="application\/ld\+json">\s*(\{[\s\S]*?\})\s*<\/script>/.exec(html)[1]
   )['@graph'].find((node) => node['@type'] === 'Organization');
-  assert.deepEqual(org.sameAs, company.sameAs);
+  // company.js is evaluated in a vm sandbox, so its Array has a different
+  // prototype and strict deepEqual rejects it. Compare contents, not objects.
+  assert.deepEqual(Array.from(org.sameAs), Array.from(company.sameAs));
+});
+/* ─── The product does what we say it does ─────────────────────────────────
+   Copy drifted once into claiming children type code as the main activity.
+   builderTabs.js says the loop is Play, Change, The code, Save: a child
+   changes a project by moving things and asking, and "The code" shows what
+   the project is made of and links to the lesson behind each idea. */
+
+test('no page claims children write or edit code as the main activity', () => {
+  const OVERSTATED = [
+    /edits? the real HTML/i,
+    /edit the actual HTML/i,
+    /inspect and edit the real/i,
+    /see the code, change the code/i,
+    /wants? to write real HTML/i,
+  ];
+  const sources = [
+    require('./content-loader').loadGuidePages().map((g) => g.markdown).join('\n'),
+    ...PAGES.map((p) => `${p.bodyHtml || ''} ${sectionsToTextSafe(p)} ${p.description} ${p.intro || ''}`),
+    `${HOME_PAGE.description} ${sectionsToTextSafe(HOME_PAGE)}`,
+    fs.readFileSync(path.resolve(__dirname, '../public/llms.txt'), 'utf8'),
+  ].join('\n');
+  for (const pattern of OVERSTATED) {
+    assert.ok(!pattern.test(sources), `copy still overstates what children do: ${pattern}`);
+  }
 });
