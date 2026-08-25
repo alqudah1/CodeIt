@@ -6,3 +6,8 @@ Allow: /
 # they can read and obey that noindex instruction.
 
 Sitemap: https://codeitlearn.com/sitemap.xml
+
+# Plain-text summary of this site for language models.
+# Note: no major assistant is known to request this file; it is cheap to keep,
+# but it is not a substitute for content being present in the HTML.
+LLM-Content: https://codeitlearn.com/llms.txt

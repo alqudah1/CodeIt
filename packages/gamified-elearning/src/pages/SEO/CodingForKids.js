@@ -23,7 +23,7 @@ const FAQS = [
   },
   {
     q: 'Is CodeIt free?',
-    a: 'CodeIt has useful free activities. A Founding Family plan is being considered at US$12 per month, but no payment starts from an interest button and no paid family subscription is live today.',
+    a: 'CodeIt has useful free activities. A Founding Family plan is being considered at CA$12 per month, but no payment starts from an interest button and no paid family subscription is live today.',
   },
   {
     q: 'Are projects public?',

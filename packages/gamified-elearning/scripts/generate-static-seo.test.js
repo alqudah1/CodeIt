@@ -131,3 +131,107 @@ test('private application pages are crawlable but excluded with X-Robots-Tag', (
     assert.match(htaccess, new RegExp(`\\|${route}\\||\\(${route}\\||\\|${route}\\)`));
   }
 });
+
+/* ─── Crawlable-content guarantees ─────────────────────────────────────────
+   Assistants that retrieve this site do not execute JavaScript. These tests
+   fail if substantive content stops being present in the static HTML. */
+
+const { HOME_PAGE, PRICING } = require('./generate-static-seo');
+
+function bodyText(html) {
+  const body = /<body[^>]*>([\s\S]*)<\/body>/i.exec(html)?.[1] ?? '';
+  return body
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function jsonLd(html) {
+  const raw = /<script id="static-route-jsonld" type="application\/ld\+json">([\s\S]*?)<\/script>/i.exec(html)?.[1];
+  const parsed = JSON.parse(raw);
+  return Array.isArray(parsed) ? parsed : [parsed];
+}
+
+test('every generated route carries substantive crawlable body text', () => {
+  const template = TEMPLATE;
+  for (const page of PAGES) {
+    const text = bodyText(renderRouteDocument(template, page));
+    assert.ok(
+      text.length >= 900,
+      `${page.route} has only ${text.length} characters of crawlable body text`
+    );
+  }
+});
+
+test('homepage states what the product is, who it is for, and what it costs', () => {
+  const text = bodyText(renderRouteDocument(TEMPLATE, HOME_PAGE));
+  assert.ok(text.length >= 2000, `homepage body text is only ${text.length} characters`);
+  assert.match(text, /ages 5.18/i);
+  assert.match(text, /HTML, CSS, and JavaScript/i);
+  assert.ok(text.includes(PRICING.symbol + PRICING.amount), 'homepage does not state the price');
+});
+
+test('the price is stated in exactly one currency across all routes', () => {
+  const template = TEMPLATE;
+  const wrongCurrency = PRICING.symbol === 'CA$' ? /US\$\s?12/ : /CA\$\s?12/;
+  for (const page of [...PAGES, HOME_PAGE]) {
+    const html = renderRouteDocument(template, page);
+    assert.ok(!wrongCurrency.test(bodyText(html)), `${page.route} states a second currency`);
+  }
+});
+
+test('lesson pages inline the full lesson, not a teaser', () => {
+  const template = TEMPLATE;
+  const lesson1 = PAGES.find((page) => page.route === '/lesson/1');
+  const text = bodyText(renderRouteDocument(template, lesson1));
+  assert.ok(lesson1.sections.length >= 4, 'lesson 1 should expose every step');
+  assert.match(text, /print\(/, 'lesson code should be present in the HTML');
+});
+
+test('blog posts declare headline, author and datePublished', () => {
+  const template = TEMPLATE;
+  for (const page of PAGES.filter((p) => p.type === 'BlogPosting')) {
+    const [article] = jsonLd(renderRouteDocument(template, page));
+    assert.equal(article['@type'], 'BlogPosting', `${page.route} is not typed BlogPosting`);
+    assert.ok(article.headline, `${page.route} has no headline`);
+    assert.ok(article.author, `${page.route} has no author`);
+    assert.match(article.datePublished ?? '', /^\d{4}-\d{2}-\d{2}$/, `${page.route} has no datePublished`);
+  }
+});
+
+test('static title matches the rendered h1 subject on blog and lesson pages', () => {
+  for (const page of PAGES.filter((p) => p.route.startsWith('/blog/') || p.route.startsWith('/lesson/'))) {
+    assert.ok(
+      page.title.includes(page.h1),
+      `${page.route} title "${page.title}" does not contain its h1 "${page.h1}"`
+    );
+  }
+});
+
+test('the lesson sequence is expressed as a Course', () => {
+  const lessons = PAGES.find((page) => page.route === '/lessons');
+  const course = jsonLd(renderRouteDocument(TEMPLATE, lessons)).find((n) => n['@type'] === 'Course');
+  assert.ok(course, '/lessons does not emit Course schema');
+
+  // Counted from the lesson files rather than written here as a number. This
+  // said 16 and the curriculum grew to 31, so the test failed on a change that
+  // was entirely correct — and a test that cries wolf when the product improves
+  // is a test people start ignoring.
+  const lessonFiles = fs
+    .readdirSync(path.join(__dirname, '..', 'src', 'pages', 'Lessons', 'lessonData'))
+    .filter((name) => /^lesson\d+\.js$/.test(name)).length;
+
+  assert.ok(lessonFiles > 0, 'no lesson data files found');
+  assert.equal(course.hasPart.length, lessonFiles);
+});
+
+test('the visible FAQ is expressed as FAQPage', () => {
+  const page = PAGES.find((p) => p.route === '/coding-for-kids');
+  const faq = jsonLd(renderRouteDocument(TEMPLATE, page)).find((n) => n['@type'] === 'FAQPage');
+  assert.ok(faq, '/coding-for-kids does not emit FAQPage schema');
+  assert.ok(faq.mainEntity.length >= 5);
+  for (const entry of faq.mainEntity) {
+    assert.ok(entry.acceptedAnswer.text.length > 40, `answer to "${entry.name}" is too thin`);
+  }
+});
