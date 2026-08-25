@@ -1,14 +1,14 @@
 const lesson12 = {
   id: 12,
   title: "Booleans & Comparisons",
-  subtitle: "Python can decide if something is True or False — and act on it!",
+  subtitle: "Python can decide if something is True or False. And act on it!",
   emoji: "⚖️",
   story: "Before Python can choose, it has to answer a yes-or-no question. That answer is True or False.",
   steps: [
     {
       type: 'concept',
       id: 'concept',
-      title: 'True and False — Two Special Values',
+      title: 'True and False. Two Special Values',
       body: 'A boolean is a value that is either True or False. You create booleans by comparing things. The comparison operators are: == (equal to), != (not equal), < (less than), > (greater than), <= (less than or equal), and >= (greater than or equal). These comparisons are used inside if statements to make decisions.',
       highlight: 'age = 13\nprint(age >= 13)  # True\nprint(age == 14)  # False',
       code: 'age = 13\nprint(age >= 13)\nprint(age == 14)',

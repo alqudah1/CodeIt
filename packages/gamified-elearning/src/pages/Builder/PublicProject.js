@@ -108,7 +108,7 @@ export default function PublicProject() {
     shareUrl.searchParams.set('utm_source', 'project-share');
     const url = shareUrl.toString();
     const title = project?.title || 'A CodeIt project';
-    const text = `Try "${title}", made with CodeIt—then remix it or build your own.`;
+    const text = `Try "${title}", made with CodeIt, then remix it or build your own.`;
     let completed = false;
 
     if (navigator.share) {
@@ -245,7 +245,7 @@ export default function PublicProject() {
         <div className="pp-attribution">
           <span>Made on</span>
           <Link to="/" className="pp-attribution__brand">CodeIt</Link>
-          <span>— the creative playground for builders</span>
+          <span>,  the creative playground for builders</span>
         </div>
 
       </div>

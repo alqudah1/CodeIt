@@ -54,7 +54,7 @@ describe('what counts as a version worth keeping', () => {
 
 describe('a bug that only fires when you play the game', () => {
   // The case a browser test caught. Most bugs in a child's game do not throw on
-  // load — they throw on the first click. The old design recorded the broken
+  // load. they throw on the first click. The old design recorded the broken
   // version as good while nobody had pressed the button yet, then offered to
   // restore it.
   const CLICK_BUG = "el.addEventListener('click', () => { scoreboard.textContent = 1; });";
@@ -62,7 +62,7 @@ describe('a bug that only fires when you play the game', () => {
   test('a version that looked fine is struck off once it throws', () => {
     let state = rememberWorking(EMPTY, V1);      // played, fine
     state = rememberWorking(state, CLICK_BUG);   // loaded, nobody clicked yet
-    state = markBroken(state, CLICK_BUG);        // child clicks — it throws
+    state = markBroken(state, CLICK_BUG);        // child clicks. It throws
     expect(state.working).toEqual([V1]);
   });
 

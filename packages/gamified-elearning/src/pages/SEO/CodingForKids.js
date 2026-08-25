@@ -32,7 +32,7 @@ const PATHS = [
     number: '03',
     label: 'Browser playground',
     title: 'Test a small idea immediately',
-    body: 'Change an example, run it, and connect each line of Python to the result—without installing anything.',
+    body: 'Change an example, run it, and connect each line of Python to the result, without installing anything.',
     link: '/playground',
     linkLabel: 'Try the playground',
   },
@@ -41,7 +41,7 @@ const PATHS = [
 export default function CodingForKids() {
   useSEO({
     title: 'Coding for Kids: Projects, Python & Parent Guide | CodeIt',
-    description: 'A project-first coding platform for ages 5–18, with private parent-managed profiles for ages 5–12. Build websites, games and quizzes, then learn the code.',
+    description: 'A project-first coding platform for ages 5 to 18, with private parent-managed profiles for ages 5 to 12. Build websites, games and quizzes, then learn the code.',
     canonical: '/coding-for-kids',
   });
   useFAQSchema(FAQS);
@@ -62,7 +62,7 @@ export default function CodingForKids() {
               <span className="parents-eyebrow">For parents &amp; educators</span>
               <h1>A first coding project they’ll want to keep improving.</h1>
               <p className="parents-hero__lead">
-                CodeIt helps a beginner turn an idea into a website, game, or quiz—then change the
+                CodeIt helps a beginner turn an idea into a website, game, or quiz, then change the
                 design, inspect the code, and understand what makes it work.
               </p>
               <div className="parents-actions">
@@ -82,7 +82,7 @@ export default function CodingForKids() {
                 </a>
               </div>
               <p className="parents-hero__note">
-                Ages 5–12 start through a free parent or guardian account.{' '}
+                Ages 5 to 12 start through a free parent or guardian account.{' '}
                 <Link
                   to="/register?for=family"
                   onClick={() => void trackEvent('parent_cta_click', 'create-family-account')}
@@ -135,7 +135,7 @@ export default function CodingForKids() {
                 notice the result, and explain why it happened.
               </p>
               <p>
-                That gives a learner a reason to keep going—and gives an adult something more useful
+                That gives a learner a reason to keep going, and gives an adult something more useful
                 to ask than “Did you finish the lesson?”
               </p>
             </div>

@@ -34,13 +34,17 @@ describe('Pricing', () => {
     mockAuth = { user: { id: 12, role: 'Educator', email: 'parent@example.com' }, token: 'parent-token' };
   });
 
-  test('labels the founding offer as planned and does not imply a charge', async () => {
+  test('the pilot card is free and never contradicts the live paid plan', async () => {
     renderPricing();
     await screen.findByRole('checkbox');
 
     expect(screen.getByText('Free pilot requests open')).toBeInTheDocument();
-    expect(screen.getByText('planned plan: CA$12/month after testing')).toBeInTheDocument();
-    expect(screen.getByText('No payment is being collected today')).toBeInTheDocument();
+    // Both cards render on one screen. The pilot card used to read "planned
+    // plan: CA$12/month after testing" a few centimetres from a live CA$12
+    // checkout button, and the status line said no payment was being collected
+    // while checkout was open. Two false sentences about money, on the page
+    // that exists to be trusted about money.
+    expect(document.body.textContent).not.toMatch(/after testing|being collected today|billing is not live|before billing opens/i);
     expect(screen.getByText('Try the current family experience. Nothing paid starts automatically.')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Request a free family pilot spot/i })).toHaveAttribute('href', '#family-pilot');
     expect(screen.getByText(/About 30 seconds · immediate setup email · no credit card/i)).toBeInTheDocument();
@@ -65,7 +69,7 @@ describe('Pricing', () => {
     fireEvent.click(await screen.findByRole('checkbox'));
     fireEvent.click(screen.getByRole('button', { name: 'Request a free family pilot spot' }));
 
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Pilot request saved — thank you' })).toBeDisabled());
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Pilot request saved. Thank you.' })).toBeDisabled());
     expect(screen.getByText('Your family pilot request is saved.')).toBeInTheDocument();
     expect(screen.getByText(/Check your inbox for immediate setup steps/i)).toBeInTheDocument();
     expect(global.fetch).toHaveBeenLastCalledWith(

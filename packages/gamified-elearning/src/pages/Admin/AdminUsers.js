@@ -8,9 +8,9 @@ import './AdminLayout.css';
 const PAGE_SIZE = 50;
 
 function calcAge(dob) {
-  if (!dob) return '—';
+  if (!dob) return ', ';
   const birth = new Date(dob);
-  if (isNaN(birth)) return '—';
+  if (isNaN(birth)) return ', ';
   const today = new Date();
   let age = today.getFullYear() - birth.getFullYear();
   const m = today.getMonth() - birth.getMonth();
@@ -19,7 +19,7 @@ function calcAge(dob) {
 }
 
 function fmtDate(dt) {
-  if (!dt) return '—';
+  if (!dt) return ', ';
   return new Date(dt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
@@ -88,8 +88,8 @@ const AdminUsers = () => {
   const sortedRows = [...rows].sort((a, b) => {
     let av = sortKey === '_age' ? calcAge(a.dob) : (a[sortKey] ?? '');
     let bv = sortKey === '_age' ? calcAge(b.dob) : (b[sortKey] ?? '');
-    if (av === '—') av = sortDir === 'asc' ? Infinity : -Infinity;
-    if (bv === '—') bv = sortDir === 'asc' ? Infinity : -Infinity;
+    if (av === ', ') av = sortDir === 'asc' ? Infinity : -Infinity;
+    if (bv === ', ') bv = sortDir === 'asc' ? Infinity : -Infinity;
     if (av < bv) return sortDir === 'asc' ? -1 : 1;
     if (av > bv) return sortDir === 'asc' ? 1 : -1;
     return 0;
@@ -146,15 +146,15 @@ const AdminUsers = () => {
                     onClick={() => navigate(`/admin/users/${u.user_id}`)}
                   >
                     <td style={{ color: '#718096' }}>#{u.user_id}</td>
-                    <td>{u.username ? `@${u.username}` : <span style={{ color: '#aaa' }}>—</span>}</td>
-                    <td><strong>{u.name || '—'}</strong></td>
-                    <td style={{ color: '#718096' }}>{u.dob ? fmtDate(u.dob) : '—'}</td>
+                    <td>{u.username ? `@${u.username}` : <span style={{ color: '#aaa' }}>, </span>}</td>
+                    <td><strong>{u.name || ', '}</strong></td>
+                    <td style={{ color: '#718096' }}>{u.dob ? fmtDate(u.dob) : ', '}</td>
                     <td>{calcAge(u.dob)}</td>
-                    <td><span className={`adm-badge ${roleBadge(u.role)}`}>{u.role || '—'}</span></td>
+                    <td><span className={`adm-badge ${roleBadge(u.role)}`}>{u.role || ', '}</span></td>
                     <td>{familyStatus(u.family_status)}</td>
                     <td style={{ color: '#718096' }}>{fmtDate(u.created_at)}</td>
                     <td><strong style={{ color: '#6c63ff' }}>{(Number(u.total_xp) || 0).toLocaleString()}</strong></td>
-                    <td>{u.current_streak > 0 ? `${u.current_streak}d` : <span style={{ color: '#ccc' }}>—</span>}</td>
+                    <td>{u.current_streak > 0 ? `${u.current_streak}d` : <span style={{ color: '#ccc' }}>, </span>}</td>
                     <td>{u.lessons_done || 0}</td>
                     <td>{u.quizzes_done || 0}</td>
                   </tr>
@@ -185,7 +185,7 @@ function roleBadge(role) {
 }
 
 function familyStatus(status) {
-  if (!status) return <span style={{ color: '#aaa' }}>—</span>;
+  if (!status) return <span style={{ color: '#aaa' }}>, </span>;
   const labels = {
     managed: 'Managed',
     review_sent: 'Review sent',

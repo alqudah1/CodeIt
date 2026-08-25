@@ -99,12 +99,12 @@ const AdminDashboard = () => {
                       #{u.user_id}
                     </td>
                     <td>
-                      <strong>{u.name || '—'}</strong>
+                      <strong>{u.name || ', '}</strong>
                       {u.username && <span style={{ color: '#718096', marginLeft: '0.4rem', fontSize: '0.82rem' }}>@{u.username}</span>}
                     </td>
-                    <td style={{ color: '#718096' }}>{u.email || '—'}</td>
+                    <td style={{ color: '#718096' }}>{u.email || ', '}</td>
                     <td>
-                      <span className={`adm-badge ${roleBadge(u.role)}`}>{u.role || '—'}</span>
+                      <span className={`adm-badge ${roleBadge(u.role)}`}>{u.role || ', '}</span>
                     </td>
                     <td><strong>{fmt(u.xp)}</strong></td>
                     <td style={{ color: '#718096' }}>{fmtDate(u.created_at)}</td>
@@ -127,7 +127,7 @@ function roleBadge(role) {
 }
 
 function fmtDate(dt) {
-  if (!dt) return '—';
+  if (!dt) return ', ';
   return new Date(dt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 

@@ -95,7 +95,7 @@ const AdminStats = () => {
                 <div className="adm-prog-bar-wrap">
                   <div className="adm-prog-bar-fill" style={{ width: `${row.avg_pct || 0}%` }} />
                 </div>
-                <span className="adm-prog-pct">{row.avg_pct ?? '—'}%</span>
+                <span className="adm-prog-pct">{row.avg_pct ?? ', '}%</span>
               </div>
             ))}
           </div>
@@ -103,7 +103,7 @@ const AdminStats = () => {
       </div>
 
       {/* Daily signups */}
-      <div className="adm-section-head">Daily Signups — Last 30 Days</div>
+      <div className="adm-section-head">Daily Signups. Last 30 Days</div>
       <div className="adm-table-wrap" style={{ marginBottom: '1.75rem' }}>
         <table className="adm-table">
           <thead>
@@ -141,7 +141,7 @@ const AdminStats = () => {
               <tr key={l.user_id} className="clickable" onClick={() => navigate(`/admin/users/${l.user_id}`)}>
                 <td style={{ color: '#718096', fontWeight: 700 }}>{i + 1}</td>
                 <td>
-                  <strong>{l.name || '—'}</strong>
+                  <strong>{l.name || ', '}</strong>
                   {l.username && <span style={{ color: '#aaa', fontSize: '0.8rem', marginLeft: '0.4rem' }}>@{l.username}</span>}
                 </td>
                 <td><strong style={{ color: '#6c63ff' }}>{fmt(l.total_xp)}</strong></td>
@@ -150,7 +150,7 @@ const AdminStats = () => {
                     <div style={{ width: `${(l.total_xp / maxLearnerXP) * 100}%`, height: '100%', background: 'linear-gradient(90deg,#6c63ff,#FF8A3D)', borderRadius: '999px' }} />
                   </div>
                 </td>
-                <td>{l.current_streak ? `${l.current_streak}d` : '—'}</td>
+                <td>{l.current_streak ? `${l.current_streak}d` : ', '}</td>
                 <td>{l.lessons_done || 0}</td>
                 <td>{l.quizzes_done || 0}</td>
               </tr>
@@ -172,11 +172,11 @@ const AdminStats = () => {
                 {progress.lessonStats.map(row => (
                   <tr key={row.lesson_id}>
                     <td>Lesson {row.lesson_id}</td>
-                    <td style={{ color: '#4a5568' }}>{row.title || '—'}</td>
+                    <td style={{ color: '#4a5568' }}>{row.title || ', '}</td>
                     <td><strong>{fmt(row.completions)}</strong></td>
                     <td>
                       <span className={`adm-badge ${row.pct >= 50 ? 'adm-badge-green' : 'adm-badge-amber'}`}>
-                        {row.pct ?? '—'}%
+                        {row.pct ?? ', '}%
                       </span>
                     </td>
                   </tr>
@@ -204,7 +204,7 @@ const AdminStats = () => {
                     <td>{fmt(row.unique_students)}</td>
                     <td>
                       <span className={`adm-badge ${(row.avg_score_pct||0) >= 70 ? 'adm-badge-green' : 'adm-badge-amber'}`}>
-                        {row.avg_score_pct ?? '—'}%
+                        {row.avg_score_pct ?? ', '}%
                       </span>
                     </td>
                   </tr>

@@ -1,17 +1,17 @@
 const lesson26 = {
   id: 26,
-  title: "Scope — Where a Variable Lives",
+  title: "Scope. Where a Variable Lives",
   subtitle: "Why the thing you made inside a function vanishes outside it.",
   emoji: "🏠",
   xp: 50,
-  story: "You wrote a variable inside a function, tried to use it outside, and Python said it does not exist. It is not a bug — it is a rule, and it exists to protect you.",
+  story: "You wrote a variable inside a function, tried to use it outside, and Python said it does not exist. It is not a bug. It is a rule, and it exists to protect you.",
   steps: [
     {
       type: 'concept',
       id: 'concept',
       title: 'Inside Stays Inside',
-      body: 'A variable made inside a function only exists while that function is running. When it finishes, the variable is gone. Variables made outside can be read from inside — but to change one, you have to say so with global, which you almost never should.',
-      highlight: 'score = 0            # global — everyone can read it\n\ndef play():\n    bonus = 10       # local — only exists in here\n    print(score)     # fine, reading is allowed\n\nplay()\nprint(bonus)         # error: bonus is gone',
+      body: 'A variable made inside a function only exists while that function is running. When it finishes, the variable is gone. Variables made outside can be read from inside. But to change one, you have to say so with global, which you almost never should.',
+      highlight: 'score = 0            # global. Everyone can read it\n\ndef play():\n    bonus = 10       # local. Only exists in here\n    print(score)     # fine, reading is allowed\n\nplay()\nprint(bonus)         # error: bonus is gone',
       code: 'score = 0\n\ndef play():\n    bonus = 10\n    print("Inside, bonus is", bonus)\n    print("Inside, score is", score)\n\nplay()\nprint("Outside, score is", score)',
     },
     {
@@ -59,7 +59,7 @@ const lesson26 = {
       expectedKeywords: ['return'],
       wrongOutputHint: 'You should end on level 3 with 450 XP.',
       hints: [
-        'new_level and new_xp only exist inside the function — that is fine, they get returned.',
+        'new_level and new_xp only exist inside the function. That is fine, they get returned.',
         'The two variables outside are updated by the assignment, not by the function reaching out.',
       ],
     },

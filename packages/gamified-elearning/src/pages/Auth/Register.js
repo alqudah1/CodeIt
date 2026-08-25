@@ -185,17 +185,17 @@ export default function Register() {
             <button className="auth-path-card auth-path-card--student" onClick={() => setStep('student')}>
               <span className="auth-path-card__title">
                 {hasBuilderDraft
-                  ? `${builderActionWord === 'publish' ? 'Publish' : 'Save'} with a Student account (13–18)`
-                  : 'I am a Student (13–18)'}
+                  ? `${builderActionWord === 'publish' ? 'Publish' : 'Save'} with a Student account (13 to 18)`
+                  : 'I am a Student (13 to 18)'}
               </span>
-              <span className="auth-path-card__desc">Use a username — no student email needed</span>
+              <span className="auth-path-card__desc">Use a username. No student email needed</span>
             </button>
 
             <button className="auth-path-card auth-path-card--educator" onClick={() => setStep('educator')}>
               <span className="auth-path-card__title">
                 {hasBuilderDraft ? 'Continue with a Parent or Educator' : 'I am a Parent or Educator'}
               </span>
-              <span className="auth-path-card__desc">Required to manage a private profile for ages 5–12</span>
+              <span className="auth-path-card__desc">Required to manage a private profile for ages 5 to 12</span>
             </button>
 
             <button className="auth-path-card auth-path-card--guest" onClick={() => navigate('/builder')}>
@@ -209,7 +209,7 @@ export default function Register() {
           </div>
 
           <div className="auth-educator-note">
-            Ages 5–12: ask a parent or legal guardian to create a private managed profile.
+            Ages 5 to 12: ask a parent or legal guardian to create a private managed profile.
           </div>
 
           <div className="auth-footer">
@@ -250,7 +250,7 @@ export default function Register() {
                   required: 'Username is required',
                   pattern: {
                     value: /^[a-zA-Z0-9_]{3,20}$/,
-                    message: '3-20 characters — letters, numbers, and underscores only',
+                    message: '3-20 characters. Letters, numbers, and underscores only',
                   },
                 })}
                 placeholder="e.g. coder_alex42"
@@ -298,14 +298,14 @@ export default function Register() {
                       const age = Math.floor(
                         (new Date() - new Date(v)) / (365.25 * 24 * 60 * 60 * 1000)
                       );
-                      return (age >= 13 && age <= 18) || 'Student accounts are for ages 13–18. Younger learners need parent-managed access.';
+                      return (age >= 13 && age <= 18) || 'Student accounts are for ages 13 to 18. Younger learners need parent-managed access.';
                     },
                   },
                 })}
               />
               {errS.dob && <span className="error">{errS.dob.message}</span>}
               {!errS.dob && (
-                <span className="auth-hint">Independent student accounts are for ages 13–18. A parent or guardian can create a private profile for ages 5–12.</span>
+                <span className="auth-hint">Independent student accounts are for ages 13 to 18. A parent or guardian can create a private profile for ages 5 to 12.</span>
               )}
             </div>
 
@@ -400,13 +400,13 @@ export default function Register() {
                 : hasBuilderDraft
                   ? 'Your project is safe. After this setup, we’ll bring you back to finish.'
                 : familyEntry
-                  ? 'Start with your adult account. After confirming your email, you can create a private profile for a learner ages 5–12.'
+                  ? 'Start with your adult account. After confirming your email, you can create a private profile for a learner ages 5 to 12.'
                   : 'Create an adult account for family or classroom use.'}
             </p>
           </header>
 
           <div className="auth-educator-note">
-            After signup, confirm your adult email to create a private learner profile for ages 5–12.
+            After signup, confirm your adult email to create a private learner profile for ages 5 to 12.
           </div>
 
           <form className="auth-form" onSubmit={submitE(onEducatorSubmit)}>

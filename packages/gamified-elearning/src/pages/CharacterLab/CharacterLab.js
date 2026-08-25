@@ -64,7 +64,7 @@ const EXPRESSION_OPTIONS = [
 // ── Component ────────────────────────────────────────────────
 const AvatarLab = () => {
   useSEO({
-    title:       'Avatar Lab — Customize Your Coding Avatar | CodeIt',
+    title:       'Avatar Lab. Customize Your Coding Avatar | CodeIt',
     description: 'Design your personal coding avatar for CodeIt. Pick your style, outfit, accessories, and nickname. Level up through Python lessons to unlock new looks.',
     canonical:   '/character',
     robots:      'noindex,nofollow',
@@ -160,14 +160,14 @@ const AvatarLab = () => {
           </div>
           <h1 className="al-hero__title">Your Coding Avatar</h1>
           <p className="al-hero__sub">
-            Make it yours — pick your look, name your character, and level up through lessons to unlock new outfits and styles.
+            Make it yours. Pick your look, name your character, and level up through lessons to unlock new outfits and styles.
           </p>
         </div>
 
         {/* ── 2-col layout ──────────────────────────────── */}
         <div className="al-layout">
 
-          {/* LEFT — Sticky preview card */}
+          {/* LEFT. Sticky preview card */}
           <aside className="al-preview-col">
             <div className="al-preview-card">
 
@@ -250,7 +250,7 @@ const AvatarLab = () => {
             </div>
           </aside>
 
-          {/* RIGHT — Customiser sections */}
+          {/* RIGHT. Customiser sections */}
           <div className="al-options-col">
 
             {/* Base Style */}
@@ -270,7 +270,7 @@ const AvatarLab = () => {
               </div>
             </section>
 
-            {/* Skin Tone — always unlocked */}
+            {/* Skin Tone. Always unlocked */}
             <section className="al-section">
               <h3 className="al-section__title">Skin Tone</h3>
               <div className="al-swatches">
@@ -423,7 +423,7 @@ const AvatarLab = () => {
               </div>
             </section>
 
-            {/* Expression — always unlocked */}
+            {/* Expression. Always unlocked */}
             <section className="al-section">
               <h3 className="al-section__title">Expression</h3>
               <div className="al-pills">

@@ -202,7 +202,7 @@ function loopCountQuestion(facts) {
     code: loop.text + ' ... }',
     correctAnswer: String(times),
     distractors: [String(times + 1), String(loop.to), String(Math.max(1, times - 1))],
-    explain: `It runs ${times} times. It starts at ${loop.from} and keeps going while the counter is less than ${loop.to} — so ${loop.to} itself never happens.`,
+    explain: `It runs ${times} times. It starts at ${loop.from} and keeps going while the counter is less than ${loop.to}. so ${loop.to} itself never happens.`,
     seedText: facts.source,
   });
 }

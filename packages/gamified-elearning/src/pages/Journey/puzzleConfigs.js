@@ -4,7 +4,7 @@
 
 const nonEmpty = (output) => {
   const lines = output.split('\n').filter(l => l.trim() && !l.startsWith('❌'));
-  if (lines.length === 0) return { pass: false, message: 'Run your code first — no output detected.' };
+  if (lines.length === 0) return { pass: false, message: 'Run your code first. No output detected.' };
   return { pass: true, message: 'Puzzle complete! Great work.' };
 };
 
@@ -20,7 +20,7 @@ export const PUZZLE_CONFIGS = {
     id: 101,
     nextJourneyRoute: '/journey/puzzle/1/b?from=journey&node=puzzle1b',
     title: 'Hello World!',
-    story: 'The first print is done. Add two more print lines below it — say anything you like!',
+    story: 'The first print is done. Add two more print lines below it. Say anything you like!',
     goals: [
       'Add two more print("...") lines below the first one',
       'See 3 different messages in the output',
@@ -33,7 +33,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `print("Hello from Python!")\nprint("Hello again!")\nprint("One more!")`,
     starterCode: `print("Hello from Python!")\n# Add two more print lines below:\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       const lines = output.split('\n').filter(l => l.trim());
       if (lines.length < 3) return { pass: false, message: `Got ${lines.length} line(s). Add ${3 - lines.length} more print() line(s)!` };
       return { pass: true, message: 'Three messages sent! Great work.' };
@@ -44,7 +44,7 @@ export const PUZZLE_CONFIGS = {
     id: 102,
     nextJourneyRoute: '/journey/puzzle/1/boss?from=journey&node=boss1',
     title: 'Space Mail',
-    story: 'The message is almost ready — replace ___ with the word Python to fix it!',
+    story: 'The message is almost ready. Replace ___ with the word Python to fix it!',
     goals: [
       'Replace ___ inside the print with the word Python',
       'Output must read: Space mail delivered via Python!',
@@ -55,9 +55,9 @@ export const PUZZLE_CONFIGS = {
       'Change ___ to: Python',
     ],
     hintCode: `print("Space mail delivered via Python!")`,
-    starterCode: `# Fix this line — replace ___ with Python\nprint("Space mail delivered via ___!")\n`,
+    starterCode: `# Fix this line. Replace ___ with Python\nprint("Space mail delivered via ___!")\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       if (!output.includes('Python')) return { pass: false, message: 'Output must contain the word "Python". Replace ___ with Python.' };
       if (!output.toLowerCase().includes('space mail')) return { pass: false, message: 'Keep the "Space mail delivered" text in your message.' };
       return { pass: true, message: 'Space mail delivered via Python!' };
@@ -70,7 +70,7 @@ export const PUZZLE_CONFIGS = {
     title: 'Mission Banner',
     story: 'Print a 3-line banner: a divider line, your title message, then another divider line.',
     goals: [
-      'The first divider is already there — add your title on the next line',
+      'The first divider is already there. Add your title on the next line',
       'Add another divider line at the end',
     ],
     hints: [
@@ -81,7 +81,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `print("----------")\nprint("My Mission")\nprint("----------")`,
     starterCode: `# A banner has 3 lines: divider, title, divider\nprint("----------")\n# Add your title here:\n\n# Add the closing divider here:\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       const lines = output.split('\n').filter(l => l.trim());
       if (lines.length < 3) return { pass: false, message: `Got ${lines.length} line(s). Need 3 lines: divider, title, divider.` };
       return { pass: true, message: 'Banner printed! Boss cleared!' };
@@ -105,18 +105,18 @@ export const PUZZLE_CONFIGS = {
     ],
     hints: [
       'Use the variable name inside print().',
-      'No quotes — write: print(name)',
+      'No quotes. Write: print(name)',
       'Do the same for age and city.',
     ],
     hintCode: `name = "Alex"\nage = 12\ncity = "London"\n\nprint(name)\nprint(age)\nprint(city)`,
     starterCode: `name = "Alex"\nage = 12\ncity = "London"\n\n# Print all three variables below:\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       if (!output.includes('Alex'))   return { pass: false, message: 'name not printed. Use print(name).' };
       if (!output.includes('12'))     return { pass: false, message: 'age not printed. Use print(age).' };
       if (!output.includes('London')) return { pass: false, message: 'city not printed. Use print(city).' };
       const lines = output.split('\n').filter(l => l.trim());
-      if (lines.length < 3) return { pass: false, message: 'Print all 3 variables — need 3 output lines.' };
+      if (lines.length < 3) return { pass: false, message: 'Print all 3 variables. Need 3 output lines.' };
       return { pass: true, message: 'Vault unlocked! All three values received.' };
     },
   },
@@ -138,7 +138,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `name = "Alex"\nage = 12\n\nprint(name, "is", age, "years old.")`,
     starterCode: `name = "Alex"\nage = 12\n\n# Print one sentence using both variables.\n# Hint: print(name, "is", age, "years old.")\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       if (!output.includes('Alex'))                    return { pass: false, message: 'Output must include the name value.' };
       if (!output.toLowerCase().includes('years old')) return { pass: false, message: 'Output must include "years old".' };
       return { pass: true, message: 'Introduction printed!' };
@@ -149,7 +149,7 @@ export const PUZZLE_CONFIGS = {
     id: 203,
     nextJourneyRoute: '/lesson/3?from=journey&node=lesson3',
     title: 'Profile Card',
-    story: 'Build a profile card that shows Name, Age, and City — each on its own labelled line.',
+    story: 'Build a profile card that shows Name, Age, and City. Each on its own labelled line.',
     goals: [
       'Print "Name:" followed by the name value',
       'Print "Age:" and "City:" with their values on separate lines',
@@ -162,7 +162,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `name = "Alex"\nage = 12\ncity = "London"\n\nprint("Name:", name)\nprint("Age:", age)\nprint("City:", city)`,
     starterCode: `name = "Alex"\nage = 12\ncity = "London"\n\n# Print the profile card below:\n# Example first line: print("Name:", name)\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       const lines = output.split('\n').filter(l => l.trim());
       if (lines.length < 3) return { pass: false, message: `Got ${lines.length} line(s). Need 3 labelled lines.` };
       if (!output.includes('Name:')) return { pass: false, message: 'Output must contain "Name:".' };
@@ -182,7 +182,7 @@ export const PUZZLE_CONFIGS = {
     id: 301,
     nextJourneyRoute: '/journey/puzzle/3/b?from=journey&node=puzzle3b',
     title: 'String Joiner',
-    story: 'Join a first name and last name into one full name — use + to connect them!',
+    story: 'Join a first name and last name into one full name. Use + to connect them!',
     goals: [
       'Use + to join first and last with a space in between',
       'Print the full name on one line',
@@ -195,7 +195,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `first = "Ada"\nlast = "Lovelace"\n\nprint(first + " " + last)`,
     starterCode: `first = "Ada"\nlast = "Lovelace"\n\n# Join first + " " + last and print the result:\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       if (!output.includes('Ada'))      return { pass: false, message: 'Output must include "Ada". Use first in your print.' };
       if (!output.includes('Lovelace')) return { pass: false, message: 'Output must include "Lovelace". Use last in your print.' };
       if (!output.includes('Ada Lovelace') && !output.includes('Ada') ) return { pass: false, message: 'Join with a space: first + " " + last' };
@@ -220,7 +220,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `name = "Python"\n\nprint(name.upper())\nprint("Letters:", len(name))`,
     starterCode: `name = "Python"\n\n# Print the name in UPPERCASE:\n\n# Print the number of letters:\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       if (!output.includes('PYTHON')) return { pass: false, message: 'Missing uppercase. Use print(name.upper()).' };
       if (!output.includes('6') && !output.includes('Letters')) return { pass: false, message: 'Missing letter count. Use print("Letters:", len(name)).' };
       return { pass: true, message: 'String tricks complete! Puzzle solved.' };
@@ -244,7 +244,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `name = "Coder"\n\ngreeting = "Hello, " + name + "!"\nprint(greeting.upper())`,
     starterCode: `name = "Coder"\n\n# Build the greeting: "Hello, " + name + "!"\n# Then print it in UPPERCASE\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       if (!output.toUpperCase().includes('HELLO')) return { pass: false, message: 'Output must include HELLO. Join: "Hello, " + name + "!"' };
       if (!output.toUpperCase().includes('CODER')) return { pass: false, message: 'Output must include CODER. Use name in your greeting.' };
       const hasUpper = output.split('').some(c => c === c.toUpperCase() && c.match(/[A-Z]/));
@@ -268,7 +268,7 @@ export const PUZZLE_CONFIGS = {
       'Try changing the temperature number and run again',
     ],
     hints: [
-      'Just click Run — no code to add.',
+      'Just click Run. No code to add.',
       'Change the temperature number.',
       'Try 10, 25, or 35 to see each branch.',
     ],
@@ -309,7 +309,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `temp1 = 22\nif temp1 > 30:\n    print("Hot day!")\nelif temp1 > 15:\n    print("Warm day!")\n\ntemp2 = 8\nif temp2 > 30:\n    print("Hot day!")\nelif temp2 > 15:\n    print("Warm day!")\nelse:\n    print("Cold day!")`,
     starterCode: `temp1 = 22\nif temp1 > 30:\n    print("Hot day!")\nelif temp1 > 15:\n    # Add: print("Warm day!")\n\ntemp2 = 8\nif temp2 > 30:\n    print("Hot day!")\nelif temp2 > 15:\n    print("Warm day!")\nelse:\n    # Add: print("Cold day!")\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       if (!output.includes('Warm')) return { pass: false, message: 'Missing Warm. Add print("Warm day!") inside the first elif.' };
       if (!output.includes('Cold')) return { pass: false, message: 'Missing Cold. Add print("Cold day!") inside the second else.' };
       return { pass: true, message: 'Temperature report complete! Boss cleared!' };
@@ -325,7 +325,7 @@ export const PUZZLE_CONFIGS = {
   '5-a': {
     id: 501,
     title: 'Repeat It',
-    story: 'The loop is ready — the print line is missing! Add print(i) inside it.',
+    story: 'The loop is ready. The print line is missing! Add print(i) inside it.',
     goals: [
       'Type print(i) inside the loop (indented with 4 spaces)',
       'See 5 numbers printed from 0 to 4',
@@ -338,7 +338,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `for i in range(5):\n    print(i)`,
     starterCode: `for i in range(5):\n    # Type: print(i)\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       const lines = output.split('\n').filter(l => l.trim());
       if (lines.length < 5) return { pass: false, message: `Got ${lines.length} line(s). The loop should print 5 numbers (0 to 4).` };
       return { pass: true, message: 'Loop running! 5 numbers printed.' };
@@ -348,7 +348,7 @@ export const PUZZLE_CONFIGS = {
   '5-b': {
     id: 502,
     title: 'Count Up',
-    story: 'Print the numbers 1 through 5 — use range(1, 6) to start at 1.',
+    story: 'Print the numbers 1 through 5. use range(1, 6) to start at 1.',
     goals: [
       'Use for i in range(1, 6) to count from 1 to 5',
       'Print i on each loop step',
@@ -361,7 +361,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `# Count from 1 to 5\nfor i in range(1, 6):\n    print(i)`,
     starterCode: `# Count from 1 to 5\nfor i in range(1, 6):\n    # Type: print(i)\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       const lines = output.split('\n').filter(l => l.trim());
       if (lines.length < 5) return { pass: false, message: `Got ${lines.length} line(s). Need 5 numbers (1 to 5).` };
       if (!output.includes('1')) return { pass: false, message: 'Output should start at 1. Use range(1, 6).' };
@@ -386,7 +386,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `for i in range(1, 6):\n    print("Round", i)`,
     starterCode: `# Print: Round 1, Round 2, Round 3, Round 4, Round 5\nfor i in range(1, 6):\n    # Add your print here\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       const lines = output.split('\n').filter(l => l.trim());
       if (lines.length < 5) return { pass: false, message: `Got ${lines.length} line(s). The loop should print 5 rounds.` };
       if (!output.toLowerCase().includes('round')) return { pass: false, message: 'Each line should include the word "Round". Try: print("Round", i)' };
@@ -409,7 +409,7 @@ export const PUZZLE_CONFIGS = {
       'Change "Python" to your own name and run again',
     ],
     hints: [
-      'Just click Run — no code needed.',
+      'Just click Run. No code needed.',
       'Change the word and run again.',
       'Try your own name instead of "Python".',
     ],
@@ -433,7 +433,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `word = "Python"\nfor char in word:\n    if char in "aeiouAEIOU":\n        print(char)`,
     starterCode: `word = "Python"\nfor char in word:\n    # Add: if char in "aeiouAEIOU":\n    #         print(char)\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       const vowels = output.split('\n').filter(l => 'aeiouAEIOU'.includes(l.trim()) && l.trim().length === 1);
       if (vowels.length === 0) return { pass: false, message: 'No vowels found. Add: if char in "aeiouAEIOU": then print(char)' };
       if (output.toLowerCase().includes('p') && output.split('\n').some(l => l.trim() === 'P')) {
@@ -460,7 +460,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `word = "elephant"\ncount = 0\n\nfor char in word:\n    if char in "aeiouAEIOU":\n        count = count + 1\n\nprint("Vowels:", count)`,
     starterCode: `word = "elephant"\ncount = 0\n\nfor char in word:\n    if char in "aeiouAEIOU":\n        # Add: count = count + 1\n\nprint("Vowels:", count)\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       if (!output.includes('Vowels:')) return { pass: false, message: 'Output must include "Vowels:". Keep the print("Vowels:", count) line.' };
       if (!output.includes('3')) return { pass: false, message: '"elephant" has 3 vowels (e, e, a). Add count = count + 1 inside the if block.' };
       return { pass: true, message: '3 vowels counted! Boss cleared!' };
@@ -482,7 +482,7 @@ export const PUZZLE_CONFIGS = {
       'Try changing an item in the list and run again',
     ],
     hints: [
-      'Just click Run — no code needed.',
+      'Just click Run. No code needed.',
       'Change a color and run again.',
       'Try "purple" instead of "red".',
     ],
@@ -493,7 +493,7 @@ export const PUZZLE_CONFIGS = {
   '7-b': {
     id: 702,
     title: 'List Builder',
-    story: 'Two items are in the list — append two more, then print the whole list.',
+    story: 'Two items are in the list. Append two more, then print the whole list.',
     goals: [
       'Use .append() to add "cherry" to the list',
       'Use .append() to add one more fruit of your choice',
@@ -507,9 +507,9 @@ export const PUZZLE_CONFIGS = {
     hintCode: `fruits = ["apple", "banana"]\n\nfruits.append("cherry")\nfruits.append("mango")\n\nprint(fruits)`,
     starterCode: `fruits = ["apple", "banana"]\n\n# Add "cherry" to the list:\n# Your code here\n\n# Add one more fruit:\n# Your code here\n\nprint(fruits)\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       if (!output.includes('cherry')) return { pass: false, message: 'Missing "cherry". Use fruits.append("cherry").' };
-      if (!output.includes('apple'))  return { pass: false, message: 'Keep "apple" in the list — do not remove it.' };
+      if (!output.includes('apple'))  return { pass: false, message: 'Keep "apple" in the list. Do not remove it.' };
       const match = output.match(/\[([^\]]+)\]/);
       if (!match) return { pass: false, message: 'Print the list using print(fruits).' };
       const items = match[1].split(',').map(s => s.trim());
@@ -534,7 +534,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `items = []\n\nitems.append("apple")\nitems.append("banana")\nitems.append("cherry")\n\nprint(items)\nprint("Count:", len(items))`,
     starterCode: `items = []\n\n# Append three things to items:\n# Your code here\n\nprint(items)\nprint("Count:", len(items))\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       if (!output.includes('Count:')) return { pass: false, message: 'Keep print("Count:", len(items)) at the bottom.' };
       if (!output.includes('3') && !output.includes('4') && !output.includes('5')) {
         return { pass: false, message: 'Add at least 3 items with .append() before printing.' };
@@ -562,7 +562,7 @@ export const PUZZLE_CONFIGS = {
       'Try adding another planet to the list and run again',
     ],
     hints: [
-      'Just click Run — no code needed.',
+      'Just click Run. No code needed.',
       'Add another planet and run again.',
       'Try adding "Jupiter" to the list.',
     ],
@@ -586,7 +586,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `scores = [75, 90, 60, 85, 55, 95]\n\nfor score in scores:\n    if score >= 80:\n        print(score)`,
     starterCode: `scores = [75, 90, 60, 85, 55, 95]\n\nfor score in scores:\n    # Add: if score >= 80:\n    #         print(score)\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       if (!output.includes('90')) return { pass: false, message: '90 should be printed. Add: if score >= 80: then print(score).' };
       if (!output.includes('85')) return { pass: false, message: '85 should be printed. Check your if condition.' };
       if (!output.includes('95')) return { pass: false, message: '95 should be printed. Make sure the loop runs for all scores.' };
@@ -614,7 +614,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `scores = [75, 90, 60, 85, 55, 95]\ncount = 0\n\nfor score in scores:\n    if score >= 80:\n        count = count + 1\n\nprint("High scores:", count)`,
     starterCode: `scores = [75, 90, 60, 85, 55, 95]\ncount = 0\n\nfor score in scores:\n    if score >= 80:\n        # Add: count = count + 1\n\nprint("High scores:", count)\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       if (!output.includes('High scores:')) return { pass: false, message: 'Keep print("High scores:", count) at the bottom.' };
       if (!output.includes('3')) return { pass: false, message: 'There are 3 scores >= 80 (90, 85, 95). Add count = count + 1 inside the if block.' };
       return { pass: true, message: '3 high scores counted! Boss cleared!' };
@@ -630,7 +630,7 @@ export const PUZZLE_CONFIGS = {
   '9-a': {
     id: 901,
     title: 'First Function',
-    story: 'The function is defined — call it three times to say hello!',
+    story: 'The function is defined. Call it three times to say hello!',
     goals: [
       'Call say_hi() three times below the function',
       'See "Hello there!" printed three times',
@@ -643,7 +643,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `def say_hi():\n    print("Hello there!")\n\nsay_hi()\nsay_hi()\nsay_hi()`,
     starterCode: `def say_hi():\n    print("Hello there!")\n\n# Call say_hi() three times:\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       const lines = output.split('\n').filter(l => l.trim().toLowerCase().includes('hello'));
       if (lines.length < 3) return { pass: false, message: `Found ${lines.length} Hello message(s). Call say_hi() three times!` };
       return { pass: true, message: 'Three hellos sent! Function works.' };
@@ -666,7 +666,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `def greet(name):\n    print("Hello,", name + "!")\n\ngreet("Alice")\ngreet("Bob")\ngreet("Sam")`,
     starterCode: `def greet(name):\n    print("Hello,", name + "!")\n\n# Call greet() three times with different names:\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       const lines = output.split('\n').filter(l => l.trim().toLowerCase().includes('hello'));
       if (lines.length < 3) return { pass: false, message: `Found ${lines.length} greeting(s). Call greet() three times with different names!` };
       const names = new Set(lines.map(l => l.replace(/hello,\s*/i, '').replace('!', '').trim().toLowerCase()));
@@ -691,7 +691,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `def add(a, b):\n    return a + b\n\nresult = add(3, 4)\nprint("Sum:", result)`,
     starterCode: `# Define a function called add that takes a and b\n# and returns a + b\n\n# Then call it with two numbers and print the result\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       const lines = output.split('\n').filter(l => l.trim());
       if (lines.length === 0) return { pass: false, message: 'No output detected. Call your function and print the result.' };
       const hasNumber = lines.some(l => /\d/.test(l));
@@ -715,7 +715,7 @@ export const PUZZLE_CONFIGS = {
       'Try changing the words in the list and run again',
     ],
     hints: [
-      'Just click Run — no code needed.',
+      'Just click Run. No code needed.',
       'Change the words in the list.',
       'Try your own words instead.',
     ],
@@ -739,7 +739,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `names = ["Alice", "Bob", "Anna", "Charlie", "Amy"]\n\nfor name in names:\n    if name[0] == "A":\n        print(name)`,
     starterCode: `names = ["Alice", "Bob", "Anna", "Charlie", "Amy"]\n\nfor name in names:\n    # Add: if name[0] == "A":\n    #         print(name)\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       if (!output.includes('Alice')) return { pass: false, message: '"Alice" should be printed. Add: if name[0] == "A": then print(name).' };
       if (!output.includes('Anna'))  return { pass: false, message: '"Anna" should be printed. Make sure the loop checks all names.' };
       if (!output.includes('Amy'))   return { pass: false, message: '"Amy" should be printed. Make sure the loop runs for all names.' };
@@ -767,7 +767,7 @@ export const PUZZLE_CONFIGS = {
     hintCode: `def greet_all(names):\n    for name in names:\n        print("Hello, " + name + "!")\n\ngreet_all(["Alice", "Bob", "Charlie"])`,
     starterCode: `# Define greet_all(names) that loops through the list\n# and prints "Hello, " + name + "!" for each name\n\n# Then call it with a list of 3 or more names\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first — no output detected.' };
+      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
       const lines = output.split('\n').filter(l => l.trim().toLowerCase().includes('hello'));
       if (lines.length < 3) return { pass: false, message: `Found ${lines.length} greeting(s). Call your function with a list of at least 3 names.` };
       return { pass: true, message: 'Mini program complete! Journey finished!' };

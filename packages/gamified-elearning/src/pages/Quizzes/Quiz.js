@@ -459,7 +459,7 @@ export default function Quiz() {
                 <span className="qz-feedback-verdict">
                   {isCorrect
                     ? "Correct!"
-                    : `Not quite — the correct answer is "${correctAnswerText}".`}
+                    : `Not quite. The correct answer is "${correctAnswerText}".`}
                 </span>
               </div>
               {checkResult?.explanation && (

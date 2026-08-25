@@ -45,7 +45,7 @@ describe('buildInstantCss', () => {
     expect(buildInstantCss({ textSize: 'gigantic' })).toBe('');
   });
 
-  test('stays inert CSS — the marker is a comment, not a selector', () => {
+  test('stays inert CSS. The marker is a comment, not a selector', () => {
     const css = buildInstantCss({ textSize: 'big' });
     expect(css.startsWith('/* codeit-instant-style:')).toBe(true);
     expect(css).not.toContain('[data-codeit-prefs=');
@@ -160,7 +160,7 @@ describe('project heading', () => {
 });
 
 describe('age-appropriate control sets', () => {
-  test('ages 5–7 get the fewest controls, teens the most', () => {
+  test('ages 5 to 7 get the fewest controls, teens the most', () => {
     const early = controlsForGuideLevel('early');
     const independent = controlsForGuideLevel('independent');
     expect(early.length).toBeLessThan(independent.length);

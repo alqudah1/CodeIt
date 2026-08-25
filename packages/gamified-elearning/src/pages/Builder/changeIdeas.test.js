@@ -1,7 +1,7 @@
 import { changeIdeasFor } from './changeIdeas';
 
 // Karam's project, near enough: a football game with a goalie, a score and a
-// shot counter. He reached "Change one thing — pick new colors or add a fun
+// shot counter. He reached "Change one thing. pick new colors or add a fun
 // idea" and asked what it meant. Every test here is about him getting a real
 // answer instead of a mood.
 const FOOTBALL_GAME = `<!doctype html>
@@ -99,7 +99,7 @@ describe('there is always something to do', () => {
   });
 
   test('a page with nothing in it does not leave a child staring at "change one thing"', () => {
-    // Unlike a quiz question, a suggestion cannot be wrong — so unlike proveIt,
+    // Unlike a quiz question, a suggestion cannot be wrong. so unlike proveIt,
     // this never returns nothing.
     [null, undefined, '<html></html>', '<<<not html'].forEach(input => {
       expect(changeIdeasFor(input).length).toBeGreaterThanOrEqual(3);

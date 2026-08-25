@@ -102,7 +102,7 @@ function childStepsFor(stepType, isDone) {
   ];
   if (stepType === 'concept') return [
     'Look at the example in the box.',
-    'When you are ready, press the big “Got It — Next Step” button below.',
+    'When you are ready, press the big “Got It. Next Step” button below.',
   ];
   if (stepType === 'example') return [
     'You do not need to type yet.',
@@ -167,7 +167,7 @@ function useLessonJsonLd(lessonData, seoTitle, seoDesc) {
         isAccessibleForFree: true,
         isPartOf: {
           '@type': 'Course',
-          name:    `Python for Beginners — ${TOTAL_LESSONS} Free Interactive Lessons`,
+          name:    `Python for Beginners. ${TOTAL_LESSONS} Free Interactive Lessons`,
           url:     `${BASE}/lessons`,
         },
         provider: { '@type': 'Organization', name: 'CodeIt', url: BASE },
@@ -208,7 +208,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const guideLevel = effectiveGuideLevel(user);
 
   const seo = seoFor(lessonId);
-  const seoTitle = seo.title ? `Lesson ${lessonData.id}: ${seo.title} — Python for Beginners | CodeIt` : undefined;
+  const seoTitle = seo.title ? `Lesson ${lessonData.id}: ${seo.title}. Python for Beginners | CodeIt` : undefined;
   useSEO({
     title:       seoTitle,
     description: seo.desc,
@@ -226,10 +226,10 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const [stepIdx,     setStepIdx]     = useState(restored?.stepIdx || 0);
   const [stepsDone,      setStepsDone]      = useState(restored?.stepsDone || {}); // { [idx]: true }
   const [stepHintCounts, setStepHintCounts] = useState({});  // { [idx]: number revealed }
-  const [lastOutputs,    setLastOutputs]    = useState({});  // { [idx]: string } — output from last Run
-  const [lastCode,       setLastCode]       = useState({});  // { [idx]: string } — code from last Run
+  const [lastOutputs,    setLastOutputs]    = useState({});  // { [idx]: string }. output from last Run
+  const [lastCode,       setLastCode]       = useState({});  // { [idx]: string }. code from last Run
   const [feedback,       setFeedback]       = useState({});  // { [idx]: 'incorrect' | null }
-  const [feedbackText,   setFeedbackText]   = useState({});  // { [idx]: string } — why it was wrong
+  const [feedbackText,   setFeedbackText]   = useState({});  // { [idx]: string }. why it was wrong
   const [picks,          setPicks]          = useState(restored?.picks || {}); // non-typing answers
   const [xpToast,        setXpToast]        = useState(null); // { amount, label }
 
@@ -462,11 +462,11 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   // Next-button label
   const nextLabel = () => {
     if (isLastStep) {
-      if (canProceed) return `Complete Lesson — Unlock Quiz ${id}`;
+      if (canProceed) return `Complete Lesson. Unlock Quiz ${id}`;
       return 'Complete this step to advance';
     }
-    if (currentStep?.type === 'concept') return 'Got It — Next Step';
-    if (canProceed) return 'Step Complete — Next';
+    if (currentStep?.type === 'concept') return 'Got It. Next Step';
+    if (canProceed) return 'Step Complete. Next';
     if (currentStep?.type === 'example') return 'Run the code to continue';
     if (isInteractionStep(currentStep)) return 'Check your answer to advance';
     return 'Submit your answer to advance';
@@ -531,7 +531,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               Lesson {id} done, {firstName}!
             </h2>
             <p className="sl-completion-card__sub">
-              {title} — finished.
+              {title}. finished.
             </p>
             {completionData.xpEarned > 0 && (
               <div className="sl-completion-card__xp">
@@ -752,7 +752,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               {feedback[stepIdx] === 'incorrect' && !isCurrentDone && (
                 <div className="sl-feedback sl-feedback--incorrect">
                   <span className="sl-feedback__icon" aria-hidden="true">✗</span>
-                  <div>{feedbackText[stepIdx] || 'Not quite — try again.'}</div>
+                  <div>{feedbackText[stepIdx] || 'Not quite. Try again.'}</div>
                 </div>
               )}
 
@@ -816,7 +816,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                 </div>
               )}
 
-              {/* ── Hint — progressive reveal ────────────── */}
+              {/* ── Hint. Progressive reveal ────────────── */}
               {!isCurrentDone && (() => {
                 const hints = getStepHints(currentStep);
                 if (!hints.length) return null;
@@ -914,7 +914,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
 
       </div>
 
-      {/* ── Character guide — fixed bottom-right ── */}
+      {/* ── Character guide. Fixed bottom-right ── */}
       <LessonGuide
         stepType={currentStep?.type}
         isCurrentDone={isCurrentDone}

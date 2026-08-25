@@ -93,13 +93,13 @@ export default function SplineScene({ scene, className }) {
 
   return (
     <div className={['spline-scene', className].filter(Boolean).join(' ')}>
-      {/* Detecting — show spinner */}
+      {/* Detecting. Show spinner */}
       {webGLSupported === null && <SplineLoadingFallback />}
 
-      {/* No WebGL support — skip Spline entirely, show branded fallback */}
+      {/* No WebGL support. Skip Spline entirely, show branded fallback */}
       {webGLSupported === false && <SplineStaticFallback />}
 
-      {/* WebGL confirmed — load Spline inside an Error Boundary */}
+      {/* WebGL confirmed. Load Spline inside an Error Boundary */}
       {webGLSupported === true && (
         <SplineErrorBoundary>
           <Suspense fallback={<SplineLoadingFallback />}>

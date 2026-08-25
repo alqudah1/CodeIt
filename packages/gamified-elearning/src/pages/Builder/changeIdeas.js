@@ -88,7 +88,7 @@ function titleIdea(facts) {
   if (!heading) return null;
   return {
     id: 'title',
-    label: `Rename it — it says "${heading}" right now`,
+    label: `Rename it. It says "${heading}" right now`,
     why: 'Give your project a name that is yours.',
     prompt: `Change the main title from "${heading}" to something of my own.`,
   };

@@ -126,7 +126,7 @@ describe('what the shelf refuses to hold', () => {
     expect(saveProject(store, { code: null }, NOW)).toBeNull();
   });
 
-  test('more than the shelf holds — the oldest goes', () => {
+  test('more than the shelf holds. The oldest goes', () => {
     const store = fakeStorage();
     for (let i = 0; i < MAX_PROJECTS + 4; i += 1) {
       saveProject(store, { title: `Game ${i}`, code: game(`Game ${i}`) }, NOW + i * 1000);

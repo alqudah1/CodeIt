@@ -59,7 +59,7 @@ export default function AdminEvidence() {
         <header className="evidence__header">
           <p>Private founder view</p>
           <h1>Historical product evidence</h1>
-          <span>Aggregate activity only—no student names, emails, birthdays, or passwords appear here.</span>
+          <span>Aggregate activity only, no student names, emails, birthdays, or passwords appear here.</span>
         </header>
 
         {error && <div className="adm-error">{error}</div>}
@@ -84,7 +84,7 @@ export default function AdminEvidence() {
 
             <section className="evidence__activity" aria-label="Measured active users">
               <header>
-                <p>Measured from signed-in visits—not streaks</p>
+                <p>Measured from signed-in visits, not streaks</p>
                 <h2>Recent active users</h2>
                 <span>{activity.definition}</span>
               </header>

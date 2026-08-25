@@ -4,14 +4,14 @@ const lesson22 = {
   subtitle: "One list that cannot change, and one that refuses repeats.",
   emoji: "🔒",
   xp: 50,
-  story: "Some things should never be edited by accident — the size of your game screen, for instance. And some things should never appear twice, like the list of players who have joined.",
+  story: "Some things should never be edited by accident. The size of your game screen, for instance. And some things should never appear twice, like the list of players who have joined.",
   steps: [
     {
       type: 'concept',
       id: 'concept',
       title: 'Locked and Unique',
       body: 'A tuple looks like a list but uses round brackets, and once it is made it cannot be changed. A set uses curly braces and silently throws away any duplicates. Both are ordinary Python, and both save you from a whole class of bug.',
-      highlight: 'screen = (800, 600)      # a tuple — locked\nplayers = {"Sam", "Ada"}  # a set — no repeats\n\nplayers.add("Sam")        # already there, nothing happens',
+      highlight: 'screen = (800, 600)      # a tuple. Locked\nplayers = {"Sam", "Ada"}  # a set. No repeats\n\nplayers.add("Sam")        # already there, nothing happens',
       code: 'screen = (800, 600)\nprint("Width:", screen[0])\n\nplayers = {"Sam", "Ada", "Sam"}\nprint("Players:", len(players))',
     },
     {
@@ -22,7 +22,7 @@ const lesson22 = {
       code: 'colours = {"red", "blue", "red", "green", "blue"}\nprint(len(colours))',
       choices: ['5', '3', '2', 'An error'],
       correct: 1,
-      explain: 'Yes — a set keeps only one of each. red, blue and green, so three.',
+      explain: 'Yes. A set keeps only one of each. Red, blue and green, so three.',
       wrongHint: 'Count how many different colours there are, not how many are written down.',
       hints: ['A set throws duplicates away as it is built.', 'How many unique words are in those five?'],
     },
@@ -41,9 +41,9 @@ const lesson22 = {
         'It prints 1024',
       ],
       correct: 2,
-      explain: 'Right. That is the whole point of a tuple — Python refuses, loudly, rather than letting it change quietly.',
+      explain: 'Right. That is the whole point of a tuple. Python refuses, loudly, rather than letting it change quietly.',
       wrongHint: 'A tuple cannot be changed after it is made. What does Python do when you try anyway?',
-      hints: ['Round brackets mean locked.', 'Python does not fail silently — it tells you.'],
+      hints: ['Round brackets mean locked.', 'Python does not fail silently. It tells you.'],
     },
     {
       type: 'example',
@@ -64,7 +64,7 @@ const lesson22 = {
       wrongOutputHint: 'Six visits, three different people. Check that you wrapped the list in set().',
       hints: [
         'set(a_list) builds a set from a list, dropping the repeats.',
-        'Add another "Jo" to the list — the visit count grows but the people count does not.',
+        'Add another "Jo" to the list. The visit count grows but the people count does not.',
       ],
     },
     {

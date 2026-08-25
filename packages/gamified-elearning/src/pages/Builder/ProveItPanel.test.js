@@ -82,7 +82,7 @@ describe('answering', () => {
   test('a wrong answer is not punished, and still explains', () => {
     start();
     const asked = answer({ correctly: false });
-    expect(screen.getByText('Not that one — here is why.')).toBeInTheDocument();
+    expect(screen.getByText('Not that one. Here is why.')).toBeInTheDocument();
     expect(screen.getByText(asked.explain)).toBeInTheDocument();
     // No "wrong", no "incorrect", no cross.
     expect(screen.queryByText(/wrong|incorrect|failed/i)).not.toBeInTheDocument();

@@ -60,7 +60,7 @@ const buildAchievements = (lessons, quizzes, puzzles, streak) => [
 
 const MainPage = () => {
   useSEO({
-    title:       'My Dashboard | CodeIt — Python Learning Progress',
+    title:       'My Dashboard | CodeIt. Python Learning Progress',
     description: 'Track your Python lessons, quizzes, and coding challenges. See your XP, streak, achievements, and next mission on your CodeIt learner dashboard.',
     canonical:   '/MainPage',
     robots:      'noindex,nofollow',
@@ -133,7 +133,7 @@ const MainPage = () => {
           type:    'lesson',
           title:   `Lesson ${n}: ${LESSON_TITLES[n]}`,
           meta:    completedLessons === 0
-                     ? 'No experience needed — start here.'
+                     ? 'No experience needed. Start here.'
                      : `${completedLessons} of ${LESSON_TOTAL} lessons done`,
           onClick: () => navigate(`/lesson/${n}`),
           allDone: false,
@@ -143,7 +143,7 @@ const MainPage = () => {
         return {
           type:    'quiz',
           title:   `Quiz ${n}: ${LESSON_TITLES[n]}`,
-          meta:    `Lesson ${n} complete — test your knowledge and earn XP!`,
+          meta:    `Lesson ${n} complete. Test your knowledge and earn XP!`,
           onClick: () => navigate(`/quiz/${n}`),
           allDone: false,
         };
@@ -154,8 +154,8 @@ const MainPage = () => {
           if (!completedPuzzlesArr.includes(`${n}${key}`)) {
             return {
               type:    'puzzle',
-              title:   `Lesson ${n} — Puzzle ${key === 'BOSS' ? 'Boss Challenge' : key}`,
-              meta:    `Quiz ${n} complete — time for the coding challenge!`,
+              title:   `Lesson ${n}. Puzzle ${key === 'BOSS' ? 'Boss Challenge' : key}`,
+              meta:    `Quiz ${n} complete. Time for the coding challenge!`,
               onClick: () => navigate(`/journey/puzzle/${n}/${routeSlot}`),
               allDone: false,
             };
@@ -188,7 +188,7 @@ const MainPage = () => {
       for (const [key, routeSlot] of [['A', 'a'], ['B', 'b'], ['BOSS', 'boss']]) {
         if (!completedPuzzlesArr.includes(`${n}${key}`)) {
           return {
-            label: `Lesson ${n} — Puzzle ${key === 'BOSS' ? 'Boss' : key}`,
+            label: `Lesson ${n}. Puzzle ${key === 'BOSS' ? 'Boss' : key}`,
             route: `/journey/puzzle/${n}/${routeSlot}`,
           };
         }
@@ -220,8 +220,8 @@ const MainPage = () => {
     // Mission card — below the meta line
     let mission = null;
     if (completedLessons > 0 && lessonsLeft > 0) {
-      if (lessonsLeft === 1)                          mission = 'Last lesson — finish strong!';
-      else if (completedLessons >= LESSON_TOTAL - 4)  mission = "You're doing great — almost there!";
+      if (lessonsLeft === 1)                          mission = 'Last lesson. Finish strong!';
+      else if (completedLessons >= LESSON_TOTAL - 4)  mission = "You're doing great. Almost there!";
       else                                            mission = `${lessonsLeft} lessons left to complete`;
     }
 
@@ -235,22 +235,22 @@ const MainPage = () => {
 
     // Lessons track header
     let lessons = null;
-    if      (completedLessons === LESSON_TOTAL) lessons = 'All lessons complete — Python mastered!';
+    if      (completedLessons === LESSON_TOTAL) lessons = 'All lessons complete. Python mastered!';
     else if (lessonsLeft === 1)                 lessons = 'Just 1 lesson left!';
-    else if (completedLessons > 0)              lessons = `${completedLessons} of ${LESSON_TOTAL} done — keep going!`;
+    else if (completedLessons > 0)              lessons = `${completedLessons} of ${LESSON_TOTAL} done. Keep going!`;
 
     // Quizzes track header
     let quizzes = null;
     if      (completedLessons === 0)  quizzes = 'Complete a lesson first to unlock quizzes';
-    else if (completedQuizzes === 0)  quizzes = 'Lesson done — take your first quiz to earn XP!';
+    else if (completedQuizzes === 0)  quizzes = 'Lesson done. Take your first quiz to earn XP!';
     else if (quizzesLeft === 1)       quizzes = 'Just 1 knowledge check left!';
-    else if (completedQuizzes > 0)    quizzes = `${completedQuizzes} of ${QUIZ_TOTAL} done — keep going!`;
+    else if (completedQuizzes > 0)    quizzes = `${completedQuizzes} of ${QUIZ_TOTAL} done. Keep going!`;
 
     // Puzzles track header
     let puzzles = null;
     if      (completedQuizzes === 0)                    puzzles = 'Pass a quiz to unlock your first coding challenge';
-    else if (completedPuzzles === 0)                    puzzles = 'Quiz done — your first puzzle is unlocked!';
-    else if (completedPuzzles >= LIVE_PUZZLE_TOTAL)     puzzles = `All ${LIVE_PUZZLE_TOTAL} challenges solved — well done!`;
+    else if (completedPuzzles === 0)                    puzzles = 'Quiz done. Your first puzzle is unlocked!';
+    else if (completedPuzzles >= LIVE_PUZZLE_TOTAL)     puzzles = `All ${LIVE_PUZZLE_TOTAL} challenges solved. Well done!`;
     else                                                puzzles = `${completedPuzzles} of ${LIVE_PUZZLE_TOTAL} challenges solved`;
 
     return { mission, level, lessons, quizzes, puzzles };
@@ -286,15 +286,15 @@ const MainPage = () => {
         navigateToRegister={navigateToRegister}
       />
       <main className="main-content">
-        {/* Visually hidden H1 for SEO — dashboard is auth-gated so content H1 is fine here */}
+        {/* Visually hidden H1 for SEO. Dashboard is auth-gated so content H1 is fine here */}
         <h1 className="seo-only">
-          {firstName ? `${firstName}'s Python Dashboard` : 'Python Learning Dashboard'} — CodeIt
+          {firstName ? `${firstName}'s Python Dashboard` : 'Python Learning Dashboard'}. CodeIt
         </h1>
 
         {showFirstWin && <FirstWinPanel token={token} />}
 
         {/* ══════════════════════════════════════════════════════
-            YOUR NEXT MISSION — lesson-focused top action card
+            YOUR NEXT MISSION. Lesson-focused top action card
         ══════════════════════════════════════════════════════ */}
         {!progressLoading && nextMission && (
           <section className={`mp-mission${nextMission.allDone ? ' mp-mission--done' : ''}`}>
@@ -352,7 +352,7 @@ const MainPage = () => {
               </span>
               {!progressLoading && (
                 <span className="mp-char-card__level">
-                  Level {levelInfo.level} — {levelInfo.title}
+                  Level {levelInfo.level}. {levelInfo.title}
                 </span>
               )}
               {!progressLoading && levelInfo.hasNext && (
@@ -380,7 +380,7 @@ const MainPage = () => {
         )}
 
         {/* ══════════════════════════════════════════════════════
-            STATS ROW — Level + Streak side by side
+            STATS ROW. Level + Streak side by side
         ══════════════════════════════════════════════════════ */}
         {!progressLoading && (
           <div className="cp-stats-row">
@@ -413,7 +413,7 @@ const MainPage = () => {
                 <span className="mp-level-card__bar-sub">
                   {levelInfo.hasNext
                     ? `${levelInfo.xpToNext} XP needed for Level ${levelInfo.level + 1}`
-                    : `${(xp ?? 0).toLocaleString()} XP — Legend status achieved`}
+                    : `${(xp ?? 0).toLocaleString()} XP, and still going`}
                 </span>
                 {mc.level && <span className="mc mc--urgent">{mc.level}</span>}
                 {!progressLoading && (() => {
@@ -501,7 +501,7 @@ const MainPage = () => {
               <div
                 key={ach.id}
                 className={`mp-ach-card${ach.unlocked ? ' mp-ach-card--unlocked' : ''}`}
-                title={ach.unlocked ? 'Unlocked!' : 'Locked — keep going'}
+                title={ach.unlocked ? 'Unlocked!' : 'Locked. Keep going'}
               >
                 <div className="mp-ach-card__icon">{ach.icon}</div>
                 <div className="mp-ach-card__label">{ach.label}</div>
@@ -513,7 +513,7 @@ const MainPage = () => {
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            TRACKS GRID — Lessons / Quizzes / Journey Puzzles
+            TRACKS GRID. Lessons / Quizzes / Journey Puzzles
         ══════════════════════════════════════════════════════ */}
         <section className="tracks-grid">
 
@@ -526,7 +526,7 @@ const MainPage = () => {
                   Lessons
                   <span className="track-total-badge">{completedLessons}/{LESSON_TOTAL}</span>
                 </h2>
-                <p>Step-by-step Python lessons — one concept at a time.</p>
+                <p>Step-by-step Python lessons. One concept at a time.</p>
                 {mc.lessons && <span className="mc">{mc.lessons}</span>}
               </div>
             </header>
@@ -563,7 +563,7 @@ const MainPage = () => {
                   Knowledge Checks
                   <span className="track-total-badge">{completedQuizzes}/{QUIZ_TOTAL}</span>
                 </h2>
-                <p>One quiz per lesson — test your knowledge and earn XP.</p>
+                <p>One quiz per lesson. Test your knowledge and earn XP.</p>
                 {mc.quizzes && <span className={`mc${completedLessons === 0 ? ' mc--locked' : ''}`}>{mc.quizzes}</span>}
               </div>
             </header>
@@ -600,7 +600,7 @@ const MainPage = () => {
                   Coding Challenges
                   <span className="track-total-badge">{completedPuzzles}/{LIVE_PUZZLE_TOTAL}</span>
                 </h2>
-                <p>Journey puzzles unlocked after each quiz — write real Python to pass.</p>
+                <p>Journey puzzles unlocked after each quiz. Write real Python to pass.</p>
                 {mc.puzzles && <span className={`mc${completedQuizzes === 0 ? ' mc--locked' : ' mc--accent'}`}>{mc.puzzles}</span>}
               </div>
             </header>
@@ -637,7 +637,7 @@ const MainPage = () => {
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            AI BUILDER CTA — quick-access from dashboard
+            AI BUILDER CTA. Quick-access from dashboard
         ══════════════════════════════════════════════════════ */}
         <section className="mp-builder-cta">
           <div className="mp-builder-cta__copy">

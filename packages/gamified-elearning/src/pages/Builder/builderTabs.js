@@ -93,7 +93,7 @@ function tabHint(tabId, { hasPlayed, hasChanged, hasTested, isSaved } = {}) {
   if (tabId === 'play') {
     if (!hasPlayed) return 'Press Play and try it out.';
     if (!hasChanged) return 'Played it? Now open Change and make it yours.';
-    if (!hasTested) return 'You changed something — play it again to check it still works.';
+    if (!hasTested) return 'You changed something. Play it again to check it still works.';
     return null;
   }
   if (tabId === 'change') {

@@ -56,7 +56,7 @@ const Playground = () => {
   const navigate = useNavigate();
 
   useSEO({
-    title:       'Free Python Playground — Run Python in Your Browser | CodeIt',
+    title:       'Free Python Playground. Run Python in Your Browser | CodeIt',
     description: 'Write and run Python code instantly in your browser. Free online Python playground with starter presets. No install needed. Perfect for beginners.',
     canonical:   '/playground',
   });
@@ -89,7 +89,7 @@ const Playground = () => {
           <span className="pg-heading__tag">Free Python Sandbox</span>
           <h1 className="pg-title">Python Playground</h1>
           <p className="pg-subtitle">
-            Write and run Python code right in your browser — no install needed.
+            Write and run Python code right in your browser. No install needed.
           </p>
         </div>
 

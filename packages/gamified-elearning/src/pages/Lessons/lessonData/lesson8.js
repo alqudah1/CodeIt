@@ -1,7 +1,7 @@
 const lesson8 = {
   id: 8,
   title: "Loops with Lists",
-  subtitle: "Visit every item in a list — automatically, one by one!",
+  subtitle: "Visit every item in a list. Automatically, one by one!",
   emoji: "🔁",
   story: "A list of scores is only useful if you can walk through it. Loop plus list is where real programs begin.",
   steps: [
@@ -9,7 +9,7 @@ const lesson8 = {
       type: 'concept',
       id: 'concept',
       title: 'Loop Through a List',
-      body: 'Combine a for loop with a list and Python visits every item automatically. Write what you want to do with each item — the loop handles the rest, no matter how long the list is!',
+      body: 'Combine a for loop with a list and Python visits every item automatically. Write what you want to do with each item. The loop handles the rest, no matter how long the list is!',
       highlight: 'fruits = ["apple", "banana", "mango"]\nfor fruit in fruits:\n    print(fruit)   →   apple  banana  mango',
       code: 'fruits = ["apple", "banana", "mango"]\nfor fruit in fruits:\n    print(fruit)',
     },
@@ -21,7 +21,7 @@ const lesson8 = {
       code: 'scores = [10, 20, 30]\ntotal = 0\nfor score in scores:\n    total = total + score\nprint(total)',
       choices: ['10', '30', '60', '0'],
       correct: 2,
-      explain: 'Right — total grows on each lap: 10, then 30, then 60. The print happens after the loop finishes.',
+      explain: 'Right. Total grows on each lap: 10, then 30, then 60. The print happens after the loop finishes.',
       wrongHint: 'Follow total through the loop: it starts at 0 and each score gets added on.',
       hints: ['Write down total after each lap.', 'The print is outside the loop, so it only runs once, at the end.'],
     },

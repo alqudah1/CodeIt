@@ -1,6 +1,6 @@
 const lesson24 = {
   id: 24,
-  title: "List Comprehensions — A List in One Line",
+  title: "List Comprehensions. A List in One Line",
   subtitle: "The shortcut every Python programmer uses.",
   emoji: "⚡",
   xp: 50,
@@ -22,7 +22,7 @@ const lesson24 = {
       code: 'numbers = [1, 2, 3, 4]\nresult = [n * n for n in numbers]\nprint(result)',
       choices: ['[1, 2, 3, 4]', '[2, 4, 6, 8]', '[1, 4, 9, 16]', '[1, 2, 3, 4, 1, 2, 3, 4]'],
       correct: 2,
-      explain: 'Yes — each number multiplied by itself: 1, 4, 9, 16.',
+      explain: 'Yes. Each number multiplied by itself: 1, 4, 9, 16.',
       wrongHint: 'n * n is n multiplied by itself, not n added to itself.',
       hints: ['Work it out for one number first: what is 3 * 3?', 'Now do that for every number in the list.'],
     },
@@ -58,7 +58,7 @@ const lesson24 = {
         '    doubles.append(n * 2)',
         'print(doubles)',
       ],
-      explain: 'That is the long version. Both do exactly the same thing — the one-liner is just quicker to write.',
+      explain: 'That is the long version. Both do exactly the same thing. The one-liner is just quicker to write.',
       wrongHint: 'You need an empty list before you can append to it, and the append belongs inside the loop.',
     },
     {

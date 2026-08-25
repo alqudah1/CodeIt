@@ -1,6 +1,6 @@
 const lesson20 = {
   id: 20,
-  title: "Dictionaries — Labels, Not Numbers",
+  title: "Dictionaries. Labels, Not Numbers",
   subtitle: "A list remembers order. A dictionary remembers names.",
   emoji: "📖",
   xp: 50,
@@ -34,7 +34,7 @@ const lesson20 = {
       template: 'player = ___"name": "Blaze", "health": 100___\nprint(player[___])',
       options: ['{', '}', '[', ']', '"health"', 'health'],
       answers: ['{', '}', '"health"'],
-      explain: 'Yes — curly braces build the dictionary, and the key needs its quote marks.',
+      explain: 'Yes. Curly braces build the dictionary, and the key needs its quote marks.',
       wrongHint: 'Dictionaries use curly braces. A key made of text needs quote marks around it.',
       hints: [
         'Lists use square brackets. Dictionaries use the curly ones.',
@@ -57,7 +57,7 @@ const lesson20 = {
       code: 'hero = {"name": "Echo", "power": "invisibility", "level": 3}\nhero["pet"] = "dragon"\nprint(hero["name"], "the level", hero["level"], "hero")\nprint("Pet:", hero["pet"])',
       expectedOutput: /Pet:/,
       expectedKeywords: ['{', '}'],
-      wrongOutputHint: 'Keep both prints — one for the hero, one for the new key you added.',
+      wrongOutputHint: 'Keep both prints. One for the hero, one for the new key you added.',
       hints: [
         'Add a key by assigning to it: hero["speed"] = 9',
         'Any word can be a key, as long as it is in quote marks.',

@@ -4,7 +4,7 @@ import { PredictOutput, FillBlank, OrderSteps } from './LessonInteractions';
 import { BLANK, checkFillBlank, checkOrder } from './interactionGrading';
 
 // These run on school Chromebooks and iPads. Everything a child touches has to
-// be a real button — reachable by tap, by mouse, and by keyboard — because
+// be a real button. reachable by tap, by mouse, and by keyboard. because
 // HTML5 drag-and-drop is none of those things on a tablet.
 
 describe('PredictOutput', () => {

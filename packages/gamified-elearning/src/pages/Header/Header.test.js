@@ -32,7 +32,7 @@ describe('header navigation', () => {
 
   test('a signed-in adult can reach the plan page', () => {
     // Regression: MEMBER_NAV used to be PUBLIC_NAV.slice(0, 4), which silently
-    // dropped Pricing — so the people who might actually pay had no link to it.
+    // dropped Pricing. so the people who might actually pay had no link to it.
     renderHeader({ id: 1, name: 'Parent', role: 'Educator' });
     expect(screen.getByRole('link', { name: 'Plan' })).toHaveAttribute('href', '/pricing');
   });

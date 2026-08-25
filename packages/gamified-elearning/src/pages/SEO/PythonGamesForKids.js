@@ -7,7 +7,7 @@ import './SEOPage.css';
 const FAQS = [
   {
     q: 'Are there real Python coding games for kids?',
-    a: 'Yes — CodeIt\'s coding puzzles are story-driven games that use real Python code, not drag-and-drop blocks. Kids type actual Python, run it in the browser, and see results immediately. Each puzzle is built around one specific Python concept, so the skill feels necessary and the win feels earned. There is also a free Python playground where kids can experiment with code outside of the structured puzzles.',
+    a: 'Yes. CodeIt\'s coding puzzles are story-driven games that use real Python code, not drag-and-drop blocks. Kids type actual Python, run it in the browser, and see results immediately. Each puzzle is built around one specific Python concept, so the skill feels necessary and the win feels earned. There is also a free Python playground where kids can experiment with code outside of the structured puzzles.',
   },
   {
     q: 'Do coding games actually teach programming skills?',
@@ -15,22 +15,22 @@ const FAQS = [
   },
   {
     q: 'Can kids play the coding games without doing the lessons first?',
-    a: 'On CodeIt, coding puzzles unlock after completing the matching lesson and quiz. This ensures kids have the Python skills they need before attempting each challenge — preventing frustration and making success feel earned rather than accidental. If a child gets stuck on a puzzle, they can always revisit the matching lesson for a refresher.',
+    a: 'On CodeIt, coding puzzles unlock after completing the matching lesson and quiz. This ensures kids have the Python skills they need before attempting each challenge. Preventing frustration and making success feel earned rather than accidental. If a child gets stuck on a puzzle, they can always revisit the matching lesson for a refresher.',
   },
   {
     q: 'What Python concepts do the coding games on CodeIt teach?',
-    a: 'The current five puzzles cover: print statements (Puzzle 1 — Talking Robot Adventure), variables (Puzzle 2 — Apple Game Challenge), for loops (Puzzle 3 — Loop Game Challenge), if/else statements (Puzzle 4 — Condition Game Master), and arithmetic expressions (Puzzle 5 — Math Game Quest). More puzzles covering dictionaries, file handling, exception handling, and object-oriented programming are in development.',
+    a: 'The current five puzzles cover: print statements (Puzzle 1. Talking Robot Adventure), variables (Puzzle 2. Apple Game Challenge), for loops (Puzzle 3. Loop Game Challenge), if/else statements (Puzzle 4. Condition Game Master), and arithmetic expressions (Puzzle 5. Math Game Quest). More puzzles covering dictionaries, file handling, exception handling, and object-oriented programming are in development.',
   },
   {
     q: 'Are the Python coding games on CodeIt free?',
-    a: 'Yes — all current coding puzzles on CodeIt are free to play. The current learning path also includes 16 beginner lessons and matching quizzes. A paid family plan is being tested, but it is not live and CodeIt does not collect payment today.',
+    a: 'Yes. Every coding puzzle on CodeIt is free to play, and so is the beginner Python path that goes with them. There is a paid plan, CodeIt Plus, at CA$12 a month plus tax, but none of the puzzles are behind it.',
   },
 ];
 
 export default function PythonGamesForKids() {
   useSEO({
-    title:       'Python Games for Kids | Coding Puzzles — CodeIt',
-    description: 'Python games for kids — solve coding puzzles and beat game challenges to learn Python on CodeIt. Unlock new games as you complete each lesson.',
+    title:       'Python Games for Kids | Coding Puzzles. CodeIt',
+    description: 'Python games for kids. Solve coding puzzles and beat game challenges to learn Python on CodeIt. Unlock new games as you complete each lesson.',
     canonical:   '/python-games-for-kids',
   });
   useFAQSchema(FAQS);
@@ -63,7 +63,7 @@ export default function PythonGamesForKids() {
             <span className="seo-answer-box__label">Quick Answer</span>
             <p className="seo-answer-box__answer">
               CodeIt's Python games for kids are story-driven coding puzzles where each game is
-              solved by writing real Python code — not dragging blocks — making skills transfer
+              solved by writing real Python code. Not dragging blocks. Making skills transfer
               directly to real-world programming.
             </p>
             <p className="seo-answer-box__detail">
@@ -73,7 +73,7 @@ export default function PythonGamesForKids() {
               uses <code>print()</code>, Puzzle 2 uses variables, Puzzle 3 uses for loops, Puzzle 4
               uses if/else statements, and Puzzle 5 uses arithmetic expressions. For example, in the
               Apple Game Challenge, kids use variables to track and update a score as the game
-              plays out — making an abstract concept immediately concrete and fun.
+              plays out. Making an abstract concept immediately concrete and fun.
             </p>
           </section>
 
@@ -97,7 +97,7 @@ export default function PythonGamesForKids() {
                 Research on game-based learning consistently shows better retention, higher
                 engagement, and more time-on-task compared to standard tutorials. CodeIt is built
                 around this evidence. Between puzzles, kids can also experiment in the{' '}
-                <Link to="/playground">Python playground</Link> — a free browser-based editor for
+                <Link to="/playground">Python playground</Link>. a free browser-based editor for
                 testing ideas and practising concepts without any constraints.
               </p>
             </section>
@@ -110,21 +110,21 @@ export default function PythonGamesForKids() {
                 current puzzle lineup:
               </p>
               <ul className="seo-list">
-                <li><strong>Puzzle 1 — Talking Robot Adventure:</strong> Use print() to guide a
+                <li><strong>Puzzle 1. Talking Robot Adventure:</strong> Use print() to guide a
                   robot through a story. Covers Lesson 1: Hello Python.</li>
-                <li><strong>Puzzle 2 — Apple Game Challenge:</strong> Use variables to track and
+                <li><strong>Puzzle 2. Apple Game Challenge:</strong> Use variables to track and
                   update a score in an apple-catching challenge. Covers Lesson 2: Variables.</li>
-                <li><strong>Puzzle 3 — Loop Game Challenge:</strong> Use for loops to repeat actions
+                <li><strong>Puzzle 3. Loop Game Challenge:</strong> Use for loops to repeat actions
                   and make a programme more efficient. Covers loops.</li>
-                <li><strong>Puzzle 4 — Condition Game Master:</strong> Use if/else to make
+                <li><strong>Puzzle 4. Condition Game Master:</strong> Use if/else to make
                   a character respond differently to different situations. Covers Lesson 4:
                   If Statements.</li>
-                <li><strong>Puzzle 5 — Math Game Quest:</strong> Use arithmetic expressions to
+                <li><strong>Puzzle 5. Math Game Quest:</strong> Use arithmetic expressions to
                   solve challenges and advance through levels. Covers expressions.</li>
               </ul>
               <p className="seo-p">
-                More puzzles — covering dictionaries, file handling, exceptions, OOP, and modules
-                — are coming soon. View the full list on the{' '}
+                More puzzles. Covering dictionaries, file handling, exceptions, OOP, and modules
+. are coming soon. View the full list on the{' '}
                 <Link to="/games">coding puzzles page</Link>.
               </p>
             </section>
@@ -132,7 +132,7 @@ export default function PythonGamesForKids() {
             <section className="seo-section">
               <h2 className="seo-h2">How the Coding Journey Works</h2>
               <p className="seo-p">
-                CodeIt isn't just a collection of isolated puzzles — it's a complete learning
+                CodeIt isn't just a collection of isolated puzzles. It's a complete learning
                 adventure. The <Link to="/journey">Journey Map</Link> shows the full path: lessons,
                 quizzes, and puzzles connected in a sequence that builds skills progressively.
               </p>
@@ -146,7 +146,7 @@ export default function PythonGamesForKids() {
               </ul>
               <p className="seo-p">
                 Each chapter also includes mini puzzles and a boss challenge. The boss puzzle
-                requires combining multiple concepts — it's a real test of what the kid has
+                requires combining multiple concepts. It's a real test of what the kid has
                 learned, not just a repeat of the lesson's examples.
               </p>
               <p className="seo-p">
@@ -188,7 +188,7 @@ export default function PythonGamesForKids() {
                 <li><strong>Start small:</strong> Write one line, run it, see what happens.
                   Don't try to write the whole solution before testing anything.</li>
                 <li><strong>Use the lesson:</strong> Each puzzle links back to its lesson. If
-                  you're stuck, re-read the relevant section — the answer is usually in
+                  you're stuck, re-read the relevant section. The answer is usually in
                   the examples.</li>
                 <li><strong>Try the playground:</strong> The <Link to="/playground">Python
                   playground</Link> is a great place to experiment with an idea before
@@ -198,7 +198,7 @@ export default function PythonGamesForKids() {
               </ul>
               <p className="seo-p">
                 The puzzles on CodeIt have no time limit and no penalty for wrong answers. Try
-                as many times as needed — the goal is understanding, not speed.
+                as many times as needed. The goal is understanding, not speed.
               </p>
             </section>
 
@@ -206,13 +206,13 @@ export default function PythonGamesForKids() {
               <h2 className="seo-h2">Python Games vs. Drag-and-Drop Coding</h2>
               <p className="seo-p">
                 Many children's coding platforms use drag-and-drop blocks (like Scratch) as a
-                starting point. These are great for introducing logic, but they have a ceiling —
+                starting point. These are great for introducing logic, but they have a ceiling , 
                 block-based coding doesn't translate to real programming languages, and kids
                 eventually need to make the jump to text-based code.
               </p>
               <p className="seo-p">
                 CodeIt uses real Python from Lesson 1. Kids type actual code, read error messages,
-                and learn to debug — the same skills professional developers use. The puzzles make
+                and learn to debug. The same skills professional developers use. The puzzles make
                 this feel like a game rather than a chore, so the transition from blocks to text
                 is smooth and natural.
               </p>
@@ -252,7 +252,7 @@ export default function PythonGamesForKids() {
           <div className="seo-bottom-cta">
             <h2>Ready to Play Your First Python Game?</h2>
             <p>
-              Start with Lesson 1 to unlock Puzzle 1 — or jump straight to the games
+              Start with Lesson 1 to unlock Puzzle 1. or jump straight to the games
               page to see everything available. All free, no download needed.
             </p>
             <Link to="/journey" className="seo-cta-btn">

@@ -1,16 +1,16 @@
 const lesson29 = {
   id: 29,
-  title: "Classes and Objects — Your Own Kind of Thing",
+  title: "Classes and Objects. Your Own Kind of Thing",
   subtitle: "Build a blueprint once, then stamp out as many as you like.",
   emoji: "🏗️",
   xp: 50,
-  story: "Your game has twenty enemies. Twenty dictionaries with the same keys is a chore. One class is a blueprint — and every enemy made from it already knows how to attack.",
+  story: "Your game has twenty enemies. Twenty dictionaries with the same keys is a chore. One class is a blueprint. And every enemy made from it already knows how to attack.",
   steps: [
     {
       type: 'concept',
       id: 'concept',
       title: 'A Blueprint and Its Copies',
-      body: 'class defines the blueprint. __init__ runs whenever a new one is made, and self is that particular one — this enemy, not enemies in general. Functions inside a class are called methods, and they always take self first.',
+      body: 'class defines the blueprint. __init__ runs whenever a new one is made, and self is that particular one. This enemy, not enemies in general. Functions inside a class are called methods, and they always take self first.',
       highlight: 'class Enemy:\n    def __init__(self, name, health):\n        self.name = name       # store it on THIS enemy\n        self.health = health\n\n    def hit(self, damage):\n        self.health = self.health - damage\n\ngoblin = Enemy("Goblin", 30)   # __init__ runs here\ngoblin.hit(10)                 # self is goblin',
       code: 'class Enemy:\n    def __init__(self, name, health):\n        self.name = name\n        self.health = health\n\n    def hit(self, damage):\n        self.health = self.health - damage\n        print(self.name, "now has", self.health, "health")\n\ngoblin = Enemy("Goblin", 30)\ngoblin.hit(10)',
     },
@@ -22,7 +22,7 @@ const lesson29 = {
       code: 'class Pet:\n    def __init__(self, name):\n        self.name = name\n\na = Pet("Rex")\nb = Pet("Milo")\nprint(a.name)',
       choices: ['Rex', 'Milo', 'Rex Milo', 'An error'],
       correct: 0,
-      explain: 'Correct. a and b are separate objects. Making b did not touch a.',
+      explain: 'Correct. A and b are separate objects. Making b did not touch a.',
       wrongHint: 'Each object made from a class keeps its own values. They do not share.',
       hints: ['Two Pet(...) calls means two separate pets.', 'a.name was set when a was made.'],
     },
@@ -34,7 +34,7 @@ const lesson29 = {
       template: '___ Hero:\n    def __init__(___, name):\n        self.name = name\n        ___.health = 100\n\nnova = Hero("Nova")\nprint(nova.health)',
       options: ['class', 'def', 'self', 'this'],
       answers: ['class', 'self', 'self'],
-      explain: 'Yes. class starts the blueprint, and self is how each object refers to itself. Python uses self, not this.',
+      explain: 'Yes. Class starts the blueprint, and self is how each object refers to itself. Python uses self, not this.',
       wrongHint: 'One word starts a blueprint. The other is the name Python gives to "this particular one".',
       hints: [
         'The first line defines a new kind of thing.',

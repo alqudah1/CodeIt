@@ -1,6 +1,6 @@
 const lesson30 = {
   id: 30,
-  title: "Recursion — A Function That Calls Itself",
+  title: "Recursion. A Function That Calls Itself",
   subtitle: "The strangest idea in this course, and one of the most useful.",
   emoji: "🪆",
   xp: 50,
@@ -10,7 +10,7 @@ const lesson30 = {
       type: 'concept',
       id: 'concept',
       title: 'Two Parts, Always',
-      body: 'A recursive function calls itself on a smaller version of the problem. It needs a base case — the moment it stops — and a recursive case that gets closer to it. Without the base case it never ends, and Python gives up with a RecursionError.',
+      body: 'A recursive function calls itself on a smaller version of the problem. It needs a base case. The moment it stops. And a recursive case that gets closer to it. Without the base case it never ends, and Python gives up with a RecursionError.',
       highlight: 'def countdown(n):\n    if n == 0:          # base case: STOP\n        print("Lift off!")\n        return\n    print(n)\n    countdown(n - 1)    # smaller each time',
       code: 'def countdown(n):\n    if n == 0:\n        print("Lift off!")\n        return\n    print(n)\n    countdown(n - 1)\n\ncountdown(3)',
     },
@@ -73,7 +73,7 @@ const lesson30 = {
       expectedKeywords: ['return', 'total('],
       wrongOutputHint: 'The numbers 1 to 5 add up to 15.',
       hints: [
-        'numbers[1:] is everything except the first item — that is the smaller problem.',
+        'numbers[1:] is everything except the first item. That is the smaller problem.',
         'The base case is an empty list, which adds up to 0.',
       ],
     },
@@ -89,7 +89,7 @@ const lesson30 = {
       wrongOutputHint: 'python reversed is nohtyp.',
       hints: [
         'word[-1] is the last letter; word[:-1] is everything except the last letter.',
-        'A word of one letter is already backwards — that is your base case.',
+        'A word of one letter is already backwards. That is your base case.',
       ],
     },
   ],

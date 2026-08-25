@@ -1,6 +1,6 @@
 const lesson17 = {
   id: 17,
-  title: "While Loops — Keep Going Until",
+  title: "While Loops. Keep Going Until",
   subtitle: "A for loop counts. A while loop waits for something to happen.",
   emoji: "🔁",
   xp: 50,
@@ -27,8 +27,8 @@ const lesson17 = {
         'Nothing at all',
       ],
       correct: 1,
-      explain: 'Right — lives starts at 2, so the loop runs twice and then 0 > 0 is False.',
-      wrongHint: 'Count the laps. lives is 2, then 1, then 0. The loop stops as soon as the question is False.',
+      explain: 'Right. Lives starts at 2, so the loop runs twice and then 0 > 0 is False.',
+      wrongHint: 'Count the laps. Lives is 2, then 1, then 0. The loop stops as soon as the question is False.',
       hints: [
         'The loop checks "is lives more than 0?" before every single lap.',
         'Write down lives after each lap: 2 → 1 → 0. How many times did it print before reaching 0?',
@@ -68,7 +68,7 @@ const lesson17 = {
       wrongOutputHint: 'The last line should say how big the number got. Keep the print at the end.',
       hints: [
         'The loop condition is "while number is 100 or less".',
-        'Try starting at 3 instead of 1 — the numbers change but the loop still stops.',
+        'Try starting at 3 instead of 1. the numbers change but the loop still stops.',
       ],
     },
     {

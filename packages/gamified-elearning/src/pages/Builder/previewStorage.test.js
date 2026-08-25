@@ -184,7 +184,7 @@ describe('putting the shim into a project', () => {
 
 describe('taking CodeIt\'s own scripts back out', () => {
   // The preview serialises the live document when a child edits by hand. That
-  // document contains whatever we injected — and before this, a saved project
+  // document contains whatever we injected. and before this, a saved project
   // grew by the whole editor bridge every time.
   const LIVE = `<!doctype html><html><head><script id="__codeit_storage__">var saved={"best":"99"};<\/script>
     <style>body{color:red}</style></head><body><h1>Mine</h1>

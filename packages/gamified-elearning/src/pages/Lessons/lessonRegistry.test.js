@@ -12,8 +12,8 @@ import {
 import { blankCount, isInteractionStep } from '../../components/InteractiveLessonTemplate/interactionGrading';
 
 // The registry is the thing that makes "adding a lesson is one entry" true.
-// These tests are what stop a half-added lesson — routable but unlisted, or
-// listed with no project to build afterwards — from reaching a child.
+// These tests are what stop a half-added lesson. routable but unlisted, or
+// listed with no project to build afterwards. from reaching a child.
 
 describe('the curriculum is complete', () => {
   test('every lesson has a data file with matching id', () => {
@@ -154,7 +154,7 @@ describe('every step is well formed', () => {
 
   test('no step passes on output that has nothing to do with it', () => {
     // The old lessons were full of checks like /\S+/, /\w/ and /\d+/, which pass
-    // on literally any output — including the untouched starter code, or a
+    // on literally any output. including the untouched starter code, or a
     // single space. A child could be told "correct" without having done
     // anything. Rather than banning one regex by name, this feeds every check
     // some unrelated output and insists it be rejected.

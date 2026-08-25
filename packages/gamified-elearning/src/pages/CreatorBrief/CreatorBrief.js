@@ -36,7 +36,7 @@ const DEMO_STEPS = [
   ['01', 'Start with the finished result', 'Open a working quiz, game, or website before explaining features.'],
   ['02', 'Show where the idea began', 'Use one short prompt, then explain that the first version removes the intimidating blank screen.'],
   ['03', 'Change one visible thing', 'Edit a colour, rule, label, or animation so viewers see that the student controls the project.'],
-  ['04', 'Connect it to one concept', 'Show the code behind the score, button, loop, or condition—then end with one call to action.'],
+  ['04', 'Connect it to one concept', 'Show the code behind the score, button, loop, or condition, then end with one call to action.'],
 ];
 
 const CONTENT_FORMATS = [
@@ -61,11 +61,11 @@ const CONTENT_FORMATS = [
 ];
 
 const VIDEO_SCRIPT = [
-  ['0–2 sec', 'Show the finished project', '“A student described this idea—and CodeIt turned it into a working project.”'],
-  ['2–9 sec', 'Play it', 'Click, score, answer, or trigger the part that makes the result feel real.'],
-  ['9–18 sec', 'Change one thing', '“Now they can change the colour, rule, words, or behaviour instead of stopping at generation.”'],
-  ['18–26 sec', 'Open the code', '“CodeIt connects what changed on screen to the code behind it.”'],
-  ['26–32 sec', 'Use one call to action', '“Parents can request a free family pilot spot at codeitlearn.com.”'],
+  ['0 to 2 sec', 'Show the finished project', '“A student described this idea, and CodeIt turned it into a working project.”'],
+  ['2 to 9 sec', 'Play it', 'Click, score, answer, or trigger the part that makes the result feel real.'],
+  ['9 to 18 sec', 'Change one thing', '“Now they can change the colour, rule, words, or behaviour instead of stopping at generation.”'],
+  ['18 to 26 sec', 'Open the code', '“CodeIt connects what changed on screen to the code behind it.”'],
+  ['26 to 32 sec', 'Use one call to action', '“Parents can request a free family pilot spot at codeitlearn.com.”'],
 ];
 
 const LAUNCH_PLAN = [
@@ -112,7 +112,7 @@ export default function CreatorBrief() {
             and claim boundaries needed to promote CodeIt clearly.
           </p>
           <blockquote>
-            CodeIt helps students turn an idea into a real website, game, or quiz—then learn,
+            CodeIt helps students turn an idea into a real website, game, or quiz, then learn,
             edit, save, and share the code behind what they built.
           </blockquote>
           <p className="creator-brief__offer">
@@ -126,7 +126,7 @@ export default function CreatorBrief() {
         </section>
 
         <section className="creator-brief__audience" aria-label="CodeIt audience and promise">
-          <article><span>Primary user</span><strong>Young creators ages 5–18</strong><p>Parents can create private managed profiles for ages 5–12; independent student accounts begin at 13.</p></article>
+          <article><span>Primary user</span><strong>Young creators ages 5 to 18</strong><p>Parents can create private managed profiles for ages 5 to 12; independent student accounts begin at 13.</p></article>
           <article><span>Primary buyer</span><strong>Parents and guardians</strong><p>Adults who want visible, understandable progress.</p></article>
           <article><span>Product difference</span><strong>Build first, then understand</strong><p>General AI builders make; CodeIt connects making to learning.</p></article>
         </section>
@@ -189,7 +189,7 @@ export default function CreatorBrief() {
           <div className="creator-brief__section-heading">
             <p className="creator-brief__eyebrow">Short-form content</p>
             <h2 id="formats-title">Three repeatable formats.</h2>
-            <p>Keep most videos 15–35 seconds, add captions, and show the result in the first two seconds.</p>
+            <p>Keep most videos 15 to 35 seconds, add captions, and show the result in the first two seconds.</p>
           </div>
           <div className="creator-brief__format-grid">
             {CONTENT_FORMATS.map((format) => (
@@ -236,14 +236,14 @@ export default function CreatorBrief() {
             <div><span>20</span><strong>own-idea starts</strong></div>
             <div><span>10</span><strong>projects generated</strong></div>
             <div><span>3</span><strong>family pilot requests</strong></div>
-            <p>Decision targets for the first test—not guaranteed results. If visits arrive but pilot requests do not, improve the offer or parent proof. If visitors request the pilot but do not register, improve the setup email. If students register but do not finish a project, improve generation and onboarding.</p>
+            <p>Decision targets for the first test, not guaranteed results. If visits arrive but pilot requests do not, improve the offer or parent proof. If visitors request the pilot but do not register, improve the setup email. If students register but do not finish a project, improve generation and onboarding.</p>
           </aside>
         </section>
 
         <section className="creator-brief__section creator-brief__claims" aria-labelledby="claims-title">
           <div className="creator-brief__section-heading">
             <p className="creator-brief__eyebrow">Trust comes first</p>
-            <h2 id="claims-title">What you can say—and what is still planned.</h2>
+            <h2 id="claims-title">What you can say, and what is still planned.</h2>
           </div>
           <div>
             <article className="is-approved">
@@ -254,7 +254,7 @@ export default function CreatorBrief() {
                 <li>The core beginner experience has a free starting option.</li>
                 <li>Free family pilot requests are open with no card, charge, or subscription.</li>
                 <li>Confirmed parents can receive selected milestone emails from a student profile.</li>
-                <li>Parents can create private managed profiles for learners ages 5–12.</li>
+                <li>Parents can create private managed profiles for learners ages 5 to 12.</li>
               </ul>
             </article>
             <article className="is-planned">

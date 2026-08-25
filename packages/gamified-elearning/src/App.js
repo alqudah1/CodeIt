@@ -1,11 +1,12 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useParams, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useParams, Navigate, Link } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import ResetPassword from './pages/Auth/ResetPassword';
 import ParentReview from './pages/Auth/ParentReview';
+import { TOTAL_LESSONS } from './pages/Lessons/lessonRegistry';
 import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { CharacterProvider } from './context/CharacterContext';
@@ -86,10 +87,27 @@ const PageLoader = () => (
 );
 
 // ── Quiz validation wrapper ───────────────────────────────────────
-const VALID_QUIZ_IDS = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'];
+//
+// This list used to be typed out as '1' through '16'. The curriculum grew to
+// 31 lessons and the list did not, so every lesson from 17 onward sent a child
+// who had just finished it to the bare string "Invalid Quiz ID" — half the
+// course, ending in what looks like a crash.
+//
+// It is derived from the lesson registry now, so the two cannot drift apart
+// again. A quiz with no questions in the database is a different case and Quiz
+// itself already says so in plain words.
 const QuizWrapper = () => {
   const { quizId } = useParams();
-  if (!VALID_QUIZ_IDS.includes(quizId)) return <div>Invalid Quiz ID</div>;
+  const id = Number(quizId);
+  if (!Number.isInteger(id) || id < 1 || id > TOTAL_LESSONS) {
+    return (
+      <div className="app-missing">
+        <h1>That quiz does not exist</h1>
+        <p>There are {TOTAL_LESSONS} lessons, each with its own quiz.</p>
+        <Link to="/lessons">See all the lessons</Link>
+      </div>
+    );
+  }
   return <Quiz quizId={quizId} />;
 };
 

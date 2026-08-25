@@ -22,7 +22,7 @@ const PAGE = [
 
 describe("the line number has to be the child's own", () => {
   // Chrome reports the line relative to the whole document. Anything CodeIt
-  // injects above the child's code shifts every number — and a message pointing
+  // injects above the child's code shifts every number. and a message pointing
   // at the wrong line is worse than no message at all.
 
   test('the error watcher adds no lines', () => {

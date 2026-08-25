@@ -176,12 +176,12 @@ export default function Login() {
           <Link to="/forgot-password">Forgot your password?</Link>
         </div>
 
-        {/* Guest option — students only */}
+        {/* Guest option. Students only */}
         {role === 'student' && (
           <>
             <div className="auth-divider">or</div>
             <button type="button" className="auth-guest-btn" onClick={() => navigate('/builder')}>
-              {hasBuilderDraft ? 'Go back to my project' : 'Try the project builder — no account needed'}
+              {hasBuilderDraft ? 'Go back to my project' : 'Try the project builder. No account needed'}
             </button>
           </>
         )}

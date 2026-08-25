@@ -224,8 +224,8 @@ describe('project studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Change my project' }));
 
     expect(screen.getByRole('group', { name: 'How to change your project' })).toHaveTextContent('Pick an idea');
-    fireEvent.click(screen.getByRole('button', { name: /Change the colors/i }));
-    expect(screen.getByLabelText('Or type your own idea')).toHaveValue('Change the game to bright rainbow colors.');
+    fireEvent.click(screen.getByRole('button', { name: /Change the colours/i }));
+    expect(screen.getByLabelText('Or type your own idea')).toHaveValue('Change the game to bright rainbow colours.');
     fireEvent.click(screen.getByRole('button', { name: 'Make my change' }));
 
     await waitFor(() => {
@@ -265,7 +265,7 @@ describe('project studio opening', () => {
     expect(await screen.findByText(/Your project is safe!/)).toBeInTheDocument();
     expect(screen.getByText(/Your project is safe!/).closest('[role="status"]')).toHaveTextContent('2 minutes');
     expect(screen.getByRole('button', { name: /Play my project/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Change colors/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Change colours/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Wait 2 minutes/i })).toBeDisabled();
   }, 10000);
 
@@ -301,7 +301,7 @@ describe('project studio opening', () => {
 
     render(<Builder />);
 
-    expect(await screen.findByText('Welcome back—your project was recovered.')).toBeInTheDocument();
+    expect(await screen.findByText('Welcome back, your project was recovered.')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Keep my project/i })).toBeInTheDocument();
     expect(trackEvent).toHaveBeenCalledWith('guest_draft_recovered');
@@ -319,7 +319,7 @@ describe('project studio opening', () => {
 
     render(<Builder />);
 
-    expect(screen.queryByText('Welcome back—your project was recovered.')).not.toBeInTheDocument();
+    expect(screen.queryByText('Welcome back, your project was recovered.')).not.toBeInTheDocument();
     expect(localStorage.getItem(GUEST_PROJECT_DRAFT_KEY)).toBeNull();
   });
 
@@ -358,7 +358,7 @@ describe('project studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: /Save my project/i }));
 
     openStudioPage('Keep');
-    await screen.findByRole('heading', { name: 'Great work — show your grown-up or teacher.' });
+    await screen.findByRole('heading', { name: 'Great work. Show your grown-up or teacher.' });
     expect(screen.queryByRole('button', { name: 'Publish and get a link' })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Learn how it works' }));
     expect(trackEvent).toHaveBeenCalledWith('activation_next_step', 'learn', 'managed-token');
@@ -759,7 +759,7 @@ describe('project studio opening', () => {
     );
 
     // "0 plays" reads as failure; this reads as an invitation.
-    expect(await screen.findByText(/No plays yet — share your link/)).toBeInTheDocument();
+    expect(await screen.findByText(/No plays yet. Share your link/)).toBeInTheDocument();
   });
 
   test('a single play is not pluralised', async () => {

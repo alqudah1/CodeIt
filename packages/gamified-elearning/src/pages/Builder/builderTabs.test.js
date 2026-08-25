@@ -31,7 +31,7 @@ describe('the pages themselves', () => {
   });
 
   test('no tab is named after something in the code', () => {
-    // "Studio panel", "modifiers", "entitlements" — none of these mean anything
+    // "Studio panel", "modifiers", "entitlements". none of these mean anything
     // to a ten-year-old.
     const jargon = /panel|modifier|entitlement|config|component|render/i;
     TABS.forEach(tab => {

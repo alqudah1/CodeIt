@@ -127,7 +127,7 @@ describe('memory is bounded', () => {
     }
     const bytes = history.past.reduce((sum, e) => sum + e.html.length, 0);
     expect(bytes).toBeLessThanOrEqual(4 * 1024 * 1024);
-    // Still usable — it keeps at least the most recent step.
+    // Still usable. it keeps at least the most recent step.
     expect(canUndo(history)).toBe(true);
   });
 });
@@ -138,7 +138,7 @@ describe('history does not leak between projects', () => {
     const cleared = clearHistory();
     expect(canUndo(cleared)).toBe(false);
     expect(canRedo(cleared)).toBe(false);
-    // The original is untouched — these functions never mutate.
+    // The original is untouched. these functions never mutate.
     expect(history.past).toHaveLength(2);
   });
 

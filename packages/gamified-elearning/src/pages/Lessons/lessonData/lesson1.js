@@ -1,7 +1,7 @@
 const lesson1 = {
   id: 1,
   title: "Hello Python!",
-  subtitle: "Make a computer say your first message — it is easier than you think!",
+  subtitle: "Make a computer say your first message. It is easier than you think!",
   emoji: "🐍",
   story: "Every program you will ever write starts here: telling the computer to say something, and watching it obey.",
   steps: [
@@ -21,7 +21,7 @@ const lesson1 = {
       code: 'print("Hello")\nprint("Python")',
       choices: ['Hello Python', 'Hello\nPython', 'HelloPython', '"Hello"\n"Python"'],
       correct: 1,
-      explain: 'Right — each print starts a new line, and the quote marks do not get printed.',
+      explain: 'Right. Each print starts a new line, and the quote marks do not get printed.',
       wrongHint: 'There are two prints, so there are two lines. And quote marks never show up in the output.',
       hints: ['Every print() puts its message on its own line.', 'The quotes tell Python where the text starts and ends. They are not part of it.'],
     },
@@ -39,7 +39,7 @@ const lesson1 = {
       type: 'tryit',
       id: 'tryit',
       title: 'Make It Your Own',
-      description: 'Change "Hello!" to YOUR message — like your name or something funny. Click Run to see YOUR message appear!',
+      description: 'Change "Hello!" to YOUR message. Like your name or something funny. Click Run to see YOUR message appear!',
       code: 'print("Hello!")',
       // Open-ended: the child writes their own message, so the check is that
       // they still used print and that something was actually printed.

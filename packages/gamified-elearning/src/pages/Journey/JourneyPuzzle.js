@@ -101,7 +101,7 @@ const JourneyPuzzle = () => {
       .then(data => {
         if ((data.completedPuzzles || []).map(String).includes(String(config.id))) {
           setAlreadyDone(true);
-          setCheckResult({ pass: true, message: 'Already completed — well done!' });
+          setCheckResult({ pass: true, message: 'Already completed. Well done!' });
         }
       })
       .catch(() => {});

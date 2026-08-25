@@ -72,7 +72,7 @@ const ACQUISITION_SOURCES = [
 ];
 
 const fmt = (value) => (Number(value) || 0).toLocaleString();
-const usd = (value) => value == null ? '—' : `$${Number(value).toFixed(3)}`;
+const usd = (value) => value == null ? ', ' : `$${Number(value).toFixed(3)}`;
 
 function ratio(numerator, denominator) {
   if (!denominator) return 'Collecting data';
@@ -390,7 +390,7 @@ export default function AdminFunnel() {
               </tbody>
             </table>
           </div>
-          <p className="funnel-parent-note">The campaign code identifies the promotion, not the visitor. Use internal codes only—never a visitor name, email address, phone number, or private message detail.</p>
+          <p className="funnel-parent-note">The campaign code identifies the promotion, not the visitor. Use internal codes only, never a visitor name, email address, phone number, or private message detail.</p>
 
           <div className="adm-section-head">Parent acquisition actions</div>
           <div className="funnel-parent-grid">
@@ -427,7 +427,7 @@ export default function AdminFunnel() {
                     <td>{lead.name || 'Parent / educator'}</td>
                     <td><a href={`mailto:${lead.email}`}>{lead.email}</a></td>
                     <td>{lead.source || 'account opt-in'}</td>
-                    <td>{lead.interested_at ? new Date(lead.interested_at).toLocaleDateString() : '—'}</td>
+                    <td>{lead.interested_at ? new Date(lead.interested_at).toLocaleDateString() : ', '}</td>
                   </tr>
                 ))}
               </tbody>
@@ -443,7 +443,7 @@ export default function AdminFunnel() {
             <article><span>Verified managed profiles</span><strong>{fmt(ageAudit?.under_13_verified_managed)}</strong></article>
             <article><span>Parent review sent</span><strong>{fmt(ageAudit?.under_13_review_sent)}</strong></article>
             <article className="is-urgent"><span>Parent review needed</span><strong>{fmt(Math.max(0, Number(ageAudit?.under_13 || 0) - Number(ageAudit?.under_13_verified_managed || 0) - Number(ageAudit?.under_13_review_sent || 0)))}</strong></article>
-            <article><span>Students ages 13–18</span><strong>{fmt(ageAudit?.age_13_18)}</strong></article>
+            <article><span>Students ages 13 to 18</span><strong>{fmt(ageAudit?.age_13_18)}</strong></article>
           </div>
           <p className="funnel-safety-note">Aggregate counts only. Historical under-13 accounts stay paused and private until a parent or guardian completes the review and connects a confirmed adult account.</p>
 

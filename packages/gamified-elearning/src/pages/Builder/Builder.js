@@ -58,6 +58,7 @@ import {
   restore as restoreWorking,
 } from './codeSafety';
 import { initialTab, tabAfter, tabsFor } from './builderTabs';
+import { liveUpdateScript, readSettings, setSetting } from './gameSettings';
 import {
   EMPTY as EMPTY_HISTORY,
   canRedo as historyCanRedo,
@@ -77,19 +78,19 @@ import {
 
 const QUICK_STARTS = [
   // Games
-  { label: 'Click the target',    category: 'Game',    prompt: 'a click-the-target game where colorful circles pop up randomly and you have to click them before they vanish — with a 30-second timer, score counter, increasing speed each hit, and a game-over screen' },
+  { label: 'Click the target',    category: 'Game',    prompt: 'a click-the-target game where colorful circles pop up randomly and you have to click them before they vanish. With a 30-second timer, score counter, increasing speed each hit, and a game-over screen' },
   { label: 'Quick quiz',          category: 'Game',    prompt: 'a 3-question general knowledge quiz with multiple choice answers, instant correct or wrong feedback, a score counter, and a results screen at the end' },
-  { label: 'Memory match',        category: 'Game',    prompt: 'a memory card matching game with emoji pairs on a 4x4 grid — cards flip with animation, track number of moves, and show a celebration screen when all pairs are found' },
-  { label: 'Reaction tester',     category: 'Game',    prompt: 'a reaction time tester where a glowing circle appears after a random delay and you tap it as fast as possible — 5 rounds, shows your average reaction time at the end' },
+  { label: 'Memory match',        category: 'Game',    prompt: 'a memory card matching game with emoji pairs on a 4x4 grid. Cards flip with animation, track number of moves, and show a celebration screen when all pairs are found' },
+  { label: 'Reaction tester',     category: 'Game',    prompt: 'a reaction time tester where a glowing circle appears after a random delay and you tap it as fast as possible. 5 rounds, shows your average reaction time at the end' },
   // Websites
-  { label: 'My portfolio',        category: 'Website', prompt: 'a personal portfolio website with a hero section, animated skills grid, project cards with hover effects, and a contact form that shows a success message — colorful and modern' },
+  { label: 'My portfolio',        category: 'Website', prompt: 'a personal portfolio website with a hero section, animated skills grid, project cards with hover effects, and a contact form that shows a success message. Colorful and modern' },
   { label: 'Pizza shop',          category: 'Website', prompt: 'a pizza restaurant website with sticky nav, menu grid with add-to-order buttons, a live cart showing items and total, and an order confirmation animation' },
   { label: 'Sports fan page',     category: 'Website', prompt: 'a soccer team fan page with a hero section, tab navigation between roster, schedule, and results, player cards with stats, and animated score counters' },
   { label: 'Pet shop',            category: 'Website', prompt: 'a pet shop with product cards for animals and supplies, add-to-cart buttons, a cart panel showing items and running total, and a cute checkout confirmation overlay' },
   // Tools
-  { label: 'Calculator',          category: 'Tool',    prompt: 'a calculator with a number display, full keypad (0-9, +, -, ×, ÷, =, AC), keyboard support, and a smooth result animation — make it look modern and polished' },
+  { label: 'Calculator',          category: 'Tool',    prompt: 'a calculator with a number display, full keypad (0-9, +, -, ×, ÷, =, AC), keyboard support, and a smooth result animation. Make it look modern and polished' },
   { label: 'Countdown timer',     category: 'Tool',    prompt: 'a countdown timer and stopwatch with large digital display, start/pause/reset buttons, lap recording, red warning color when under 10 seconds, and a finish animation at zero' },
-  { label: 'Drawing app',         category: 'Tool',    prompt: 'a canvas drawing app with pencil and eraser tools, a grid of color swatches, adjustable brush size slider, clear canvas button, and save-as-PNG download — fun and easy to use' },
+  { label: 'Drawing app',         category: 'Tool',    prompt: 'a canvas drawing app with pencil and eraser tools, a grid of color swatches, adjustable brush size slider, clear canvas button, and save-as-PNG download. Fun and easy to use' },
   { label: 'Flashcards',          category: 'Tool',    prompt: 'a flashcard study app where cards flip with a 3D animation to reveal the answer, previous and next navigation, a progress bar, shuffle button, and a completion screen' },
 ];
 
@@ -110,7 +111,7 @@ const WEBSITE_MODIFIERS = [
   'Make it mobile-friendly',
   'Add form feedback',
   'Add smooth animations',
-  'Improve the colors',
+  'Improve the colours',
   'Add a hero section',
   'Add more content',
 ];
@@ -166,7 +167,7 @@ const HERO_BUILDS = [
   {
     id:    'game',
     title: 'Build a Game',
-    sub:   'Click, dodge, race, quiz — playable in seconds',
+    sub:   'Click, dodge, race, quiz. Playable in seconds',
     prompt: QUICK_STARTS[0].prompt,
   },
   {
@@ -184,12 +185,20 @@ const HERO_BUILDS = [
 ];
 
 const STUDIO_TOOLS = [
-  { id: 'mine',     label: 'Make it mine', desc: 'Instant changes — no waiting' },
-  { id: 'colors',   label: 'Colors',   desc: 'Pick a color theme' },
+  { id: 'mine',     label: 'Make it mine', desc: 'Changes that happen straight away' },
+  { id: 'colors',   label: 'Colours', desc: 'Pick a colour theme' },
   { id: 'text',     label: 'Text',     desc: 'Change writing style' },
   { id: 'effects',  label: 'Effects',  desc: 'Add visual effects' },
-  { id: 'gameplay', label: 'Gameplay', desc: 'Tune game settings' },
+  { id: 'gameplay', label: 'Controls', desc: 'Change how it plays, straight away' },
   { id: 'save',     label: 'Save',     desc: 'Save your creation' },
+];
+
+// Swatches for a colour setting inside a game. Bright, high-contrast and
+// distinguishable from each other for the commonest colour-vision deficiencies
+// — a child picking "the green one" should not land on the red one.
+const SETTING_COLOURS = [
+  '#FFD84D', '#FF7A00', '#FF4D6D', '#A855F7',
+  '#3DDC97', '#00C2FF', '#FFFFFF', '#1E1E2E',
 ];
 
 const PRESET_PALETTES = [
@@ -251,12 +260,12 @@ const MISSION_POOLS = {
   clicker: [
     'Add a golden target worth triple points',
     'Add a bomb target that explodes and ends the game',
-    'Add a combo multiplier — 5 hits in a row = 3x score',
+    'Add a combo multiplier. 5 hits in a row = 3x score',
     'Add a ghost target that only appears for half a second',
     'Add a shield power-up that freezes the timer for 3 seconds',
     'Add a rage mode when your combo hits 8',
     'Add a boss target that takes 3 hits before it disappears',
-    'Add shrinking targets — smaller targets score more points',
+    'Add shrinking targets. Smaller targets score more points',
     'Add a giant target that splits into 3 smaller ones when hit',
     'Turn it into a two-zone game: red targets cost points',
   ],
@@ -271,7 +280,7 @@ const MISSION_POOLS = {
     'Add a slow-motion power-up that stretches 3 seconds into 10',
     'Add a checkpoint that saves progress after 500 points',
     'Add moving platforms that slide side to side',
-    'Add a boss obstacle — a giant wall with one gap to jump through',
+    'Add a boss obstacle. A giant wall with one gap to jump through',
   ],
 
   platformer: [
@@ -280,7 +289,7 @@ const MISSION_POOLS = {
     'Add a double jump so you can leap even higher',
     'Add a coin magnet power-up that lasts 10 seconds',
     'Add moving platforms that shift left and right',
-    'Add a hazard zone — lava at the bottom that resets the level',
+    'Add a hazard zone. Lava at the bottom that resets the level',
     'Add a boss platform at the end with a giant enemy to dodge',
     'Add a ghost mode power-up where you pass through walls briefly',
     'Add animated sparkle effects when coins are collected',
@@ -293,7 +302,7 @@ const MISSION_POOLS = {
     'Add explosive obstacles that create a shockwave on impact',
     'Add a slow-motion power-up that freezes everything briefly',
     'Add diagonal-moving obstacles for unpredictable patterns',
-    'Add a "close call" bonus — dodge an obstacle within 5 pixels',
+    'Add a "close call" bonus. Dodge an obstacle within 5 pixels',
     'Add a warp zone that teleports you to the other side of the screen',
     'Add a second player ghost to race against your own best run',
     'Add screen flash on every near-miss',
@@ -314,11 +323,11 @@ const MISSION_POOLS = {
   ],
 
   typing: [
-    'Add bomb words — type them in time or the game ends',
+    'Add bomb words. Type them in time or the game ends',
     'Add a golden word that appears for 2 seconds and scores triple',
     'Add a boss word: one huge 12-letter word worth 50 points',
     'Add a freeze power-up unlocked by typing the word FREEZE',
-    'Add a miss counter — 3 typos and the round ends early',
+    'Add a miss counter. 3 typos and the round ends early',
     'Add a turbo rush mode where words fly in for 5 seconds',
     'Add longer words as levels increase to ramp up difficulty',
     'Add a slow-motion power-up unlocked by typing a perfect streak of 5',
@@ -332,7 +341,7 @@ const MISSION_POOLS = {
     'Add armored enemy units that take 3 hits to destroy',
     'Add flying enemies that bypass all ground-level towers',
     'Add an air strike power-up that wipes the entire screen',
-    'Add a tower upgrade system — spend gold to double a tower\'s range',
+    'Add a tower upgrade system. Spend gold to double a tower\'s range',
     'Add a repair station that restores 3 lives for 50 gold',
     'Add a boss enemy at wave 5 that has 10 hit points',
     'Add a slow-down button that reduces enemy speed for 5 seconds',
@@ -342,10 +351,10 @@ const MISSION_POOLS = {
   maze: [
     'Add a key you must collect before the exit unlocks',
     'Add an enemy that chases you through the corridors',
-    'Add a fog of war — only reveal walls close to the player',
+    'Add a fog of war. Only reveal walls close to the player',
     'Add teleport pads that warp you to a random maze location',
     'Add collectible stars hidden at dead ends for bonus points',
-    'Add a countdown timer — escape before it hits zero',
+    'Add a countdown timer. Escape before it hits zero',
     'Add moving walls that shift and change the maze layout',
     'Add a torch power-up that temporarily reveals the whole maze',
     'Add multiple exits and a bonus for finding the correct one',
@@ -359,7 +368,7 @@ const MISSION_POOLS = {
     'Add a speed boost power-up to outrun the horde',
     'Add a magnet that automatically pulls health packs to you',
     'Add a scoring multiplier for deliberately getting close to enemies',
-    'Add a boss enemy — giant, fast, and worth 100 points',
+    'Add a boss enemy. Giant, fast, and worth 100 points',
     'Add a freeze ability that stops all enemies for 3 seconds',
     'Add enemy waves that announce themselves with a flashing warning',
     'Add a safe zone that appears briefly and restores 1 health',
@@ -370,7 +379,7 @@ const MISSION_POOLS = {
     'Add a countdown timer that challenges you to beat the clock',
     'Add an undo button that rewinds your last 3 moves',
     'Add animated tile sliding with smooth easing',
-    'Add a "shuffle again" penalty — costs 20 points per use',
+    'Add a "shuffle again" penalty. Costs 20 points per use',
     'Add a star rating: 3 stars for under 20 moves, 2 for 30, 1 for any win',
     'Add a color-coded guide showing which tiles are in the right place',
     'Add a move counter that turns red when over the ideal limit',
@@ -379,12 +388,12 @@ const MISSION_POOLS = {
   ],
 
   basketball: [
-    'Add a 3-point line — shots from far away score triple',
+    'Add a 3-point line. Shots from far away score triple',
     'Add wind gusts that push the ball left or right mid-flight',
     'Add an arc guide that shows the ball\'s predicted trajectory',
     'Add a layup zone close to the hoop that scores 1 point quickly',
     'Add a fast break mode that awards double points for 10 seconds',
-    'Add a shot streak bonus — 3 in a row gives you 5 bonus points',
+    'Add a shot streak bonus. 3 in a row gives you 5 bonus points',
     'Add backboard bounce detection for a lucky-shot bonus',
     'Add a moving hoop that slides left and right to increase difficulty',
     'Add a buzzer beater round: score in under 2 seconds',
@@ -393,13 +402,13 @@ const MISSION_POOLS = {
 
   soccer: [
     'Add a goalkeeper that levels up and gets smarter each miss',
-    'Add a curve shot — click a direction for the ball to bend mid-air',
+    'Add a curve shot. Click a direction for the ball to bend mid-air',
     'Add a wind meter that tilts ball flight left or right',
     'Add a sudden death round: next miss ends the game',
     'Add a corner kick round with a more difficult angle to shoot from',
-    'Add a power meter — hold longer to kick harder',
+    'Add a power meter. Hold longer to kick harder',
     'Add a slow-motion replay on every successful goal',
-    'Add hat trick celebrations — score 3 and the crowd goes wild',
+    'Add hat trick celebrations. Score 3 and the crowd goes wild',
     'Add a goalkeeper dive animation with a miss or save sound',
     'Add a training round with a stationary goalkeeper to warm up',
   ],
@@ -407,7 +416,7 @@ const MISSION_POOLS = {
   cooking: [
     'Add a secret ingredient that secretly doubles the dish\'s value',
     'Add a burned dish penalty when you are too slow',
-    'Add a rush hour mode — complete 3 recipes simultaneously',
+    'Add a rush hour mode. Complete 3 recipes simultaneously',
     'Add a chef star rating: 1 to 5 stars based on accuracy and speed',
     'Add a wrong ingredient penalty that scrambles the order',
     'Add ingredient substitutions that appear in advanced rounds',
@@ -418,12 +427,12 @@ const MISSION_POOLS = {
   ],
 
   memory: [
-    'Add a hidden countdown — match all pairs before time runs out',
+    'Add a hidden countdown. Match all pairs before time runs out',
     'Add a golden pair worth double points when matched first',
     'Add a peek power-up that briefly flips all cards face-up',
     'Add faster flip-back timing as levels advance',
     'Add a 6x6 expert mode with 18 pairs to find',
-    'Add a combo bonus — match 3 pairs in a row for bonus points',
+    'Add a combo bonus. Match 3 pairs in a row for bonus points',
     'Add confetti and a score multiplier for speed matching',
     'Add a daily challenge with a fixed layout to compare scores',
     'Add themed emoji sets that change each round',
@@ -432,10 +441,10 @@ const MISSION_POOLS = {
 
   reaction: [
     'Add a fake-out flash that penalizes tapping too early',
-    'Add a color challenge — only tap when the circle turns green',
+    'Add a color challenge. Only tap when the circle turns green',
     'Add a final lightning round with half the normal reaction window',
     'Add a streak bonus: 3 perfect taps doubles your next round score',
-    'Add a sound cue before the visual one — react to the beep',
+    'Add a sound cue before the visual one. React to the beep',
     'Add a two-target round where both must be tapped simultaneously',
     'Add a leaderboard entry for all-time top 3 times',
     'Add a personal best tracker with animated record celebrations',
@@ -446,7 +455,7 @@ const MISSION_POOLS = {
   // ── Non-game categories ──
   quiz: [
     'Add a 10-second countdown bar per question',
-    'Add a streak bonus — 3 correct in a row doubles points',
+    'Add a streak bonus. 3 correct in a row doubles points',
     'Add a lifeline: skip one question without penalty',
     'Add difficulty levels: Easy, Medium, and Hard',
     'Add a correct-answer explanation that appears after each wrong pick',
@@ -611,13 +620,13 @@ function detectProjectType(prompt) {
 
 // ── Instant starter templates shown while AI generates ────────────
 const STARTER_TEMPLATES = {
-  game: `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>:root{--bg:#FFF6ED;--orange:#FF7A00;--r:14px}*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;background:var(--bg);min-height:100vh;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px}h1{font-size:1.9rem;font-weight:800;color:#38291F}.hud{display:flex;gap:22px;font-size:1.1rem;font-weight:700;color:#38291F}.hud b{color:var(--orange)}#ga{position:relative;width:360px;height:320px;background:#fff;border-radius:16px;border:2px solid rgba(255,122,0,.18);box-shadow:0 8px 24px rgba(0,0,0,.08);overflow:hidden}.tgt{position:absolute;width:52px;height:52px;background:var(--orange);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;user-select:none;transition:transform .1s}.tgt:hover{transform:scale(1.12)}.ov{position:absolute;inset:0;background:rgba(255,246,237,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:10}.ov h2{font-size:1.5rem;font-weight:800;color:#38291F}.ov p{color:#785B49;font-size:.95rem}button{background:var(--orange);color:#fff;border:none;border-radius:var(--r);padding:13px 30px;font-size:1.05rem;font-weight:700;cursor:pointer;transition:opacity .15s}button:hover{opacity:.88}</style></head><body><h1>Click Game</h1><div class="hud"><span>Score: <b id="sc">0</b></span><span>Time: <b id="ti">30</b>s</span></div><div id="ga"><div class="ov" id="ov"><h2>Ready to Play?</h2><p>Click the stars before they disappear!</p><button onclick="startGame()">Start Game</button></div></div><script>let s=0,t=30,on=false,sp,ct;function startGame(){s=0;t=30;on=true;document.getElementById('sc').textContent=0;document.getElementById('ti').textContent=30;document.getElementById('ov').style.display='none';document.querySelectorAll('.tgt').forEach(x=>x.remove());sp=setInterval(spawn,860);ct=setInterval(()=>{t--;document.getElementById('ti').textContent=t;if(t<=0)end();},1000);}function spawn(){if(!on)return;const e=document.createElement('div');e.className='tgt';e.textContent='⭐';e.style.left=Math.random()*290+'px';e.style.top=Math.random()*260+'px';e.onclick=()=>{if(!on)return;s++;document.getElementById('sc').textContent=s;e.remove();};document.getElementById('ga').appendChild(e);setTimeout(()=>e&&e.remove(),1100);}function end(){on=false;clearInterval(sp);clearInterval(ct);document.querySelectorAll('.tgt').forEach(x=>x.remove());const o=document.getElementById('ov');o.style.display='flex';o.innerHTML='<h2>Game Over!</h2><p>Score: <b style="color:#FF7A00">'+s+'</b> — great job!</p><button onclick="startGame()">Play Again</button>';}<\/script></body></html>`,
+  game: `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>:root{--bg:#FFF6ED;--orange:#FF7A00;--r:14px}*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;background:var(--bg);min-height:100vh;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px}h1{font-size:1.9rem;font-weight:800;color:#38291F}.hud{display:flex;gap:22px;font-size:1.1rem;font-weight:700;color:#38291F}.hud b{color:var(--orange)}#ga{position:relative;width:360px;height:320px;background:#fff;border-radius:16px;border:2px solid rgba(255,122,0,.18);box-shadow:0 8px 24px rgba(0,0,0,.08);overflow:hidden}.tgt{position:absolute;width:52px;height:52px;background:var(--orange);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;user-select:none;transition:transform .1s}.tgt:hover{transform:scale(1.12)}.ov{position:absolute;inset:0;background:rgba(255,246,237,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:10}.ov h2{font-size:1.5rem;font-weight:800;color:#38291F}.ov p{color:#785B49;font-size:.95rem}button{background:var(--orange);color:#fff;border:none;border-radius:var(--r);padding:13px 30px;font-size:1.05rem;font-weight:700;cursor:pointer;transition:opacity .15s}button:hover{opacity:.88}</style></head><body><h1>Click Game</h1><div class="hud"><span>Score: <b id="sc">0</b></span><span>Time: <b id="ti">30</b>s</span></div><div id="ga"><div class="ov" id="ov"><h2>Ready to Play?</h2><p>Click the stars before they disappear!</p><button onclick="startGame()">Start Game</button></div></div><script>let s=0,t=30,on=false,sp,ct;function startGame(){s=0;t=30;on=true;document.getElementById('sc').textContent=0;document.getElementById('ti').textContent=30;document.getElementById('ov').style.display='none';document.querySelectorAll('.tgt').forEach(x=>x.remove());sp=setInterval(spawn,860);ct=setInterval(()=>{t--;document.getElementById('ti').textContent=t;if(t<=0)end();},1000);}function spawn(){if(!on)return;const e=document.createElement('div');e.className='tgt';e.textContent='⭐';e.style.left=Math.random()*290+'px';e.style.top=Math.random()*260+'px';e.onclick=()=>{if(!on)return;s++;document.getElementById('sc').textContent=s;e.remove();};document.getElementById('ga').appendChild(e);setTimeout(()=>e&&e.remove(),1100);}function end(){on=false;clearInterval(sp);clearInterval(ct);document.querySelectorAll('.tgt').forEach(x=>x.remove());const o=document.getElementById('ov');o.style.display='flex';o.innerHTML='<h2>Game Over!</h2><p>Score: <b style="color:#FF7A00">'+s+'</b>. great job!</p><button onclick="startGame()">Play Again</button>';}<\/script></body></html>`,
 
-  quiz: `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>:root{--bg:#FFF6ED;--orange:#FF7A00;--mint:#10B981;--coral:#FF6B6B;--r:14px}*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.card{background:#fff;border-radius:20px;padding:28px;max-width:460px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.08)}h1{font-size:1.7rem;font-weight:800;color:#38291F;margin-bottom:6px}.sub{color:#785B49;font-size:.9rem;margin-bottom:20px}#quiz-screen{display:none}#result-screen{display:none;text-align:center}.qnum{font-size:.78rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}.qtext{font-size:1.05rem;font-weight:700;color:#38291F;margin-bottom:14px;line-height:1.4}.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}.opt{padding:11px 14px;background:#FFFCF8;border:2px solid #EAD9CB;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;text-align:left;font-family:inherit;transition:all .15s}.opt:hover:not(:disabled){border-color:var(--orange);background:rgba(255,122,0,.06)}.fb{font-weight:700;font-size:.9rem;min-height:1.4rem;margin-bottom:8px}.fb.ok{color:var(--mint)}.fb.no{color:var(--coral)}.btn{background:var(--orange);color:#fff;border:none;border-radius:var(--r);padding:12px 24px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;font-family:inherit}.btn:hover{opacity:.9}#nxt{display:none}.bigs{font-size:2.8rem;font-weight:800;color:var(--orange);margin:10px 0}</style></head><body><div class="card"><div id="start-screen"><h1>Quiz Time!</h1><p class="sub">3 sample questions — can you get them all right?</p><button class="btn" onclick="startQuiz()">Start Quiz</button></div><div id="quiz-screen"><div class="qnum" id="qnum"></div><div class="qtext" id="qtext"></div><div class="opts" id="opts"></div><div class="fb" id="fb"></div><button class="btn" id="nxt" onclick="nextQ()">Next Question</button></div><div id="result-screen"><h1>Done!</h1><div class="bigs" id="fscore">0 / 3</div><p class="sub">Try another round or change the questions.</p><button class="btn" onclick="startQuiz()">Play Again</button></div></div><script>const qs=[{q:'What is 4 × 6?',a:['20','24','26','18'],c:1},{q:'Which is the largest ocean?',a:['Atlantic','Indian','Arctic','Pacific'],c:3},{q:'How many sides does a hexagon have?',a:['5','7','6','8'],c:2}];let cur=0,sc=0;function startQuiz(){cur=0;sc=0;document.getElementById('start-screen').style.display='none';document.getElementById('result-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';showQ();}function showQ(){const q=qs[cur];document.getElementById('qnum').textContent='Question '+(cur+1)+' / '+qs.length;document.getElementById('qtext').textContent=q.q;document.getElementById('fb').textContent='';document.getElementById('fb').className='fb';document.getElementById('nxt').style.display='none';const opts=document.getElementById('opts');opts.innerHTML='';q.a.forEach((a,i)=>{const b=document.createElement('button');b.className='opt';b.textContent=a;b.onclick=()=>check(i);opts.appendChild(b);});}function check(i){const c=qs[cur].c;document.querySelectorAll('.opt').forEach((b,j)=>{b.disabled=true;if(j===c)b.style.background='rgba(16,185,129,.15)';if(j===i&&j!==c)b.style.background='rgba(255,107,107,.15)';});const fb=document.getElementById('fb');if(i===c){sc++;fb.textContent='Correct!';fb.className='fb ok';}else{fb.textContent='Wrong — see green for the answer.';fb.className='fb no';}document.getElementById('nxt').style.display='block';}function nextQ(){cur++;if(cur<qs.length)showQ();else done();}function done(){document.getElementById('quiz-screen').style.display='none';document.getElementById('result-screen').style.display='block';document.getElementById('fscore').textContent=sc+' / '+qs.length;}<\/script></body></html>`,
+  quiz: `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>:root{--bg:#FFF6ED;--orange:#FF7A00;--mint:#10B981;--coral:#FF6B6B;--r:14px}*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.card{background:#fff;border-radius:20px;padding:28px;max-width:460px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.08)}h1{font-size:1.7rem;font-weight:800;color:#38291F;margin-bottom:6px}.sub{color:#785B49;font-size:.9rem;margin-bottom:20px}#quiz-screen{display:none}#result-screen{display:none;text-align:center}.qnum{font-size:.78rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}.qtext{font-size:1.05rem;font-weight:700;color:#38291F;margin-bottom:14px;line-height:1.4}.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}.opt{padding:11px 14px;background:#FFFCF8;border:2px solid #EAD9CB;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;text-align:left;font-family:inherit;transition:all .15s}.opt:hover:not(:disabled){border-color:var(--orange);background:rgba(255,122,0,.06)}.fb{font-weight:700;font-size:.9rem;min-height:1.4rem;margin-bottom:8px}.fb.ok{color:var(--mint)}.fb.no{color:var(--coral)}.btn{background:var(--orange);color:#fff;border:none;border-radius:var(--r);padding:12px 24px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;font-family:inherit}.btn:hover{opacity:.9}#nxt{display:none}.bigs{font-size:2.8rem;font-weight:800;color:var(--orange);margin:10px 0}</style></head><body><div class="card"><div id="start-screen"><h1>Quiz Time!</h1><p class="sub">3 sample questions. Can you get them all right?</p><button class="btn" onclick="startQuiz()">Start Quiz</button></div><div id="quiz-screen"><div class="qnum" id="qnum"></div><div class="qtext" id="qtext"></div><div class="opts" id="opts"></div><div class="fb" id="fb"></div><button class="btn" id="nxt" onclick="nextQ()">Next Question</button></div><div id="result-screen"><h1>Done!</h1><div class="bigs" id="fscore">0 / 3</div><p class="sub">Try another round or change the questions.</p><button class="btn" onclick="startQuiz()">Play Again</button></div></div><script>const qs=[{q:'What is 4 × 6?',a:['20','24','26','18'],c:1},{q:'Which is the largest ocean?',a:['Atlantic','Indian','Arctic','Pacific'],c:3},{q:'How many sides does a hexagon have?',a:['5','7','6','8'],c:2}];let cur=0,sc=0;function startQuiz(){cur=0;sc=0;document.getElementById('start-screen').style.display='none';document.getElementById('result-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';showQ();}function showQ(){const q=qs[cur];document.getElementById('qnum').textContent='Question '+(cur+1)+' / '+qs.length;document.getElementById('qtext').textContent=q.q;document.getElementById('fb').textContent='';document.getElementById('fb').className='fb';document.getElementById('nxt').style.display='none';const opts=document.getElementById('opts');opts.innerHTML='';q.a.forEach((a,i)=>{const b=document.createElement('button');b.className='opt';b.textContent=a;b.onclick=()=>check(i);opts.appendChild(b);});}function check(i){const c=qs[cur].c;document.querySelectorAll('.opt').forEach((b,j)=>{b.disabled=true;if(j===c)b.style.background='rgba(16,185,129,.15)';if(j===i&&j!==c)b.style.background='rgba(255,107,107,.15)';});const fb=document.getElementById('fb');if(i===c){sc++;fb.textContent='Correct!';fb.className='fb ok';}else{fb.textContent='Wrong. See green for the answer.';fb.className='fb no';}document.getElementById('nxt').style.display='block';}function nextQ(){cur++;if(cur<qs.length)showQ();else done();}function done(){document.getElementById('quiz-screen').style.display='none';document.getElementById('result-screen').style.display='block';document.getElementById('fscore').textContent=sc+' / '+qs.length;}<\/script></body></html>`,
 
-  website: `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>:root{--bg:#FFF6ED;--orange:#FF7A00;--mint:#10B981;--r:14px}*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;background:var(--bg);color:#38291F}nav{display:flex;gap:10px;padding:.8rem 1.4rem;background:#fff;border-bottom:1px solid #F4E7DC;position:sticky;top:0;z-index:10}nav a{color:#38291F;font-weight:700;text-decoration:none;padding:6px 10px;border-radius:8px;font-size:.9rem;cursor:pointer;transition:background .15s}nav a:hover{background:rgba(255,122,0,.1);color:var(--orange)}.hero{padding:3.5rem 1.5rem;text-align:center;background:linear-gradient(135deg,rgba(255,122,0,.06),rgba(61,220,151,.05))}.hero h1{font-size:2.2rem;font-weight:800;margin-bottom:8px}.hero p{color:#785B49;margin-bottom:20px;font-size:1rem}.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.btn{display:inline-block;background:var(--orange);color:#fff;border:none;border-radius:var(--r);padding:12px 24px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s,transform .1s}.btn:hover{opacity:.9;transform:translateY(-1px)}.btn-g{background:transparent;color:var(--orange);border:2px solid var(--orange)}section{padding:2.5rem 1.5rem;max-width:640px;margin:0 auto}h2{font-size:1.4rem;font-weight:800;margin-bottom:12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}.card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.07)}.card h3{font-weight:700;margin-bottom:4px;font-size:.95rem}.card p{font-size:.82rem;color:#785B49}.form-row{display:flex;gap:8px;margin-top:12px}.form-row input{flex:1;padding:10px 12px;border:2px solid #EAD9CB;border-radius:10px;font-family:inherit;font-size:.9rem;outline:none}.form-row input:focus{border-color:var(--orange)}#msg{font-weight:700;color:var(--mint);margin-top:8px;min-height:1.2rem;font-size:.9rem}</style></head><body><nav><a onclick="sv('#about')">About</a><a onclick="sv('#features')">Features</a><a onclick="sv('#contact')">Contact</a></nav><div class="hero"><h1>Welcome!</h1><p>Your website is ready — explore it now!</p><div class="btns"><button class="btn" onclick="sv('#features')">Explore</button><button class="btn btn-g" onclick="alert('Hello! Your site is ready to explore.')">Say Hello</button></div></div><section id="about"><h2>About</h2><p style="color:#785B49;line-height:1.6">Click buttons and nav links — everything is interactive and ready for you to customize.</p></section><section id="features"><h2>Features</h2><div class="grid"><div class="card"><h3>Interactive</h3><p>Every button does something</p></div><div class="card"><h3>Colorful</h3><p>Bright and fun design</p></div><div class="card"><h3>Built to edit</h3><p>Change every section</p></div></div></section><section id="contact"><h2>Contact</h2><div class="form-row"><input id="ni" placeholder="Your message..."><button class="btn" onclick="send()">Send</button></div><p id="msg"></p></section><script>function sv(id){document.querySelector(id).scrollIntoView({behavior:'smooth'});}function send(){const v=document.getElementById('ni').value.trim();document.getElementById('msg').textContent=v?'Thanks! Got your message: "'+v+'"':'Please type a message first.';}<\/script></body></html>`,
+  website: `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>:root{--bg:#FFF6ED;--orange:#FF7A00;--mint:#10B981;--r:14px}*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;background:var(--bg);color:#38291F}nav{display:flex;gap:10px;padding:.8rem 1.4rem;background:#fff;border-bottom:1px solid #F4E7DC;position:sticky;top:0;z-index:10}nav a{color:#38291F;font-weight:700;text-decoration:none;padding:6px 10px;border-radius:8px;font-size:.9rem;cursor:pointer;transition:background .15s}nav a:hover{background:rgba(255,122,0,.1);color:var(--orange)}.hero{padding:3.5rem 1.5rem;text-align:center;background:linear-gradient(135deg,rgba(255,122,0,.06),rgba(61,220,151,.05))}.hero h1{font-size:2.2rem;font-weight:800;margin-bottom:8px}.hero p{color:#785B49;margin-bottom:20px;font-size:1rem}.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.btn{display:inline-block;background:var(--orange);color:#fff;border:none;border-radius:var(--r);padding:12px 24px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s,transform .1s}.btn:hover{opacity:.9;transform:translateY(-1px)}.btn-g{background:transparent;color:var(--orange);border:2px solid var(--orange)}section{padding:2.5rem 1.5rem;max-width:640px;margin:0 auto}h2{font-size:1.4rem;font-weight:800;margin-bottom:12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}.card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.07)}.card h3{font-weight:700;margin-bottom:4px;font-size:.95rem}.card p{font-size:.82rem;color:#785B49}.form-row{display:flex;gap:8px;margin-top:12px}.form-row input{flex:1;padding:10px 12px;border:2px solid #EAD9CB;border-radius:10px;font-family:inherit;font-size:.9rem;outline:none}.form-row input:focus{border-color:var(--orange)}#msg{font-weight:700;color:var(--mint);margin-top:8px;min-height:1.2rem;font-size:.9rem}</style></head><body><nav><a onclick="sv('#about')">About</a><a onclick="sv('#features')">Features</a><a onclick="sv('#contact')">Contact</a></nav><div class="hero"><h1>Welcome!</h1><p>Your website is ready. Explore it now!</p><div class="btns"><button class="btn" onclick="sv('#features')">Explore</button><button class="btn btn-g" onclick="alert('Hello! Your site is ready to explore.')">Say Hello</button></div></div><section id="about"><h2>About</h2><p style="color:#785B49;line-height:1.6">Click buttons and nav links. Everything is interactive and ready for you to customize.</p></section><section id="features"><h2>Features</h2><div class="grid"><div class="card"><h3>Interactive</h3><p>Every button does something</p></div><div class="card"><h3>Colorful</h3><p>Bright and fun design</p></div><div class="card"><h3>Built to edit</h3><p>Change every section</p></div></div></section><section id="contact"><h2>Contact</h2><div class="form-row"><input id="ni" placeholder="Your message..."><button class="btn" onclick="send()">Send</button></div><p id="msg"></p></section><script>function sv(id){document.querySelector(id).scrollIntoView({behavior:'smooth'});}function send(){const v=document.getElementById('ni').value.trim();document.getElementById('msg').textContent=v?'Thanks! Got your message: "'+v+'"':'Please type a message first.';}<\/script></body></html>`,
 
-  tool: `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>:root{--bg:#FFF6ED;--orange:#FF7A00;--coral:#FF6B6B;--r:14px}*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.card{background:#fff;border-radius:20px;padding:30px;max-width:380px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.08)}h1{font-size:1.6rem;font-weight:800;color:#38291F;margin-bottom:6px}p{color:#785B49;font-size:.88rem;margin-bottom:18px}label{display:block;font-size:.83rem;font-weight:700;color:#4F392C;margin-bottom:5px}input,select{width:100%;padding:11px 13px;border:2px solid #EAD9CB;border-radius:10px;font-size:.95rem;font-family:inherit;outline:none;margin-bottom:12px;transition:border-color .15s}input:focus,select:focus{border-color:var(--orange)}button{background:var(--orange);color:#fff;border:none;border-radius:var(--r);padding:13px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;font-family:inherit}button:hover{opacity:.9}.res{margin-top:16px;padding:16px;background:rgba(255,122,0,.07);border:2px solid rgba(255,122,0,.18);border-radius:12px;min-height:56px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px}.rv{font-size:2rem;font-weight:800;color:var(--orange)}.rl{font-size:.8rem;color:#785B49;text-align:center}</style></head><body><div class="card"><h1>Calculator</h1><p>Enter numbers and click Calculate</p><label>First number</label><input id="a" type="number" placeholder="e.g. 25"><label>Second number</label><input id="b" type="number" placeholder="e.g. 10"><select id="op"><option value="+">Add (+)</option><option value="-">Subtract (−)</option><option value="*">Multiply (×)</option><option value="/">Divide (÷)</option></select><button onclick="calc()">Calculate</button><div class="res"><div class="rv" id="rv">—</div><div class="rl" id="rl">Enter numbers above</div></div></div><script>function calc(){const a=parseFloat(document.getElementById('a').value),b=parseFloat(document.getElementById('b').value),op=document.getElementById('op').value;if(isNaN(a)||isNaN(b)){document.getElementById('rv').textContent='?';document.getElementById('rv').style.color='#FF6B6B';document.getElementById('rl').textContent='Enter valid numbers';return;}let r,l;if(op==='+'){r=a+b;l=a+' + '+b+' = '+r;}else if(op==='-'){r=a-b;l=a+' − '+b+' = '+r;}else if(op==='*'){r=a*b;l=a+' × '+b+' = '+r;}else{if(b===0){document.getElementById('rv').textContent='∞';document.getElementById('rv').style.color='#FF6B6B';document.getElementById('rl').textContent="Can't divide by zero!";return;}r=Math.round(a/b*100)/100;l=a+' ÷ '+b+' = '+r;}document.getElementById('rv').textContent=r;document.getElementById('rv').style.color='#FF7A00';document.getElementById('rl').textContent=l;}document.querySelectorAll('input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')calc();}));<\/script></body></html>`,
+  tool: `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>:root{--bg:#FFF6ED;--orange:#FF7A00;--coral:#FF6B6B;--r:14px}*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.card{background:#fff;border-radius:20px;padding:30px;max-width:380px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.08)}h1{font-size:1.6rem;font-weight:800;color:#38291F;margin-bottom:6px}p{color:#785B49;font-size:.88rem;margin-bottom:18px}label{display:block;font-size:.83rem;font-weight:700;color:#4F392C;margin-bottom:5px}input,select{width:100%;padding:11px 13px;border:2px solid #EAD9CB;border-radius:10px;font-size:.95rem;font-family:inherit;outline:none;margin-bottom:12px;transition:border-color .15s}input:focus,select:focus{border-color:var(--orange)}button{background:var(--orange);color:#fff;border:none;border-radius:var(--r);padding:13px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;font-family:inherit}button:hover{opacity:.9}.res{margin-top:16px;padding:16px;background:rgba(255,122,0,.07);border:2px solid rgba(255,122,0,.18);border-radius:12px;min-height:56px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px}.rv{font-size:2rem;font-weight:800;color:var(--orange)}.rl{font-size:.8rem;color:#785B49;text-align:center}</style></head><body><div class="card"><h1>Calculator</h1><p>Enter numbers and click Calculate</p><label>First number</label><input id="a" type="number" placeholder="e.g. 25"><label>Second number</label><input id="b" type="number" placeholder="e.g. 10"><select id="op"><option value="+">Add (+)</option><option value="-">Subtract (−)</option><option value="*">Multiply (×)</option><option value="/">Divide (÷)</option></select><button onclick="calc()">Calculate</button><div class="res"><div class="rv" id="rv">, </div><div class="rl" id="rl">Enter numbers above</div></div></div><script>function calc(){const a=parseFloat(document.getElementById('a').value),b=parseFloat(document.getElementById('b').value),op=document.getElementById('op').value;if(isNaN(a)||isNaN(b)){document.getElementById('rv').textContent='?';document.getElementById('rv').style.color='#FF6B6B';document.getElementById('rl').textContent='Enter valid numbers';return;}let r,l;if(op==='+'){r=a+b;l=a+' + '+b+' = '+r;}else if(op==='-'){r=a-b;l=a+' − '+b+' = '+r;}else if(op==='*'){r=a*b;l=a+' × '+b+' = '+r;}else{if(b===0){document.getElementById('rv').textContent='∞';document.getElementById('rv').style.color='#FF6B6B';document.getElementById('rl').textContent="Can't divide by zero!";return;}r=Math.round(a/b*100)/100;l=a+' ÷ '+b+' = '+r;}document.getElementById('rv').textContent=r;document.getElementById('rv').style.color='#FF7A00';document.getElementById('rl').textContent=l;}document.querySelectorAll('input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')calc();}));<\/script></body></html>`,
 
   story: `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>:root{--bg:#FFF6ED;--orange:#FF7A00;--r:14px}*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.card{background:#fff;border-radius:20px;padding:32px;max-width:440px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.08);text-align:center}h1{font-size:1.8rem;font-weight:800;color:#38291F;margin-bottom:6px}p.sub{color:#785B49;font-size:.9rem;margin-bottom:20px}button{background:var(--orange);color:#fff;border:none;border-radius:var(--r);padding:14px 28px;font-size:1.1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:transform .12s,opacity .15s;margin-bottom:18px}button:hover{opacity:.9;transform:scale(1.04)}button:active{transform:scale(.97)}.sb{background:rgba(255,122,0,.05);border:2px solid rgba(255,122,0,.18);border-radius:14px;padding:20px;min-height:80px;display:flex;align-items:center;justify-content:center}#st{font-size:1rem;line-height:1.6;color:#38291F;font-weight:600;transition:opacity .25s}</style></head><body><div class="card"><h1>Story Generator</h1><p class="sub">Click the button for a random adventure!</p><button onclick="gen()">Generate Story</button><div class="sb"><p id="st">Press the button to begin your story...</p></div></div><script>const H=['A brave knight','A clever fox','A tiny robot','A singing explorer','A fearless pirate'];const P=['in a magical forest','on the moon','in a giant pizza shop','underwater','in a flying castle'];const M=['found the golden trophy','baked the world\'s best pie','defeated the robot king','discovered a hidden map','made everyone laugh'];function gen(){const s=document.getElementById('st');s.style.opacity=0;setTimeout(()=>{s.textContent=H[~~(Math.random()*H.length)]+' went '+P[~~(Math.random()*P.length)]+' and '+M[~~(Math.random()*M.length)]+'!';s.style.opacity=1;},220);}<\/script></body></html>`,
 };
@@ -631,17 +640,17 @@ const EDIT_STEPS = [
 
 const EASY_EDIT_IDEAS = {
   game: [
-    { icon: '🎨', label: 'Change the colors', instruction: 'Change the game to bright rainbow colors.' },
+    { icon: '🎨', label: 'Change the colours', instruction: 'Change the game to bright rainbow colours.' },
     { icon: '⭐', label: 'Add a power-up', instruction: 'Add a fun star power-up that helps the player.' },
     { icon: '🏆', label: 'Add a win screen', instruction: 'Add a colorful celebration screen when the player wins.' },
   ],
   website: [
-    { icon: '🎨', label: 'Change the colors', instruction: 'Change the website to bright rainbow colors.' },
+    { icon: '🎨', label: 'Change the colours', instruction: 'Change the website to bright rainbow colours.' },
     { icon: '🖼️', label: 'Add a picture spot', instruction: 'Add a big friendly picture section near the top.' },
     { icon: '✨', label: 'Make buttons move', instruction: 'Add a fun bounce animation when buttons are pressed.' },
   ],
   default: [
-    { icon: '🎨', label: 'Change the colors', instruction: 'Change the project to bright rainbow colors.' },
+    { icon: '🎨', label: 'Change the colours', instruction: 'Change the project to bright rainbow colours.' },
     { icon: '🔤', label: 'Make words bigger', instruction: 'Make the important words bigger and easier to read.' },
     { icon: '✨', label: 'Add movement', instruction: 'Add a fun gentle animation to the main button.' },
   ],
@@ -882,9 +891,14 @@ export default function Builder() {
   const [projectDesc, setProjectDesc] = useState('');
   const [editingDesc, setEditingDesc] = useState(false);
   const [xpPopup, setXpPopup]         = useState(null);
-  const [gameSpeed, setGameSpeed]     = useState(3);
-  const [gameDiff, setGameDiff]       = useState('medium');
-  const [gameTimer, setGameTimer]     = useState(30);
+
+  // Where a slider currently sits, before the change is written into the file.
+  //
+  // Kept separate from `code` on purpose. Rewriting the source on every pixel
+  // of a drag would rebuild the iframe dozens of times a second and restart the
+  // game under the child's finger. So the draft drives the control, the running
+  // game is poked live, and the file is only rewritten when they let go.
+  const [settingDrafts, setSettingDrafts] = useState({});
 
   // ── Instant color editing ──────────────────────────────────────────────────
   const [customBg, setCustomBg]           = useState('#FFF6ED');
@@ -1027,6 +1041,25 @@ export default function Builder() {
     popXp(10, 'Made it yours');
   }
 
+  /**
+   * Open (or close) a studio tool, and bring what it opens into view.
+   *
+   * The scroll is not a flourish. On a 390x844 phone the Controls panel opens
+   * roughly 1000px down the page — a child taps a button, the thing they asked
+   * for appears entirely below the fold, and as far as they can tell nothing
+   * happened. Measured, not guessed: the browser check found the slider at
+   * y=1005 on a viewport 844 tall.
+   */
+  function openStudioTool(id) {
+    // Every panel renders on the Change page; the tools are reachable from
+    // pages where they are not.
+    setWorkspaceTab('change');
+    setStudioPanel(sp => (sp === id ? null : id));
+    setTimeout(() => {
+      studioRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+    }, 0);
+  }
+
   function openInstantPanel() {
     setStudioPanel('mine');
     // The panel is below the preview on phones; bring it into view so "Show me"
@@ -1046,27 +1079,46 @@ export default function Builder() {
     popXp(10, 'Named it');
   }
 
-  // Inject JS + CSS into iframe instantly — NO reload, NO AI call
-  function applyGameTweakInstant(speed, timer) {
-    const spawnDelays = [1300, 950, 680, 460, 290];
-    const speeds      = [1.8, 3, 4.5, 6, 9];
-    const sd  = spawnDelays[speed - 1] ?? 680;
-    const spd = speeds[speed - 1] ?? 4.5;
 
-    const js = `(function(){
-      if(typeof spawnDelay!=='undefined')spawnDelay=${sd};
-      if(typeof speed!=='undefined')speed=${spd};
-      if(typeof gameSpeed!=='undefined')gameSpeed=${spd};
-      var s=document.getElementById('__ci_speed');
-      if(!s){s=document.createElement('style');s.id='__ci_speed';document.head.appendChild(s);}
-      s.textContent=':root{--game-speed:${spd}}@keyframes bldr-game-speed-noop{}';
-      ${timer ? `if(typeof timeLeft!=='undefined'&&timeLeft>0){
-        timeLeft=Math.min(timeLeft,${timer});
-        var td=document.getElementById('timer-display')||document.querySelector('[id*=timer]');
-        if(td)td.textContent=timeLeft;
-      }` : ''}
-    })();`;
-    sendBridgeCmd('RUN_SCRIPT', { js });
+  // ── Changing a setting: live while dragging, written down on release ──────
+  //
+  // Both halves matter. The live poke is what makes it feel like a toy rather
+  // than a form — the stars speed up under your finger. The rewrite is what
+  // makes it real: it changes the same line the child will read in the code
+  // tab and be asked about in Prove It.
+  //
+  // No network call, no model, no waiting. This used to be an AI round-trip.
+  function previewSetting(setting, value) {
+    setSettingDrafts(d => ({ ...d, [setting.name]: value }));
+    const js = liveUpdateScript(setting.name, value, setting.type, setting.quote);
+    if (js) sendBridgeCmd('RUN_SCRIPT', { js });
+  }
+
+  function commitSetting(setting, value) {
+    const nextCode = setSetting(code, setting.name, value);
+    setSettingDrafts(d => {
+      const next = { ...d };
+      delete next[setting.name];
+      return next;
+    });
+    // setSetting returns the original string when it could not write safely, so
+    // this is also the "nothing actually changed" check.
+    if (nextCode === code) return;
+    commitInstantChange(
+      nextCode,
+      `${setting.label}: ${value}`,
+      `${setting.label} is now ${value}. Your game restarted so you can see it.`
+    );
+    popXp(10, 'Tuned it');
+  }
+
+  function resetSetting(setting) {
+    previewSetting(setting, setting.value);
+    setSettingDrafts(d => {
+      const next = { ...d };
+      delete next[setting.name];
+      return next;
+    });
   }
 
   // Run a mission: applyEdit + mission XP
@@ -1076,7 +1128,7 @@ export default function Builder() {
     try {
       await applyEdit(
         `MISSION UPGRADE: ${mission}. ` +
-        `Implement this fully — add real working JavaScript logic, not a placeholder. ` +
+        `Implement this fully. Add real working JavaScript logic, not a placeholder. ` +
         `Preserve all existing gameplay, scoring, and visual style exactly. ` +
         `The new feature must integrate seamlessly with the current code.`
       );
@@ -1650,6 +1702,11 @@ export default function Builder() {
 
   function toggleEditMode() {
     const next = !editModeOn;
+    // The panel, the undo bar and the "click anything" hint all live on the
+    // Change tab. Turning edit mode on from anywhere else armed the frame and
+    // left the child with outlines appearing under their finger and nothing to
+    // explain them.
+    if (next) setWorkspaceTab('change');
     editModeOnRef.current = next;
     setEditModeOn(next);
     if (!next) {
@@ -1760,7 +1817,7 @@ export default function Builder() {
       if (!isValidHtml(html)) throw new Error('The builder returned an incomplete page. Please try again.');
       setCode(html);
       setBuiltPrompt(text);
-      setBuiltSummary(data.isFallback ? 'Starter ready — add your own details next' : (data.summary || ''));
+      setBuiltSummary(data.isFallback ? 'Starter ready. Add your own details next' : (data.summary || ''));
       setAiTitle(data.title || '');
       setProjectType(data.type || 'website');
       setConceptsUsed(Array.isArray(data.conceptsUsed) ? data.conceptsUsed : []);
@@ -1789,7 +1846,7 @@ export default function Builder() {
       pushLocalVersion(`Build: ${text.slice(0, 50)}`, html, [text], data.title || '');
     } catch (err) {
       clearTimeout(buildTimeout);
-      setError(err.name === 'AbortError' ? 'Build timed out — please try again.' : err.message);
+      setError(err.name === 'AbortError' ? 'Build timed out. Please try again.' : err.message);
     } finally {
       setLoading(false);
     }
@@ -1829,7 +1886,7 @@ export default function Builder() {
       }
       if (!res.ok) throw new Error(data.error || 'Edit failed');
       const html = data.html || data.code;
-      if (!isValidHtml(html)) throw new Error('The builder returned invalid code — your project was not changed.');
+      if (!isValidHtml(html)) throw new Error('The builder returned invalid code. Your project was not changed.');
       // Only touch state after confirmed success
       setPreviousCode(snapshot);
       setCode(html);
@@ -1846,7 +1903,7 @@ export default function Builder() {
       clearTimeout(timeoutId);
       // Code unchanged — snapshot was never committed
       const msg = err.name === 'AbortError'
-        ? 'Edit timed out — your project is unchanged. Try a simpler instruction.'
+        ? 'Edit timed out. Your project is unchanged. Try a simpler instruction.'
         : err.message;
       setEditError(msg);
     } finally {
@@ -1870,7 +1927,7 @@ export default function Builder() {
     if (code) {
       applyEdit(mod);
     } else {
-      const updated = `${prompt.trim()} — ${mod}`;
+      const updated = `${prompt.trim()}. ${mod}`;
       setPrompt(updated);
       callBuilder(updated);
     }
@@ -2257,9 +2314,9 @@ export default function Builder() {
     setDeviceView('desktop');
     setProjectDesc('');
     setEditingDesc(false);
-    setGameSpeed(3);
-    setGameDiff('medium');
-    setGameTimer(30);
+    // Controls are read out of whatever project is loaded now, so there is no
+    // stale slider position to reset — only the half-finished drag.
+    setSettingDrafts({});
     setEditModeOn(false);
     setHasPersonalized(false);
     setHasPlayedOnce(false);
@@ -2473,7 +2530,7 @@ export default function Builder() {
     : !hasPlayedOnce
       ? { number: 2, icon: '▶️', title: 'Press Play', detail: 'Try every button. See what works.', target: 'play' }
       : !isPersonalized
-        ? { number: 3, icon: '🎨', title: 'Change one thing', detail: 'Pick new colors or add a fun idea.', target: 'change' }
+        ? { number: 3, icon: '🎨', title: 'Change one thing', detail: 'Pick new colours or add a fun idea.', target: 'change' }
         : !hasTestedLatest
           ? { number: 4, icon: '🧪', title: 'Play it again', detail: 'Make sure your new change works.', target: 'play' }
           : !isSaved
@@ -2500,6 +2557,21 @@ export default function Builder() {
     () => preparePreview(code, loadPreviewStorage(previewKey)),
     [code, previewKey]
   );
+
+  // ── The controls this particular project offers ──────────────────────────
+  //
+  // Read out of the child's own file rather than assumed. A project with no
+  // settings block gets no Controls tab at all, which is better than a tab of
+  // sliders wired to variables that do not exist — which is what was there
+  // before: the panel poked `spawnDelay`, `speed` and `gameSpeed`, and not one
+  // of the three starter games declares any of them.
+  const gameSettings = useMemo(() => readSettings(code), [code]);
+
+  // A slider shows the draft if the child is mid-drag, otherwise the file.
+  function settingValue(setting) {
+    const draft = settingDrafts[setting.name];
+    return draft === undefined ? setting.value : draft;
+  }
 
   const allVersions = useMemo(() => [...localVersions, ...serverVersions], [localVersions, serverVersions]);
   const activeModifiers = useMemo(() => {
@@ -2611,7 +2683,7 @@ export default function Builder() {
           <button type="button" className="bldr-coach-open" onClick={() => setCoachOpen(true)}>🧭 Open CodeIt Guide</button>
         )}
 
-        {/* Ambient studio particles — paused while editing for performance */}
+        {/* Ambient studio particles. Paused while editing for performance */}
         {hasResult && !editing && (
           <div className="bldr-studio-particles" aria-hidden="true">
             <span className="bldr-studio-particle" />
@@ -2745,7 +2817,7 @@ export default function Builder() {
               </div>
             </div>
 
-            {/* Live starter preview — play it while AI customizes your version */}
+            {/* Live starter preview. Play it while AI customizes your version */}
             <div className="bldr-loading-preview-wrap">
               <div className="bldr-browser">
                 <div className="bldr-browser__chrome">
@@ -2764,7 +2836,7 @@ export default function Builder() {
                     className="bldr-iframe"
                     srcDoc={STARTER_TEMPLATES[loadingPreviewType] || STARTER_TEMPLATES.game}
                     sandbox="allow-scripts allow-forms"
-                    title="Building preview — play me while you wait!"
+                    title="Building preview. Play me while you wait!"
                   />
                   <div className="bldr-loading-preview__status">
                     <span className="bldr-spinner bldr-spinner--sm" />
@@ -2842,7 +2914,7 @@ export default function Builder() {
                 <h2 className="bldr-success-banner__name">{projectName}</h2>
                 <p className="bldr-success-banner__credit">
                   {user
-                    ? `by ${user.username || user.name || 'you'} — Made with CodeIt`
+                    ? `by ${user.username || user.name || 'you'}. Made with CodeIt`
                     : 'Made with CodeIt'}
                 </p>
                 {builtSummary && <p className="bldr-success-banner__summary">{builtSummary}</p>}
@@ -2878,7 +2950,7 @@ export default function Builder() {
                 <div>
                   <strong>
                     {guestDraftRecovered
-                      ? 'Welcome back—your project was recovered.'
+                      ? 'Welcome back, your project was recovered.'
                       : 'Backed up in this browser.'}
                   </strong>
                   <span>
@@ -2892,7 +2964,7 @@ export default function Builder() {
             )}
 
             {/* The understanding check. On Keep, because "is this mine?" is the
-                question you ask when you are about to keep something — and
+                question you ask when you are about to keep something. And
                 because a parent's reason to pay is made here, not on Play. */}
             {onTab('keep') && code && (
               <ProveItPanel
@@ -2910,7 +2982,7 @@ export default function Builder() {
               />
             )}
 
-            {/* Project description — inline editable. On Keep, because writing
+            {/* Project description. Inline editable. On Keep, because writing
                 a description is something you do when you are keeping a thing,
                 not the first thing you meet after making it. */}
             {onTab('keep') && (
@@ -2983,7 +3055,7 @@ export default function Builder() {
                 <div className="bldr-browser__bar">
                   {editing
                     ? <><span className="bldr-browser__bar-spinner" />Applying changes...</>
-                    : `CodeIt Studio — ${projectName}`}
+                    : `CodeIt Studio: ${projectName}`}
                 </div>
                 <button
                   className="bldr-browser__play-btn"
@@ -3001,7 +3073,7 @@ export default function Builder() {
                   Full screen
                 </button>
               </div>
-              {/* sandbox="allow-scripts allow-forms allow-pointer-lock" — enables JS, forms, and pointer lock for games */}
+              {/* sandbox="allow-scripts allow-forms allow-pointer-lock". enables JS, forms, and pointer lock for games */}
               <iframe
                 ref={iframeRef}
                 srcDoc={previewDoc}
@@ -3015,7 +3087,7 @@ export default function Builder() {
             {!isSaved && (
               <section className="bldr-activation-card bldr-activation-card--journey" aria-labelledby="bldr-next-step-title">
                 <div className="bldr-activation-card__copy">
-                  <span className="bldr-activation-card__kicker">Your first version is ready — it is not finished yet</span>
+                  <span className="bldr-activation-card__kicker">Your first version is ready. It is not finished yet</span>
                   <h3 id="bldr-next-step-title">Play it. Change it. Test it. Then save it.</h3>
                   <p>
                     {guideLevel === 'early'
@@ -3085,7 +3157,7 @@ export default function Builder() {
                   )}
                   {hasPlayedOnce && !isPersonalized && (
                     <div className="bldr-activation-themes" role="group" aria-label="Quick color choices">
-                      <span className="bldr-activation-themes__label">Or pick colors now</span>
+                      <span className="bldr-activation-themes__label">Or pick colours now</span>
                       {FIRST_CHANGE_THEMES.map(theme => (
                         <button
                           key={theme.name}
@@ -3113,7 +3185,7 @@ export default function Builder() {
                   <span className="bldr-activation-card__kicker">Quality check complete</span>
                   <h3 id="bldr-finish-step-title">
                     {user?.managedProfile
-                      ? 'Great work — show your grown-up or teacher.'
+                      ? 'Great work. Show your grown-up or teacher.'
                       : 'Now your project is ready to publish.'}
                   </h3>
                   <p>
@@ -3234,12 +3306,12 @@ export default function Builder() {
             <div className="bldr-studio-bar" ref={studioRef}>
               <span className="bldr-studio-bar__label">Studio:</span>
               {STUDIO_TOOLS
-                .filter(t => t.id !== 'gameplay' || /game|quiz|clicker|runner|memory|reaction|soccer/.test(projectType))
+                .filter(t => t.id !== 'gameplay' || gameSettings.length > 0)
                 .map(tool => (
                   <button
                     key={tool.id}
                     className={`bldr-studio-bar__btn bldr-studio-bar__btn--${tool.id}${studioPanel === tool.id ? ' bldr-studio-bar__btn--active' : ''}`}
-                    onClick={() => setStudioPanel(sp => sp === tool.id ? null : tool.id)}
+                    onClick={() => openStudioTool(tool.id)}
                     disabled={editing}
                   >
                     {tool.label}
@@ -3264,7 +3336,7 @@ export default function Builder() {
                       <span className="bldr-mine__intro-icon" aria-hidden="true">✨</span>
                       {guideLevel === 'early'
                         ? 'Tap a picture to change your project. It changes right away!'
-                        : 'Every change here happens straight away — no waiting, no internet needed.'}
+                        : 'Every change here happens straight away. No waiting, no internet needed.'}
                     </p>
 
                     {instantControls.includes('theme') && (
@@ -3452,7 +3524,7 @@ export default function Builder() {
 
                 {studioPanel === 'colors' && (
                   <div className="bldr-studio-panel__body">
-                    <p className="bldr-studio-panel__hint">Pick individual colors — updates instantly</p>
+                    <p className="bldr-studio-panel__hint">Pick any colour you like. It changes straight away.</p>
                     <div className="bldr-color-pickers">
                       {[
                         { label: 'Background', val: customBg,      set: setCustomBg,      key: '--bg' },
@@ -3481,7 +3553,7 @@ export default function Builder() {
                         setStudioPanel(null);
                       }}
                     >
-                      Apply Colors
+                      Apply colours
                     </button>
                     <p className="bldr-studio-panel__hint" style={{ marginTop: '0.75rem' }}>Or apply a full preset theme:</p>
                     {PRESET_PALETTES.map(palette => (
@@ -3552,45 +3624,108 @@ export default function Builder() {
                 )}
 
                 {studioPanel === 'gameplay' && (
-                  <div className="bldr-studio-panel__body">
-                    <p className="bldr-studio-panel__hint">Drag to preview instantly — Apply to make it permanent</p>
-                    <div className="bldr-studio-slider">
-                      <div className="bldr-studio-slider__header">
-                        <label className="bldr-studio-slider__label">Speed</label>
-                        <span className="bldr-studio-slider__val">{['Very slow','Slow','Normal','Fast','Very fast'][gameSpeed - 1]}</span>
-                      </div>
-                      <input type="range" min={1} max={5} value={gameSpeed} className="bldr-studio-range"
-                        onChange={e => { const v = +e.target.value; setGameSpeed(v); applyGameTweakInstant(v, gameTimer); }} />
-                    </div>
-                    <div className="bldr-studio-slider">
-                      <div className="bldr-studio-slider__header">
-                        <label className="bldr-studio-slider__label">Timer</label>
-                        <span className="bldr-studio-slider__val">{gameTimer}s</span>
-                      </div>
-                      <input type="range" min={10} max={90} step={5} value={gameTimer} className="bldr-studio-range"
-                        onChange={e => { const v = +e.target.value; setGameTimer(v); applyGameTweakInstant(gameSpeed, v); }} />
-                    </div>
-                    <div className="bldr-studio-select">
-                      <label className="bldr-studio-slider__label">Difficulty</label>
-                      <select value={gameDiff} onChange={e => setGameDiff(e.target.value)} className="bldr-studio-dropdown">
-                        <option value="easy">Easy — great for beginners</option>
-                        <option value="medium">Medium — balanced challenge</option>
-                        <option value="hard">Hard — for pros</option>
-                        <option value="extreme">Extreme — insanely fast</option>
-                      </select>
-                    </div>
-                    <button
-                      className="bldr-studio-panel__apply-btn"
-                      disabled={editing}
-                      onClick={() => {
-                        const speedDesc = ['very slow','slow','normal','fast','very fast'][gameSpeed - 1];
-                        applyEdit(`Update these game settings: speed should be ${speedDesc}, the timer should last ${gameTimer} seconds, and difficulty should be ${gameDiff}. Adjust existing speed values, timing intervals, and difficulty accordingly. Keep all design and features unchanged.`);
-                        popXp(25, 'Game Tuned');
-                        setStudioPanel(null);
-                      }}
-                    >
-                      {editing ? 'Applying...' : 'Apply to Game'}
-                    </button>
+                  <div className="bldr-studio-panel__body bldr-controls">
+                    <p className="bldr-studio-panel__hint">
+                      These are the real settings inside your game. Move one and watch.
+                    </p>
+
+                    {gameSettings.map(setting => {
+                      const value = settingValue(setting);
+                      const changed = value !== setting.value;
+                      return (
+                        <div className="bldr-control" key={setting.name}>
+                          <div className="bldr-control__header">
+                            <label className="bldr-control__label" htmlFor={`ctl-${setting.name}`}>
+                              {setting.label}
+                            </label>
+                            {/* The child's own variable name, shown on purpose: it is the
+                                word they will meet again in the code tab and in Prove It. */}
+                            <code className="bldr-control__var">{setting.name}</code>
+                            <span className="bldr-control__val">
+                              {setting.type === 'colour'
+                                ? <span className="bldr-control__chip" style={{ background: value }} />
+                                : String(value)}
+                            </span>
+                          </div>
+
+                          {setting.type === 'number' && (
+                            <input
+                              id={`ctl-${setting.name}`}
+                              type="range"
+                              className="bldr-studio-range"
+                              min={setting.min}
+                              max={setting.max}
+                              step={setting.step}
+                              value={value}
+                              onChange={e => previewSetting(setting, Number(e.target.value))}
+                              onPointerUp={e => commitSetting(setting, Number(e.currentTarget.value))}
+                              onKeyUp={e => commitSetting(setting, Number(e.currentTarget.value))}
+                              onBlur={e => commitSetting(setting, Number(e.currentTarget.value))}
+                            />
+                          )}
+
+                          {setting.type === 'colour' && (
+                            <div className="bldr-control__colours">
+                              {SETTING_COLOURS.map(c => (
+                                <button
+                                  key={c}
+                                  type="button"
+                                  className={`bldr-control__swatch${String(value).toLowerCase() === c.toLowerCase() ? ' bldr-control__swatch--on' : ''}`}
+                                  style={{ background: c }}
+                                  aria-label={`Use ${c}`}
+                                  onClick={() => { previewSetting(setting, c); commitSetting(setting, c); }}
+                                />
+                              ))}
+                              <input
+                                id={`ctl-${setting.name}`}
+                                type="color"
+                                className="bldr-control__picker"
+                                aria-label={`${setting.label}: pick any colour`}
+                                value={/^#[0-9a-f]{6}$/i.test(String(value)) ? value : '#ffffff'}
+                                onChange={e => previewSetting(setting, e.target.value)}
+                                onBlur={e => commitSetting(setting, e.target.value)}
+                              />
+                            </div>
+                          )}
+
+                          {setting.type === 'text' && (
+                            <input
+                              id={`ctl-${setting.name}`}
+                              type="text"
+                              className="bldr-control__text"
+                              value={value}
+                              maxLength={40}
+                              onChange={e => setSettingDrafts(d => ({ ...d, [setting.name]: e.target.value }))}
+                              onBlur={e => commitSetting(setting, e.target.value)}
+                            />
+                          )}
+
+                          {setting.type === 'boolean' && (
+                            <button
+                              id={`ctl-${setting.name}`}
+                              type="button"
+                              className={`bldr-control__toggle${value ? ' bldr-control__toggle--on' : ''}`}
+                              onClick={() => { previewSetting(setting, !value); commitSetting(setting, !value); }}
+                            >
+                              {value ? 'On' : 'Off'}
+                            </button>
+                          )}
+
+                          <div className="bldr-control__foot">
+                            {setting.help && <span className="bldr-control__help">{setting.help}</span>}
+                            {changed && (
+                              <button
+                                type="button"
+                                className="bldr-control__reset"
+                                onClick={() => resetSetting(setting)}
+                              >
+                                Put it back to {String(setting.value)}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
 
@@ -3644,7 +3779,7 @@ export default function Builder() {
               </div>
             )}
 
-            {/* The answer to "what does it mean by the change it" — real
+            {/* The answer to "what does it mean by the change it". real
                  things in this child's own project, each with the words to
                  send, so nothing has to be invented. */}
             {onTab('change') && ideasForThisProject.length > 0 && (
@@ -3668,7 +3803,7 @@ export default function Builder() {
               </div>
             )}
 
-            {/* One-click upgrades — visible immediately after preview */}
+            {/* One-click upgrades. Visible immediately after preview */}
             {onTab('change') && (
             <div className="bldr-modifiers">
               <span className="bldr-modifiers__label">
@@ -3756,7 +3891,7 @@ export default function Builder() {
                 className={`bldr-action-btn bldr-action-btn--livedit${editModeOn ? ' bldr-action-btn--livedit-active' : ''}`}
                 onClick={toggleEditMode}
                 disabled={editing}
-                title={editModeOn ? 'Exit element editor — saves changes' : 'Click any element in the preview to edit it directly'}
+                title={editModeOn ? 'Exit element editor. Saves changes' : 'Click any element in the preview to edit it directly'}
               >
                 {editModeOn ? 'Exit element editor' : 'Edit elements'}
               </button>}
@@ -3852,11 +3987,11 @@ export default function Builder() {
                     <div>
                       <p className="bldr-edit-panel__pause-title">Your project is safe!</p>
                       <p>The magic helper needs a break. Try it again in <strong>{friendlyWait(editRetrySeconds)}</strong>.</p>
-                      <p>You can keep playing or change the colors while you wait.</p>
+                      <p>You can keep playing or change the colours while you wait.</p>
                     </div>
                     <div className="bldr-edit-panel__pause-actions">
                       <button type="button" onClick={() => { setIsPlayMode(true); setHasPlayedOnce(true); setHasTestedLatest(true); setShowEditPanel(false); }}>▶ Play my project</button>
-                      <button type="button" onClick={() => { setStudioPanel('colors'); setShowEditPanel(false); }}>🎨 Change colors</button>
+                      <button type="button" onClick={() => { openStudioTool('colors'); setShowEditPanel(false); }}>🎨 Change colours</button>
                     </div>
                   </div>
                 )}
@@ -3987,7 +4122,7 @@ export default function Builder() {
                   disabled={!historyCanUndo(editHistory)}
                   title={historyUndoLabel(editHistory) ? `Undo: ${historyUndoLabel(editHistory)}` : 'Nothing to undo'}
                 >
-                  ↩ Undo{historyUndoLabel(editHistory) ? ` — ${historyUndoLabel(editHistory)}` : ''}
+                  ↩ Undo{historyUndoLabel(editHistory) ? `. ${historyUndoLabel(editHistory)}` : ''}
                 </button>
                 <button
                   className="bldr-hand-undo__btn bldr-hand-undo__btn--quiet"
@@ -4006,7 +4141,39 @@ export default function Builder() {
               </div>
             )}
 
-            {onTab('change') && editModeOn && showElPanel && selectedEl && (
+            {/* ── Tapping the game itself ──────────────────────────────────
+                A canvas game is one DOM element. Tapping a falling star selects
+                the whole board, so the usual element controls. Bigger, colour,
+                spacing. Would offer to restyle a rectangle the child does not
+                think of as a thing. What they mean by "change this" is the
+                game, so they get the game's own settings instead. */}
+            {onTab('change') && editModeOn && showElPanel && selectedEl
+              && selectedEl.tag === 'CANVAS' && gameSettings.length > 0 && (
+              <div className="bldr-el-panel bldr-el-panel--game">
+                <div className="bldr-el-panel__header">
+                  <span className="bldr-el-panel__title">Your game</span>
+                  <button
+                    className="bldr-el-panel__close"
+                    onClick={() => { setShowElPanel(false); sendBridgeCmd('DESELECT'); }}
+                  >
+                    ×
+                  </button>
+                </div>
+                <p className="bldr-el-panel__hint">
+                  These are the settings inside this game. Move one and watch it change.
+                </p>
+                <button
+                  type="button"
+                  className="bldr-el-panel__jump"
+                  onClick={() => { openStudioTool('gameplay'); setShowElPanel(false); sendBridgeCmd('DESELECT'); }}
+                >
+                  Open the controls
+                </button>
+              </div>
+            )}
+
+            {onTab('change') && editModeOn && showElPanel && selectedEl
+              && !(selectedEl.tag === 'CANVAS' && gameSettings.length > 0) && (
               <div className="bldr-el-panel">
                 <div className="bldr-el-panel__header">
                   <span className="bldr-el-panel__title">
@@ -4045,7 +4212,7 @@ export default function Builder() {
                   <button
                     className="bldr-el-verb bldr-el-verb--danger"
                     onClick={() => elementAction('DELETE', 'Deleted it')}
-                    title="Remove it — you can undo this"
+                    title="Remove it. You can undo this"
                   >
                     <span aria-hidden="true">🗑</span> Delete
                   </button>
@@ -4061,7 +4228,7 @@ export default function Builder() {
                   <button
                     className={`bldr-el-tab${elPanelTab === 'colors' ? ' bldr-el-tab--active' : ''}`}
                     onClick={() => setElPanelTab('colors')}
-                  >Colors</button>
+                  >Colours</button>
                   <button
                     className={`bldr-el-tab${elPanelTab === 'spacing' ? ' bldr-el-tab--active' : ''}`}
                     onClick={() => setElPanelTab('spacing')}
@@ -4123,7 +4290,7 @@ export default function Builder() {
 
                   {elPanelTab === 'spacing' && (
                     <div className="bldr-el-field">
-                      <label className="bldr-el-label">Padding — {elPadding}px</label>
+                      <label className="bldr-el-label">Padding: {elPadding}px</label>
                       <input
                         type="range"
                         className="bldr-el-range"
@@ -4135,7 +4302,7 @@ export default function Builder() {
                           applyElStyleChange({ padding: e.target.value + 'px' });
                         }}
                       />
-                      <label className="bldr-el-label" style={{ marginTop: 12 }}>Font size — {selectedEl.styles?.fs || '16px'}</label>
+                      <label className="bldr-el-label" style={{ marginTop: 12 }}>Font size: {selectedEl.styles?.fs || '16px'}</label>
                       <input
                         type="range"
                         className="bldr-el-range"
@@ -4181,7 +4348,7 @@ export default function Builder() {
                         className="bldr-el-textarea"
                         value={aiRefineText}
                         onChange={e => setAiRefineText(e.target.value)}
-                        placeholder="e.g. make this button bigger and more colorful, add an emoji, change the wording..."
+                        placeholder="e.g. make this button bigger, add an emoji, change the wording"
                         rows={3}
                         disabled={patchLoading}
                       />
@@ -4202,7 +4369,7 @@ export default function Builder() {
             )}
 
             {/* Concepts used by AI */}
-            {/* The code itself, first — this tab is called "The code" and until
+            {/* The code itself, first. This tab is called "The code" and until
                 now it showed everything except the code. */}
             {onTab('learn') && code && (
               <CodePanel
@@ -4238,7 +4405,7 @@ export default function Builder() {
               <div className="bldr-lessons-used">
                 <div className="bldr-lessons-used__header">
                   <span className="bldr-lessons-used__title">What you just used</span>
-                  <span className="bldr-lessons-used__sub">Each concept below made this build possible — tap to learn how it works</span>
+                  <span className="bldr-lessons-used__sub">Each concept below made this build possible. Tap to learn how it works</span>
                 </div>
                 <div className="bldr-lessons-used__chips">
                   {lessonChips.map(lesson => (
@@ -4281,10 +4448,26 @@ export default function Builder() {
             </button>
             <button
               className="bldr-mobile-play-bar__btn bldr-mobile-play-bar__btn--edit"
-              onClick={() => { setShowEditPanel(p => !p); setEditError(''); if (editModeOn) toggleEditMode(); }}
+              onClick={() => {
+                // Everything this button opens lives on the Change tab. Without
+                // this line, tapping Edit from Play or Keep flipped some state
+                // and showed the child nothing — the commonest kind of dead end
+                // on a phone, and completely silent.
+                setWorkspaceTab('change');
+                if (gameSettings.length > 0) {
+                  // A game with real settings: go straight to the controls
+                  // rather than to a text box asking them to describe a change.
+                  openStudioTool('gameplay');
+                  setShowEditPanel(false);
+                } else {
+                  setShowEditPanel(p => !p);
+                }
+                setEditError('');
+                if (editModeOn) toggleEditMode();
+              }}
               disabled={editing}
             >
-              Edit
+              {gameSettings.length > 0 ? 'Controls' : 'Edit'}
             </button>
             <button
               className="bldr-mobile-play-bar__btn bldr-mobile-play-bar__btn--save"
@@ -4374,7 +4557,7 @@ export default function Builder() {
                         <div className="bldr-project-card__plays">
                           {Number(project.view_count) > 0
                             ? `▶ ${project.view_count} ${Number(project.view_count) === 1 ? 'play' : 'plays'}`
-                            : '▶ No plays yet — share your link'}
+                            : '▶ No plays yet. Share your link'}
                           {Number(project.remix_count) > 0 && (
                             <span> · ⤴ {project.remix_count} remixed</span>
                           )}
@@ -4465,12 +4648,17 @@ export default function Builder() {
         {hasResult && !loading && (
           <div className="bldr-creator-toolbar">
             {STUDIO_TOOLS
-              .filter(t => t.id !== 'gameplay' || /game|quiz|clicker|runner|memory|reaction/.test(projectType))
+              .filter(t => t.id !== 'gameplay' || gameSettings.length > 0)
               .map(tool => (
                 <button
                   key={tool.id}
                   className={`bldr-creator-tool bldr-creator-tool--${tool.id}${studioPanel === tool.id ? ' bldr-creator-tool--active' : ''}`}
-                  onClick={() => setStudioPanel(sp => sp === tool.id ? null : tool.id)}
+                  // This toolbar is fixed to the side of the window and shows on
+                  // every page of the studio, but the panel it opens only renders
+                  // on Change. Pressing a tool from Play used to set some state
+                  // and show nothing — the desktop twin of the dead end the
+                  // mobile Edit button had.
+                  onClick={() => openStudioTool(tool.id)}
                   disabled={editing}
                   title={tool.desc || tool.label}
                 >
@@ -4484,7 +4672,7 @@ export default function Builder() {
         {/* XP gain popup */}
         {xpPopup && (
           <div key={xpPopup.id} className="bldr-xp-popup">
-            +{xpPopup.amount} XP{xpPopup.reason ? ` — ${xpPopup.reason}` : ''}
+            +{xpPopup.amount} XP{xpPopup.reason ? `. ${xpPopup.reason}` : ''}
           </div>
         )}
 

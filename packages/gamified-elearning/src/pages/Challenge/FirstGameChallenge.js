@@ -40,7 +40,7 @@ function builderLink(prompt) {
 export default function FirstGameChallenge() {
   useSEO({
     title: 'Build Your First Game Free | 10-Minute Coding Challenge | CodeIt',
-    description: 'Choose a game idea, build a playable first version, change it, save it, and earn XP. A free coding challenge for young creators ages 5–18.',
+    description: 'Choose a game idea, build a playable first version, change it, save it, and earn XP. A free coding challenge for young creators ages 5 to 18.',
     canonical: '/first-game-challenge',
   });
 
@@ -58,7 +58,7 @@ export default function FirstGameChallenge() {
         <section className="fgc-hero">
           <div className="fgc-wrap fgc-hero__grid">
             <div className="fgc-hero__copy">
-              <p className="fgc-kicker">Free first-game challenge · Ages 5–18</p>
+              <p className="fgc-kicker">Free first-game challenge · Ages 5 to 18</p>
               <h1>Build your first game. Make it yours.</h1>
               <p className="fgc-hero__lead">
                 Pick one idea, get a playable first version, change one thing, and save what you made.
@@ -66,7 +66,7 @@ export default function FirstGameChallenge() {
               </p>
               <a className="fgc-button fgc-button--primary" href="#choose-game">Choose your game <span>↓</span></a>
               <p className="fgc-age-note">
-                Ages 5–12 participate through a parent-managed profile. Independent student accounts begin at 13.
+                Ages 5 to 12 participate through a parent-managed profile. Independent student accounts begin at 13.
               </p>
             </div>
 
@@ -123,7 +123,7 @@ export default function FirstGameChallenge() {
             <div className="fgc-heading fgc-heading--left">
               <p className="fgc-kicker">The complete mission</p>
               <h2>A finished game is only the beginning.</h2>
-              <p>The challenge is complete when the project feels like your work—not when the first version appears.</p>
+              <p>The challenge is complete when the project feels like your work, not when the first version appears.</p>
             </div>
             <ol className="fgc-steps">
               <li><span>01</span><div><strong>Build it</strong><p>Start with one of the three game ideas.</p></div></li>
