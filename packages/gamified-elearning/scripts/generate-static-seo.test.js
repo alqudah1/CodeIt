@@ -516,3 +516,22 @@ test('nothing is still deferred until billing opens', () => {
     );
   }
 });
+
+test('every sameAs entry is an absolute https URL', () => {
+  const company = require('./content-loader').loadCompany();
+  for (const url of company.sameAs) {
+    assert.match(url, /^https:\/\/\S+$/, `sameAs entry is not an absolute https URL: ${url}`);
+    assert.ok(!/YOUR-|example\.com|\/$/.test(url), `sameAs entry looks like a placeholder: ${url}`);
+  }
+});
+
+test('sameAs reaches the Organization node when populated', () => {
+  const company = require('./content-loader').loadCompany();
+  if (!company.sameAs.length) return;
+  const realTemplate = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
+  const html = renderRouteDocument(realTemplate, PAGES.find((p) => p.route === '/about'));
+  const org = JSON.parse(
+    /<script type="application\/ld\+json">\s*(\{[\s\S]*?\})\s*<\/script>/.exec(html)[1]
+  )['@graph'].find((node) => node['@type'] === 'Organization');
+  assert.deepEqual(org.sameAs, company.sameAs);
+});
