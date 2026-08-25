@@ -1,0 +1,258 @@
+/* The code view. Warm rather than "developer tool" — this is the first real
+   editor most of these children will ever open, and it should not look like a
+   terminal. */
+
+.cp {
+  background: #fff;
+  border: 2px solid #f0d8c5;
+  border-radius: 18px;
+  padding: 16px;
+  margin: 12px 0;
+}
+
+.cp__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.cp__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #3d302b;
+}
+
+.cp__sub {
+  margin: 4px 0 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: #7a6a60;
+  max-width: 44ch;
+}
+
+.cp__lines {
+  flex: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #8a7768;
+  background: #fff7ee;
+  border: 1px solid #f0d8c5;
+  border-radius: 99px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+.cp__editor {
+  border: 1px solid #e8d5c4;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cp__editor .cm-editor {
+  font-size: 13px;
+}
+
+.cp__editor .cm-editor.cm-focused {
+  outline: 2px solid #f87824;
+}
+
+.cp__loading {
+  padding: 40px 16px;
+  text-align: center;
+  color: #8a7768;
+  font-weight: 600;
+}
+
+/* ── Controls ───────────────────────────────────────────────────────────── */
+
+.cp__bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.cp__run {
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #6b5a4d;
+  background: #f5ece3;
+  cursor: default;
+}
+
+.cp__run--waiting {
+  background: #f87824;
+  color: #fff;
+  cursor: pointer;
+}
+
+.cp__restore {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  border: 2px solid #f0d8c5;
+  border-radius: 10px;
+  padding: 8px 14px;
+  background: #fff;
+  color: #3d302b;
+  font-weight: 700;
+  font-size: 0.88rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cp__restore:hover {
+  border-color: #f87824;
+}
+
+.cp__restore-cost {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #8a7768;
+}
+
+/* ── Errors ─────────────────────────────────────────────────────────────── */
+
+.cp__ok {
+  margin: 12px 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2f7a4d;
+}
+
+.cp__errors {
+  margin-top: 14px;
+  background: #fff6f3;
+  border: 2px solid #f6c6b4;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.cp__errors-title {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #a3341a;
+}
+
+.cp__errors-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.cp-error {
+  background: #fff;
+  border: 1px solid #f3d3c6;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.cp-error__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.cp-error__icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #e5533a;
+  color: #fff;
+  font-weight: 900;
+  font-size: 0.8rem;
+  display: inline-grid;
+  place-items: center;
+  transform: translateY(2px);
+}
+
+.cp-error__title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #3d302b;
+  line-height: 1.4;
+}
+
+.cp-error__count {
+  flex: none;
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #a3341a;
+  background: #ffe9e2;
+  border-radius: 99px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.cp-error__fix {
+  margin: 6px 0 0 28px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #6b5a4d;
+}
+
+.cp-error__lines {
+  margin: 8px 0 0 28px;
+  border-radius: 8px;
+  overflow-x: auto;
+  background: #fbf6f1;
+  border: 1px solid #eedbcd;
+}
+
+.cp-error__line {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 2px 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+  white-space: pre;
+}
+
+.cp-error__line--here {
+  background: #ffe4d9;
+}
+
+.cp-error__lineno {
+  flex: none;
+  min-width: 2.2em;
+  text-align: right;
+  color: #a8968a;
+  user-select: none;
+}
+
+.cp-error__raw {
+  margin: 8px 0 0 28px;
+  font-size: 0.78rem;
+  color: #8a7768;
+  overflow-wrap: anywhere;
+}
+
+.cp-error__raw code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: #6b5a4d;
+}
+
+@media (max-width: 520px) {
+  .cp { padding: 12px; }
+  .cp__head { flex-direction: column; }
+  .cp__bar { flex-direction: column; align-items: stretch; }
+  .cp__run, .cp__restore { width: 100%; }
+  .cp-error__fix,
+  .cp-error__lines,
+  .cp-error__raw { margin-left: 0; }
+}

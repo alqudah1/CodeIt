@@ -134,7 +134,7 @@ describe('the shim script itself', () => {
   test('sessionStorage is given too, and deliberately not persisted', () => {
     const script = storageShimScript();
     expect(script).toContain("'sessionStorage'");
-    expect(script).toContain('make({}, false)');
+    expect(script).toContain('make({},false)');
   });
 });
 

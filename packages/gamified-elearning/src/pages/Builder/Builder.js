@@ -36,6 +36,19 @@ import {
   savePreviewStorage,
   stripPreviewScripts,
 } from './previewStorage';
+import CodePanel from './CodePanel';
+import {
+  collapseErrors,
+  describeError,
+  injectErrorReporter,
+  isErrorMessage,
+} from './previewErrors';
+import {
+  EMPTY as EMPTY_SAFETY,
+  markBroken,
+  rememberWorking,
+  restore as restoreWorking,
+} from './codeSafety';
 import { initialTab, tabAfter, tabsFor } from './builderTabs';
 import {
   EMPTY as EMPTY_HISTORY,
@@ -694,7 +707,9 @@ function injectBridge(html) {
  * starts on, and the editor bridge does not run until something is clicked.
  */
 function preparePreview(html, seed) {
-  return injectBridge(injectPreviewStorage(html, seed));
+  // The error watcher goes in last so it ends up first in the document: a
+  // project that throws on its opening line still gets reported.
+  return injectErrorReporter(injectBridge(injectPreviewStorage(html, seed)));
 }
 
 function rgbToHex(rgb) {
@@ -817,6 +832,12 @@ export default function Builder() {
   // every time a game saved its score, resetting the game the instant a child
   // beat their record.
   const previewKeyRef = useRef('draft');
+
+  // What the running project has complained about, and the last version of it
+  // that ran without complaining.
+  const [runErrors, setRunErrors] = useState([]);
+  const [safety, setSafety] = useState(EMPTY_SAFETY);
+  const settleTimer = useRef(null);
   const editModeOnRef = useRef(false);
   const studioRef  = useRef(null);
   const resumeActionStartedRef = useRef(false);
@@ -1407,6 +1428,37 @@ export default function Builder() {
 
   useEffect(() => { codeRef.current = code; }, [code]);
 
+  // ── The run loop ───────────────────────────────────────────────────────────
+  //
+  // Every time the code changes the iframe reloads, so the errors from the old
+  // version are no longer about anything. Clear them, then wait: if nothing has
+  // thrown by the time the settle window closes, this version ran clean and
+  // becomes the one the child can always get back to.
+  //
+  // The wait matters. Marking code good the moment it is handed to the frame
+  // would happily save a version that throws on its first line.
+  const SETTLE_MS = 1200;
+  useEffect(() => {
+    if (!code) return undefined;
+    setRunErrors([]);
+    clearTimeout(settleTimer.current);
+    settleTimer.current = setTimeout(() => {
+      setSafety(prev => rememberWorking(prev, codeRef.current));
+    }, SETTLE_MS);
+    return () => clearTimeout(settleTimer.current);
+  }, [code]);
+
+  /** Put the project back to the last version that actually ran. */
+  const restoreLastWorking = () => {
+    const good = restoreWorking(safety, codeRef.current);
+    if (!good) return;
+    setEditHistory(prev => rememberEdit(prev, codeRef.current, 'Went back to a working version'));
+    setCode(good);
+    setIsSaved(false);
+    setSaveStatus(null);
+    setRunErrors([]);
+  };
+
   /** Record the page as it is now, so the next hand edit can be undone. */
   const recordHandEdit = (label) => {
     setEditHistory(prev => rememberEdit(prev, codeRef.current, label));
@@ -1488,6 +1540,17 @@ export default function Builder() {
       }
       if (d.type === 'CODEIT_READY' && editModeOnRef.current) {
         sendBridgeCmd('ENABLE');
+      }
+      if (isErrorMessage(d)) {
+        // The project threw. Record it against the code that is running right
+        // now, so the safety net knows this exact version is broken.
+        const described = describeError(d);
+        if (described) {
+          setRunErrors(prev => collapseErrors([...prev, described]));
+          setSafety(prev => markBroken(prev, codeRef.current));
+          clearTimeout(settleTimer.current);
+        }
+        return;
       }
       if (isStorageMessage(d)) {
         // The preview saved something — a high score, a level, a name. It runs
@@ -4015,6 +4078,26 @@ export default function Builder() {
             )}
 
             {/* Concepts used by AI */}
+            {/* The code itself, first — this tab is called "The code" and until
+                now it showed everything except the code. */}
+            {onTab('learn') && code && (
+              <CodePanel
+                code={code}
+                onCodeChange={next => {
+                  if (next === codeRef.current) return;
+                  setEditHistory(prev => rememberEdit(prev, codeRef.current, 'Typed in the code'));
+                  setCode(next);
+                  setIsSaved(false);
+                  setSaveStatus(null);
+                  trackPersonalizationOnce();
+                }}
+                errors={runErrors}
+                safety={safety}
+                onRestore={restoreLastWorking}
+                guideLevel={guideLevel}
+              />
+            )}
+
             {onTab('learn') && conceptsUsed.length > 0 && (
               <div className="bldr-concepts-used">
                 <span className="bldr-concepts-used__label">Concepts in this build:</span>

@@ -119,36 +119,45 @@ function isStorageMessage(data) {
  *
  * Runs before anything the child's project does, which is the whole point — a
  * game reads its high score at the top of the file.
+ *
+ * Written as pieces joined into ONE line, and it has to stay that way. The
+ * browser reports error line numbers relative to the whole document, so every
+ * newline in here would push the child's own code down and make the error
+ * console point at the wrong line. previewErrors.test.js fails if a newline
+ * ever creeps back in.
  */
 function storageShimScript(seed = {}) {
   // Embedded as JSON, and `<` escaped so a saved value can never close the
   // script tag it is sitting inside.
   const seedJson = JSON.stringify(seed || {}).replace(/</g, '\\u003c');
 
-  return `(function(){
-  try { window.localStorage.getItem('__codeit_probe__'); return; } catch (e) {}
-  var saved = ${seedJson};
-  function report(store){
-    try { parent.postMessage({ type: '${STORAGE_MESSAGE}', data: store }, '*'); } catch (e) {}
-  }
-  function make(store, persist){
-    var api = {
-      getItem: function(k){ k = String(k); return Object.prototype.hasOwnProperty.call(store, k) ? store[k] : null; },
-      setItem: function(k, v){ store[String(k)] = String(v); if (persist) report(store); },
-      removeItem: function(k){ delete store[String(k)]; if (persist) report(store); },
-      clear: function(){ Object.keys(store).forEach(function(k){ delete store[k]; }); if (persist) report(store); },
-      key: function(i){ var keys = Object.keys(store); return i < keys.length ? keys[i] : null; }
-    };
-    Object.defineProperty(api, 'length', { get: function(){ return Object.keys(store).length; } });
-    return api;
-  }
-  try {
-    Object.defineProperty(window, 'localStorage', { value: make(saved, true), configurable: true });
-    // sessionStorage is meant to be forgotten when the page goes, so it is not
-    // persisted — that is the correct behaviour, not a shortcut.
-    Object.defineProperty(window, 'sessionStorage', { value: make({}, false), configurable: true });
-  } catch (e) {}
-})();`;
+  return [
+    '(function(){',
+    "try{window.localStorage.getItem('__codeit_probe__');return;}catch(e){}",
+    `var saved=${seedJson};`,
+    'function report(store){',
+    `try{parent.postMessage({type:'${STORAGE_MESSAGE}',data:store},'*');}catch(e){}`,
+    '}',
+    'function make(store,persist){',
+    'var api={',
+    'getItem:function(k){k=String(k);return Object.prototype.hasOwnProperty.call(store,k)?store[k]:null;},',
+    'setItem:function(k,v){store[String(k)]=String(v);if(persist)report(store);},',
+    'removeItem:function(k){delete store[String(k)];if(persist)report(store);},',
+    'clear:function(){Object.keys(store).forEach(function(k){delete store[k];});if(persist)report(store);},',
+    'key:function(i){var keys=Object.keys(store);return i<keys.length?keys[i]:null;}',
+    '};',
+    "Object.defineProperty(api,'length',{get:function(){return Object.keys(store).length;}});",
+    'return api;',
+    '}',
+    'try{',
+    "Object.defineProperty(window,'localStorage',{value:make(saved,true),configurable:true});",
+    // sessionStorage is meant to be forgotten when the page goes, so it is
+    // given a store of its own that is never persisted. That is the correct
+    // behaviour, not a shortcut.
+    "Object.defineProperty(window,'sessionStorage',{value:make({},false),configurable:true});",
+    '}catch(e){}',
+    '})();',
+  ].join('');
 }
 
 const SHIM_ID = '__codeit_storage__';
@@ -194,7 +203,7 @@ function injectPreviewStorage(html, seed = {}) {
 function stripPreviewScripts(html) {
   if (typeof html !== 'string' || !html) return html;
   return html.replace(
-    /<script\s+id="(?:__codeit_storage__|__codeit_bridge__)"[^>]*>[\s\S]*?<\/script>/gi,
+    /<script\s+id="(?:__codeit_storage__|__codeit_bridge__|__codeit_errors__)"[^>]*>[\s\S]*?<\/script>/gi,
     ''
   );
 }

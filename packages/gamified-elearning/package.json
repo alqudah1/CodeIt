@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@codemirror/lang-html": "^6.4.12",
     "@codemirror/lang-python": "^6.1.7",
     "@e-learning/shared-auth": "1.0.0",
     "@testing-library/dom": "^10.4.0",
@@ -43,6 +44,12 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@codemirror|@lezer|@uiw|@marijn|codemirror|style-mod|crelt|w3c-keyname)/)",
+      "^.+\\.module\\.(css|sass|scss)$"
     ]
   }
 }
