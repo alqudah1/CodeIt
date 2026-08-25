@@ -3,9 +3,18 @@
 const fs = require('fs');
 const path = require('path');
 
-const { loadBlogPosts, loadLessons } = require('./content-loader');
+const {
+  loadBlogPosts,
+  loadLessons,
+  loadGuidePages,
+  loadMarkdownRenderer,
+} = require('./content-loader');
 
 const SITE = 'https://codeitlearn.com';
+
+// Deterministic build output: derived from content, not from the clock, so two
+// builds of the same commit produce byte-identical files.
+const LAST_MODIFIED = '2026-08-25';
 
 /**
  * Single source of truth for the price shown anywhere on the site.
@@ -276,6 +285,8 @@ const BASE_PAGES = [
    React is invisible to them.
 ───────────────────────────────────────────────────────────── */
 
+const GUIDE_CONTENT = loadGuidePages();
+const renderMarkdown = loadMarkdownRenderer();
 const BLOG_CONTENT = loadBlogPosts();
 const LESSON_CONTENT = loadLessons();
 const BLOG_BY_SLUG = new Map(BLOG_CONTENT.map((post) => [post.slug, post]));
@@ -307,6 +318,13 @@ function lessonSections(lesson) {
 }
 
 /** Full plain-text body of a page, for schema articleBody / word counts. */
+function bodyTextOf(page) {
+  if (page.bodyHtml) {
+    return page.bodyHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  return sectionsToText(page.sections || []);
+}
+
 function sectionsToText(sections) {
   return sections
     .flatMap((section) => [section.heading, ...(section.paragraphs || []), section.code || ''])
@@ -663,6 +681,44 @@ const PAGES = [
     };
   }),
 
+  {
+    route: '/guide',
+    title: 'Coding Guides for Parents, Teachers & Beginners | CodeIt',
+    description:
+      'Practical, current guides on choosing coding tools, publishing a first project, and knowing whether a child actually learned anything.',
+    eyebrow: 'CodeIt guides',
+    h1: 'Straight answers about learning to code.',
+    intro:
+      'Written to be useful whether or not you ever use CodeIt. Several of these recommend another tool, because for a lot of readers another tool is the right answer.',
+    detail: 'Each guide is dated and says when it was last checked against the products it names.',
+    type: 'CollectionPage',
+    sections: GUIDE_CONTENT.map((guide) => ({
+      heading: guide.h1,
+      paragraphs: [guide.description],
+    })),
+  },
+
+  ...GUIDE_CONTENT.map((guide) => ({
+    route: `/guide/${guide.slug}`,
+    title: guide.title,
+    description: guide.description,
+    eyebrow: 'CodeIt guide',
+    h1: guide.h1,
+    intro: guide.description,
+    detail: `Last verified ${guide.lastVerified}.`,
+    type: 'Article',
+    slug: guide.slug,
+    datePublished: guide.lastVerified,
+    // Pre-rendered from the same Markdown the React page renders, so the
+    // crawlable HTML and the page a person sees are the same words.
+    bodyHtml: renderMarkdown(guide.markdown),
+    breadcrumbs: [
+      ['/', 'Home'],
+      ['/guide', 'Guides'],
+      [`/guide/${guide.slug}`, guide.h1],
+    ],
+  })),
+
   ...BLOG_POSTS.map(([slug, fallbackTitle, fallbackDescription]) => {
     const post = BLOG_BY_SLUG.get(slug);
     const sections = blogSections(post);
@@ -783,7 +839,7 @@ function staticContent(page) {
       <h1>${escapeHtml(page.h1)}</h1>
       ${dateLine}
       <p>${paragraphHtml(page.intro)}</p>
-      ${sectionsHtml(page.sections)}
+      ${page.bodyHtml || sectionsHtml(page.sections)}
       ${faqHtml(page.faqs)}
       <h2>${escapeHtml(page.sectionTitle || 'What you can do on CodeIt')}</h2>
       <p>${paragraphHtml(page.detail)}</p>
@@ -800,7 +856,7 @@ function staticContent(page) {
 function pageSchema(page) {
   const graph = [];
   const url = `${SITE}${page.route}`;
-  const bodyText = sectionsToText(page.sections || []);
+  const bodyText = bodyTextOf(page);
 
   const primary = {
     '@context': 'https://schema.org',
@@ -831,7 +887,7 @@ function pageSchema(page) {
   }
 
   // Articles previously carried no headline, author or datePublished at all.
-  if (page.type === 'BlogPosting') {
+  if (page.type === 'BlogPosting' || page.type === 'Article') {
     primary.headline = page.h1;
     primary.author = { '@id': `${SITE}/#organization` };
     primary.mainEntityOfPage = { '@type': 'WebPage', '@id': url };
@@ -840,7 +896,7 @@ function pageSchema(page) {
       primary.dateModified = page.datePublished;
     }
     if (bodyText) primary.articleBody = bodyText;
-    if (page.sections?.length) primary.wordCount = bodyText.split(/\s+/).length;
+    if (bodyText) primary.wordCount = bodyText.split(/\s+/).length;
   }
 
   graph.push(primary);
@@ -919,6 +975,30 @@ function renderRouteDocument(template, page) {
   return html.replace('</head>', `${routeStyle}\n    ${schema}\n  </head>`);
 }
 
+function writeSitemap(buildDir) {
+  const today = LAST_MODIFIED;
+  const urls = [{ route: '/', priority: '1.0' }, ...PAGES.map((page) => ({ route: page.route }))];
+  const seen = new Set();
+  const body = urls
+    .filter(({ route }) => (seen.has(route) ? false : seen.add(route)))
+    .map(
+      ({ route, priority }) =>
+        `  <url>\n` +
+        `    <loc>${SITE}${route === '/' ? '/' : route}</loc>\n` +
+        `    <lastmod>${today}</lastmod>\n` +
+        (priority ? `    <priority>${priority}</priority>\n` : '') +
+        `  </url>`
+    )
+    .join('\n');
+
+  const xml =
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
+
+  fs.writeFileSync(path.join(buildDir, 'sitemap.xml'), xml);
+  console.log(`Generated sitemap.xml with ${seen.size} URLs.`);
+}
+
 function generate(buildDir = path.resolve(__dirname, '../build')) {
   const templatePath = path.join(buildDir, 'index.html');
   const template = fs.readFileSync(templatePath, 'utf8');
@@ -931,6 +1011,11 @@ function generate(buildDir = path.resolve(__dirname, '../build')) {
     fs.writeFileSync(path.join(outputDir, 'index.html'), document);
     totalBodyChars += staticContent(page).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length;
   }
+
+  // The sitemap is generated from the same PAGES list rather than maintained
+  // by hand. A hand-written sitemap is how fifteen lessons went unlisted for
+  // months on a site whose entire problem was not being readable.
+  writeSitemap(buildDir);
 
   // Homepage last: it overwrites the template file itself.
   fs.writeFileSync(templatePath, renderRouteDocument(template, HOME_PAGE));

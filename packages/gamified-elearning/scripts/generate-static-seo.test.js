@@ -56,13 +56,18 @@ test('every route document has one matching canonical, title, and static marker'
   }
 });
 
-test('the sitemap lists every generated public route on the canonical host', () => {
-  const sitemap = fs.readFileSync(path.resolve(__dirname, '../public/sitemap.xml'), 'utf8');
-
-  for (const page of PAGES) {
-    assert.match(sitemap, new RegExp(`<loc>https://codeitlearn\\.com${page.route.replaceAll('/', '\\/')}</loc>`));
-  }
+// The sitemap is no longer hand-maintained — it is generated from PAGES at
+// build time, which is what stops routes going unlisted. Coverage is asserted
+// against the generated file in "the sitemap covers every generated route".
+test('the sitemap uses the canonical host and no www', () => {
+  const fsMod = require('node:fs');
+  const os = require('node:os');
+  const dir = fsMod.mkdtempSync(path.join(os.tmpdir(), 'sitemap-host-'));
+  fsMod.writeFileSync(path.join(dir, 'index.html'), TEMPLATE);
+  require('./generate-static-seo').generate(dir);
+  const sitemap = fsMod.readFileSync(path.join(dir, 'sitemap.xml'), 'utf8');
   assert.doesNotMatch(sitemap, /www\.codeitlearn\.com/);
+  assert.match(sitemap, /<loc>https:\/\/codeitlearn\.com\//);
 });
 
 test('public search documents use one accurate age range', () => {
@@ -234,4 +239,85 @@ test('the visible FAQ is expressed as FAQPage', () => {
   for (const entry of faq.mainEntity) {
     assert.ok(entry.acceptedAnswer.text.length > 40, `answer to "${entry.name}" is too thin`);
   }
+});
+
+/* ─── Guides ────────────────────────────────────────────────────────────── */
+
+
+test('every guide page inlines its full body, not a summary', () => {
+  const guides = PAGES.filter((page) => page.route.startsWith('/guide/'));
+  assert.ok(guides.length >= 11, `expected 11+ guides, found ${guides.length}`);
+  for (const guide of guides) {
+    assert.ok(guide.bodyHtml, `${guide.route} has no inlined body`);
+    const text = bodyText(renderRouteDocument(TEMPLATE, guide));
+    assert.ok(text.length >= 4000, `${guide.route} inlines only ${text.length} characters`);
+  }
+});
+
+test('guide tables survive into the crawlable HTML', () => {
+  const withTables = PAGES.filter(
+    (page) => page.route.startsWith('/guide/') && page.bodyHtml.includes('<table>')
+  );
+  assert.ok(withTables.length >= 8, `only ${withTables.length} guides kept their tables`);
+});
+
+test('guides are typed as Article with a date and an author', () => {
+  for (const guide of PAGES.filter((page) => page.route.startsWith('/guide/'))) {
+    const [article] = jsonLd(renderRouteDocument(TEMPLATE, guide));
+    assert.equal(article['@type'], 'Article', `${guide.route} is not typed Article`);
+    assert.ok(article.author, `${guide.route} has no author`);
+    assert.match(article.datePublished ?? '', /^\d{4}-\d{2}-\d{2}$/, `${guide.route} has no date`);
+  }
+});
+
+test('guides name competitors — a page that recommends only us does not get cited', () => {
+  const RIVALS = ['Scratch', 'Tynker', 'CodeMonkey', 'Codecademy', 'Khan Academy', 'Roblox',
+                  'freeCodeCamp', 'CodeCombat', 'Neocities', 'GitHub Pages', 'Lovable',
+                  'Bolt', 'Wix', 'Squarespace', 'Webflow', 'Framer', 'Replit', 'Kodable',
+                  'codeSpark', 'CodeHS', 'Netlify', 'Vercel', 'itch.io', 'KAPLAY', 'Phaser'];
+  for (const guide of PAGES.filter((page) => page.route.startsWith('/guide/'))) {
+    const named = RIVALS.filter((rival) => guide.bodyHtml.includes(rival));
+    assert.ok(named.length >= 2, `${guide.route} names only ${named.length} other products`);
+  }
+});
+
+test('no guide states a price or a build allowance — both are in flux', () => {
+  for (const guide of PAGES.filter((page) => page.route.startsWith('/guide/'))) {
+    assert.ok(!/(CA|US)\$\s?\d/.test(guide.bodyHtml), `${guide.route} quotes a CodeIt price`);
+    assert.ok(
+      !/\b\d+\s+(assisted|AI)\s+(project\s+)?builds?\b/i.test(guide.bodyHtml),
+      `${guide.route} quotes a build allowance`
+    );
+  }
+});
+
+test('no page claims accessibility support that has not been tested', () => {
+  const BANNED = [/\bdyslexi/i, /\bADHD\b/i, /\bautis/i, /\bscreen reader\b/i, /free forever/i];
+  for (const page of [...PAGES, HOME_PAGE]) {
+    const haystack = `${page.bodyHtml || ''} ${sectionsToTextSafe(page)} ${page.description}`;
+    for (const pattern of BANNED) {
+      assert.ok(!pattern.test(haystack), `${page.route} matches forbidden claim ${pattern}`);
+    }
+  }
+});
+
+function sectionsToTextSafe(page) {
+  return (page.sections || [])
+    .flatMap((section) => [section.heading, ...(section.paragraphs || [])])
+    .filter(Boolean)
+    .join(' ');
+}
+
+test('the sitemap covers every generated route', () => {
+  const fsMod = require('node:fs');
+  const os = require('node:os');
+  const dir = fsMod.mkdtempSync(path.join(os.tmpdir(), 'sitemap-'));
+  fsMod.writeFileSync(path.join(dir, 'index.html'), TEMPLATE);
+  require('./generate-static-seo').generate(dir);
+  const xml = fsMod.readFileSync(path.join(dir, 'sitemap.xml'), 'utf8');
+  for (const page of PAGES) {
+    assert.ok(xml.includes(`<loc>https://codeitlearn.com${page.route}</loc>`),
+      `${page.route} is missing from the sitemap`);
+  }
+  assert.ok(xml.includes('<loc>https://codeitlearn.com/</loc>'), 'homepage missing from sitemap');
 });

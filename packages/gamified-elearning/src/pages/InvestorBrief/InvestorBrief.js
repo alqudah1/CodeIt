@@ -157,7 +157,7 @@ export default function InvestorBrief() {
             </article>
             <article>
               <span>Planned family plan</span>
-              <h3>US$12 per month</h3>
+              <h3>CA$12 per month</h3>
               <p>More creation capacity and parent-approved progress features. Billing is not live yet.</p>
             </article>
             <article>

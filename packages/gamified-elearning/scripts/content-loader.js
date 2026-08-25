@@ -81,4 +81,22 @@ function loadLessons() {
   return lessons;
 }
 
-module.exports = { loadBlogPosts, loadLessons, loadEsmDefault };
+/** Long-form guide pages, shared with the React GuidePage component. */
+function loadGuidePages() {
+  const guides = loadEsmDefault(path.join(SRC, 'data/guidePages.js'));
+  if (!Array.isArray(guides) || guides.length === 0) {
+    throw new Error('content-loader: guidePages.js did not export a non-empty array');
+  }
+  return guides;
+}
+
+/** The same Markdown renderer the React app uses, so both agree exactly. */
+function loadMarkdownRenderer() {
+  const render = loadEsmDefault(path.join(SRC, 'utils/markdown.js'));
+  if (typeof render !== 'function') {
+    throw new Error('content-loader: markdown.js did not export a function');
+  }
+  return render;
+}
+
+module.exports = { loadBlogPosts, loadLessons, loadGuidePages, loadMarkdownRenderer, loadEsmDefault };

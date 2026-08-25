@@ -15,7 +15,7 @@
       "destination": "/api?path=:path*"
     },
     {
-      "source": "/(MainPage|admin|ai-website-builder-for-kids|blog|builder|character|coding-for-kids|creator-brief|explore|first-game-challenge|forgot-password|game|games|investor-brief|journey|leaderboard|learn-python-for-kids|lesson|lessons|login|parent-review|playground|pricing|privacy|profile|project|python-games-for-kids|quiz|register|reset-password|terms)(/.*)?",
+      "source": "/(MainPage|admin|ai-website-builder-for-kids|blog|builder|character|coding-for-kids|creator-brief|explore|first-game-challenge|forgot-password|game|games|guide|investor-brief|journey|leaderboard|learn-python-for-kids|lesson|lessons|login|parent-review|playground|pricing|privacy|profile|project|python-games-for-kids|quiz|register|reset-password|terms)(/.*)?",
       "destination": "/index.html"
     }
   ],
