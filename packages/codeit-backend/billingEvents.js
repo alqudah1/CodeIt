@@ -46,15 +46,43 @@ function subscriptionFields(subscription) {
 
   const item = subscription.items?.data?.[0] || null;
 
+  // Newer API versions moved the period onto the subscription item; accept both.
+  const currentPeriodEnd = unixToIso(subscription.current_period_end ?? item?.current_period_end);
+  const cancelAt = unixToIso(subscription.cancel_at);
+
   return {
     stripeSubscriptionId: id,
     stripeCustomerId: idOf(subscription.customer),
     priceId: idOf(item?.price) || idOf(subscription.plan),
     status,
-    // Newer API versions moved the period onto the subscription item; accept both.
-    currentPeriodEnd: unixToIso(subscription.current_period_end ?? item?.current_period_end),
-    cancelAtPeriodEnd: Boolean(subscription.cancel_at_period_end),
+    currentPeriodEnd,
+    cancelAtPeriodEnd: cancelsAtPeriodEnd(subscription, currentPeriodEnd, cancelAt),
   };
+}
+
+/**
+ * Is this subscription set to stop at the end of the period it is in?
+ *
+ * Reading `cancel_at_period_end` alone was wrong, and it was wrong silently.
+ * A parent cancelled in Stripe's own portal, Stripe recorded "Cancels Sep 25",
+ * the event arrived and was stored - and the site went on telling them
+ * "Renews on 9/25". The flag was false in the payload because this API version
+ * expresses a pending cancellation by setting `cancel_at` to the end of the
+ * period instead.
+ *
+ * So both are accepted. `cancel_at` is only treated as a period-end
+ * cancellation when it falls at or before the current period end: a `cancel_at`
+ * further out means the subscription really does keep renewing until then, and
+ * "renews on" is the true thing to say in the meantime.
+ *
+ * ISO strings from unixToIso are all UTC and fixed-width, so comparing them as
+ * text is the same as comparing the instants.
+ */
+function cancelsAtPeriodEnd(subscription, currentPeriodEnd, cancelAt) {
+  if (subscription.cancel_at_period_end) return true;
+  if (!cancelAt) return false;
+  if (!currentPeriodEnd) return true;
+  return cancelAt <= currentPeriodEnd;
 }
 
 /**

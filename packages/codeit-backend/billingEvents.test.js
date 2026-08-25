@@ -72,6 +72,45 @@ test('the period is read from the item when the subscription omits it', () => {
   assert.strictEqual(fields.currentPeriodEnd, '2026-09-19T00:00:00.000Z');
 });
 
+// -- A cancellation this API version does not spell out ---------------------
+//
+// These cases are the bug that shipped: a real cancellation, made in Stripe's
+// own portal, that the site reported as "Renews on". The event was delivered,
+// accepted and stored - it simply did not use the field we read.
+
+const PERIOD_END = 1790000000;
+const SUB = {
+  id: 'sub_1',
+  customer: 'cus_1',
+  status: 'active',
+  items: { data: [{ price: { id: 'price_1' }, current_period_end: PERIOD_END }] },
+};
+
+test('cancel_at at the period end counts as cancelling', () => {
+  assert.strictEqual(subscriptionFields({ ...SUB, cancel_at: PERIOD_END }).cancelAtPeriodEnd, true);
+});
+
+test('cancel_at before the period end counts as cancelling', () => {
+  // A cancellation dated mid-period still ends the plan; saying "renews on"
+  // would be worse than saying it a day early.
+  assert.strictEqual(subscriptionFields({ ...SUB, cancel_at: PERIOD_END - 86400 }).cancelAtPeriodEnd, true);
+});
+
+test('cancel_at far in the future does not', () => {
+  // This one really does keep renewing until then, and a parent should be told
+  // so. Treating every cancel_at as imminent trades one lie for another.
+  assert.strictEqual(subscriptionFields({ ...SUB, cancel_at: PERIOD_END + 86400 * 90 }).cancelAtPeriodEnd, false);
+});
+
+test('neither field set means renewing', () => {
+  assert.strictEqual(subscriptionFields(SUB).cancelAtPeriodEnd, false);
+});
+
+test('cancel_at with no period end is trusted', () => {
+  const sub = { id: 'sub_1', customer: 'cus_1', status: 'active', cancel_at: PERIOD_END };
+  assert.strictEqual(subscriptionFields(sub).cancelAtPeriodEnd, true);
+});
+
 test('cancel_at_period_end survives the mapping', () => {
   const fields = subscriptionFields({
     id: 'sub_1', customer: 'cus_1', status: 'active', cancel_at_period_end: true, items: { data: [] },
