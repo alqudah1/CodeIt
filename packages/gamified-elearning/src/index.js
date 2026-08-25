@@ -2,6 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+// Loaded after App so it wins on equal specificity. Everything in it was put
+// there by the device sweep, not by taste — see the file for what and why.
+import './styles/reachable.css';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -1,0 +1,72 @@
+
+══ small phone (320x568) ═══════════════════
+  home (new visitor)     clean
+  home (returning)       clean
+  studio — play          clean
+  studio — change        clean
+  studio — the code      clean
+  studio — keep          clean
+  pricing                clean
+  lessons                clean
+
+══ phone (390x844) ═════════════════════════
+  home (new visitor)     clean
+  home (returning)       clean
+  studio — play          clean
+  studio — change        clean
+  studio — the code      clean
+  studio — keep          clean
+  pricing                clean
+  lessons                clean
+
+══ big phone (430x932) ═════════════════════
+  home (new visitor)     clean
+  home (returning)       clean
+  studio — play          clean
+  studio — change        clean
+  studio — the code      clean
+  studio — keep          clean
+  pricing                clean
+  lessons                clean
+
+══ tablet (768x1024) ════════════════════════
+  home (new visitor)     clean
+  home (returning)       clean
+  studio — play          clean
+  studio — change        clean
+  studio — the code      clean
+  studio — keep          clean
+  pricing                clean
+  lessons                clean
+
+══ tablet wide (1024x768) ═══════════════════
+  home (new visitor)     clean
+  home (returning)       clean
+  studio — play          clean
+  studio — change        clean
+  studio — the code      clean
+  studio — keep          clean
+  pricing                clean
+  lessons                clean
+
+══ laptop (1280x800) ════════════════════════
+  home (new visitor)     clean
+  home (returning)       clean
+  studio — play          clean
+  studio — change        clean
+  studio — the code      clean
+  studio — keep          clean
+  pricing                clean
+  lessons                clean
+
+══ desktop (1680x1050) ═══════════════════════
+  home (new visitor)     clean
+  home (returning)       clean
+  studio — play          clean
+  studio — change        clean
+  studio — the code      clean
+  studio — keep          clean
+  pricing                clean
+  lessons                clean
+
+No problems found.

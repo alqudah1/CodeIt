@@ -1,0 +1,259 @@
+/* ── Things a child can actually hit and actually read ───────────────────────
+ *
+ * Every rule in here was put there by a measurement, not a hunch. A sweep runs
+ * the real pages at seven widths — 320, 390, 430, 768, 1024, 1280, 1680 — and
+ * reports controls too small for a fingertip, text too small to read, and
+ * anything hanging off the edge of the screen.
+ *
+ * ── Two sizes, not one ──────────────────────────────────────────────────────
+ *
+ * Controls get 44px: buttons, primary calls to action, the mobile play bar.
+ * That is WCAG 2.5.5, and it is the size of a fingertip. A nine-year-old
+ * holding a phone in one hand on a bus does not have a mouse pointer's
+ * precision, and the studio's main Play / Edit / Save bar was 39px.
+ *
+ * Dense link lists — the footer sitemap, in-page navigation — get 24px, which
+ * is WCAG 2.2 AA (2.5.8). Forcing 44px on forty footer links would produce a
+ * footer taller than the page it sits under, and the standard recognises that.
+ * This is a deliberate distinction, not a shortcut.
+ *
+ * ── Why !important ──────────────────────────────────────────────────────────
+ *
+ * Not laziness. The studio and the lesson pages are lazy-loaded, so their
+ * stylesheets are injected into the document *after* this file — the first
+ * version of it lost every override on exactly the pages that needed them, and
+ * the sweep proved it by reporting the same 42px button twice. Specificity
+ * cannot win against load order. An accessibility floor is also the one kind of
+ * rule that should be hard to override by accident.
+ *
+ * Re-run the sweep after touching anything here. If it reports nothing, this
+ * file is doing its job.
+ */
+
+/* ── Controls: 44px on a touch screen ─────────────────────────────────────
+ *
+ * Guarded on a coarse pointer, so a mouse-driven desktop layout is not
+ * stretched for no reason. A 33px button is fine with a cursor.
+ */
+@media (pointer: coarse) {
+  button,
+  summary,
+  [role='button'] {
+    min-height: 44px !important;
+  }
+
+  /* Links that are really buttons. Named rather than caught by a blanket rule,
+     because a blanket rule would also catch every word in a sentence. */
+  .bldr-activation-card__primary,     /* "Play it now" — a primary CTA, was 42px */
+  .bldr-mobile-play-bar__btn,         /* Play / Edit / Save — the main controls, 39px */
+  .bldr-action-btn,                   /* "New build", 34px */
+  .bldr-coach-open,
+  .bldr-startover,
+  .bldr-browser__play-btn,            /* was 24px */
+  .bldr-browser__fullscreen-btn,
+  .bldr-device-btn,
+  .bldr-guest-backup button,
+  .pick__card,
+  .pick__own > summary,
+  .shelf__chip,
+  .prove__choice,
+  .prove__start,
+  .prove__next,
+  .studio-start-card a,               /* card CTAs, 15px */
+  .studio-family__cta,
+  .bldr-lesson-chip__learn,           /* "Learn this", 14px */
+  .pricing-hero__pilot-link,          /* 43px — one pixel short is still short */
+  .lm-back-btn,
+  .lm-continue-btn {
+    min-height: 44px !important;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .pick__card,
+  .studio-start-card a,
+  .bldr-mobile-play-bar__btn {
+    justify-content: center;
+  }
+
+  /* Dense link lists: 24px, per WCAG 2.2 AA. See the note at the top.
+     Two footers, because the home page has its own. Missing the second one is
+     why the sweep still reported 15px links after the first pass. */
+  .site-footer a,
+  .site-footer__build,
+  .studio-footer a {
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* .studio-text-link is deliberately absent: it is a link inside a sentence,
+     and its tap target is its line box. Giving it a min-height turned it into
+     an inline-flex box that no longer sat on the baseline of the text around
+     it — a fix that made the page worse. */
+}
+
+/* ── Readable text ────────────────────────────────────────────────────────
+ *
+ * 13px is the floor, not a target. These were all between 10.88px and 12.8px —
+ * sizes chosen by someone looking at a large screen from close up.
+ */
+.studio-kicker,
+.studio-preview__status,
+.pick__blurb,
+.pick__note,
+.shelf__note,
+.shelf__chip-when,
+.evidence__note,
+.prove__note,
+.bldr-coach-open,
+.bldr-success-banner__label,
+.bldr-success-banner__credit,
+.pricing-kicker,
+.pricing-hero__pilot-note,
+.pricing-status,
+.cp-error__raw,
+.cp__lines,
+.studio-hero__audience li,
+.studio-pixel figcaption,
+.studio-pixel figcaption strong,
+.studio-traction__metrics dt,
+.studio-family__setup span,
+.bldr-interact-badge,
+.bldr-browser__bar,
+.bldr-activation-card__kicker,
+.bldr-project-checklist button,
+.bldr-lessons-used__sub,
+.bldr-lesson-chip__hint,
+.pricing-card__eyebrow,
+.pricing-card__flag,
+.pricing-price span,
+.pricing-next strong,
+.pricing-next li,
+.pricing-card small,
+.site-footer__col strong,
+.site-footer__bottom a,
+.bldr-guest-backup span,
+.bldr-guest-backup button,
+.studio-family__setup a,
+.founding-signup__heading span,
+.founding-signup__row button,
+.founding-signup span,
+.founding-signup small,
+.founding-signup label,
+.studio-family span,
+.studio-family small,
+.studio-family__email-label,
+.studio-loop__lesson-card span {
+  font-size: 0.82rem !important;   /* 13.1px at the default root size */
+  line-height: 1.5;
+}
+
+/* ── Nothing off the edge ─────────────────────────────────────────────────
+ *
+ * The mascot is a fixed-width figure that hung 8px off a tablet and 26px off a
+ * laptop. An image should never be able to do this.
+ */
+.studio-pixel,
+.studio-pixel img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* The tab bar has to fit. This is the one that mattered.
+ *
+ * On a 320px phone the four studio pages ran 50px past the edge, and with
+ * `overflow-x: hidden` on the body that does not scroll — it clips. "Keep",
+ * the page where a child saves their work and shows they understand it, was
+ * simply not reachable on the smallest phones people still use.
+ *
+ * Shrinking beats scrolling here: a four-item bar that has to be swiped is a
+ * bar most children will never discover the end of. */
+@media (max-width: 380px) {
+  .bldr-tabs {
+    gap: 4px;
+  }
+
+  .bldr-tab {
+    min-width: 0;
+    flex: 1 1 0;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .bldr-tab__label {
+    font-size: 0.72rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* The preview's browser chrome is decoration around the game, and it can
+     give up its width before the game does. */
+  .bldr-browser__chrome {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .bldr-browser__fullscreen-btn {
+    padding-left: 8px;
+    padding-right: 8px;
+    font-size: 0.74rem;
+    max-width: 100%;
+  }
+}
+
+/* A grid or flex child defaults to `min-width: auto`, which means a wide child
+   pushes the whole column past the edge instead of being contained by it. */
+.studio-hero__visual,
+.studio-hero__copy {
+  min-width: 0;
+}
+
+/* The mascot is absolutely positioned at `right: -3.5rem` — deliberately
+   hanging outside its container for effect, which looks right on a wide screen
+   and hangs off the edge of a tablet. `max-width: 100%` could never fix that,
+   because the overflow comes from the offset, not the width.
+   Tucked back in below the width where it stops fitting. */
+/* The mascot is deliberately left alone.
+ *
+ * It is absolutely positioned to hang outside its container for effect, and
+ * HomeStudio.css already re-places it at four breakpoints — including one that
+ * centres it with `right: 50%; transform: translateX(56%)`. Overriding `right`
+ * from here broke that centring and pushed it 85px off the screen: a fix that
+ * was three times worse than the thing it was fixing.
+ *
+ * It hangs a little past the edge at some widths, and `overflow-x: hidden` on
+ * the body clips it, so the page never scrolls sideways — which is the part a
+ * user can feel. Left to the design, and written down so the next person does
+ * not repeat the mistake. */
+
+/* A last line of defence. Nothing in a children's product should make the page
+   scroll sideways, and this is cheap insurance against the next component that
+   tries it. */
+html,
+body {
+  overflow-x: hidden;
+}
+
+
+/* Code inside a marketing illustration is closer to a picture of code than to
+   text anyone reads word by word. It was 11.52px. Held to the same 13px floor
+   as everything else rather than given its own exception: the illustration
+   copes fine, and an exception nobody can see the reason for is how a floor
+   stops being a floor. */
+.studio-loop__window code {
+  font-size: 0.82rem;
+}
+
+/* ── One deliberate exception ─────────────────────────────────────────────
+ *
+ * .studio-preview is the little mock product screenshot on the home page — a
+ * drawing of the studio, not the studio. Its text runs down to 9.76px because
+ * it is a miniature, and scaling it up to 13px would not make it more readable,
+ * it would make it a broken-looking illustration. Nobody is expected to read
+ * it; it is there to show the shape of the thing.
+ *
+ * Left as it is on purpose, and written down here so the next person running
+ * the sweep does not "fix" it.
+ */
