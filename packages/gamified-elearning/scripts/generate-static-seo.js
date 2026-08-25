@@ -214,11 +214,11 @@ const BASE_PAGES = [
   {
     route: '/pricing',
     title: 'CodeIt Pricing: Free Coding & Family Pilot',
-    description: 'Start coding for free, then request a free CodeIt family pilot spot with guided setup, parent progress, and two learner profiles.',
+    description: 'Start free with no card. The CodeIt family plan is CA$12 a month, cancellable at any time, with guided setup, parent progress and learner profiles.',
     eyebrow: 'Free family pilot',
     h1: 'Start free. Join the family pilot when you want more support.',
-    intro: 'CodeIt keeps a useful free option for beginners. Families can now request a free pilot spot before paid billing opens.',
-    detail: 'The Founding Family pilot offers guided setup, more assisted project building, learner profiles, parent visibility, and a direct feedback channel. No card or subscription starts automatically.',
+    intro: 'CodeIt keeps a useful free option for beginners, and a paid family plan for households that want more.',
+    detail: 'The family plan adds guided setup, more assisted project building, learner profiles, parent visibility, and a direct feedback channel. Nothing starts charging on its own.',
     type: 'WebPage',
   },
   {

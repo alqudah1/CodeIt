@@ -58,6 +58,7 @@ import {
   restore as restoreWorking,
 } from './codeSafety';
 import { initialTab, tabAfter, tabsFor } from './builderTabs';
+import { liveUpdateScript, readSettings, setSetting } from './gameSettings';
 import {
   EMPTY as EMPTY_HISTORY,
   canRedo as historyCanRedo,
@@ -188,8 +189,16 @@ const STUDIO_TOOLS = [
   { id: 'colors',   label: 'Colors',   desc: 'Pick a color theme' },
   { id: 'text',     label: 'Text',     desc: 'Change writing style' },
   { id: 'effects',  label: 'Effects',  desc: 'Add visual effects' },
-  { id: 'gameplay', label: 'Gameplay', desc: 'Tune game settings' },
+  { id: 'gameplay', label: 'Controls', desc: 'Change how it plays — instantly' },
   { id: 'save',     label: 'Save',     desc: 'Save your creation' },
+];
+
+// Swatches for a colour setting inside a game. Bright, high-contrast and
+// distinguishable from each other for the commonest colour-vision deficiencies
+// — a child picking "the green one" should not land on the red one.
+const SETTING_COLOURS = [
+  '#FFD84D', '#FF7A00', '#FF4D6D', '#A855F7',
+  '#3DDC97', '#00C2FF', '#FFFFFF', '#1E1E2E',
 ];
 
 const PRESET_PALETTES = [
@@ -882,9 +891,14 @@ export default function Builder() {
   const [projectDesc, setProjectDesc] = useState('');
   const [editingDesc, setEditingDesc] = useState(false);
   const [xpPopup, setXpPopup]         = useState(null);
-  const [gameSpeed, setGameSpeed]     = useState(3);
-  const [gameDiff, setGameDiff]       = useState('medium');
-  const [gameTimer, setGameTimer]     = useState(30);
+
+  // Where a slider currently sits, before the change is written into the file.
+  //
+  // Kept separate from `code` on purpose. Rewriting the source on every pixel
+  // of a drag would rebuild the iframe dozens of times a second and restart the
+  // game under the child's finger. So the draft drives the control, the running
+  // game is poked live, and the file is only rewritten when they let go.
+  const [settingDrafts, setSettingDrafts] = useState({});
 
   // ── Instant color editing ──────────────────────────────────────────────────
   const [customBg, setCustomBg]           = useState('#FFF6ED');
@@ -1027,6 +1041,25 @@ export default function Builder() {
     popXp(10, 'Made it yours');
   }
 
+  /**
+   * Open (or close) a studio tool, and bring what it opens into view.
+   *
+   * The scroll is not a flourish. On a 390x844 phone the Controls panel opens
+   * roughly 1000px down the page — a child taps a button, the thing they asked
+   * for appears entirely below the fold, and as far as they can tell nothing
+   * happened. Measured, not guessed: the browser check found the slider at
+   * y=1005 on a viewport 844 tall.
+   */
+  function openStudioTool(id) {
+    // Every panel renders on the Change page; the tools are reachable from
+    // pages where they are not.
+    setWorkspaceTab('change');
+    setStudioPanel(sp => (sp === id ? null : id));
+    setTimeout(() => {
+      studioRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+    }, 0);
+  }
+
   function openInstantPanel() {
     setStudioPanel('mine');
     // The panel is below the preview on phones; bring it into view so "Show me"
@@ -1046,27 +1079,46 @@ export default function Builder() {
     popXp(10, 'Named it');
   }
 
-  // Inject JS + CSS into iframe instantly — NO reload, NO AI call
-  function applyGameTweakInstant(speed, timer) {
-    const spawnDelays = [1300, 950, 680, 460, 290];
-    const speeds      = [1.8, 3, 4.5, 6, 9];
-    const sd  = spawnDelays[speed - 1] ?? 680;
-    const spd = speeds[speed - 1] ?? 4.5;
 
-    const js = `(function(){
-      if(typeof spawnDelay!=='undefined')spawnDelay=${sd};
-      if(typeof speed!=='undefined')speed=${spd};
-      if(typeof gameSpeed!=='undefined')gameSpeed=${spd};
-      var s=document.getElementById('__ci_speed');
-      if(!s){s=document.createElement('style');s.id='__ci_speed';document.head.appendChild(s);}
-      s.textContent=':root{--game-speed:${spd}}@keyframes bldr-game-speed-noop{}';
-      ${timer ? `if(typeof timeLeft!=='undefined'&&timeLeft>0){
-        timeLeft=Math.min(timeLeft,${timer});
-        var td=document.getElementById('timer-display')||document.querySelector('[id*=timer]');
-        if(td)td.textContent=timeLeft;
-      }` : ''}
-    })();`;
-    sendBridgeCmd('RUN_SCRIPT', { js });
+  // ── Changing a setting: live while dragging, written down on release ──────
+  //
+  // Both halves matter. The live poke is what makes it feel like a toy rather
+  // than a form — the stars speed up under your finger. The rewrite is what
+  // makes it real: it changes the same line the child will read in the code
+  // tab and be asked about in Prove It.
+  //
+  // No network call, no model, no waiting. This used to be an AI round-trip.
+  function previewSetting(setting, value) {
+    setSettingDrafts(d => ({ ...d, [setting.name]: value }));
+    const js = liveUpdateScript(setting.name, value, setting.type, setting.quote);
+    if (js) sendBridgeCmd('RUN_SCRIPT', { js });
+  }
+
+  function commitSetting(setting, value) {
+    const nextCode = setSetting(code, setting.name, value);
+    setSettingDrafts(d => {
+      const next = { ...d };
+      delete next[setting.name];
+      return next;
+    });
+    // setSetting returns the original string when it could not write safely, so
+    // this is also the "nothing actually changed" check.
+    if (nextCode === code) return;
+    commitInstantChange(
+      nextCode,
+      `${setting.label}: ${value}`,
+      `${setting.label} is now ${value}. Your game restarted so you can see it.`
+    );
+    popXp(10, 'Tuned it');
+  }
+
+  function resetSetting(setting) {
+    previewSetting(setting, setting.value);
+    setSettingDrafts(d => {
+      const next = { ...d };
+      delete next[setting.name];
+      return next;
+    });
   }
 
   // Run a mission: applyEdit + mission XP
@@ -1650,6 +1702,11 @@ export default function Builder() {
 
   function toggleEditMode() {
     const next = !editModeOn;
+    // The panel, the undo bar and the "click anything" hint all live on the
+    // Change tab. Turning edit mode on from anywhere else armed the frame and
+    // left the child with outlines appearing under their finger and nothing to
+    // explain them.
+    if (next) setWorkspaceTab('change');
     editModeOnRef.current = next;
     setEditModeOn(next);
     if (!next) {
@@ -2257,9 +2314,9 @@ export default function Builder() {
     setDeviceView('desktop');
     setProjectDesc('');
     setEditingDesc(false);
-    setGameSpeed(3);
-    setGameDiff('medium');
-    setGameTimer(30);
+    // Controls are read out of whatever project is loaded now, so there is no
+    // stale slider position to reset — only the half-finished drag.
+    setSettingDrafts({});
     setEditModeOn(false);
     setHasPersonalized(false);
     setHasPlayedOnce(false);
@@ -2500,6 +2557,21 @@ export default function Builder() {
     () => preparePreview(code, loadPreviewStorage(previewKey)),
     [code, previewKey]
   );
+
+  // ── The controls this particular project offers ──────────────────────────
+  //
+  // Read out of the child's own file rather than assumed. A project with no
+  // settings block gets no Controls tab at all, which is better than a tab of
+  // sliders wired to variables that do not exist — which is what was there
+  // before: the panel poked `spawnDelay`, `speed` and `gameSpeed`, and not one
+  // of the three starter games declares any of them.
+  const gameSettings = useMemo(() => readSettings(code), [code]);
+
+  // A slider shows the draft if the child is mid-drag, otherwise the file.
+  function settingValue(setting) {
+    const draft = settingDrafts[setting.name];
+    return draft === undefined ? setting.value : draft;
+  }
 
   const allVersions = useMemo(() => [...localVersions, ...serverVersions], [localVersions, serverVersions]);
   const activeModifiers = useMemo(() => {
@@ -3234,12 +3306,12 @@ export default function Builder() {
             <div className="bldr-studio-bar" ref={studioRef}>
               <span className="bldr-studio-bar__label">Studio:</span>
               {STUDIO_TOOLS
-                .filter(t => t.id !== 'gameplay' || /game|quiz|clicker|runner|memory|reaction|soccer/.test(projectType))
+                .filter(t => t.id !== 'gameplay' || gameSettings.length > 0)
                 .map(tool => (
                   <button
                     key={tool.id}
                     className={`bldr-studio-bar__btn bldr-studio-bar__btn--${tool.id}${studioPanel === tool.id ? ' bldr-studio-bar__btn--active' : ''}`}
-                    onClick={() => setStudioPanel(sp => sp === tool.id ? null : tool.id)}
+                    onClick={() => openStudioTool(tool.id)}
                     disabled={editing}
                   >
                     {tool.label}
@@ -3552,45 +3624,108 @@ export default function Builder() {
                 )}
 
                 {studioPanel === 'gameplay' && (
-                  <div className="bldr-studio-panel__body">
-                    <p className="bldr-studio-panel__hint">Drag to preview instantly — Apply to make it permanent</p>
-                    <div className="bldr-studio-slider">
-                      <div className="bldr-studio-slider__header">
-                        <label className="bldr-studio-slider__label">Speed</label>
-                        <span className="bldr-studio-slider__val">{['Very slow','Slow','Normal','Fast','Very fast'][gameSpeed - 1]}</span>
-                      </div>
-                      <input type="range" min={1} max={5} value={gameSpeed} className="bldr-studio-range"
-                        onChange={e => { const v = +e.target.value; setGameSpeed(v); applyGameTweakInstant(v, gameTimer); }} />
-                    </div>
-                    <div className="bldr-studio-slider">
-                      <div className="bldr-studio-slider__header">
-                        <label className="bldr-studio-slider__label">Timer</label>
-                        <span className="bldr-studio-slider__val">{gameTimer}s</span>
-                      </div>
-                      <input type="range" min={10} max={90} step={5} value={gameTimer} className="bldr-studio-range"
-                        onChange={e => { const v = +e.target.value; setGameTimer(v); applyGameTweakInstant(gameSpeed, v); }} />
-                    </div>
-                    <div className="bldr-studio-select">
-                      <label className="bldr-studio-slider__label">Difficulty</label>
-                      <select value={gameDiff} onChange={e => setGameDiff(e.target.value)} className="bldr-studio-dropdown">
-                        <option value="easy">Easy — great for beginners</option>
-                        <option value="medium">Medium — balanced challenge</option>
-                        <option value="hard">Hard — for pros</option>
-                        <option value="extreme">Extreme — insanely fast</option>
-                      </select>
-                    </div>
-                    <button
-                      className="bldr-studio-panel__apply-btn"
-                      disabled={editing}
-                      onClick={() => {
-                        const speedDesc = ['very slow','slow','normal','fast','very fast'][gameSpeed - 1];
-                        applyEdit(`Update these game settings: speed should be ${speedDesc}, the timer should last ${gameTimer} seconds, and difficulty should be ${gameDiff}. Adjust existing speed values, timing intervals, and difficulty accordingly. Keep all design and features unchanged.`);
-                        popXp(25, 'Game Tuned');
-                        setStudioPanel(null);
-                      }}
-                    >
-                      {editing ? 'Applying...' : 'Apply to Game'}
-                    </button>
+                  <div className="bldr-studio-panel__body bldr-controls">
+                    <p className="bldr-studio-panel__hint">
+                      These are the real settings inside your game. Move one and watch.
+                    </p>
+
+                    {gameSettings.map(setting => {
+                      const value = settingValue(setting);
+                      const changed = value !== setting.value;
+                      return (
+                        <div className="bldr-control" key={setting.name}>
+                          <div className="bldr-control__header">
+                            <label className="bldr-control__label" htmlFor={`ctl-${setting.name}`}>
+                              {setting.label}
+                            </label>
+                            {/* The child's own variable name, shown on purpose: it is the
+                                word they will meet again in the code tab and in Prove It. */}
+                            <code className="bldr-control__var">{setting.name}</code>
+                            <span className="bldr-control__val">
+                              {setting.type === 'colour'
+                                ? <span className="bldr-control__chip" style={{ background: value }} />
+                                : String(value)}
+                            </span>
+                          </div>
+
+                          {setting.type === 'number' && (
+                            <input
+                              id={`ctl-${setting.name}`}
+                              type="range"
+                              className="bldr-studio-range"
+                              min={setting.min}
+                              max={setting.max}
+                              step={setting.step}
+                              value={value}
+                              onChange={e => previewSetting(setting, Number(e.target.value))}
+                              onPointerUp={e => commitSetting(setting, Number(e.currentTarget.value))}
+                              onKeyUp={e => commitSetting(setting, Number(e.currentTarget.value))}
+                              onBlur={e => commitSetting(setting, Number(e.currentTarget.value))}
+                            />
+                          )}
+
+                          {setting.type === 'colour' && (
+                            <div className="bldr-control__colours">
+                              {SETTING_COLOURS.map(c => (
+                                <button
+                                  key={c}
+                                  type="button"
+                                  className={`bldr-control__swatch${String(value).toLowerCase() === c.toLowerCase() ? ' bldr-control__swatch--on' : ''}`}
+                                  style={{ background: c }}
+                                  aria-label={`Use ${c}`}
+                                  onClick={() => { previewSetting(setting, c); commitSetting(setting, c); }}
+                                />
+                              ))}
+                              <input
+                                id={`ctl-${setting.name}`}
+                                type="color"
+                                className="bldr-control__picker"
+                                aria-label={`${setting.label}: pick any colour`}
+                                value={/^#[0-9a-f]{6}$/i.test(String(value)) ? value : '#ffffff'}
+                                onChange={e => previewSetting(setting, e.target.value)}
+                                onBlur={e => commitSetting(setting, e.target.value)}
+                              />
+                            </div>
+                          )}
+
+                          {setting.type === 'text' && (
+                            <input
+                              id={`ctl-${setting.name}`}
+                              type="text"
+                              className="bldr-control__text"
+                              value={value}
+                              maxLength={40}
+                              onChange={e => setSettingDrafts(d => ({ ...d, [setting.name]: e.target.value }))}
+                              onBlur={e => commitSetting(setting, e.target.value)}
+                            />
+                          )}
+
+                          {setting.type === 'boolean' && (
+                            <button
+                              id={`ctl-${setting.name}`}
+                              type="button"
+                              className={`bldr-control__toggle${value ? ' bldr-control__toggle--on' : ''}`}
+                              onClick={() => { previewSetting(setting, !value); commitSetting(setting, !value); }}
+                            >
+                              {value ? 'On' : 'Off'}
+                            </button>
+                          )}
+
+                          <div className="bldr-control__foot">
+                            {setting.help && <span className="bldr-control__help">{setting.help}</span>}
+                            {changed && (
+                              <button
+                                type="button"
+                                className="bldr-control__reset"
+                                onClick={() => resetSetting(setting)}
+                              >
+                                Put it back to {String(setting.value)}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
 
@@ -4006,7 +4141,39 @@ export default function Builder() {
               </div>
             )}
 
-            {onTab('change') && editModeOn && showElPanel && selectedEl && (
+            {/* ── Tapping the game itself ──────────────────────────────────
+                A canvas game is one DOM element. Tapping a falling star selects
+                the whole board, so the usual element controls — bigger, colour,
+                spacing — would offer to restyle a rectangle the child does not
+                think of as a thing. What they mean by "change this" is the
+                game, so they get the game's own settings instead. */}
+            {onTab('change') && editModeOn && showElPanel && selectedEl
+              && selectedEl.tag === 'CANVAS' && gameSettings.length > 0 && (
+              <div className="bldr-el-panel bldr-el-panel--game">
+                <div className="bldr-el-panel__header">
+                  <span className="bldr-el-panel__title">Your game</span>
+                  <button
+                    className="bldr-el-panel__close"
+                    onClick={() => { setShowElPanel(false); sendBridgeCmd('DESELECT'); }}
+                  >
+                    ×
+                  </button>
+                </div>
+                <p className="bldr-el-panel__hint">
+                  These are the settings inside this game. Move one and watch it change.
+                </p>
+                <button
+                  type="button"
+                  className="bldr-el-panel__jump"
+                  onClick={() => { openStudioTool('gameplay'); setShowElPanel(false); sendBridgeCmd('DESELECT'); }}
+                >
+                  Open the controls
+                </button>
+              </div>
+            )}
+
+            {onTab('change') && editModeOn && showElPanel && selectedEl
+              && !(selectedEl.tag === 'CANVAS' && gameSettings.length > 0) && (
               <div className="bldr-el-panel">
                 <div className="bldr-el-panel__header">
                   <span className="bldr-el-panel__title">
@@ -4281,10 +4448,26 @@ export default function Builder() {
             </button>
             <button
               className="bldr-mobile-play-bar__btn bldr-mobile-play-bar__btn--edit"
-              onClick={() => { setShowEditPanel(p => !p); setEditError(''); if (editModeOn) toggleEditMode(); }}
+              onClick={() => {
+                // Everything this button opens lives on the Change tab. Without
+                // this line, tapping Edit from Play or Keep flipped some state
+                // and showed the child nothing — the commonest kind of dead end
+                // on a phone, and completely silent.
+                setWorkspaceTab('change');
+                if (gameSettings.length > 0) {
+                  // A game with real settings: go straight to the controls
+                  // rather than to a text box asking them to describe a change.
+                  openStudioTool('gameplay');
+                  setShowEditPanel(false);
+                } else {
+                  setShowEditPanel(p => !p);
+                }
+                setEditError('');
+                if (editModeOn) toggleEditMode();
+              }}
               disabled={editing}
             >
-              Edit
+              {gameSettings.length > 0 ? 'Controls' : 'Edit'}
             </button>
             <button
               className="bldr-mobile-play-bar__btn bldr-mobile-play-bar__btn--save"
@@ -4465,12 +4648,17 @@ export default function Builder() {
         {hasResult && !loading && (
           <div className="bldr-creator-toolbar">
             {STUDIO_TOOLS
-              .filter(t => t.id !== 'gameplay' || /game|quiz|clicker|runner|memory|reaction/.test(projectType))
+              .filter(t => t.id !== 'gameplay' || gameSettings.length > 0)
               .map(tool => (
                 <button
                   key={tool.id}
                   className={`bldr-creator-tool bldr-creator-tool--${tool.id}${studioPanel === tool.id ? ' bldr-creator-tool--active' : ''}`}
-                  onClick={() => setStudioPanel(sp => sp === tool.id ? null : tool.id)}
+                  // This toolbar is fixed to the side of the window and shows on
+                  // every page of the studio, but the panel it opens only renders
+                  // on Change. Pressing a tool from Play used to set some state
+                  // and show nothing — the desktop twin of the dead end the
+                  // mobile Edit button had.
+                  onClick={() => openStudioTool(tool.id)}
                   disabled={editing}
                   title={tool.desc || tool.label}
                 >
