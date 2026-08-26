@@ -9,16 +9,15 @@
 //   1. the walls are selectable elements, not pixels
 //   2. moving one is picked up by the game
 //   3. the child's own file changes, so the level survives a reload
-const { chromium } = require('playwright-core');
+const { launch } = require('./browser');
 
-const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const BASE = 'http://localhost:4599';
 
 const problems = [];
 const fail = m => problems.push(m);
 
 async function run() {
-  const browser = await chromium.launch({ executablePath: EXE });
+  const browser = await launch();
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const page = await context.newPage();
 

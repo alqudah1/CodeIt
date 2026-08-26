@@ -1,0 +1,54 @@
+# ── Why this exists ──────────────────────────────────────────────────────────
+#
+# There was no CI. Nothing ran the tests on push, on a pull request, or before a
+# merge, so "did you run the suite?" was a question two people answered from
+# memory. It went wrong the obvious way: a refactor that moved page titles into
+# src/data/pageMeta.js shipped green because only the scripts/*.test.js suites
+# had been run, and main sat red until somebody happened to run the React tests.
+#
+# Nobody was careless. The repo just had no way to notice.
+#
+# This runs everything on every push and every pull request. It does not touch
+# the database and it does not deploy — see ops/db/migrate.js for why migrations
+# stay a thing a person does on purpose.
+
+name: tests
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # Named separately rather than run as one command, so a red tick says
+      # which half broke without anyone opening the log.
+      - name: Backend tests
+        run: npm test --workspace=@e-learning/codeit-backend
+
+      - name: Frontend tests
+        run: npm test --workspace=@e-learning/gamified-elearning -- --watchAll=false
+        env:
+          CI: true
+
+      # The suite passing and the build failing are different things, and the
+      # build is the one the visitor sees. CRA treats lint warnings as errors
+      # when CI is set, which has caught two unused variables that tests did not.
+      - name: Production build
+        run: npm run build:learning
+        env:
+          CI: true

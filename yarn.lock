@@ -1056,6 +1056,7 @@
   version "0.1.0"
   resolved "file:packages/gamified-elearning"
   dependencies:
+    "@codemirror/lang-html" "^6.4.12"
     "@codemirror/lang-python" "^6.1.7"
     "@e-learning/shared-auth" "1.0.0"
     "@testing-library/dom" "^10.4.0"
@@ -5757,6 +5758,11 @@ pkg-up@^3.1.0:
   version "3.1.0"
   dependencies:
     find-up "^3.0.0"
+
+playwright-core@^1.62.1:
+  version "1.62.1"
+  resolved "https://registry.npmjs.org/playwright-core/-/playwright-core-1.62.1.tgz"
+  integrity sha512-wPYSwEBJY9GHraISXqyqtx0na0LpO3XEX7jNDhntbex7tzUS7kLnZsOlFruFJB4Hi/rhDMjXGqHewDZ68nYZVw==
 
 possible-typed-array-names@^1.0.0:
   version "1.1.0"

@@ -3,9 +3,8 @@
 // The unit tests prove the parser and the rewriter. They cannot prove that the
 // control is reachable, that the running game hears the change, or that the
 // code the child later reads matches what they did. Only a browser can.
-const { chromium } = require('playwright-core');
+const { launch } = require('./browser');
 
-const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const BASE = 'http://localhost:4599';
 
 const SIZES = [
@@ -19,7 +18,7 @@ const problems = [];
 function fail(where, what) { problems.push(`${where}: ${what}`); }
 
 async function run() {
-  const browser = await chromium.launch({ executablePath: EXE });
+  const browser = await launch();
 
   for (const size of SIZES) {
     const context = await browser.newContext({

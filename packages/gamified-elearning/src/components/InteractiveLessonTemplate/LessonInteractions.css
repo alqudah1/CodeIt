@@ -310,3 +310,31 @@
   .li-choice__text { font-size: 0.88rem; }
   .li-line__arrows { flex-direction: column; }
 }
+
+/* ── An answer that was checked and was not right ─────────────────────────────
+   Before this existed, a wrong answer kept the same orange "chosen" styling it
+   had before it was checked, so nothing about the answer changed. The only
+   sign was a sentence below the button, and the button below that still read
+   "Check your answer to advance" — which is what the child had just done.
+   Three signals saying nothing happened, one saying it had. */
+
+.li-choice--wrong {
+  border-color: #D8443C;
+  background: #FDECEA;
+}
+
+.li-choice--wrong .li-choice__letter {
+  background: #D8443C;
+  color: #FFFFFF;
+}
+
+.li-choice--wrong .li-choice__verdict {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #B3352E;
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import CodeRunnerPython from '../CodeRunnerPython';
 import Header from '../../pages/Header/Header';
 import LessonGuide from '../LessonGuide/LessonGuide';
@@ -14,7 +14,7 @@ import { useSEO } from '../../hooks/useSEO';
 import { API_BASE_URL } from '../../config/api';
 import { getNextUnlock, getNextUnlockLabel } from '../../data/unlocks';
 import { usePlayerProgress } from '../../hooks/usePlayerProgress';
-import { TOTAL_LESSONS, builderPromptFor, seoFor } from '../../pages/Lessons/lessonRegistry';
+import { TOTAL_LESSONS, builderPromptFor, getLessonEntry, seoFor } from '../../pages/Lessons/lessonRegistry';
 import { hasQuiz, loadQuizIds } from '../../utils/quizAvailability';
 import { effectiveGuideLevel } from '../../utils/guideLevel';
 import { PredictOutput, FillBlank, OrderSteps } from './LessonInteractions';
@@ -473,6 +473,12 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   // Can the current step be proceeded past?
   const canProceed = currentStep?.type === 'concept' || isCurrentDone;
 
+  // The lesson either side of this one, when there is one. getLessonEntry
+  // returns null past the ends, so lesson 1 has no previous and lesson 31 has
+  // no next without either being special-cased here.
+  const previousLesson = getLessonEntry(Number(id) - 1);
+  const nextLesson = getLessonEntry(Number(id) + 1);
+
   // Next-button label
   const nextLabel = () => {
     if (isLastStep) {
@@ -482,7 +488,14 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
     if (currentStep?.type === 'concept') return 'Got It. Next Step';
     if (canProceed) return 'Step Complete. Next';
     if (currentStep?.type === 'example') return 'Run the code to continue';
-    if (isInteractionStep(currentStep)) return 'Check your answer to advance';
+    // "Check your answer to advance" is exactly what a child has just done when
+    // they get here after a wrong attempt, which reads as a broken screen
+    // rather than as an instruction.
+    if (isInteractionStep(currentStep)) {
+      return feedback[stepIdx] === 'incorrect'
+        ? 'Pick a different answer'
+        : 'Check your answer to advance';
+    }
     return 'Submit your answer to advance';
   };
 
@@ -736,6 +749,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                 <PredictOutput
                   step={currentStep}
                   chosen={picks[stepIdx]}
+                  wrong={feedback[stepIdx] === 'incorrect' ? picks[stepIdx] : undefined}
                   onChoose={(choice) => setPicks(prev => ({ ...prev, [stepIdx]: choice }))}
                   locked={isCurrentDone}
                 />
@@ -759,21 +773,25 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                 />
               )}
 
+              {/* Why it was wrong comes before the button that tries again.
+                  It used to sit underneath, so the reading order was
+                  answers → big orange button → the reason, and the reason was
+                  the last thing a child found. */}
+              {feedback[stepIdx] === 'incorrect' && !isCurrentDone && (
+                <div className="sl-feedback sl-feedback--incorrect" role="status">
+                  <span className="sl-feedback__icon" aria-hidden="true">✗</span>
+                  <div>{feedbackText[stepIdx] || 'Not quite. Try again.'}</div>
+                </div>
+              )}
+
               {!isCurrentDone && (
                 <button
                   className="sl-submit-btn"
                   onClick={() => submitAnswer(stepIdx, currentStep)}
                   disabled={picks[stepIdx] === undefined && currentStep.type === 'predict'}
                 >
-                  Check my answer
+                  {feedback[stepIdx] === 'incorrect' ? 'Check my new answer' : 'Check my answer'}
                 </button>
-              )}
-
-              {feedback[stepIdx] === 'incorrect' && !isCurrentDone && (
-                <div className="sl-feedback sl-feedback--incorrect">
-                  <span className="sl-feedback__icon" aria-hidden="true">✗</span>
-                  <div>{feedbackText[stepIdx] || 'Not quite. Try again.'}</div>
-                </div>
               )}
 
               {isCurrentDone && (
@@ -909,6 +927,32 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
             </button>
           </div>
         </div>
+
+        {/* ── The lesson before and the lesson after ────────────────────────
+            Thirty-one lesson pages, and until now not one of them linked to
+            another. The sitemap declared all thirty-one and nothing on the site
+            vouched for any of them: no chain to follow, no way to read the
+            course in order without going back to the map, and nothing for a
+            crawler to walk.
+
+            These are plain anchors and they are always present. Reading the
+            next lesson's page is not the same as completing it, and the gate
+            that stops a child skipping ahead lives on the lesson itself. */}
+        <nav className="sl-around" aria-label="Other lessons">
+          {previousLesson && (
+            <Link className="sl-around__link sl-around__link--prev" to={`/lesson/${previousLesson.data.id}`}>
+              <span className="sl-around__where">Lesson {previousLesson.data.id}</span>
+              <span className="sl-around__title">{previousLesson.data.title}</span>
+            </Link>
+          )}
+          {nextLesson && (
+            <Link className="sl-around__link sl-around__link--next" to={`/lesson/${nextLesson.data.id}`}>
+              <span className="sl-around__where">Lesson {nextLesson.data.id}</span>
+              <span className="sl-around__title">{nextLesson.data.title}</span>
+            </Link>
+          )}
+          <Link className="sl-around__all" to="/lessons">All {TOTAL_LESSONS} lessons</Link>
+        </nav>
 
         {/* ── Finish early: visible once at least one code step is done ── */}
         {anyCodeDone && !isLastStep && (

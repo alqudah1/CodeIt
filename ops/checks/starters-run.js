@@ -5,9 +5,8 @@
 // nothing, or has controls a finger cannot reach. Only a browser can, and a
 // starter that crashes is the worst thing to ship: it is the first thing a
 // child touches.
-const { chromium } = require('playwright-core');
+const { launch } = require('./browser');
 
-const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const BASE = 'http://localhost:4599';
 
 // Read from the source, not typed out here.
@@ -59,7 +58,7 @@ const problems = [];
 const fail = (w, m) => problems.push(`${w}: ${m}`);
 
 async function run() {
-  const browser = await chromium.launch({ executablePath: EXE });
+  const browser = await launch();
 
   for (const size of SIZES) {
     for (const starter of STARTERS) {

@@ -11,7 +11,7 @@
 //
 // Serve a production build on port 4599 first (npx serve -s build -l 4599).
 // Everything in src/styles/reachable.css exists because this reported it.
-const { chromium } = require('playwright-core');
+const { launch } = require('./browser');
 
 const DEVICES = [
   { name: 'small phone',  width: 320, height: 568, touch: true },
@@ -120,7 +120,7 @@ async function audit(page) {
 }
 
 (async () => {
-  const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
+  const browser = await launch();
   let totalProblems = 0;
 
   for (const device of DEVICES) {

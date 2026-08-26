@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ENDPOINTS } from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../Header/Header';
@@ -125,14 +125,27 @@ const LessonMap = () => {
                   />
                 )}
 
-                {/* Lesson card */}
-                <div
+                {/* ── Lesson card ────────────────────────────────────────────
+                    A real anchor, not a div that calls navigate().
+
+                    Thirty-one lesson pages are generated at build time and all
+                    thirty-one are in the sitemap, so they are discoverable. But
+                    nothing on this site linked to a single one of them: the
+                    cards were divs with an onClick, which no crawler follows and
+                    no middle-click opens in a new tab. A page a sitemap declares
+                    and nothing links to is a page nothing vouches for.
+
+                    Locked lessons still get an href. The lesson page renders
+                    perfectly well on its own, and a child who taps one gets the
+                    same toast as before because the click is intercepted here —
+                    the href is for the crawler and for the middle click, not a
+                    way around the gate. */}
+                <Link
+                  to={`/lesson/${lesson.id}`}
                   ref={isNext ? nextRef : null}
                   className={`lm-card lm-card--${status}${isNext ? ' lm-card--next' : ''}`}
-                  onClick={() => handleLessonClick(lesson)}
-                  role="button"
+                  onClick={(e) => { e.preventDefault(); handleLessonClick(lesson); }}
                   tabIndex={status === 'locked' ? -1 : 0}
-                  onKeyDown={(e) => e.key === 'Enter' && handleLessonClick(lesson)}
                   aria-label={`Lesson ${lesson.id}: ${lesson.title}. ${status}`}
                 >
                   {/* Number bubble */}
@@ -159,7 +172,7 @@ const LessonMap = () => {
                   {status !== 'locked' && (
                     <span className="lm-arrow" aria-hidden="true">›</span>
                   )}
-                </div>
+                </Link>
               </div>
             );
           })}

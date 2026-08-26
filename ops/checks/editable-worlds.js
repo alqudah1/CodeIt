@@ -13,9 +13,8 @@
 //
 // A unit test cannot answer it. It needs the real editor, the real overlay, the
 // real iframe and a real mouse.
-const { chromium } = require('playwright-core');
+const { launch } = require('./browser');
 
-const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const BASE = 'http://localhost:4599';
 
 // starter id → a selector for one piece of its world, and how many there
@@ -47,7 +46,7 @@ async function openEditor(page) {
 }
 
 async function run() {
-  const browser = await chromium.launch({ executablePath: EXE });
+  const browser = await launch();
 
   for (const world of WORLDS) {
     const where = world.id;

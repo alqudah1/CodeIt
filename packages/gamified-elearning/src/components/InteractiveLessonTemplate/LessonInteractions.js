@@ -17,7 +17,17 @@ import './LessonInteractions.css';
 // Read the code, say what it will print. No typing, and it tests understanding
 // more directly than running someone else's code does.
 
-export function PredictOutput({ step, chosen, onChoose, locked }) {
+/**
+ * A multiple-choice question.
+ *
+ * `wrong` is the index of an answer that has been checked and was not right.
+ * It exists because without it there was no such state: a child tapped an
+ * answer, pressed Check my answer, was told no — and the answer they tapped
+ * looked exactly as it had a second earlier, still outlined in orange as
+ * though it had been accepted. Three things on the screen said nothing had
+ * happened and one sentence underneath said it had.
+ */
+export function PredictOutput({ step, chosen, onChoose, wrong, locked }) {
   return (
     <div className="li-block">
       <p className="li-prompt">{step.question || 'What will this code print?'}</p>
@@ -33,19 +43,23 @@ export function PredictOutput({ step, chosen, onChoose, locked }) {
       <div className="li-choices" role="group" aria-label="Choose the output">
         {(step.choices || []).map((choice, index) => {
           const isChosen = Number(chosen) === index;
+          const isWrong = Number(wrong) === index;
           return (
             <button
               key={choice}
               type="button"
-              className={`li-choice${isChosen ? ' li-choice--chosen' : ''}`}
+              className={`li-choice${isChosen ? ' li-choice--chosen' : ''}${isWrong ? ' li-choice--wrong' : ''}`}
               onClick={() => !locked && onChoose(index)}
               disabled={locked}
               aria-pressed={isChosen}
             >
               <span className="li-choice__letter" aria-hidden="true">
-                {String.fromCharCode(65 + index)}
+                {isWrong ? '✗' : String.fromCharCode(65 + index)}
               </span>
               <span className="li-choice__text">{choice}</span>
+              {/* Colour alone does not carry this. Roughly one boy in twelve
+                  cannot tell the orange from the red. */}
+              {isWrong && <span className="li-choice__verdict">Not this one</span>}
             </button>
           );
         })}
