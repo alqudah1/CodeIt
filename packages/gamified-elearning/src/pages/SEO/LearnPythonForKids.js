@@ -30,7 +30,7 @@ const FAQS = [
 
 export default function LearnPythonForKids() {
   useSEO({
-    title:       'Free Python for Kids Online | 16 Interactive Lessons | CodeIt',
+    title:       'Free Python for Kids Online | 31 Interactive Lessons | CodeIt',
     description: 'Start learning Python for free with 31 interactive browser lessons, real code, quizzes, and projects. No download or signup is needed to open Lesson 1.',
     canonical:   '/learn-python-for-kids',
   });
