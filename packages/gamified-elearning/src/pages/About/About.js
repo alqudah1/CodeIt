@@ -8,7 +8,7 @@ export default function About() {
   useSEO({
     title: 'About CodeIt',
     description:
-      'CodeIt is a browser-based coding studio for ages 5–18, built in Toronto. Learners build websites, games and quizzes, then edit the real code behind them.',
+      'CodeIt is a browser-based coding studio for ages 5–18, built in Toronto. Learners describe a website, game or quiz, change it by moving things and picking colours, then see the code behind it.',
     canonical: '/about',
   });
 

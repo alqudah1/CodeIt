@@ -94,7 +94,7 @@ const BASE_PAGES = [
   {
     route: '/ai-website-builder-for-kids',
     title: 'AI Website Builder for Kids: Build & Learn the Code | CodeIt',
-    description: 'Kids can turn an idea into an editable website, game, or quiz, then inspect and change the HTML, CSS, and JavaScript behind it.',
+    description: 'Kids can turn an idea into a website, game, or quiz, change it by moving things and picking colours, then see the HTML, CSS, and JavaScript behind it.',
     eyebrow: 'Creative coding for ages 5–18',
     h1: 'An AI website builder for kids that teaches the code.',
     intro: 'CodeIt helps a young creator turn an idea into a website, game, or quiz, then change the design, inspect the real code, and understand how the project works.',
@@ -104,7 +104,7 @@ const BASE_PAGES = [
   {
     route: '/builder',
     title: 'AI Website Builder for Kids & Beginners | CodeIt',
-    description: 'Describe a website, game, or quiz, build it in the browser, then inspect and edit the HTML, CSS, and JavaScript behind it.',
+    description: 'Describe a website, game, or quiz, build it in the browser, then see the HTML, CSS, and JavaScript behind it.',
     eyebrow: 'Project studio',
     h1: 'Build a website. Then learn how it works.',
     intro: 'CodeIt turns an idea into a working browser project, but the finished result is only the beginning. Students can play with it, edit individual elements, inspect the code, save versions, and publish a link.',
@@ -367,7 +367,7 @@ const IDENTITY_PAGES = [
     route: '/about',
     title: 'About CodeIt',
     description:
-      'CodeIt is a browser-based coding studio for ages 5–18, built in Toronto. Learners build websites, games and quizzes, then edit the real code behind them.',
+      'CodeIt is a browser-based coding studio for ages 5–18, built in Toronto. Learners describe a website, game or quiz, change it by moving things and picking colours, then see the code behind it.',
     eyebrow: 'About',
     h1: 'About CodeIt',
     intro: `CodeIt is a browser-based coding studio for learners aged 5 to 18, built in ${COMPANY.locationLine()}${COMPANY.founderName ? ` by ${COMPANY.founderName}` : ''}. A learner describes a website, game or quiz; CodeIt builds a working first version; and then the learner opens it up and changes it.`,
@@ -646,7 +646,7 @@ const HOME_PAGE = {
   // different headline from the page a person sees is the one kind of drift
   // worth avoiding at any SEO cost. "Website" is retained because it is what
   // the page has been indexed under.
-  h1: 'Make a real game or website. Then change the code inside it.',
+  h1: 'Make a real game or website. Then see the code inside it.',
   intro:
     'CodeIt helps kids and beginner coders create websites, games, and quizzes, inspect the code behind them, and keep improving every project. Learners are then asked questions generated from their own code, so understanding is shown rather than assumed.',
   detail:
