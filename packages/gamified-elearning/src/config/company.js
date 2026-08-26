@@ -59,6 +59,10 @@ const COMPANY = {
   sameAs: [
     'https://www.linkedin.com/company/codeitlearn',
     'https://www.youtube.com/@CodeItLearn1',
+    'https://www.crunchbase.com/organization/codeit-learn',
+    'https://www.facebook.com/codeitlearn',
+    'https://www.instagram.com/codeitlearn',
+    'https://www.tiktok.com/@codeitlearn',
   ],
 };
 
