@@ -39,8 +39,6 @@ function builderLink(prompt) {
 
 export default function FirstGameChallenge() {
   useSEO({
-    title: 'Build Your First Game Free | 10-Minute Coding Challenge | CodeIt',
-    description: 'Choose a game idea, build a playable first version, change it, save it, and earn XP. A free coding challenge for young creators ages 5 to 18.',
     canonical: '/first-game-challenge',
   });
 

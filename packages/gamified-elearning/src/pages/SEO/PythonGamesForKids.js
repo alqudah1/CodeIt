@@ -29,8 +29,6 @@ const FAQS = [
 
 export default function PythonGamesForKids() {
   useSEO({
-    title:       'Python Games for Kids | Coding Puzzles. CodeIt',
-    description: 'Python games for kids. Solve coding puzzles and beat game challenges to learn Python on CodeIt. Unlock new games as you complete each lesson.',
     canonical:   '/python-games-for-kids',
   });
   useFAQSchema(FAQS);

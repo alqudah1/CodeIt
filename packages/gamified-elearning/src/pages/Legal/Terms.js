@@ -14,8 +14,6 @@ const UPDATED = 'August 22, 2026';
 
 export default function Terms() {
   useSEO({
-    title: 'Terms of Use | CodeIt',
-    description: 'The rules for using CodeIt lessons, coding tools, AI-assisted projects, accounts, public sharing, and planned paid features.',
     canonical: '/terms',
   });
 

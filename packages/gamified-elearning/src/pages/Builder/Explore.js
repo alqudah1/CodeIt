@@ -150,8 +150,6 @@ export default function Explore() {
   const [toast,      setToast]      = useState('');
 
   useSEO({
-    title: 'Student Coding Projects: Play, Remix & Learn | CodeIt',
-    description: 'Explore websites, games, quizzes, and tools shared by CodeIt learners. Play a project, remix an idea, or build your own.',
     canonical: '/explore',
   });
 

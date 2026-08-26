@@ -60,8 +60,6 @@ const buildAchievements = (lessons, quizzes, puzzles, streak) => [
 
 const MainPage = () => {
   useSEO({
-    title:       'Your progress | CodeIt. Python Learning Progress',
-    description: 'Track your Python lessons, quizzes, and coding challenges. See your XP, streak, achievements, and next mission on your CodeIt progress page.',
     canonical:   '/MainPage',
     robots:      'noindex,nofollow',
   });

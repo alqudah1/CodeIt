@@ -7,9 +7,6 @@ import './Guide.css';
 
 export default function GuideIndex() {
   useSEO({
-    title: 'Coding Guides for Parents, Teachers & Beginners | CodeIt',
-    description:
-      'Practical, current guides on choosing coding tools, publishing a first project, and knowing whether a child actually learned anything.',
     canonical: '/guide',
   });
 

@@ -20,8 +20,6 @@ function formatDate(iso) {
 
 export default function BlogIndex() {
   useSEO({
-    title:       'Blog | CodeIt. Python Learning for Kids',
-    description: 'Tips, guides, and resources to help kids learn Python programming. Explore lessons, coding games, and how to start coding as a beginner.',
     canonical:   '/blog',
   });
 

@@ -20,8 +20,6 @@ const avatarColour = (name) => {
 
 const Leaderboard = () => {
   useSEO({
-    title:       'Leaderboard | CodeIt',
-    description: 'See CodeIt creators climb the rankings by building projects, publishing their work, and completing coding challenges.',
     canonical:   '/leaderboard',
     robots:      'noindex,nofollow',
   });

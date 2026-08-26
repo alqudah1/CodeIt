@@ -16,8 +16,6 @@ export default function ResetPassword() {
   const token = searchParams.get('token') || '';
 
   useSEO({
-    title: 'Choose New Password | CodeIt',
-    description: 'Choose a new password for your CodeIt account.',
     canonical: '/reset-password',
     robots: 'noindex,nofollow',
   });

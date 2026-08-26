@@ -30,8 +30,6 @@ export default function ParentReview() {
   const [completed, setCompleted] = useState(false);
 
   useSEO({
-    title: 'Parent Review | CodeIt',
-    description: 'Review and manage an existing CodeIt learner account.',
     canonical: '/parent-review',
     robots: 'noindex,nofollow',
   });

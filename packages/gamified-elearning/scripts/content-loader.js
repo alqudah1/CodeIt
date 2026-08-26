@@ -130,7 +130,21 @@ function loadPricing() {
   return pricing;
 }
 
+/**
+ * Title and description per route, shared with the React app's useSEO hook.
+ * Both sides reading one object is what stops a page telling a person one
+ * thing and a crawler another.
+ */
+function loadPageMeta() {
+  const meta = loadEsmDefault(path.join(SRC, 'data/pageMeta.js'));
+  if (!meta || typeof meta !== 'object' || !Object.keys(meta).length) {
+    throw new Error('content-loader: pageMeta.js did not export a non-empty object');
+  }
+  return meta;
+}
+
 module.exports = {
+  loadPageMeta,
   loadPricing,
   loadBlogPosts,
   loadLessons,
