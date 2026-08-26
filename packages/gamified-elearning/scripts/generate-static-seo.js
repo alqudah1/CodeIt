@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const {
+  loadPageMeta,
   loadPricing,
   loadBlogPosts,
   loadLessons,
@@ -93,8 +94,6 @@ const BLOG_POSTS = [
 const BASE_PAGES = [
   {
     route: '/ai-website-builder-for-kids',
-    title: 'AI Website Builder for Kids: Build & Learn the Code | CodeIt',
-    description: 'Kids can turn an idea into a website, game, or quiz, change it by moving things and picking colours, then see the HTML, CSS, and JavaScript behind it.',
     eyebrow: 'Creative coding for ages 5–18',
     h1: 'An AI website builder for kids that teaches the code.',
     intro: 'CodeIt helps a young creator turn an idea into a website, game, or quiz, then change the design, inspect the real code, and understand how the project works.',
@@ -103,8 +102,6 @@ const BASE_PAGES = [
   },
   {
     route: '/builder',
-    title: 'AI Website Builder for Kids & Beginners | CodeIt',
-    description: 'Describe a website, game, or quiz, build it in the browser, then see the HTML, CSS, and JavaScript behind it.',
     eyebrow: 'Project studio',
     h1: 'Build a website. Then learn how it works.',
     intro: 'CodeIt turns an idea into a working browser project, but the finished result is only the beginning. Students can play with it, edit individual elements, inspect the code, save versions, and publish a link.',
@@ -113,8 +110,6 @@ const BASE_PAGES = [
   },
   {
     route: '/first-game-challenge',
-    title: 'Build Your First Game Free | 10-Minute Coding Challenge | CodeIt',
-    description: 'Choose a game idea, build a playable first version, change it, save it, and earn XP. A free coding challenge for young creators ages 5–18.',
     eyebrow: 'Free first-game challenge · Ages 5–18',
     h1: 'Build your first game. Make it yours.',
     intro: 'Choose a reaction game, football penalty game, or pet-catching game. CodeIt creates a playable starting point, then the learner changes it, tests it, and saves it.',
@@ -123,8 +118,6 @@ const BASE_PAGES = [
   },
   {
     route: '/lessons',
-    title: 'Beginner Coding Lessons for Kids | CodeIt',
-    description: 'Follow short beginner coding lessons covering Python variables, strings, decisions, loops, lists, and functions.',
     eyebrow: 'Beginner learning path',
     h1: 'Learn one coding idea at a time.',
     intro: 'CodeIt lessons introduce one concept, let students try it immediately, and connect the idea to projects they can build and change.',
@@ -133,8 +126,6 @@ const BASE_PAGES = [
   },
   {
     route: '/journey',
-    title: 'Interactive Python Learning Journey for Kids | CodeIt',
-    description: 'Move through a structured Python journey with lessons, quizzes, puzzles, XP, and visible progress.',
     eyebrow: 'Structured practice',
     h1: 'A clear next step for every beginner.',
     intro: 'The CodeIt journey combines short explanations with quizzes and hands-on challenges, so students practice instead of only watching.',
@@ -143,8 +134,6 @@ const BASE_PAGES = [
   },
   {
     route: '/games',
-    title: 'Coding Games & Python Challenges for Kids | CodeIt',
-    description: 'Practice beginner Python through interactive coding games, puzzles, scores, and challenges that run in the browser.',
     eyebrow: 'Challenge arcade',
     h1: 'Practice coding through playable challenges.',
     intro: 'Each CodeIt challenge reinforces a real programming idea, including print statements, variables, strings, decisions, and loops.',
@@ -153,8 +142,6 @@ const BASE_PAGES = [
   },
   {
     route: '/playground',
-    title: 'Free Online Python Playground for Beginners | CodeIt',
-    description: 'Write and run beginner Python directly in your browser with no download or local setup.',
     eyebrow: 'Python playground',
     h1: 'Run Python in your browser.',
     intro: 'Use the CodeIt playground to test a small idea, change an example, or practice a lesson without installing Python.',
@@ -163,8 +150,6 @@ const BASE_PAGES = [
   },
   {
     route: '/explore',
-    title: 'Explore Student Coding Projects | CodeIt',
-    description: 'Open public websites, games, and quizzes made with CodeIt, then remix a project into your own version.',
     eyebrow: 'Community projects',
     h1: 'See what other beginners are building.',
     intro: 'Published CodeIt projects are playable in the browser. Students can use them for inspiration and remix a copy without changing the original.',
@@ -173,8 +158,6 @@ const BASE_PAGES = [
   },
   {
     route: '/coding-for-kids',
-    title: 'Coding for Kids: Projects, Python & Parent Guide | CodeIt',
-    description: 'A project-first coding platform for ages 5–18, with private parent-managed profiles for ages 5–12. Build websites, games and quizzes, then learn the code.',
     eyebrow: 'For parents & educators',
     h1: 'A first coding project they’ll want to keep improving.',
     intro: 'CodeIt helps a beginner turn an idea into a website, game, or quiz, then change the design, inspect the code, and understand what makes it work.',
@@ -183,8 +166,6 @@ const BASE_PAGES = [
   },
   {
     route: '/learn-python-for-kids',
-    title: 'Free Python for Kids Online | 31 Interactive Lessons | CodeIt',
-    description: 'Start learning Python for free with 31 interactive browser lessons, real code, quizzes, and projects. No download or signup is needed to open Lesson 1.',
     eyebrow: 'Beginner Python, in the browser',
     h1: 'Learn Python by making something work.',
     intro: 'Write a line, run it, and see what changed. CodeIt gives beginners a clear path through real Python without downloads or a wall of theory first.',
@@ -193,8 +174,6 @@ const BASE_PAGES = [
   },
   {
     route: '/python-games-for-kids',
-    title: 'Python Games for Kids | Real Coding Puzzles — CodeIt',
-    description: 'Use real Python to solve browser-based games and coding puzzles about variables, loops, decisions, and beginner programming.',
     eyebrow: 'Real Python, playful challenges',
     h1: 'Python games that make every line matter.',
     intro: 'Each short challenge gives a beginner a reason to use loops, variables, or conditions. They type real Python, run it, and see what their code changed.',
@@ -203,8 +182,6 @@ const BASE_PAGES = [
   },
   {
     route: '/blog',
-    title: 'Coding Guides for Kids, Parents & Beginners | CodeIt',
-    description: 'Read practical guides about learning Python, choosing coding activities, and helping a beginner build confidence.',
     eyebrow: 'CodeIt guides',
     h1: 'Clear coding guidance for beginners and parents.',
     intro: 'The CodeIt blog answers common questions about where to start, what children can build, and how coding games support real learning.',
@@ -213,8 +190,6 @@ const BASE_PAGES = [
   },
   {
     route: '/pricing',
-    title: 'CodeIt Pricing: Free Coding & Family Pilot',
-    description: 'Start free with no card. The CodeIt family plan is CA$12 a month, cancellable at any time, with guided setup, parent progress and learner profiles.',
     eyebrow: 'Free family pilot',
     h1: 'Start free. Join the family pilot when you want more support.',
     intro: 'CodeIt keeps a useful free option for beginners, and a paid family plan for households that want more.',
@@ -223,8 +198,6 @@ const BASE_PAGES = [
   },
   {
     route: '/privacy',
-    title: 'Privacy & Safety | CodeIt',
-    description: 'How CodeIt handles account information, learning progress, projects, AI processing, analytics, public sharing, and child safety.',
     eyebrow: 'Privacy & safety',
     h1: 'Clear information about what CodeIt collects—and why.',
     intro: 'CodeIt collects information needed to run accounts, save learning progress, and build projects. It does not sell personal information or run behavioural advertising.',
@@ -235,8 +208,6 @@ const BASE_PAGES = [
   },
   {
     route: '/terms',
-    title: 'Terms of Use | CodeIt',
-    description: 'The rules for using CodeIt lessons, coding tools, AI-assisted projects, accounts, public sharing, and planned paid features.',
     eyebrow: 'Terms of use',
     h1: 'Build freely. Learn responsibly. Keep people safe.',
     intro: 'These terms explain the current rules for using CodeIt accounts, lessons, project tools, AI-assisted results, and public sharing.',
@@ -365,9 +336,6 @@ function pricingSections() {
 const IDENTITY_PAGES = [
   {
     route: '/about',
-    title: 'About CodeIt',
-    description:
-      'CodeIt is a browser-based coding studio for ages 5–18, built in Toronto. Learners describe a website, game or quiz, change it by moving things and picking colours, then see the code behind it.',
     eyebrow: 'About',
     h1: 'About CodeIt',
     intro: `CodeIt is a browser-based coding studio for learners aged 5 to 18, built in ${COMPANY.locationLine()}${COMPANY.founderName ? ` by ${COMPANY.founderName}` : ''}. A learner describes a website, game or quiz; CodeIt builds a working first version; and then the learner opens it up and changes it.`,
@@ -429,9 +397,6 @@ const IDENTITY_PAGES = [
   },
   {
     route: '/faq',
-    title: 'CodeIt FAQ: Ages, Cost, Safety & What It Does Not Do',
-    description:
-      'Straight answers about CodeIt — age ranges, what it costs, whether projects are public, what it does not do, and how it differs from Scratch.',
     eyebrow: 'Questions',
     h1: 'Questions parents ask first',
     intro: 'Including the ones with awkward answers. If something here is out of date, it is a bug.',
@@ -637,9 +602,6 @@ const SECTIONS_BY_ROUTE = {
 // other route uses build/index.html as its shell.
 const HOME_PAGE = {
   route: '/',
-  title: 'Coding for Kids: Build Websites & Learn the Code | CodeIt',
-  description:
-    'CodeIt is a browser-based coding platform for ages 5\u201318. Describe a website, game or quiz, play what comes back, change it by moving things and picking colours, then see what it is made of.',
   eyebrow: 'Creative coding for ages 5–18',
   // Kept in step with the real page. The app's headline changed when the front
   // door became three tappable games, and a crawlable copy that claims a
@@ -802,6 +764,37 @@ const PAGES = [
     };
   }),
 ];
+
+/**
+ * Titles and descriptions come from src/data/pageMeta.js, which the React app's
+ * useSEO hook reads too. They used to be written in both places and drifted:
+ * eleven of sixteen pairs disagreed, and two of the disagreements were a wrong
+ * price and a false claim about what children do.
+ *
+ * Lesson, blog and guide routes are absent from that file on purpose — their
+ * titles are built from their own content just above, and copying derived text
+ * into a config file would recreate the duplication this removes. So a missing
+ * entry is only an error for a page that is supposed to have one.
+ */
+const PAGE_META = loadPageMeta();
+
+for (const page of [HOME_PAGE, ...PAGES]) {
+  const meta = PAGE_META[page.route || '/'];
+  if (meta) {
+    page.title = meta.title;
+    page.description = meta.description;
+  }
+}
+
+for (const page of [HOME_PAGE, ...PAGES]) {
+  if (!page.title || !page.description) {
+    throw new Error(
+      `generate-static-seo: ${page.route || '/'} has no title or description. ` +
+        'Hand-written pages get theirs from src/data/pageMeta.js; add an entry there.'
+    );
+  }
+}
+
 
 function escapeHtml(value) {
   return String(value)

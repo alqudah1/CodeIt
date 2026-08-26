@@ -30,8 +30,6 @@ const NEXT_MILESTONES = [
 
 export default function InvestorBrief() {
   useSEO({
-    title: 'CodeIt Investor Overview',
-    description: 'An unlisted, honest overview of the CodeIt product, market thesis, business model, and validation plan.',
     canonical: '/investor-brief',
     robots: 'noindex,nofollow',
   });

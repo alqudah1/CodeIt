@@ -147,8 +147,6 @@ const EMPTY_PROG = {
 // ── Component ───────────────────────────────────────────────────
 export default function JourneyMap() {
   useSEO({
-    title:       'Your Coding Journey | CodeIt',
-    description: 'Track your progress through Python lessons, quizzes, and coding puzzles on CodeIt\'s interactive learning map.',
     canonical:   '/journey',
   });
 

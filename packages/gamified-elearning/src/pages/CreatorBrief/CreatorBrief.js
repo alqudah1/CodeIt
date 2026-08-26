@@ -82,8 +82,6 @@ export default function CreatorBrief() {
   const trackedLinks = useMemo(() => campaignLinks(campaignCode), [campaignCode]);
 
   useSEO({
-    title: 'CodeIt Creator Brief',
-    description: 'An unlisted collaboration brief for demonstrating and promoting CodeIt accurately.',
     canonical: '/creator-brief',
     robots: 'noindex,nofollow',
   });

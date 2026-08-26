@@ -8,8 +8,6 @@ const UPDATED = 'August 25, 2026';
 
 export default function Privacy() {
   useSEO({
-    title: 'Privacy & Safety | CodeIt',
-    description: 'How CodeIt handles account information, learning progress, projects, AI processing, analytics, public sharing, and child safety.',
     canonical: '/privacy',
   });
 

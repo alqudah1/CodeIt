@@ -29,8 +29,6 @@ function getLevelTitle(level) {
 
 export default function Profile() {
   useSEO({
-    title: 'My Profile. CodeIt',
-    description: 'Your avatar, XP, and level on CodeIt.',
     canonical: '/profile',
     robots: 'noindex,nofollow',
   });

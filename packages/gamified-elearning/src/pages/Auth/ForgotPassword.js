@@ -13,8 +13,6 @@ export default function ForgotPassword() {
   const [sending, setSending] = useState(false);
 
   useSEO({
-    title: 'Reset Password | CodeIt',
-    description: 'Request a secure link to reset your CodeIt password.',
     canonical: '/forgot-password',
     robots: 'noindex,nofollow',
   });

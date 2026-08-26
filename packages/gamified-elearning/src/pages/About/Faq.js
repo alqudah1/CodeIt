@@ -30,9 +30,6 @@ function useFaqPageJsonLd() {
 
 export default function Faq() {
   useSEO({
-    title: 'CodeIt FAQ: Ages, Cost, Safety & What It Does Not Do',
-    description:
-      'Straight answers about CodeIt — age ranges, what it costs, whether projects are public, what it does not do, and how it differs from Scratch.',
     canonical: '/faq',
   });
   useFaqPageJsonLd();

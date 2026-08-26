@@ -71,8 +71,6 @@ export default function Pricing() {
   const [billingError, setBillingError] = useState('');
 
   useSEO({
-    title: 'CodeIt Pricing: Free Coding & Family Pilot',
-    description: 'Start free with no card. The CodeIt family plan is CA$12 a month, cancellable at any time, with guided setup, parent progress and learner profiles.',
     canonical: '/pricing',
   });
 

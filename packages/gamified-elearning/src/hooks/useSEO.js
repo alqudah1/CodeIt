@@ -1,20 +1,30 @@
 import { useEffect } from "react";
+import PAGE_META from "../data/pageMeta";
 
 const BASE_URL = "https://codeitlearn.com";
 const DEFAULT_IMAGE = `${BASE_URL}/brand/og-image.png`;
 
 const DEFAULTS = {
   title: "Coding for Kids: Build Websites & Learn the Code | CodeIt",
-  description: "CodeIt helps kids and beginner coders build websites, games, and quizzes, then understand and edit the code behind each project.",
+  // Not "edit the code behind each project". This default is what any page
+  // without its own entry shows, so a false claim here is a false claim on
+  // whichever page forgets to say otherwise.
+  description: "CodeIt is a browser-based coding studio for ages 5 to 18. Describe a website, game or quiz, change it by moving things and picking colours, then see what it is made of.",
   canonical: "/",
   image: DEFAULT_IMAGE,
 };
 
 export function useSEO({ title, description, canonical, image, robots = "index,follow" } = {}) {
   useEffect(() => {
-    const resolvedTitle = title ?? DEFAULTS.title;
-    const resolvedDescription = description ?? DEFAULTS.description;
     const resolvedCanonical = canonical ?? DEFAULTS.canonical;
+
+    // A page passes its canonical and nothing else. The title and description
+    // for that route live in src/data/pageMeta.js, which the static generator
+    // reads too, so the two cannot drift apart. An explicit title or
+    // description still wins, for the pages whose text is built at runtime.
+    const meta = PAGE_META[resolvedCanonical] || {};
+    const resolvedTitle = title ?? meta.title ?? DEFAULTS.title;
+    const resolvedDescription = description ?? meta.description ?? DEFAULTS.description;
     const resolvedImage = image
       ? (image.startsWith("http") ? image : `${BASE_URL}${image}`)
       : DEFAULTS.image;

@@ -56,8 +56,6 @@ const Playground = () => {
   const navigate = useNavigate();
 
   useSEO({
-    title:       'Free Python Playground. Run Python in Your Browser | CodeIt',
-    description: 'Write and run Python code instantly in your browser. Free online Python playground with starter presets. No install needed. Perfect for beginners.',
     canonical:   '/playground',
   });
 
