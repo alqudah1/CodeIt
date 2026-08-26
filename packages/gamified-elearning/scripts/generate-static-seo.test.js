@@ -625,20 +625,27 @@ test('sameAs reaches the Organization node when populated', () => {
    the project is made of and links to the lesson behind each idea. */
 
 test('no page claims children write or edit code as the main activity', () => {
+  // Four rounds of this test have now been written by matching the phrasings
+  // that happened to be on screen, and each one passed while the same claim sat
+  // in wording it had not anticipated: "edit the real HTML" was caught and "edit
+  // the real code behind them" was not; then llms.txt said "inspect and edit the
+  // generated HTML" and "inspect, edit, save, and share the code behind their
+  // projects", and both slipped through again.
+  //
+  // These two describe the grammar of the false claim instead of its vocabulary.
+  // A: an edit verb governing the code, or the HTML/CSS/JS, directly.
+  // B: an edit verb in a list whose object is the code *behind* or *inside* a
+  //    project.
+  // Both were built against the real strings in this repo, the true ones as well
+  // as the false ones: 9 false claims and 13 true ones, with the patterns
+  // required to catch every false one and flag none of the true ones. That is
+  // why "changing the code, watching it break" in the AI guide and "a challenge
+  // that requires changing the code" on the lesson pages stay legal. Children
+  // do write Python in the lessons. What they do not do is edit the generated
+  // code of a project the studio built, and only that shape is caught here.
   const OVERSTATED = [
-    /edits? the real HTML/i,
-    /edit the actual HTML/i,
-    /inspect and edit the real/i,
-    /see the code, change the code/i,
-    /wants? to write real HTML/i,
-    // The five patterns above were written against the exact phrasings found
-    // the day this test was added, so they missed every later rewording. These
-    // two describe the shape of the false claim instead: changing or editing
-    // the code, or the HTML/CSS/JS, *of an existing project*. A Python lesson
-    // that says "write code" is not this, which is why "behind"/"inside" and
-    // the explicit language names are load-bearing rather than decoration.
-    /(edit|change)[a-z]*\s+(the\s+)?(real\s+|actual\s+)?(code|HTML|CSS|JavaScript)\b[^.]{0,40}\b(behind|inside)\b/i,
-    /(edit|change)[a-z]*\s+the\s+(HTML|CSS|JavaScript)\b/i,
+    /\b(?:edit|edits|editing|change|changes|changing)\s+(?:[a-z]+\s+){0,3}?(?:and\s+)?(?:the\s+)?(?:(?:real|actual|generated)\s+(?:code|HTML|CSS|JavaScript)|the\s+(?:HTML|CSS|JavaScript))\b/i,
+    /\b(?:edit|edits|editing|change|changes|changing)\b[^.]{0,25}?\bthe\s+(?:real\s+|actual\s+|generated\s+)?(?:code|HTML|CSS|JavaScript)\b[^.]{0,25}?\b(?:behind|inside)\b/i,
   ];
   // Every field that reaches a rendered page, not the subset being edited at
   // the time. h1 was missing from this list, and the homepage h1 — the single

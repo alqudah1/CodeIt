@@ -1,6 +1,6 @@
 # CodeIt
 
-> CodeIt is a creative coding studio for young creators. Students build websites, games, and quizzes, then inspect, edit, save, and share the code behind their projects.
+> CodeIt is a browser-based coding studio for ages 5 to 18. Learners describe a website, game or quiz, play what comes back, change it by moving things and picking colours, then see what the finished project is made of.
 
 Canonical website: https://codeitlearn.com/
 Brand names: CodeIt, CodeItLearn, Code It Learn
@@ -8,7 +8,7 @@ Primary audience: Young creators ages 5–18, families, and beginner coders. A p
 
 ## What CodeIt does
 
-- Project Studio: turn an idea into a website, game, or quiz; preview it; inspect and edit the generated HTML, CSS, and JavaScript; save it; and publish a shareable project.
+- Project Studio: describe a website, game, or quiz; play it; change it by moving elements, picking colours and fonts, or asking for changes in plain language; see which programming ideas the finished project uses and open the lesson behind each one; save it; and publish a shareable link.
 - Coding lessons: a beginner Python pathway with interactive explanations, exercises, quizzes, XP, streaks, and progress.
 - Python Playground: write and run beginner Python code in the browser.
 - Explore: view selected public projects made with CodeIt.
