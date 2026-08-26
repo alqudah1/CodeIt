@@ -531,6 +531,22 @@ test('every sameAs entry is an absolute https URL', () => {
   }
 });
 
+test('every alias list in the rendered graph comes from config', () => {
+  // The Organization node is rebuilt from company.js, so it was right. The
+  // WebSite node sitting directly beneath it in the same @graph was hand-written
+  // and had gone stale, omitting 'CodeIt Learn' — the one name every external
+  // profile is registered under. Checking only the node we happened to look at
+  // is how that survived, so this checks all of them.
+  const company = require('./content-loader').loadCompany();
+  const realTemplate = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
+  const html = renderRouteDocument(realTemplate, PAGES.find((p) => p.route === '/about'));
+  const lists = [...html.matchAll(/"alternateName":\s*(\[[^\]]*\])/g)].map((m) => JSON.parse(m[1]));
+  assert.ok(lists.length >= 2, 'expected at least the Organization and WebSite alias lists');
+  for (const list of lists) {
+    assert.deepEqual(list, Array.from(company.alternateNames));
+  }
+});
+
 test('no profile is listed twice in sameAs', () => {
   // sameAs grows one profile at a time, by hand, over months. The failure it
   // invites is the same URL pasted twice, or the same account under two host

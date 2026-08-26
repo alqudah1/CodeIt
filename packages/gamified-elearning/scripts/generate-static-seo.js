@@ -1034,8 +1034,23 @@ function withOrganization(html) {
   );
 }
 
+/**
+ * The WebSite node in that same @graph carries its own hand-written alias list,
+ * and it went stale: it still omitted 'CodeIt Learn' after that became the name
+ * every external profile is registered under. A page that answers "what is this
+ * called" two different ways is worse than one that answers once, because a
+ * reader deciding whether two mentions are the same organisation has to guess.
+ *
+ * Rewrite every alternateName array in the graph from config. There is only one
+ * list of names for this company and it lives in src/config/company.js.
+ */
+function withAliases(html) {
+  const aliases = JSON.stringify(COMPANY.alternateNames);
+  return html.replace(/"alternateName":\s*\[[^\]]*\]/g, `"alternateName": ${aliases}`);
+}
+
 function renderRouteDocument(template, page) {
-  let html = replaceMeta(withOrganization(template), page);
+  let html = replaceMeta(withAliases(withOrganization(template)), page);
   const content = staticContent(page);
   html = html.replace(/<div id="root">[\s\S]*?<\/body>/i, `<div id="root">${content}</div>\n  </body>`);
   const routeStyle = `<style id="static-route-style">
