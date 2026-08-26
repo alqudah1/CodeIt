@@ -5386,3 +5386,98 @@
   .bldr-concept-list { padding: 0 0.6rem 0.8rem; }
   .bldr-concept { padding: 0.65rem 0.6rem; }
 }
+
+/* ── The shelves ─────────────────────────────────────────────────────────────
+   Eighteen projects that open with no wait. Laid out as three horizontal rows
+   rather than one grid of eighteen, because eighteen cards in a block is a
+   menu, and a menu is a decision, and a decision is where people leave. Three
+   short rows with a heading each is a glance.
+
+   The rows scroll sideways on a phone. Cards keep a fixed width so a partial
+   card is visible at the edge — which is what tells a thumb there is more. */
+
+.bldr-shelves {
+  margin: 8px 0 22px;
+}
+
+.bldr-shelves__lead {
+  margin: 0 0 14px;
+  font-size: 15px;
+  opacity: .75;
+}
+
+.bldr-shelf + .bldr-shelf {
+  margin-top: 20px;
+}
+
+.bldr-shelf__title {
+  margin: 0 0 2px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -.01em;
+}
+
+.bldr-shelf__line {
+  margin: 0 0 10px;
+  font-size: 14px;
+  opacity: .7;
+  line-height: 1.4;
+}
+
+.bldr-shelf__row {
+  display: flex;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0 2px 6px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bldr-shelf__row > li {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+.bldr-shelf__card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 176px;
+  min-height: 118px;
+  padding: 13px 13px 14px;
+  text-align: left;
+  border: 2px solid rgba(140, 148, 190, .28);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .05);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.bldr-shelf__card:hover,
+.bldr-shelf__card:focus-visible {
+  border-color: rgba(140, 148, 190, .7);
+}
+
+.bldr-shelf__emoji {
+  font-size: 27px;
+  line-height: 1;
+}
+
+.bldr-shelf__label {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.bldr-shelf__blurb {
+  font-size: 13px;
+  line-height: 1.4;
+  opacity: .72;
+}
+
+@media (max-width: 520px) {
+  .bldr-shelf__card { width: 158px; min-height: 112px; }
+}

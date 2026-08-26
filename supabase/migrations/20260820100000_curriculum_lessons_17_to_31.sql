@@ -277,17 +277,17 @@ on conflict (id) do nothing;
 -- cannot create a second copy of every question. quiz_questions has no natural
 -- unique key, so ON CONFLICT has nothing to match on.
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 17, 'Which loop keeps going until a condition stops being true?', 'for', 'while', 'if', 'def', 'B', 'A for loop runs a set number of times. A while loop keeps checking a question at the top of every lap.'
+select 17, 'Which loop keeps going until a condition stops being true?', 'for', 'if', 'while', 'def', 'C', 'A for loop runs a set number of times. A while loop keeps checking a question at the top of every lap.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 17 and question_text = 'Which loop keeps going until a condition stops being true?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 17, 'What is wrong with: while n > 0: print(n)', 'Nothing, it is fine', 'n never changes, so it loops forever', 'while is spelled wrong', 'It needs an else', 'B', 'If nothing inside the loop changes n, the condition stays true and the loop never ends.'
+select 17, 'What is wrong with: while n > 0: print(n)', 'Nothing, it is fine', 'It needs an else', 'while is spelled wrong', 'n never changes, so it loops forever', 'D', 'If nothing inside the loop changes n, the condition stays true and the loop never ends.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 17 and question_text = 'What is wrong with: while n > 0: print(n)'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 17, 'fuel = 2. How many times does ''while fuel > 0'' run if fuel drops by 1 each lap?', '1', '2', '3', '0', 'B', 'fuel goes 2 then 1 then 0. The loop runs twice and stops when the condition becomes false.'
+select 17, 'fuel = 2. How many times does ''while fuel > 0'' run if fuel drops by 1 each lap?', '1', '0', '3', '2', 'D', 'fuel goes 2 then 1 then 0. The loop runs twice and stops when the condition becomes false.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 17 and question_text = 'fuel = 2. How many times does ''while fuel > 0'' run if fuel drops by 1 each lap?'
 );
@@ -302,27 +302,27 @@ where not exists (
   select 1 from public.quiz_questions where quiz_id = 18 and question_text = 'What does break do inside a loop?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 18, 'What does continue do?', 'Ends the whole loop', 'Skips the rest of this lap and starts the next', 'Pauses the program', 'Repeats the same lap', 'B', 'continue jumps straight to the next pass, skipping whatever came after it in the body.'
+select 18, 'What does continue do?', 'Skips the rest of this lap and starts the next', 'Ends the whole loop', 'Pauses the program', 'Repeats the same lap', 'A', 'continue jumps straight to the next pass, skipping whatever came after it in the body.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 18 and question_text = 'What does continue do?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 18, 'for n in [1,2,3,4]: if n == 3: break — then print(n). What prints?', '1 and 2', '1, 2 and 3', '3 and 4', 'Nothing', 'A', 'The break happens before the print on the lap where n is 3, and there are no laps after it.'
+select 18, 'for n in [1,2,3,4]: if n == 3: break — then print(n). What prints?', 'Nothing', '1, 2 and 3', '3 and 4', '1 and 2', 'D', 'The break happens before the print on the lap where n is 3, and there are no laps after it.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 18 and question_text = 'for n in [1,2,3,4]: if n == 3: break — then print(n). What prints?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 18, 'Which one would you use to ignore empty items but keep looping?', 'break', 'continue', 'return', 'pass', 'B', 'continue skips just that item and lets the loop carry on with the rest.'
+select 18, 'Which one would you use to ignore empty items but keep looping?', 'continue', 'break', 'return', 'pass', 'A', 'continue skips just that item and lets the loop carry on with the rest.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 18 and question_text = 'Which one would you use to ignore empty items but keep looping?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 19, 'What does import random do?', 'Makes numbers random', 'Brings in a module of ready-made code', 'Deletes your variables', 'Prints a random number', 'B', 'import loads a module so you can use the tools inside it.'
+select 19, 'What does import random do?', 'Makes numbers random', 'Deletes your variables', 'Brings in a module of ready-made code', 'Prints a random number', 'C', 'import loads a module so you can use the tools inside it.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 19 and question_text = 'What does import random do?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 19, 'random.randint(1, 6) can return which values?', '1 to 5', '1 to 6', '0 to 6', 'Only 6', 'B', 'randint includes both ends, so 1 and 6 are both possible.'
+select 19, 'random.randint(1, 6) can return which values?', '1 to 6', '1 to 5', '0 to 6', 'Only 6', 'A', 'randint includes both ends, so 1 and 6 are both possible.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 19 and question_text = 'random.randint(1, 6) can return which values?'
 );
@@ -332,17 +332,17 @@ where not exists (
   select 1 from public.quiz_questions where quiz_id = 19 and question_text = 'Which one picks an item out of a list?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 19, 'What does math.sqrt(25) give?', '5.0', '625', '12.5', 'An error', 'A', 'sqrt is the square root, and it comes back as a float.'
+select 19, 'What does math.sqrt(25) give?', '625', '5.0', '12.5', 'An error', 'B', 'sqrt is the square root, and it comes back as a float.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 19 and question_text = 'What does math.sqrt(25) give?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 20, 'Which brackets make a dictionary?', 'Square [ ]', 'Round ( )', 'Curly { }', 'Angle < >', 'C', 'Curly braces with key: value pairs inside make a dictionary.'
+select 20, 'Which brackets make a dictionary?', 'Square [ ]', 'Round ( )', 'Angle < >', 'Curly { }', 'D', 'Curly braces with key: value pairs inside make a dictionary.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 20 and question_text = 'Which brackets make a dictionary?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 20, 'player = {"score": 10}. How do you read the score?', 'player.score', 'player["score"]', 'player(score)', 'player{score}', 'B', 'You look a value up by putting its key in square brackets.'
+select 20, 'player = {"score": 10}. How do you read the score?', 'player.score', 'player{score}', 'player(score)', 'player["score"]', 'D', 'You look a value up by putting its key in square brackets.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 20 and question_text = 'player = {"score": 10}. How do you read the score?'
 );
@@ -352,12 +352,12 @@ where not exists (
   select 1 from public.quiz_questions where quiz_id = 20 and question_text = 'What does player["lives"] do if there is no "lives" key?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 20, 'What does scores.get("Blaze", 0) return when Blaze is missing?', '0', 'None', 'An error', '"Blaze"', 'A', 'The second argument to .get() is the fallback used when the key is not there.'
+select 20, 'What does scores.get("Blaze", 0) return when Blaze is missing?', 'None', '0', 'An error', '"Blaze"', 'B', 'The second argument to .get() is the fallback used when the key is not there.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 20 and question_text = 'What does scores.get("Blaze", 0) return when Blaze is missing?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 21, 'for thing in my_dict: what is thing each lap?', 'A value', 'A key', 'Both together', 'The whole dictionary', 'B', 'Looping over a dictionary on its own gives you the keys.'
+select 21, 'for thing in my_dict: what is thing each lap?', 'A key', 'A value', 'Both together', 'The whole dictionary', 'A', 'Looping over a dictionary on its own gives you the keys.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 21 and question_text = 'for thing in my_dict: what is thing each lap?'
 );
@@ -367,27 +367,27 @@ where not exists (
   select 1 from public.quiz_questions where quiz_id = 21 and question_text = 'Which method gives you keys and values together?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 21, 'How do you add up every value in a dictionary?', 'Loop over .keys()', 'Loop over .values() and add each one', 'Use len()', 'You cannot', 'B', 'values() gives you just the numbers, which is exactly what you want to total.'
+select 21, 'How do you add up every value in a dictionary?', 'Loop over .keys()', 'Use len()', 'Loop over .values() and add each one', 'You cannot', 'C', 'values() gives you just the numbers, which is exactly what you want to total.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 21 and question_text = 'How do you add up every value in a dictionary?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 21, 'scores = {"A": 1, "B": 2}. What does len(scores) give?', '1', '2', '3', '4', 'B', 'len counts the pairs, and there are two.'
+select 21, 'scores = {"A": 1, "B": 2}. What does len(scores) give?', '2', '1', '3', '4', 'A', 'len counts the pairs, and there are two.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 21 and question_text = 'scores = {"A": 1, "B": 2}. What does len(scores) give?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 22, 'Which brackets make a tuple?', 'Square [ ]', 'Round ( )', 'Curly { }', 'None', 'B', 'Round brackets make a tuple, and once made it cannot be changed.'
+select 22, 'Which brackets make a tuple?', 'Round ( )', 'Square [ ]', 'Curly { }', 'None', 'A', 'Round brackets make a tuple, and once made it cannot be changed.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 22 and question_text = 'Which brackets make a tuple?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 22, 'What happens if you try to change an item in a tuple?', 'It changes', 'Nothing happens', 'Python raises a TypeError', 'It becomes a list', 'C', 'That is the point of a tuple: Python refuses loudly rather than letting it change quietly.'
+select 22, 'What happens if you try to change an item in a tuple?', 'It changes', 'Nothing happens', 'It becomes a list', 'Python raises a TypeError', 'D', 'That is the point of a tuple: Python refuses loudly rather than letting it change quietly.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 22 and question_text = 'What happens if you try to change an item in a tuple?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 22, '{"red", "blue", "red"} has how many items?', '1', '2', '3', '0', 'B', 'A set keeps only one of each, so the second red is dropped.'
+select 22, '{"red", "blue", "red"} has how many items?', '1', '3', '2', '0', 'C', 'A set keeps only one of each, so the second red is dropped.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 22 and question_text = '{"red", "blue", "red"} has how many items?'
 );
@@ -397,7 +397,7 @@ where not exists (
   select 1 from public.quiz_questions where quiz_id = 22 and question_text = 'What does set(my_list) do?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 23, 'items = [10,20,30,40]. What is items[1:3]?', '[10, 20]', '[20, 30]', '[20, 30, 40]', '[10, 20, 30]', 'B', 'Slicing starts at the first number and stops just before the second.'
+select 23, 'items = [10,20,30,40]. What is items[1:3]?', '[10, 20]', '[20, 30, 40]', '[20, 30]', '[10, 20, 30]', 'C', 'Slicing starts at the first number and stops just before the second.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 23 and question_text = 'items = [10,20,30,40]. What is items[1:3]?'
 );
@@ -407,27 +407,27 @@ where not exists (
   select 1 from public.quiz_questions where quiz_id = 23 and question_text = 'What is word[-1]?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 23, 'What does scores[:3] mean?', 'From position 3 to the end', 'The first three items', 'Every third item', 'The last three items', 'B', 'Leaving the start empty means start at the beginning.'
+select 23, 'What does scores[:3] mean?', 'From position 3 to the end', 'The last three items', 'Every third item', 'The first three items', 'D', 'Leaving the start empty means start at the beginning.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 23 and question_text = 'What does scores[:3] mean?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 23, 'What does word[::-1] give?', 'The word reversed', 'The first letter', 'An empty string', 'An error', 'A', 'A step of -1 walks the whole thing backwards.'
+select 23, 'What does word[::-1] give?', 'An error', 'The first letter', 'An empty string', 'The word reversed', 'D', 'A step of -1 walks the whole thing backwards.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 23 and question_text = 'What does word[::-1] give?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 24, 'What is [n * 2 for n in [1,2,3]]?', '[1, 2, 3]', '[2, 4, 6]', '[1, 4, 9]', '6', 'B', 'Each item is doubled and collected into a new list.'
+select 24, 'What is [n * 2 for n in [1,2,3]]?', '[2, 4, 6]', '[1, 2, 3]', '[1, 4, 9]', '6', 'A', 'Each item is doubled and collected into a new list.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 24 and question_text = 'What is [n * 2 for n in [1,2,3]]?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 24, 'Where does the filter go in a comprehension?', 'At the start', 'In the middle', 'At the end', 'Anywhere', 'C', 'The if always comes last: [thing for item in list if condition].'
+select 24, 'Where does the filter go in a comprehension?', 'At the start', 'At the end', 'In the middle', 'Anywhere', 'B', 'The if always comes last: [thing for item in list if condition].'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 24 and question_text = 'Where does the filter go in a comprehension?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 24, 'A list comprehension is a shorter way of writing what?', 'A function', 'A for loop that appends to a list', 'An if statement', 'A dictionary', 'B', 'It does exactly what an empty list plus a loop plus append would do.'
+select 24, 'A list comprehension is a shorter way of writing what?', 'A for loop that appends to a list', 'A function', 'An if statement', 'A dictionary', 'A', 'It does exactly what an empty list plus a loop plus append would do.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 24 and question_text = 'A list comprehension is a shorter way of writing what?'
 );
@@ -437,12 +437,12 @@ where not exists (
   select 1 from public.quiz_questions where quiz_id = 24 and question_text = 'What is [n for n in [1,2,3,4] if n > 2]?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 25, 'What does a function with no return statement give back?', '0', 'An empty string', 'None', 'An error', 'C', 'None is Python''s word for ''nothing here''.'
+select 25, 'What does a function with no return statement give back?', 'None', 'An empty string', '0', 'An error', 'A', 'None is Python''s word for ''nothing here''.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 25 and question_text = 'What does a function with no return statement give back?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 25, 'def greet(name, greeting="Hi") — what is greeting="Hi"?', 'A comment', 'A default value', 'A return', 'A variable', 'B', 'If the caller leaves it out, the default is used.'
+select 25, 'def greet(name, greeting="Hi") — what is greeting="Hi"?', 'A default value', 'A comment', 'A return', 'A variable', 'A', 'If the caller leaves it out, the default is used.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 25 and question_text = 'def greet(name, greeting="Hi") — what is greeting="Hi"?'
 );
@@ -452,37 +452,37 @@ where not exists (
   select 1 from public.quiz_questions where quiz_id = 25 and question_text = 'What is the difference between print and return?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 25, 'def stats(): return 1, 2. What comes back?', 'Just 1', 'Just 2', 'A tuple with both', 'An error', 'C', 'Returning several values separated by commas gives you a tuple you can unpack.'
+select 25, 'def stats(): return 1, 2. What comes back?', 'Just 1', 'A tuple with both', 'Just 2', 'An error', 'B', 'Returning several values separated by commas gives you a tuple you can unpack.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 25 and question_text = 'def stats(): return 1, 2. What comes back?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 26, 'A variable made inside a function can be used where?', 'Everywhere', 'Only inside that function', 'Only outside', 'Only in other functions', 'B', 'It exists only while that function is running, then it is gone.'
+select 26, 'A variable made inside a function can be used where?', 'Only inside that function', 'Everywhere', 'Only outside', 'Only in other functions', 'A', 'It exists only while that function is running, then it is gone.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 26 and question_text = 'A variable made inside a function can be used where?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 26, 'score = 5 outside. A function does score = 100. What is score outside afterwards?', '100', '5', 'None', 'An error', 'B', 'Assigning inside a function makes a new local variable, even if the name matches.'
+select 26, 'score = 5 outside. A function does score = 100. What is score outside afterwards?', '100', 'None', '5', 'An error', 'C', 'Assigning inside a function makes a new local variable, even if the name matches.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 26 and question_text = 'score = 5 outside. A function does score = 100. What is score outside afterwards?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 26, 'Can a function read a variable made outside it?', 'Yes', 'No', 'Only with global', 'Only if it is a number', 'A', 'Reading is allowed. It is assigning that creates a new local one.'
+select 26, 'Can a function read a variable made outside it?', 'Only if it is a number', 'No', 'Only with global', 'Yes', 'D', 'Reading is allowed. It is assigning that creates a new local one.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 26 and question_text = 'Can a function read a variable made outside it?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 26, 'What does the global keyword do?', 'Makes a variable faster', 'Lets a function change an outer variable', 'Deletes a variable', 'Makes a variable local', 'B', 'It is allowed, but it makes programs harder to follow, so it is rarely the right answer.'
+select 26, 'What does the global keyword do?', 'Makes a variable faster', 'Deletes a variable', 'Lets a function change an outer variable', 'Makes a variable local', 'C', 'It is allowed, but it makes programs harder to follow, so it is rarely the right answer.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 26 and question_text = 'What does the global keyword do?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 27, 'What goes in the try block?', 'The recovery code', 'The code that might go wrong', 'Only print statements', 'Nothing', 'B', 'try holds the risky part, and except holds what to do if it fails.'
+select 27, 'What goes in the try block?', 'The recovery code', 'Only print statements', 'The code that might go wrong', 'Nothing', 'C', 'try holds the risky part, and except holds what to do if it fails.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 27 and question_text = 'What goes in the try block?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 27, 'int("banana") raises which error?', 'KeyError', 'ValueError', 'TypeError', 'ZeroDivisionError', 'B', 'A ValueError means the value was the wrong sort of thing.'
+select 27, 'int("banana") raises which error?', 'KeyError', 'TypeError', 'ValueError', 'ZeroDivisionError', 'C', 'A ValueError means the value was the wrong sort of thing.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 27 and question_text = 'int("banana") raises which error?'
 );
@@ -492,12 +492,12 @@ where not exists (
   select 1 from public.quiz_questions where quiz_id = 27 and question_text = 'What happens to the rest of the try block after something goes wrong?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 27, 'Why name the error, as in except ValueError?', 'It looks tidier', 'So a different problem is not swallowed silently', 'It is required by Python', 'It makes it faster', 'B', 'A bare except hides real bugs by catching everything, including ones you did not expect.'
+select 27, 'Why name the error, as in except ValueError?', 'It looks tidier', 'It makes it faster', 'It is required by Python', 'So a different problem is not swallowed silently', 'D', 'A bare except hides real bugs by catching everything, including ones you did not expect.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 27 and question_text = 'Why name the error, as in except ValueError?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 28, 'What does enumerate give you each lap?', 'Just the item', 'The position and the item', 'Just the position', 'The whole list', 'B', 'That is why you write ''for position, item in enumerate(things)''.'
+select 28, 'What does enumerate give you each lap?', 'The position and the item', 'Just the item', 'Just the position', 'The whole list', 'A', 'That is why you write ''for position, item in enumerate(things)''.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 28 and question_text = 'What does enumerate give you each lap?'
 );
@@ -507,7 +507,7 @@ where not exists (
   select 1 from public.quiz_questions where quiz_id = 28 and question_text = 'enumerate(names) starts counting at what?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 28, 'What does zip do?', 'Compresses a file', 'Walks two lists side by side', 'Sorts a list', 'Removes duplicates', 'B', 'It pairs the first with the first, the second with the second, and so on.'
+select 28, 'What does zip do?', 'Compresses a file', 'Removes duplicates', 'Sorts a list', 'Walks two lists side by side', 'D', 'It pairs the first with the first, the second with the second, and so on.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 28 and question_text = 'What does zip do?'
 );
@@ -517,19 +517,19 @@ where not exists (
   select 1 from public.quiz_questions where quiz_id = 28 and question_text = 'zip stops when what happens?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 29, 'What does class do?', 'Makes one object', 'Defines a blueprint for objects', 'Imports a module', 'Creates a list', 'B', 'The class is the plan; each object made from it is a copy with its own values.'
+select 29, 'What does class do?', 'Defines a blueprint for objects', 'Makes one object', 'Imports a module', 'Creates a list', 'A', 'The class is the plan; each object made from it is a copy with its own values.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 29 and question_text = 'What does class do?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 29, 'When does __init__ run?', 'Every time a method is called', 'When a new object is made', 'Once when the program starts', 'Never', 'B', 'It is the setup that runs at the moment the object is created.'
+select 29, 'When does __init__ run?', 'Every time a method is called', 'Never', 'Once when the program starts', 'When a new object is made', 'D', 'It is the setup that runs at the moment the object is created.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 29 and question_text = 'When does __init__ run?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 29, 'What is self?', 'The class itself', 'This particular object', 'A keyword Python ignores', 'The name of the file', 'B', 'self is how a method refers to the object it was called on.'
+select 29, 'Inside a method, what does self refer to?', 'The class itself', 'A keyword Python ignores', 'This particular object', 'The name of the file', 'C', 'self is how a method refers to the object it was called on.'
 where not exists (
-  select 1 from public.quiz_questions where quiz_id = 29 and question_text = 'What is self?'
+  select 1 from public.quiz_questions where quiz_id = 29 and question_text = 'Inside a method, what does self refer to?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
 select 29, 'a = Pet("Rex") and b = Pet("Milo"). Does making b change a?', 'Yes', 'No, they are separate objects', 'Only if they share a name', 'It causes an error', 'B', 'Each object keeps its own values. They do not share.'
@@ -537,12 +537,12 @@ where not exists (
   select 1 from public.quiz_questions where quiz_id = 29 and question_text = 'a = Pet("Rex") and b = Pet("Milo"). Does making b change a?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 30, 'What is a recursive function?', 'A function with a loop', 'A function that calls itself', 'A function with no arguments', 'A function that returns None', 'B', 'It solves a problem by calling itself on a smaller version of it.'
+select 30, 'What is a recursive function?', 'A function that calls itself', 'A function with a loop', 'A function with no arguments', 'A function that returns None', 'A', 'It solves a problem by calling itself on a smaller version of it.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 30 and question_text = 'What is a recursive function?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 30, 'What is a base case?', 'The first line of the function', 'The condition that stops the recursion', 'The name of the function', 'The return value', 'B', 'Without one, the function never stops and Python raises a RecursionError.'
+select 30, 'What is a base case?', 'The first line of the function', 'The return value', 'The name of the function', 'The condition that stops the recursion', 'D', 'Without one, the function never stops and Python raises a RecursionError.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 30 and question_text = 'What is a base case?'
 );
@@ -552,7 +552,7 @@ where not exists (
   select 1 from public.quiz_questions where quiz_id = 30 and question_text = 'What happens with no base case?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 30, 'factorial(4) is 4 * factorial(3). What must factorial(1) return?', '0', '1', '4', 'None', 'B', '1 is the base case, and it is what stops the chain of calls.'
+select 30, 'factorial(4) is 4 * factorial(3). What must factorial(1) return?', '1', '0', '4', 'None', 'A', '1 is the base case, and it is what stops the chain of calls.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 30 and question_text = 'factorial(4) is 4 * factorial(3). What must factorial(1) return?'
 );
@@ -567,12 +567,12 @@ where not exists (
   select 1 from public.quiz_questions where quiz_id = 31 and question_text = 'prizes = {"gold": 50} is what kind of thing?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 31, 'Why wrap int(answer) in try/except in a quiz?', 'It runs faster', 'So one bad answer does not crash the whole quiz', 'It is required', 'To use less memory', 'B', 'Recovering from bad input is what keeps a program usable by real people.'
+select 31, 'Why wrap int(answer) in try/except in a quiz?', 'It runs faster', 'To use less memory', 'It is required', 'So one bad answer does not crash the whole quiz', 'D', 'Recovering from bad input is what keeps a program usable by real people.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 31 and question_text = 'Why wrap int(answer) in try/except in a quiz?'
 );
 insert into public.quiz_questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option, explanation)
-select 31, 'A class is most useful when you need what?', 'One value', 'Many things of the same kind, each with its own values', 'A shorter program', 'Faster maths', 'B', 'Twenty enemies from one blueprint beats twenty hand-written dictionaries.'
+select 31, 'A class is most useful when you need what?', 'One value', 'A shorter program', 'Many things of the same kind, each with its own values', 'Faster maths', 'C', 'Twenty enemies from one blueprint beats twenty hand-written dictionaries.'
 where not exists (
   select 1 from public.quiz_questions where quiz_id = 31 and question_text = 'A class is most useful when you need what?'
 );

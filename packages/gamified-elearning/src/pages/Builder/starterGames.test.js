@@ -64,9 +64,28 @@ describe('they have to actually be games', () => {
   // and the word "score" twice. This is the test that stops that coming back.
   STARTER_GAMES.forEach(game => {
     describe(game.label, () => {
-      test('draws on a canvas', () => {
-        expect(game.code).toContain('<canvas');
-        expect(game.code).toContain("getContext('2d')");
+      test('has a world, drawn or built', () => {
+        // This used to insist on a canvas, and the rule was a proxy for the
+        // thing it actually cared about: the old starters were web pages with
+        // buttons, and a canvas was the easiest way to tell a game from a form.
+        //
+        // The maze broke the proxy without breaking the rule. Its world is made
+        // of real page elements on purpose, so the studio's drag editor becomes
+        // a level editor and a child moves a wall rather than a score badge.
+        // That is more of a game than a canvas, not less.
+        //
+        // The proxy broke a second time. Whack-a-mole and colour memory are
+        // also built from elements, but they need no geometry at all — a mole
+        // is up or it is not — so requiring getBoundingClientRect would have
+        // failed two real games for not measuring anything.
+        //
+        // What all three element-built games share is the thing that matters:
+        // a #field holding the pieces, read back out of the page at run time,
+        // so a piece a child moved is the piece the game plays.
+        const drawsOnCanvas = game.code.includes('<canvas') && game.code.includes("getContext('2d')");
+        const buildsFromElements = game.code.includes('id="field"')
+          && /querySelectorAll\('\.[a-z]+'\)|getBoundingClientRect/.test(game.code);
+        expect(drawsOnCanvas || buildsFromElements).toBe(true);
       });
 
       test('has something that moves on its own', () => {
@@ -91,8 +110,12 @@ describe('they have to actually be games', () => {
       });
 
       test('fills the screen it is given', () => {
-        expect(game.code).toContain('window.innerWidth');
-        expect(game.code).toContain("addEventListener('resize'");
+        // A canvas has to be told its pixel size; an element world is laid out
+        // in percentages and resizes itself. Both must cope with a phone.
+        const sizesACanvas = game.code.includes('window.innerWidth')
+          && game.code.includes("addEventListener('resize'");
+        const laysOutInPercent = /left: \d+%/.test(game.code) && /inset: 0/.test(game.code);
+        expect(sizesACanvas || laysOutInPercent).toBe(true);
       });
 
       test('is a complete page', () => {

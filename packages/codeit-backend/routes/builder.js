@@ -22,38 +22,90 @@ const MAX_INSTRUCTION_LENGTH = 2000;
 const MAX_ELEMENT_HTML_LENGTH = 25000;
 const POLISH_TIMEOUT_MS = 12000;
 
-function createRequestLimiter({ anonymous, authenticated, windowMs = 60 * 60 * 1000 }) {
+// ── Who a limit applies to ───────────────────────────────────────────────────
+//
+// This used to key anonymous users by IP address, and that quietly made the
+// product unusable in the one room it most needs to work in.
+//
+// A school, a library and a family home all share a single public IP. With a
+// limit of five generations an hour per IP, the first five children in a
+// classroom of thirty each got a project and the other twenty-five were told
+// "the magic helper needs a short break" for the rest of the lesson. The
+// teacher would have had no idea why, and neither would the children: nothing
+// is broken, nothing is logged, it simply stops for everyone at once.
+//
+// So an anonymous child is now counted by the journey id the browser already
+// sends with every request — one per browser, not one per building. A shared IP
+// still gets a ceiling, because one machine should not be able to spend an
+// unbounded amount of money, but it is set high enough for a full class rather
+// than a family of five.
+//
+// The journey id is spoofable. So is an IP, by anyone who wants to; the point
+// of these numbers is to bound accidents and casual abuse, not to stop someone
+// determined, and the ceiling below is what actually bounds the spend.
+function createRequestLimiter({
+  anonymous,
+  authenticated,
+  perSharedIp = 200,
+  windowMs = 60 * 60 * 1000,
+}) {
   const requests = new Map();
+
+  function take(key, limit, now) {
+    const entry = requests.get(key);
+    if (!entry || entry.resetAt <= now) {
+      requests.set(key, { count: 1, resetAt: now + windowMs });
+      return { allowed: true };
+    }
+    if (entry.count >= limit) {
+      return { allowed: false, retryAfter: Math.max(1, Math.ceil((entry.resetAt - now) / 1000)) };
+    }
+    entry.count += 1;
+    return { allowed: true };
+  }
 
   return function requestLimiter(req, res, next) {
     const now = Date.now();
-    const key = req.user?.user_id ? `user:${req.user.user_id}` : `ip:${req.ip}`;
-    const limit = req.user?.user_id ? authenticated : anonymous;
-    const entry = requests.get(key);
 
-    if (!entry || entry.resetAt <= now) {
-      requests.set(key, { count: 1, resetAt: now + windowMs });
-      return next();
+    if (req.user?.user_id) {
+      const result = take(`user:${req.user.user_id}`, authenticated, now);
+      if (!result.allowed) return tooMany(res, result.retryAfter);
+      return sweep(now), next();
     }
 
-    if (entry.count >= limit) {
-      const retryAfter = Math.max(1, Math.ceil((entry.resetAt - now) / 1000));
-      res.set('Retry-After', String(retryAfter));
-      return res.status(429).json({
-        code: 'AI_LIMIT_REACHED',
-        error: 'The magic helper needs a short break. Your project is safe, and you can keep playing or use the studio tools.',
-        retryAfterSeconds: retryAfter,
-      });
+    // One bucket per browser, so a classroom is thirty children rather than one
+    // address. Falls back to the IP when there is no journey id at all.
+    const journeyId = normalizeJourneyId(req.get('X-CodeIt-Journey'));
+    const ownKey = journeyId ? `journey:${journeyId}` : `ip:${req.ip}`;
+    const own = take(ownKey, anonymous, now);
+    if (!own.allowed) return tooMany(res, own.retryAfter);
+
+    // The abuse ceiling. Only checked when the child was counted by browser,
+    // because otherwise the same request would be counted against the IP twice.
+    if (journeyId) {
+      const shared = take(`shared:${req.ip}`, perSharedIp, now);
+      if (!shared.allowed) return tooMany(res, shared.retryAfter);
     }
 
-    entry.count += 1;
-    if (requests.size > 5000) {
-      for (const [storedKey, storedEntry] of requests) {
-        if (storedEntry.resetAt <= now) requests.delete(storedKey);
-      }
-    }
+    sweep(now);
     next();
   };
+
+  function sweep(now) {
+    if (requests.size <= 5000) return;
+    for (const [storedKey, storedEntry] of requests) {
+      if (storedEntry.resetAt <= now) requests.delete(storedKey);
+    }
+  }
+}
+
+function tooMany(res, retryAfter) {
+  res.set('Retry-After', String(retryAfter));
+  return res.status(429).json({
+    code: 'AI_LIMIT_REACHED',
+    error: 'Pixel needs a short break. Your project is safe, and you can keep playing or use the studio tools.',
+    retryAfterSeconds: retryAfter,
+  });
 }
 
 const generationLimiter = createRequestLimiter({ anonymous: 5, authenticated: 20 });

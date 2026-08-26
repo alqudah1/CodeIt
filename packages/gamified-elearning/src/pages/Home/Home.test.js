@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import Home from './Home';
 import { TOTAL_LESSONS } from '../Lessons/lessonRegistry';
-import { STARTER_GAMES } from '../Builder/starterGames';
+import { STARTER_PROJECTS } from '../Builder/starterProjects';
 import { trackEvent } from '../../utils/trackEvent';
 
 let mockHomeAuth = { user: null, token: null };
@@ -74,7 +74,10 @@ describe('Home', () => {
     const figures = document.querySelectorAll('.studio-traction__metrics dd');
     const values = [...figures].map(el => el.textContent);
     expect(values).toContain(String(TOTAL_LESSONS));
-    expect(values).toContain(String(STARTER_GAMES.length));
+    // Counts every starter, not just the games: there are quizzes and shop
+    // pages on the shelves too, and a number that only counted the games
+    // would understate the page while claiming to be checkable.
+    expect(values).toContain(String(STARTER_PROJECTS.length));
     expect(values).toContain('CA$0');
   });
 

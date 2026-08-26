@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import AIWebsiteBuilderForKids from './AIWebsiteBuilderForKids';
 import { useSEO } from '../../hooks/useSEO';
 import { useFAQSchema } from '../../hooks/useFAQSchema';
+import PAGE_META from '../../data/pageMeta';
 
 jest.mock('react-router-dom', () => {
   const React = require('react');
@@ -34,10 +35,17 @@ describe('AI website builder landing page', () => {
   test('ships canonical metadata and answer-ready FAQs', () => {
     render(<AIWebsiteBuilderForKids />);
 
+    // The page passes its canonical and nothing else. Titles and descriptions
+    // moved into src/data/pageMeta.js so the static generator and the runtime
+    // read the same one and cannot drift apart — so the title is checked where
+    // it now lives, rather than where it used to be passed.
     expect(useSEO).toHaveBeenCalledWith(expect.objectContaining({
       canonical: '/ai-website-builder-for-kids',
-      title: expect.stringContaining('AI Website Builder for Kids'),
     }));
+    expect(PAGE_META['/ai-website-builder-for-kids'].title)
+      .toEqual(expect.stringContaining('AI Website Builder for Kids'));
+    expect(PAGE_META['/ai-website-builder-for-kids'].description.length)
+      .toBeGreaterThan(70);
     expect(useFAQSchema).toHaveBeenCalledWith(expect.arrayContaining([
       expect.objectContaining({ q: 'What is an AI website builder for kids?' }),
       expect.objectContaining({ q: 'Can a child publish a website publicly?' }),

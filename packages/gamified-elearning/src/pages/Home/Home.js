@@ -7,7 +7,8 @@ import BrandLogo from "../../components/BrandLogo/BrandLogo";
 import { useSEO } from "../../hooks/useSEO";
 import { trackEvent } from "../../utils/trackEvent";
 import HomePilotSignup from "./HomePilotSignup";
-import { HOME_PICKS, STARTER_GAMES } from "../Builder/starterGames";
+import { HOME_PICKS } from "../Builder/starterGames";
+import { STARTER_PROJECTS } from "../Builder/starterProjects";
 import { TOTAL_LESSONS } from "../Lessons/lessonRegistry";
 import { CURRENCY_SYMBOL } from "../../config/pricing";
 import YourShelf from "./YourShelf";
@@ -363,8 +364,8 @@ export default function Home() {
                 <dd>{TOTAL_LESSONS}</dd>
               </div>
               <div>
-                <dt>Games you can open and change</dt>
-                <dd>{STARTER_GAMES.length}</dd>
+                <dt>Games, quizzes and shops you can open and change</dt>
+                <dd>{STARTER_PROJECTS.length}</dd>
               </div>
               <div>
                 <dt>Cost to start</dt>
