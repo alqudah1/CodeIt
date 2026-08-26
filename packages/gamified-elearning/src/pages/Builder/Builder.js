@@ -732,7 +732,7 @@ function rgbToHex(rgb) {
 export default function Builder() {
   useSEO({
     title:       'Coding Project Builder for Kids | Websites, Games & Quizzes | CodeIt',
-    description: 'Turn an idea into a working website, game, or quiz, then edit the design and real code in your browser. Beginner-friendly and free to try.',
+    description: 'Describe a website, game, or quiz, build it in the browser, then see the HTML, CSS, and JavaScript behind it.',
     canonical:   '/builder',
   });
 

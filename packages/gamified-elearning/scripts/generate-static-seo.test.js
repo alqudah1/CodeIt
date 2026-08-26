@@ -557,6 +557,29 @@ test('every alias list in the rendered graph comes from config', () => {
   }
 });
 
+test('every lesson count in rendered copy matches the lesson files', () => {
+  // This page carried "16 Interactive Lessons" in its <title> and "31
+  // interactive browser lessons" in its description, on the same page, at the
+  // same time. The curriculum grew and one of the two got updated. The title is
+  // the line a person reads in a search result, so the stale half was the half
+  // that mattered, and it was advertising half the course.
+  const real = fs
+    .readdirSync(path.resolve(__dirname, '../src/pages/Lessons/lessonData'))
+    .filter((name) => /^lesson\d+\.js$/.test(name)).length;
+  assert.ok(real > 0, 'no lesson data files found');
+
+  const realTemplate = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
+  let checked = 0;
+  for (const page of [HOME_PAGE, ...PAGES]) {
+    const text = renderRouteDocument(realTemplate, page).replace(/<[^>]+>/g, ' ');
+    for (const [claim, n] of [...text.matchAll(/(\d+)\s+(?:interactive\s+)?(?:browser\s+)?lessons\b/gi)].map((m) => [m[0], Number(m[1])])) {
+      checked += 1;
+      assert.equal(n, real, `${page.route || '/'} claims "${claim}" but there are ${real} lesson files`);
+    }
+  }
+  assert.ok(checked > 0, 'no lesson-count claim was found to check; this test is not doing anything');
+});
+
 test('no profile is listed twice in sameAs', () => {
   // sameAs grows one profile at a time, by hand, over months. The failure it
   // invites is the same URL pasted twice, or the same account under two host
