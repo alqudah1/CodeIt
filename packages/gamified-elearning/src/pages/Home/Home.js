@@ -228,7 +228,7 @@ export default function Home() {
                 <>
                   <h1 id="studio-title">
                     Make a real game.
-                    <span>Then change the code inside it.</span>
+                    <span>Then see the code inside it.</span>
                   </h1>
                   <p className="studio-hero__lead">
                     Games, quizzes and websites you actually play. Then open them up, see how they

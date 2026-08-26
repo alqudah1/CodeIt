@@ -90,7 +90,17 @@ test('homepage search copy leads with creating and learning, not AI', () => {
   const description = template.match(/<meta name="description" content="([^"]+)"/)?.[1] || '';
 
   assert.match(title, /Coding for Kids.*Build Websites.*Learn the Code/);
-  assert.match(description, /build websites, games, and quizzes, then learn and edit the code/i);
+  // This used to pin the exact sentence "build websites, games, and quizzes,
+  // then learn and edit the code". That is how a test ends up holding a false
+  // claim in place: the copy was corrected everywhere else and this assertion
+  // demanded it back. What the test is actually protecting is that the
+  // description leads with what a learner makes rather than with the
+  // technology, so assert that and not one particular wording.
+  assert.match(description, /websites?,? games?,? (and|or) quiz/i);
+  assert.ok(
+    description.length > 80 && description.length <= 200,
+    `homepage description is ${description.length} chars; search engines truncate well before 200`
+  );
   assert.doesNotMatch(`${title} ${description}`, /\bAI\b/);
 });
 
@@ -586,12 +596,28 @@ test('no page claims children write or edit code as the main activity', () => {
     /inspect and edit the real/i,
     /see the code, change the code/i,
     /wants? to write real HTML/i,
+    // The five patterns above were written against the exact phrasings found
+    // the day this test was added, so they missed every later rewording. These
+    // two describe the shape of the false claim instead: changing or editing
+    // the code, or the HTML/CSS/JS, *of an existing project*. A Python lesson
+    // that says "write code" is not this, which is why "behind"/"inside" and
+    // the explicit language names are load-bearing rather than decoration.
+    /(edit|change)[a-z]*\s+(the\s+)?(real\s+|actual\s+)?(code|HTML|CSS|JavaScript)\b[^.]{0,40}\b(behind|inside)\b/i,
+    /(edit|change)[a-z]*\s+the\s+(HTML|CSS|JavaScript)\b/i,
   ];
+  // Every field that reaches a rendered page, not the subset being edited at
+  // the time. h1 was missing from this list, and the homepage h1 — the single
+  // most visible line on the site — read "Then change the code inside it."
+  const pageText = (p) =>
+    [p.bodyHtml, sectionsToTextSafe(p), p.description, p.intro, p.detail, p.h1, p.title, p.eyebrow]
+      .filter(Boolean)
+      .join(' ');
   const sources = [
     require('./content-loader').loadGuidePages().map((g) => g.markdown).join('\n'),
-    ...PAGES.map((p) => `${p.bodyHtml || ''} ${sectionsToTextSafe(p)} ${p.description} ${p.intro || ''}`),
-    `${HOME_PAGE.description} ${sectionsToTextSafe(HOME_PAGE)}`,
+    ...PAGES.map(pageText),
+    pageText(HOME_PAGE),
     fs.readFileSync(path.resolve(__dirname, '../public/llms.txt'), 'utf8'),
+    fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8'),
   ].join('\n');
   for (const pattern of OVERSTATED) {
     assert.ok(!pattern.test(sources), `copy still overstates what children do: ${pattern}`);

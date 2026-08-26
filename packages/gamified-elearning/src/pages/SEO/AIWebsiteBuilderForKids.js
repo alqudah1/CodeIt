@@ -38,7 +38,7 @@ const STEPS = [
 export default function AIWebsiteBuilderForKids() {
   useSEO({
     title: 'AI Website Builder for Kids: Build & Learn the Code | CodeIt',
-    description: 'Kids can turn an idea into an editable website, game, or quiz, then inspect and change the HTML, CSS, and JavaScript behind it.',
+    description: 'Kids can turn an idea into a website, game, or quiz, change it by moving things and picking colours, then see the HTML, CSS, and JavaScript behind it.',
     canonical: '/ai-website-builder-for-kids',
   });
   useFAQSchema(FAQS);
