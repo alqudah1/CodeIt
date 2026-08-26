@@ -136,15 +136,50 @@ test('legal search documents use trust-specific copy', () => {
 });
 
 test('private application pages are crawlable but excluded with X-Robots-Tag', () => {
+  // This test used to read public/.htaccess and assert the rules were in it.
+  // They were. The file is Apache configuration and the site is served by
+  // Vercel, which has no Apache and never reads it, so every rule in it was
+  // inert while this test reported them as present. Among the things that were
+  // therefore not happening: noindex on /project/*, which is where children's
+  // published work lives, and no-cache on index.html, which is why the homepage
+  // served a build from before 25 August for days.
+  //
+  // Assert what actually ships. vercel.json is the only file the edge reads.
   const robots = fs.readFileSync(path.resolve(__dirname, '../public/robots.txt'), 'utf8');
-  const htaccess = fs.readFileSync(path.resolve(__dirname, '../public/.htaccess'), 'utf8');
+  const vercel = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../vercel.json'), 'utf8'));
 
   assert.doesNotMatch(robots, /Disallow:\s*\/(login|register|MainPage|admin|character|leaderboard|quiz)/);
-  assert.match(htaccess, /X-Robots-Tag "noindex, nofollow"/);
 
-  for (const route of ['login', 'register', 'MainPage', 'admin', 'character', 'leaderboard', 'quiz', 'project']) {
-    assert.match(htaccess, new RegExp(`\\|${route}\\||\\(${route}\\||\\|${route}\\)`));
+  const noindex = vercel.headers.find((entry) =>
+    entry.headers.some((h) => h.key === 'X-Robots-Tag' && /noindex/.test(h.value))
+  );
+  assert.ok(noindex, 'vercel.json sends no X-Robots-Tag noindex header');
+
+  for (const route of [
+    'login', 'register', 'forgot-password', 'reset-password', 'parent-review',
+    'MainPage', 'admin', 'character', 'leaderboard', 'profile', 'quiz',
+    'project', 'creator-brief', 'investor-brief',
+  ]) {
+    assert.ok(
+      new RegExp(`[(|]${route}[|)]`).test(noindex.source),
+      `${route} is not covered by the X-Robots-Tag rule in vercel.json`
+    );
   }
+
+  // The rule must not swallow pages that are supposed to rank.
+  for (const route of ['about', 'pricing', 'coding-for-kids', 'lessons', 'blog', 'explore']) {
+    assert.ok(
+      !new RegExp(`[(|]${route}[|)]`).test(noindex.source),
+      `${route} should be indexable but is inside the noindex rule`
+    );
+  }
+
+  // An Apache config in a Vercel project is a rule that looks enforced and is
+  // not. If one comes back, it must not be the place the policy lives.
+  assert.ok(
+    !fs.existsSync(path.resolve(__dirname, '../public/.htaccess')),
+    'public/.htaccess is back; Vercel never reads it, so any policy in it is inert'
+  );
 });
 
 /* ─── Crawlable-content guarantees ─────────────────────────────────────────
