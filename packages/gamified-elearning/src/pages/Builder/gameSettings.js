@@ -151,61 +151,148 @@ function parseLiteral(raw) {
  * An empty panel is honest; a panel of controls wired to nothing is the bug
  * this module was written to remove.
  */
+/**
+ * Is this name written to more than once?
+ *
+ * This is the whole idea behind inferring controls, and it is a better test
+ * than any list of words could be. A setting is a value that is READ many
+ * times and WRITTEN once: `fallSpeed` is set at the top and then only read.
+ * State is the opposite: `score`, `shipX` and `timeLeft` are assigned
+ * constantly as the game runs.
+ *
+ * So a variable that is assigned anywhere after its declaration is not a knob,
+ * whatever it is called. That single rule keeps the panel free of sliders for
+ * a player's current position, which would fight the game for control of it
+ * and look, to the child, like the slider was broken.
+ */
+function isReassigned(body, name) {
+  const escaped = escapeName(name);
+  // `name =` but not `==`, `===`, `<=`, `>=`, `!=`. Plus the compound forms.
+  const assignment = new RegExp(
+    `(?:^|[^\\w$.])${escaped}\\s*(?:\\+\\+|--|(?:[+\\-*/%]|\\*\\*)?=(?!=))`,
+    'g'
+  );
+  // The declaration itself is the first match, so a knob has exactly one and
+  // state has more.
+  const writes = body.match(assignment);
+  return (writes || []).length > 1;
+}
+
+/** Does the rest of the code actually use it? A knob that changes nothing is not a knob. */
+function isUsed(body, name) {
+  const uses = body.match(new RegExp(`(?:^|[^\\w$.])${escapeName(name)}(?![\\w$])`, 'g'));
+  return (uses || []).length > 1;
+}
+
+// Names that read as something a child would want to turn. Used only to order
+// the list when a project offers more knobs than a panel should show, never to
+// exclude anything: a game about a cat might reasonably call its knob `catMood`.
+const SOUNDS_TUNABLE = /speed|size|colour|color|lives|shots|tries|chance|delay|gap|gravity|count|wide|height|score|jump|time|level|rate|power|max|min|total|start/i;
+
+/**
+ * The settings a child may change, read out of their own file.
+ *
+ * Two ways in, and the difference matters.
+ *
+ * If the file has the marker comment, that is the author saying "these are the
+ * knobs" and it is taken at its word. Every starter game is written that way.
+ *
+ * Otherwise the block is inferred, and this is what makes the product's central
+ * promise true rather than nearly true. A child who types their own idea gets
+ * whatever the model wrote, and the model may not have left a marker. Without
+ * inference that child got a Controls panel with nothing in it and no way to
+ * change their game except to ask for it in words and wait, which is the exact
+ * thing CodeIt exists not to do.
+ *
+ * Inference is deliberately strict. It would rather show three real controls
+ * than eight, two of which fight the running game.
+ */
 function readSettings(html) {
   const body = scriptBody(html);
   if (!body) return [];
 
   const lines = body.split('\n');
+  const markerAt = lines.findIndex(line => /^\s*\/\/.*change these/i.test(line));
 
-  // Prefer the marked block. Every starter game has one, and it is the author
-  // saying "these are the knobs" rather than us inferring it.
-  let start = lines.findIndex(line => /^\s*\/\/.*change these/i.test(line));
-  let marked = start !== -1;
-  if (marked) {
-    start += 1;
-  } else {
-    // No marker: take the first unbroken run of literal declarations. In a file
-    // that opens with `const canvas = document.getElementById(...)` this finds
-    // nothing, which is the right answer.
-    start = lines.findIndex(line => line.trim() !== '');
-    if (start === -1) return [];
-  }
+  const settings = markerAt !== -1
+    ? markedBlock(lines, markerAt + 1)
+    : inferBlock(lines, body);
 
+  return settings.slice(0, MAX_SETTINGS);
+}
+
+/** The author's own block: consecutive declarations until a blank line. */
+function markedBlock(lines, start) {
   const settings = [];
   const seen = new Set();
 
   for (let i = start; i < lines.length; i += 1) {
     const line = lines[i];
     if (line.trim() === '') {
-      if (settings.length) break;      // blank line ends the block
-      continue;                         // but leading blanks are fine
+      if (settings.length) break;
+      continue;
     }
     const match = line.match(DECLARATION);
     if (!match) break;
 
-    const [, name, raw] = match;
-    if (seen.has(name)) continue;
-    if (!marked && NOT_A_SETTING.has(name.toLowerCase())) continue;
-
-    const literal = parseLiteral(raw);
-    if (literal.type === 'number' && !Number.isFinite(literal.value)) continue;
-    if (literal.type === 'text' && literal.value.length > MAX_TEXT) continue;
-
-    seen.add(name);
-    settings.push({
-      name,
-      label: labelFor(name),
-      type: literal.type,
-      value: literal.value,
-      quote: literal.quote,
-      help: helpFor(name, literal.type),
-      ...(literal.type === 'number' ? rangeFor(literal.value) : {}),
-    });
-
+    const setting = describe(match, seen);
+    if (setting) settings.push(setting);
     if (settings.length >= MAX_SETTINGS) break;
   }
-
   return settings;
+}
+
+/**
+ * No marker: work out which top-level values are knobs.
+ *
+ * Only column-zero declarations are considered. Anything indented is inside a
+ * function, and a local inside a loop is never a setting for the whole game.
+ */
+function inferBlock(lines, body) {
+  const settings = [];
+  const seen = new Set();
+
+  lines.forEach(line => {
+    if (/^\s/.test(line)) return;                 // indented: not top level
+    const match = line.match(DECLARATION);
+    if (!match) return;
+
+    const name = match[1];
+    if (NOT_A_SETTING.has(name.toLowerCase())) return;
+    if (name.length < 2) return;
+    if (isReassigned(body, name)) return;          // that is state, not a knob
+    if (!isUsed(body, name)) return;               // changing it would do nothing
+
+    const setting = describe(match, seen);
+    if (setting) settings.push(setting);
+  });
+
+  // The most knob-like first, so a panel that has to stop at eight stops on the
+  // boring ones. Stable within each group, so the file's own order survives.
+  const tunable = settings.filter(s => SOUNDS_TUNABLE.test(s.name));
+  const rest = settings.filter(s => !SOUNDS_TUNABLE.test(s.name));
+  return [...tunable, ...rest];
+}
+
+/** One declaration match into a control, or null if it is not usable. */
+function describe(match, seen) {
+  const [, name, raw] = match;
+  if (seen.has(name)) return null;
+
+  const literal = parseLiteral(raw);
+  if (literal.type === 'number' && !Number.isFinite(literal.value)) return null;
+  if (literal.type === 'text' && literal.value.length > MAX_TEXT) return null;
+
+  seen.add(name);
+  return {
+    name,
+    label: labelFor(name),
+    type: literal.type,
+    value: literal.value,
+    quote: literal.quote,
+    help: helpFor(name, literal.type),
+    ...(literal.type === 'number' ? rangeFor(literal.value) : {}),
+  };
 }
 
 /** How a value goes back into the file, in the quotes it came out of. */

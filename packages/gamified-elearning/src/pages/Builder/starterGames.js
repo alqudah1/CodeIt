@@ -222,18 +222,27 @@ window.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') moveBasket(basketX + 34);
 });
 
-// One frame before we start.
+// Wait until the frame has a size, however many frames that takes.
 //
 // A sandboxed iframe can run this script before the browser has given the
-// document a size. Everything then lays itself out against a 0x0 window: in
-// the asteroid game that put the ship off the top of the screen and all sixty
-// background stars in a single column at x=0, so the game was running, scoring
-// and unplayable. It happened perhaps one load in three, which is the worst
-// frequency there is: often enough to reach children, rare enough to look like
-// their device rather than our bug.
+// document a size, and everything then lays itself out against a 0x0 window:
+// in the asteroid game that put the ship off the top of the screen and all
+// sixty background stars in a single column, so the game ran, scored, and was
+// invisible.
 //
-// requestAnimationFrame runs after layout. Waiting one frame costs nothing.
-requestAnimationFrame(startGame);
+// One requestAnimationFrame was the first attempt and it was not enough. It
+// waits for the next paint, and the next paint can still arrive before the
+// frame has been laid out, so the bug came back at maybe one load in six:
+// rarer than before, which made it worse, not better. This waits for an actual
+// width and keeps waiting, so there is no frequency left to be unlucky at.
+(function waitForSize() {
+  if (window.innerWidth > 0 && window.innerHeight > 0) {
+    fitScreen();
+    startGame();
+    return;
+  }
+  requestAnimationFrame(waitForSize);
+})();
 ${CLOSE_SCRIPT}
 </body>
 </html>`;
@@ -411,18 +420,27 @@ function draw() {
 
 window.addEventListener('pointerdown', e => shootAt(e.clientX, e.clientY));
 
-// One frame before we start.
+// Wait until the frame has a size, however many frames that takes.
 //
 // A sandboxed iframe can run this script before the browser has given the
-// document a size. Everything then lays itself out against a 0x0 window: in
-// the asteroid game that put the ship off the top of the screen and all sixty
-// background stars in a single column at x=0, so the game was running, scoring
-// and unplayable. It happened perhaps one load in three, which is the worst
-// frequency there is: often enough to reach children, rare enough to look like
-// their device rather than our bug.
+// document a size, and everything then lays itself out against a 0x0 window:
+// in the asteroid game that put the ship off the top of the screen and all
+// sixty background stars in a single column, so the game ran, scored, and was
+// invisible.
 //
-// requestAnimationFrame runs after layout. Waiting one frame costs nothing.
-requestAnimationFrame(startGame);
+// One requestAnimationFrame was the first attempt and it was not enough. It
+// waits for the next paint, and the next paint can still arrive before the
+// frame has been laid out, so the bug came back at maybe one load in six:
+// rarer than before, which made it worse, not better. This waits for an actual
+// width and keeps waiting, so there is no frequency left to be unlucky at.
+(function waitForSize() {
+  if (window.innerWidth > 0 && window.innerHeight > 0) {
+    fitScreen();
+    startGame();
+    return;
+  }
+  requestAnimationFrame(waitForSize);
+})();
 ${CLOSE_SCRIPT}
 </body>
 </html>`;
@@ -496,7 +514,10 @@ function startGame() {
     backgroundStars.push({ x: Math.random() * width, y: Math.random() * height, size: Math.random() * 2 + 0.6 });
   }
   shipX = width / 2;
-  shipY = height - 120;
+  // Clamped, because the preview frame is not always tall. A fixed 120px from
+  // the bottom puts the ship above the top of a short frame, and the game then
+  // runs perfectly with nothing visible in it.
+  shipY = Math.max(shipSize * 2, height - Math.min(120, height * 0.25));
   playing = true;
   started = false;
   document.getElementById('gameOver').style.display = 'none';
@@ -578,18 +599,27 @@ window.addEventListener('keydown', e => {
   if (e.key === 'ArrowDown')  flyTo(shipX, shipY + 34);
 });
 
-// One frame before we start.
+// Wait until the frame has a size, however many frames that takes.
 //
 // A sandboxed iframe can run this script before the browser has given the
-// document a size. Everything then lays itself out against a 0x0 window: in
-// the asteroid game that put the ship off the top of the screen and all sixty
-// background stars in a single column at x=0, so the game was running, scoring
-// and unplayable. It happened perhaps one load in three, which is the worst
-// frequency there is: often enough to reach children, rare enough to look like
-// their device rather than our bug.
+// document a size, and everything then lays itself out against a 0x0 window:
+// in the asteroid game that put the ship off the top of the screen and all
+// sixty background stars in a single column, so the game ran, scored, and was
+// invisible.
 //
-// requestAnimationFrame runs after layout. Waiting one frame costs nothing.
-requestAnimationFrame(startGame);
+// One requestAnimationFrame was the first attempt and it was not enough. It
+// waits for the next paint, and the next paint can still arrive before the
+// frame has been laid out, so the bug came back at maybe one load in six:
+// rarer than before, which made it worse, not better. This waits for an actual
+// width and keeps waiting, so there is no frequency left to be unlucky at.
+(function waitForSize() {
+  if (window.innerWidth > 0 && window.innerHeight > 0) {
+    fitScreen();
+    startGame();
+    return;
+  }
+  requestAnimationFrame(waitForSize);
+})();
 ${CLOSE_SCRIPT}
 </body>
 </html>`;
@@ -759,18 +789,27 @@ function popAt(x, y) {
 }
 window.addEventListener('pointerdown', e => popAt(e.clientX, e.clientY));
 
-// One frame before we start.
+// Wait until the frame has a size, however many frames that takes.
 //
 // A sandboxed iframe can run this script before the browser has given the
-// document a size. Everything then lays itself out against a 0x0 window: in
-// the asteroid game that put the ship off the top of the screen and all sixty
-// background stars in a single column at x=0, so the game was running, scoring
-// and unplayable. It happened perhaps one load in three, which is the worst
-// frequency there is: often enough to reach children, rare enough to look like
-// their device rather than our bug.
+// document a size, and everything then lays itself out against a 0x0 window:
+// in the asteroid game that put the ship off the top of the screen and all
+// sixty background stars in a single column, so the game ran, scored, and was
+// invisible.
 //
-// requestAnimationFrame runs after layout. Waiting one frame costs nothing.
-requestAnimationFrame(startGame);
+// One requestAnimationFrame was the first attempt and it was not enough. It
+// waits for the next paint, and the next paint can still arrive before the
+// frame has been laid out, so the bug came back at maybe one load in six:
+// rarer than before, which made it worse, not better. This waits for an actual
+// width and keeps waiting, so there is no frequency left to be unlucky at.
+(function waitForSize() {
+  if (window.innerWidth > 0 && window.innerHeight > 0) {
+    fitScreen();
+    startGame();
+    return;
+  }
+  requestAnimationFrame(waitForSize);
+})();
 ${CLOSE_SCRIPT}
 </body>
 </html>`;
@@ -942,18 +981,27 @@ window.addEventListener('pointerup', e => {
   else turn(0, dy > 0 ? 1 : -1);
 });
 
-// One frame before we start.
+// Wait until the frame has a size, however many frames that takes.
 //
 // A sandboxed iframe can run this script before the browser has given the
-// document a size. Everything then lays itself out against a 0x0 window: in
-// the asteroid game that put the ship off the top of the screen and all sixty
-// background stars in a single column at x=0, so the game was running, scoring
-// and unplayable. It happened perhaps one load in three, which is the worst
-// frequency there is: often enough to reach children, rare enough to look like
-// their device rather than our bug.
+// document a size, and everything then lays itself out against a 0x0 window:
+// in the asteroid game that put the ship off the top of the screen and all
+// sixty background stars in a single column, so the game ran, scored, and was
+// invisible.
 //
-// requestAnimationFrame runs after layout. Waiting one frame costs nothing.
-requestAnimationFrame(startGame);
+// One requestAnimationFrame was the first attempt and it was not enough. It
+// waits for the next paint, and the next paint can still arrive before the
+// frame has been laid out, so the bug came back at maybe one load in six:
+// rarer than before, which made it worse, not better. This waits for an actual
+// width and keeps waiting, so there is no frequency left to be unlucky at.
+(function waitForSize() {
+  if (window.innerWidth > 0 && window.innerHeight > 0) {
+    fitScreen();
+    startGame();
+    return;
+  }
+  requestAnimationFrame(waitForSize);
+})();
 ${CLOSE_SCRIPT}
 </body>
 </html>`;
@@ -1135,18 +1183,27 @@ window.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') movePaddle(paddleX + 40);
 });
 
-// One frame before we start.
+// Wait until the frame has a size, however many frames that takes.
 //
 // A sandboxed iframe can run this script before the browser has given the
-// document a size. Everything then lays itself out against a 0x0 window: in
-// the asteroid game that put the ship off the top of the screen and all sixty
-// background stars in a single column at x=0, so the game was running, scoring
-// and unplayable. It happened perhaps one load in three, which is the worst
-// frequency there is: often enough to reach children, rare enough to look like
-// their device rather than our bug.
+// document a size, and everything then lays itself out against a 0x0 window:
+// in the asteroid game that put the ship off the top of the screen and all
+// sixty background stars in a single column, so the game ran, scored, and was
+// invisible.
 //
-// requestAnimationFrame runs after layout. Waiting one frame costs nothing.
-requestAnimationFrame(startGame);
+// One requestAnimationFrame was the first attempt and it was not enough. It
+// waits for the next paint, and the next paint can still arrive before the
+// frame has been laid out, so the bug came back at maybe one load in six:
+// rarer than before, which made it worse, not better. This waits for an actual
+// width and keeps waiting, so there is no frequency left to be unlucky at.
+(function waitForSize() {
+  if (window.innerWidth > 0 && window.innerHeight > 0) {
+    fitScreen();
+    startGame();
+    return;
+  }
+  requestAnimationFrame(waitForSize);
+})();
 ${CLOSE_SCRIPT}
 </body>
 </html>`;
@@ -1306,18 +1363,27 @@ function draw() {
   requestAnimationFrame(draw);
 }
 
-// One frame before we start.
+// Wait until the frame has a size, however many frames that takes.
 //
 // A sandboxed iframe can run this script before the browser has given the
-// document a size. Everything then lays itself out against a 0x0 window: in
-// the asteroid game that put the ship off the top of the screen and all sixty
-// background stars in a single column at x=0, so the game was running, scoring
-// and unplayable. It happened perhaps one load in three, which is the worst
-// frequency there is: often enough to reach children, rare enough to look like
-// their device rather than our bug.
+// document a size, and everything then lays itself out against a 0x0 window:
+// in the asteroid game that put the ship off the top of the screen and all
+// sixty background stars in a single column, so the game ran, scored, and was
+// invisible.
 //
-// requestAnimationFrame runs after layout. Waiting one frame costs nothing.
-requestAnimationFrame(startGame);
+// One requestAnimationFrame was the first attempt and it was not enough. It
+// waits for the next paint, and the next paint can still arrive before the
+// frame has been laid out, so the bug came back at maybe one load in six:
+// rarer than before, which made it worse, not better. This waits for an actual
+// width and keeps waiting, so there is no frequency left to be unlucky at.
+(function waitForSize() {
+  if (window.innerWidth > 0 && window.innerHeight > 0) {
+    fitScreen();
+    startGame();
+    return;
+  }
+  requestAnimationFrame(waitForSize);
+})();
 ${CLOSE_SCRIPT}
 </body>
 </html>`;

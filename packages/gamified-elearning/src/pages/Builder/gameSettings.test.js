@@ -251,3 +251,125 @@ describe.each(STARTER_GAMES.map(g => [g.label, g]))('%s', (label, game) => {
     expect(readSettings(next).length).toBe(readSettings(game.code).length);
   });
 });
+
+// ── Projects the AI wrote, which is most of them ────────────────────────────
+//
+// The seven starter games are hand-written with a settings block at the top.
+// Everything a child types for themselves is written by a model, and a model
+// may not leave one. Before this, those children opened Controls and found it
+// empty: the promise that you change your project by dragging rather than
+// typing was true only for the seven projects we wrote ourselves.
+//
+// These fixtures are shaped like real generated output: a jumble of config and
+// state at the top of the script, no marker comment, no tidy block.
+
+const AI_GAME = `<!doctype html>
+<html><head><style>:root{--primary:#7C3AED}</style></head>
+<body>
+<canvas id="gameCanvas"></canvas>
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let playerSpeed = 6;
+let enemySpeed = 2.5;
+let bubbleColor = '#00C2FF';
+let startingLives = 3;
+let score = 0;
+let lives = startingLives;
+let playerX = 100;
+let playerY = 200;
+let bubbles = [];
+let running = true;
+
+function update() {
+  playerX = playerX + playerSpeed;
+  score = score + 1;
+  bubbles.forEach(b => { b.y += enemySpeed; });
+  ctx.fillStyle = bubbleColor;
+  if (lives <= 0) running = false;
+}
+<\/script>
+</body></html>`;
+
+test('a project with no marker still offers real controls', () => {
+  const names = readSettings(AI_GAME).map(s => s.name);
+  expect(names).toContain('playerSpeed');
+  expect(names).toContain('enemySpeed');
+  expect(names).toContain('bubbleColor');
+  expect(names).toContain('startingLives');
+  expect(names.length).toBeGreaterThanOrEqual(4);
+});
+
+test('the game’s own moving parts never become sliders', () => {
+  // This is the rule that makes inference safe. score, lives, playerX and
+  // playerY are all written to while the game runs. A slider for playerX would
+  // fight the game for control of the player and read, to the child, as broken.
+  const names = readSettings(AI_GAME).map(s => s.name);
+  for (const state of ['score', 'lives', 'playerX', 'playerY', 'running', 'bubbles']) {
+    expect(names).not.toContain(state);
+  }
+});
+
+test('a value nothing else uses is not offered', () => {
+  // Changing it would visibly do nothing, which teaches a child that the
+  // controls are decoration.
+  const html = `<script>
+let usedSpeed = 4;
+let neverUsed = 99;
+function tick() { move(usedSpeed); }
+<\/script>`;
+  const names = readSettings(html).map(s => s.name);
+  expect(names).toContain('usedSpeed');
+  expect(names).not.toContain('neverUsed');
+});
+
+test('locals inside functions are not offered', () => {
+  const html = `<script>
+let gameSpeed = 5;
+function draw() {
+  let i = 0;
+  let tempColour = '#ff0000';
+  paint(tempColour, gameSpeed);
+}
+<\/script>`;
+  const names = readSettings(html).map(s => s.name);
+  expect(names).toEqual(['gameSpeed']);
+});
+
+test('a comparison is not mistaken for an assignment', () => {
+  // `if (maxLives === 3)` must not make maxLives look like state. Getting this
+  // wrong would silently drop the best knobs from every project.
+  const html = `<script>
+let maxLives = 3;
+let dropRate = 0.05;
+function check() {
+  if (maxLives === 3 && dropRate >= 0.05) celebrate(maxLives, dropRate);
+}
+<\/script>`;
+  const names = readSettings(html).map(s => s.name);
+  expect(names).toContain('maxLives');
+  expect(names).toContain('dropRate');
+});
+
+test('the knobs a child would recognise come first', () => {
+  const html = `<script>
+let apiVersion = 2;
+let jumpHeight = 14;
+let themeName = 'space';
+function go() { jump(jumpHeight); use(apiVersion); show(themeName); }
+<\/script>`;
+  expect(readSettings(html)[0].name).toBe('jumpHeight');
+});
+
+test('the marker still wins when the author left one', () => {
+  // An author saying "these are the knobs" beats anything inferred, including
+  // for names that inference would have rejected.
+  const names = readSettings(CATCH_STARS).map(s => s.name);
+  expect(names).toEqual(['fallSpeed', 'starSize', 'starColour', 'basketWide', 'startLives']);
+});
+
+test('a change to an inferred setting still rewrites only the declaration', () => {
+  const next = setSetting(AI_GAME, 'playerSpeed', 12);
+  expect(next).toContain('let playerSpeed = 12;');
+  expect(next).toContain('playerX = playerX + playerSpeed;');
+});

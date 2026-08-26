@@ -19,6 +19,40 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+// ── Which lessons actually have a quiz ───────────────────────────────────────
+//
+// Deliberately before the auth middleware, and deliberately returning nothing
+// but a list of numbers.
+//
+// The curriculum grew from 16 lessons to 31. The questions did not: quiz 17
+// through 31 have no rows at all. Every one of those lessons still ended with a
+// button reading "Complete Lesson. Unlock Quiz 17", and a child who had just
+// finished half an hour of work pressed it and got a page saying "No questions
+// found for this quiz". Fifteen lessons ending in a wall, and the wall looked
+// like the child had broken something.
+//
+// The frontend cannot know which quizzes exist without asking, so this is the
+// asking. It is public because the answer is public: whether a quiz exists is
+// not a secret, and requiring a token would mean a signed-out child on a lesson
+// page could not be told where the lesson ends.
+router.get('/available', async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      'SELECT DISTINCT quiz_id FROM Quiz_Questions ORDER BY quiz_id'
+    );
+    const ids = (rows || [])
+      .map(row => Number(row.quiz_id))
+      .filter(id => Number.isInteger(id) && id > 0);
+    res.json({ quizIds: ids });
+  } catch (err) {
+    // A failure here must never hide a lesson's ending. The caller treats an
+    // error as "we do not know", and showing a quiz that turns out to be empty
+    // is a smaller harm than hiding one that exists.
+    console.error('Quiz availability error:', err.message);
+    res.status(200).json({ quizIds: null });
+  }
+});
+
 router.use(authenticateToken);
 
 // Helper: map correct_option letter to text value
