@@ -21,6 +21,15 @@
   ],
   "headers": [
     {
+      "source": "/(login|register|forgot-password|reset-password|parent-review|MainPage|admin|character|leaderboard|profile|quiz|project|creator-brief|investor-brief)(/.*)?",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
       "source": "/((?!static/).*)",
       "headers": [
         {
