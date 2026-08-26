@@ -16,9 +16,36 @@ const {
 
 const SITE = 'https://codeitlearn.com';
 
-// Deterministic build output: derived from content, not from the clock, so two
-// builds of the same commit produce byte-identical files.
-const LAST_MODIFIED = '2026-08-25';
+// Deterministic build output: derived from the commit, not from the clock, so
+// two builds of the same commit produce byte-identical files.
+//
+// This used to be a hand-typed date, and it went stale the day after it was
+// typed: the site changed substantially on 26 August and every URL in the
+// sitemap still announced 25 August. A constant that only a person can update
+// is a constant that stops being true, which is the same failure as the
+// hand-maintained sitemap this file replaced.
+//
+// The commit date has both properties: it is fixed for a given commit, and it
+// moves on its own. The pinned date remains only as a fallback for a build with
+// no git available, where a slightly old date beats no sitemap.
+const PINNED_LAST_MODIFIED = '2026-08-25';
+
+function commitDate() {
+  try {
+    const iso = require('node:child_process')
+      .execFileSync('git', ['log', '-1', '--format=%cs'], {
+        cwd: __dirname,
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      })
+      .trim();
+    return /^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso : PINNED_LAST_MODIFIED;
+  } catch {
+    return PINNED_LAST_MODIFIED;
+  }
+}
+
+const LAST_MODIFIED = commitDate();
 
 // Price and free-plan limits come from src/config/pricing.js — the same file
 // the pricing page reads. This script used to keep its own copy, which is how
@@ -1121,4 +1148,4 @@ function generate(buildDir = path.resolve(__dirname, '../build')) {
 
 if (require.main === module) generate();
 
-module.exports = { PAGES, HOME_PAGE, PRICING, FAQS, generate, renderRouteDocument, pageSchema };
+module.exports = { PAGES, HOME_PAGE, PRICING, FAQS, LAST_MODIFIED, generate, renderRouteDocument, pageSchema };
