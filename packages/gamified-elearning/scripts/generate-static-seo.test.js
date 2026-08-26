@@ -366,7 +366,13 @@ test('the Organization node is built from config, not hand-written HTML', () => 
   const org = JSON.parse(graphRaw[1])['@graph'].find((node) => node['@type'] === 'Organization');
   assert.ok(org, 'no Organization node in the graph');
   assert.equal(org.address.addressLocality, 'Toronto');
-  assert.deepEqual(org.alternateName, ['CodeItLearn', 'Code It Learn']);
+  // Read the aliases from config rather than restating them. This assertion
+  // was a hand-copied list and it went stale the day 'CodeIt Learn' was added,
+  // which is the one alias that matters: it is what the LinkedIn, Crunchbase
+  // and YouTube profiles are named.
+  const company = require('./content-loader').loadCompany();
+  assert.deepEqual(Array.from(org.alternateName), Array.from(company.alternateNames));
+  assert.ok(company.alternateNames.includes('CodeIt Learn'), 'the name used on every external profile must be declared as an alias');
   // sameAs must be absent while empty rather than shipped as []
   assert.ok(!('sameAs' in org) || org.sameAs.length > 0, 'empty sameAs should be omitted');
 });
@@ -522,6 +528,20 @@ test('every sameAs entry is an absolute https URL', () => {
   for (const url of company.sameAs) {
     assert.match(url, /^https:\/\/\S+$/, `sameAs entry is not an absolute https URL: ${url}`);
     assert.ok(!/YOUR-|example\.com|\/$/.test(url), `sameAs entry looks like a placeholder: ${url}`);
+  }
+});
+
+test('no profile is listed twice in sameAs', () => {
+  // sameAs grows one profile at a time, by hand, over months. The failure it
+  // invites is the same URL pasted twice, or the same account under two host
+  // spellings. Either one tells a reader the list was not checked, which is
+  // the opposite of what a corroboration list is for.
+  const company = require('./content-loader').loadCompany();
+  const seen = new Map();
+  for (const url of company.sameAs) {
+    const key = url.toLowerCase().replace(/^https:\/\/(www\.)?/, '').replace(/\/+$/, '');
+    assert.ok(!seen.has(key), `sameAs lists the same profile twice: ${seen.get(key)} and ${url}`);
+    seen.set(key, url);
   }
 });
 
