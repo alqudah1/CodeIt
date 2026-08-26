@@ -39,7 +39,12 @@ test('no React page writes its own title or description for a route that has one
     const source = fs.readFileSync(file, 'utf8');
     const call = /useSEO\(\{([\s\S]*?)\n\s*\}\);/.exec(source);
     if (!call) continue;
-    const canonical = /canonical:\s*'([^']+)'/.exec(call[1]);
+    // Both quote styles. The first version of this test matched single quotes
+    // only, so it skipped Home.js — which wrote canonical: "/" with double
+    // quotes and carried a description saying children "edit, save, and share
+    // the code behind" their projects. The homepage was the one page this was
+    // most important on, and the test passed.
+    const canonical = /canonical:\s*['"]([^'"]+)['"]/.exec(call[1]);
     if (!canonical || !META[canonical[1]]) continue;
 
     checked += 1;
@@ -71,7 +76,7 @@ test('every hand-written page has an entry, and every entry is used', () => {
   const reactCanonicals = new Set();
   for (const file of jsFiles(PAGES_DIR)) {
     const call = /useSEO\(\{([\s\S]*?)\n\s*\}\);/.exec(fs.readFileSync(file, 'utf8'));
-    const canonical = call && /canonical:\s*'([^']+)'/.exec(call[1]);
+    const canonical = call && /canonical:\s*['"]([^'"]+)['"]/.exec(call[1]);
     if (canonical) reactCanonicals.add(canonical[1]);
   }
   for (const route of Object.keys(META)) {
