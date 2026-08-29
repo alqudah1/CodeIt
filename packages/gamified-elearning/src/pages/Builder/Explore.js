@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import {
+  BrowserSticker,
+  ControllerSticker,
+  QuestionSticker,
+  ShopSticker,
+} from '../../components/ArcadeArt/ArcadeArt';
 import Header from '../Header/Header';
 import { AuthContext } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
@@ -27,9 +33,22 @@ function typeCategory(t = '') {
   return 'game';
 }
 
-// One friendly face per kind of project, instead of the same muddy gradient
-// on every thumbnail.
-const CATEGORY_EMOJI = { game: '🎮', quiz: '🧠', web: '🌐', tool: '🛠️' };
+// One hand-drawn sticker per kind of project, instead of the same muddy
+// gradient on every thumbnail. Each card leans its own way — a small tilt
+// derived from the title, so a shelf of same-kind projects still reads as a
+// pile of stickers rather than a printed grid.
+const CATEGORY_ART = {
+  game: ControllerSticker,
+  quiz: QuestionSticker,
+  web: BrowserSticker,
+  tool: ShopSticker,
+};
+
+function titleTilt(title = '') {
+  let h = 0;
+  for (const ch of String(title)) h = (h * 31 + ch.charCodeAt(0)) % 997;
+  return (h % 13) - 6; // −6° … +6°
+}
 
 function CreatorBubble({ name = 'C', creator }) {
   const initial = (name || 'C')[0].toUpperCase();
@@ -75,7 +94,16 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
           <span className="exp-card__type-badge">
             {TYPE_LABEL[project.projectType] || project.projectType || 'Project'}
           </span>
-          <span className="exp-card__thumb-emoji" aria-hidden="true">{CATEGORY_EMOJI[cat] || '🎮'}</span>
+          <span className="exp-card__thumb-burst" aria-hidden="true" />
+          {(() => {
+            // A shop gets the storefront even though it lives in the web
+            // category — it is the drawing a child would pick for it.
+            const raw = String(project.projectType || '').toLowerCase();
+            const Art = ['shop', 'restaurant'].includes(raw)
+              ? ShopSticker
+              : (CATEGORY_ART[cat] || ControllerSticker);
+            return <Art size={62} tilt={titleTilt(project.title)} />;
+          })()}
           <span className="exp-card__thumb-title">{project.title}</span>
         </div>
         {!project.isShowcase && (

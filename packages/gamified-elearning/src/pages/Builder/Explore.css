@@ -547,3 +547,29 @@
 }
 .exp-card__thumb { position: relative; }
 .exp-card__thumb > * { position: relative; z-index: 1; }
+
+/* Round 8: the wall of identical cards, broken up.
+   Lighter halftone so the colours stay bright; a paper burst behind the
+   sticker so the art sits on something; the tilt comes from each title. */
+.exp-card__thumb::after {
+  background-image: radial-gradient(rgba(53, 34, 14, 0.07) 1.2px, transparent 1.4px);
+  background-size: 13px 13px;
+}
+.exp-card__thumb .arcade-sticker {
+  filter: drop-shadow(0 3px 0 rgba(53, 34, 14, 0.28));
+}
+.exp-card__thumb::before {
+  content: '';
+  display: none;
+}
+.exp-card__thumb-burst {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -58%);
+  pointer-events: none;
+}

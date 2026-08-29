@@ -33,11 +33,14 @@ const LEARNER = {
   dob: '2010-05-02',
 };
 
+// Each with its true type: the explore page colours and labels cards by
+// project_type, and four "games" that are really a quiz and a shop made the
+// whole feed one identical orange wall.
 const PROJECTS = [
-  { title: 'Build a maze',     prompt: 'a maze you walk through' },
-  { title: 'Catch the stars',  prompt: 'a game where you catch things' },
-  { title: 'Animal quiz',      prompt: 'a quiz about animals' },
-  { title: 'Cupcake shop',     prompt: 'a shop that sells cupcakes' },
+  { title: 'Build a maze',     prompt: 'a maze you walk through',        project_type: 'game' },
+  { title: 'Catch the stars',  prompt: 'a game where you catch things',  project_type: 'game' },
+  { title: 'Animal quiz',      prompt: 'a quiz about animals',           project_type: 'quiz' },
+  { title: 'Cupcake shop',     prompt: 'a shop that sells cupcakes',     project_type: 'shop' },
 ];
 
 // Lessons 1 and 2 so a quiz gate opens, and 17 because quizzes 17 to 31 are the
@@ -88,7 +91,7 @@ async function main() {
     const saved = await call('/api/builder/projects', {
       token,
       method: 'POST',
-      body: JSON.stringify({ ...project, generated_code: code, project_type: 'game' }),
+      body: JSON.stringify({ ...project, generated_code: code }),
     });
     const id = saved.body?.project?.id;
     if (!id) { console.log(`  could not save ${project.title}: ${saved.status}`); continue; }
