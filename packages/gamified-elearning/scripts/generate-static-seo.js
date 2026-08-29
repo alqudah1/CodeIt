@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('node:crypto');
 
 const {
   loadPageMeta,
@@ -46,6 +47,90 @@ function commitDate() {
 }
 
 const LAST_MODIFIED = commitDate();
+
+// Why the commit date is not enough on its own.
+//
+// Vercel does not build from a git clone. It unpacks a source archive, so
+// `git log` throws there and commitDate() returns the pinned fallback on every
+// production build. The sitemap that has been live since 25 August announces
+// 2026-08-25 on all 69 URLs, and would have announced it forever, through any
+// number of deploys. The pin was written as a fallback for a case that does not
+// happen locally and happens on every real build.
+//
+// So the date a URL announces is now derived from that URL's own content. A
+// checked-in manifest holds, per route, a fingerprint of the page's title,
+// description and crawlable body, and the date that fingerprint was first seen.
+// A page whose content is unchanged keeps its stored date no matter how many
+// times the site is deployed. A page whose content changed announces today.
+// That is what lastmod is defined to mean, and it needs no git.
+// Overridable so a test can point at a manifest it controls and watch what a
+// wrong fingerprint actually does, rather than asserting that the code reads
+// the way it is supposed to behave.
+const CONTENT_DATES_PATH =
+  process.env.CODEIT_CONTENT_DATES || path.resolve(__dirname, '../src/data/contentDates.json');
+
+function readContentDates() {
+  try {
+    const parsed = JSON.parse(fs.readFileSync(CONTENT_DATES_PATH, 'utf8'));
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+const CONTENT_DATES = readContentDates();
+const BUILD_DATE = new Date().toISOString().slice(0, 10);
+
+// Hash the meaning of the page, not the file. The rendered document carries
+// hashed asset filenames and shared boilerplate that change on builds where no
+// page changed at all; hashing those would mark all 69 URLs modified on every
+// deploy, which is the same no-information sitemap in the other direction.
+function contentFingerprint(page) {
+  const body = staticContent(page)
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return crypto
+    .createHash('sha1')
+    .update([page.title || '', page.description || '', body].join('\u0000'))
+    .digest('hex')
+    .slice(0, 16);
+}
+
+// Built once, keyed by route, so that only real pages consult the manifest.
+let CONTENT_DATE_BY_ROUTE = null;
+
+function contentDateByRoute() {
+  if (CONTENT_DATE_BY_ROUTE) return CONTENT_DATE_BY_ROUTE;
+  CONTENT_DATE_BY_ROUTE = new Map();
+  for (const page of [HOME_PAGE, ...PAGES]) {
+    const route = page.route || '/';
+    const hash = contentFingerprint(page);
+    const stored = CONTENT_DATES[route];
+    const unchanged =
+      stored && stored.hash === hash && /^\d{4}-\d{2}-\d{2}$/.test(stored.date || '');
+    CONTENT_DATE_BY_ROUTE.set(route, { hash, date: unchanged ? stored.date : BUILD_DATE });
+  }
+  return CONTENT_DATE_BY_ROUTE;
+}
+
+// Refresh the checked-in manifest so the next build has today's fingerprints to
+// compare against. On Vercel the working tree is discarded, and that is fine:
+// an out-of-date manifest still gives every unchanged page its true stored date
+// and every changed page the deploy date. It is only wrong if it is missing.
+function writeContentDates() {
+  const next = {};
+  for (const route of [...contentDateByRoute().keys()].sort()) {
+    const { hash, date } = contentDateByRoute().get(route);
+    next[route] = { hash, date };
+  }
+  try {
+    fs.writeFileSync(CONTENT_DATES_PATH, `${JSON.stringify(next, null, 2)}\n`);
+  } catch {
+    // Read-only filesystem on the build host. Nothing to do and nothing broken.
+  }
+  return next;
+}
 
 // Price and free-plan limits come from src/config/pricing.js — the same file
 // the pricing page reads. This script used to keep its own copy, which is how
@@ -1274,7 +1359,13 @@ function renderRouteDocument(template, page) {
  */
 function pageLastModified(page) {
   const own = page && page.datePublished;
-  return /^\d{4}-\d{2}-\d{2}$/.test(own || '') ? own : LAST_MODIFIED;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(own || '')) return own;
+
+  // A real page's date comes from its own content. Anything not in the page
+  // list — a bare object in a test, a route added without content — falls back
+  // to the commit date, which is what it always did.
+  const known = contentDateByRoute().get((page && page.route) || '/');
+  return known ? known.date : LAST_MODIFIED;
 }
 
 /**
@@ -1379,6 +1470,7 @@ function generate(buildDir = path.resolve(__dirname, '../build')) {
   // The sitemap is generated from the same PAGES list rather than maintained
   // by hand. A hand-written sitemap is how fifteen lessons went unlisted for
   // months on a site whose entire problem was not being readable.
+  writeContentDates();
   writeSitemap(buildDir);
   writeLlmsTxt(buildDir);
 
@@ -1405,4 +1497,19 @@ function generate(buildDir = path.resolve(__dirname, '../build')) {
 
 if (require.main === module) generate();
 
-module.exports = { PAGES, HOME_PAGE, PRICING, FAQS, LAST_MODIFIED, pageLastModified, writeLlmsTxt, generate, renderRouteDocument, pageSchema };
+module.exports = {
+  PAGES,
+  HOME_PAGE,
+  PRICING,
+  FAQS,
+  LAST_MODIFIED,
+  BUILD_DATE,
+  CONTENT_DATES_PATH,
+  contentFingerprint,
+  writeContentDates,
+  pageLastModified,
+  writeLlmsTxt,
+  generate,
+  renderRouteDocument,
+  pageSchema,
+};

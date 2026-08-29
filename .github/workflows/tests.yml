@@ -45,6 +45,15 @@ jobs:
         env:
           CI: true
 
+      # The node:test suites under scripts/ never ran here. They are the
+      # guards on the things a browser test cannot see — the sitemap's dates, the
+      # lesson count, the claims about the product, whether any page is orphaned
+      # — and the workflow above was written after a refactor shipped green
+      # because only these ran and the React suite did not. The same gap existed
+      # in the other direction the whole time.
+      - name: Search and schema guards
+        run: npm run test:seo --workspace=@e-learning/gamified-elearning
+
       # The suite passing and the build failing are different things, and the
       # build is the one the visitor sees. CRA treats lint warnings as errors
       # when CI is set, which has caught two unused variables that tests did not.
