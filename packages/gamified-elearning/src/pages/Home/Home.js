@@ -262,7 +262,7 @@ export default function Home() {
                     ? "Or start something new"
                     : user
                       ? "What do you want to make next?"
-                      : "Pick one and it starts right now"}
+                      : "Tap a game. It starts now!"}
                 </p>
                 <ul className="pick__row" aria-labelledby="pick-ask">
                   {HOME_PICKS.map((game) => (
@@ -309,10 +309,13 @@ export default function Home() {
                     them. It explains what the cards are; a caption belongs
                     below its picture. In front, it was 90px a child had to
                     read past before reaching anything they could tap. */}
+                {/* Nine words, all decodable by a six-year-old, because
+                    Mustafa's question is the right one: can the kid do this
+                    alone? Every clause on this screen is a wall for a child
+                    reading by themselves. */}
                 {!shelf.length && (
                   <p className="studio-hero__lead">
-                    Games, quizzes and websites you actually play. Then open them up, see how they
-                    work, and make them yours.
+                    Play real games. Open them up. Make them yours.
                   </p>
                 )}
               </div>

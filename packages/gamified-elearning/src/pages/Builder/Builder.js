@@ -796,6 +796,9 @@ export default function Builder() {
   const [guideLevelOverride, setGuideLevelOverride] = useState(storedGuideLevelOverride);
   const [coachOpen, setCoachOpen] = useState(() => learnerGuideLevel(user) !== 'independent');
   const coachRestTimer = useRef(null);
+  const [pixelQuiet, setPixelQuiet] = useState(() => {
+    try { return localStorage.getItem('codeit_pixel_quiet') === '1'; } catch (_) { return false; }
+  });
 
   // ── AI memory ──────────────────────────────────────────────────────────────
   const [promptHistory, setPromptHistory] = useState([]);
@@ -2688,7 +2691,20 @@ export default function Builder() {
   const coachStageNumber = coachStage.number;
   useEffect(() => {
     setCoachOpen(true);
-    if ((guideLevelOverride || learnerGuideLevel(user)) === 'early') return undefined;
+    const level = guideLevelOverride || learnerGuideLevel(user);
+    // ── Pixel speaks first for children who cannot read yet ─────────────────
+    //
+    // Mustafa's bar: can the kid do it alone? For a five-year-old the bubble
+    // text is a wall however short it is — the words have to arrive as SOUND.
+    // So on the big-help level, Pixel reads each new step out loud himself,
+    // once, the moment it changes. The 🔇 button below remembers "quiet
+    // please" on this device, because a classroom of thirty auto-reading
+    // tablets is its own disaster; a muted Pixel still shows the 🔊 button
+    // for reading any step by hand.
+    if (level === 'early' && localStorage.getItem('codeit_pixel_quiet') !== '1') {
+      readCoach(`${coachStage.title}. ${coachStage.detail}`);
+    }
+    if (level === 'early') return undefined;
     clearTimeout(coachRestTimer.current);
     coachRestTimer.current = setTimeout(() => setCoachOpen(false), 9000);
     return () => clearTimeout(coachRestTimer.current);
@@ -2836,6 +2852,22 @@ export default function Builder() {
                 >
                   🔊 Read to me
                 </button>
+                {guideLevel === 'early' && (
+                  <button
+                    type="button"
+                    className="pixel-guide__quiet"
+                    aria-pressed={pixelQuiet}
+                    onClick={() => {
+                      const next = !pixelQuiet;
+                      setPixelQuiet(next);
+                      try { localStorage.setItem('codeit_pixel_quiet', next ? '1' : '0'); } catch (_) {}
+                      if (next && window.speechSynthesis) window.speechSynthesis.cancel();
+                    }}
+                    aria-label={pixelQuiet ? 'Let Pixel read steps out loud' : 'Stop Pixel reading out loud'}
+                  >
+                    {pixelQuiet ? '🔇' : '🔊'}
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -3315,18 +3347,24 @@ export default function Builder() {
 
             {!user && (onTab('keep') || (guestDraftRecovered && onTab('play'))) && (
               <aside id="guest-project-recovery" className={`bldr-guest-backup${guestDraftRecovered ? ' is-recovered' : ''}`} aria-label="Guest project recovery">
+                {/* This card carried a 23-word storage lecture — "It stays
+                    only on this device for up to 7 days. Keep it in a free
+                    account to use it on another device." — the single
+                    wordiest thing on any first screen, written for a lawyer
+                    and shown to a seven-year-old. Same facts, twelve short
+                    words, and the button says the rest. */}
                 <div>
                   <strong>
                     {guestDraftRecovered
-                      ? 'Welcome back, your project was recovered.'
-                      : 'Backed up in this browser.'}
+                      ? 'Welcome back! Your game is still here.'
+                      : 'Saved in this browser.'}
                   </strong>
                   <span>
-                    It stays only on this device for up to 7 days. Keep it in a free account to use it on another device.
+                    Only on this computer, for 7 days.
                   </span>
                 </div>
                 <button type="button" onClick={handleSaveProject}>
-                  Keep it in a free account
+                  Keep it forever — free
                 </button>
               </aside>
             )}
