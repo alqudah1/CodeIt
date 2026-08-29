@@ -535,3 +535,15 @@
   padding: 2px 10px;
   font-size: 0.8125rem;
 }
+
+/* Printed-paper halftone over the flat thumb colour. */
+.exp-card__thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(53, 34, 14, 0.13) 1.2px, transparent 1.4px);
+  background-size: 11px 11px;
+  pointer-events: none;
+}
+.exp-card__thumb { position: relative; }
+.exp-card__thumb > * { position: relative; z-index: 1; }

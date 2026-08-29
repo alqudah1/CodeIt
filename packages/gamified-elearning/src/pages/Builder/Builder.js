@@ -43,6 +43,14 @@ import {
 } from './previewStorage';
 import CodePanel from './CodePanel';
 import { SHELVES, starterProjectById } from './starterProjects';
+import {
+  BrowserSticker,
+  CabinetSticker,
+  ControllerSticker,
+  QuestionSticker,
+  QuizSticker,
+  ShopSticker,
+} from '../../components/ArcadeArt/ArcadeArt';
 import { changeInvitation } from './whatCanIChange';
 import { lookInside } from './lookInside';
 import { closestStarter } from './closestStarter';
@@ -80,6 +88,11 @@ import {
   storeGuideLevelOverride,
   storedGuideLevelOverride,
 } from '../../utils/guideLevel';
+
+// One hand-drawn sticker per shelf and per ask-for-anything card, in the
+// design language itself. Decorative: the words beside them do the talking.
+const SHELF_STICKERS = { game: CabinetSticker, quiz: QuizSticker, site: ShopSticker };
+const HERO_STICKERS = { game: ControllerSticker, website: BrowserSticker, quiz: QuestionSticker };
 
 // A starter's shelf, in the words the rest of the studio already uses.
 const STARTER_TYPES = { game: 'game', quiz: 'quiz', site: 'website' };
@@ -2946,8 +2959,13 @@ export default function Builder() {
               key={shelf.kind}
               data-codeit-coach={coachStage.target === 'pick' && shelfIdx === 0 ? 'current' : undefined}
             >
-              <h3 className="bldr-shelf__title">{shelf.title}</h3>
-              <p className="bldr-shelf__line">{shelf.line}</p>
+              <div className="bldr-shelf__head">
+                {(() => { const Art = SHELF_STICKERS[shelf.kind]; return Art ? <Art size={40} /> : null; })()}
+                <div>
+                  <h3 className="bldr-shelf__title">{shelf.title}</h3>
+                  <p className="bldr-shelf__line">{shelf.line}</p>
+                </div>
+              </div>
               <ul className="bldr-shelf__row">
                 {shelf.items.map(item => (
                   <li key={item.id}>
@@ -2993,6 +3011,7 @@ export default function Builder() {
                   className={`bldr-hero-pick bldr-hero-pick--${hb.id}`}
                   onClick={() => { setPrompt(hb.prompt); callBuilder(hb.prompt); }}
                 >
+                  {(() => { const Art = HERO_STICKERS[hb.id]; return Art ? <Art size={46} /> : null; })()}
                   <span className="bldr-hero-pick__title">{hb.title}</span>
                   <span className="bldr-hero-pick__sub">{hb.sub}</span>
                   <span className="bldr-hero-pick__cta">Build now</span>

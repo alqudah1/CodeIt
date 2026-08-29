@@ -6569,3 +6569,15 @@ details.bldr-device-sizes .bldr-device-sizes__options {
 }
 .bldr-project-checklist li.is-current > span { background: var(--ink); color: var(--paper); }
 .bldr-project-checklist li.is-done > span { background: var(--arc-mint); color: var(--ink); border: 1.5px solid var(--ink); }
+
+/* ── Hand-drawn stickers ── */
+.bldr-shelf__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.bldr-shelf__head .bldr-shelf__title { margin: 0 0 2px; }
+.bldr-shelf__head .bldr-shelf__line { margin: 0; }
+.arcade-sticker { flex-shrink: 0; filter: drop-shadow(0 2px 0 rgba(53, 34, 14, 0.18)); }
+.bldr-hero-pick .arcade-sticker { display: block; margin-bottom: 8px; }
