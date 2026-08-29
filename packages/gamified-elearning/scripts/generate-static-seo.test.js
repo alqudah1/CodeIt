@@ -4,7 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { PAGES, renderRouteDocument } = require('./generate-static-seo');
+const { PAGES, renderRouteDocument, pageSchema } = require('./generate-static-seo');
 
 const TEMPLATE = `<!doctype html><html><head>
   <title>Home</title>
@@ -663,5 +663,54 @@ test('no page claims children write or edit code as the main activity', () => {
   ].join('\n');
   for (const pattern of OVERSTATED) {
     assert.ok(!pattern.test(sources), `copy still overstates what children do: ${pattern}`);
+  }
+});
+
+/* ─── Roundups say they are roundups ──────────────────────────────────────
+   Comparison and roundup pages are the two formats that outrank this site on
+   every unbranded query. Article alone describes them as prose; ItemList says
+   they are named options, which is the shape an assistant is assembling when
+   someone asks what to use. */
+
+test('a guide that declares comparesOptions emits an ItemList of them', () => {
+  const { loadGuidePages } = require('./content-loader');
+  let checked = 0;
+
+  for (const guide of loadGuidePages()) {
+    if (!guide.comparesOptions) continue;
+    checked += 1;
+    const page = PAGES.find((entry) => entry.route === `/guide/${guide.slug}`);
+    const parsed = JSON.parse(pageSchema(page));
+    const nodes = Array.isArray(parsed) ? parsed : parsed['@graph'] || [parsed];
+    const list = nodes.find((node) => node['@type'] === 'ItemList');
+
+    assert.ok(list, `/guide/${guide.slug} declares comparesOptions but emits no ItemList`);
+    assert.equal(
+      list.numberOfItems,
+      guide.comparesOptions.length,
+      `/guide/${guide.slug} compares ${guide.comparesOptions.length} things but lists ${list.numberOfItems}`
+    );
+  }
+
+  assert.ok(checked > 0, 'no guide declares comparesOptions; this test examined nothing');
+});
+
+test('every compared option is a heading that really exists on the page', () => {
+  // The list is parsed from the page's own H2s rather than typed beside them.
+  // A section renamed or deleted must not leave structured data still claiming
+  // the page compares something it no longer mentions.
+  const { loadGuidePages } = require('./content-loader');
+  for (const guide of loadGuidePages()) {
+    if (!guide.comparesOptions) continue;
+    const page = PAGES.find((entry) => entry.route === `/guide/${guide.slug}`);
+    const headings = [...String(page.bodyHtml || '').matchAll(/<h2>(.*?)<\/h2>/g)].map((m) =>
+      m[1].replace(/<[^>]+>/g, '').trim()
+    );
+    for (const option of guide.comparesOptions) {
+      assert.ok(
+        headings.includes(option),
+        `/guide/${guide.slug} claims to compare "${option}" but has no such heading`
+      );
+    }
   }
 });

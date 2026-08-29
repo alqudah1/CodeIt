@@ -280,7 +280,7 @@ CodeIt's studio has a starter written for exactly this crossing: **Cat and mouse
     ],
     markdown: `**Short answer:** the learning is not lost, but it has not happened yet either. It happens in what your child does next — changing the code, watching it break, and working out why — and you can start that this week with three questions, on any platform, without knowing how to code yourself.
 
-This page covers why kids reach for AI (it is rational, not lazy), what is genuinely lost when code arrives finished, why banning it fails, and where the "should kids learn vibe coding" argument actually stands. We build a product in this space and say so plainly near the end.
+In practice the tool is usually ChatGPT, Claude or whatever their friends are using, and which one matters far less than what happens after the code arrives. This page covers why kids reach for AI (it is rational, not lazy), what is genuinely lost when code arrives finished, why banning it fails, and where the "should kids learn vibe coding" argument actually stands. We build a product in this space and say so plainly near the end.
 
 ## Why kids reach for AI
 
@@ -1325,6 +1325,223 @@ For a classroom, the honest recommendations are the ones above: CodeHS for a ful
 The one place we might be worth a look is well outside a school: a **homeschooling parent or an after-school setting with one or two children**, where you want kids building websites, games and quizzes and then opening up the real HTML, CSS and JavaScript underneath. AI can help generate a project and the result stays editable rather than becoming a locked AI result. The free plan does not expire and needs no card: ten assisted project builds a month and two learner profiles under a parent view. A paid family plan is available at CA$12 a month, cancellable at any time. There is also a 31-lesson beginner Python sequence. Ages 5–12 use parent-managed, email-verified profiles that cannot publish publicly; independent accounts start at 13.
 
 If that is not your situation, take the list above and ignore us.`,
+  },
+  {
+    slug: "tynker-alternative",
+    title: "Tynker Alternatives: What to Use, and When Tynker Is Still the Answer",
+    description: "Tynker costs $15 to $18 a month for up to three children. What the alternatives actually are, what each one is better at, and the cases where you should stay.",
+    h1: "Is Tynker worth it, and what else is there?",
+    lastVerified: "2026-08-26",
+    targetQueries: ["tynker alternative", "is tynker worth it", "tynker vs scratch", "cheaper alternative to tynker", "tynker pricing family plan", "coding subscription for kids worth the money", "tynker vs code.org", "best paid coding platform for kids"],
+    markdown: `**Short answer:** if your child is under 8, or wants Minecraft and Roblox modding specifically, Tynker is still the best-supported option and the alternatives are worse. If your child is past blocks and you mostly want them building things they can share, you are paying for a course library you will not finish.
+
+This page names prices as they were checked on 26 August 2026, from each product's own pricing page.
+
+## What Tynker actually costs
+
+From [Tynker's pricing page](https://www.tynker.com/pricing/), family plans, with a 40% discount applied at the time of checking:
+
+| Plan | Price | Billed |
+|---|---|---|
+| Quarterly | $18/month | $54 every three months |
+| Yearly | $15/month | $180 a year |
+| Lifetime | $468 | once |
+
+All three cover up to three children and carry a 30-day money-back guarantee. Tynker states an age range of 5 to 18, from icon coding for pre-readers up to Python and JavaScript.
+
+That is not a bad price for what it is. The question is whether what it is matches what your child does.
+
+## Where Tynker is genuinely the right answer
+
+**Under 8.** Icon coding for pre-readers is real work to build and almost nobody else does it well. If your child cannot yet read fluently, most of the alternatives on this page are unusable for them.
+
+**Minecraft and Roblox modding.** This is Tynker's strongest hand. The integrations are maintained, they work, and a child who wants to mod the game they already play will stay engaged far longer than with a generic project.
+
+**You want a curriculum, not a tool.** Tynker is a course library with a path through it. If you want to hand a child something structured and step away, that is what it is built for.
+
+If any of those three describe you, stop reading. The rest of this page will not serve you better.
+
+## Where the money stops making sense
+
+The common failure is not that Tynker is bad. It is that a subscription bought for a 7-year-old is still being paid for at 11, when the child has outgrown blocks and the text-code courses feel like homework rather than making something.
+
+At that point you are paying a monthly fee for a library, and the child is not opening it. The honest move is to cancel and pick a tool aimed at what they do now.
+
+## The alternatives, and what each is actually for
+
+**[Code.org](https://code.org/)** — free, and it stays free. Rebranded to CodeAI on 2 June 2026, with the Hour of Code now the Hour of AI, and it [continues to provide free curriculum, tools and professional learning resources](https://code.org/en-US/codeorg-is-now-codeai). Best for structured courses at no cost. Weakest at open-ended making: a child who wants to build their own thing and share a link will find it closed-ended.
+
+**Scratch** — free, from MIT, block-based, and still the best on-ramp there is. It is not an alternative to Tynker so much as the thing Tynker's early levels are competing with. If your child is happy in Scratch, there is no reason to pay anyone.
+
+**The p5.js Web Editor** — free, text-based JavaScript, no account needed to start. Best for a teenager who already wants to write code. Nothing about it is designed for children, and that is the point.
+
+**CodeIt** — this is us, so weigh it accordingly.
+
+## Disclosure: we make one of these
+
+CodeIt is a browser-based coding studio for ages 5 to 18, built in Toronto. A learner describes a website, game or quiz, plays what comes back, and changes it by moving things and picking colours or asking in plain language. A separate view shows what the finished project is made of and opens the lesson behind each idea in it. There are 31 beginner Python lessons.
+
+Free plan: no card, ten AI-assisted builds a month, and the lessons and Python playground stay free. Paid family plan CA$12 a month, cancellable at any time. Note that is Canadian dollars against Tynker's US dollars, so compare the numbers in your own currency rather than taking the gap at face value.
+
+**Where CodeIt is genuinely the better fit:** a child roughly 8 to 16 who has outgrown blocks, wants to make things rather than take a course, and whose parent wants some evidence of understanding rather than a completion badge. The comprehension questions are generated from the learner's own file, so the right answer is whatever they actually wrote.
+
+**Where Tynker beats us, plainly:** it is older, larger, better supported, and has a proper curriculum. It works for pre-readers and we are weaker there. It has Minecraft and Roblox and we have neither. If those matter to your child, buy Tynker.
+
+**What we do not do at all:** no rostering, no LMS integration, no standards alignment, no teacher dashboards. CodeIt is not a schools product.
+
+## The version of this page you should trust
+
+Any comparison page written by one of the products is worth reading sceptically, including this one. The test is whether it tells you when to buy the competitor. This one does, three times, in the section above. If a page never does that, it is an advert.`,
+  },
+  {
+    slug: "free-coding-for-kids",
+    comparesOptions: ["Scratch", "Code.org, now CodeAI", "Google CS First", "freeCodeCamp", "The p5.js Web Editor"],
+    title: "Free Coding for Kids: What Is Actually Free in 2026",
+    description: "Six platforms that cost nothing, what each is genuinely good at, and which one to pick by what your child wants to make. Every claim checked against the source.",
+    h1: "What is actually free, and which one should we use?",
+    lastVerified: "2026-08-29",
+    targetQueries: ["free coding for kids", "free coding websites for kids", "best free coding platform for children", "free programming for kids no subscription", "coding for kids without paying", "free alternative to tynker", "free kids coding 2026", "is scratch free"],
+    markdown: `**Short answer:** [Scratch](https://scratch.mit.edu/) if your child is new or under about 9. [Code.org](https://code.org/) if you want structured lessons with no account overhead. [freeCodeCamp](https://www.freecodecamp.org/) if they are a teenager who wants to write real code. Everything below is checked against each product's own words, quoted, on 29 August 2026.
+
+There is a lot of "free" in this category that means a free trial, or a free tier that ends at lesson three. These do not: no subscription, no card, and nothing that stops working after a month. All of them are coding websites you open in a browser, and all of them teach real programming rather than a toy version of it.
+
+If you are here because you want your child learning to code without paying, the honest answer is that you can, indefinitely, and most families never need to spend anything.
+
+## Scratch
+
+**Free, permanently.** The Scratch Foundation states plainly: *"Scratch is free for everyone. Supporters make that possible."*
+
+Block-based, from MIT, and still the best on-ramp that exists. A child drags blocks together rather than typing, which removes the entire category of problem where a missing semicolon ends the session in tears.
+
+**Best for:** a first ever coding experience, and for children who want to make animations and games and share them.
+
+**Where it stops:** blocks are a floor, not a ceiling. A child who has been in Scratch for two years and wants to build a real web page will need something else, which is the single most common question parents ask in this category.
+
+## Code.org, now CodeAI
+
+**Free, and they have said so again recently.** The organisation [rebranded to CodeAI on 2 June 2026](https://code.org/en-US/codeorg-is-now-codeai), the Hour of Code became the Hour of AI, and they will *"continue to provide free curriculum, tools, and professional learning resources."* The URL did not change and the site is still live, despite a lot of secondhand writing suggesting otherwise.
+
+**Best for:** structured courses, a class or a group, and anyone who wants a path laid out rather than a blank page.
+
+**Where it stops:** it is closed-ended by design. A child who wants to build their own thing and send someone a link will find the walls quickly.
+
+## Google CS First
+
+**Free, unambiguously.** Google's own wording: *"CS First is totally free of charge — any number of students, all materials, as many lessons as you want."*
+
+Video tutorials with block coding built on Scratch, organised into themed units like sports, art and game design.
+
+**Best for:** a teacher or a parent who wants a ready-made unit with videos, rather than assembling one.
+
+**Where it stops:** it is Scratch underneath, so it inherits both the strengths and the ceiling.
+
+## freeCodeCamp
+
+**Free, including the certificates.** Their words: *"Every aspect of freeCodeCamp is 100% free. The courses, the projects, even the certifications."* Project-based, in the browser, covering web development, JavaScript, Python and a great deal more.
+
+**Best for:** a motivated teenager who has decided they want to be able to build things properly.
+
+**Where it stops:** it was not designed for children. There is no hand-holding, no age gating in the interface, and the tone assumes an adult career-changer. A 10-year-old will usually bounce off it, and that is not a criticism of freeCodeCamp — it is not what they built.
+
+## The p5.js Web Editor
+
+**Free and open source.** p5.js describes itself as *"a free and open-source JavaScript library built by an inclusive, nurturing community"*, and the [web editor](https://editor.p5js.org/) runs in the browser.
+
+**Best for:** a teenager who wants to make visual, generative, drawing-based things in real JavaScript with nothing to install.
+
+**Where it stops:** nothing about it is designed for children, and nothing guides you. It is a blank editor and a library, which is exactly right for some people and useless for others.
+
+## What about the paid ones
+
+[Tynker](https://www.tynker.com/pricing/) is the main paid option at this age range: $18/month billed quarterly, $15/month billed yearly at $180, or $468 lifetime, covering up to three children, checked 26 August 2026. It is genuinely better than the free options for pre-readers and for Minecraft and Roblox modding. If neither of those describes your child, start with the free tools and see whether you ever run out of them. Most families do not.
+
+There is more detail in [Tynker alternatives](/guide/tynker-alternative), including when to stay.
+
+## Disclosure: we make one of these
+
+CodeIt has a free plan with no card: ten AI-assisted project builds a month, and the Python lessons and playground stay free regardless. The paid family plan is CA$12 a month, cancellable at any time, in Canadian dollars.
+
+A learner describes a website, game or quiz, plays what comes back, and changes it by moving things and picking colours. A separate view shows what the finished project is made of and opens the lesson behind each idea in it.
+
+**Where we fit that the list above does not:** the gap between Scratch and freeCodeCamp — a child roughly 8 to 16 who has outgrown blocks but is not going to sit through an adult curriculum. That gap is the reason CodeIt exists, and if your child is not in it, one of the free tools above is the better answer and this page has tried to say which.
+
+**What we do not do:** no rostering, no LMS integration, no standards alignment, no teacher dashboards. Not a schools product.
+
+## How to use this page
+
+Pick by what the child wants to make, not by what the platform claims to teach. A child who wants a game and a child who wants a website will quit different tools at different speeds, and the free ones cost nothing to try, so try two.`,
+  },
+  {
+    slug: "coding-for-kids-by-age",
+    comparesOptions: ["Ages 5 to 7: before reading is fluent", "Ages 8 to 11: the block years", "Ages 12 to 15: the gap where children quit", "Ages 16 and up: use the real thing"],
+    title: "Coding for Kids by Age: 5-7, 8-11, 12-15, 16+",
+    description: "What actually works at each age, why the wrong tool at the right age is the usual reason a child quits, and when to move them on. Sourced and dated.",
+    h1: "Which coding tool suits my child's age?",
+    lastVerified: "2026-08-29",
+    targetQueries: ["coding for kids by age", "best coding app for 6 year old", "coding for 8 year old", "coding for 10 year olds", "what age should kids start coding", "coding for teenagers beginner", "is my child too young to learn to code", "when to move from scratch to python"],
+    markdown: `**The short version:** ages 5 to 7 need pictures rather than words. 8 to 11 is where blocks work and most children start. Around 11 or 12 blocks stop being satisfying and the wrong move here is the usual reason a child quits. For teenagers, adult tools work and are better, and Python is usually the right first text language.
+
+Parents of 8, 9 and 10 year olds ask this most often, and the answer for that group is almost always Scratch first, then a decision at 11 or 12 about whether to move to Python or to the web.
+
+The common mistake is not starting too early. It is leaving a child in a tool they have outgrown, because the subscription is already paid and the tool still technically works.
+
+Everything below is checked against each product's own site, quoted where it matters, on 29 August 2026.
+
+## Ages 5 to 7: before reading is fluent
+
+At this age the constraint is not intelligence, it is reading speed. A tool that requires reading each block will exhaust a five-year-old before they build anything.
+
+**[ScratchJr](https://www.scratchjr.org/)** — their site states it is for *"young children (ages 5-7)"*. Picture blocks, no text, made for exactly this window. This is the default recommendation.
+
+**[Kodable](https://www.kodable.com/)** — has a free Kickstart plan for families. Their published pricing is aimed at schools, at $1,750 to $3,500 a year per site, so check the parent option rather than assuming the school price applies to you.
+
+**Tynker** — [icon coding for pre-readers](https://www.tynker.com/pricing/) is genuinely well built and one of the few paid things at this age worth the money. Family plans are $18/month quarterly, $15/month yearly at $180, or $468 lifetime for up to three children.
+
+**Not us.** CodeIt asks a child to describe what they want in words. A five-year-old who cannot yet type a sentence will not get far. We are honest about that on our own pricing page and we will be honest about it here.
+
+## Ages 8 to 11: the block years
+
+This is the sweet spot for block coding and where most children start and stay for two or three years.
+
+**[Scratch](https://scratch.mit.edu/)** — *"Scratch is free for everyone"* (Scratch Foundation). Still the best on-ramp that exists, and the community is a large part of why. If your child is happy here, there is no reason to pay anyone anything.
+
+**[Google CS First](https://csfirst.withgoogle.com/)** — *"totally free of charge — any number of students, all materials, as many lessons as you want."* Video-led units built on Scratch. Best if you want structure rather than a blank canvas.
+
+**[Code.org](https://code.org/)** — now CodeAI since 2 June 2026, still free, still at the same address. Courses with a path through them.
+
+**Where CodeIt starts to fit:** the top of this band, around 10 or 11, for a child who wants to make a thing and share it rather than complete a course.
+
+## Ages 12 to 15: the gap where children quit
+
+This is the hard part, and it is the reason this site exists.
+
+Blocks start feeling babyish somewhere around 11 or 12. But the adult text-code tools assume motivation a 12-year-old has not built yet, and the drop from dragging a block to a blank file with a blinking cursor is where most children stop coding permanently.
+
+**What works:** anything where they still make something they care about on day one, but the real code is visible. **What fails:** a syntax course. They will complete two lessons and never return.
+
+**[The p5.js Web Editor](https://editor.p5js.org/)** — p5.js is *"a free and open-source JavaScript library"*, and the editor runs in the browser with nothing to install. Excellent for a 14-year-old who wants to make visual things. No guidance at all, which suits some children and loses others.
+
+**Code.org** continues to work here, and its later courses are text-based.
+
+**Where CodeIt fits, plainly:** this band is the whole reason we exist. A learner describes a website, game or quiz, plays it, changes it by moving things and picking colours, and a separate view shows what the finished project is made of and opens the lesson behind each idea in it. Free plan, no card, ten AI-assisted builds a month, lessons and playground free regardless. Paid family plan CA$12 a month in Canadian dollars.
+
+If your 13-year-old is thriving in Scratch, leave them there. This band is about the ones who have stopped.
+
+## Ages 16 and up: use the real thing
+
+At this point the honest advice is to stop using anything designed for children.
+
+**[freeCodeCamp](https://www.freecodecamp.org/)** — *"Every aspect of freeCodeCamp is 100% free. The courses, the projects, even the certifications."* Project-based, serious, and the right answer for a teenager who has decided they want this.
+
+**The p5.js editor**, a plain text editor, or whatever a working developer uses. A 16-year-old who wants to build things should be building them with the tools that build things.
+
+**Not us, mostly.** CodeIt goes to 18 and the lessons are useful for a late beginner, but a motivated 16-year-old is better served by freeCodeCamp and we would rather say so.
+
+## The one rule that matters more than the age bands
+
+Ages are a starting guess, not a verdict. A confident 9-year-old belongs in the 12-to-15 advice and a hesitant 13-year-old belongs in Scratch, and neither is a problem.
+
+Watch what happens when they get stuck. A child in the right tool gets annoyed and tries again. A child in the wrong tool goes quiet and finds something else to do. That signal is more reliable than any age range on this page, including ours.`,
   },
 ];
 

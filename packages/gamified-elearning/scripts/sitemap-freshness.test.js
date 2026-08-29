@@ -20,7 +20,7 @@ const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('node:child_process');
 
-const { LAST_MODIFIED } = require('./generate-static-seo.js');
+const { LAST_MODIFIED, PAGES, HOME_PAGE, pageLastModified } = require('./generate-static-seo.js');
 
 test('the sitemap date is a real date', () => {
   assert.match(LAST_MODIFIED, /^\d{4}-\d{2}-\d{2}$/, `lastmod is not an ISO date: ${LAST_MODIFIED}`);
@@ -58,4 +58,34 @@ test('the date is computed, not assigned from the pinned constant', () => {
     /const LAST_MODIFIED = commitDate\(\);/,
     'LAST_MODIFIED is no longer derived from the commit date'
   );
+});
+
+test('a page that carries its own date uses it, not the build date', () => {
+  // Every URL used to share one lastmod, which tells a crawler that all 69
+  // pages changed at once — no information at all. Guides carry lastVerified
+  // and blog posts carry their own date, both set by whoever checked the facts,
+  // and those are better evidence than the build clock.
+  const dated = [HOME_PAGE, ...PAGES].filter((page) =>
+    /^\d{4}-\d{2}-\d{2}$/.test(page.datePublished || '')
+  );
+  assert.ok(dated.length > 0, 'no page carries its own date; this test examined nothing');
+
+  for (const page of dated) {
+    assert.equal(
+      pageLastModified(page),
+      page.datePublished,
+      `${page.route} has its own date but the sitemap would announce the build date`
+    );
+  }
+
+  const distinct = new Set([HOME_PAGE, ...PAGES].map(pageLastModified));
+  assert.ok(
+    distinct.size > 1,
+    'every URL still shares one sitemap date, so the field carries no signal'
+  );
+});
+
+test('a page with no date of its own falls back to the commit date', () => {
+  assert.equal(pageLastModified({ route: '/nothing' }), LAST_MODIFIED);
+  assert.equal(pageLastModified({ route: '/bad', datePublished: 'March 2026' }), LAST_MODIFIED);
 });

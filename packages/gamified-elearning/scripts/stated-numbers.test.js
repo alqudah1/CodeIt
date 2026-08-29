@@ -64,6 +64,16 @@ test('every stated build allowance is the live one', () => {
 });
 
 test('every stated price is the live one', () => {
+  // Deliberate scope, stated so it is not mistaken for more than it is: this
+  // matches CA$ and US$ prefixed amounts only. Bare "$18" is not checked,
+  // because comparison pages quote competitors' prices in their own currency
+  // and flagging those would make the guard unusable on exactly the pages that
+  // most need writing.
+  //
+  // The gap that leaves: CodeIt's own price written as a bare "$12" would pass.
+  // The assertion below closes it — anywhere the product is named near a price,
+  // that price must carry the currency, because "$12" means different money in
+  // Toronto than it does anywhere Tynker is sold.
   let checked = 0;
   for (const page of [HOME_PAGE, ...PAGES]) {
     for (const match of visibleText(page).matchAll(/(CA|US)\$\s?(\d+(?:\.\d+)?)/g)) {
@@ -81,4 +91,55 @@ test('every stated price is the live one', () => {
     }
   }
   assert.ok(checked > 0, 'no price was found on any page; this test examined nothing');
+});
+
+test('the live price is never written without its currency', () => {
+  // First attempt at this matched "CodeIt" within 80 characters of a dollar
+  // sign, and could not cross a full stop. The product name sat in the previous
+  // sentence, so breaking the page on purpose did not fail the test. It passed
+  // for the wrong reason, which is worse than not existing.
+  //
+  // This looks for the live amount with no currency in front of it. A bare
+  // "$12" means different money in Toronto than in the United States, and the
+  // only place that figure appears is our own plan.
+  //
+  // If a competitor is ever genuinely priced at the same number, this fails and
+  // a person decides what to do. That is the correct outcome: a human looking
+  // at an ambiguous price is the thing being protected.
+  const BARE = new RegExp(`(?<!CA)(?<!US)\\$\\s?${PRICING.AMOUNT}\\b`);
+  for (const page of [HOME_PAGE, ...PAGES]) {
+    const match = BARE.exec(visibleText(page));
+    assert.ok(
+      !match,
+      `${page.route || '/'} writes the price as "${match && match[0]}" with no currency`
+    );
+  }
+});
+
+test('a page quoting a competitor price shows the reader when it was checked', () => {
+  // Competitor prices go stale silently and there is no way for the build to
+  // know. The next best thing is that the reader can see the date and judge for
+  // themselves, so any guide quoting money must render its own lastVerified.
+  //
+  // This is the honest limit of what a test can do here: it cannot tell whether
+  // Tynker still costs $15, only that the page is not pretending to be timeless.
+  const { loadGuidePages } = require('./content-loader');
+  const MONEY = /\$\s?\d/;
+  let checked = 0;
+
+  for (const guide of loadGuidePages()) {
+    if (!MONEY.test(guide.markdown)) continue;
+    checked += 1;
+    assert.ok(
+      /^\d{4}-\d{2}-\d{2}$/.test(guide.lastVerified || ''),
+      `/guide/${guide.slug} quotes a price but carries no lastVerified date`
+    );
+    const page = PAGES.find((entry) => entry.route === `/guide/${guide.slug}`);
+    assert.ok(
+      visibleText(page).includes(guide.lastVerified),
+      `/guide/${guide.slug} quotes a price but never shows the reader when it was checked`
+    );
+  }
+
+  assert.ok(checked > 0, 'no guide quotes a price; this test examined nothing');
 });

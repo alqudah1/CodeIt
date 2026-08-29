@@ -256,6 +256,12 @@ const GUIDE_CONTENT = loadGuidePages();
 const renderMarkdown = loadMarkdownRenderer();
 const BLOG_CONTENT = loadBlogPosts();
 const LESSON_CONTENT = loadLessons();
+
+// Counted, never typed. A page that states "31 lessons" is stating a fact about
+// the curriculum, and the curriculum is the only thing that should be able to
+// change it. This site has already shipped a title advertising 16 lessons
+// against 31, in the same breath as a description saying 31.
+const LESSON_COUNT = LESSON_CONTENT.size;
 const BLOG_BY_SLUG = new Map(BLOG_CONTENT.map((post) => [post.slug, post]));
 
 /** Blog post -> [{heading, paragraphs:[string]}] */
@@ -361,6 +367,73 @@ function pricingSections() {
  * here is factual and matches what the React page actually renders.
  */
 const IDENTITY_PAGES = [
+  {
+    // A page for people who might write about CodeIt.
+    //
+    // The binding constraint on being named by an assistant is that nothing off
+    // this domain mentions the product. Journalists, directory editors and
+    // people writing roundups cite what is easy to cite: one page with the
+    // facts, the spelling, the founder, and an honest statement of what the
+    // thing does not do. Every figure here is read from config or the lesson
+    // files rather than typed, so it cannot go stale the way the rest of this
+    // site quietly did.
+    route: '/press',
+    eyebrow: 'Press and facts',
+    h1: 'Everything you need to write about CodeIt.',
+    intro: `CodeIt is a browser-based coding studio for ages 5 to 18, built in ${COMPANY.locationLine()}${COMPANY.founderName ? ` by ${COMPANY.founderName}` : ''}. This page exists so that anyone writing about the product can check a fact without asking, and so that what gets written is accurate.`,
+    detail: 'If something here is unclear or you need a detail that is not on this page, email and ask. A correction is cheaper than a wrong sentence.',
+    type: 'AboutPage',
+    sections: [
+      {
+        heading: 'The name',
+        paragraphs: [
+          `The product is CodeIt. It is registered on external profiles as "${COMPANY.alternateNames[0]}", because "CodeIt" alone collides with several unrelated organisations: a youth outreach programme at MIT, a tutoring company in London at codeitlearning.com, and a software services firm at codeit.us. None of them are us.`,
+          `Written as one word with a capital I: CodeIt. The site is ${COMPANY.url}.`,
+        ],
+      },
+      {
+        heading: 'What it does',
+        paragraphs: [
+          'A learner describes a website, game or quiz and gets a working version they can play immediately. They change it by moving elements, picking colours and fonts, or asking for changes in plain language.',
+          'A separate view shows which programming ideas the finished project uses, and opens the lesson behind each one. Children see the code their project is made of; they are not typing it as the main activity, and describing it that way is the most common error in write-ups.',
+          `Alongside the studio there are ${LESSON_COUNT} beginner Python lessons, each with an explanation, a runnable example, something to write, and a challenge. The lessons are where children write code.`,
+        ],
+      },
+      {
+        heading: 'What it costs',
+        paragraphs: [
+          `Free plan: no card, ${PRICING.FREE_MONTHLY_AI_BUILDS} AI-assisted project builds a month. The lessons and the Python playground stay free regardless of plan.`,
+          `Paid family plan: ${PRICING.PRICE_PER_INTERVAL}, cancellable at any time. Prices are Canadian dollars.`,
+        ],
+      },
+      {
+        heading: 'What it does not do',
+        paragraphs: [
+          'No rostering, no LMS integration, no standards alignment, no teacher dashboards. CodeIt is not built for school or district deployment and is not sold that way.',
+          'It is not right for a pre-reading child; Kodable and codeSpark are built for that and are better at it. It is not right for a learner who mainly wants to keep making games, where CodeCombat or Roblox Studio fit better.',
+        ],
+      },
+      {
+        heading: 'Children and accounts',
+        paragraphs: [
+          'Profiles for ages 5 to 12 are created and managed by a parent or guardian after the adult account email is confirmed. Those managed profiles cannot publish projects publicly. Independent student accounts begin at 13.',
+        ],
+      },
+      {
+        heading: 'Contact',
+        paragraphs: [
+          `${COMPANY.founderName}, founder. ${COMPANY.contactEmail}. Based in ${COMPANY.locationLine()}.`,
+          `Profiles: ${COMPANY.sameAs.join(' · ')}`,
+        ],
+      },
+      {
+        heading: 'Using the logo',
+        paragraphs: [
+          `The mark is at ${COMPANY.url}/brand/codeit-logo-trimmed.png and the square version at ${COMPANY.url}/brand/LogoForSM.png. Use either as-is; please do not recolour or stretch them.`,
+        ],
+      },
+    ],
+  },
   {
     route: '/about',
     eyebrow: 'About',
@@ -765,6 +838,9 @@ const PAGES = [
     type: 'Article',
     slug: guide.slug,
     datePublished: guide.lastVerified,
+    // Declared in the guide itself, so the page and its structured data agree
+    // about what is being compared. Absent on guides that are not roundups.
+    comparesOptions: guide.comparesOptions,
     // Pre-rendered from the same Markdown the React page renders, so the
     // crawlable HTML and the page a person sees are the same words.
     bodyHtml: renderMarkdown(guide.markdown),
@@ -914,10 +990,10 @@ function breadcrumbHtml(breadcrumbs) {
  * on /coding-for-kids really is the reader asking what comes after Scratch.
  */
 const GUIDES_BY_ROUTE = {
-  '/': ['after-scratch', 'ai-built-it-now-edit-it'],
-  '/coding-for-kids': ['after-scratch', 'what-did-my-kid-learn'],
+  '/': ['after-scratch', 'ai-built-it-now-edit-it', 'free-coding-for-kids'],
+  '/coding-for-kids': ['after-scratch', 'what-did-my-kid-learn', 'coding-for-kids-by-age'],
   '/learn-python-for-kids': ['after-scratch'],
-  '/lessons': ['after-scratch'],
+  '/lessons': ['after-scratch', 'free-coding-for-kids'],
   '/builder': ['ai-builder-you-can-edit', 'publish-first-project'],
   '/ai-website-builder-for-kids': ['ai-builder-you-can-edit', 'ai-built-it-now-edit-it'],
   '/games': ['first-browser-game'],
@@ -925,9 +1001,10 @@ const GUIDES_BY_ROUTE = {
   '/first-game-challenge': ['first-browser-game'],
   '/explore': ['publish-first-project'],
   '/playground': ['after-scratch'],
-  '/journey': ['what-did-my-kid-learn'],
+  '/journey': ['what-did-my-kid-learn', 'coding-for-kids-by-age'],
   '/blog': ['what-did-my-kid-learn'],
-  '/faq': ['what-did-my-kid-learn'],
+  '/faq': ['what-did-my-kid-learn', 'coding-for-kids-by-age'],
+  '/pricing': ['tynker-alternative', 'free-coding-for-kids'],
   '/about': ['ai-built-it-now-edit-it'],
 };
 
@@ -963,6 +1040,7 @@ function staticContent(page) {
     ['/guide', 'Straight answers about learning to code'],
     ['/faq', 'Questions parents ask first'],
     ['/about', 'About CodeIt'],
+    ['/press', 'Press and facts'],
     ['/privacy', 'Privacy'],
     ['/terms', 'Terms'],
   ]
@@ -1043,6 +1121,40 @@ function pageSchema(page) {
   }
 
   graph.push(primary);
+
+  // Roundups get an ItemList of what they compare.
+  //
+  // A comparison page is a list, and Article alone does not say so. An
+  // extraction pipeline reading Article sees prose; reading ItemList it sees
+  // named options in order, which is the shape of the answer an assistant is
+  // trying to build when someone asks what to use. These are the two page types
+  // that beat this site on every unbranded query, so it is worth telling a
+  // machine that is what they are.
+  //
+  // The list is parsed from the page's own H2 headings rather than typed
+  // beside them, so a section renamed or removed cannot leave a stale entry
+  // behind claiming the page still compares something it does not.
+  if (page.comparesOptions) {
+    const headings = [...String(page.bodyHtml || '').matchAll(/<h2>(.*?)<\/h2>/g)]
+      .map((match) => match[1].replace(/<[^>]+>/g, '').trim())
+      .filter((heading) => page.comparesOptions.includes(heading));
+
+    if (headings.length) {
+      graph.push({
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        '@id': `${url}#options`,
+        name: page.h1,
+        itemListOrder: 'https://schema.org/ItemListUnordered',
+        numberOfItems: headings.length,
+        itemListElement: headings.map((heading, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: heading,
+        })),
+      });
+    }
+  }
 
   // The 16-lesson sequence is a Course. `LearningResource` alone does not
   // express the sequence, and Course is what most extraction pipelines key on.
@@ -1148,17 +1260,76 @@ function renderRouteDocument(template, page) {
   return html.replace('</head>', `${routeStyle}\n    ${schema}\n  </head>`);
 }
 
+/**
+ * The date a specific page last changed, not the date the site was built.
+ *
+ * Every URL used to carry the same lastmod, which tells a crawler that all 69
+ * pages changed together — that is, nothing useful. A guide verified in March
+ * and a page rewritten this morning looked identical, so the signal was spent
+ * on all of them equally and did no work for any of them.
+ *
+ * Guides carry lastVerified and blog posts carry their own date, both authored
+ * by the person who checked the facts. Those are better evidence of change than
+ * the build clock. Everything else falls back to the commit date.
+ */
+function pageLastModified(page) {
+  const own = page && page.datePublished;
+  return /^\d{4}-\d{2}-\d{2}$/.test(own || '') ? own : LAST_MODIFIED;
+}
+
+/**
+ * llms.txt, with the guides in it.
+ *
+ * That file is written for language models, and it listed thirteen product
+ * pages and none of the fifteen guides — the pages that exist specifically to
+ * answer a question, which is the only thing a model fetching this file is
+ * looking for. A model reading it learned what CodeIt sells and nothing about
+ * what CodeIt knows.
+ *
+ * It was also maintained by hand, which on this site has been a reliable way to
+ * make something stop being true. The guide section is generated from
+ * src/data/guidePages.js at build time and replaces anything already under that
+ * heading, so adding a guide adds it here and removing one removes it.
+ */
+function writeLlmsTxt(buildDir) {
+  const source = path.resolve(__dirname, '../public/llms.txt');
+  if (!fs.existsSync(source)) {
+    console.warn('llms.txt not found in public/; skipping.');
+    return;
+  }
+
+  const HEADING = '## Guides';
+  const base = fs.readFileSync(source, 'utf8').split(HEADING)[0].trimEnd();
+
+  const guides = GUIDE_CONTENT.map(
+    (guide) =>
+      `- ${guide.h1}\n  ${SITE}/guide/${guide.slug}\n  ${guide.description}\n  Last checked ${guide.lastVerified}.`
+  ).join('\n\n');
+
+  const body =
+    `${base}\n\n${HEADING}\n\n` +
+    'Long-form answers to specific questions. Several of them recommend a\n' +
+    'competitor, because for many readers a competitor is the right answer.\n' +
+    'Each one states the date its facts were checked.\n\n' +
+    `${guides}\n`;
+
+  fs.writeFileSync(path.join(buildDir, 'llms.txt'), body);
+  console.log(`Wrote llms.txt with ${GUIDE_CONTENT.length} guides.`);
+}
+
 function writeSitemap(buildDir) {
-  const today = LAST_MODIFIED;
-  const urls = [{ route: '/', priority: '1.0' }, ...PAGES.map((page) => ({ route: page.route }))];
+  const urls = [
+    { route: '/', priority: '1.0', page: HOME_PAGE },
+    ...PAGES.map((page) => ({ route: page.route, page })),
+  ];
   const seen = new Set();
   const body = urls
     .filter(({ route }) => (seen.has(route) ? false : seen.add(route)))
     .map(
-      ({ route, priority }) =>
+      ({ route, priority, page }) =>
         `  <url>\n` +
         `    <loc>${SITE}${route === '/' ? '/' : route}</loc>\n` +
-        `    <lastmod>${today}</lastmod>\n` +
+        `    <lastmod>${pageLastModified(page)}</lastmod>\n` +
         (priority ? `    <priority>${priority}</priority>\n` : '') +
         `  </url>`
     )
@@ -1209,6 +1380,7 @@ function generate(buildDir = path.resolve(__dirname, '../build')) {
   // by hand. A hand-written sitemap is how fifteen lessons went unlisted for
   // months on a site whose entire problem was not being readable.
   writeSitemap(buildDir);
+  writeLlmsTxt(buildDir);
 
   // Homepage last: it overwrites the template file itself.
   fs.writeFileSync(templatePath, renderRouteDocument(template, HOME_PAGE));
@@ -1233,4 +1405,4 @@ function generate(buildDir = path.resolve(__dirname, '../build')) {
 
 if (require.main === module) generate();
 
-module.exports = { PAGES, HOME_PAGE, PRICING, FAQS, LAST_MODIFIED, generate, renderRouteDocument, pageSchema };
+module.exports = { PAGES, HOME_PAGE, PRICING, FAQS, LAST_MODIFIED, pageLastModified, writeLlmsTxt, generate, renderRouteDocument, pageSchema };

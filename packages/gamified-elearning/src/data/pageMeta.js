@@ -113,6 +113,10 @@ const PAGE_META = {
     title: 'Free Online Python Playground for Beginners | CodeIt',
     description: 'Write and run beginner Python directly in your browser with no download or local setup.',
   },
+  '/press': {
+    title: 'CodeIt Press Kit: Facts, Figures and Contact',
+    description: 'Everything needed to write accurately about CodeIt: what it is, what it costs, what it deliberately does not do, who built it, and how to use the logo.',
+  },
   '/pricing': {
     title: 'CodeIt Pricing: Free Coding & Family Pilot',
     description: 'Start free with no card. The CodeIt family plan is CA$12 a month, cancellable at any time, with guided setup, parent progress and learner profiles.',
