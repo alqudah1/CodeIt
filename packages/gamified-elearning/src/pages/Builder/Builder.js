@@ -3315,18 +3315,24 @@ export default function Builder() {
 
             {!user && (onTab('keep') || (guestDraftRecovered && onTab('play'))) && (
               <aside id="guest-project-recovery" className={`bldr-guest-backup${guestDraftRecovered ? ' is-recovered' : ''}`} aria-label="Guest project recovery">
+                {/* This card carried a 23-word storage lecture — "It stays
+                    only on this device for up to 7 days. Keep it in a free
+                    account to use it on another device." — the single
+                    wordiest thing on any first screen, written for a lawyer
+                    and shown to a seven-year-old. Same facts, twelve short
+                    words, and the button says the rest. */}
                 <div>
                   <strong>
                     {guestDraftRecovered
-                      ? 'Welcome back, your project was recovered.'
-                      : 'Backed up in this browser.'}
+                      ? 'Welcome back! Your game is still here.'
+                      : 'Saved in this browser.'}
                   </strong>
                   <span>
-                    It stays only on this device for up to 7 days. Keep it in a free account to use it on another device.
+                    Only on this computer, for 7 days.
                   </span>
                 </div>
                 <button type="button" onClick={handleSaveProject}>
-                  Keep it in a free account
+                  Keep it forever — free
                 </button>
               </aside>
             )}

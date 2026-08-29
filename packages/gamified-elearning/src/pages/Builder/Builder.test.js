@@ -309,8 +309,8 @@ describe('studio opening', () => {
     // message.
     expect(screen.queryByLabelText('Guest project recovery')).not.toBeInTheDocument();
     openStudioPage('Save');
-    expect(screen.getByLabelText('Guest project recovery')).toHaveTextContent('Backed up in this browser');
-    expect(screen.getByLabelText('Guest project recovery')).toHaveTextContent('only on this device for up to 7 days');
+    expect(screen.getByLabelText('Guest project recovery')).toHaveTextContent('Saved in this browser');
+    expect(screen.getByLabelText('Guest project recovery')).toHaveTextContent('Only on this computer, for 7 days');
     await waitFor(() => expect(JSON.parse(localStorage.getItem(GUEST_PROJECT_DRAFT_KEY))).toEqual(expect.objectContaining({
       code: expect.stringContaining('My game'),
       projectType: 'game',
@@ -330,12 +330,12 @@ describe('studio opening', () => {
 
     render(<Builder />);
 
-    expect(await screen.findByText('Welcome back, your project was recovered.')).toBeInTheDocument();
+    expect(await screen.findByText('Welcome back! Your game is still here.')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Play everything/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Keep my project/i })).toBeInTheDocument();
     expect(trackEvent).toHaveBeenCalledWith('guest_draft_recovered');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Keep it in a free account' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Keep it forever — free' }));
     expect(mockNavigate).toHaveBeenCalledWith('/register?from=builder&action=save', {
       state: { from: '/builder', resumeBuilderAction: 'save' },
     });
@@ -348,7 +348,7 @@ describe('studio opening', () => {
 
     render(<Builder />);
 
-    expect(screen.queryByText('Welcome back, your project was recovered.')).not.toBeInTheDocument();
+    expect(screen.queryByText('Welcome back! Your game is still here.')).not.toBeInTheDocument();
     expect(localStorage.getItem(GUEST_PROJECT_DRAFT_KEY)).toBeNull();
   });
 
