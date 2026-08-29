@@ -102,6 +102,7 @@ run device-sweep.js
 run screen-share.js
 run complaints-check.js
 run first-five-minutes.js
+run kid-alone.js
 
 echo
 if [ "$failed" -gt 0 ]; then

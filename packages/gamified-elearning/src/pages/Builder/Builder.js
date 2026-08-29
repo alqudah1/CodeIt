@@ -796,6 +796,9 @@ export default function Builder() {
   const [guideLevelOverride, setGuideLevelOverride] = useState(storedGuideLevelOverride);
   const [coachOpen, setCoachOpen] = useState(() => learnerGuideLevel(user) !== 'independent');
   const coachRestTimer = useRef(null);
+  const [pixelQuiet, setPixelQuiet] = useState(() => {
+    try { return localStorage.getItem('codeit_pixel_quiet') === '1'; } catch (_) { return false; }
+  });
 
   // ── AI memory ──────────────────────────────────────────────────────────────
   const [promptHistory, setPromptHistory] = useState([]);
@@ -2688,7 +2691,20 @@ export default function Builder() {
   const coachStageNumber = coachStage.number;
   useEffect(() => {
     setCoachOpen(true);
-    if ((guideLevelOverride || learnerGuideLevel(user)) === 'early') return undefined;
+    const level = guideLevelOverride || learnerGuideLevel(user);
+    // ── Pixel speaks first for children who cannot read yet ─────────────────
+    //
+    // Mustafa's bar: can the kid do it alone? For a five-year-old the bubble
+    // text is a wall however short it is — the words have to arrive as SOUND.
+    // So on the big-help level, Pixel reads each new step out loud himself,
+    // once, the moment it changes. The 🔇 button below remembers "quiet
+    // please" on this device, because a classroom of thirty auto-reading
+    // tablets is its own disaster; a muted Pixel still shows the 🔊 button
+    // for reading any step by hand.
+    if (level === 'early' && localStorage.getItem('codeit_pixel_quiet') !== '1') {
+      readCoach(`${coachStage.title}. ${coachStage.detail}`);
+    }
+    if (level === 'early') return undefined;
     clearTimeout(coachRestTimer.current);
     coachRestTimer.current = setTimeout(() => setCoachOpen(false), 9000);
     return () => clearTimeout(coachRestTimer.current);
@@ -2836,6 +2852,22 @@ export default function Builder() {
                 >
                   🔊 Read to me
                 </button>
+                {guideLevel === 'early' && (
+                  <button
+                    type="button"
+                    className="pixel-guide__quiet"
+                    aria-pressed={pixelQuiet}
+                    onClick={() => {
+                      const next = !pixelQuiet;
+                      setPixelQuiet(next);
+                      try { localStorage.setItem('codeit_pixel_quiet', next ? '1' : '0'); } catch (_) {}
+                      if (next && window.speechSynthesis) window.speechSynthesis.cancel();
+                    }}
+                    aria-label={pixelQuiet ? 'Let Pixel read steps out loud' : 'Stop Pixel reading out loud'}
+                  >
+                    {pixelQuiet ? '🔇' : '🔊'}
+                  </button>
+                )}
               </div>
             </div>
           )}

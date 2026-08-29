@@ -6350,3 +6350,33 @@ details.bldr-device-sizes .bldr-device-sizes__options {
   color: var(--ink);
   border: 2px solid var(--ink);
 }
+
+/* Pixel's quiet toggle: a small round key beside Read to me. */
+.pixel-guide__quiet {
+  min-height: 44px;
+  min-width: 44px;
+  border: 2px solid var(--ink);
+  border-radius: 11px;
+  background: var(--paper);
+  box-shadow: var(--pop-down);
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+}
+.pixel-guide__quiet:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
+.pixel-guide__quiet[aria-pressed="true"] { background: var(--arc-sun); }
+
+/* ── The unreachable starters, found by the kid-alone check ─────────────────
+   .bldr-page is a centring flex column, and .bldr-shelves had no width
+   constraint — so it sized to max-content (1674px on a 390px phone), was
+   centred, and stuck out BOTH sides. The row inside never scrolled, because
+   the row itself was full content width: nothing overflowed IT. Result: on
+   every phone, the first games of every shelf sat left of x=0, and no
+   amount of swiping could reach them — a child could literally never open
+   Catch the Stars from the shelf.
+
+   Both geometry checks were blind to it by construction: the overflow check
+   exempts anything inside a scrollable row, and the side-scroll check reads
+   documentElement, which the body's overflow-x clip keeps innocent. It took
+   a check that TAPS like a child to find a thing no child could tap. */
+.bldr-shelves, .bldr-shelf, .bldr-shelf__row { width: 100%; max-width: 100%; min-width: 0; }

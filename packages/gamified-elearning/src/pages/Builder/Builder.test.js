@@ -145,6 +145,39 @@ describe('studio opening', () => {
     expect(trackEvent).toHaveBeenCalledWith('new_account_studio_view', null, 'student-token');
   });
 
+  test('reads each step out loud to an early learner, and remembers quiet', () => {
+    // For a child who cannot read yet, the bubble text is a wall however
+    // short it is — the words have to arrive as sound, without the child
+    // having to find a button first. The mute must stick, because a
+    // classroom of thirty auto-reading tablets is its own disaster.
+    const speak = jest.fn();
+    const cancel = jest.fn();
+    window.speechSynthesis = { speak, cancel };
+    window.SpeechSynthesisUtterance = function utter(text) { this.text = text; };
+
+    render(
+      <AuthContext.Provider value={{ user: { id: 5, name: 'Little Coder', role: 'student', learningMode: 'early' }, token: 'student-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    // Step one spoke on arrival, unprompted.
+    expect(speak).toHaveBeenCalled();
+    expect(speak.mock.calls[0][0].text).toMatch(/Tap a game to open it/i);
+
+    // The quiet key silences him and is remembered on this device.
+    fireEvent.click(screen.getByRole('button', { name: /Stop Pixel reading out loud/i }));
+    expect(localStorage.getItem('codeit_pixel_quiet')).toBe('1');
+    expect(cancel).toHaveBeenCalled();
+
+    speak.mockClear();
+    fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
+    // The step changed; a muted Pixel stays silent.
+    expect(speak).not.toHaveBeenCalled();
+    delete window.speechSynthesis;
+    delete window.SpeechSynthesisUtterance;
+  });
+
   test('gives an early learner larger step-by-step help and lets an adult change the level', () => {
     render(
       <AuthContext.Provider value={{ user: { id: 5, name: 'Little Coder', role: 'student', learningMode: 'early' }, token: 'student-token' }}>
