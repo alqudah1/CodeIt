@@ -187,7 +187,7 @@
   }
 
   .bldr-tab__label {
-    font-size: 0.72rem;
+    font-size: 0.8125rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -203,7 +203,7 @@
   .bldr-browser__fullscreen-btn {
     padding-left: 8px;
     padding-right: 8px;
-    font-size: 0.74rem;
+    font-size: 0.8125rem;
     max-width: 100%;
   }
 }

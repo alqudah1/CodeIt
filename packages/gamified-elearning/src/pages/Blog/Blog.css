@@ -47,7 +47,7 @@
 
 .bi-eyebrow {
   display: inline-block;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -108,7 +108,7 @@
 /* ── Category pill tag ───────────────────────────────────── */
 .bi-cat-tag {
   display: inline-block;
-  font-size: 0.66rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.13em;
@@ -149,7 +149,7 @@
 /* ── meta helpers ────────────────────────────────────────── */
 .bi-meta-date,
 .bi-meta-read {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: rgba(56,41,31,0.48);
 }
@@ -471,7 +471,7 @@
 
 .blog-index__eyebrow {
   display: inline-block;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -562,7 +562,7 @@
 }
 
 .blog-card__category {
-  font-size: 0.68rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -575,7 +575,7 @@
 
 .blog-card__date,
 .blog-card__read-time {
-  font-size: 0.79rem;
+  font-size: 0.8125rem;
   color: rgba(59, 42, 34, 0.46);
   font-weight: 600;
 }
@@ -644,7 +644,7 @@
 }
 
 .blog-post__category {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -792,7 +792,7 @@
 }
 
 .blog-post__related-title {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -863,7 +863,7 @@
 
 .blog-breadcrumb__sep {
   color: rgba(59, 42, 34, 0.30);
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
 }
 
 /* ── Header nav links ────────────────────────────────────── */
@@ -882,7 +882,7 @@
   border: 1.5px solid rgba(255, 138, 61, 0.20);
   border-radius: 999px;
   text-decoration: none;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #FF8A3D;
   transition: all 0.18s ease;
@@ -907,7 +907,7 @@
 
 .blog-post__journey-cta__eyebrow {
   display: inline-block;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -1019,7 +1019,7 @@
 }
 
 .blog-post__related-card__cat {
-  font-size: 0.66rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -1030,7 +1030,7 @@
 }
 
 .blog-post__related-card__time {
-  font-size: 0.76rem;
+  font-size: 0.8125rem;
   color: rgba(59, 42, 34, 0.44);
   font-weight: 600;
 }
@@ -1056,7 +1056,7 @@
 }
 
 .blog-post__related-card__arrow {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #FF8A3D;
   margin-top: 0.3rem;

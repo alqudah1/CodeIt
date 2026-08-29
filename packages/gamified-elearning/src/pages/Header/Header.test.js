@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import Header from './Header';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -33,12 +33,20 @@ describe('header navigation', () => {
   test('a signed-in adult can reach the plan page', () => {
     // Regression: MEMBER_NAV used to be PUBLIC_NAV.slice(0, 4), which silently
     // dropped Pricing. so the people who might actually pay had no link to it.
+    //
+    // Plan now lives in the account menu rather than the top bar — eight
+    // destinations across the top spent a child's whole attention before the
+    // page below had rendered anything. It still has to be reachable, which is
+    // what this test has always been about.
     renderHeader({ id: 1, name: 'Parent', role: 'Educator' });
-    expect(screen.getByRole('link', { name: 'Plan' })).toHaveAttribute('href', '/pricing');
+    fireEvent.click(screen.getByRole('button', { name: /account menu/i }));
+    expect(screen.getByRole('menuitem', { name: 'Plan' })).toHaveAttribute('href', '/pricing');
   });
 
   test('a managed child profile is never shown a price', () => {
     renderHeader({ id: 2, name: 'Sara', role: 'student', managedProfile: true });
+    fireEvent.click(screen.getByRole('button', { name: /account menu/i }));
+    expect(screen.queryByRole('menuitem', { name: 'Plan' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Plan' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Pricing' })).not.toBeInTheDocument();
     // The rest of the learning nav is untouched.

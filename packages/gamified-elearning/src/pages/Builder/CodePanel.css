@@ -35,7 +35,7 @@
 
 .cp__lines {
   flex: none;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #8a7768;
   background: #fff7ee;
@@ -114,7 +114,7 @@
 }
 
 .cp__restore-cost {
-  font-size: 0.74rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #8a7768;
 }
@@ -172,7 +172,7 @@
   background: #e5533a;
   color: #fff;
   font-weight: 900;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   display: inline-grid;
   place-items: center;
   transform: translateY(2px);
@@ -189,7 +189,7 @@
 .cp-error__count {
   flex: none;
   margin-left: auto;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #a3341a;
   background: #ffe9e2;
@@ -219,7 +219,7 @@
   align-items: baseline;
   padding: 2px 8px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   white-space: pre;
 }
 
@@ -237,7 +237,7 @@
 
 .cp-error__raw {
   margin: 8px 0 0 28px;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   color: #8a7768;
   overflow-wrap: anywhere;
 }
@@ -255,4 +255,15 @@
   .cp-error__fix,
   .cp-error__lines,
   .cp-error__raw { margin-left: 0; }
+}
+
+/* Saying where the editor jumped to, so it is not a mystery. */
+.cp__here {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(168, 85, 247, .09);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.4;
 }

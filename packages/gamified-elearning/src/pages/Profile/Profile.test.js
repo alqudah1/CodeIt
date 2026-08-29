@@ -74,6 +74,23 @@ describe('parent progress availability', () => {
           }),
         });
       }
+      if (/\/api\/family\/children\/\d+\/evidence$/.test(requestUrl)) {
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({
+            success: true,
+            projects: [{
+              id: 51,
+              title: 'Star catcher',
+              prompt: 'a game about catching stars',
+              projectType: 'game',
+              updatedAt: '2026-08-28T12:00:00Z',
+              code: '<!doctype html><html><body><h1>Star catcher</h1><script>\nlet score = 0;\nfunction catchStar() { score = score + 1; }\n</'+'script></body></html>',
+            }],
+            lessonsDone: [{ id: 1, title: 'Hello Python' }, { id: 2, title: 'Storing Info with Variables' }],
+          }),
+        });
+      }
       if (requestUrl.endsWith('/api/family/children') && options.method === 'POST') {
         const child = {
           id: 23,
@@ -202,6 +219,39 @@ describe('parent progress availability', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/login', {
       state: { managedUsername: 'creative_coder', from: '/builder' },
     });
+  });
+
+  test("shows a parent the evidence: their child's own lines, not a count", async () => {
+    // "4 projects · 12 lessons" is a count, and counts are what every learning
+    // product shows because counts are cheap. The evidence panel answers the
+    // question GOAL.md wrote down — what did my child actually do — with the
+    // child's own line, read by the same concept finder the child's code tab
+    // uses. If this test fails, the paid product has lost its reason to exist.
+    mockProfileUser = { user_id: 9, name: 'Parent Builder', email: 'parent@example.com', role: 'Educator' };
+    mockFamilyChildren = [{
+      id: 22,
+      username: 'creative_coder',
+      totalXP: 120,
+      lessons: 2,
+      quizzes: 1,
+      puzzles: 0,
+      projects: 1,
+      progressEmailsEnabled: true,
+    }];
+    render(<Profile />);
+
+    fireEvent.click(await screen.findByRole('button', { name: /What did they actually do\?/i }));
+
+    // The concept, named; the count; and the line from the child's own file.
+    await screen.findByText('Star catcher');
+    expect(screen.getByText('Variables')).toBeInTheDocument();
+    expect(screen.getByText(/let score = 0/)).toBeInTheDocument();
+    expect(screen.getByText(/own file — not an example, not a summary/i)).toBeInTheDocument();
+    expect(screen.getByText(/Hello Python, Storing Info with Variables/)).toBeInTheDocument();
+
+    // And it folds away.
+    fireEvent.click(screen.getByRole('button', { name: /Hide the evidence/i }));
+    expect(screen.queryByText(/let score = 0/)).not.toBeInTheDocument();
   });
 
   test('attributes a newly created learner profile to the current visitor journey', async () => {

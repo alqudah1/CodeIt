@@ -16,7 +16,9 @@
     "test": "npm test --workspace=@e-learning/codeit-backend && npm test --workspace=@e-learning/gamified-elearning -- --watchAll=false",
     "test:backend": "npm test --workspace=@e-learning/codeit-backend",
     "db:migrate": "node ops/db/migrate.js",
-    "check:browser": "node ops/checks/starters-run.js && node ops/checks/editable-worlds.js && node ops/checks/device-sweep.js && node ops/checks/controls-check.js"
+    "check:browser": "ops/checks/run-all.sh",
+    "db:migrate:fresh": "node ops/db/migrate.js --fresh --apply",
+    "check:seed": "node ops/checks/seed.js"
   },
   "version": "1.0.0",
   "devDependencies": {

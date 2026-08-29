@@ -213,6 +213,14 @@ function parseBuilderResponse(rawText) {
   };
 }
 
+// ── Does it parse? ──────────────────────────────────────────────────────────
+//
+// Everything below this line checks that certain words appear in the generated
+// text. None of it asks whether the JavaScript can run, so a project with an
+// unbalanced brace shipped to a child, who pressed Play and watched nothing
+// happen. generatedCode.js compiles the scripts without calling them.
+const { syntaxErrorIn } = require('../generatedCode');
+
 function validateHtml(html) {
   return (
     typeof html === 'string' &&
@@ -1628,14 +1636,30 @@ ${designConfig.category === 'game' ? '• Game must be startable, playable, scor
     }
 
     // Quality check — retry once with correction prompt if validation fails
+    // A project whose JavaScript will not parse is not a project. This is the
+    // only check here that asks whether the thing runs rather than whether it
+    // contains the right words, and it is the one that catches what children
+    // actually hit: "some games don't work".
+    const brokenCode = syntaxErrorIn(parsed.html);
+    if (brokenCode) {
+      console.log(`Builder: generated project will not parse — ${brokenCode.detail || brokenCode.message}`);
+    }
+
     const isValid = !missingScript
       && !wasTruncated
+      && !brokenCode
       && validateHtml(parsed.html)
       && validateInteractivity(parsed.html, designConfig.type);
     const qualityCheck = designEngine.validateOutput(parsed.html);
 
     if (!isValid || !qualityCheck.valid) {
       const failReasons = [
+        // First, because it is the only one that means the project cannot start
+        // at all, and because naming the parser's own words gives the model
+        // something precise to fix rather than a category to guess at.
+        brokenCode
+          ? `JAVASCRIPT DOES NOT PARSE — script ${brokenCode.script} of ${brokenCode.of}: ${brokenCode.message}`
+          : '',
         !/<script[\s\S]*?>[\s\S]{80,}<\/script>/i.test(parsed.html) ? 'NO working JavaScript code' : '',
         !/addEventListener|onclick/i.test(parsed.html) ? 'NO event listeners (all buttons are dead)' : '',
         !/<\/html>/i.test(parsed.html) ? 'OUTPUT IS TRUNCATED — missing </html>' : '',
@@ -1726,7 +1750,16 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
       }
     }
 
-    if (!validateHtml(parsed.html) || !validateInteractivity(parsed.html, designConfig.type)) {
+    // The retry gets the same question as the first pass. Without this, a
+    // project that failed to parse, was sent back to be fixed, and came back
+    // still not parsing would be handed to the child anyway — which is the
+    // original bug with one extra step in front of it.
+    const stillBroken = syntaxErrorIn(parsed.html);
+    if (stillBroken) {
+      console.log(`Builder: retry still will not parse — ${stillBroken.message}`);
+    }
+
+    if (stillBroken || !validateHtml(parsed.html) || !validateInteractivity(parsed.html, designConfig.type)) {
       console.log('Builder: validation failed after retry, using rich fallback for type:', designConfig.type);
       const fbHtml = getRichFallback(designConfig, prompt.trim());
       const fbTitle = derivePromptTitle(prompt.trim());

@@ -6,6 +6,7 @@
     "@codemirror/lang-html": "^6.4.12",
     "@codemirror/lang-python": "^6.1.7",
     "@e-learning/shared-auth": "1.0.0",
+    "@fontsource/baloo-2": "^5.3.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",

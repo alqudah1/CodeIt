@@ -93,7 +93,7 @@
   border-radius: 999px;
   background: linear-gradient(135deg, #34c773, #06d6a0);
   color: #fff;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   box-shadow: 0 6px 18px rgba(6, 214, 160, 0.35);
   animation: al-pop 2.2s ease forwards;
@@ -136,7 +136,7 @@
 }
 
 .al-field__label {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -250,7 +250,7 @@
 
 .al-section__title {
   margin: 0 0 1rem;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -336,7 +336,7 @@
 }
 
 .al-swatch__name {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #2b2f5e;
   white-space: nowrap;
@@ -384,7 +384,7 @@
 }
 
 .al-outfit-card__desc {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   color: rgba(40, 46, 87, 0.65);
   line-height: 1.4;
 }
@@ -443,7 +443,7 @@
   display: inline-block;
   background: linear-gradient(135deg, #FF8A3D, #FFD166);
   color: #3B2A22;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -453,7 +453,7 @@
 }
 
 .al-level-xp {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(28, 35, 70, 0.55);
 }
@@ -476,7 +476,7 @@
 
 .al-xp-label {
   margin: 0;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(28, 35, 70, 0.5);
   text-align: center;
@@ -496,7 +496,7 @@
 }
 
 .al-next-unlock__label {
-  font-size: 0.62rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -504,7 +504,7 @@
 }
 
 .al-next-unlock__item {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #0a7a68;
 }
@@ -521,7 +521,7 @@
   position: absolute;
   top: -8px;
   right: -4px;
-  font-size: 0.55rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -540,7 +540,7 @@
 }
 
 .al-section__lock-hint {
-  font-size: 0.65rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(86, 54, 211, 0.55);
   background: rgba(86, 54, 211, 0.08);
@@ -566,7 +566,7 @@
 }
 
 .al-pill__lock {
-  font-size: 0.68rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   color: rgba(86, 54, 211, 0.6);
   background: rgba(86, 54, 211, 0.08);
@@ -605,7 +605,7 @@
 
 .al-outfit-card__lock-badge {
   display: inline-block;
-  font-size: 0.65rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   color: rgba(86, 54, 211, 0.65);
   background: rgba(86, 54, 211, 0.08);

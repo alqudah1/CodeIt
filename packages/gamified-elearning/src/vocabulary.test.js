@@ -109,8 +109,13 @@ describe('one thing, one name', () => {
 describe('the header agrees with the pages it links to', () => {
   const header = fs.readFileSync(path.join(SRC, 'pages/Header/Header.js'), 'utf8');
 
-  test('the nav calls the studio the studio', () => {
-    expect(header).toMatch(/to: "\/builder", label: "Studio"/);
+  test('the header calls the studio the studio', () => {
+    // The nav used to carry a "Studio" link four positions away from a button
+    // that went to the same /builder — two controls, one destination, which
+    // teaches a child that the words on this page are decoration. The link
+    // went; the rule did not. A signed-in child's one route to /builder still
+    // has to say "studio", and neither may ever say "Build".
+    expect(header).toMatch(/user \? "Open studio" : "Start building"/);
     expect(header).not.toMatch(/label: "Build"/);
   });
 
@@ -122,8 +127,17 @@ describe('the header agrees with the pages it links to', () => {
     expect(builder).toMatch(/My projects/);
   });
 
-  test('the Explore link reaches a page headed Explore', () => {
+  test('the nav word for /explore is the word on the page it opens', () => {
+    // Written as the rule rather than the word. The heading used to be the bare
+    // word "Explore" at 4.5rem with an eyebrow above it and a paragraph below,
+    // and that heading was checked here by name — so rewording the page to say
+    // what it actually holds broke a test that never cared about the wording,
+    // only about the agreement.
     const explore = fs.readFileSync(path.join(SRC, 'pages/Builder/Explore.js'), 'utf8');
-    expect(explore).toMatch(/exp-hero__title">Explore</);
+    const navLabel = header.match(/\{ to: "\/explore", label: "([^"]+)" \}/)?.[1];
+    expect(navLabel).toBeTruthy();
+    const heading = explore.match(/exp-hero__title">([^<]+)</)?.[1];
+    expect(heading).toBeTruthy();
+    expect(heading.toLowerCase()).toContain(navLabel.toLowerCase());
   });
 });

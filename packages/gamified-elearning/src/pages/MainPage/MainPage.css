@@ -142,7 +142,7 @@
 
 .brand-eyebrow {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   text-transform: uppercase;
   letter-spacing: 0.18em;
   color: var(--clr-orange, #FF8A3D);
@@ -240,7 +240,7 @@
 
 .overview-progress-label {
   margin: 1.4rem 0 0.2rem;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.10em;
@@ -430,7 +430,7 @@
 
 .track-button__label {
   display: block;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   line-height: 1.3;
   word-break: break-word;
@@ -604,7 +604,7 @@
   margin-left: 0.55rem;
   padding: 0.15rem 0.65rem;
   border-radius: 999px;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -691,7 +691,7 @@
    NEW: stat-chip percentage label
 ══════════════════════════════════════════════════════════════ */
 .stat-chip__pct {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   opacity: 0.65;
   margin-top: 0.05rem;
@@ -721,7 +721,7 @@
 }
 
 .progress-track__label {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.09em;
@@ -767,7 +767,7 @@
 }
 
 .progress-track__count {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: rgba(4, 22, 56, 0.35);
   white-space: nowrap;
@@ -852,7 +852,7 @@
 }
 
 .mp-level-card__lvl-sup {
-  font-size: 0.55rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.14em;
   color: rgba(255, 255, 255, 0.75);
@@ -904,7 +904,7 @@
 }
 
 .mp-level-card__bar-label {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.09em;
@@ -937,7 +937,7 @@
 }
 
 .mp-level-card__bar-sub {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: rgba(11, 61, 102, 0.48);
 }
@@ -1003,7 +1003,7 @@
 }
 
 .mp-streak-card__label {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -1134,7 +1134,7 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  font-size: 0.65rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.02em;
   flex-shrink: 0;
@@ -1165,7 +1165,7 @@
 
 .xp-chip__label,
 .streak-chip__label {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: rgba(11, 61, 102, 0.65);
   text-transform: uppercase;
@@ -1230,7 +1230,7 @@
 
 .mp-mission__eyebrow {
   display: inline-block;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -1344,7 +1344,7 @@
   line-height: 1;
 }
 .mp-mission__ring-label span {
-  font-size: 0.62rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(11, 61, 102, 0.5);
   text-transform: uppercase;
@@ -1426,7 +1426,7 @@
   border-radius: 12px;
   background: linear-gradient(135deg, #ff9f1c, #ffd166);
   color: #fff;
-  font-size: 0.68rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.02em;
 }
@@ -1443,13 +1443,13 @@
 }
 
 .mp-ach-card__desc {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   color: rgba(11, 61, 102, 0.6);
   line-height: 1.3;
 }
 
 .mp-ach-card__badge {
-  font-size: 0.62rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1591,7 +1591,7 @@
 
 .cp-progress-card__heading {
   margin: 0 0 1.2rem;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -1608,7 +1608,7 @@
 ══════════════════════════════════════════════════════════════ */
 .mc {
   display: block;
-  font-size: 0.76rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: rgba(4, 22, 56, 0.42);
   line-height: 1.4;
@@ -1642,7 +1642,7 @@
 /* Unlock: subtle teal — "Next reward: X at Level N" */
 .mc--unlock {
   margin-top: 0.2rem;
-  font-size: 0.74rem;
+  font-size: 0.8125rem;
   color: #0a7a68;
   font-weight: 700;
 }
@@ -1653,7 +1653,7 @@
 
 /* Replace track-total-badge N/total style */
 .track-card .track-total-badge {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   padding: 0.18rem 0.6rem;
   border-radius: 999px;
@@ -1726,7 +1726,7 @@
 }
 
 .track-next__eyebrow {
-  font-size: 0.65rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -1781,7 +1781,7 @@
 .track-view-all {
   display: block;
   margin-top: 0.9rem;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(4, 22, 56, 0.42);
   text-decoration: none;
@@ -1803,7 +1803,7 @@
 
 /* Secondary "explore extra games" link */
 .track-view-all-secondary {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(4, 22, 56, 0.42);
   text-decoration: none;
@@ -1885,7 +1885,7 @@
 }
 
 .mp-char-card__next-unlock {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #0a7a68;
   margin-top: 0.3rem;
@@ -1954,7 +1954,7 @@
   background: linear-gradient(135deg, rgba(124,58,237,0.14), rgba(109,40,217,0.10));
   border: 1px solid rgba(124,58,237,0.28);
   border-radius: 999px;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #5b21b6;
   letter-spacing: 0.06em;
@@ -2016,12 +2016,12 @@
   background: linear-gradient(135deg, #fff7ef, #fffdf9);
   box-shadow: 0 12px 32px rgba(185, 85, 25, .08);
 }
-.mp-first-win__copy > span { color: #bd4e14; font-size: .7rem; font-weight: 1000; letter-spacing: .12em; text-transform: uppercase; }
+.mp-first-win__copy > span { color: #bd4e14; font-size: 0.8125rem; font-weight: 1000; letter-spacing: .12em; text-transform: uppercase; }
 .mp-first-win__copy h2 { margin: .35rem 0 .55rem; color: #38291f; font-family: Arvo, Georgia, serif; font-size: clamp(1.5rem, 3vw, 2.35rem); line-height: 1.12; }
 .mp-first-win__copy p { max-width: 620px; margin: 0; color: #72594d; line-height: 1.6; }
 .mp-first-win__steps { display: grid; align-content: center; gap: .6rem; }
 .mp-first-win__steps span { display: flex; align-items: center; gap: .65rem; color: #513b2e; font-size: .82rem; font-weight: 900; }
-.mp-first-win__steps b { display: grid; width: 27px; height: 27px; place-items: center; border-radius: 50%; background: #ffe3cf; color: #bd4e14; font-size: .72rem; }
+.mp-first-win__steps b { display: grid; width: 27px; height: 27px; place-items: center; border-radius: 50%; background: #ffe3cf; color: #bd4e14; font-size: 0.8125rem; }
 .mp-first-win__actions { grid-column: 1 / -1; display: flex; align-items: center; gap: .7rem; }
 .mp-first-win__actions a { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; border-radius: 11px; padding: .72rem 1rem; font-size: .82rem; font-weight: 1000; text-decoration: none; }
 .mp-first-win__primary { gap: .5rem; background: #ed6c1e; color: #fff; box-shadow: 0 8px 20px rgba(189, 78, 20, .18); }
@@ -2033,3 +2033,82 @@
   .mp-first-win__actions { grid-column: auto; align-items: stretch; flex-direction: column; }
   .mp-first-win__actions a { width: 100%; }
 }
+
+/* ── The Paper Arcade, progress-room chapter (see styles/arcade.css) ─────────
+   This is the returning child's daily room, and it had never joined the
+   language: its own soft-shadow cards, gradient pill buttons, and an
+   unscoped .brand-logo that reached up and deformed the shared site header
+   into a white tile with a drop shadow — one product, two hats. */
+
+/* The leak, sealed: inside the header the logo is the logo. */
+.site-header .brand-logo {
+  width: auto;
+  height: 56px;
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.main-page { background: transparent; color: var(--ink); }
+
+/* The mission card is the room's marquee: what to do next, as one keycap. */
+.mp-mission {
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: var(--pop-card);
+}
+.mp-mission__title { font-family: var(--font-display); color: var(--ink); }
+.mp-mission__eyebrow { color: var(--arc-orange-down); font-family: var(--font-display); letter-spacing: 0.1em; }
+.mp-mission__btn {
+  background: var(--arc-orange);
+  color: var(--ink);
+  border: 2.5px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: var(--pop-rest);
+  font-family: var(--font-display);
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+}
+.mp-mission__btn:hover { transform: translateY(-2px); box-shadow: var(--pop-lift); }
+.mp-mission__btn:active { transform: translateY(3px); box-shadow: var(--pop-down); background: var(--arc-orange-down); }
+
+/* The cards: paper with quiet ink lines; the child's numbers carry the
+   colour, not the furniture. */
+.mp-char-card, .mp-level-card, .mp-streak-card, .mp-ach-card,
+.mp-builder-cta, .cp-progress-card {
+  background: var(--paper);
+  border: 2px solid var(--ink-line);
+  border-radius: 18px;
+  box-shadow: var(--pop-card);
+}
+.mp-char-card__name, .mp-level-card__badge, .track-header h2,
+.mp-builder-cta__title, .mp-achievements__heading {
+  font-family: var(--font-display);
+  color: var(--ink);
+}
+.mp-level-card__lvl-num { font-family: var(--font-display); }
+.mp-char-card__bar, .mp-level-card__bar-wrap {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.mp-char-card__bar-fill, .mp-level-card__bar-fill { background: var(--arc-mint); }
+.mp-char-card__link, .mp-builder-cta__btn {
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: var(--pop-down);
+  font-family: var(--font-display);
+  font-weight: 700;
+  background: var(--arc-orange);
+  color: var(--ink);
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+}
+.mp-char-card__link:hover, .mp-builder-cta__btn:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
+.mp-char-card__link:active, .mp-builder-cta__btn:active { transform: translateY(2px); box-shadow: 0 0 0 var(--ink); }
+
+/* A cold streak stays honest but stops looking broken: cardboard, not
+   greyed-out failure. */
+.mp-streak-card--cold { border-style: dashed; }
+.mp-streak-card--hot { border: 2.5px solid var(--ink); box-shadow: var(--pop-rest); }

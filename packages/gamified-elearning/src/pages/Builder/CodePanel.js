@@ -27,6 +27,7 @@ import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
 import { lineContext } from './previewErrors';
 import { canRestore, costOfRestoring } from './codeSafety';
 import './CodePanel.css';
+import { whatIsHere, whereMyCodeStarts } from './yourOwnCode';
 
 const CodeEditor = lazy(() => import('./CodeEditor'));
 
@@ -117,6 +118,13 @@ export default function CodePanel({
   const restorable = canRestore(safety, code);
   const cost = costOfRestoring(safety, code);
 
+  // ── Where to open ──────────────────────────────────────────────────────────
+  //
+  // Not line 1. Line 1 is <!doctype html>, and the child's own code is past the
+  // head, the viewport meta tag and every line of CSS.
+  const openAt = whereMyCodeStarts(code);
+  const here = whatIsHere(code);
+
   return (
     <section className="cp" aria-labelledby="cp-title">
       <header className="cp__head">
@@ -131,9 +139,14 @@ export default function CodePanel({
         <span className="cp__lines">{lineCount} lines</span>
       </header>
 
+      {/* Saying where we jumped to. Opening a file somewhere other than the top
+          without a word is disorienting — a child scrolls up looking for line 1
+          and cannot work out why it was not there. */}
+      {here && <p className="cp__here">{here}</p>}
+
       <div className="cp__editor">
         <Suspense fallback={<div className="cp__loading">Opening your code…</div>}>
-          <CodeEditor value={draft} onChange={handleChange} />
+          <CodeEditor value={draft} onChange={handleChange} openAtLine={openAt} />
         </Suspense>
       </div>
 

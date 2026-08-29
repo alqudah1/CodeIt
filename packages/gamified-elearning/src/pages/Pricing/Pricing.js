@@ -36,7 +36,9 @@ const FOUNDING_FEATURES = [
 
 const PLUS_FEATURES = [
   'As many AI-built projects and changes as you want',
-  'Publish projects to a public CodeIt link',
+  // Publishing moved to the free plan, where this page had always said it was.
+  // Listing it here as well would make Plus look like it unlocks something a
+  // family already has.
   'See how many people played what your child made',
   'Up to four children, one adult account',
   'Everything in the free plan stays free',
@@ -175,18 +177,21 @@ export default function Pricing() {
     <div className="pricing-page">
       <Header />
       <main>
+        {/* Six blocks used to stand between a parent and a price: a kicker, a
+            75px serif headline, a paragraph, a jump link, a note under the jump
+            link, and the status pill. The plans began 727px down — 9% of a
+            laptop's first screen on a page called Pricing.
+
+            The jump link pointed at the family pilot card, which is the third
+            card in the grid immediately below. A link that scrolls you past two
+            plans to reach the third is not navigation, it is an advert for one
+            of the three options, and its own card sells it better.
+
+            What stays: the heading, because a page needs one, and the status
+            pill, because "nothing is charged today" is the one thing a parent
+            needs to read before the numbers rather than after them. */}
         <section className="pricing-hero" aria-labelledby="pricing-title">
-          <p className="pricing-kicker">Simple, honest pricing</p>
-          <h1 id="pricing-title">Start free. Join the family pilot when you want more support.</h1>
-          <p>Try CodeIt today, then request a free family pilot spot for guided setup, learner profiles, and parent progress.</p>
-          <a
-            className="pricing-hero__pilot-link"
-            href="#family-pilot"
-            onClick={() => void trackEvent('parent_cta_click', 'join-pilot')}
-          >
-            Request a free family pilot spot <span aria-hidden="true">↓</span>
-          </a>
-          <p className="pricing-hero__pilot-note">About 30 seconds · immediate setup email · no credit card</p>
+          <h1 id="pricing-title">Start free. Pay only if you want more.</h1>
           <div className="pricing-status">
             <span aria-hidden="true" />
             {billing.billingEnabled

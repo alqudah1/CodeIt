@@ -225,7 +225,7 @@
   background: #FF7A00;
   color: #fff;
   font-family: 'Nunito', sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   padding: 0.25rem 0.65rem;
   border-radius: 999px;
@@ -254,7 +254,7 @@
   border-radius: 999px;
   background: #FF7A00;
   color: #fff;
-  font-size: 0.58rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   font-family: 'Nunito', sans-serif;
   display: flex;
@@ -348,14 +348,14 @@
 
 .site-header__dropdown-xp-label {
   font-family: 'Nunito', sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #FF7A00;
 }
 
 .site-header__dropdown-xp-total {
   font-family: 'Nunito', sans-serif;
-  font-size: 0.68rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #A48773;
 }
@@ -377,7 +377,7 @@
 
 .site-header__dropdown-name {
   font-family: 'Nunito', 'Arvo', sans-serif;
-  font-size: 0.73rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #A48773;
   text-transform: uppercase;

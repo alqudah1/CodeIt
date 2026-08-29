@@ -128,13 +128,13 @@
 }
 
 .shelf__chip-when {
-  font-size: 0.74rem;
+  font-size: 0.8125rem;
   color: #a8968a;
 }
 
 .shelf__note {
   margin: 12px 0 0;
-  font-size: 0.76rem;
+  font-size: 0.8125rem;
   line-height: 1.45;
   color: #8a7768;
 }

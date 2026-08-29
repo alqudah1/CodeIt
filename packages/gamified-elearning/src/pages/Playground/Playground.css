@@ -41,7 +41,7 @@
 
 .pg-breadcrumb__sep {
   color: #c7aa95;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
 }
 
 .pg-breadcrumb__current {
@@ -60,7 +60,7 @@
   display: inline-block;
   background: rgba(255, 138, 61, 0.15);
   color: #FF8A3D;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -98,7 +98,7 @@
 }
 
 .pg-section-label {
-  font-size: 0.65rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -176,7 +176,7 @@
 }
 
 .pg-tip {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   color: #745d50;
   font-weight: 600;
 }
@@ -197,7 +197,7 @@
   }
 
   .pg-preset-btn {
-    font-size: 0.78rem;
+    font-size: 0.8125rem;
     padding: 0.35rem 0.88rem;
   }
 

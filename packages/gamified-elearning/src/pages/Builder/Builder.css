@@ -51,7 +51,7 @@
   background: rgba(255, 122, 0, 0.10);
   border: 1.5px solid rgba(255, 122, 0, 0.28);
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -178,7 +178,7 @@
 }
 
 .bldr-how__body {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   color: #666;
   margin: 0;
   line-height: 1.55;
@@ -261,7 +261,7 @@
   position: absolute;
   bottom: 0.65rem;
   right: 1rem;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   color: #bbb;
   pointer-events: none;
 }
@@ -271,7 +271,7 @@
   border-left: 3px solid #f0a05c;
   padding-left: 0.7rem;
   color: #785b49;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   line-height: 1.45;
 }
 
@@ -295,7 +295,7 @@
 }
 
 .bldr-quickstarts__group-label {
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -335,7 +335,7 @@
 
 /* Category label inside chip */
 .bldr-chip__cat {
-  font-size: 0.65rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -461,7 +461,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   position: relative;
 }
@@ -574,7 +574,7 @@
 
 .bldr-error-card__detail {
   margin: 0.4rem 0 0;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   color: #c0392b;
   font-style: italic;
 }
@@ -732,7 +732,7 @@
 }
 
 .bldr-success-banner__label {
-  font-size: 0.73rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.10em;
@@ -791,7 +791,7 @@
 }
 
 .bldr-success-banner__save small {
-  font-size: 0.66rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   opacity: 0.88;
 }
@@ -923,7 +923,7 @@
   border: 1px solid rgba(56, 41, 31,0.10);
   border-radius: 6px;
   padding: 0.3rem 0.75rem;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   color: #999;
   font-family: 'Nunito', sans-serif;
   text-align: center;
@@ -936,7 +936,7 @@
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   font-family: 'Nunito', sans-serif;
   cursor: pointer;
@@ -973,7 +973,7 @@
   gap: 0.3rem;
   padding: 0.3rem 0.85rem;
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 0.01em;
 }
@@ -1008,7 +1008,7 @@
 }
 
 .bldr-concepts-used__label {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1024,7 +1024,7 @@
 
 .bldr-concepts-used__tag {
   padding: 0.25rem 0.75rem;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #10B981;
   background: rgba(16,185,129,0.08);
@@ -1041,7 +1041,7 @@
 }
 
 .bldr-modifiers__label {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1083,7 +1083,7 @@
 }
 
 .bldr-explanation__label {
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.09em;
@@ -1272,7 +1272,7 @@
   border-radius: 999px;
   background: rgba(168,85,247,0.10);
   color: #9333ea;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 800;
 }
 
@@ -1292,7 +1292,7 @@
   border-radius: 12px;
   background: #FFFCF8;
   color: #4F392C;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   line-height: 1.25;
 }
@@ -1307,7 +1307,7 @@
   border-radius: 50%;
   background: #FF7A00;
   color: #fff;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
 }
 
 .bldr-edit-panel__ideas {
@@ -1368,7 +1368,7 @@
   border-radius: 50%;
   background: rgba(168,85,247,0.12);
   color: #A855F7;
-  font-size: 0.62rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   display: flex;
   align-items: center;
@@ -1376,7 +1376,7 @@
 }
 
 .bldr-edit-panel__history-text {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   color: #555;
   line-height: 1.45;
 }
@@ -1453,7 +1453,7 @@
 
 .bldr-edit-panel__error-detail {
   margin: 0;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   color: rgba(185, 28, 28, 0.70);
   line-height: 1.4;
 }
@@ -1613,7 +1613,7 @@
   border-radius: 999px;
   background: rgba(255,122,0,0.10);
   color: #C85A00;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 800;
 }
 
@@ -1652,7 +1652,7 @@
 
 .bldr-project-card__type {
   display: inline-block;
-  font-size: 0.65rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1674,7 +1674,7 @@
 }
 
 .bldr-project-card__prompt {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   color: #888;
   line-height: 1.45;
   display: -webkit-box;
@@ -1684,7 +1684,7 @@
 }
 
 .bldr-project-card__date {
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   color: #bbb;
   font-weight: 600;
   margin-top: auto;
@@ -1697,7 +1697,7 @@
   align-items: center;
   gap: 0.35rem 0.5rem;
   padding-top: 0.45rem;
-  font-size: 0.68rem;
+  font-size: 0.8125rem;
   line-height: 1.35;
 }
 
@@ -1714,7 +1714,7 @@
 
 .bldr-project-card__visibility small {
   color: #8B7567;
-  font-size: 0.68rem;
+  font-size: 0.8125rem;
   font-weight: 700;
 }
 
@@ -1748,7 +1748,7 @@
   flex: 1;
   padding: 0.38rem 0.5rem;
   font-family: 'Nunito', 'Arvo', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   border-radius: 8px;
   cursor: pointer;
@@ -1843,7 +1843,7 @@
 
 .bldr-trust__pill {
   padding: 0.3rem 0.9rem;
-  font-size: 0.77rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   border-radius: 999px;
   background: rgba(255,122,0,0.07);
@@ -1880,7 +1880,7 @@
 }
 
 .bldr-lessons-used__sub {
-  font-size: 0.76rem;
+  font-size: 0.8125rem;
   color: rgba(56, 41, 31, 0.50);
   margin: 0;
 }
@@ -1920,7 +1920,7 @@
   border-radius: 6px;
   background: #FF7A00;
   color: #fff;
-  font-size: 0.62rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   flex-shrink: 0;
   letter-spacing: 0.02em;
@@ -1934,7 +1934,7 @@
 }
 
 .bldr-lesson-chip__hint {
-  font-size: 0.74rem;
+  font-size: 0.8125rem;
   color: rgba(56, 41, 31, 0.58);
   margin: 0;
   line-height: 1.45;
@@ -1944,7 +1944,7 @@
 .bldr-lesson-chip__learn {
   display: inline-flex;
   align-items: center;
-  font-size: 0.74rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #FF7A00;
   text-decoration: none;
@@ -2016,7 +2016,7 @@
 .bldr-history-save-btn,
 .bldr-history-fork-btn {
   font-family: 'Nunito', 'Arvo', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   padding: 6px 14px;
   border-radius: 999px;
@@ -2144,7 +2144,7 @@
   align-items: center;
   padding: 2px 8px;
   border-radius: 999px;
-  font-size: 0.65rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -2165,7 +2165,7 @@
 }
 
 .bldr-version-card__name {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   color: #785B49;
   white-space: nowrap;
   overflow: hidden;
@@ -2174,14 +2174,14 @@
 }
 
 .bldr-version-card__time {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   color: #A48773;
   white-space: nowrap;
 }
 
 .bldr-version-card__restore-btn {
   font-family: 'Nunito', 'Arvo', sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   padding: 6px 14px;
   border-radius: 999px;
@@ -2311,7 +2311,7 @@
   border: 1.5px solid #EAD9CB;
   border-radius: 999px;
   padding: 4px 14px;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   cursor: pointer;
   color: #785B49;
@@ -2347,7 +2347,7 @@
 }
 
 .bldr-el-label {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #4F392C;
   letter-spacing: 0.02em;
@@ -2413,7 +2413,7 @@
 }
 
 .bldr-el-color-val {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   color: #785B49;
   font-family: 'Courier New', monospace;
 }
@@ -2435,7 +2435,7 @@
   border: 1.5px solid #EAD9CB;
   border-radius: 8px;
   padding: 8px 6px;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
@@ -2512,7 +2512,7 @@
   color: #7C3AED;
   border: 1.5px solid rgba(168, 85, 247, 0.22);
   border-radius: 6px;
-  font-size: 0.73rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   font-family: 'Nunito', sans-serif;
   cursor: pointer;
@@ -2530,7 +2530,7 @@
 ════════════════════════════════════════════════════════════ */
 .bldr-browser__play-btn {
   padding: 0.32rem 1rem;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -2551,7 +2551,7 @@
 }
 
 .bldr-modifiers__label {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -2773,7 +2773,7 @@
   justify-content: center;
   transition: background 0.16s;
   font-weight: 900;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   letter-spacing: -0.03em;
 }
 
@@ -2797,7 +2797,7 @@
 }
 
 .bldr-creator-tool__label {
-  font-size: 0.66rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #8C7564;
   text-align: center;
@@ -2829,7 +2829,7 @@
 }
 
 .bldr-studio-bar__label {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.09em;
@@ -2932,7 +2932,7 @@
 }
 
 .bldr-studio-panel__hint {
-  font-size: 0.77rem;
+  font-size: 0.8125rem;
   color: #A48773;
   margin: 0 0 0.2rem;
 }
@@ -3057,7 +3057,7 @@
 .bldr-color-picker-input::-webkit-color-swatch { border-radius: 6px; border: 1.5px solid rgba(56, 41, 31,0.18); }
 
 .bldr-color-picker-hex {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #A48773;
   font-family: 'Nunito', monospace;
@@ -3130,7 +3130,7 @@
 }
 
 .bldr-studio-slider__val {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #FF7A00;
   min-width: 60px;
@@ -3211,7 +3211,7 @@
   border-radius: 999px;
   background: rgba(16, 185, 129, 0.12);
   color: #059669;
-  font-size: 0.69rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -3225,7 +3225,7 @@
 .bldr-device-btn {
   padding: 0.32rem 0.8rem;
   font-family: 'Nunito', 'Arvo', sans-serif;
-  font-size: 0.77rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #785B49;
   background: transparent;
@@ -3523,7 +3523,7 @@
   }
   .bldr-studio-bar__btn {
     padding: 0.38rem 0.75rem;
-    font-size: 0.79rem;
+    font-size: 0.8125rem;
   }
   .bldr-project-card__thumb {
     height: 70px;
@@ -3626,7 +3626,7 @@
 }
 
 .bldr-hero-pick__sub {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #785B49;
   line-height: 1.4;
@@ -3634,7 +3634,7 @@
 }
 
 .bldr-hero-pick__cta {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -3668,7 +3668,7 @@
 
 .bldr-success-banner__credit {
   margin: 0.1rem 0 0;
-  font-size: 0.77rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(16,185,129,0.75);
   letter-spacing: 0.01em;
@@ -3755,7 +3755,7 @@
 .bldr-sort-btn {
   padding: 0.32rem 0.85rem;
   font-family: 'Nunito', 'Arvo', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #785B49;
   background: rgba(56, 41, 31,0.04);
@@ -3772,10 +3772,13 @@
 }
 
 .bldr-sort-btn--active {
-  background: #FF7A00 !important;
-  border-color: #FF7A00 !important;
-  color: #fff !important;
-  box-shadow: 0 2px 8px rgba(255,122,0,0.26);
+  /* Was three !importants deep in white-on-orange — 2.5:1, and immune to
+     every later fix by construction. !important is how a contrast bug
+     becomes permanent. */
+  background: var(--arc-orange);
+  border-color: var(--ink);
+  color: var(--ink);
+  box-shadow: 0 2px 0 var(--ink);
 }
 
 /* Favorite star button — overlaid on thumbnail */
@@ -3840,7 +3843,7 @@
 }
 
 .bldr-missions__label {
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.10em;
@@ -4123,7 +4126,7 @@
 
 .bldr-guest-backup span {
   color: #72594d;
-  font-size: 0.76rem;
+  font-size: 0.8125rem;
   line-height: 1.4;
 }
 
@@ -4136,7 +4139,7 @@
   background: #fff;
   color: #b94718;
   font: inherit;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   cursor: pointer;
 }
@@ -4159,7 +4162,7 @@
 
 .bldr-help-level__label {
   color: #4f392c;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 900;
 }
 
@@ -4171,7 +4174,7 @@
   border-radius: 11px;
   background: #fff;
   color: #4f392c;
-  font: 900 0.75rem/1.1 'Nunito', sans-serif;
+  font: 900 0.8125rem/1.1 'Nunito', sans-serif;
   cursor: pointer;
 }
 .bldr-help-level button span { margin-right: 0.3rem; font-size: 1rem; }
@@ -4196,9 +4199,9 @@
 .bldr-coach--early { border-width: 3px; background: #fffaf0; }
 .bldr-coach__face { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 15px; background: #f3e8ff; font-size: 1.7rem; }
 .bldr-coach__copy { min-width: 0; }
-.bldr-coach__step { display: block; color: #7e22ce; font-size: 0.68rem; font-weight: 1000; letter-spacing: 0.08em; text-transform: uppercase; }
+.bldr-coach__step { display: block; color: #7e22ce; font-size: 0.8125rem; font-weight: 1000; letter-spacing: 0.08em; text-transform: uppercase; }
 .bldr-coach__copy strong { display: block; margin-top: 0.12rem; color: #38291f; font: 900 1rem/1.25 'Arvo', serif; }
-.bldr-coach__copy p { margin: 0.18rem 0 0; color: #72594a; font-size: 0.8rem; line-height: 1.35; }
+.bldr-coach__copy p { margin: 0.18rem 0 0; color: #72594a; font-size: 0.8125rem; line-height: 1.35; }
 .bldr-coach--early .bldr-coach__copy strong { font-size: 1.15rem; }
 .bldr-coach--early .bldr-coach__copy p { font-size: 0.92rem; font-weight: 800; }
 .bldr-coach__actions { display: flex; align-items: center; gap: 0.4rem; }
@@ -4210,7 +4213,7 @@
   border-radius: 11px;
   background: #fff;
   color: #4f392c;
-  font: 900 0.76rem/1 'Nunito', sans-serif;
+  font: 900 0.8125rem/1 'Nunito', sans-serif;
   cursor: pointer;
 }
 .bldr-coach__show { border-color: #a855f7 !important; background: #a855f7 !important; color: #fff !important; }
@@ -4249,7 +4252,7 @@
   display: block;
   margin-bottom: 0.28rem;
   color: #b94718;
-  font-size: 0.69rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -4278,10 +4281,26 @@
   gap: 0.55rem;
 }
 
+/* ── The four steps, which a child has to be able to read ────────────────────
+   This was `repeat(4, minmax(0, 1fr))`: four columns at every width, and
+   minmax(0, ...) explicitly permits a column to shrink below its own text. In a
+   classroom, on a monitor where this card shares its row with a button, each
+   column got about seventy pixels and the steps rendered as
+
+       ✓ Pla     Chi    Pla   Save
+         eve  2  one 3  it  4 your
+              thi     ag     work
+
+   — clipped mid-word. The four lines telling a child what to do next were the
+   least readable thing on the screen, which is most of the answer to "what do
+   I do". Photographed on a real screen by the owner, not found by any test.
+
+   auto-fit wraps to two-by-two rather than crushing, and the font clears the
+   13px floor this project holds itself to. */
 .bldr-project-checklist {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.45rem;
+  grid-template-columns: repeat(auto-fit, minmax(146px, 1fr));
+  gap: 0.5rem;
   margin: 0.85rem 0 0;
   padding: 0;
   list-style: none;
@@ -4289,15 +4308,35 @@
 .bldr-project-checklist li {
   display: flex;
   align-items: center;
-  gap: 0.38rem;
-  min-height: 42px;
-  padding: 0.45rem 0.55rem;
+  gap: 0.45rem;
+  min-width: 0;
+  min-height: 46px;
+  padding: 0.5rem 0.6rem;
   border: 1.5px solid #ead9cb;
   border-radius: 11px;
   background: #fff;
   color: #785b49;
-  font-size: 0.73rem;
+  font-size: 0.84rem;
   font-weight: 900;
+  line-height: 1.25;
+}
+
+/* The whole chip is the tap target, so it has to fill its box and be able to
+   hold two lines without the words being cut in half. */
+.bldr-project-checklist li > button {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow-wrap: break-word;
 }
 .bldr-project-checklist li > span { display: grid; place-items: center; flex: 0 0 24px; width: 24px; height: 24px; border-radius: 50%; background: #f1e7df; color: #72594a; }
 .bldr-project-checklist li.is-current { border-color: #a855f7; background: #faf5ff; color: #5b21b6; }
@@ -4315,7 +4354,7 @@
 .bldr-activation-themes__label {
   flex: 1 1 100%;
   color: #8a6b58;
-  font-size: .68rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: .04em;
   text-align: right;
@@ -4330,7 +4369,7 @@
   background: #fff;
   color: #432c23;
   font-family: 'Nunito', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   cursor: pointer;
   transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
@@ -4756,7 +4795,7 @@
    project is live — a private project has no audience to report. */
 .bldr-project-card__plays {
   margin-top: 0.35rem;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #1A7A50;
 }
@@ -5015,7 +5054,7 @@
   .bldr-device-bar { padding-top: 8px; padding-bottom: 8px; }
   /* The fake browser chrome is charming on a laptop and is 68px of nothing on a
      phone, directly above the game. */
-  .bldr-browser__bar { padding-top: 8px; padding-bottom: 8px; font-size: 0.72rem; }
+  .bldr-browser__bar { padding-top: 8px; padding-bottom: 8px; font-size: 0.8125rem; }
 }
 
 /* ── The controls a game actually has ────────────────────────────────────────
@@ -5064,7 +5103,7 @@
  * asked about in Prove It, and pairing them costs nothing. */
 .bldr-control__var {
   font-family: 'SFMono-Regular', Menlo, Consolas, monospace;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #785B49;
   background: rgba(56, 41, 31, 0.06);
@@ -5278,7 +5317,7 @@
   }
 
   .bldr-control__var {
-    font-size: 0.68rem;
+    font-size: 0.8125rem;
   }
 
   .bldr-control__swatch,
@@ -5328,7 +5367,7 @@
 
 .bldr-concept__count {
   font-family: 'Nunito', 'Arvo', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #785B49;
   background: rgba(56, 41, 31, 0.06);
@@ -5358,7 +5397,7 @@
 .bldr-concept__line {
   flex: 0 0 auto;
   font-family: 'Nunito', 'Arvo', sans-serif;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #FFD84D;
   white-space: nowrap;
@@ -5480,4 +5519,834 @@
 
 @media (max-width: 520px) {
   .bldr-shelf__card { width: 158px; min-height: 112px; }
+}
+
+/* ── Why publishing did not happen ───────────────────────────────────────────
+   A rule, not a failure. It stays on screen rather than vanishing after three
+   seconds, because the child it is written for reads slowly and the answer does
+   not change. */
+
+.bldr-publish-note {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  width: 100%;
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  border: 2px solid rgba(255, 138, 0, .35);
+  border-radius: 14px;
+  background: rgba(255, 138, 0, .10);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.bldr-publish-note a {
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* ── The help-level question, folded away ────────────────────────────────────
+   It used to be the first thing in the studio: a self-assessment demanded
+   before a child had seen anything to assess. Now it is a preference someone
+   opens if they want it, and the flex row above only applies once open. */
+
+details.bldr-help-level {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  margin: 4px auto 16px;
+}
+
+details.bldr-help-level > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  opacity: 0.75;
+  cursor: pointer;
+  list-style: none;
+}
+
+details.bldr-help-level > summary::-webkit-details-marker { display: none; }
+details.bldr-help-level > summary::before { content: '⚙'; }
+details.bldr-help-level > summary:hover { opacity: 1; }
+
+details.bldr-help-level .bldr-help-level__options {
+  margin-top: 8px;
+  padding: 12px;
+  border: 1.5px solid #ead9cb;
+  border-radius: 16px;
+  background: rgba(255, 252, 248, 0.92);
+}
+
+/* ── One strip above the project, not three ──────────────────────────────────
+   Was: a 119px banner, a 48px device bar, and a 55px pretend browser window
+   with traffic-light dots. The game started 553px down an 800px screen. */
+
+.bldr-browser__applying {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 0.8125rem;
+  font-weight: 800;
+}
+
+details.bldr-device-sizes { position: relative; }
+
+details.bldr-device-sizes > summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  opacity: 0.7;
+  cursor: pointer;
+  list-style: none;
+}
+
+details.bldr-device-sizes > summary::-webkit-details-marker { display: none; }
+details.bldr-device-sizes > summary:hover { opacity: 1; }
+
+details.bldr-device-sizes .bldr-device-sizes__options {
+  position: absolute;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 8px;
+  border: 1.5px solid #ead9cb;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .14);
+}
+
+/* One line above the four steps, where there used to be three. */
+.bldr-activation-card__title {
+  margin: 0 0 2px;
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+/* ── "What can I edit", answered by naming one real thing ────────────────────
+   Sits under the child's project and above the four steps, because it is the
+   answer to the question they asked before they read any of the steps. */
+
+.bldr-change-hint {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border: 2px solid rgba(168, 85, 247, .35);
+  border-radius: 14px;
+  background: rgba(168, 85, 247, .08);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.bldr-change-hint > span:nth-child(2) { flex: 1 1 220px; min-width: 0; }
+
+.bldr-change-hint__go {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  border-radius: 11px;
+  background: #a855f7;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* ── The same line, after they have changed something ────────────────────────
+   Green rather than purple, because it is a different thing being said and a
+   child should be able to see that it changed without reading it again. */
+
+.bldr-change-hint--behind {
+  border-color: rgba(16, 185, 129, .38);
+  background: rgba(16, 185, 129, .09);
+}
+
+.bldr-change-hint--behind .bldr-change-hint__go { background: #0f9d76; }
+
+.bldr-change-hint__rest {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: #0b7a5c;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ── What fills the wait ─────────────────────────────────────────────────────
+   A real starter, playable, above the progress card rather than below it. */
+
+.bldr-loading-preview__say {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.bldr-loading-preview__say strong { font-size: 1.05rem; font-weight: 900; }
+.bldr-loading-preview__say span { font-size: 0.875rem; opacity: 0.7; font-weight: 700; }
+
+.bldr-loading-preview__iframe-wrap {
+  border: 2px solid rgba(140, 148, 190, .28);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* The waiting game gets the same room the real preview gets. It was rendering
+   about 230px tall — a quarter of a phone screen — which is a thumbnail, not
+   something a child plays for twenty seconds. */
+.bldr-loading-preview__iframe-wrap { height: 480px; }
+.bldr-loading-preview__iframe-wrap .bldr-iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+@media (max-height: 720px) {
+  .bldr-loading-preview__iframe-wrap { height: 380px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE PAPER ARCADE — the studio's chapter.
+
+   The language itself lives in src/styles/arcade.css. This chapter exists
+   because Builder.css ships in a lazy chunk that loads AFTER the global
+   stylesheet, so at equal specificity the studio's older rules were beating
+   the language — the site changed everywhere except the room children spend
+   the most time in. Appending the studio's overrides to the studio's own file
+   puts them last in the chunk that wins.
+
+   Same two rules as everywhere: touchable = ink outline + hard shadow +
+   press; passive = quiet paper. Layout is untouched.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* The project frame: an ink-outlined toy screen, not a grey web embed. */
+.bldr-browser {
+  border: 2.5px solid var(--ink);
+  box-shadow: var(--pop-card);
+}
+
+/* The success banner: a paper card with the mint kept for the tick and the
+   label, instead of a mint mist over the whole box. */
+.bldr-success-banner {
+  background: var(--paper);
+  border: 2px solid var(--ink-line);
+  box-shadow: var(--pop-card);
+}
+.bldr-success-banner__label { font-family: var(--font-display); letter-spacing: 0.06em; }
+.bldr-success-banner__name { font-family: var(--font-display); color: var(--ink); }
+
+/* Play — the most important button in the product. A proper orange keycap. */
+.bldr-browser__play-btn {
+  background: var(--arc-orange);
+  color: var(--ink);
+  border: 2.5px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: var(--pop-rest);
+  font-family: var(--font-display);
+  font-weight: 700;
+  padding: 0.4rem 1.2rem;
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+}
+.bldr-browser__play-btn:hover { transform: translateY(-2px); box-shadow: var(--pop-lift); background: var(--arc-orange); }
+.bldr-browser__play-btn:active { transform: translateY(3px); box-shadow: var(--pop-down); background: var(--arc-orange-down); }
+
+.bldr-browser__fullscreen-btn {
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: var(--pop-down);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.bldr-browser__fullscreen-btn:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); background: var(--paper); }
+
+/* Device size dots become three little ink-ringed screens. */
+.bldr-device-btn { border: 2px solid var(--ink-line); border-radius: 8px; }
+.bldr-device-btn--active { border-color: var(--ink); background: var(--arc-sun); box-shadow: 2px 2px 0 rgba(53,34,14,0.2); }
+
+/* The creator rail: five toys in a toybox. Each tool's dot becomes a solid
+   colour keycap — the pale 12%-tint chips read as disabled, which on a
+   toolbar for children is the exact wrong message. */
+.bldr-creator-tool__dot {
+  border: 2.5px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 0 3px 0 var(--ink);
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+  font-family: var(--font-display);
+}
+.bldr-creator-tool:hover:not(:disabled) { background: transparent; transform: none; }
+.bldr-creator-tool:hover:not(:disabled) .bldr-creator-tool__dot { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); }
+.bldr-creator-tool:active:not(:disabled) .bldr-creator-tool__dot { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.bldr-creator-tool--mine     .bldr-creator-tool__dot { background: var(--arc-orange); color: var(--ink); }
+.bldr-creator-tool--colors   .bldr-creator-tool__dot { background: var(--arc-sun);    color: var(--ink); }
+.bldr-creator-tool--text     .bldr-creator-tool__dot { background: var(--arc-violet-deep); color: #fff; }
+.bldr-creator-tool--effects  .bldr-creator-tool__dot { background: var(--arc-mint);   color: var(--ink); }
+.bldr-creator-tool--gameplay .bldr-creator-tool__dot { background: var(--arc-sky);    color: var(--ink); }
+.bldr-creator-tool--save     .bldr-creator-tool__dot { background: var(--arc-mint);   color: var(--ink); }
+.bldr-creator-tool--sound    .bldr-creator-tool__dot { background: var(--arc-sky);    color: var(--ink); }
+.bldr-creator-tool__label { font-family: var(--font-display); font-weight: 700; color: var(--ink); }
+.bldr-creator-tool--active { background: transparent !important; box-shadow: none; }
+.bldr-creator-tool--active .bldr-creator-tool__dot { filter: none; transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+
+/* The tab bar is the game HUD: active tab is a pressed sun key. */
+.bldr-tab {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: var(--pop-down);
+  font-family: var(--font-display);
+  color: var(--ink);
+  transition: transform 0.09s ease, box-shadow 0.09s ease, background 0.15s ease;
+}
+.bldr-tab:hover { background: var(--paper); transform: translateY(-1px); box-shadow: var(--pop-rest); color: var(--ink); }
+.bldr-tab--active {
+  background: var(--arc-sun);
+  color: var(--ink);
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+.bldr-tab--active:hover { background: var(--arc-sun); transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+
+/* Every studio action button becomes a keycap; the variants keep their
+   colour roles. */
+.bldr-action-btn {
+  border: 2.5px solid var(--ink);
+  box-shadow: var(--pop-rest);
+  font-family: var(--font-display);
+  font-weight: 700;
+  transition: transform 0.09s ease, box-shadow 0.09s ease, background 0.15s ease;
+}
+.bldr-action-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--pop-lift); }
+.bldr-action-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: var(--pop-down); }
+.bldr-action-btn--primary, .bldr-action-btn--save { background: var(--arc-orange); color: var(--ink); }
+.bldr-action-btn--primary:active, .bldr-action-btn--save:active { background: var(--arc-orange-down); color: var(--ink); }
+.bldr-action-btn--publish { background: var(--arc-violet-deep); color: #fff; }
+.bldr-action-btn--livedit { background: var(--arc-sky); color: var(--ink); }
+
+.bldr-build-btn {
+  border: 2.5px solid var(--ink);
+  box-shadow: var(--pop-rest);
+  background: var(--arc-orange);
+  color: var(--ink);
+  font-family: var(--font-display);
+}
+.bldr-build-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--pop-lift); }
+.bldr-build-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: var(--pop-down); background: var(--arc-orange-down); }
+
+.bldr-coach-open {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: var(--pop-down);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.bldr-coach-open:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
+
+/* Starter shelves: twenty toys on shelves, not twenty white forms. */
+.bldr-shelf__card {
+  border: 2.5px solid var(--ink);
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow: var(--pop-rest);
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+}
+.bldr-shelf__card:hover, .bldr-shelf__card:focus-visible { transform: translateY(-2px); box-shadow: var(--pop-lift); }
+.bldr-shelf__card:active { transform: translateY(3px); box-shadow: var(--pop-down); }
+.bldr-shelf__title { font-family: var(--font-display); font-weight: 800; }
+.bldr-shelf__label { font-family: var(--font-display); font-weight: 800; }
+
+.bldr-chip {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: var(--pop-down);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.bldr-chip:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
+
+/* The quest tracker: number dice, done steps stamped mint. */
+.bldr-project-checklist li button span {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 2px 2px 0 rgba(53, 34, 14, 0.2);
+  border-radius: 10px;
+  font-family: var(--font-display);
+}
+.bldr-project-checklist li.is-done button span { background: var(--arc-mint); color: var(--ink); }
+.bldr-project-checklist li.is-current button span { background: var(--arc-sun); color: var(--ink); }
+.bldr-activation-card h3, .bldr-activation-card__title { font-family: var(--font-display); color: var(--ink); }
+.bldr-activation-card__primary {
+  border: 2.5px solid var(--ink);
+  box-shadow: var(--pop-rest);
+  background: var(--arc-orange);
+  color: var(--ink);
+  font-family: var(--font-display);
+}
+.bldr-activation-card__primary:hover { transform: translateY(-2px); box-shadow: var(--pop-lift); }
+.bldr-activation-card__primary:active { transform: translateY(3px); box-shadow: var(--pop-down); background: var(--arc-orange-down); }
+
+/* The studio tool panels open as paper cards. */
+.bldr-studio-panel {
+  background: var(--paper);
+  border: 2px solid var(--ink-line);
+  box-shadow: var(--pop-card);
+}
+.bldr-studio-panel__title { font-family: var(--font-display); }
+.bldr-mine__option {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: var(--pop-down);
+  font-family: var(--font-display);
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+}
+.bldr-mine__option:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
+.bldr-mine__option:active { transform: translateY(2px); box-shadow: 0 0 0 var(--ink); }
+
+/* The look-inside line, and the change hint: sticker notes, not alerts. */
+.bldr-change-hint { border: 2px solid var(--arc-violet); background: rgba(124, 92, 255, 0.07); }
+.bldr-change-hint--behind { border-color: var(--arc-mint); background: rgba(23, 192, 139, 0.07); }
+.bldr-change-hint__go { border: 2px solid var(--ink); box-shadow: var(--pop-down); font-family: var(--font-display); }
+.bldr-change-hint__go:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
+
+/* The coach's "you are here" ring, in the language: a sun halo that breathes,
+   instead of a purple outline that fought the keycap shadows. The box-shadow
+   animation had to go anyway — it overwrote the keycap's own shadow, so the
+   coached button stopped looking pressable at the exact moment a child was
+   being told to press it. */
+[data-codeit-coach="current"] {
+  outline: 3.5px solid var(--arc-sun) !important;
+  outline-offset: 4px;
+  animation: codeitCoachBreathe 1.6s ease-in-out infinite;
+}
+@keyframes codeitCoachBreathe {
+  0%, 100% { outline-offset: 4px; }
+  50% { outline-offset: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-codeit-coach="current"] { animation: none; }
+}
+
+/* The phone's bottom bar: three keycaps a thumb can feel. This is the bar a
+   child holds all lesson long on a classroom tablet. */
+.bldr-mobile-play-bar__btn {
+  border: 2.5px solid var(--ink);
+  box-shadow: var(--pop-rest);
+  font-family: var(--font-display);
+  font-weight: 700;
+  border-radius: 14px;
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+}
+.bldr-mobile-play-bar__btn:active { transform: translateY(3px); box-shadow: var(--pop-down); }
+.bldr-mobile-play-bar__btn--play { background: var(--arc-orange); color: var(--ink); }
+.bldr-mobile-play-bar__btn--edit { background: var(--arc-sky); color: var(--ink); }
+.bldr-mobile-play-bar__btn--save { background: var(--arc-mint); color: var(--ink); }
+
+/* "Make something else" and the recovered-draft card join the language. */
+.bldr-startover {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: var(--pop-down);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.bldr-startover:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
+.bldr-guest-backup {
+  background: var(--paper);
+  border: 2px solid var(--ink-line);
+  box-shadow: var(--pop-card);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PIXEL, IN PERSON — the corner guide.
+
+   A character, not a widget. He bobs like he is breathing, the bubble pops in
+   like speech, and when he is resting a small "?" reminds a child he can be
+   asked. On phones he stands above the bottom play bar so a thumb never has
+   to choose between him and Play.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.pixel-guide {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none;
+}
+.pixel-guide > * { pointer-events: auto; }
+
+.pixel-guide__pal {
+  width: 84px;
+  height: 84px;
+  padding: 6px 6px 0;
+  border: 2.5px solid var(--ink);
+  border-radius: 50%;
+  background: var(--arc-sun);
+  box-shadow: var(--pop-rest);
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+  animation: pixelBob 3.2s ease-in-out infinite;
+}
+.pixel-guide__pal:hover { transform: translateY(-2px); box-shadow: var(--pop-lift); }
+.pixel-guide__pal:active { transform: translateY(3px); box-shadow: var(--pop-down); }
+.pixel-guide__pal:focus-visible { outline: 3px solid var(--arc-violet); outline-offset: 3px; }
+.pixel-guide__pal img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+.pixel-guide__hint {
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  background: var(--arc-violet-deep);
+  color: #fff;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.85rem;
+  animation: pixelHintPing 2.2s ease-in-out infinite;
+}
+
+@keyframes pixelBob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(-2deg); }
+}
+@keyframes pixelHintPing {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+}
+/* The bob and the press fight over transform; while a pointer is on him the
+   press wins, which is exactly the "he responds to me" feeling. */
+.pixel-guide__pal:hover, .pixel-guide__pal:active { animation: none; }
+
+.pixel-guide__bubble {
+  max-width: 264px;
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 18px 18px 4px 18px;
+  box-shadow: var(--pop-rest);
+  padding: 12px 14px;
+  transform-origin: bottom right;
+  animation: bubblePop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes bubblePop {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.pixel-guide__step {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--arc-orange-down);
+}
+.pixel-guide__title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  color: var(--ink);
+  margin: 2px 0;
+}
+.pixel-guide__detail {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.pixel-guide__actions { display: flex; gap: 8px; }
+.pixel-guide__show, .pixel-guide__read {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 2px solid var(--ink);
+  border-radius: 11px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  box-shadow: var(--pop-down);
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+}
+.pixel-guide__show { background: var(--arc-violet-deep); color: #fff; }
+.pixel-guide__read { background: var(--paper); color: var(--ink); }
+.pixel-guide__show:hover, .pixel-guide__read:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
+.pixel-guide__show:active, .pixel-guide__read:active { transform: translateY(2px); box-shadow: 0 0 0 var(--ink); }
+
+/* Early learners get a bigger voice; the guide level survives the redesign. */
+.pixel-guide__bubble--early { max-width: 300px; }
+.pixel-guide__bubble--early .pixel-guide__title { font-size: 1.15rem; }
+.pixel-guide__bubble--early .pixel-guide__detail { font-size: 1rem; }
+
+/* Above the phone play bar, and slightly smaller so he never crowds a game. */
+@media (max-width: 640px) {
+  .pixel-guide { right: 10px; bottom: 88px; }
+  .pixel-guide__pal { width: 68px; height: 68px; }
+  .pixel-guide__bubble { max-width: 228px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pixel-guide__pal, .pixel-guide__hint { animation: none; }
+  .pixel-guide__bubble { animation: none; }
+}
+
+/* ── IT'S LIVE — the publish celebration ─────────────────────────────────────
+   A sun-lit card with a confetti burst that fires once. The confetti is
+   eight CSS pieces, no library and no canvas: this fires on classroom
+   tablets, and pride should not cost a frame rate. */
+.bldr-live-card {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 18px 20px;
+  background: #FFF9E6;
+  border: 2.5px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: var(--pop-rest);
+  overflow: hidden;
+  animation: liveCardPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes liveCardPop {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.bldr-live-card__pixel { width: 84px; flex: 0 0 auto; }
+.bldr-live-card__kicker {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--arc-orange-down);
+}
+.bldr-live-card__title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--ink);
+  margin: 2px 0 4px;
+}
+.bldr-live-card__line { margin: 0 0 8px; font-size: 0.92rem; color: var(--ink); }
+.bldr-live-card__url {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  background: var(--paper);
+  border: 2px solid var(--ink-line);
+  border-radius: 9px;
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+.bldr-live-card__actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.bldr-live-card__burst { position: absolute; inset: 0; pointer-events: none; }
+.bldr-live-card__burst i {
+  position: absolute;
+  top: 40%;
+  left: 18%;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: confettiFly 1.1s ease-out 0.15s forwards;
+}
+.bldr-live-card__burst i:nth-child(1) { background: var(--arc-orange); --fx: 60px;  --fy: -70px; }
+.bldr-live-card__burst i:nth-child(2) { background: var(--arc-violet); --fx: 140px; --fy: -40px; animation-delay: 0.2s; }
+.bldr-live-card__burst i:nth-child(3) { background: var(--arc-mint);   --fx: 220px; --fy: -80px; animation-delay: 0.25s; }
+.bldr-live-card__burst i:nth-child(4) { background: var(--arc-sun);    --fx: 300px; --fy: -30px; border-radius: 50%; animation-delay: 0.3s; }
+.bldr-live-card__burst i:nth-child(5) { background: var(--arc-sky);    --fx: 380px; --fy: -75px; animation-delay: 0.35s; }
+.bldr-live-card__burst i:nth-child(6) { background: var(--arc-coral);  --fx: 460px; --fy: -45px; border-radius: 50%; animation-delay: 0.4s; }
+.bldr-live-card__burst i:nth-child(7) { background: var(--arc-orange); --fx: 540px; --fy: -85px; animation-delay: 0.45s; }
+.bldr-live-card__burst i:nth-child(8) { background: var(--arc-violet); --fx: 620px; --fy: -35px; animation-delay: 0.5s; }
+@keyframes confettiFly {
+  0% { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--fx), var(--fy)) rotate(280deg); }
+}
+@media (max-width: 560px) {
+  .bldr-live-card { flex-direction: column; align-items: flex-start; }
+  .bldr-live-card__pixel { width: 64px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bldr-live-card { animation: none; }
+  .bldr-live-card__burst { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE ARCADE CABINET — the studio's stage, redesigned as one object.
+
+   Before: a 120px pale banner card, then an almost-empty white shelf with
+   three controls lost on it, then the game — three stacked cards of chrome,
+   and the child's project starting a full card lower than it needed to.
+
+   Now: a marquee. Title on the left, the honest state as a sticker, the
+   knobs on the right — attached flush to the ink-framed screen below it, the
+   way an arcade cabinet's title strip sits on its monitor. One outline
+   around one object, and the object is the child's game.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.bldr-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  margin-bottom: 0;
+  background: var(--arc-sun);
+  border: 2.5px solid var(--ink);
+  border-bottom: 0;
+  border-radius: 18px 18px 0 0;
+  box-shadow: none;
+}
+.bldr-success-banner::after { display: none; }
+.bldr-success-banner__check-wrap { flex: 0 0 auto; }
+.bldr-success-banner__check {
+  width: 30px;
+  height: 30px;
+  font-size: 0.9rem;
+  border: 2px solid var(--ink);
+  box-shadow: 1px 1px 0 rgba(53, 34, 14, 0.25);
+}
+.bldr-success-banner__copy {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 0;
+  flex: 1 1 240px;
+}
+.bldr-success-banner__name {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.bldr-success-banner__label {
+  flex: 0 0 auto;
+  padding: 3px 10px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.bldr-success-banner__saved {
+  flex: 0 0 auto;
+  padding: 3px 10px;
+  background: var(--arc-mint);
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.8125rem;
+}
+.bldr-success-banner__deck {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+.bldr-success-banner__save { flex: 0 0 auto; }
+
+/* The screen sits flush under its marquee: square top corners, shared ink. */
+.bldr-result .bldr-browser {
+  border-radius: 0 0 18px 18px;
+  border-top-width: 2px;
+}
+
+/* ── Arrival ─────────────────────────────────────────────────────────────────
+   Opening a project used to swap the DOM and stand still. One rise-and-settle
+   as the cabinet appears — 300ms, once — is the difference between a page
+   changing and a machine being wheeled out for you. */
+.bldr-result { animation: cabinetArrive 0.32s cubic-bezier(0.34, 1.4, 0.64, 1) both; }
+@keyframes cabinetArrive {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) { .bldr-result { animation: none; } }
+
+/* The instant-change notice becomes a sticker toast: it pops, says what
+   changed and what to do next, and looks like a thing rather than a line. */
+.bldr-mine__notice {
+  display: inline-block;
+  padding: 8px 14px;
+  background: var(--arc-mint);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: var(--pop-down);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  animation: stickerPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes stickerPop {
+  from { transform: scale(0.7) rotate(-3deg); opacity: 0; }
+  to { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .bldr-mine__notice { animation: none; } }
+
+/* The cabinet itself: glue, and the arrival animation moves here so the
+   whole object arrives as one. */
+.bldr-cabinet { display: flex; flex-direction: column; gap: 0; }
+.bldr-result { animation: none; }
+.bldr-cabinet { animation: cabinetArrive 0.32s cubic-bezier(0.34, 1.4, 0.64, 1) both; }
+@media (prefers-reduced-motion: reduce) { .bldr-cabinet { animation: none; } }
+
+.pixel-guide__step { color: var(--arc-orange-text); }
+.pixel-guide__show { background: var(--arc-violet-deep); }
+.bldr-live-card__kicker { color: var(--arc-orange-text); }
+
+/* The saved-projects panel joins the sweep: its own orange-fill buttons
+   still carried white text. */
+.bldr-sort-btn--active, .bldr-project-card__btn--load {
+  background: var(--arc-orange);
+  color: var(--ink);
+  border: 2px solid var(--ink);
 }

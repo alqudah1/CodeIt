@@ -56,7 +56,12 @@ function openStudioPage(name) {
 }
 
 async function finishProjectQualityCheck(theme = 'Candy') {
-  await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+  // Waits for the four-step checklist, not for a heading. It used to wait on
+  // "Play it. Change it. Test it. Then save it." — one of four separate things
+  // that were all telling a child the same sentence, and removing three of them
+  // broke fourteen tests that only cared that the studio had finished building.
+  // The first step existing is the real signal, and it survives a rewording.
+  await screen.findByRole('button', { name: /Play everything/i });
   fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
   openStudioPage('Change');
   fireEvent.click(screen.getByRole('button', { name: `Apply ${theme} theme` }));
@@ -129,8 +134,13 @@ describe('studio opening', () => {
       </AuthContext.Provider>
     );
 
-    expect(screen.getByRole('status')).toHaveTextContent('Your account is ready.');
-    expect(screen.getByRole('status')).toHaveTextContent('Your first saved project will stay in this account.');
+    // Two live regions now greet a brand-new account: the welcome banner and
+    // Pixel opening with step one — which is the product working, not a clash,
+    // so the assertion names the banner instead of assuming there is only one
+    // thing on the page allowed to speak.
+    const welcome = screen.getAllByRole('status').find(el => el.classList.contains('bldr-account-ready'));
+    expect(welcome).toHaveTextContent('Your account is ready.');
+    expect(welcome).toHaveTextContent('Your first saved project will stay in this account.');
     expect(screen.getByRole('button', { name: /Build a Game/i })).toBeInTheDocument();
     expect(trackEvent).toHaveBeenCalledWith('new_account_studio_view', null, 'student-token');
   });
@@ -143,13 +153,19 @@ describe('studio opening', () => {
     );
 
     expect(screen.getByRole('button', { name: /Big help/i })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('status')).toHaveClass('bldr-coach--early');
+    // The coach text box became Pixel's speech bubble; the rule it carried
+    // survives the costume change: an early learner gets the bigger voice,
+    // with Show me and Read to me.
+    expect(screen.getByRole('status')).toHaveClass('pixel-guide__bubble--early');
     expect(screen.getByRole('button', { name: /Show me/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Read to me/i })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /Explore myself/i }));
     expect(screen.getByRole('button', { name: /Explore myself/i })).toHaveAttribute('aria-pressed', 'true');
+    // Independent learners keep Pixel himself — resting in the corner, ready
+    // to be asked — but the bubble stays closed until they ask.
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Ask Pixel what to do next/i })).toBeInTheDocument();
     expect(localStorage.getItem('codeit_guide_level')).toBe('independent');
   });
 
@@ -202,10 +218,14 @@ describe('studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
-    const nextStepHeading = await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+    // The guidance has to come after the project, not before it. That is the
+    // whole point of the layout: the child's game is the thing on the screen and
+    // the instructions are underneath it. Anchored to the checklist rather than
+    // to any particular wording of the heading above it.
+    const firstStep = await screen.findByRole('button', { name: /Play everything/i });
     const projectPreview = screen.getByTitle('Project preview');
 
-    expect(projectPreview.compareDocumentPosition(nextStepHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(projectPreview.compareDocumentPosition(firstStep) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.queryByRole('button', { name: /Keep my project/i })).not.toBeInTheDocument();
     expect(screen.getByRole('list', { name: 'Project quality steps' })).toHaveTextContent('Play everything');
 
@@ -227,7 +247,7 @@ describe('studio opening', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
-    await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+    await screen.findByRole('button', { name: /Play everything/i });
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
     openStudioPage('Change');
     fireEvent.click(screen.getByRole('button', { name: 'Change my project' }));
@@ -250,7 +270,7 @@ describe('studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
-    await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+    await screen.findByRole('button', { name: /Play everything/i });
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
 
     const normalFetch = global.fetch.getMockImplementation();
@@ -282,7 +302,7 @@ describe('studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Website/i }));
-    await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+    await screen.findByRole('button', { name: /Play everything/i });
 
     // On Keep, not on Play. Telling a child about browser storage before they
     // have played the thing they just made is the wrong moment for a true
@@ -311,7 +331,7 @@ describe('studio opening', () => {
     render(<Builder />);
 
     expect(await screen.findByText('Welcome back, your project was recovered.')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Play everything/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Keep my project/i })).toBeInTheDocument();
     expect(trackEvent).toHaveBeenCalledWith('guest_draft_recovered');
 
@@ -353,6 +373,19 @@ describe('studio opening', () => {
     expect(mockAwardXP).toHaveBeenCalledTimes(2);
     expect(trackEvent).toHaveBeenCalledWith('activation_next_step', 'publish', 'creator-token');
     expect(screen.getByRole('button', { name: 'Share your project' })).toBeInTheDocument();
+
+    // The proudest second in the product used to be the word "copied" on a
+    // button for three seconds. Now it is a celebration that shows the real
+    // link, says what it means — anyone can play it, no app, no account —
+    // and stays until the child closes it, because pride does not expire on
+    // a timer.
+    openStudioPage('Save');
+    const live = await screen.findByText(/is on the internet now/i);
+    expect(live).toBeInTheDocument();
+    expect(screen.getByText(/codeitlearn\.com\/project\//)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Send it to someone' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Done' }));
+    expect(screen.queryByText(/is on the internet now/i)).not.toBeInTheDocument();
   });
 
   test('keeps a managed learner private and guides them into learning', async () => {
@@ -612,7 +645,7 @@ describe('studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
-    await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+    await screen.findByRole('button', { name: /Play everything/i });
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
 
     const editCallsBefore = global.fetch.mock.calls.filter(([url]) => String(url).includes('/edit')).length;
@@ -634,7 +667,7 @@ describe('studio opening', () => {
     render(<Builder />);
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
-    await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+    await screen.findByRole('button', { name: /Play everything/i });
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
     openStudioPage('Change');
     fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);
@@ -655,7 +688,7 @@ describe('studio opening', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
-    await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+    await screen.findByRole('button', { name: /Play everything/i });
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
     openStudioPage('Change');
     fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);
@@ -684,7 +717,7 @@ describe('studio opening', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
-    await screen.findByRole('heading', { name: 'Play it. Change it. Test it. Then save it.' });
+    await screen.findByRole('button', { name: /Play everything/i });
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
     openStudioPage('Change');
     fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);

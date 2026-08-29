@@ -46,17 +46,23 @@ describe('Pricing', () => {
     // that exists to be trusted about money.
     expect(document.body.textContent).not.toMatch(/after testing|being collected today|billing is not live|before billing opens/i);
     expect(screen.getByText('Try the current family experience. Nothing paid starts automatically.')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Request a free family pilot spot/i })).toHaveAttribute('href', '#family-pilot');
-    expect(screen.getByText(/About 30 seconds · immediate setup email · no credit card/i)).toBeInTheDocument();
   });
 
-  test('measures the hero jump to the pilot form', async () => {
+  test('the plans are the first thing on the page', async () => {
+    // There used to be a jump link in the hero — "Request a free family pilot
+    // spot ↓" — that scrolled past the free plan and the paid plan to reach the
+    // pilot card, which is the third card in the grid immediately below it.
+    // With it went a kicker, a 75px headline, a paragraph and a note: the plans
+    // began 727px down a page called Pricing, 9% of a laptop's first screen.
+    //
+    // What has to survive is that a parent still reaches the pilot card, and
+    // still reads the truth about money before the numbers.
     renderPricing();
-    const pilotLink = screen.getByRole('link', { name: /Request a free family pilot spot/i });
-    pilotLink.addEventListener('click', (event) => event.preventDefault());
-    fireEvent.click(pilotLink);
+    await screen.findByRole('checkbox');
 
-    expect(trackEvent).toHaveBeenCalledWith('parent_cta_click', 'join-pilot');
+    expect(screen.getByRole('button', { name: 'Request a free family pilot spot' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /Request a free family pilot spot/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Start free/i);
   });
 
   test('saves an adult lead through the waitlist endpoint', async () => {

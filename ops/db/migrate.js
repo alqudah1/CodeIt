@@ -50,6 +50,18 @@ const BASELINE = (() => {
   const at = process.argv.indexOf('--baseline');
   return at === -1 ? null : process.argv[at + 1];
 })();
+// ── The empty database ───────────────────────────────────────────────────────
+//
+// The refusal above is exactly right for the live database and exactly wrong
+// for a database that was created ten seconds ago: there, nothing has been
+// applied by hand because nothing has been applied at all, and the tool
+// refusing to start means a check run can never build its own stack.
+//
+// --fresh says "this database is new, run everything". It refuses to do that to
+// a database with anything in it, so it cannot be pointed at production by
+// accident — the guard is the state of the database, not a promise on the
+// command line.
+const FRESH = process.argv.includes('--fresh');
 const URL = process.env.DATABASE_URL;
 
 /** 20260820100000_curriculum_lessons_17_to_31.sql → version and name. */
@@ -167,7 +179,18 @@ async function main() {
 
     const risky = pending.filter(m => warningsFor(fs.readFileSync(path.join(DIR, m.file), 'utf8')).length);
 
-    if (neverAdopted) {
+    if (neverAdopted && FRESH) {
+      const { rows: [{ count }] } = await pool.query(
+        "select count(*)::int as count from information_schema.tables where table_schema = 'public' and table_name <> 'schema_migrations'"
+      );
+      if (count > 0) {
+        console.log(`\n--fresh refused: this database already has ${count} table(s) in it.`);
+        console.log('It is not new, so "run everything" is not safe. Use --baseline <version>.');
+        process.exitCode = 1;
+        return;
+      }
+      console.log('\n--fresh: this database is empty, so every migration is genuinely pending.');
+    } else if (neverAdopted) {
       console.log('\nNothing has ever been recorded here, so this tool cannot tell which of');
       console.log('these have already been applied by hand — and re-running one that has is');
       console.log('how a live database gets broken.');

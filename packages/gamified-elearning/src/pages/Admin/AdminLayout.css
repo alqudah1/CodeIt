@@ -80,7 +80,7 @@
 .adm-sidebar-footer {
   padding: 1rem 1.5rem;
   border-top: 1px solid rgba(255,255,255,0.08);
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   color: #4a5568;
 }
 
@@ -91,7 +91,7 @@
   padding: 0.4rem 0.9rem;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-family: 'Nunito', sans-serif;
   margin-top: 0.5rem;
   width: 100%;
@@ -142,7 +142,7 @@
 .adm-stat-num.teal    { color: #2b9e8f; }
 
 .adm-stat-lbl {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   color: #718096;
   margin-top: 0.3rem;
   font-weight: 600;
@@ -182,7 +182,7 @@
   text-align: left;
   color: #718096;
   font-weight: 700;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-bottom: 1px solid #e8ecf4;
@@ -214,7 +214,7 @@
   display: inline-block;
   padding: 0.18rem 0.55rem;
   border-radius: 999px;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 700;
 }
 .adm-badge-purple { background: rgba(108,99,255,0.12); color: #6c63ff; }
@@ -337,7 +337,7 @@
 }
 
 .adm-detail-card h3 {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: #718096;
@@ -363,7 +363,7 @@
   background: rgba(108,99,255,0.1);
   border: 1px solid rgba(108,99,255,0.2);
   border-radius: 8px;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   color: #6c63ff;
   font-weight: 600;
   margin: 0.15rem 0.15rem 0 0;
@@ -402,7 +402,7 @@
   width: 40px;
   text-align: right;
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   color: #6c63ff;
 }
 
@@ -421,7 +421,7 @@
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 .adm-dist-card h3 {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #718096;

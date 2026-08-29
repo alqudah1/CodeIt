@@ -11,7 +11,7 @@
 //   3. the child's own file changes, so the level survives a reload
 const { launch } = require('./browser');
 
-const BASE = 'http://localhost:4599';
+const BASE = process.env.CHECK_BASE || 'http://localhost:4599';
 
 const problems = [];
 const fail = m => problems.push(m);
@@ -67,8 +67,12 @@ async function run() {
     if (/Change/.test(await t.innerText())) { await t.click(); break; }
   }
   await page.waitForTimeout(700);
-  const editBtn = await page.$('text=Edit elements');
-  if (!editBtn) { fail('no "Edit elements" control'); return finish(browser); }
+  // Anchored to the class, not the words. This searched for "Edit elements",
+  // which C renamed to "Tap things to change them" — and a check that looks for
+  // a label reports a working feature as missing the moment the label improves.
+  // editable-worlds.js was fixed for exactly this; this one was missed.
+  const editBtn = await page.$('.bldr-action-btn--livedit');
+  if (!editBtn) { fail('no live-edit control on the preview'); return finish(browser); }
   await editBtn.click();
   await page.waitForTimeout(800);
 

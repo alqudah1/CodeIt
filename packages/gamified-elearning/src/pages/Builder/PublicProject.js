@@ -193,19 +193,14 @@ export default function PublicProject() {
           </div>
         </div>
 
-        {/* ── Live preview iframe ─────────────────────────────────── */}
+        {/* ── The game, framed like a game ────────────────────────────
+            This used to sit inside a pretend browser window — traffic-light
+            dots and a fake address bar — the exact furniture A removed from
+            the studio, still living on here. On the one page that strangers
+            see, the child's game looked like an embed. Now it gets the same
+            ink-outlined toy screen the studio gives it. */}
         <div className="pp-frame-wrap">
-          <div className="pp-browser">
-            <div className="pp-browser__chrome">
-              <div className="pp-browser__dots">
-                <span className="pp-browser__dot pp-browser__dot--red" />
-                <span className="pp-browser__dot pp-browser__dot--yellow" />
-                <span className="pp-browser__dot pp-browser__dot--green" />
-              </div>
-              <div className="pp-browser__bar">
-                codeitlearn.com/project/{publicId}
-              </div>
-            </div>
+          <div className="pp-arcade-frame">
             <iframe
               ref={frameRef}
               className="pp-iframe"
@@ -216,29 +211,55 @@ export default function PublicProject() {
           </div>
         </div>
 
-        {/* ── Actions ─────────────────────────────────────────────── */}
-        <div className="pp-actions">
-          <button
-            className="pp-cta-btn pp-cta-btn--remix"
-            onClick={handleRemix}
-            disabled={remixStatus === 'remixing'}
-          >
-            {remixStatus === 'remixing'
-              ? <><span className="pp-spinner pp-spinner--sm" />Remixing...</>
-              : remixStatus === 'error' ? 'Try again'
-              : 'Remix this'}
-          </button>
-          <Link to="/builder" className="pp-cta-btn pp-cta-btn--build">
-            Build your own
-          </Link>
-          <button
-            className="pp-cta-btn pp-cta-btn--copy"
-            onClick={handleShare}
-          >
-            {shareStatus === 'shared' ? 'Shared!'
-              : shareStatus === 'copied' ? 'Link copied!'
-              : 'Share project'}
-          </button>
+        {/* ── The invitation ──────────────────────────────────────────
+            This page is where CodeIt grows or does not. A child sends their
+            game to a friend; the friend plays it; and in that exact moment —
+            "someone my age MADE this" — the friend is more persuadable than
+            any advert will ever find them. The page used to answer that
+            moment with three equal grey-ish buttons.
+
+            Now Pixel does what he does in the studio: greets them and says
+            the true thing. Making one is free and starts right now. The
+            buttons keep their old accessible names — the tests, and any
+            child's muscle memory, keep working. */}
+        <div className="pp-invite">
+          <img className="pp-invite__pixel" src="/brand/pixel-guide.png" alt="" />
+          <div className="pp-invite__bubble">
+            <strong className="pp-invite__hi">
+              You just played {project.creator_name ? `${project.creator_name}'s` : 'a'} game.
+            </strong>
+            <p className="pp-invite__line">
+              Someone learning to code made this. You can make your own — free,
+              nothing to download, and it starts right now.
+            </p>
+            <div className="pp-actions">
+              <Link
+                to="/builder"
+                className="pp-cta-btn pp-cta-btn--build"
+                onClick={() => void trackEvent('landing_cta_click', 'public-project-build')}
+              >
+                Build your own
+              </Link>
+              <button
+                className="pp-cta-btn pp-cta-btn--remix"
+                onClick={handleRemix}
+                disabled={remixStatus === 'remixing'}
+              >
+                {remixStatus === 'remixing'
+                  ? <><span className="pp-spinner pp-spinner--sm" />Remixing...</>
+                  : remixStatus === 'error' ? 'Try again'
+                  : 'Remix this'}
+              </button>
+              <button
+                className="pp-cta-btn pp-cta-btn--copy"
+                onClick={handleShare}
+              >
+                {shareStatus === 'shared' ? 'Shared!'
+                  : shareStatus === 'copied' ? 'Link copied!'
+                  : 'Share project'}
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* ── Footer attribution ──────────────────────────────────── */}

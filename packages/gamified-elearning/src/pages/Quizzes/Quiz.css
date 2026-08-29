@@ -20,7 +20,7 @@
   padding: clamp(1.6rem, 4vw, 2.8rem);
   display: flex;
   flex-direction: column;
-  gap: 1.4rem;
+  gap: 1rem;
 }
 
 /* ───── Header ───── */
@@ -99,7 +99,7 @@
   align-self: flex-start;
   background: linear-gradient(120deg, #9bf6ff, #a0c4ff);
   color: #5A3A2C;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -535,3 +535,29 @@
   .qz-card { border-radius: 22px; }
   .qz-btn-next { align-self: stretch; text-align: center; }
 }
+
+/* ── The Paper Arcade, quiz chapter (see styles/arcade.css) ──
+   Answers are big paper keys a child wants to press; right stamps mint,
+   wrong stamps coral, and the letter is a sun die. */
+.qz-card { background: var(--paper); border: 2px solid var(--ink-line); box-shadow: var(--pop-card); backdrop-filter: none; }
+.qz-opt {
+  border: 2.5px solid var(--ink);
+  background: var(--paper);
+  box-shadow: var(--pop-rest);
+  border-radius: 16px;
+  font-weight: 800;
+  transition: transform 0.09s ease, box-shadow 0.09s ease, background 0.15s ease;
+}
+.qz-opt:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--pop-lift); }
+.qz-opt:active:not(:disabled) { transform: translateY(3px); box-shadow: var(--pop-down); }
+.qz-opt--correct { background: var(--arc-mint); color: var(--ink); }
+.qz-opt--wrong { background: var(--arc-coral); color: #fff; }
+.qz-opt--dim { opacity: 0.55; }
+.qz-opt-letter { border: 2px solid var(--ink); background: var(--arc-sun); color: var(--ink); font-family: var(--font-display); font-weight: 800; border-radius: 8px; }
+.qz-question-text, .qz-results-title { font-family: var(--font-display); color: var(--ink); }
+.qz-question-card { border: 2px solid var(--ink-line); box-shadow: none; }
+.qz-progress-track { border: 2px solid var(--ink); background: var(--paper); }
+.qz-progress-fill { background: var(--arc-mint); }
+.qz-btn-back { border: 2px solid var(--ink); background: var(--paper); box-shadow: var(--pop-down); font-family: var(--font-display); font-weight: 700; }
+.qz-btn-back:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
+.qz-xp-pill { background: var(--arc-sun); border: 2px solid var(--ink); color: var(--ink); font-family: var(--font-display); font-weight: 800; }

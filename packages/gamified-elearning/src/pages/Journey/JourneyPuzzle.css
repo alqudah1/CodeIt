@@ -49,7 +49,7 @@
   flex-wrap: wrap;
 }
 .jp-header__next-hint {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #6b6f9e;
   background: rgba(107,111,158,0.1);
@@ -61,7 +61,7 @@
   display: inline-block;
   background: linear-gradient(135deg, #FF8A3D, #FFD166);
   color: #fff;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -132,7 +132,7 @@
   border-radius: 50%;
   background: linear-gradient(135deg, #FF8A3D, #FFD166);
   color: #fff;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -252,7 +252,7 @@
   flex-shrink: 0;
   background: #FED340;
   color: #4a3800;
-  font-size: 0.68rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -331,12 +331,12 @@
 }
 
 .jp-done-level-hint {
-  font-size: 0.76rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #0a7a68;
 }
 
 .jp-done-level-hint--urgent {
   color: #c85a00;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
 }

@@ -83,28 +83,39 @@ const POPULAR_LESSONS = [
 const HOME_VIEW_SESSION_KEY = "codeit_homepage_view_recorded";
 
 function StudioPreview() {
-  const [activeId, setActiveId] = useState(PROJECT_IDEAS[0].id);
-  const active = PROJECT_IDEAS.find((idea) => idea.id === activeId) || PROJECT_IDEAS[0];
+  // These three used to be buttons. Beside them, four hundred pixels away, sat
+  // three other buttons with emoji and short names that start a real project —
+  // and a child arriving on this page saw six similar-looking things to tap,
+  // three of which only changed a picture. That is the "where do I go, what do
+  // I do" complaint in one screenshot.
+  //
+  // The panel is a picture of the product. It now shows itself, cycling through
+  // the three examples on its own, and nothing in it invites a tap. Anyone who
+  // prefers no motion gets the first example and no cycle.
+  const [index, setIndex] = useState(0);
+  const active = PROJECT_IDEAS[index % PROJECT_IDEAS.length];
+
+  useEffect(() => {
+    const stillPlease = window.matchMedia
+      && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (stillPlease) return undefined;
+    const timer = setInterval(() => setIndex((n) => n + 1), 3800);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <section className="studio-preview" aria-label="Interactive example of a project made with CodeIt">
+    <section className="studio-preview" aria-label="An example of a project made with CodeIt">
       <div className="studio-preview__toolbar">
         <span className="studio-preview__brand-mark"><BrandLogo className="studio-preview__logo" alt="" /></span>
         <span>My CodeIt project</span>
         <span className="studio-preview__status">Preview + code</span>
       </div>
 
-      <div className="studio-preview__idea-list" role="group" aria-label="Choose an example project">
+      <div className="studio-preview__idea-list" aria-hidden="true">
         {PROJECT_IDEAS.map((idea) => (
-          <button
-            type="button"
-            key={idea.id}
-            className={idea.id === active.id ? "is-active" : ""}
-            onClick={() => setActiveId(idea.id)}
-            aria-pressed={idea.id === active.id}
-          >
+          <span key={idea.id} className={idea.id === active.id ? "is-active" : ""}>
             {idea.label}
-          </button>
+          </span>
         ))}
       </div>
 
@@ -224,16 +235,10 @@ export default function Home() {
                   Welcome back. Your work is right here.
                 </h1>
               ) : (
-                <>
-                  <h1 id="studio-title">
-                    Make a real game.
-                    <span>Then see the code inside it.</span>
-                  </h1>
-                  <p className="studio-hero__lead">
-                    Games, quizzes and websites you actually play. Then open them up, see how they
-                    work, and make them yours.
-                  </p>
-                </>
+                <h1 id="studio-title">
+                  Make a real game.
+                  <span>Then see the code inside it.</span>
+                </h1>
               )}
               {/* ── Pick one. No typing. ──────────────────────────────────
                   This used to be an empty text box, and an empty text box is
@@ -299,6 +304,17 @@ export default function Home() {
                 </details>
 
                 <small className="pick__note">No account needed. Nothing to download.</small>
+
+                {/* The pitch, under the three cards rather than in front of
+                    them. It explains what the cards are; a caption belongs
+                    below its picture. In front, it was 90px a child had to
+                    read past before reaching anything they could tap. */}
+                {!shelf.length && (
+                  <p className="studio-hero__lead">
+                    Games, quizzes and websites you actually play. Then open them up, see how they
+                    work, and make them yours.
+                  </p>
+                )}
               </div>
               <Evidence />
 
@@ -328,8 +344,14 @@ export default function Home() {
               </ul>
             </div>
 
+            {/* A returning child does not need the pitch panel. The headline
+                already steps aside when there is work on the shelf; the demo
+                beside it is the same pitch in pictures, and its three example
+                buttons look exactly like the three buttons that start a real
+                project — six near-identical taps, three of which only change a
+                drawing. */}
             <div className="studio-hero__visual">
-              <StudioPreview />
+              {!shelf.length && <StudioPreview />}
               <figure className="studio-pixel">
                 <img
                   src="/brand/pixel-mascot-hero.png"

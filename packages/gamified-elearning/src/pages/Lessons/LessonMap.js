@@ -87,18 +87,24 @@ const LessonMap = () => {
 
       <div className="lm-container">
         {/* ── Page header ───────────────────────────────── */}
+        {/* Back, title and how-far-through on as few rows as they fit on.
+            Stacked, on a 390px phone, they were 186px — three separate rows of
+            page furniture above the lessons themselves. */}
         <div className="lm-header">
-          <button className="lm-back-btn" onClick={() => navigate('/MainPage')}>
-            ← Back to your progress
-          </button>
-          <h1 className="lm-title">Lessons</h1>
-          <p className="lm-subtitle">
-            Complete each lesson to unlock the next. Earn XP and level up your Python skills!
-          </p>
+          <div className="lm-header__top">
+            <button className="lm-back-btn" onClick={() => navigate('/MainPage')}>
+              ← Back
+            </button>
+            <h1 className="lm-title">Lessons</h1>
+          </div>
+          {/* "Complete each lesson to unlock the next. Earn XP and level up
+              your Python skills!" — every card below carries a padlock, an XP
+              figure and a number. The sentence explained the picture to
+              someone already looking at it, and cost 130px above the map. */}
 
           <div className="lm-stats-row">
             <span className="lm-stat-chip">
-              {loading ? '…' : `${completedIds.length} of ${lessons.length} lessons complete`}
+              {loading ? '…' : `${completedIds.length} / ${lessons.length} done`}
             </span>
             {!loading && nextLesson && (
               <button className="lm-continue-btn" onClick={scrollToNext}>

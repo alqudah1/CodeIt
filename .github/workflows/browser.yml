@@ -1,0 +1,88 @@
+# ── Why this exists ──────────────────────────────────────────────────────────
+#
+# tests.yml runs the unit tests and the build, and that is worth having. But
+# every bug that actually reached a child this month passed all of it:
+#
+#   the four-step checklist crushed into unreadable single-letter columns
+#   the publish button that refused every child and never said why
+#   the fast path hidden below twenty screens of the slow one
+#   a generated game whose JavaScript threw on its first frame
+#   289 pieces of text below a readable size, some at 9.8px
+#
+# None of those are visible to a test that renders a component into a fake DOM.
+# They are visible to a browser, and the browser checks that catch them lived in
+# ops/checks and were run by whoever remembered.
+#
+# So this stands up the whole thing on every push — a database built from this
+# repository's own migrations, the backend, a production build, one child in it
+# — and points a real browser at the result. It is the slow job. It is also the
+# one that would have caught every bug on that list.
+#
+# It never touches a real database: the Postgres here is a service container
+# that exists for the length of the run.
+
+name: browser
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: check
+          POSTGRES_DB: codeit_check
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+
+    env:
+      DATABASE_URL: postgresql://postgres:check@localhost:5432/codeit_check
+      # A throwaway key for a throwaway database. The real one lives in Vercel
+      # and must never be in a checkout.
+      JWT_SECRET: ci-only-signing-key-not-a-real-secret
+      CODEIT_TOKEN_FILE: ${{ github.workspace }}/.check-token
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # Chromium only. The checks measure layout and behaviour, not rendering
+      # differences between engines, and three browsers would treble the run.
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      # The whole thing: migrate, build, serve, seed, then ten browser checks.
+      # See ops/checks/run-all.sh — it is the same command a person runs on a
+      # laptop, so a red tick here is reproducible in one line.
+      - name: Every browser check
+        run: ops/checks/run-all.sh
+
+      # A failing check is usually a layout that moved, and a picture of the
+      # page it moved on saves the next person half an hour.
+      - name: Keep the output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-check-output
+          path: |
+            ops/checks/*-result.txt
+          if-no-files-found: ignore
+          retention-days: 7

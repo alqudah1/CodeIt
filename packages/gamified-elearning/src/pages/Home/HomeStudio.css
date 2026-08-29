@@ -28,17 +28,23 @@
 .studio-hero {
   width: min(1220px, calc(100% - 48px));
   margin: 0 auto;
-  padding: clamp(4.5rem, 8vw, 7.5rem) 0 clamp(4rem, 7vw, 6.5rem);
+  /* Was clamp(4.5rem, 8vw, 7.5rem) at the top: up to 120px of nothing above
+     the headline, on the screen where a child decides whether to bother. */
+  padding: clamp(1.2rem, 2.4vw, 1.6rem) 0 clamp(2.4rem, 5vw, 4rem);
   display: grid;
   grid-template-columns: minmax(0, 0.86fr) minmax(560px, 1.14fr);
-  align-items: center;
+  /* Was `center`. The right column is a tall decorative panel, so centring
+     against it pushed the left column — the headline and the three games a
+     child can actually tap — a hundred pixels down the page to line up with a
+     picture. */
+  align-items: start;
   gap: clamp(2.5rem, 5vw, 5.5rem);
 }
 
 .studio-kicker {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   color: var(--studio-orange-dark);
-  font-size: 0.76rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.15em;
   line-height: 1.3;
@@ -48,20 +54,23 @@
 .studio-welcome { margin-bottom: 0.7rem; color: var(--studio-violet); font-weight: 800; }
 
 .studio-hero h1 {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   max-width: 680px;
   font-family: "Arvo", serif;
-  font-size: clamp(2.85rem, 5.4vw, 5.15rem);
+  /* 5.15rem is 82px — a poster headline. Two lines of it, plus its own
+     1.5rem margin, was 200px of the first screen spent on a sentence, before
+     the three games a child can actually tap. */
+  font-size: clamp(1.85rem, 3.4vw, 2.9rem);
   font-weight: 700;
-  letter-spacing: -0.052em;
-  line-height: 0.99;
+  letter-spacing: -0.042em;
+  line-height: 1.06;
 }
 
 .studio-hero h1 span { display: block; color: var(--studio-orange); }
 
 .studio-hero__lead {
   max-width: 650px;
-  margin-bottom: 2rem;
+  margin: 1rem 0 0;
   color: var(--studio-muted);
   font-size: clamp(1.05rem, 1.5vw, 1.24rem);
   line-height: 1.68;
@@ -123,11 +132,11 @@
 
 .studio-hero__idea-row button:hover { background: #e96818; }
 .studio-hero__idea-row button:focus-visible { outline: 3px solid rgba(104, 87, 217, 0.42); outline-offset: 2px; }
-.studio-hero__idea > small { color: var(--studio-muted); font-size: 0.72rem; line-height: 1.45; }
+.studio-hero__idea > small { color: var(--studio-muted); font-size: 0.8125rem; line-height: 1.45; }
 
 .studio-hero__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.8rem; }
 .studio-hero__audience { margin: 1.2rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; }
-.studio-hero__audience li { padding: 0.42rem 0.68rem; color: var(--studio-ink); background: #fff; border: 1px solid var(--studio-line); border-radius: 999px; font-size: 0.7rem; font-weight: 900; }
+.studio-hero__audience li { padding: 0.42rem 0.68rem; color: var(--studio-ink); background: #fff; border: 1px solid var(--studio-line); border-radius: 999px; font-size: 0.8125rem; font-weight: 900; }
 .studio-hero__audience li::before { content: "•"; margin-right: 0.38rem; color: var(--studio-orange); }
 
 .studio-button {
@@ -194,12 +203,12 @@
   gap: 0.65rem;
   color: var(--studio-ink);
   background: var(--studio-orange);
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 900;
 }
 .studio-preview__brand-mark { width: 30px; height: 30px; display: grid; place-items: center; background: #fff; border-radius: 9px; box-shadow: 0 2px 0 rgba(61,48,43,0.12); overflow: hidden; }
 .studio-preview__logo { --brand-logo-width: 27px; }
-.studio-preview__status { justify-self: end; padding: 0.38rem 0.65rem; color: var(--studio-ink); background: #fff3d7; border-radius: 999px; font-size: 0.68rem; }
+.studio-preview__status { justify-self: end; padding: 0.38rem 0.65rem; color: var(--studio-ink); background: #fff3d7; border-radius: 999px; font-size: 0.8125rem; }
 
 .studio-pixel {
   position: absolute;
@@ -223,23 +232,26 @@
   border: 1px solid var(--studio-line);
   border-radius: 14px 14px 4px 14px;
   box-shadow: 0 10px 28px rgba(61,48,43,0.13);
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   line-height: 1.35;
 }
-.studio-pixel figcaption strong { display: block; color: var(--studio-orange-dark); font-size: 0.76rem; }
+.studio-pixel figcaption strong { display: block; color: var(--studio-orange-dark); font-size: 0.8125rem; }
 
 .studio-preview__idea-list { padding: 0.75rem 1rem; display: flex; gap: 0.5rem; overflow-x: auto; background: #fff9f2; border-bottom: 1px solid var(--studio-line); scrollbar-width: none; }
-.studio-preview__idea-list button { min-height: 44px; padding: 0.65rem 0.9rem; flex: 0 0 auto; color: var(--studio-muted); background: #fff; border: 1px solid var(--studio-line); border-radius: 999px; font: inherit; font-size: 0.75rem; font-weight: 900; cursor: pointer; }
-.studio-preview__idea-list button.is-active { color: #fff; background: #5b45b8; border-color: #5b45b8; }
+/* Spans, not buttons, and no pointer cursor: these label the example the panel
+   is showing. They stopped being controls when they stopped competing with the
+   three cards that start a real project. */
+.studio-preview__idea-list span { padding: 0.5rem 0.9rem; flex: 0 0 auto; color: var(--studio-muted); background: #fff; border: 1px solid var(--studio-line); border-radius: 999px; font: inherit; font-size: 0.8125rem; font-weight: 900; transition: background .3s, color .3s, border-color .3s; }
+.studio-preview__idea-list span.is-active { color: #fff; background: #5b45b8; border-color: #5b45b8; }
 
 .studio-preview__body { min-height: 430px; display: grid; grid-template-rows: minmax(315px, 1fr) auto; }
 .studio-preview__canvas { position: relative; min-width: 0; padding: 3.2rem 2rem 2rem; display: grid; place-items: center; overflow: hidden; background: linear-gradient(135deg, #fff0df, color-mix(in srgb, var(--project-accent) 12%, #fff) 48%, #dff7ef); }
 .studio-preview__canvas::before, .studio-preview__canvas::after { content: ""; position: absolute; width: 170px; height: 170px; border-radius: 42% 58% 60% 40%; background: var(--studio-orange); opacity: 0.16; transform: rotate(28deg); }
 .studio-preview__canvas::before { top: -70px; left: -50px; }
 .studio-preview__canvas::after { right: -65px; bottom: -80px; background: var(--project-accent); transform: rotate(-18deg); }
-.studio-preview__made-with { position: absolute; top: 1rem; right: 1.2rem; color: var(--studio-ink); font-size: 0.63rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
+.studio-preview__made-with { position: absolute; top: 1rem; right: 1.2rem; color: var(--studio-ink); font-size: 0.8125rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
 .studio-preview__project-card { position: relative; z-index: 1; width: min(100%, 390px); padding: 2.4rem 1.8rem 1.6rem; text-align: center; background: rgba(255,255,255,0.94); border: 2px solid #6b4fc8; border-radius: 22px; box-shadow: 9px 9px 0 color-mix(in srgb, var(--project-accent) 68%, #f87824); animation: studio-project-in 260ms ease both; }
-.studio-preview__project-kicker { color: var(--project-accent); font-size: 0.61rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
+.studio-preview__project-kicker { color: var(--project-accent); font-size: 0.8125rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
 .studio-preview__project-title { margin: 0.8rem 0 0.5rem; color: var(--studio-ink); font-family: "Arvo", serif; font-size: clamp(1.35rem, 2.5vw, 2rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.15; }
 .studio-preview__project-card > p:not(.studio-preview__project-title) { min-height: 2.5em; margin-bottom: 1rem; color: #656b78; font-size: 0.83rem; }
 .studio-preview__project-shapes { display: flex; justify-content: center; gap: 0.45rem; }
@@ -248,9 +260,9 @@
 .studio-preview__project-shapes i:nth-child(3) { background: #48c9a6; }
 .studio-preview__learn { min-height: 98px; padding: 1rem 1.15rem; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1rem; color: var(--studio-ink); background: #eee9ff; border-top: 1px solid #d5cbff; }
 .studio-preview__learn div { display: grid; gap: 0.24rem; }
-.studio-preview__learn span { color: var(--studio-orange-dark); font-size: 0.62rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
+.studio-preview__learn span { color: var(--studio-orange-dark); font-size: 0.8125rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
 .studio-preview__learn strong { font-size: 0.82rem; }
-.studio-preview__learn code { padding: 0.7rem 0.85rem; color: #4c399f; background: #fff; border: 1px solid #d5cbff; border-radius: 10px; font-size: 0.7rem; }
+.studio-preview__learn code { padding: 0.7rem 0.85rem; color: #4c399f; background: #fff; border: 1px solid #d5cbff; border-radius: 10px; font-size: 0.8125rem; }
 @keyframes studio-project-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
 
 .studio-proof {
@@ -319,7 +331,7 @@
 }
 .studio-traction__metrics dt {
   color: var(--studio-muted);
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   line-height: 1.35;
 }
@@ -349,16 +361,16 @@
 .studio-loop { display: grid; grid-template-columns: 1fr 0.9fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
 .studio-loop__visual { min-height: 475px; position: relative; display: grid; place-items: center; background: #eae6ff; border-radius: 28px; }
 .studio-loop__window { width: min(86%, 440px); overflow: hidden; background: #fff; border: 2px solid #6b4fc8; border-radius: 16px; box-shadow: 0 24px 60px rgba(91,69,184,0.18); transform: translate(-4%, -5%); }
-.studio-loop__window-head { min-height: 43px; padding: 0 1rem; display: flex; align-items: center; gap: 6px; color: var(--studio-muted); background: #fff7ee; border-bottom: 1px solid #eadfd5; font-size: 0.7rem; }
+.studio-loop__window-head { min-height: 43px; padding: 0 1rem; display: flex; align-items: center; gap: 6px; color: var(--studio-muted); background: #fff7ee; border-bottom: 1px solid #eadfd5; font-size: 0.8125rem; }
 .studio-loop__window-head i { width: 8px; height: 8px; background: #ff776d; border-radius: 50%; }
 .studio-loop__window-head i:nth-child(2) { background: #ffd166; }
 .studio-loop__window-head i:nth-child(3) { background: #4fd1a8; }
 .studio-loop__window-head span { margin-left: auto; }
 .studio-loop__window pre { margin: 0; padding: 2.2rem 1.6rem; color: var(--studio-ink); font-size: clamp(0.72rem, 1.3vw, 0.9rem); line-height: 1.8; }
 .studio-loop__window b { color: #5b45b8; }
-.studio-loop__window em { color: #008d72; font-style: normal; }
+.studio-loop__window em { color: #00614E; font-style: normal; }
 .studio-loop__lesson-card { position: absolute; right: 4%; bottom: 8%; width: min(55%, 245px); padding: 1.1rem; display: grid; gap: 0.2rem; background: #fff; border: 1px solid var(--studio-line); border-radius: 13px; box-shadow: 0 14px 34px rgba(91,69,184,0.14); }
-.studio-loop__lesson-card span { color: var(--studio-orange-dark); font-size: 0.62rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
+.studio-loop__lesson-card span { color: var(--studio-orange-dark); font-size: 0.8125rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
 .studio-loop__lesson-card small { color: var(--studio-muted); line-height: 1.4; }
 .studio-loop__copy ol { margin: 2rem 0; padding: 0; display: grid; gap: 1.35rem; list-style: none; }
 .studio-loop__copy li { display: grid; grid-template-columns: 38px 1fr; gap: 1rem; align-items: start; }
@@ -399,7 +411,7 @@
 }
 .studio-family__setup > div { display: grid; gap: 0.2rem; }
 .studio-family__setup strong { font-family: "Arvo", serif; font-size: 0.86rem; }
-.studio-family__setup span { color: var(--studio-muted); font-size: 0.72rem; line-height: 1.4; }
+.studio-family__setup span { color: var(--studio-muted); font-size: 0.8125rem; line-height: 1.4; }
 .studio-family__setup a {
   min-height: 44px;
   padding: 0.65rem 0.85rem;
@@ -410,7 +422,7 @@
   color: #fff;
   background: var(--studio-orange);
   border-radius: 10px;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   text-align: center;
   text-decoration: none;
@@ -436,13 +448,13 @@
   box-shadow: 12px 12px 0 #ffd9be;
   transform: rotate(0.7deg);
 }
-.studio-family__email-bar { margin: -1.4rem -1.4rem 1.3rem; padding: 0.85rem 1rem; display: flex; align-items: center; gap: 0.65rem; background: #fff7ee; border-bottom: 1px solid #eadfd5; border-radius: 20px 20px 0 0; color: var(--studio-muted); font-size: 0.72rem; font-weight: 900; }
+.studio-family__email-bar { margin: -1.4rem -1.4rem 1.3rem; padding: 0.85rem 1rem; display: flex; align-items: center; gap: 0.65rem; background: #fff7ee; border-bottom: 1px solid #eadfd5; border-radius: 20px 20px 0 0; color: var(--studio-muted); font-size: 0.8125rem; font-weight: 900; }
 .studio-family__email-logo { --brand-logo-width: 34px; }
-.studio-family__email-label { margin-bottom: 0.5rem; color: var(--studio-orange-dark); font-size: 0.67rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
+.studio-family__email-label { margin-bottom: 0.5rem; color: var(--studio-orange-dark); font-size: 0.8125rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
 .studio-family__email h3 { margin: 0 0 0.65rem; font-family: "Arvo", serif; font-size: clamp(1.35rem, 3vw, 2rem); }
 .studio-family__email > p:not(.studio-family__email-label) { color: var(--studio-muted); line-height: 1.6; }
 .studio-family__email-result { margin-top: 1.3rem; padding: 1rem; display: grid; gap: 0.18rem; background: #dff7ef; border-radius: 13px; }
-.studio-family__email-result span { color: #176b52; font-size: 0.62rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
+.studio-family__email-result span { color: #176b52; font-size: 0.8125rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
 .studio-family__email-result small { color: var(--studio-muted); }
 
 .studio-trust { border-top: 1px solid var(--studio-line); display: grid; grid-template-columns: 0.8fr 1.2fr; gap: clamp(3rem, 8vw, 8rem); }
@@ -462,10 +474,10 @@
 .studio-footer__logo { --brand-logo-width: 146px; }
 .studio-footer__brand p { max-width: 260px; margin-top: 1rem; color: var(--studio-muted); line-height: 1.55; }
 .studio-footer__top > div:not(.studio-footer__brand) { display: flex; flex-direction: column; gap: 0.55rem; }
-.studio-footer__top strong { margin-bottom: 0.35rem; color: var(--studio-ink); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.studio-footer__top strong { margin-bottom: 0.35rem; color: var(--studio-ink); font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .studio-footer a { color: var(--studio-muted); font-size: 0.84rem; text-decoration: none; }
 .studio-footer a:hover { color: var(--studio-orange-dark); }
-.studio-footer__bottom { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: 1.2rem 0 2rem; display: flex; gap: 1rem; color: #8a746a; border-top: 1px solid #ead3c2; font-size: 0.76rem; }
+.studio-footer__bottom { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: 1.2rem 0 2rem; display: flex; gap: 1rem; color: #8a746a; border-top: 1px solid #ead3c2; font-size: 0.8125rem; }
 .studio-footer__bottom a:first-of-type { margin-left: auto; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -487,7 +499,7 @@
 
 @media (max-width: 780px) {
   .studio-hero, .studio-traction, .studio-start, .studio-loop, .studio-family, .studio-trust, .studio-footer__top, .studio-footer__bottom { width: min(100% - 32px, 1120px); }
-  .studio-hero { padding-top: 3.2rem; }
+  .studio-hero { padding-top: 1.5rem; }
   .studio-hero h1 { font-size: clamp(2.55rem, 12vw, 4rem); }
   .studio-preview__canvas { min-height: 320px; }
   .studio-hero__visual { padding-bottom: 5rem; }
@@ -610,7 +622,7 @@
 }
 
 .pick__blurb {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   line-height: 1.4;
   color: #7a6a60;
 }
@@ -653,7 +665,7 @@
 .pick__note {
   display: block;
   margin-top: 10px;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   color: #8a7768;
 }
 
@@ -692,3 +704,75 @@
     font-size: clamp(1.35rem, 5.4vw, 1.85rem);
   }
 }
+
+/* ── The headline on a phone ─────────────────────────────────────────
+   At 390px the two sentences ran to five lines and 149px, which put the
+   three tappable games 324px down — 38% of the screen gone before a child
+   could do anything. The claim stays a headline; the sentence explaining it
+   is sized like a sentence. */
+@media (max-width: 560px) {
+  .studio-hero h1 { font-size: 1.55rem; line-height: 1.15; }
+  .studio-hero h1 span { margin-top: 0.25rem; font-size: 1.15rem; letter-spacing: -0.02em; }
+}
+
+/* ── The Paper Arcade, home chapter ──────────────────────────────────────────
+   The language is in styles/arcade.css; these are the home page's own pieces.
+   Baloo 2 runs wider than the Arvo it replaced, so the headline that fit in
+   two lines started orphaning "it." onto a third — tightened until the two
+   sentences are two lines again. And the "type your own idea" summary was a
+   bare black box once it gained the keycap outline; it needed the padding a
+   keycap deserves. */
+.studio-hero h1 { font-size: clamp(1.75rem, 3vw, 2.55rem); line-height: 1.12; }
+.pick__own > summary {
+  display: inline-block;
+  padding: 0.55rem 1.1rem;
+  border-radius: 12px;
+  background: var(--paper);
+  cursor: pointer;
+}
+.pick__own > summary::marker, .pick__own > summary::-webkit-details-marker { content: ''; display: none; }
+.pick__note { display: block; margin-top: 0.7rem; }
+.shelf__hero { border-radius: 18px; background: var(--paper); }
+.shelf__chip { border-radius: 12px; background: var(--paper); }
+.shelf__title { font-weight: 800; }
+
+/* ── More alive, still calm ──────────────────────────────────────────────────
+   Pixel breathes on the home page the same way he does in the studio, and the
+   three sticker tiles sway gently at their own paces — the page moves the way
+   a shelf of toys would, not the way a casino would. Everything stops for
+   prefers-reduced-motion. */
+.studio-pixel img { animation: pixelBobHome 3.4s ease-in-out infinite; }
+@keyframes pixelBobHome {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.pick__emoji { animation: stickerSway 4.2s ease-in-out infinite; }
+.pick__row > li:nth-child(2) .pick__emoji { animation-delay: 1.3s; }
+.pick__row > li:nth-child(3) .pick__emoji { animation-delay: 2.5s; }
+@keyframes stickerSway {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(2deg) translateY(-2px); }
+}
+.pick__row > li:nth-child(2) .pick__emoji { --sway-base: 3deg; }
+.pick__card:hover .pick__emoji { animation: none; transform: rotate(0deg) scale(1.1); }
+@media (prefers-reduced-motion: reduce) {
+  .studio-pixel img, .pick__emoji { animation: none; }
+}
+
+.studio-preview__learn span { color: var(--arc-orange-text); }
+/* On the violet-tinted learn strip the text-safe orange was still 4.4:1;
+   this one context gets a deeper cut. */
+.studio-preview__learn span { color: #9A4700; }
+
+/* The final band (#ffd9be) is lighter than paper, so its kicker, links and
+   emphasis need the deeper orange text cut. */
+.studio-final .studio-kicker { color: #9A4700; }
+.studio-final a, .studio-final em { color: var(--ink); }
+/* The family band's links and body text, same tinted-band rule. */
+.studio-family a, .studio-family em, .studio-final p, .studio-family p { color: var(--ink); }
+
+/* The final band's dark button had been swept into ink-on-violet (2.6:1);
+   this violet is deep enough to carry white (6.3:1). */
+.studio-final .studio-button--dark, .studio-button--dark { color: #fff; }
+/* The home page's own footer small print. */
+.studio-footer__bottom, .studio-footer__bottom span, .studio-footer__bottom a { color: var(--ink-mute); }

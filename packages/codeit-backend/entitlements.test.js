@@ -91,13 +91,22 @@ test('Plus removes the AI build cap entirely', () => {
   assert.deepStrictEqual(allowance, { allowed: true, remaining: null, unlimited: true });
 });
 
-test('publishing needs a paid plan', () => {
-  const free = checkPublishAllowance(null, {}, NOW);
-  assert.strictEqual(free.allowed, false);
-  assert.strictEqual(free.code, 'PLAN_UPGRADE_REQUIRED');
-  assert.match(free.message, /saved and private/);
-
+test('publishing does not need a paid plan', () => {
+  // It used to. The pricing page had said "Build, edit, save, and publish
+  // projects" in the free column the whole time, so the site promised it and
+  // the server refused it — and children in a real classroom pressed Share and
+  // were shown nothing at all. Publishing also costs nothing to run: it writes
+  // a row and hands back a link. The AI generation cap is what Plus is for.
+  assert.strictEqual(checkPublishAllowance(null, {}, NOW).allowed, true);
   assert.strictEqual(checkPublishAllowance(sub(), {}, NOW).allowed, true);
+});
+
+test('what the free plan actually includes', () => {
+  // Read straight off the plan, so this file disagrees loudly with the pricing
+  // page rather than quietly, if either ever moves again.
+  assert.strictEqual(PLANS.free.canPublish, true);
+  assert.strictEqual(PLANS.free.monthlyAiBuilds, 10);
+  assert.strictEqual(PLANS.plus.monthlyAiBuilds, Infinity);
 });
 
 test('the child-safety rule outranks the billing rule', () => {

@@ -9,6 +9,7 @@ const {
   requestAdultVerification,
   resetManagedChildPassword,
   setManagedProgressEmails,
+  getChildEvidence,
   verifyAdultEmail,
 } = require('../familyAccounts');
 const { JWT_SECRET } = require('../config');
@@ -130,6 +131,26 @@ router.post('/children', requireAuth, limited, async (req, res) => {
       error: error.message || 'Could not create the managed profile.',
       field: error.field,
     });
+  }
+});
+
+// The evidence page's data: the child's own newest files and finished
+// lessons, for the linked adult only. Deliberately not rate-limited like the
+// write routes — a parent refreshing their child's progress is the product
+// working.
+router.get('/children/:id/evidence', requireAuth, async (req, res) => {
+  // Validated before it can reach SQL. The proof script sent a garbage id and
+  // got back a 500 carrying a raw database error — which both leaks
+  // implementation detail and is the wrong answer: an id that is not a
+  // number is a learner that does not exist.
+  const childId = Number(req.params.id);
+  if (!Number.isInteger(childId) || childId < 1) {
+    return res.status(404).json({ error: 'No such learner in this family.' });
+  }
+  try {
+    res.json({ success: true, ...(await getChildEvidence(req.user.user_id, childId)) });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message || 'Could not load learner evidence.' });
   }
 });
 

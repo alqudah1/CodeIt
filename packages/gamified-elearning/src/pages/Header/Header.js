@@ -6,25 +6,49 @@ import CharacterAvatar from "../../components/CharacterAvatar/CharacterAvatar";
 import BrandLogo from "../../components/BrandLogo/BrandLogo";
 import "./Header.css";
 
+// Nine controls used to sit in this header — logo, six nav links, the primary
+// button and Log in — and a browser check found that on every page outside the
+// studio, nine of the eleven-to-fourteen things competing for a child's first
+// tap were these. No page can get under the bar while its header spends the
+// whole budget before the page has rendered anything.
+//
+// "Studio" went first: it and the primary button beside it both went to
+// /builder. Two controls, one destination, four positions apart — a child
+// learns from that that the words are decoration.
+//
+// Playground went second, to the footer and the pages that already link it in
+// a sentence. It is a tool you go to on purpose, not a place to start.
 const PUBLIC_NAV = [
-  { to: "/builder", label: "Studio", primary: true },
   { to: "/explore", label: "Explore" },
   { to: "/lessons", label: "Learn" },
-  { to: "/playground", label: "Playground" },
   { to: "/pricing", label: "Pricing" },
   { to: "/coding-for-kids", label: "For parents" },
 ];
 
 // Listed in full rather than sliced from PUBLIC_NAV: the slice silently
 // dropped Pricing, so signed-in parents had no way to reach the plan page.
+//
+// Four across the top, not eight. A signed-in child's header used to hold
+// eight destinations plus a logo, a Studio button and an account menu: eleven
+// controls, which on a 1280px laptop is the entire budget of ten spent before
+// the page below it has rendered anything at all.
+//
+// Nothing is unreachable. The four that moved are all about this one child —
+// their progress, their rank, their avatar, their plan — and the account menu
+// they moved into is where a person looks for exactly that. The four that
+// stayed are the four places to go and do something.
 const MEMBER_NAV = [
-  { to: "/builder", label: "Studio", primary: true },
   { to: "/explore", label: "Explore" },
   { to: "/lessons", label: "Learn" },
-  { to: "/playground", label: "Playground" },
+];
+
+// Reached from the account menu rather than the top bar. Nothing here became
+// unreachable; it became reachable from the place a person looks for it.
+const MEMBER_ACCOUNT_NAV = [
+  { to: "/MainPage", label: "My progress" },
   { to: "/leaderboard", label: "Compete" },
-  { to: "/character", label: "Avatar" },
-  { to: "/MainPage", label: "Progress" },
+  { to: "/character", label: "My avatar" },
+  { to: "/playground", label: "Python playground" },
   { to: "/pricing", label: "Plan", adultsOnly: true },
 ];
 
@@ -43,6 +67,8 @@ export default function Header() {
   // the plan link. The page itself refuses them too; this just avoids
   // dangling a price in front of a nine-year-old.
   const navLinks = (user ? MEMBER_NAV : PUBLIC_NAV)
+    .filter(link => !link.adultsOnly || !user?.managedProfile);
+  const accountLinks = (user ? MEMBER_ACCOUNT_NAV : [])
     .filter(link => !link.adultsOnly || !user?.managedProfile);
   const level = stats?.totalXP >= 0 ? Math.floor(stats.totalXP / XP_PER_LEVEL) + 1 : null;
 
@@ -166,6 +192,9 @@ export default function Header() {
                     )}
                     <Link to="/profile" className="site-header__dropdown-item" role="menuitem">My profile</Link>
                     <Link to="/builder?view=projects" className="site-header__dropdown-item" role="menuitem">My projects</Link>
+                    {accountLinks.map(({ to, label }) => (
+                      <Link key={to} to={to} className="site-header__dropdown-item" role="menuitem">{label}</Link>
+                    ))}
                     <div className="site-header__dropdown-divider" />
                     <Link to="/blog" className="site-header__dropdown-item" role="menuitem">Guides and ideas</Link>
                     <button

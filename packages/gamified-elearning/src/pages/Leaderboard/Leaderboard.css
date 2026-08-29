@@ -155,7 +155,7 @@
 
 .lb-eyebrow {
   color: #d84f0f;
-  font-size: 0.76rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.12em;
 }
@@ -353,7 +353,7 @@
   display: inline-block;
   background: linear-gradient(120deg, #FF8A3D, #FFD166);
   color: #3B2A22;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   border-radius: 999px;
   padding: 0.15rem 0.6rem;

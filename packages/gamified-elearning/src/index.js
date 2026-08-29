@@ -5,6 +5,10 @@ import App from './App';
 // Loaded after App so it wins on equal specificity. Everything in it was put
 // there by the device sweep, not by taste — see the file for what and why.
 import './styles/reachable.css';
+// The design language. Loaded last on purpose: it owns colour, type, depth
+// and motion for the whole site, and must win the cascade over per-component
+// stylesheets. Layout stays in the component files. See styles/arcade.css.
+import './styles/arcade.css';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

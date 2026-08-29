@@ -14,7 +14,7 @@
 .fgc-wrap { width: min(100% - 40px, 1160px); margin: 0 auto; }
 .fgc-hero { padding: clamp(4.5rem, 9vw, 8rem) 0 5rem; }
 .fgc-hero__grid { display: grid; grid-template-columns: 1.03fr .97fr; gap: clamp(2.5rem, 7vw, 6rem); align-items: center; }
-.fgc-kicker { margin: 0 0 1rem; color: var(--fgc-orange-dark); font-size: .72rem; font-weight: 1000; letter-spacing: .14em; text-transform: uppercase; }
+.fgc-kicker { margin: 0 0 1rem; color: var(--fgc-orange-dark); font-size: 0.8125rem; font-weight: 1000; letter-spacing: .14em; text-transform: uppercase; }
 .fgc-page h1, .fgc-page h2, .fgc-page h3 { font-family: Arvo, Georgia, serif; }
 .fgc-page h1 { max-width: 690px; margin: 0; font-size: clamp(3.4rem, 8vw, 6.8rem); line-height: .93; letter-spacing: -.06em; }
 .fgc-hero__lead { max-width: 660px; margin: 1.7rem 0 2rem; color: #72594a; font-size: clamp(1.05rem, 2vw, 1.24rem); line-height: 1.7; }
@@ -25,7 +25,7 @@
 .fgc-button--quiet { background: #fff; }
 .fgc-age-note { max-width: 590px; margin: 1.35rem 0 0; color: #72594a; font-size: .88rem; line-height: 1.55; }
 .fgc-demo { transform: rotate(1.2deg); border: 3px solid var(--fgc-ink); border-radius: 28px; overflow: hidden; background: #fff; box-shadow: 16px 18px 0 var(--fgc-yellow); }
-.fgc-demo__top { min-height: 62px; display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0 1.25rem; background: var(--fgc-orange); color: #fff; font-size: .75rem; font-weight: 1000; letter-spacing: .08em; }
+.fgc-demo__top { min-height: 62px; display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0 1.25rem; background: var(--fgc-orange); color: #fff; font-size: 0.8125rem; font-weight: 1000; letter-spacing: .08em; }
 .fgc-demo__screen { min-height: 320px; display: grid; place-content: center; place-items: center; gap: 1.2rem; background: #f5edff; }
 .fgc-demo__screen p { margin: 0; font-weight: 900; }
 .fgc-demo__target { width: 116px; height: 116px; display: grid; place-items: center; border: 3px solid var(--fgc-ink); border-radius: 50%; background: var(--fgc-yellow); font-size: 3.6rem; box-shadow: 8px 8px 0 var(--fgc-purple); animation: fgc-pulse 1.3s ease-in-out infinite; }
@@ -33,7 +33,7 @@
 .fgc-demo__score span { padding: 1.1rem 1.25rem; }
 .fgc-demo__score span + span { border-left: 3px solid var(--fgc-ink); }
 .fgc-demo__score small, .fgc-demo__score strong { display: block; }
-.fgc-demo__score small { color: #72594a; font-size: .65rem; font-weight: 1000; letter-spacing: .09em; }
+.fgc-demo__score small { color: #72594a; font-size: 0.8125rem; font-weight: 1000; letter-spacing: .09em; }
 .fgc-demo__score strong { margin-top: .35rem; font: 800 1.2rem Arvo, serif; }
 .fgc-proof { border-block: 2px solid var(--fgc-ink); background: #fff; }
 .fgc-proof .fgc-wrap { display: grid; grid-template-columns: repeat(3, 1fr); }

@@ -53,24 +53,31 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
 
   return (
     <article className={`exp-card exp-card--${cat}`}>
-      {/* Thumbnail */}
-      <div
-        className="exp-card__thumb"
-        style={{ '--pc': project.primaryColor, '--ac': project.accentColor }}
-        onClick={() => navigate(`/project/${project.publicId}`)}
-        role="button"
-        tabIndex={0}
-        onKeyDown={e => e.key === 'Enter' && navigate(`/project/${project.publicId}`)}
-        aria-label={`Play ${project.title}`}
-      >
-        <span className="exp-card__type-badge">
-          {TYPE_LABEL[project.projectType] || project.projectType || 'Project'}
-        </span>
-        <span className="exp-card__thumb-title">{project.title}</span>
+      {/* Thumbnail. The heart used to live INSIDE this role="button" — a
+          button nested in a button, which axe flags as serious because a
+          screen reader announces one control and hides the other, and a
+          keyboard user cannot reach the inner one predictably. The heart is
+          now a sibling, positioned over the corner by the card's relative
+          box, so both controls exist honestly. */}
+      <div className="exp-card__thumb-wrap">
+        <div
+          className="exp-card__thumb"
+          style={{ '--pc': project.primaryColor, '--ac': project.accentColor }}
+          onClick={() => navigate(`/project/${project.publicId}`)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={e => e.key === 'Enter' && navigate(`/project/${project.publicId}`)}
+          aria-label={`Play ${project.title}`}
+        >
+          <span className="exp-card__type-badge">
+            {TYPE_LABEL[project.projectType] || project.projectType || 'Project'}
+          </span>
+          <span className="exp-card__thumb-title">{project.title}</span>
+        </div>
         {!project.isShowcase && (
           <button
             className={`exp-card__heart${project.liked ? ' exp-card__heart--liked' : ''}`}
-            onClick={e => { e.stopPropagation(); onLike(project); }}
+            onClick={() => onLike(project)}
             aria-label={project.liked ? 'Unlike' : 'Like'}
           >
             {project.liked ? '♥' : '♡'}
@@ -114,10 +121,7 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
 
 function Section({ title, projects, onLike, onRemix, remixingId, emptyMsg }) {
   return (
-    <section className="exp-section">
-      <div className="exp-section__header">
-        <h2 className="exp-section__title">{title}</h2>
-      </div>
+    <section className="exp-section" aria-label={title}>
       {projects.length === 0 ? (
         <p className="exp-section__empty">{emptyMsg}</p>
       ) : (
@@ -251,13 +255,14 @@ export default function Explore() {
     <div className="exp-page">
       <Header />
 
-      {/* Hero */}
+      {/* One line, and the projects start. What "Explore" means is obvious
+          from the projects themselves; a paragraph explaining it, an eyebrow
+          reading "Community" and a 4.5rem heading were 610px of preamble in
+          front of the only thing on the page anyone came for. */}
       <div className="exp-hero">
         <div className="exp-hero__inner">
-          <p className="exp-hero__eyebrow">Community</p>
-          <h1 className="exp-hero__title">Explore</h1>
-          <p className="exp-hero__sub">Play, remix, and get inspired by projects shared by CodeIt learners.</p>
-          <Link to="/builder" className="exp-hero__cta">Build Your Own</Link>
+          <h1 className="exp-hero__title">Explore projects other learners made</h1>
+          <Link to="/builder" className="exp-hero__cta">Make one</Link>
         </div>
       </div>
 

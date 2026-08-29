@@ -3,12 +3,23 @@
 // ── What a CodeIt plan allows ────────────────────────────────────────────────
 //
 // Free keeps the whole learning path open: every lesson, unlimited manual
-// editing in the studio, and private saved projects. A classroom must never hit
-// a paywall mid-lesson.
+// editing in the studio, private saved projects, and publishing. A classroom
+// must never hit a paywall mid-lesson.
 //
-// CodeIt Plus (CA$12/month) removes the AI generation cap and unlocks
-// publishing, because those are the two things that actually cost money to run
-// and the two things families ask for once a child is hooked.
+// ── Why publishing became free ───────────────────────────────────────────────
+//
+// It was a Plus feature, and the pricing page had said "Build, edit, save, and
+// publish projects" in the free column the whole time. So the site promised it
+// and the server refused it, and children in a real classroom pressed Share and
+// got nothing. Two ways to fix a contradiction like that; this is the one the
+// owner chose, and it is the one that matches what families were told.
+//
+// It also costs nothing to run. Publishing writes a row and hands back a link.
+// The AI generation cap is where the money actually goes, and that is what Plus
+// is for.
+//
+// The under-13 rule below is untouched and always wins: a paid plan never makes
+// a younger child's work public.
 //
 // This module is pure. Entitlement is derived from a subscription row that only
 // the Stripe webhook ever writes — never from anything the browser sends.
@@ -18,7 +29,7 @@ const PLANS = {
     id: 'free',
     label: 'Free',
     monthlyAiBuilds: 10,
-    canPublish: false,
+    canPublish: true,
     maxChildProfiles: 1,
   },
   plus: {

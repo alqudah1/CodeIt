@@ -74,7 +74,7 @@
 }
 
 .sl-strip__title {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #2B2D42;
   white-space: nowrap;
@@ -109,7 +109,7 @@
 }
 
 .sl-strip__xp-lv {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   color: #FE582A;
   text-transform: uppercase;
@@ -118,7 +118,7 @@
 }
 
 .sl-strip__xp-val {
-  font-size: 0.68rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #555770;
   line-height: 1;
@@ -166,7 +166,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.02em;
   transition: all 0.2s ease;
@@ -191,7 +191,7 @@
 }
 
 .sl-jp-label {
-  font-size: 0.68rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -245,7 +245,7 @@
 }
 
 .sl-card__step-num {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #8890a8;
   letter-spacing: 0.04em;
@@ -255,7 +255,7 @@
 /* ── Type tags ─────────────────────────────────────────────── */
 .sl-tag {
   display: inline-block;
-  font-size: 0.65rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -291,7 +291,7 @@
 .sl-now__eyebrow {
   display: block;
   margin-bottom: 0.45rem;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -349,7 +349,7 @@
 
 .sl-concept__highlight-label {
   display: block;
-  font-size: 0.65rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -399,7 +399,7 @@
 
 .sl-terminal-lang {
   margin-left: 2px;
-  font-size: 0.68rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #745d50;
   letter-spacing: 0.06em;
@@ -408,7 +408,7 @@
 
 .sl-terminal-ro {
   margin-left: auto;
-  font-size: 0.62rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #9a8172;
   letter-spacing: 0.04em;
@@ -609,7 +609,7 @@
 
 .sl-hint__label {
   font-weight: 900;
-  font-size: 0.65rem;
+  font-size: 0.8125rem;
   background: #FED340;
   color: #4a3800;
   border-radius: 999px;
@@ -627,7 +627,7 @@
   border-radius: 999px;
   color: #4a3800;
   font-family: inherit;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   padding: 0.3rem 0.9rem;
   cursor: pointer;
@@ -660,7 +660,7 @@
 
 .sl-success__xp {
   font-weight: 900;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   background: #06d6a0;
   color: #fff;
   border-radius: 999px;
@@ -773,7 +773,7 @@
 .sl-skip-btn {
   background: none;
   border: none;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #8890a8;
   text-decoration: underline;
@@ -864,8 +864,8 @@
   .sl-nav__next     { width: 100%; text-align: center; }
   .sl-nav__continue { width: 100%; text-align: center; }
 
-  .sl-jp-label { font-size: 0.62rem; }
-  .sl-jp-dot   { width: 30px; height: 30px; font-size: 0.68rem; }
+  .sl-jp-label { font-size: 0.8125rem; }
+  .sl-jp-dot   { width: 30px; height: 30px; font-size: 0.8125rem; }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1016,7 +1016,7 @@
   display: inline-block;
   background: linear-gradient(120deg, #06d6a0, #00c49a);
   color: #fff;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1054,7 +1054,7 @@
 
 .sl-completion-card__level-hint {
   margin: 0.2rem 0 0;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #0a7a68;
   text-align: center;
@@ -1251,7 +1251,7 @@
 }
 
 .sl-around__where {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1282,3 +1282,34 @@
   .sl-around__link--next { text-align: left; }
   .sl-around__all { width: 100%; justify-content: center; }
 }
+
+/* ── The Paper Arcade, lesson-page chapter (see styles/arcade.css) ── */
+.sl-card { background: var(--paper); border: 2px solid var(--ink-line); box-shadow: var(--pop-card); }
+.sl-card__title { font-family: var(--font-display); color: var(--ink); }
+.sl-strip__bar-track { border: 2px solid var(--ink); background: var(--paper); }
+.sl-strip__bar-fill { background: var(--arc-mint); }
+.sl-strip__back {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: var(--pop-down);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.sl-strip__back:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
+.sl-jp-dot { border: 2px solid var(--ink); font-family: var(--font-display); box-shadow: 2px 2px 0 rgba(53,34,14,0.18); }
+.sl-jp-node--active .sl-jp-dot { background: var(--arc-sun); color: var(--ink); }
+.sl-now { border-left: 4px solid var(--arc-sun); }
+.sl-tag--done { background: var(--arc-mint); color: var(--ink); border: 1.5px solid var(--ink); }
+.sl-gate-card__btn, .sl-completion-card__btn {
+  border: 2.5px solid var(--ink);
+  box-shadow: var(--pop-rest);
+  font-family: var(--font-display);
+  font-weight: 700;
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+}
+.sl-gate-card__btn:hover, .sl-completion-card__btn:hover { transform: translateY(-2px); box-shadow: var(--pop-lift); }
+.sl-gate-card__btn:active, .sl-completion-card__btn:active { transform: translateY(3px); box-shadow: var(--pop-down); }
+.sl-gate-card__btn--primary, .sl-completion-card__btn--primary { background: var(--arc-orange); color: var(--ink); }
+.sl-gate-card__btn--ghost, .sl-completion-card__btn--ghost { background: var(--paper); color: var(--ink); }
+.sl-completion-card__btn--builder { background: var(--arc-violet-deep); color: #fff; }
+.sl-completion-card__badge { background: var(--arc-mint); border: 2px solid var(--ink); color: #fff; font-family: var(--font-display); }

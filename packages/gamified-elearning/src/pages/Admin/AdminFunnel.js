@@ -40,6 +40,11 @@ const PARENT_ACTIONS = [
   ['join-pilot', 'Opened pilot signup'],
   ['view-pricing', 'Viewed family pricing'],
   ['pilot-email', 'Opened pilot email'],
+  // The conversion moment the evidence panel was built for: a parent who has
+  // just read their child's own line of code, tapping through to the pilot.
+  // If this row stays at zero while parent_evidence_open climbs, the offer is
+  // wrong; if both stay at zero, parents are not finding the panel.
+  ['evidence-pilot', 'Saw the evidence, opened the pilot'],
 ];
 
 const FINISH_ACTIONS = [
@@ -47,6 +52,18 @@ const FINISH_ACTIONS = [
   ['improve', 'Kept improving'],
   ['learn', 'Opened code explanation'],
   ['share', 'Shared a live project'],
+];
+
+// The growth loop's gauges, planted where the loops close. Reading them as a
+// chain tells the whole story: a child publishes and shares from the
+// celebration → a stranger lands on the share page and taps "build your own"
+// → a parent opens the evidence → the pilot. Where the chain thins is where
+// the next round of work goes — measured, not guessed.
+const GROWTH_LOOP = [
+  ['publish_celebrate_share', 'Shared from the publish celebration'],
+  ['public-project-build', 'Stranger on a shared game chose to build'],
+  ['parent_evidence_open', 'Parents opened the evidence panel'],
+  ['builder_look_inside', 'Children followed their code into a lesson'],
 ];
 
 const HOMEPAGE_ACTIONS = [
@@ -398,6 +415,19 @@ export default function AdminFunnel() {
               <article key={key}>
                 <span>{label}</span>
                 <strong>{fmt(parentActions[key])}</strong>
+              </article>
+            ))}
+          </div>
+
+          {/* Read as a chain, top to bottom. A healthy loop thins gradually;
+              a broken link shows as a cliff, and the cliff is where the next
+              round of work goes. */}
+          <div className="adm-section-head">The growth loop</div>
+          <div className="funnel-parent-grid">
+            {GROWTH_LOOP.map(([key, label]) => (
+              <article key={key}>
+                <span>{label}</span>
+                <strong>{fmt(key === 'public-project-build' ? homepageActions[key] : counts[key])}</strong>
               </article>
             ))}
           </div>

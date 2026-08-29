@@ -11,7 +11,7 @@
 
 .evidence__title {
   margin: 0;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -61,7 +61,7 @@
 
 .evidence__note {
   margin: 12px 0 0;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   line-height: 1.55;
   color: #6b7f72;
 }

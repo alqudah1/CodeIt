@@ -26,7 +26,7 @@
 
 .founding-signup__heading span {
   color: var(--founding-muted);
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   line-height: 1.45;
 }
 
@@ -34,7 +34,7 @@
   display: block;
   margin-bottom: 0.35rem;
   color: var(--founding-ink);
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 900;
 }
 
@@ -80,7 +80,7 @@
   align-items: start;
   margin-top: 0.7rem;
   color: var(--founding-muted);
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   line-height: 1.4;
   cursor: pointer;
 }
@@ -96,14 +96,14 @@
   display: block;
   margin-top: 0.6rem;
   color: var(--founding-muted);
-  font-size: 0.66rem;
+  font-size: 0.8125rem;
   line-height: 1.45;
 }
 
 .founding-signup__error {
   margin: 0.65rem 0 0;
   color: #a8382f;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   line-height: 1.4;
 }
@@ -117,10 +117,21 @@
 }
 
 .founding-signup--saved strong { color: #176b4d; font-family: "Arvo", serif; }
-.founding-signup--saved p { margin: 0.35rem 0 0.55rem; color: #527062; font-size: 0.78rem; line-height: 1.45; }
-.founding-signup--saved a { color: #176b4d; font-size: 0.78rem; font-weight: 900; text-decoration: none; }
+.founding-signup--saved p { margin: 0.35rem 0 0.55rem; color: #527062; font-size: 0.8125rem; line-height: 1.45; }
+.founding-signup--saved a { color: #176b4d; font-size: 0.8125rem; font-weight: 900; text-decoration: none; }
 
 @media (max-width: 520px) {
   .founding-signup__row { grid-template-columns: 1fr; }
   .founding-signup__row button { min-height: 44px; }
+}
+
+/* ── Paper Arcade: the pilot form's button carries ink, like every orange
+   keycap since the contrast sweep. ── */
+.founding-signup__row button[type="submit"], .founding-signup button[type="submit"] {
+  background: var(--arc-orange);
+  color: var(--ink);
+  border: 2.5px solid var(--ink);
+  box-shadow: var(--pop-rest);
+  font-family: var(--font-display);
+  font-weight: 700;
 }

@@ -20,15 +20,23 @@
 /* ── Header block ──────────────────────────────────── */
 .lm-header {
   text-align: center;
-  margin-bottom: 2.8rem;
+  margin-bottom: 1.2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
 }
 
+.lm-header__top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .lm-back-btn {
-  align-self: flex-start;
+  align-self: center;
   background: rgba(255, 255, 255, 0.26);
   border: 1.5px solid rgba(255, 255, 255, 0.35);
   border-radius: 999px;
@@ -56,7 +64,7 @@
 }
 
 .lm-title {
-  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-size: clamp(1.5rem, 3vw, 2rem);
   color: #041638;
   margin: 0.25rem 0 0;
 }
@@ -247,7 +255,7 @@
 }
 
 .lm-lesson-num {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -256,7 +264,7 @@
 
 /* Status badges */
 .lm-badge {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   padding: 0.16rem 0.7rem;
   border-radius: 999px;
@@ -344,3 +352,42 @@
     font-size: 1rem;
   }
 }
+
+/* ── The Paper Arcade, lesson-map chapter (see styles/arcade.css) ── */
+.lm-back-btn, .lm-continue-btn {
+  border: 2px solid var(--ink);
+  box-shadow: var(--pop-down);
+  font-family: var(--font-display);
+  font-weight: 700;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+}
+.lm-back-btn { background: var(--paper); color: var(--ink); }
+.lm-continue-btn { background: var(--arc-orange); color: var(--ink); }
+.lm-back-btn:hover, .lm-continue-btn:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
+.lm-back-btn:active, .lm-continue-btn:active { transform: translateY(2px); box-shadow: 0 0 0 var(--ink); }
+.lm-title { font-family: var(--font-display); color: var(--ink); }
+.lm-stat-chip { border: 2px solid var(--ink); background: var(--paper); box-shadow: var(--pop-down); font-family: var(--font-display); backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+.lm-lesson-num { color: var(--ink-mute); }
+.lm-xp { color: var(--ink); background: var(--arc-sun); border-color: var(--ink); }
+
+/* Locked cards stay visually closed (dashed cardboard) but their text meets
+   the floor — a child squinting at grey to find out WHICH lesson is locked
+   is accessibility backwards. */
+.lm-card--locked .lm-card-title, .lm-card--locked .lm-card-desc,
+.lm-card--locked .lm-lesson-num { color: var(--ink-mute); }
+.lm-badge--locked { color: var(--ink-mute); border-color: rgba(53, 34, 14, 0.35); }
+/* The locked card's translucent paper let the play-mat dots bleed through
+   and shaved the text contrast to 4.4:1. Solid paper; the dashed border
+   still says "closed" on its own. */
+.lm-card--locked { background: var(--paper); }
+
+/* Found it: the locked card carried opacity 0.62 on the WHOLE card, which
+   multiplies through every text ratio underneath — no colour fix can
+   survive a parent's opacity. The card holds full opacity; "locked" is said
+   by the dashed border, the muted palette and the Locked badge, which is
+   how it should be said — a child deciding which lesson to do next deserves
+   to read the locked ones' names. */
+.lm-card--locked { opacity: 1; }

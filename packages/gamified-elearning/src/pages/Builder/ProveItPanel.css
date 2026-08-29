@@ -28,7 +28,7 @@
 
 .prove__count {
   flex: none;
-  font-size: 0.76rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #7c6a92;
   background: #fff;
@@ -200,7 +200,7 @@
 
 .prove__note {
   margin: 10px 0 0;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   color: #6b7f72;
 }
 

@@ -15,7 +15,7 @@
 // real iframe and a real mouse.
 const { launch } = require('./browser');
 
-const BASE = 'http://localhost:4599';
+const BASE = process.env.CHECK_BASE || 'http://localhost:4599';
 
 // starter id → a selector for one piece of its world, and how many there
 // should be. Deliberately written out rather than derived: the point is to
@@ -38,7 +38,11 @@ async function openEditor(page) {
     if (/Change/.test(await tab.innerText())) { await tab.click(); break; }
   }
   await page.waitForTimeout(700);
-  const button = await page.$('text=Edit elements');
+  // By class, not by label. This searched for the text "Edit elements" and broke
+  // the moment that button was renamed to say what it actually does — a check
+  // that fails because the product got clearer is a check pinned to the wrong
+  // thing.
+  const button = await page.$('.bldr-action-btn--livedit');
   if (!button) return false;
   await button.click();
   await page.waitForTimeout(800);
@@ -67,7 +71,7 @@ async function run() {
         continue;
       }
 
-      if (!await openEditor(page)) { fail(where, 'no "Edit elements" control'); await context.close(); continue; }
+      if (!await openEditor(page)) { fail(where, "no element-editor control"); await context.close(); continue; }
 
       // Aim at the second one, so a hit on a wrapper reads as a miss.
       const box = await frame.evaluate(sel => {

@@ -54,7 +54,7 @@
 
 .seo-eyebrow {
   display: inline-block;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -304,7 +304,7 @@
 
 .seo-answer-box__label {
   display: block;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.14em;

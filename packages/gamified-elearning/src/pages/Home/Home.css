@@ -156,7 +156,7 @@
   align-items: center;
   padding: 0.28rem 0.85rem;
   border-radius: 999px;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 0.02em;
   white-space: nowrap;
@@ -176,7 +176,7 @@
 
 /* ── Eyebrow (logged-in) ────────────────────────────────────────── */
 .hp-eyebrow {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #FF7A00;
@@ -252,7 +252,7 @@
   padding: 0.38rem 0.95rem;
   border-radius: 999px;
   font-family: 'Nunito', 'Arvo', sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   white-space: nowrap;
   user-select: none;
@@ -358,7 +358,7 @@
 .hp-mock__dot:nth-child(3) { background: #28c840; }
 
 .hp-mock__chrome-label {
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   color: rgba(255, 255, 255, 0.92);
   font-weight: 800;
   margin-left: 0.4rem;
@@ -384,7 +384,7 @@
 }
 
 .hp-mock__key {
-  font-size: 0.62rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: rgba(31,41,55,0.38);
   text-transform: uppercase;
@@ -454,7 +454,7 @@
   background: #3DDC97;
   color: #fff;
   border-radius: 50%;
-  font-size: 0.62rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   flex-shrink: 0;
   line-height: 1;
@@ -534,7 +534,7 @@
 .ai-demo__dot:nth-child(2) { background: #febc2e; }
 .ai-demo__dot:nth-child(3) { background: #28c840; }
 .ai-demo__chrome-label {
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   color: rgba(255, 255, 255, 0.30);
   font-weight: 600;
   margin-left: 0.5rem;
@@ -549,7 +549,7 @@
   gap: 0.52rem;
 }
 .ai-demo__prompt-hint {
-  font-size: 0.68rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(31, 41, 55, 0.40);
   text-transform: uppercase;
@@ -590,7 +590,7 @@
   border: none;
   border-radius: 8px;
   font-family: 'Nunito', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   cursor: default;
 }
@@ -617,7 +617,7 @@
 
 .ai-demo__building-note {
   margin: 0.15rem 0 0;
-  font-size: 0.74rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(31, 41, 55, 0.36);
   text-align: center;
@@ -638,9 +638,9 @@
   border-top: 1px solid rgba(31, 41, 55, 0.06);
   border-bottom: 1px solid rgba(31, 41, 55, 0.06);
 }
-.ai-demo__result-url { font-size: 0.68rem; color: rgba(31, 41, 55, 0.36); font-weight: 600; font-family: monospace; }
+.ai-demo__result-url { font-size: 0.8125rem; color: rgba(31, 41, 55, 0.36); font-weight: 600; font-family: monospace; }
 .ai-demo__result-live {
-  font-size: 0.67rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #28c840;
   background: rgba(40, 200, 64, 0.12);
@@ -661,17 +661,17 @@
   margin-bottom: 0.75rem;
 }
 .ai-demo__site-brand { font-size: 0.86rem; font-weight: 900; color: #fff; font-family: 'Nunito', sans-serif; }
-.ai-demo__site-links { display: flex; gap: 0.7rem; font-size: 0.67rem; color: rgba(255,255,255,0.58); font-weight: 600; font-family: 'Nunito', sans-serif; }
+.ai-demo__site-links { display: flex; gap: 0.7rem; font-size: 0.8125rem; color: rgba(255,255,255,0.58); font-weight: 600; font-family: 'Nunito', sans-serif; }
 .ai-demo__site-body { text-align: center; padding: 0.85rem 0.5rem 0.7rem; display: flex; flex-direction: column; align-items: center; gap: 0.38rem; }
 .ai-demo__site-h1  { margin: 0; font-size: 0.98rem; font-weight: 900; color: #fff; font-family: 'Nunito', sans-serif; letter-spacing: -0.01em; }
-.ai-demo__site-sub { margin: 0; font-size: 0.72rem; color: rgba(255,255,255,0.66); font-weight: 600; font-family: 'Nunito', sans-serif; }
+.ai-demo__site-sub { margin: 0; font-size: 0.8125rem; color: rgba(255,255,255,0.66); font-weight: 600; font-family: 'Nunito', sans-serif; }
 .ai-demo__site-cta {
   margin-top: 0.28rem;
   display: inline-block;
   padding: 0.36rem 1.05rem;
   background: #FF7A00;
   color: #fff;
-  font-size: 0.74rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   border-radius: 999px;
   font-family: 'Nunito', sans-serif;
@@ -730,7 +730,7 @@
   background: rgba(255, 122, 0, 0.11);
   border: 1px solid rgba(255, 122, 0, 0.26);
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #C85A00;
   letter-spacing: 0.02em;
@@ -788,7 +788,7 @@
   position: absolute;
   left: 0;
   color: #FF7A00;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
 }
 
 .hp-build-card__cta {
@@ -900,7 +900,7 @@
 
 .hp-xp__eyebrow {
   display: inline-block;
-  font-size: 0.76rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -963,7 +963,7 @@
 }
 
 .hp-xp-card__total {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(31, 41, 55, 0.42);
 }
@@ -984,7 +984,7 @@
 
 .hp-xp-card__bar-label {
   margin: -0.4rem 0 0;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(31, 41, 55, 0.38);
   text-align: right;
@@ -999,7 +999,7 @@
 }
 
 .hp-xp-card__event {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   padding: 0.38rem 0.75rem;
   border-radius: 8px;
@@ -1123,7 +1123,7 @@
 
 .hp-footer__col-heading {
   margin: 0 0 0.35rem;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.10em;
@@ -1153,7 +1153,7 @@
 }
 
 .hp-footer__lesson-heading {
-  font-size: 0.68rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -1171,7 +1171,7 @@
 }
 
 .hp-footer__lesson-link {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: rgba(31, 41, 55, 0.40);
   text-decoration: none;
@@ -1184,7 +1184,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 1.1rem 24px 1.4rem;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   color: rgba(31, 41, 55, 0.36);
   font-weight: 600;
 }

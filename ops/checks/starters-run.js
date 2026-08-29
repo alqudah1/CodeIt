@@ -7,7 +7,7 @@
 // child touches.
 const { launch } = require('./browser');
 
-const BASE = 'http://localhost:4599';
+const BASE = process.env.CHECK_BASE || 'http://localhost:4599';
 
 // Read from the source, not typed out here.
 //

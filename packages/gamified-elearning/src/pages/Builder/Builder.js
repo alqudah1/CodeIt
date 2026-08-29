@@ -43,6 +43,9 @@ import {
 } from './previewStorage';
 import CodePanel from './CodePanel';
 import { SHELVES, starterProjectById } from './starterProjects';
+import { changeInvitation } from './whatCanIChange';
+import { lookInside } from './lookInside';
+import { closestStarter } from './closestStarter';
 
 import ProveItPanel from './ProveItPanel';
 import { hasUnderstood, recordUnderstanding } from '../../utils/understanding';
@@ -778,6 +781,10 @@ export default function Builder() {
   const [aiTitle, setAiTitle]           = useState('');
   const [projectType, setProjectType]   = useState('website');
   const [conceptsUsed, setConceptsUsed] = useState([]);
+  // Which lessons this child has finished, so the door into the lessons opens
+  // somewhere they have not been. Signed out, this stays empty and the earliest
+  // lesson is the right answer anyway. See lookInside.js.
+  const [lessonsDone, setLessonsDone] = useState([]);
   const [loading, setLoading]           = useState(false);
   const [buildStep, setBuildStep]       = useState(0);
   const [error, setError]               = useState('');
@@ -788,6 +795,7 @@ export default function Builder() {
   const [guestDraftRecovered, setGuestDraftRecovered] = useState(false);
   const [guideLevelOverride, setGuideLevelOverride] = useState(storedGuideLevelOverride);
   const [coachOpen, setCoachOpen] = useState(() => learnerGuideLevel(user) !== 'independent');
+  const coachRestTimer = useRef(null);
 
   // ── AI memory ──────────────────────────────────────────────────────────────
   const [promptHistory, setPromptHistory] = useState([]);
@@ -875,6 +883,7 @@ export default function Builder() {
   const settleTimer = useRef(null);
   const editModeOnRef = useRef(false);
   const studioRef  = useRef(null);
+  const waitingRef = useRef(null);
   const resumeActionStartedRef = useRef(false);
   const queryProjectOpenedRef = useRef(false);
   const saveInFlightRef = useRef(false);
@@ -937,7 +946,25 @@ export default function Builder() {
   // ── Public sharing ────────────────────────────────────────────────────────
   const [isPublished, setIsPublished]     = useState(false);
   const [publicId, setPublicId]           = useState(null);
-  const [publishStatus, setPublishStatus] = useState(null); // null | 'publishing' | 'copied' | 'error'
+  const [publishStatus, setPublishStatus] = useState(null); // null | 'publishing' | 'copied' | 'error' | 'refused'
+  // The moment itself. Publishing is the proudest second in the product —
+  // a child's game just became a real link on the real internet — and it was
+  // being celebrated with the word "copied" on a button for three seconds.
+  const [justPublished, setJustPublished] = useState(false);
+  // ── Why publishing did not happen ──────────────────────────────────────────
+  //
+  // The server already answers this properly. Under-13 profiles get "Projects
+  // on a family profile stay private. Share it with your grown-up or teacher
+  // instead." A free plan gets "Publishing to a public CodeIt link is part of
+  // CodeIt Plus. Your project stays saved and private until then."
+  //
+  // Both were thrown away by `catch (_)`, and the child saw the Share button
+  // read "Try again" for three seconds before going back to "Share". Trying
+  // again cannot work — neither an age nor a plan changes by pressing a button
+  // twice — so the one instruction on screen was the one thing guaranteed to
+  // fail, and it looked like the site was broken. It was not. It just never
+  // said the thing it already knew.
+  const [publishRefusal, setPublishRefusal] = useState(null);
 
   // ── My projects — sort + favorites ───────────────────────────────────────
   const [projectSort, setProjectSort]   = useState('recent');
@@ -1259,6 +1286,23 @@ export default function Builder() {
   }
 
   // ── Prefill prompt from ?prompt= URL param (sent by lesson "Use in AI Builder") ─
+  // ── Which lessons this child has already finished ──────────────────────────
+  //
+  // Read once, and only to decide which lesson to offer when they look inside
+  // their own code. Nothing on this page waits for it: signed out, or if the
+  // request fails, the list stays empty and the door opens on the earliest
+  // lesson in their project, which is the right answer for someone who has done
+  // none of them.
+  useEffect(() => {
+    if (!token) { setLessonsDone([]); return undefined; }
+    let live = true;
+    fetch(`${API_BASE_URL}/api/lessons/progress`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => { if (live && data) setLessonsDone((data.completedLessons || []).map(Number)); })
+      .catch(() => { /* the earliest lesson is a fine answer */ });
+    return () => { live = false; };
+  }, [token]);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const pre = params.get('prompt');
@@ -1460,22 +1504,10 @@ export default function Builder() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buildKey]);
 
-  // ── Interactivity badges (derived from generated code) ────────────────────
-  const interactivityBadges = useMemo(() => {
-    if (!code) return [];
-    const badges = [];
-    const hasScript   = /<script/i.test(code);
-    const hasListener = /addEventListener|\.onclick\s*=|\bonclick\s*=|onchange\s*=/i.test(code);
-    const isGame      = /game/i.test(projectType);
-    const hasGameLogic = /score|restart|start\s*game|gameActive|setInterval/i.test(code);
-    if (isGame && hasScript && hasGameLogic) {
-      badges.push({ label: 'Playable project', cls: 'play' });
-      badges.push({ label: 'Game controls ready', cls: 'game' });
-    } else if (hasScript && hasListener) {
-      badges.push({ label: 'Buttons work', cls: 'buttons' });
-    }
-    return badges;
-  }, [code, projectType]);
+  // The badges this computed — "Playable project", "Game controls ready",
+  // "Buttons work" — were removed with the row that displayed them. They read
+  // the child's code to tell the child something the child can see by looking
+  // at it, and they cost thirty-one pixels above the game.
 
   // ── Loading step advancement ───────────────────────────────────────────────
   useEffect(() => {
@@ -1779,6 +1811,21 @@ export default function Builder() {
 
   // ── Fresh build ────────────────────────────────────────────────────────────
   const callBuilder = async (text) => {
+    // ── Look at the thing you were given ───────────────────────────────────
+    //
+    // The prompt box sits below the twenty starter cards, so a child who typed
+    // their own idea is scrolled several hundred pixels down when they press
+    // Build. The empty state then disappears and the waiting game renders at
+    // the top of a much shorter page — above where they are looking. They spend
+    // the whole build staring at whatever happens to be under their scroll
+    // position.
+    //
+    // Two frames, because the loading state has to render before there is
+    // anything to scroll to.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      waitingRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+    }));
+
     personalizationTrackedRef.current = false;
     setHasPersonalized(false);
     setHasPlayedOnce(false);
@@ -2249,6 +2296,10 @@ export default function Builder() {
       if (savedProjectId === project.id) {
         setIsPublished(true);
         setPublicId(data.public_id);
+        // Same moment, same fuss: most children publish through this card,
+        // not the footer button, and the celebration belongs to the moment,
+        // not to the button that happened to trigger it.
+        setJustPublished(true);
       }
       setProjectCardAction({ id: project.id, status: 'published' });
       setTimeout(() => {
@@ -2443,13 +2494,26 @@ export default function Builder() {
     }
 
     setPublishStatus('publishing');
+    setPublishRefusal(null);
     try {
       const res  = await fetch(`${API_BASE_URL}/api/builder/projects/${projectId}/publish`, {
         method:  'POST',
         headers: { Authorization: `Bearer ${token}`, ...journeyHeaders() },
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Publish failed');
+      if (!res.ok) {
+        // A rule, not a failure. It will say the same thing every time, so it
+        // stays on screen until the child does something else, and the button
+        // stops offering a retry that cannot succeed.
+        const isRule = ['MANAGED_PROFILE_PRIVATE', 'PLAN_UPGRADE_REQUIRED'].includes(data.code);
+        if (isRule) {
+          setPublishRefusal({ code: data.code, message: data.error });
+          setPublishStatus('refused');
+          void trackEvent('publish_refused', data.code, token);
+          return;
+        }
+        throw new Error(data.error || 'Publish failed');
+      }
       earnedXp += Number(data.xp_awarded) || 0;
       if (earnedXp > 0) {
         awardXP(earnedXp);
@@ -2457,15 +2521,16 @@ export default function Builder() {
       }
       setIsPublished(true);
       setPublicId(data.public_id);
+      setJustPublished(true);
       sessionStorage.removeItem('codeit_builder_draft');
       clearGuestProjectDraft(localStorage);
       const url = `https://codeitlearn.com/project/${data.public_id}?utm_source=project-share`;
       try { await navigator.clipboard.writeText(url); } catch (_) {}
       setPublishStatus('copied');
       setTimeout(() => setPublishStatus(null), 3000);
-    } catch (_) {
+    } catch (error) {
+      setPublishRefusal({ code: null, message: error.message || 'Publishing did not work. Your project is still saved.' });
       setPublishStatus('error');
-      setTimeout(() => setPublishStatus(null), 3000);
     }
   };
 
@@ -2552,6 +2617,33 @@ export default function Builder() {
   });
   const activeTab = workspaceTabs.find(tab => tab.id === workspaceTab) || workspaceTabs[0];
 
+  // ── The answer to "what can I edit" ────────────────────────────────────────
+  //
+  // Children asked it out loud. Nothing on the screen answered it: reaching the
+  // editor took two steps and the button said "Edit elements", which is a word
+  // a seven-year-old has no use for.
+  //
+  // A general sentence would not have helped. "You can change anything!" is
+  // what a screen says when it has nothing specific to offer. This reads their
+  // own file and names one real thing they are looking at — and stays quiet on
+  // a canvas game, where the only things it could point at are painted rather
+  // than written.
+  const changeHint = code ? changeInvitation(code) : null;
+
+  // ── Something real to play for the ten to twenty seconds ───────────────────
+  //
+  // The wait used to show a progress bar first and, underneath it, one of five
+  // generic demo templates — click the star, or three questions about oceans.
+  // Twenty finished projects sit in this same folder, opened in a real browser
+  // at two sizes on every build, and none of them was ever offered here.
+  //
+  // A child who types "a space game where you dodge rocks" now flies the
+  // asteroid game within a second while their own version is written.
+  const waitingGame = useMemo(
+    () => (loading ? closestStarter(builtPrompt || prompt) : null),
+    [loading, builtPrompt, prompt]
+  );
+
   // Concrete things to change in THIS project, for the child who asked what
   // "change one thing" means.
   const ideasForThisProject = code ? changeIdeasFor(code) : [];
@@ -2559,7 +2651,16 @@ export default function Builder() {
   const coachStage = !code
     ? prompt.trim()
       ? { number: 2, icon: '🟣', title: 'Press “Build my project”', detail: 'The big purple button makes your idea.', target: 'build' }
-      : { number: 1, icon: '👇', title: 'Pick what you want to make', detail: 'Press Game, Website, or Quiz.', target: 'pick' }
+      // Step 1 used to read "Press Game, Website, or Quiz", which points at the
+      // buttons that send an idea to the model and then show a blank screen for
+      // ten to twenty seconds. That is the slowest path in the product, and it
+      // was what the guide told every arriving child to do first.
+      //
+      // The twenty starters open instantly. A child who taps one is playing
+      // something of their own inside a second and has a real project to change,
+      // which is the whole loop — and they can type their own idea straight
+      // after, having seen what "a project" even means here.
+      : { number: 1, icon: '👇', title: 'Tap a game to open it', detail: 'It opens straight away. Or type your own idea below.', target: 'pick' }
     : !hasPlayedOnce
       ? { number: 2, icon: '▶️', title: 'Press Play', detail: 'Try every button. See what works.', target: 'play' }
       : !isPersonalized
@@ -2573,6 +2674,28 @@ export default function Builder() {
               : !isPublished
                 ? { number: 6, icon: '🌟', title: 'Publish when you are proud', detail: 'Your project is tested, saved, and ready to share.', target: 'publish' }
                 : { number: 7, icon: '🎉', title: 'Invite someone to play', detail: 'Share your finished project and ask what they think.', target: 'share' };
+  // ── A guide who says the step, then goes quiet ─────────────────────────────
+  //
+  // A screenshot caught Pixel's bubble sitting squarely on top of a quiz's
+  // answer buttons while the child had not even pressed Play yet. A guide who
+  // talks over the game is a guide a child learns to ignore — or worse, one
+  // they cannot get past.
+  //
+  // So he behaves like a person: when the step changes he speaks, and after a
+  // few seconds he rests to his corner; tap him and he says it again. Early
+  // learners keep him talking until they put him away themselves — the level
+  // that needs big help should never have help disappear on a timer.
+  const coachStageNumber = coachStage.number;
+  useEffect(() => {
+    setCoachOpen(true);
+    if ((guideLevelOverride || learnerGuideLevel(user)) === 'early') return undefined;
+    clearTimeout(coachRestTimer.current);
+    coachRestTimer.current = setTimeout(() => setCoachOpen(false), 9000);
+    return () => clearTimeout(coachRestTimer.current);
+    // Re-fires only when the step itself moves on.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [coachStageNumber]);
+
   // ── What actually goes into the preview frame ──────────────────────────────
   //
   // Scoped per project, so two games do not fight over one high score, and so a
@@ -2599,6 +2722,12 @@ export default function Builder() {
 
   // Read from the code, not from what the child asked for. See codeConcepts.js.
   const conceptsFound = useMemo(() => conceptsIn(code), [code]);
+
+  // What the same slot says after they have changed something. See lookInside.js.
+  const behind = useMemo(
+    () => (isPersonalized ? lookInside(conceptsFound, lessonsDone) : null),
+    [isPersonalized, conceptsFound, lessonsDone],
+  );
 
   // A slider shows the draft if the child is mid-drag, otherwise the file.
   function settingValue(setting) {
@@ -2648,7 +2777,7 @@ export default function Builder() {
         {/* ════════════════════════════════════════
             HERO
         ════════════════════════════════════════ */}
-        {(!hasResult || showStartOver) && (
+        {(!hasResult || showStartOver) && !loading && (
         <section className="bldr-hero">
           <div className="bldr-hero__badge">Studio</div>
           <h1 className="bldr-hero__title">
@@ -2669,51 +2798,57 @@ export default function Builder() {
           </aside>
         )}
 
-        {(!hasResult || showStartOver) && (
-        <section className="bldr-help-level" aria-label="Choose how much guidance you want">
-          <span className="bldr-help-level__label">How much help do you want?</span>
-          <div className="bldr-help-level__options">
-            {GUIDE_LEVELS.map(option => (
-              <button
-                key={option.id}
-                type="button"
-                className={guideLevel === option.id ? 'is-active' : ''}
-                aria-pressed={guideLevel === option.id}
-                onClick={() => changeGuideLevel(option.id)}
-              >
-                <span aria-hidden="true">{option.icon}</span>{option.label}
-              </button>
-            ))}
-          </div>
-        </section>
-        )}
 
-        {/* Once a project exists the pages carry the guidance, and each one
-            says what to do on it. Leaving the sticky coach up as well meant two
-            voices disagreeing: it read "Press Play" while the child was on the
-            Change page. Before a build there are no pages yet, so it stays. */}
-        {coachOpen && !code ? (
-          <aside className={`bldr-coach bldr-coach--${guideLevel}`} role="status" aria-live="polite">
-            <div className="bldr-coach__face" aria-hidden="true">{coachStage.icon}</div>
-            <div className="bldr-coach__copy">
-              <span className="bldr-coach__step">Pixel · Step {coachStage.number}</span>
-              <strong>{coachStage.title}</strong>
-              <p>{coachStage.detail}</p>
+        {/* ── Pixel, in person ──────────────────────────────────────────────
+            The guidance brain — coachStage, seven state-aware steps — always
+            knew what a child should do next. It spoke through a beige text box
+            that vanished the moment a project existed, plus a "🧭 Ask Pixel"
+            pill: a compass icon asking a seven-year-old to imagine the
+            character. Mustafa asked for the character itself: visible,
+            animated, telling you what to do next.
+
+            So Pixel stands in the corner, bobbing, holding the current step in
+            a speech bubble. Tapping him hides the bubble; tapping him again
+            asks. He stays through every stage now — the old worry about "two
+            voices disagreeing" was about page-anchored text, and this bubble
+            is driven by the same state as the checklist, so the two can never
+            disagree about what comes next. */}
+        {/* He steps aside while a child is playing or dragging things — the
+            browser drag check caught him standing exactly where a finger
+            needed to be — twice: first over the game, then over the end of
+            the very slider the Controls panel asks a child to drag. So the
+            rule is about hands, not screens: playing, dragging elements, or
+            using any tool panel means hands are busy, and Pixel steps aside.
+            When the hands stop, he is back with the next step. */}
+        {!isPlayMode && !editModeOn && !studioPanel && (
+        <aside className={`pixel-guide${coachOpen ? '' : ' pixel-guide--resting'}`}>
+          {coachOpen && (
+            <div className={`pixel-guide__bubble pixel-guide__bubble--${guideLevel}`} role="status" aria-live="polite">
+              <span className="pixel-guide__step">Pixel · Step {coachStage.number}</span>
+              <strong className="pixel-guide__title">{coachStage.icon} {coachStage.title}</strong>
+              <p className="pixel-guide__detail">{coachStage.detail}</p>
+              <div className="pixel-guide__actions">
+                <button type="button" className="pixel-guide__show" onClick={showCoachTarget}>👆 Show me</button>
+                <button
+                  type="button"
+                  className="pixel-guide__read"
+                  onClick={() => readCoach(`${coachStage.title}. ${coachStage.detail}`)}
+                >
+                  🔊 Read to me
+                </button>
+              </div>
             </div>
-            <div className="bldr-coach__actions">
-              <button type="button" className="bldr-coach__show" onClick={showCoachTarget}>👆 Show me</button>
-              <button
-                type="button"
-                className="bldr-coach__read"
-                onClick={() => readCoach(`${coachStage.title}. ${coachStage.detail}`)}
-              >
-                🔊 Read to me
-              </button>
-              <button type="button" className="bldr-coach__hide" onClick={() => setCoachOpen(false)} aria-label="Hide Pixel">×</button>
-            </div>
-          </aside>
-        ) : (
-          <button type="button" className="bldr-coach-open" onClick={() => setCoachOpen(true)}>🧭 Ask Pixel</button>
+          )}
+          <button
+            type="button"
+            className="pixel-guide__pal"
+            onClick={() => { clearTimeout(coachRestTimer.current); setCoachOpen(open => !open); }}
+            aria-label={coachOpen ? 'Put Pixel to rest' : 'Ask Pixel what to do next'}
+          >
+            <img src="/brand/pixel-guide.png" alt="" />
+            {!coachOpen && <span className="pixel-guide__hint" aria-hidden="true">?</span>}
+          </button>
+        </aside>
         )}
 
         {/* Ambient studio particles. Paused while editing for performance */}
@@ -2727,34 +2862,13 @@ export default function Builder() {
         )}
 
         {/* ════════════════════════════════════════
-            HERO BUILD PICKS (first-time empty state)
-        ════════════════════════════════════════ */}
-        {!code && !loading && !error && (
-          <div className="bldr-hero-picks" data-codeit-coach={coachStage.target === 'pick' ? 'current' : undefined}>
-            <p className="bldr-hero-picks__label">What will you build today?</p>
-            <div className="bldr-hero-picks__grid">
-              {HERO_BUILDS.map(hb => (
-                <button
-                  key={hb.id}
-                  className={`bldr-hero-pick bldr-hero-pick--${hb.id}`}
-                  onClick={() => { setPrompt(hb.prompt); callBuilder(hb.prompt); }}
-                >
-                  <span className="bldr-hero-pick__title">{hb.title}</span>
-                  <span className="bldr-hero-pick__sub">{hb.sub}</span>
-                  <span className="bldr-hero-pick__cta">Build now</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ════════════════════════════════════════
             THE SHELVES — eighteen projects that open instantly
         ════════════════════════════════════════ */}
-        {(!hasResult || showStartOver) && (
-        <section className="bldr-shelves" aria-label="Projects you can open right now">
+        {(!hasResult || showStartOver) && !loading && (
+        <section className="bldr-shelves" aria-label="Projects you can open right now"
+          data-codeit-coach={coachStage.target === 'pick' ? 'current' : undefined}>
           <p className="bldr-shelves__lead">
-            Open one of these and it is on screen straight away. Change anything you like.
+            Tap one. It opens straight away, and then you can change anything in it.
           </p>
           {SHELVES.map(shelf => (
             <div className="bldr-shelf" key={shelf.kind}>
@@ -2781,9 +2895,72 @@ export default function Builder() {
         )}
 
         {/* ════════════════════════════════════════
+            ASK THE AI (empty state, after the shelves)
+        ════════════════════════════════════════ */}
+        {/* ── Ask the AI for something new ────────────────────────────────
+              This used to sit above the shelves, which put the slowest thing in
+              the studio first. Pressing one of these sends an idea to the model
+              and shows a blank screen for ten to twenty seconds; the shelves
+              open in under a second. Children arriving met the slow path,
+              waited, and said the site was slow — while twenty finished
+              projects sat below the fold, unseen.
+
+              So it comes after. By the time a child reads "or ask for something
+              nobody has made yet", they have already had one thing work, and
+              waiting twenty seconds for their own idea is a trade they
+              understand rather than a blank screen they cannot explain. */}
+        {!code && !loading && !error && (
+          <div className="bldr-hero-picks">
+            <p className="bldr-hero-picks__label">Or ask for something nobody has made yet</p>
+            <div className="bldr-hero-picks__grid">
+              {HERO_BUILDS.map(hb => (
+                <button
+                  key={hb.id}
+                  className={`bldr-hero-pick bldr-hero-pick--${hb.id}`}
+                  onClick={() => { setPrompt(hb.prompt); callBuilder(hb.prompt); }}
+                >
+                  <span className="bldr-hero-pick__title">{hb.title}</span>
+                  <span className="bldr-hero-pick__sub">{hb.sub}</span>
+                  <span className="bldr-hero-pick__cta">Build now</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── How much help, asked later and quieter ────────────────────────
+            This used to be the first thing on the screen: three big buttons
+            under "How much help do you want?", before a child had seen a single
+            thing the studio makes. It is a question with no information behind
+            it — nobody knows how much help they need with something they have
+            not looked at yet — and it sat between them and anything that
+            happens. Children arrived and asked what to do.
+
+            It is a preference, so it is folded away and reachable when someone
+            wants it, and the default carries everyone else. */}
+        {(!hasResult || showStartOver) && !loading && (
+        <details className="bldr-help-level">
+          <summary>How much help do you want?</summary>
+          <div className="bldr-help-level__options">
+            {GUIDE_LEVELS.map(option => (
+              <button
+                key={option.id}
+                type="button"
+                className={guideLevel === option.id ? 'is-active' : ''}
+                aria-pressed={guideLevel === option.id}
+                onClick={() => changeGuideLevel(option.id)}
+              >
+                <span aria-hidden="true">{option.icon}</span>{option.label}
+              </button>
+            ))}
+          </div>
+        </details>
+        )}
+
+        {/* ════════════════════════════════════════
             INPUT CARD
         ════════════════════════════════════════ */}
-        {(!hasResult || showStartOver) && (
+        {(!hasResult || showStartOver) && !loading && (
         <div className="bldr-input-card">
           <div className="bldr-textarea-wrap">
             <textarea
@@ -2832,24 +3009,41 @@ export default function Builder() {
         </div>
         )}
 
-        {/* One small way back to starting something new, instead of keeping the
-            whole build form on screen forever. */}
-        {hasResult && (
-          <button
-            type="button"
-            className="bldr-startover"
-            onClick={() => setShowStartOver(open => !open)}
-            aria-expanded={showStartOver}
-          >
-            {showStartOver ? 'Back to my project' : '+ Make something else'}
-          </button>
-        )}
 
         {/* ════════════════════════════════════════
             LOADING STATE
         ════════════════════════════════════════ */}
+        {/* ── While a project is being built ────────────────────────────────
+            The shelves, the hero and the prompt box used to stay on screen
+            during a build, so the thing a child was given to play sat at 1690px
+            — below twenty starter cards they had just chosen not to use. The
+            empty state and the waiting state are different states, and only one
+            of them should be on the screen. */}
         {loading && (
           <>
+            {/* ── Play a real one while yours is written ────────────────────
+                This was below the progress card, so the first thing a waiting
+                child saw was a bar telling them to wait. And it played one of
+                five generic demo templates while twenty finished projects sat
+                unused in the same folder.
+
+                Now it is first, and it is the real starter closest to what they
+                typed — browser-tested at two sizes on every build, unlike the
+                templates it replaces. */}
+            <div className="bldr-loading-preview-wrap" ref={waitingRef}>
+              <div className="bldr-loading-preview__say">
+                <strong>Play this while I build yours.</strong>
+                <span>{waitingGame ? waitingGame.label : 'One moment'}</span>
+              </div>
+              <div className="bldr-loading-preview__iframe-wrap">
+                <iframe
+                  className="bldr-iframe"
+                  srcDoc={waitingGame ? waitingGame.code : STARTER_TEMPLATES.game}
+                  sandbox="allow-scripts allow-forms"
+                  title="Play this while your project is built"
+                />
+              </div>
+            </div>
             <div className="bldr-loading">
               <div className="bldr-loading__header">
                 <span className="bldr-spinner" />
@@ -2882,34 +3076,6 @@ export default function Builder() {
               </div>
             </div>
 
-            {/* Live starter preview. Play it while AI customizes your version */}
-            <div className="bldr-loading-preview-wrap">
-              <div className="bldr-browser">
-                <div className="bldr-browser__chrome">
-                  <div className="bldr-browser__dots">
-                    <span className="bldr-browser__dot bldr-browser__dot--red" />
-                    <span className="bldr-browser__dot bldr-browser__dot--yellow" />
-                    <span className="bldr-browser__dot bldr-browser__dot--green" />
-                  </div>
-                  <div className="bldr-browser__bar">
-                    <span className="bldr-browser__bar-spinner" />
-                    CodeIt is building your version...
-                  </div>
-                </div>
-                <div className="bldr-loading-preview__iframe-wrap">
-                  <iframe
-                    className="bldr-iframe"
-                    srcDoc={STARTER_TEMPLATES[loadingPreviewType] || STARTER_TEMPLATES.game}
-                    sandbox="allow-scripts allow-forms"
-                    title="Building preview. Play me while you wait!"
-                  />
-                  <div className="bldr-loading-preview__status">
-                    <span className="bldr-spinner bldr-spinner--sm" />
-                    Shaping this starter around your idea...
-                  </div>
-                </div>
-              </div>
-            </div>
           </>
         )}
 
@@ -2957,7 +3123,12 @@ export default function Builder() {
             )}
 
             {/* Success banner */}
-            <div className="bldr-success-banner" key={buildKey}>
+            {/* One object: marquee on top, screen under it, one outline —
+                an arcade cabinet, not a stack of cards. The wrapper exists
+                because .bldr-result's flex gap was slipping cream between
+                the marquee and its own screen. */}
+            <div className="bldr-cabinet" key={buildKey}>
+            <div className="bldr-success-banner">
               <div className="bldr-success-banner__check-wrap">
                 <div className="bldr-success-banner__check" aria-hidden="true">✓</div>
                 <div className="bldr-confetti-burst" aria-hidden="true">
@@ -2971,18 +3142,62 @@ export default function Builder() {
                 </div>
               </div>
               <div className="bldr-success-banner__copy">
+                {/* One row: the name, then the honest state as a small sticker.
+                    The escalation still earns itself — ready → personalized by
+                    you → 3 edits applied; "You built this!" stays dead.
+
+                    Two lines went. "by <name>. Made with CodeIt" was the brand
+                    introducing itself to the person who just opened their own
+                    project — attribution belongs on the share page, where the
+                    strangers are. And builtSummary restated what the child is
+                    looking at. Between them and the shelf below, the game
+                    started a full card lower than it needed to. */}
+                <h2 className="bldr-success-banner__name">{projectName}</h2>
                 <span className="bldr-success-banner__label">
                   {editCount > 0
                     ? `${editCount} edit${editCount > 1 ? 's' : ''} applied`
-                    : hasPersonalized ? 'Personalized by you' : 'You built this!'}
+                    : hasPersonalized ? 'Personalized by you' : 'Ready for your first change'}
                 </span>
-                <h2 className="bldr-success-banner__name">{projectName}</h2>
-                <p className="bldr-success-banner__credit">
-                  {user
-                    ? `by ${user.username || user.name || 'you'}. Made with CodeIt`
-                    : 'Made with CodeIt'}
-                </p>
-                {builtSummary && <p className="bldr-success-banner__summary">{builtSummary}</p>}
+                {isSaved && <span className="bldr-success-banner__saved">Saved</span>}
+              </div>
+              <div className="bldr-success-banner__deck">
+                {/* The controls that lived on their own empty shelf below.
+                    A marquee with the knobs on it is an arcade cabinet; a
+                    white bar with three buttons lost on it was furniture. */}
+                <details className="bldr-device-sizes">
+                  <summary title="Check it at another size">Size</summary>
+                  <div className="bldr-device-sizes__options">
+                    {[
+                      { id: 'desktop', label: 'Desktop' },
+                      { id: 'tablet',  label: 'Tablet'  },
+                      { id: 'mobile',  label: 'Mobile'  },
+                    ].map(d => (
+                      <button
+                        key={d.id}
+                        className={`bldr-device-btn${deviceView === d.id ? ' bldr-device-btn--active' : ''}`}
+                        onClick={() => setDeviceView(d.id)}
+                        title={`Preview as ${d.label}`}
+                      >
+                        {d.label}
+                      </button>
+                    ))}
+                  </div>
+                </details>
+                <button
+                  className="bldr-browser__fullscreen-btn"
+                  onClick={handleFullscreen}
+                  title="Open in full screen tab"
+                >
+                  Full screen
+                </button>
+                <button
+                  className="bldr-browser__play-btn"
+                  onClick={handleTogglePlay}
+                  data-codeit-coach={coachStage.target === 'play' ? 'current' : undefined}
+                  title={isPlayMode ? 'Compact view' : 'Expand to play mode'}
+                >
+                  {isPlayMode ? 'Compact' : 'Play'}
+                </button>
               </div>
               {!isSaved && isPersonalized && hasTestedLatest && (
                 <button
@@ -3010,23 +3225,9 @@ export default function Builder() {
                 The recovery message is different and stays on Play: a child
                 coming back to find their project waiting needs to be told so at
                 the moment they arrive, not on a page they might not open. */}
-            {!user && (onTab('keep') || (guestDraftRecovered && onTab('play'))) && (
-              <aside id="guest-project-recovery" className={`bldr-guest-backup${guestDraftRecovered ? ' is-recovered' : ''}`} aria-label="Guest project recovery">
-                <div>
-                  <strong>
-                    {guestDraftRecovered
-                      ? 'Welcome back, your project was recovered.'
-                      : 'Backed up in this browser.'}
-                  </strong>
-                  <span>
-                    It stays only on this device for up to 7 days. Keep it in a free account to use it on another device.
-                  </span>
-                </div>
-                <button type="button" onClick={handleSaveProject}>
-                  Keep it in a free account
-                </button>
-              </aside>
-            )}
+            {/* The recovery notice moved below the cabinet: it was rendering
+                between the marquee and the screen, wedging a card into the
+                middle of the one object on the page. */}
 
             {/* The understanding check. On Keep, because "is this mine?" is the
                 question you ask when you are about to keep something. And
@@ -3074,70 +3275,33 @@ export default function Builder() {
             </div>
             )}
 
-            {/* Interactivity badges */}
-            {interactivityBadges.length > 0 && (
-              <div className="bldr-interact-badges">
-                {interactivityBadges.map(b => (
-                  <span key={b.label} className={`bldr-interact-badge bldr-interact-badge--${b.cls}`}>
-                    {b.label}
-                  </span>
-                ))}
-              </div>
-            )}
+            {/* "Playable project" and "Game controls ready" used to sit here,
+                thirty-one pixels above a game the child was about to play. They
+                describe the project to somebody who cannot see it, and the child
+                can. Removed. */}
 
-            {/* Device preview bar */}
-            <div className="bldr-device-bar">
-              <div className="bldr-device-bar__left">
-                <span className="bldr-device-bar__project">{projectName}</span>
-                {isSaved && <span className="bldr-device-bar__saved-badge">Saved</span>}
-              </div>
-              <div className="bldr-device-bar__devices">
-                {[
-                  { id: 'desktop', label: 'Desktop' },
-                  { id: 'tablet',  label: 'Tablet'  },
-                  { id: 'mobile',  label: 'Mobile'  },
-                ].map(d => (
-                  <button
-                    key={d.id}
-                    className={`bldr-device-btn${deviceView === d.id ? ' bldr-device-btn--active' : ''}`}
-                    onClick={() => setDeviceView(d.id)}
-                    title={`Preview as ${d.label}`}
-                  >
-                    {d.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
+            {/* The device bar is gone: its three controls live on the marquee
+                above, so the cabinet is one object — title strip, knobs,
+                screen — instead of three stacked cards. */}
             {/* Live interactive iframe preview */}
             <div className={`bldr-browser bldr-browser--${deviceView}${isPlayMode ? ' bldr-browser--play' : ''}`}>
-              <div className="bldr-browser__chrome">
-                <div className="bldr-browser__dots">
-                  <span className="bldr-browser__dot bldr-browser__dot--red" />
-                  <span className="bldr-browser__dot bldr-browser__dot--yellow" />
-                  <span className="bldr-browser__dot bldr-browser__dot--green" />
+              {/* ── The pretend browser window is gone ──────────────────────
+                  It drew three traffic-light dots and an address bar reading
+                  "CodeIt Studio: <name>" above every project. Fifty-five pixels
+                  of decoration, on top of a forty-eight pixel device bar, on top
+                  of a hundred-and-nineteen pixel banner — and the game itself
+                  started 553px down a 800px screen, below the fold on a phone.
+                  A child opened their game and had to scroll to find it.
+
+                  Measured, the child's project was 33% of the page. Everything
+                  else was CodeIt talking. The dots and the fake URL said nothing
+                  a child needs; only Play and Full screen did, and they moved up
+                  into the one strip that remains. */}
+              {editing && (
+                <div className="bldr-browser__applying" role="status">
+                  <span className="bldr-browser__bar-spinner" />Applying changes...
                 </div>
-                <div className="bldr-browser__bar">
-                  {editing
-                    ? <><span className="bldr-browser__bar-spinner" />Applying changes...</>
-                    : `CodeIt Studio: ${projectName}`}
-                </div>
-                <button
-                  className="bldr-browser__play-btn"
-                  onClick={handleTogglePlay}
-                  data-codeit-coach={coachStage.target === 'play' ? 'current' : undefined}
-                  title={isPlayMode ? 'Compact view' : 'Expand to play mode'}
-                >
-                  {isPlayMode ? 'Compact' : 'Play'}
-                </button>
-                <button
-                  className="bldr-browser__fullscreen-btn"
-                  onClick={handleFullscreen}
-                  title="Open in full screen tab"
-                >
-                  Full screen
-                </button>
-              </div>
+              )}
               {/* sandbox="allow-scripts allow-forms allow-pointer-lock". enables JS, forms, and pointer lock for games */}
               <iframe
                 ref={iframeRef}
@@ -3147,18 +3311,100 @@ export default function Builder() {
                 sandbox="allow-scripts allow-forms allow-pointer-lock"
               />
             </div>
+            </div>
+
+            {!user && (onTab('keep') || (guestDraftRecovered && onTab('play'))) && (
+              <aside id="guest-project-recovery" className={`bldr-guest-backup${guestDraftRecovered ? ' is-recovered' : ''}`} aria-label="Guest project recovery">
+                <div>
+                  <strong>
+                    {guestDraftRecovered
+                      ? 'Welcome back, your project was recovered.'
+                      : 'Backed up in this browser.'}
+                  </strong>
+                  <span>
+                    It stays only on this device for up to 7 days. Keep it in a free account to use it on another device.
+                  </span>
+                </div>
+                <button type="button" onClick={handleSaveProject}>
+                  Keep it in a free account
+                </button>
+              </aside>
+            )}
 
             {/* Show the finished result before asking the student to change, save, or share it. */}
             {!isSaved && (
               <section className="bldr-activation-card bldr-activation-card--journey" aria-labelledby="bldr-next-step-title">
+                {/* ── One voice, not four ─────────────────────────────────────
+                    This card used to open with a kicker ("Your first version is
+                    ready. It is not finished yet"), a heading ("Play it. Change
+                    it. Test it. Then save it."), and a paragraph ("A strong
+                    project needs your ideas...") — and then the four-step
+                    checklist that says the same thing again, in order, knowing
+                    which step you are on.
+
+                    Four ways of saying one sentence, stacked, above a child who
+                    reads none of them. The checklist is the only one that earns
+                    its place: it is ordered, it knows what has been done, and
+                    each step is a link to the page where that step happens.
+                    The other three are gone.
+
+                    The heading stays as one short line because the section is
+                    labelled by it and a screen reader needs the label. */}
                 <div className="bldr-activation-card__copy">
-                  <span className="bldr-activation-card__kicker">Your first version is ready. It is not finished yet</span>
-                  <h3 id="bldr-next-step-title">Play it. Change it. Test it. Then save it.</h3>
-                  <p>
-                    {guideLevel === 'early'
-                      ? 'Follow the four picture steps. CodeIt will show you the next button.'
-                      : 'A strong project needs your ideas. Make at least one change and test it before you call it finished.'}
-                  </p>
+                  <h3 id="bldr-next-step-title" className="bldr-activation-card__title">
+                    {isSaved ? 'Your project is saved' : 'Four things, then it is yours'}
+                  </h3>
+                  {/* One line, and it changes hands exactly once.
+
+                      Before they have touched anything it points at something
+                      real in their own project and asks them to change it.
+                      Afterwards — and only afterwards, because this is the first
+                      moment the studio can say it without lying — the same slot
+                      shows them what is behind the thing they just changed, and
+                      the lesson that teaches it.
+
+                      That is the answer to "why is the AI writing the code",
+                      given in the first five minutes rather than in a paragraph
+                      on the home page: you changed it, here is what it is made
+                      of, here is where yours is, here is how to learn it.
+
+                      The slot, not a new panel. B cut six instruction systems
+                      down to one and this stays at one. */}
+                  {behind ? (
+                    <p className="bldr-change-hint bldr-change-hint--behind">
+                      <span aria-hidden="true">🔍</span>
+                      <span>{behind.sentence}</span>
+                      <Link
+                        to={`/lesson/${behind.lessonId}`}
+                        className="bldr-change-hint__go"
+                        onClick={() => void trackEvent('builder_look_inside', `lesson-${behind.lessonId}`, token)}
+                      >
+                        {behind.lessonLabel}
+                      </Link>
+                      {behind.rest && (
+                        <button
+                          type="button"
+                          className="bldr-change-hint__rest"
+                          onClick={() => setWorkspaceTab('learn')}
+                        >
+                          {behind.rest}
+                        </button>
+                      )}
+                    </p>
+                  ) : changeHint ? (
+                    <p className="bldr-change-hint">
+                      <span aria-hidden="true">👆</span>
+                      <span>{changeHint}</span>
+                      <button
+                        type="button"
+                        className="bldr-change-hint__go"
+                        onClick={() => { if (!editModeOn) toggleEditMode(); }}
+                      >
+                        {editModeOn ? 'Tap it now' : 'Let me try'}
+                      </button>
+                    </p>
+                  ) : null}
+
                   <ol className="bldr-project-checklist" aria-label="Project quality steps">
                     {/* The four steps and the four pages were two versions of
                         the same journey sitting on top of each other. Now a step
@@ -3862,6 +4108,23 @@ export default function Builder() {
             )}
 
             {/* Action bar */}
+            {/* Starting over belongs after the thing you might start over
+                from. It used to sit above the project — the first full-width
+                control a child met on their own game was the one that leaves
+                it — and moving it above the shelves instead put it right back
+                above the project, because the shelves render higher up. This
+                is inside the result, after it. */}
+            {hasResult && (
+              <button
+                type="button"
+                className="bldr-startover"
+                onClick={() => setShowStartOver(open => !open)}
+                aria-expanded={showStartOver}
+              >
+                {showStartOver ? 'Back to my project' : '+ Make something else'}
+              </button>
+            )}
+
             <div className="bldr-result__footer">
               {onTab('learn') && <button
                 className="bldr-action-btn bldr-action-btn--explain-primary"
@@ -3873,6 +4136,49 @@ export default function Builder() {
                   : 'How does this work?'}
               </button>}
 
+              {/* ── IT'S LIVE ─────────────────────────────────────────────
+                  The one moment worth a fuss. The link is shown in full and
+                  said out loud as what it is — a page on the real internet
+                  that anyone can open — because that sentence is the whole
+                  reason a child wanted to publish. "Send it to someone" uses
+                  the device share sheet where one exists, and every friend
+                  who opens it lands on the share page where Pixel makes them
+                  the offer. The card stays until the child closes it: pride
+                  does not expire after three seconds. */}
+              {onTab('keep') && isPublished && justPublished && (
+                <div className="bldr-live-card" role="status">
+                  <div className="bldr-live-card__burst" aria-hidden="true">
+                    <i /><i /><i /><i /><i /><i /><i /><i />
+                  </div>
+                  <img className="bldr-live-card__pixel" src="/brand/pixel-guide.png" alt="" />
+                  <div className="bldr-live-card__copy">
+                    <span className="bldr-live-card__kicker">IT'S LIVE!</span>
+                    <strong className="bldr-live-card__title">
+                      {aiTitle || 'Your project'} is on the internet now.
+                    </strong>
+                    <p className="bldr-live-card__line">
+                      Anyone you send this link to can play it right now — no app, no account.
+                    </p>
+                    <code className="bldr-live-card__url">codeitlearn.com/project/{publicId}</code>
+                    <div className="bldr-live-card__actions">
+                      <button
+                        type="button"
+                        className="bldr-action-btn bldr-action-btn--primary"
+                        onClick={() => { handleShare(); void trackEvent('publish_celebrate_share', null, token); }}
+                      >
+                        {shareStatus === 'shared' ? 'Sent!' : shareStatus === 'copied' ? 'Link copied!' : 'Send it to someone'}
+                      </button>
+                      <button
+                        type="button"
+                        className="bldr-action-btn"
+                        onClick={() => setJustPublished(false)}
+                      >
+                        Done
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
               {onTab('keep') && (isPublished ? (
                 <div className="bldr-share-group">
                   <button
@@ -3912,10 +4218,26 @@ export default function Builder() {
                 >
                   {publishStatus === 'publishing'
                     ? <><span className="bldr-spinner bldr-spinner--sm" />Publishing...</>
+                    : publishStatus === 'refused' ? 'Kept private'
                     : publishStatus === 'error' ? 'Try again'
                     : user?.managedProfile ? 'Private profile' : 'Share'}
                 </button>
               ))}
+
+              {/* The reason, in the server's own words, and it stays put. It
+                  used to vanish after three seconds — long enough to be seen
+                  and not long enough to be read by a seven-year-old. */}
+              {publishRefusal && (
+                <p className="bldr-publish-note" role="status">
+                  <span aria-hidden="true">🔒</span>
+                  <span>
+                    {publishRefusal.message}
+                    {publishRefusal.code === 'PLAN_UPGRADE_REQUIRED' && (
+                      <> <Link to="/pricing">See CodeIt Plus</Link></>
+                    )}
+                  </span>
+                </p>
+              )}
 
               {onTab('change') && <button
                 className={`bldr-action-btn bldr-action-btn--edit${showEditPanel ? ' bldr-action-btn--edit-active' : ''}`}
@@ -3929,9 +4251,11 @@ export default function Builder() {
                 className={`bldr-action-btn bldr-action-btn--livedit${editModeOn ? ' bldr-action-btn--livedit-active' : ''}`}
                 onClick={toggleEditMode}
                 disabled={editing}
-                title={editModeOn ? 'Exit element editor. Saves changes' : 'Click any element in the preview to edit it directly'}
+                title={editModeOn ? 'Stop changing things. Your changes are kept' : 'Tap anything in your project to change its words, colour or size'}
               >
-                {editModeOn ? 'Exit element editor' : 'Edit elements'}
+                {/* "Edit elements" meant nothing to the children who asked
+                    how to edit. This says what happens. */}
+                {editModeOn ? 'Stop changing things' : 'Tap things to change them'}
               </button>}
 
               {onTab('keep') && <button
@@ -4406,6 +4730,32 @@ export default function Builder() {
               </div>
             )}
 
+            {/* ── What you made, before the file you made it in ──────────────
+                This list used to sit underneath the editor. The editor holds
+                the child's whole project — two hundred lines beginning
+                <!doctype html>, then a <meta viewport>, then sixty lines of CSS
+                — so the page ran to four thousand pixels and the answer to
+                "what did I actually make" was five screens down.
+
+                It is the best thing on this tab. Every row is something found
+                in the child's own file, with the count, the line number and
+                their own line. It goes first. */}
+            {onTab('learn') && conceptsFound.length > 0 && (
+              <div className="bldr-lessons-used">
+                <div className="bldr-lessons-used__header">
+                  <span className="bldr-lessons-used__title">What you used in this project</span>
+                  <span className="bldr-lessons-used__sub">
+                    {conceptSummary(conceptsFound)} Tap any one to learn it properly.
+
+            {/* ── What you actually used, read out of the code ──────────────
+                Both blocks here used to come from `detectLessonIds`, which
+                matched keywords in the child's PROMPT. Type "a space game" and
+                it announced variables, if statements, for loops and functions
+                whether or not one of them was in the file, then opened a lesson
+                teaching something the project did not contain.
+
+                Now every row is something found in their own code, with the
+                line it is on and the line itself. */}
             {/* Concepts used by AI */}
             {/* The code itself, first. This tab is called "The code" and until
                 now it showed everything except the code. */}
@@ -4426,22 +4776,6 @@ export default function Builder() {
                 guideLevel={guideLevel}
               />
             )}
-
-            {/* ── What you actually used, read out of the code ──────────────
-                Both blocks here used to come from `detectLessonIds`, which
-                matched keywords in the child's PROMPT. Type "a space game" and
-                it announced variables, if statements, for loops and functions
-                whether or not one of them was in the file, then opened a lesson
-                teaching something the project did not contain.
-
-                Now every row is something found in their own code, with the
-                line it is on and the line itself. */}
-            {onTab('learn') && conceptsFound.length > 0 && (
-              <div className="bldr-lessons-used">
-                <div className="bldr-lessons-used__header">
-                  <span className="bldr-lessons-used__title">What you used in this project</span>
-                  <span className="bldr-lessons-used__sub">
-                    {conceptSummary(conceptsFound)} Tap any one to learn it properly.
                   </span>
                 </div>
                 <div className="bldr-concept-list">

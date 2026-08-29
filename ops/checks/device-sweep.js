@@ -13,6 +13,9 @@
 // Everything in src/styles/reachable.css exists because this reported it.
 const { launch } = require('./browser');
 
+// Where the built site is being served. CI picks its own port.
+const BASE = process.env.CHECK_BASE || 'http://localhost:4599';
+
 const DEVICES = [
   { name: 'small phone',  width: 320, height: 568, touch: true },
   { name: 'phone',        width: 390, height: 844, touch: true },
@@ -134,10 +137,10 @@ async function audit(page) {
 
     for (const target of PAGES) {
       if (target.seed === 'shelf') {
-        await page.goto('http://localhost:4599/builder?start=penalty', { waitUntil: 'domcontentloaded' });
+        await page.goto(BASE + '/builder?start=penalty', { waitUntil: 'domcontentloaded' });
         await page.waitForTimeout(2600);
       }
-      await page.goto('http://localhost:4599' + target.url, { waitUntil: 'domcontentloaded' });
+      await page.goto(BASE + target.url, { waitUntil: 'domcontentloaded' });
       await page.waitForTimeout(2400);
       if (target.tab) {
         const tab = page.locator('.bldr-tab', { hasText: target.tab });

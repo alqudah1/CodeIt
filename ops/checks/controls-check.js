@@ -5,7 +5,7 @@
 // code the child later reads matches what they did. Only a browser can.
 const { launch } = require('./browser');
 
-const BASE = 'http://localhost:4599';
+const BASE = process.env.CHECK_BASE || 'http://localhost:4599';
 
 const SIZES = [
   { name: 'small phone', width: 320, height: 568, touch: true },

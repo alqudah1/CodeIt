@@ -9,7 +9,9 @@
 
 /* ── Hero ─────────────────────────────────────────────────────────── */
 .exp-hero {
-  padding: 72px 24px 48px;
+  /* The keycap tabs below are taller than the flat tabs they replaced, and
+     the projects slid 2% past G's bar. The padding pays for it. */
+  padding: 12px 24px 10px;
   text-align: center;
   background:
     radial-gradient(circle at 15% 10%, rgba(255, 122, 0, .12), transparent 32%),
@@ -19,12 +21,17 @@
 }
 
 .exp-hero__inner {
-  max-width: 640px;
+  max-width: 760px;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .exp-hero__eyebrow {
-  font-size: .72rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -33,12 +40,12 @@
 }
 
 .exp-hero__title {
-  font-size: clamp(2.8rem, 7vw, 4.5rem);
+  font-size: clamp(1.15rem, 3.4vw, 1.5rem);
   font-weight: 900;
-  letter-spacing: -.6px;
-  line-height: 1;
+  letter-spacing: -.3px;
+  line-height: 1.2;
   color: #38291f;
-  margin-bottom: 14px;
+  margin: 0;
 }
 
 .exp-hero__sub {
@@ -52,7 +59,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 34px;
+  padding: 12px 24px;
   border-radius: 50px;
   background: #ff7624;
   color: #fff;
@@ -71,9 +78,9 @@
 /* ── Tab bar ──────────────────────────────────────────────────────── */
 .exp-tabs {
   display: flex;
-  gap: 6px;
-  padding: 20px 32px 0;
-  border-bottom: 1px solid #ead3c2;
+  gap: 8px;
+  padding: 10px 32px 4px;
+  border-bottom: none;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -109,7 +116,7 @@
 
 /* ── Content area ─────────────────────────────────────────────────── */
 .exp-content {
-  padding: 32px;
+  padding: 18px 32px 32px;
   max-width: 1300px;
   margin: 0 auto;
 }
@@ -213,7 +220,7 @@
   padding: 3px 10px;
   border-radius: 50px;
   background: rgba(0,0,0,.38);
-  font-size: .68rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 1.2px;
   text-transform: uppercase;
@@ -304,14 +311,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: .68rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #fff;
   flex-shrink: 0;
 }
 
 .exp-card__creator-name {
-  font-size: .78rem;
+  font-size: 0.8125rem;
   color: #745d50;
   font-weight: 600;
   white-space: nowrap;
@@ -328,13 +335,13 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: .72rem;
+  font-size: 0.8125rem;
   color: #8a746a;
   font-weight: 700;
 }
 
 .exp-stat__icon {
-  font-size: .75rem;
+  font-size: 0.8125rem;
 }
 
 .exp-stat__count {
@@ -450,3 +457,32 @@
   from { transform: translateX(-50%) translateY(20px); opacity: 0; }
   to   { transform: translateX(-50%) translateY(0);    opacity: 1; }
 }
+
+/* ── The Paper Arcade, explore chapter (see styles/arcade.css) ── */
+.exp-tab {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  border-radius: 999px;
+  box-shadow: var(--pop-down);
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+  transition: transform 0.09s ease, box-shadow 0.09s ease, background 0.15s ease;
+}
+.exp-tab:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
+.exp-tab--active { background: var(--arc-violet-deep); color: #fff; transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.exp-hero__title { font-family: var(--font-display); font-weight: 800; }
+.exp-card { border: 2.5px solid var(--ink); box-shadow: var(--pop-rest); }
+.exp-card:hover { transform: translateY(-2px); box-shadow: var(--pop-lift); }
+.exp-card__title, .exp-card__thumb-title { font-family: var(--font-display); font-weight: 800; }
+.exp-btn { border: 2px solid var(--ink); box-shadow: var(--pop-down); font-family: var(--font-display); font-weight: 700; }
+.exp-btn:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
+.exp-btn:active { transform: translateY(2px); box-shadow: 0 0 0 var(--ink); }
+.exp-btn--play { background: var(--arc-orange); color: var(--ink); }
+.exp-btn--remix { background: var(--paper); color: var(--ink); }
+
+/* The heart's new honest home: a sibling over the thumb's corner, not a
+   button inside a button. */
+.exp-card__thumb-wrap { position: relative; }
+.exp-card__thumb-wrap .exp-card__heart { position: absolute; top: 10px; right: 10px; z-index: 2; }
+.exp-hero__cta { color: var(--ink); background: var(--arc-orange); }

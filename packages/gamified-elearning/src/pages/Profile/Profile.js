@@ -8,6 +8,7 @@ import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
 import { trackEvent } from '../../utils/trackEvent';
+import { conceptsIn } from '../Builder/codeConcepts';
 import './Profile.css';
 
 const XP_PER_LEVEL = 100;
@@ -44,6 +45,10 @@ export default function Profile() {
   const [parentLoading, setParentLoading] = useState(true);
   const [parentLoadError, setParentLoadError] = useState('');
   const [familyStatus, setFamilyStatus] = useState(null);
+  // The evidence, per child, loaded when a parent asks for it. null = never
+  // asked, 'loading', 'error', or the payload.
+  const [evidence, setEvidence] = useState({});
+  const [evidenceOpen, setEvidenceOpen] = useState(null);
   const [familyLoading, setFamilyLoading] = useState(false);
   const [familyMessage, setFamilyMessage] = useState('');
   const [familySaving, setFamilySaving] = useState(false);
@@ -302,6 +307,41 @@ export default function Profile() {
       setFamilySaving(false);
     }
   };
+
+  // ── The evidence a parent is paying for ────────────────────────────────────
+  //
+  // The summary line above says "4 projects · 12 lessons", and counts are what
+  // every learning product shows because counts are cheap. The question GOAL.md
+  // wrote down — "the computer made it, so what did my child actually do?" —
+  // is answered from the child's own newest file, read by the same concept
+  // finder the child's code tab uses (codeConcepts.js), so parent and child
+  // are shown the same truth: the concept, how often, and the child's own
+  // line. Nothing here is generated or estimated.
+  async function openEvidence(child) {
+    if (evidenceOpen === child.id) { setEvidenceOpen(null); return; }
+    setEvidenceOpen(child.id);
+    if (evidence[child.id] && evidence[child.id] !== 'error') return;
+    setEvidence(prev => ({ ...prev, [child.id]: 'loading' }));
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/family/children/${child.id}/evidence`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error || 'Could not load');
+      const newest = data.projects?.[0] || null;
+      setEvidence(prev => ({
+        ...prev,
+        [child.id]: {
+          project: newest ? { title: newest.title, prompt: newest.prompt, updatedAt: newest.updatedAt } : null,
+          concepts: newest ? conceptsIn(newest.code).slice(0, 5) : [],
+          lessonsDone: data.lessonsDone || [],
+        },
+      }));
+      void trackEvent('parent_evidence_open', null, token);
+    } catch (err) {
+      setEvidence(prev => ({ ...prev, [child.id]: 'error' }));
+    }
+  }
 
   const switchToLearner = (child) => {
     const confirmed = window.confirm(
@@ -629,6 +669,13 @@ export default function Profile() {
                           <button
                             className="is-secondary"
                             type="button"
+                            onClick={() => openEvidence(child)}
+                          >
+                            {evidenceOpen === child.id ? 'Hide the evidence' : 'What did they actually do?'}
+                          </button>
+                          <button
+                            className="is-secondary"
+                            type="button"
                             onClick={() => toggleChildProgressEmails(child)}
                             disabled={familySaving}
                           >
@@ -649,6 +696,61 @@ export default function Profile() {
                           </button>
                         </div>
                       </div>
+                      {evidenceOpen === child.id && (
+                        <div className="profile-evidence">
+                          {evidence[child.id] === 'loading' && <p className="profile-evidence__quiet">Reading {child.username}'s own files…</p>}
+                          {evidence[child.id] === 'error' && <p className="profile-evidence__quiet">Could not load the evidence just now. Try again in a moment.</p>}
+                          {typeof evidence[child.id] === 'object' && evidence[child.id] !== null && (
+                            evidence[child.id].project ? (
+                              <>
+                                <p className="profile-evidence__intro">
+                                  In <strong>{evidence[child.id].project.title}</strong>, {child.username} is using:
+                                </p>
+                                <ul className="profile-evidence__list">
+                                  {evidence[child.id].concepts.map(concept => (
+                                    <li key={concept.id}>
+                                      <span className="profile-evidence__what">
+                                        <strong>{concept.label}</strong>
+                                        {concept.count > 1 ? ` · ${concept.count} times` : ''}
+                                      </span>
+                                      <code className="profile-evidence__line">line {concept.line}: {concept.snippet}</code>
+                                    </li>
+                                  ))}
+                                </ul>
+                                <p className="profile-evidence__note">
+                                  Every line above is from {child.username}'s own file — not an example, not a summary.
+                                  {evidence[child.id].lessonsDone.length > 0 && (
+                                    <> Lessons finished: {evidence[child.id].lessonsDone.map(l => l.title).join(', ')}.</>
+                                  )}
+                                </p>
+                                {/* The offer, at the only moment it is earned.
+                                    A pricing page is an interruption; this is a
+                                    parent who has just read their child's own
+                                    line of code. One quiet sentence, honest
+                                    about the price (the pilot is free, and
+                                    nothing charges today), and one link. */}
+                                <div className="profile-evidence__offer">
+                                  <span>
+                                    Want more of this? The family pilot is free — more projects,
+                                    two learners, and one email a month with exactly this kind of evidence.
+                                  </span>
+                                  <Link
+                                    to="/pricing#family-pilot"
+                                    className="profile-evidence__offer-link"
+                                    onClick={() => void trackEvent('parent_cta_click', 'evidence-pilot', token)}
+                                  >
+                                    See the pilot
+                                  </Link>
+                                </div>
+                              </>
+                            ) : (
+                              <p className="profile-evidence__quiet">
+                                No saved projects yet — the evidence starts with their first save.
+                              </p>
+                            )
+                          )}
+                        </div>
+                      )}
                       {passwordResetId === child.id && (
                         <form className="profile-family__password" onSubmit={event => resetChildPassword(event, child)}>
                           <label>

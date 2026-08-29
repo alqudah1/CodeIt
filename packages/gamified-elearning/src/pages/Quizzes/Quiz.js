@@ -398,16 +398,15 @@ export default function Quiz() {
   return (
     <div className="qz-page">
       <div className="qz-card">
-        {/* Header */}
-        <div className="qz-header">
+        {/* One row, not two. Back, how far through you are, and the count —
+            all of which are about the quiz rather than the question. Stacked
+            they pushed the question itself 156px down a phone screen; the
+            "Quiz 17" label was the third thing on the page telling a child
+            which quiz they had just tapped into. */}
+        <div className="qz-progress-wrap" aria-label={`Quiz ${quizId}`}>
           <button className="qz-btn-back" onClick={() => navigate(-1)}>
             Back
           </button>
-          <span className="qz-quiz-label">Quiz {quizId}</span>
-        </div>
-
-        {/* Progress bar */}
-        <div className="qz-progress-wrap">
           <div className="qz-progress-track">
             <div
               className="qz-progress-fill"

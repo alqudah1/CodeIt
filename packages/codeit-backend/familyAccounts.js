@@ -358,7 +358,68 @@ async function resetManagedChildPassword(adultUserId, childUserId, password) {
   return true;
 }
 
+/**
+ * The evidence a parent is actually paying for.
+ *
+ * getFamilyStatus counts things — 4 projects, 12 lessons — and counts are
+ * what every learning product shows because counts are cheap. What a parent
+ * wants to know is the question GOAL.md wrote down: "the computer made it,
+ * so what did my child actually do?" The honest answer lives in the child's
+ * own files, and the studio already knows how to read it (codeConcepts.js
+ * finds every concept with the line number and the child's own line).
+ *
+ * This hands the parent's browser the raw material for that answer: the
+ * child's newest projects and finished lessons — nothing invented, nothing
+ * summarised server-side. The frontend runs the same concept reader the
+ * child's own code tab uses, so parent and child are shown the same truth.
+ *
+ * Permission is the parent-child link and nothing else. A signed-in stranger
+ * with a child's id gets a 404 that does not confirm the child exists.
+ */
+async function getChildEvidence(adultUserId, childUserId) {
+  await ready;
+  const [links] = await db.query(
+    'SELECT child_user_id FROM parent_child_links WHERE adult_user_id = ? AND child_user_id = ?',
+    [adultUserId, childUserId]
+  );
+  if (!links.length) {
+    const missing = new Error('No such learner in this family.');
+    missing.statusCode = 404;
+    throw missing;
+  }
+
+  const [projects] = await db.query(
+    `SELECT id, title, prompt, project_type, generated_code, created_at, updated_at
+       FROM ai_projects
+      WHERE user_id = ?
+      ORDER BY updated_at DESC
+      LIMIT 3`,
+    [childUserId]
+  );
+  const [lessons] = await db.query(
+    `SELECT lp.lesson_id, l.title
+       FROM Student_Lesson_Progress lp
+       JOIN lessons l ON l.id = lp.lesson_id
+      WHERE lp.user_id = ?
+      ORDER BY lp.lesson_id`,
+    [childUserId]
+  );
+
+  return {
+    projects: projects.map(project => ({
+      id: project.id,
+      title: project.title,
+      prompt: project.prompt,
+      projectType: project.project_type,
+      code: project.generated_code,
+      updatedAt: project.updated_at,
+    })),
+    lessonsDone: lessons.map(lesson => ({ id: lesson.lesson_id, title: lesson.title })),
+  };
+}
+
 module.exports = {
+  getChildEvidence,
   createManagedChild,
   deleteManagedChild,
   getFamilyStatus,

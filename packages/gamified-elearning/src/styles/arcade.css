@@ -1,0 +1,403 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE PAPER ARCADE
+   One design language for the whole of CodeIt.
+
+   ── Why it exists ──────────────────────────────────────────────────────────
+   Mustafa, 28 August, showing the site to a friend that day: "the buttons are
+   crammed... the boxes don't look good, the games don't look good, the hero —
+   everything needs from zero to one hundred. Like you're in a game, in a safe
+   place you want to stay. Something I have never seen before."
+
+   Screenshots of the site as it was showed the real problem, and it was not
+   cramming — G fixed the cramming and measured it. The problem was that
+   NOTHING HAD WEIGHT. White cards on cream, hairline borders, shadows blurred
+   to invisibility, buttons that look like labels. A child's world is made of
+   things — stickers, keycaps, cardboard, toys — and this looked like a form.
+
+   ── The idea ───────────────────────────────────────────────────────────────
+   Everything a child can touch looks like a physical piece sitting on the
+   page: a firm ink outline, a hard shadow underneath, and press physics —
+   hover lifts it, pressing pushes it DOWN onto the paper like a real button.
+   Scratch is flat. Blockly is flat. This is tactile.
+
+   Two rules give it hierarchy, so it never becomes noise:
+     1. TOUCHABLE THINGS get the full treatment: ink outline + hard shadow +
+        press physics. If it has an outline, you can tap it. That single rule
+        answers "where do I go, what do I do" without a word of instruction.
+     2. PASSIVE SURFACES stay quiet: soft cream panels, no outline, tiny
+        shadow. The page never competes with the pieces on it.
+
+   Type: Baloo 2 — round, chunky, warm — for headings and buttons; Nunito for
+   reading. The ground is warm cream with a faint dot grid, like a play mat.
+
+   ── How it is applied ──────────────────────────────────────────────────────
+   Loaded after every component stylesheet, this file owns LOOK (colour, type,
+   borders, shadows, motion) and deliberately never touches LAYOUT (display,
+   grid, position, sizing) — layout lives in the component files and is
+   guarded by the browser checks. Keeping the whole language in one file means
+   one place to read it, and one place to delete if it is ever outgrown.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@import '@fontsource/baloo-2/500.css';
+@import '@fontsource/baloo-2/600.css';
+@import '@fontsource/baloo-2/700.css';
+@import '@fontsource/baloo-2/800.css';
+
+:root {
+  /* Ink: a deep warm cocoa, not black. Black on cream looks photocopied;
+     cocoa looks drawn. */
+  --ink: #35220E;
+  --ink-soft: rgba(53, 34, 14, 0.55);
+  --ink-line: rgba(53, 34, 14, 0.16);
+
+  --ground: #FFF4E5;
+  --paper: #FFFDFA;
+
+  /* The crew. Orange stays the hero; the rest exist so kinds of thing can
+     have kinds of colour: play=orange, learn=violet, done=mint, fun=sun. */
+  --arc-orange: #FF7A00;
+  --arc-orange-down: #E86D00;
+  --arc-violet: #7C5CFF;
+  --arc-violet-down: #6A4BEB;
+  /* ── Contrast-bearing variants ─────────────────────────────────────────
+     axe-core swept the journey and found one disease in seven places: white
+     text on the brand orange is 2.5:1 against a 4.5:1 floor, and small
+     orange labels on paper were 3.3:1. Children with low vision are this
+     product's audience, so the fix keeps the colour and changes the ink:
+     orange, mint and coral keycaps carry INK text (like the sun keys always
+     did — it reads more Paper Arcade, not less), violet keycaps deepen to
+     carry their white, and small orange labels use a text-safe orange. */
+  --arc-violet-deep: #5F41E5;
+  --arc-orange-text: #B25200;
+  --ink-mute: rgba(53, 34, 14, 0.74);
+  --arc-mint: #17C08B;
+  --arc-mint-down: #10AB7A;
+  --arc-sun: #FFC93C;
+  --arc-sky: #3EB7F8;
+  --arc-coral: #FF6B6B;
+
+  --font-display: 'Baloo 2', 'Nunito', sans-serif;
+  --font-body: 'Nunito', sans-serif;
+
+  /* The whole depth system is three numbers. Hard shadows, zero blur:
+     blur is what made the old site look wet. */
+  --pop-rest: 0 4px 0 var(--ink);
+  --pop-lift: 0 7px 0 var(--ink);
+  --pop-down: 0 1px 0 var(--ink);
+  --pop-card: 6px 6px 0 rgba(53, 34, 14, 0.14);
+}
+
+/* ── The ground: a play mat, not a blank page ─────────────────────────────── */
+body {
+  background-color: var(--ground);
+  background-image: radial-gradient(rgba(53, 34, 14, 0.055) 1.2px, transparent 1.2px);
+  background-size: 26px 26px;
+  color: var(--ink);
+}
+
+/* Links never look like a 1998 document again. The lessons map was rendering
+   every card title underlined in default blue — the single cheapest fix in
+   this whole file. */
+a { text-decoration: none; color: inherit; }
+
+h1, h2, h3, .studio-hero h1, .lm-title, .exp-hero__title, .pricing-hero h1,
+.qz-results-title, .sl-card__title, .profile-name, .bldr-success-banner__name,
+.shelf__title, .studio-section-heading h2 {
+  font-family: var(--font-display);
+  letter-spacing: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE PIECES — every button on the site becomes a keycap.
+   Ink outline, hard shadow, and the press: hover lifts 2px, pressing sinks it
+   3px with the shadow collapsing, exactly like a mechanical key. The list
+   below is every touchable class the site has; new ones join the list.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.site-header__cta, .site-header__login,
+.studio-button, .glass-btn,
+.pick__card, .shelf__hero, .shelf__chip,
+.bldr-build-btn, .bldr-action-btn, .bldr-chip,
+.bldr-shelf__card, .bldr-studio-bar__btn, .bldr-mine__option,
+.bldr-activation-card__primary, .bldr-change-hint__go,
+.bldr-tab,
+.lm-card, .lm-back-btn, .lm-continue-btn,
+.exp-btn, .exp-tab, .exp-hero__cta, .exp-card,
+.pricing-button, .qz-opt, .qz-btn-back,
+.sl-gate-card__btn, .sl-completion-card__btn, .sl-strip__back,
+.studio-hero__idea-row button, .pick__own > summary,
+.hpilot-form button, .auth-button {
+  font-family: var(--font-display);
+  font-weight: 700;
+  border: 2.5px solid var(--ink);
+  box-shadow: var(--pop-rest);
+  transition: transform 0.09s ease, box-shadow 0.09s ease, background 0.15s ease;
+}
+
+.site-header__cta:hover, .site-header__login:hover,
+.studio-button:hover, .glass-btn:hover,
+.pick__card:hover, .shelf__hero:hover, .shelf__chip:hover,
+.bldr-build-btn:hover:not(:disabled), .bldr-action-btn:hover:not(:disabled),
+.bldr-chip:hover, .bldr-shelf__card:hover, .bldr-studio-bar__btn:hover:not(:disabled),
+.bldr-mine__option:hover, .bldr-activation-card__primary:hover,
+.bldr-change-hint__go:hover, .bldr-tab:hover,
+.lm-card--unlocked:hover, .lm-card--completed:hover, .lm-back-btn:hover, .lm-continue-btn:hover,
+.exp-btn:hover, .exp-tab:hover, .exp-hero__cta:hover, .exp-card:hover,
+.pricing-button:hover, .qz-opt:hover:not(:disabled), .qz-btn-back:hover,
+.sl-gate-card__btn:hover, .sl-completion-card__btn:hover, .sl-strip__back:hover,
+.studio-hero__idea-row button:hover, .pick__own > summary:hover,
+.auth-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--pop-lift);
+}
+
+.site-header__cta:active, .site-header__login:active,
+.studio-button:active, .glass-btn:active,
+.pick__card:active, .shelf__hero:active, .shelf__chip:active,
+.bldr-build-btn:active, .bldr-action-btn:active,
+.bldr-chip:active, .bldr-shelf__card:active, .bldr-studio-bar__btn:active,
+.bldr-mine__option:active, .bldr-activation-card__primary:active,
+.bldr-change-hint__go:active, .bldr-tab:active,
+.lm-card:active, .lm-back-btn:active, .lm-continue-btn:active,
+.exp-btn:active, .exp-tab:active, .exp-hero__cta:active, .exp-card:active,
+.pricing-button:active, .qz-opt:active, .qz-btn-back:active,
+.sl-gate-card__btn:active, .sl-completion-card__btn:active, .sl-strip__back:active,
+.studio-hero__idea-row button:active, .pick__own > summary:active,
+.auth-button:active {
+  transform: translateY(3px);
+  box-shadow: var(--pop-down);
+}
+
+/* One focus language everywhere: a violet halo, offset so the ink outline
+   stays visible inside it. */
+.site-header__cta:focus-visible, .studio-button:focus-visible,
+.pick__card:focus-visible, .bldr-build-btn:focus-visible,
+.bldr-action-btn:focus-visible, .bldr-shelf__card:focus-visible,
+.lm-card:focus-visible, .exp-btn:focus-visible, .pricing-button:focus-visible,
+.qz-opt:focus-visible, .bldr-tab:focus-visible, .glass-btn:focus-visible {
+  outline: 3px solid var(--arc-violet);
+  outline-offset: 3px;
+}
+
+/* Colour roles. The primary action on any screen is an orange keycap with
+   ink text — sun-lit, unmissable, and pressing it visibly does something. */
+.site-header__cta, .studio-button--primary, .bldr-build-btn,
+.bldr-activation-card__primary, .exp-hero__cta, .exp-btn--play,
+.pricing-button--primary, .lm-continue-btn, .glass-btn--primary,
+.studio-hero__idea-row button, .auth-button,
+.sl-completion-card__btn--primary, .hpilot-form button {
+  background: var(--arc-orange);
+  color: var(--ink);
+}
+.site-header__cta:active, .studio-button--primary:active, .bldr-build-btn:active,
+.bldr-activation-card__primary:active, .exp-hero__cta:active, .exp-btn--play:active,
+.pricing-button--primary:active, .lm-continue-btn:active {
+  background: var(--arc-orange-down);
+}
+
+/* Quiet actions: paper keycaps. Still touchable — still outlined — just not
+   shouting. */
+.site-header__login, .studio-button--quiet, .qt-btn-back, .qz-btn-back,
+.lm-back-btn, .exp-btn--remix, .pricing-button--quiet, .sl-strip__back,
+.pick__own > summary, .glass-btn {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* The learn-side of the world is violet: lesson links from code, the tab that
+   teaches. */
+.bldr-change-hint__go { background: var(--arc-violet-deep); color: #fff; }
+.bldr-change-hint__go:active { background: var(--arc-violet-down); }
+.bldr-change-hint--behind .bldr-change-hint__go { background: var(--arc-mint); color: var(--ink); }
+.bldr-change-hint--behind .bldr-change-hint__go:active { background: var(--arc-mint-down); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PASSIVE SURFACES — cards that hold things but are not themselves buttons.
+   Soft paper, gentle offset shadow, NO ink outline (the outline is the "you
+   can tap me" promise and it is kept). Containers whose children are the
+   touchable things.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.bldr-activation-card, .bldr-success-banner, .bldr-loading-preview-wrap,
+.bldr-studio-panel, .qz-card, .sl-card, .profile-card, .pricing-card,
+.exp-section__empty, .studio-preview, .hpilot-card, .auth-card {
+  background: var(--paper);
+  border: 2px solid var(--ink-line);
+  box-shadow: var(--pop-card);
+  border-radius: 20px;
+}
+
+/* The pricing pilot card and the studio preview earn a full outline: each is
+   the single centrepiece of its page. */
+.pricing-card--founding, .studio-preview {
+  border: 2.5px solid var(--ink);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PER-SCREEN CRAFT — the places the shared rules cannot reach.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Header: the site's hat. A firm ink baseline turns "some links floating
+   on cream" into a shelf everything hangs from. ── */
+.site-header { border-bottom: 2.5px solid var(--ink); background: var(--ground); }
+.site-header__nav-link { font-family: var(--font-display); font-weight: 700; color: var(--ink); }
+.site-header__nav-link.is-active {
+  background: var(--arc-sun);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 2px var(--ink);
+  color: var(--ink);
+}
+
+/* ── Home: the three starter cards are the product. Each gets its own colour
+   sticker and a big emoji on a tilted tile, so they read as three different
+   toys rather than three white rectangles. ── */
+.pick__card { background: var(--paper); border-radius: 18px; }
+.pick__emoji {
+  display: inline-grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  background: var(--arc-sun);
+  border: 2.5px solid var(--ink);
+  border-radius: 14px;
+  transform: rotate(-4deg);
+  box-shadow: 3px 3px 0 rgba(53, 34, 14, 0.2);
+  font-size: 1.6rem;
+}
+.pick__row > li:nth-child(2) .pick__emoji { background: var(--arc-sky); transform: rotate(3deg); }
+.pick__row > li:nth-child(3) .pick__emoji { background: var(--arc-coral); transform: rotate(-2deg); }
+.pick__card:hover .pick__emoji { transform: rotate(0deg) scale(1.08); transition: transform .15s ease; }
+.pick__label { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; }
+.pick__ask { font-family: var(--font-display); font-weight: 800; }
+.studio-kicker { color: var(--arc-orange-text); }
+.studio-hero h1 { color: var(--ink); }
+.studio-hero h1 span { color: var(--arc-orange); }
+.studio-hero__audience li { border: 2px solid var(--ink-line); font-family: var(--font-display); }
+
+/* ── The studio: tabs become a game HUD. The active tab is a pressed sun-lit
+   key; the rest are paper keys waiting. ── */
+.bldr-tab { background: var(--paper); border-radius: 14px; color: var(--ink); }
+.bldr-tab--active, .bldr-tab[aria-selected="true"] {
+  background: var(--arc-sun);
+  transform: translateY(3px);
+  box-shadow: var(--pop-down);
+}
+.bldr-shelf__card { background: var(--paper); border-radius: 16px; }
+.bldr-shelf__emoji { font-size: 1.7rem; }
+.bldr-shelf__label { font-family: var(--font-display); font-weight: 800; }
+.bldr-shelf__title { font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; }
+.bldr-studio-bar__btn { background: var(--paper); border-radius: 12px; }
+.bldr-studio-bar__btn--active { background: var(--arc-sun); transform: translateY(3px); box-shadow: var(--pop-down); }
+.bldr-success-banner { border-radius: 20px; }
+.bldr-success-banner__label { font-family: var(--font-display); color: var(--arc-mint-down); }
+
+/* The four-step checklist becomes a quest tracker: each step a die with a
+   number, done steps stamped mint. */
+.bldr-project-checklist li button {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+}
+.bldr-project-checklist li button span {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 2px 2px 0 rgba(53, 34, 14, 0.2);
+  border-radius: 10px;
+}
+.bldr-project-checklist li.is-done button span { background: var(--arc-mint); color: #fff; }
+.bldr-project-checklist li.is-current button span { background: var(--arc-sun); }
+
+/* ── Lessons: the map becomes a trail of quest cards. Ink number dice; the
+   next lesson glows sun-yellow; locked ones are honest cardboard with a
+   dashed edge — closed, not broken. ── */
+.lm-page { background: transparent; }
+.lm-card {
+  background: var(--paper);
+  border-radius: 18px;
+  border: 2.5px solid var(--ink);
+  box-shadow: var(--pop-rest);
+}
+.lm-card--locked {
+  border: 2.5px dashed var(--ink-line);
+  box-shadow: none;
+  background: rgba(255, 253, 250, 0.6);
+  opacity: 1;
+}
+.lm-card--locked .lm-card-title, .lm-card--locked .lm-card-desc { color: var(--ink-soft); }
+.lm-card--next { border-color: var(--ink); background: #FFF9EA; }
+.lm-card--next .lm-emoji { background: var(--arc-sun); }
+.lm-card--completed .lm-emoji { background: var(--arc-mint); }
+.lm-emoji {
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--paper);
+  box-shadow: 2px 2px 0 rgba(53, 34, 14, 0.18);
+}
+.lm-card-title { font-family: var(--font-display); font-weight: 800; color: var(--ink); }
+.lm-lesson-num { font-family: var(--font-display); color: var(--ink-soft); }
+.lm-xp {
+  font-family: var(--font-display);
+  font-weight: 800;
+  background: var(--arc-sun);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+  color: var(--ink);
+}
+.lm-badge--locked { background: transparent; border: 1.5px dashed var(--ink-line); color: var(--ink-soft); }
+.lm-badge--completed { background: var(--arc-mint); color: var(--ink); border: 1.5px solid var(--ink); }
+.lm-stat-chip { border: 2px solid var(--ink); background: var(--paper); font-family: var(--font-display); box-shadow: var(--pop-down); }
+.lm-connector { background: var(--ink-line); }
+.lm-connector--done { background: var(--arc-mint); }
+
+/* ── Explore: project cards look like game boxes — chunky, outlined, with the
+   thumbnail as cover art. ── */
+.exp-card { background: var(--paper); border-radius: 18px; overflow: hidden; }
+.exp-card__thumb-title { font-family: var(--font-display); font-weight: 800; }
+.exp-card__title { font-family: var(--font-display); font-weight: 800; color: var(--ink); }
+.exp-card__type-badge {
+  font-family: var(--font-display);
+  border: 2px solid var(--ink);
+  background: var(--arc-sun);
+  color: var(--ink);
+}
+.exp-tab { background: var(--paper); border-radius: 999px; color: var(--ink); }
+.exp-tab--active { background: var(--arc-violet-deep); color: #fff; transform: translateY(3px); box-shadow: var(--pop-down); }
+.exp-tabs { border-bottom: none; }
+
+/* ── Quiz: answers are big paper keys; right stamps mint, wrong stamps coral.
+   A child should WANT to press an answer. ── */
+.qz-page { background: transparent; }
+.qz-opt { background: var(--paper); border-radius: 16px; font-family: var(--font-body); font-weight: 700; }
+.qz-opt--correct { background: var(--arc-mint); color: var(--ink); border-color: var(--ink); }
+.qz-opt--wrong { background: var(--arc-coral); color: var(--ink); border-color: var(--ink); }
+.qz-opt-letter {
+  border: 2px solid var(--ink);
+  background: var(--arc-sun);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 800;
+  border-radius: 8px;
+}
+.qz-progress-track { border: 2px solid var(--ink); background: var(--paper); height: 16px; }
+.qz-progress-fill { background: var(--arc-mint); }
+.qz-q-badge { font-family: var(--font-display); border: 2px solid var(--ink); background: var(--arc-sky); color: var(--ink); }
+
+/* ── Lesson pages: the strip at the top is the quest bar. ── */
+.sl-strip__bar-track { border: 2px solid var(--ink); background: var(--paper); }
+.sl-strip__bar-fill { background: var(--arc-mint); }
+.sl-jp-dot { border: 2px solid var(--ink); font-family: var(--font-display); }
+.sl-now { border-left: 4px solid var(--arc-sun); }
+.sl-tag--done { background: var(--arc-mint); color: var(--ink); }
+
+/* ── Pricing: the plans are two clean boxes; money stays calm. ── */
+.pricing-card h2 { font-family: var(--font-display); }
+.pricing-price strong { font-family: var(--font-display); color: var(--ink); }
+.pricing-status { border: 2px solid var(--arc-mint); font-family: var(--font-display); }
+
+/* ── Reduced motion: every lift and press collapses to an instant state
+   change; nothing in this language requires animation to make sense. ── */
+@media (prefers-reduced-motion: reduce) {
+  .pick__card, .bldr-build-btn, .bldr-action-btn, .lm-card, .exp-card,
+  .qz-opt, .studio-button, .site-header__cta {
+    transition: none;
+  }
+}

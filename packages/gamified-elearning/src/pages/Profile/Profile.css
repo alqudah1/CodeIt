@@ -12,16 +12,24 @@
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  padding: 3rem clamp(1rem, 5vw, 2rem) 5rem;
+  /* 3rem was three quarters of an inch of nothing above a child's own
+     numbers, on the one page that exists to show them. */
+  padding: 1.25rem clamp(1rem, 5vw, 2rem) 5rem;
 }
 
 /* ── Hero ────────────────────────────────────────────────────── */
+/* A row, not a column. Stacked, the avatar and the name took 370px before a
+   child reached the level, the XP, the streak and the project count — which is
+   the entire reason anyone opens their profile. Side by side the same two
+   things cost about 130px and nothing was removed. */
 .profile-hero {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 1.2rem;
-  text-align: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: left;
+  flex-wrap: wrap;
 }
 
 /* Avatar ring — level-dependent styling */
@@ -55,8 +63,8 @@
 .profile-hero__copy {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: flex-start;
+  gap: 0.35rem;
 }
 
 .profile-name {
@@ -121,7 +129,7 @@
 }
 
 .profile-level-lbl {
-  font-size: 0.55rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: rgba(255,255,255,0.75);
   text-transform: uppercase;
@@ -168,7 +176,7 @@
 .profile-xp-labels {
   display: flex;
   justify-content: space-between;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(31,41,55,0.40);
 }
@@ -202,7 +210,7 @@
 }
 
 .profile-stat__lbl {
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(31,41,55,0.50);
   text-transform: uppercase;
@@ -227,7 +235,7 @@
 .profile-parent__eyebrow {
   margin: 0 0 0.25rem;
   color: #c94f0c;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -243,7 +251,7 @@
   flex: 0 0 auto;
   padding: 0.35rem 0.65rem;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 900;
 }
 
@@ -265,7 +273,7 @@
   text-align: center;
   border-left: 1px solid rgba(61,48,43,0.12);
   color: #72594d;
-  font-size: 0.69rem;
+  font-size: 0.8125rem;
 }
 
 .profile-parent__counts span:first-child { border-left: 0; }
@@ -274,7 +282,7 @@
 .profile-parent__form { display: grid; gap: 0.75rem; }
 .profile-parent__form > label, .profile-parent__form legend {
   color: #3d302b;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 900;
 }
 
@@ -304,7 +312,7 @@
 }
 
 .profile-parent__form legend { padding: 0 0.35rem; }
-.profile-parent__check { display: flex; align-items: flex-start; gap: 0.55rem; color: #5f6674; font-size: 0.78rem; line-height: 1.35; }
+.profile-parent__check { display: flex; align-items: flex-start; gap: 0.55rem; color: #5f6674; font-size: 0.8125rem; line-height: 1.35; }
 .profile-parent__check input { margin-top: 0.15rem; accent-color: #f87824; }
 
 .profile-parent__form button {
@@ -320,8 +328,8 @@
 }
 
 .profile-parent__form button:disabled { cursor: wait; opacity: 0.6; }
-.profile-parent__message { margin: 0; color: #c94f0c; font-size: 0.78rem; font-weight: 800; }
-.profile-parent__privacy { margin: 0; color: #72594d; font-size: 0.72rem; line-height: 1.5; }
+.profile-parent__message { margin: 0; color: #c94f0c; font-size: 0.8125rem; font-weight: 800; }
+.profile-parent__privacy { margin: 0; color: #72594d; font-size: 0.8125rem; line-height: 1.5; }
 
 .profile-parent__notice {
   padding: 0.9rem 1rem;
@@ -329,7 +337,7 @@
   border-radius: 12px;
   background: #fffdf9;
   color: #72594d;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   line-height: 1.5;
 }
 
@@ -352,7 +360,7 @@
 .profile-family__children > p {
   margin: 0;
   color: #72594d;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   line-height: 1.55;
 }
 
@@ -396,7 +404,7 @@
   display: grid;
   gap: 0.4rem;
   color: #3d302b;
-  font-size: 0.76rem;
+  font-size: 0.8125rem;
   font-weight: 900;
 }
 
@@ -427,7 +435,7 @@
   border-radius: 11px;
   background: #fff8e9;
   color: #5f4a3f;
-  font-size: 0.76rem;
+  font-size: 0.8125rem;
   line-height: 1.5;
 }
 
@@ -465,7 +473,7 @@
 }
 
 .profile-family__children article strong { color: #3d302b; font-size: 0.88rem; }
-.profile-family__children article span { color: #72594d; font-size: 0.7rem; }
+.profile-family__children article span { color: #72594d; font-size: 0.8125rem; }
 .profile-family__children article button {
   flex: 0 0 auto;
   padding: 0.5rem 0.7rem;
@@ -474,7 +482,7 @@
   background: #fff5f1;
   color: #a83a20;
   font: inherit;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 900;
   cursor: pointer;
 }
@@ -511,7 +519,7 @@
   display: grid;
   gap: 0.35rem;
   color: #3d302b;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 900;
 }
 
@@ -538,7 +546,7 @@
 .profile-parent__recent h3 { margin: 0 0 0.65rem; font-size: 0.85rem; }
 .profile-parent__recent ul { margin: 0; padding: 0; display: grid; gap: 0.55rem; list-style: none; }
 .profile-parent__recent li { display: flex; align-items: baseline; gap: 0.65rem; }
-.profile-parent__recent li span { min-width: 112px; color: #c94f0c; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; }
+.profile-parent__recent li span { min-width: 112px; color: #c94f0c; font-size: 0.8125rem; font-weight: 900; text-transform: uppercase; }
 .profile-parent__recent li strong { font-size: 0.82rem; }
 
 /* ── Next level card ─────────────────────────────────────────── */
@@ -571,7 +579,7 @@
 
 .profile-next__label {
   margin: 0;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -600,7 +608,7 @@
 
 .profile-earn__title {
   margin: 0 0 0.75rem;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -707,3 +715,66 @@
   .profile-parent__recent li { align-items: flex-start; flex-direction: column; gap: 0.15rem; }
 }
 .profile-family { scroll-margin-top: 100px; }
+
+/* ── The evidence panel (see familyAccounts.getChildEvidence) ──
+   The one thing on this page a parent cannot get anywhere else: their
+   child's own lines, named. Styled like the child's own code tab so a
+   parent looking over a shoulder recognises what they are seeing. */
+.profile-evidence {
+  margin-top: 10px;
+  padding: 14px 16px;
+  background: var(--paper);
+  border: 2px solid var(--ink-line);
+  border-radius: 14px;
+  box-shadow: var(--pop-card);
+}
+.profile-evidence__intro { margin: 0 0 8px; font-size: 0.95rem; color: var(--ink); }
+.profile-evidence__list { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 8px; }
+.profile-evidence__what { display: block; font-size: 0.9rem; color: var(--ink); }
+.profile-evidence__what strong { font-family: var(--font-display); }
+.profile-evidence__line {
+  display: block;
+  margin-top: 2px;
+  padding: 5px 9px;
+  background: #FFF6E8;
+  border: 1.5px solid var(--ink-line);
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  overflow-x: auto;
+  white-space: pre;
+}
+.profile-evidence__note { margin: 0; font-size: 0.85rem; color: var(--ink-soft); line-height: 1.5; }
+.profile-evidence__quiet { margin: 0; font-size: 0.9rem; color: var(--ink-soft); }
+
+/* The pilot offer under the evidence — a footnote, not a banner. The parent
+   has just read their child's own line; the product does not shout at them. */
+.profile-evidence__offer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1.5px dashed var(--ink-line);
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.profile-evidence__offer span { flex: 1 1 260px; }
+.profile-evidence__offer-link {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  background: var(--arc-orange);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 11px;
+  box-shadow: var(--pop-down);
+  font-family: var(--font-display);
+  font-weight: 700;
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+}
+.profile-evidence__offer-link:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
+.profile-evidence__offer-link:active { transform: translateY(2px); box-shadow: 0 0 0 var(--ink); }

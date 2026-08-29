@@ -18,7 +18,7 @@
 .investor-brief__product aside > span,
 .investor-brief__business-grid > article > span {
   color: var(--cb-orange-dark);
-  font-size: .68rem;
+  font-size: 0.8125rem;
   font-weight: 1000;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -134,7 +134,7 @@
   display: block;
   margin-top: .6rem;
   color: var(--cb-muted);
-  font-size: .8rem;
+  font-size: 0.8125rem;
   font-weight: 900;
 }
 

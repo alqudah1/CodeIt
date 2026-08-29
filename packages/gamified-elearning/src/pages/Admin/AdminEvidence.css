@@ -1,6 +1,6 @@
 .evidence { color: #38291f; font-family: Nunito, Arial, sans-serif; }
 .evidence__header { margin-bottom: 1.6rem; }
-.evidence__header p { margin: 0 0 .5rem; color: #bd4e14; font-size: .72rem; font-weight: 1000; letter-spacing: .12em; text-transform: uppercase; }
+.evidence__header p { margin: 0 0 .5rem; color: #bd4e14; font-size: 0.8125rem; font-weight: 1000; letter-spacing: .12em; text-transform: uppercase; }
 .evidence__header h1 { margin: 0; font: 700 clamp(2rem, 5vw, 4rem)/1.05 Arvo, Georgia, serif; letter-spacing: -.04em; }
 .evidence__header > span { display: block; max-width: 760px; margin-top: .8rem; color: #72594d; line-height: 1.55; }
 .evidence__truth { margin-bottom: 1rem; border: 1px solid #e7cdbb; border-radius: 16px; padding: 1.2rem 1.35rem; background: #fff5e9; }
@@ -9,7 +9,7 @@
 .evidence__cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; }
 .evidence__cards article { border: 1px solid #ead8c9; border-radius: 16px; padding: 1.2rem; background: #fff; }
 .evidence__cards strong { display: block; color: #f46f25; font: 700 clamp(1.7rem, 4vw, 2.5rem) Arvo, Georgia, serif; }
-.evidence__cards span, .evidence__dates span { color: #72594d; font-size: .78rem; font-weight: 900; }
+.evidence__cards span, .evidence__dates span { color: #72594d; font-size: 0.8125rem; font-weight: 900; }
 .evidence__dates { margin-top: .8rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
 .evidence__dates article { display: flex; flex-direction: column; gap: .45rem; border: 1px solid #ead8c9; border-radius: 14px; padding: 1rem 1.1rem; background: #fffaf6; }
 .evidence__dates strong { font-size: 1.02rem; }
@@ -17,20 +17,20 @@
 .evidence__charts > article { border: 1px solid #ead8c9; border-radius: 18px; padding: 1.25rem; background: #fff; }
 .evidence__charts h2 { margin: 0; font: 700 1.3rem Arvo, Georgia, serif; }
 .evidence__charts p { margin: .4rem 0 1.2rem; color: #72594d; font-size: .85rem; }
-.evidence__bar { display: grid; grid-template-columns: 82px 1fr 40px; gap: .7rem; align-items: center; margin-top: .65rem; font-size: .76rem; }
+.evidence__bar { display: grid; grid-template-columns: 82px 1fr 40px; gap: .7rem; align-items: center; margin-top: .65rem; font-size: 0.8125rem; }
 .evidence__bar > span { color: #72594d; font-weight: 800; }
 .evidence__bar i { height: 9px; border-radius: 999px; background: #f4e8de; overflow: hidden; }
 .evidence__bar b { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #f46f25, #ffb15f); }
 .evidence__bar strong { text-align: right; }
 .evidence__footer { margin-top: 1rem; border-radius: 14px; padding: 1rem 1.15rem; background: #38291f; color: #fff8f1; line-height: 1.5; }
 .evidence__activity { margin-top: 1rem; border: 1px solid #e7cdbb; border-radius: 18px; padding: 1.25rem; background: #fffaf6; }
-.evidence__activity header p { margin: 0 0 .35rem; color: #bd4e14; font-size: .7rem; font-weight: 1000; letter-spacing: .1em; text-transform: uppercase; }
+.evidence__activity header p { margin: 0 0 .35rem; color: #bd4e14; font-size: 0.8125rem; font-weight: 1000; letter-spacing: .1em; text-transform: uppercase; }
 .evidence__activity header h2 { margin: 0; font: 700 1.45rem Arvo, Georgia, serif; }
 .evidence__activity header span, .evidence__activity > p { display: block; margin-top: .45rem; color: #72594d; font-size: .84rem; line-height: 1.5; }
 .evidence__activity > div { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; margin-top: 1rem; }
 .evidence__activity article { border: 1px solid #ead8c9; border-radius: 14px; padding: 1rem; background: #fff; }
 .evidence__activity article strong { display: block; color: #f46f25; font: 700 2rem Arvo, Georgia, serif; }
-.evidence__activity article span { color: #72594d; font-size: .78rem; font-weight: 900; }
+.evidence__activity article span { color: #72594d; font-size: 0.8125rem; font-weight: 900; }
 
 @media (max-width: 900px) {
   .evidence__cards { grid-template-columns: repeat(2, 1fr); }
