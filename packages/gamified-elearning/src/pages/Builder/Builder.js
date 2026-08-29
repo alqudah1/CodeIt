@@ -2932,14 +2932,20 @@ export default function Builder() {
         {/* ════════════════════════════════════════
             THE SHELVES — eighteen projects that open instantly
         ════════════════════════════════════════ */}
+        {/* The coach ring marks the FIRST shelf, not the whole section — a
+            halo around one row says "start here"; a halo around the entire
+            screen is just a big yellow box. */}
         {(!hasResult || showStartOver) && !loading && (
-        <section className="bldr-shelves" aria-label="Projects you can open right now"
-          data-codeit-coach={coachStage.target === 'pick' ? 'current' : undefined}>
+        <section className="bldr-shelves" aria-label="Projects you can open right now">
           <p className="bldr-shelves__lead">
             Tap one. It opens straight away, and then you can change anything in it.
           </p>
-          {SHELVES.map(shelf => (
-            <div className="bldr-shelf" key={shelf.kind}>
+          {SHELVES.map((shelf, shelfIdx) => (
+            <div
+              className="bldr-shelf"
+              key={shelf.kind}
+              data-codeit-coach={coachStage.target === 'pick' && shelfIdx === 0 ? 'current' : undefined}
+            >
               <h3 className="bldr-shelf__title">{shelf.title}</h3>
               <p className="bldr-shelf__line">{shelf.line}</p>
               <ul className="bldr-shelf__row">

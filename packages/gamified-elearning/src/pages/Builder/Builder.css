@@ -6418,3 +6418,111 @@ details.bldr-device-sizes .bldr-device-sizes__options {
   padding: 0.25rem 0.5rem;
   cursor: pointer;
 }
+
+/* ── The Paper Arcade, below the shelves ─────────────────────────────────────
+   The first screen spoke two languages: shelf cards in ink-and-pop, and then
+   the old design — pastel gradients, glassy blur, watercolour shadows — for
+   everything after them. One language now. */
+
+/* The three "ask for something new" cards: paper, ink, keycap. The colour
+   that told game from website from quiz survives as a top stripe. */
+.bldr-hero-pick,
+.bldr-hero-pick--game,
+.bldr-hero-pick--website,
+.bldr-hero-pick--quiz {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: var(--pop-rest);
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+}
+.bldr-hero-pick::before { border-radius: 14px 14px 0 0; }
+.bldr-hero-pick--game::before    { background: var(--arc-orange); }
+.bldr-hero-pick--website::before { background: var(--arc-mint); }
+.bldr-hero-pick--quiz::before    { background: var(--arc-violet); }
+.bldr-hero-pick:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--pop-lift);
+  border-color: var(--ink);
+}
+.bldr-hero-pick:active { transform: translateY(3px); box-shadow: var(--pop-down); }
+.bldr-hero-pick__title { color: var(--ink); font-family: var(--font-display); }
+.bldr-hero-pick__cta,
+.bldr-hero-pick--game .bldr-hero-pick__cta,
+.bldr-hero-pick--website .bldr-hero-pick__cta,
+.bldr-hero-pick--quiz .bldr-hero-pick__cta {
+  background: var(--ground);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  box-shadow: 0 2px 0 var(--ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.bldr-hero-picks__label { color: var(--ink); font-family: var(--font-display); font-weight: 700; }
+
+/* The idea box: a machine, not a cloud. No blur, no glass. */
+.bldr-input-card {
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: var(--pop-card);
+  backdrop-filter: none;
+}
+.bldr-textarea {
+  border: 2px solid var(--ink-line);
+  border-radius: 12px;
+  background: var(--ground);
+}
+.bldr-textarea:focus {
+  border-color: var(--ink);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.14);
+}
+.bldr-build-btn {
+  background: var(--arc-orange);
+  color: var(--ink);
+  border: 2.5px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: var(--pop-rest);
+  font-family: var(--font-display);
+  font-weight: 700;
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+}
+.bldr-build-btn:not(:disabled):hover { transform: translateY(-2px); box-shadow: var(--pop-lift); }
+.bldr-build-btn:not(:disabled):active { transform: translateY(3px); box-shadow: var(--pop-down); }
+.bldr-build-btn:disabled {
+  background: var(--ground);
+  color: var(--ink-mute);
+  box-shadow: none;
+}
+
+/* The parent line at the bottom: one quiet paper card, sticker chips. */
+.bldr-trust__inner {
+  background: var(--paper);
+  border: 2px solid var(--ink-line);
+  border-radius: 18px;
+  box-shadow: var(--pop-card);
+}
+.bldr-trust__title { color: var(--ink); font-family: var(--font-display); }
+.bldr-trust__pill {
+  background: var(--ground);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  box-shadow: 0 2px 0 var(--ink);
+  color: var(--ink);
+  font-weight: 800;
+}
+
+/* "How much help do you want?" folds open as a paper card too. */
+.bldr-help-level > summary { color: var(--ink); font-weight: 800; }
+.bldr-help-level__options button {
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: 0 2px 0 var(--ink);
+  color: var(--ink);
+  font-weight: 800;
+}
+.bldr-help-level__options button.is-active { background: var(--arc-sun); }
+.bldr-trust { background: transparent; border: none; box-shadow: none; padding: 0; }
