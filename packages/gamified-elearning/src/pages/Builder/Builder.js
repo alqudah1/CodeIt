@@ -764,6 +764,17 @@ export default function Builder() {
   const isNewAccountWelcome = Boolean(user)
     && new URLSearchParams(location.search || '').get('welcome') === '1';
 
+  // A parent who clicked "Start building free" on the pricing page lands here,
+  // in their child's tool — which is the honest demo, but the trail back to
+  // the decision goes cold. One quiet, dismissible line bridges back. It only
+  // exists for arrivals from pricing, so no child ever builds next to an ad.
+  const [parentTrail, setParentTrail] = useState(() => {
+    try {
+      return new URLSearchParams(location.search || '').get('from') === 'pricing'
+        && sessionStorage.getItem('codeit_parent_trail_dismissed') !== '1';
+    } catch (_) { return false; }
+  });
+
   useEffect(() => {
     if (!isNewAccountWelcome || !token) return;
     const accountKey = user?.id || user?.userId || 'account';
@@ -2789,6 +2800,31 @@ export default function Builder() {
     <>
       <Header />
       <div className={`bldr-page${hasResult ? ' bldr-studio-mode' : ''}`}>
+
+        {/* The bridge back for a parent arriving from the pricing page. */}
+        {parentTrail && (
+          <aside className="bldr-parent-trail" aria-label="For the grown-up trying this out">
+            <span>
+              For the grown-up: this is exactly what your child uses. Seen enough?
+            </span>
+            <Link
+              to="/pricing#family-pilot"
+              onClick={() => void trackEvent('parent_cta_click', 'builder-trial-return')}
+            >
+              The family pilot is free →
+            </Link>
+            <button
+              type="button"
+              aria-label="Dismiss this note"
+              onClick={() => {
+                setParentTrail(false);
+                try { sessionStorage.setItem('codeit_parent_trail_dismissed', '1'); } catch (_) {}
+              }}
+            >
+              ✕
+            </button>
+          </aside>
+        )}
 
         {/* ════════════════════════════════════════
             HERO

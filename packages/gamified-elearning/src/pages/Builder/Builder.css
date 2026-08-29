@@ -6380,3 +6380,41 @@ details.bldr-device-sizes .bldr-device-sizes__options {
    documentElement, which the body's overflow-x clip keeps innocent. It took
    a check that TAPS like a child to find a thing no child could tap. */
 .bldr-shelves, .bldr-shelf, .bldr-shelf__row { width: 100%; max-width: 100%; min-width: 0; }
+
+/* ── The parent trail — one line, only for arrivals from /pricing ── */
+.bldr-parent-trail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  margin: 0 auto 0.9rem;
+  max-width: 720px;
+  padding: 0.55rem 0.9rem;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: var(--pop-rest);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.bldr-parent-trail a {
+  color: var(--arc-orange-text);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.bldr-parent-trail button {
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ground);
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}

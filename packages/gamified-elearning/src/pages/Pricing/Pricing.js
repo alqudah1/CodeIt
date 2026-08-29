@@ -207,7 +207,9 @@ export default function Pricing() {
             <div className="pricing-price"><strong>{CURRENCY_SYMBOL}0</strong><span>free forever, no card</span></div>
             <p className="pricing-card__summary">Learn the basics and make a real first project without a credit card.</p>
             <ul>{FREE_FEATURES.map((feature) => <li key={feature}>{feature}</li>)}</ul>
-            <Link className="pricing-button pricing-button--quiet" to="/builder">Start building free</Link>
+            {/* ?from=pricing lets the studio show one dismissible line bridging the
+                grown-up back to this page. Children never arrive with it. */}
+            <Link className="pricing-button pricing-button--quiet" to="/builder?from=pricing">Start building free</Link>
           </article>
 
           {billing.billingEnabled && (

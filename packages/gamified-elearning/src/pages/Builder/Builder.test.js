@@ -869,3 +869,41 @@ describe('studio opening', () => {
     expect(await screen.findByText(/1 play$/)).toBeInTheDocument();
   });
 });
+
+// ── The parent trail ─────────────────────────────────────────────────────────
+//
+// "Start building free" on /pricing sends a parent into their child's studio —
+// the honest demo — with ?from=pricing. One dismissible line bridges them back
+// to the decision. It must never exist for a plain visit: no child builds next
+// to an advert.
+describe('the parent trail from pricing', () => {
+  beforeEach(() => {
+    window.scrollTo = jest.fn();
+    localStorage.clear();
+    sessionStorage.clear();
+    trackEvent.mockClear();
+    mockBuilderLocation.search = '';
+    mockBuilderLocation.state = null;
+    global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: async () => ({ missions: [] }) }));
+  });
+
+  test('shows the bridge back only for arrivals from pricing, and stays dismissed', () => {
+    mockBuilderLocation.search = '?from=pricing';
+    const { unmount } = render(<Builder />);
+    expect(screen.getByText(/this is exactly what your child uses/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /family pilot is free/i })).toHaveAttribute('href', '/pricing#family-pilot');
+
+    fireEvent.click(screen.getByRole('button', { name: /Dismiss this note/i }));
+    expect(screen.queryByText(/this is exactly what your child uses/i)).not.toBeInTheDocument();
+    unmount();
+
+    // Dismissed once is dismissed for the visit, even on a fresh mount.
+    render(<Builder />);
+    expect(screen.queryByText(/this is exactly what your child uses/i)).not.toBeInTheDocument();
+  });
+
+  test('a plain visit to the studio never shows it', () => {
+    render(<Builder />);
+    expect(screen.queryByText(/this is exactly what your child uses/i)).not.toBeInTheDocument();
+  });
+});
