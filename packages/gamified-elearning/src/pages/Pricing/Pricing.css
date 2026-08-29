@@ -160,6 +160,65 @@
 .pricing-button--primary { background: var(--arc-orange); color: var(--ink); }
 .pricing-button--quiet { background: var(--paper); color: var(--ink); }
 
+/* ── The example monthly email — the promise, given a shape ── */
+.pricing-evidence { margin-top: 3.5rem; }
+.pricing-evidence__intro { max-width: 640px; margin: 0 auto 1.5rem; text-align: center; }
+.pricing-evidence__intro h2 {
+  margin: 0 0 .8rem;
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-size: clamp(1.45rem, 3.2vw, 2.1rem);
+  line-height: 1.18;
+}
+.pricing-evidence__intro p:not(.pricing-kicker) { margin: 0; color: #704c37; line-height: 1.65; }
+
+.pricing-email {
+  max-width: 640px;
+  margin: 0 auto;
+  border: 2.5px solid var(--ink);
+  border-radius: 18px;
+  background: var(--paper);
+  box-shadow: var(--pop-card);
+  overflow: hidden;
+}
+.pricing-email__flag {
+  padding: .55rem .9rem;
+  background: var(--arc-sun);
+  border-bottom: 2.5px solid var(--ink);
+  color: var(--ink);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+.pricing-email__subject {
+  padding: .8rem .9rem;
+  border-bottom: 2px dashed var(--ink-line);
+  color: var(--ink);
+  font-weight: 800;
+}
+.pricing-email__subject span { color: var(--ink-mute); font-weight: 700; margin-right: .35rem; }
+.pricing-email__body { padding: 1rem .9rem 1.2rem; color: #513b2e; line-height: 1.6; }
+.pricing-email__body p { margin: 0 0 .85rem; }
+.pricing-email__body pre {
+  margin: 0 0 .85rem;
+  padding: .8rem .9rem;
+  border: 2px solid var(--ink-line);
+  border-radius: 12px;
+  background: #35220E;
+  color: #FFE9C9;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+.pricing-evidence__note {
+  max-width: 640px;
+  margin: 1rem auto 0;
+  text-align: center;
+  color: #8b6c58;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
 .pricing-kicker { color: var(--arc-orange-text); }
 /* The 01 / 02 / 03 principle numerals were decorative grey at 3:1. */
 .pricing-principles article > span, .pricing-principle > span { color: var(--ink-mute); }

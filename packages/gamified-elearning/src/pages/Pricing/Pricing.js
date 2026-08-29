@@ -384,6 +384,40 @@ export default function Pricing() {
           </section>
         )}
 
+        {/* A parent deciding whether to pay is buying one thing above all:
+            knowing what their child actually did. The plans above SAY there is
+            a monthly email; this shows one, so the promise has a shape. The
+            learner is made up and says so — the mechanics (lesson names,
+            concept labels, a child's own changed lines) are exactly what the
+            real product records. */}
+        <section className="pricing-evidence" aria-labelledby="evidence-title">
+          <div className="pricing-evidence__intro">
+            <p className="pricing-kicker">The monthly email</p>
+            <h2 id="evidence-title">Not screen-time minutes. Their actual code.</h2>
+            <p>
+              Founding Families get one email a month. It is built from your
+              child&rsquo;s real projects and finished lessons &mdash; here is
+              what one looks like.
+            </p>
+          </div>
+          <article className="pricing-email" aria-label="An example of the monthly family email">
+            <div className="pricing-email__flag">Example &mdash; Maya is made up. Your email is built from your child&rsquo;s real work.</div>
+            <div className="pricing-email__subject">
+              <span>Subject:</span> What Maya built this month on CodeIt
+            </div>
+            <div className="pricing-email__body">
+              <p>Maya finished 3 lessons this month: <strong>Variables</strong>, <strong>If statements</strong>, and <strong>For loops</strong>.</p>
+              <p>She opened <strong>Catch the Stars</strong>, looked inside, and changed it. These lines are hers:</p>
+              <pre><code>{'score = score + 2;   // each star is worth two now\nspeed = 9;            // she made the stars fall faster'}</code></pre>
+              <p>She used an if statement she learned in lesson 4 to end the game when the basket misses three stars.</p>
+            </div>
+          </article>
+          <p className="pricing-evidence__note">
+            You can also open this view any time on your child&rsquo;s profile.
+            We never share anything beyond the projects your child chose to save.
+          </p>
+        </section>
+
         <section className="pricing-principles" aria-labelledby="principles-title">
           <div>
             <p className="pricing-kicker">What we will protect</p>
