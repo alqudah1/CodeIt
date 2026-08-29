@@ -274,4 +274,19 @@ describe('Pricing', () => {
     expect(screen.queryByText('CodeIt Plus')).not.toBeInTheDocument();
     expect(screen.getByText('Free pilot requests open')).toBeInTheDocument();
   });
+  test('the monthly email is shown as a labeled example, never as a real record', async () => {
+    renderPricing();
+    await screen.findByRole('checkbox');
+
+    // The example email gives the "one email a month" promise a shape. It must
+    // say it is an example with a made-up learner, in the same breath — an
+    // unlabeled sample reads as a fabricated record of a real child.
+    const flag = screen.getByText(/Maya is made up/i);
+    expect(flag).toBeInTheDocument();
+    expect(screen.getByText(/What Maya built this month on CodeIt/)).toBeInTheDocument();
+    // The mechanics shown are the product's real mechanics: concept labels and
+    // the child's own changed lines.
+    expect(screen.getByText(/score = score \+ 2/)).toBeInTheDocument();
+    expect(screen.getByText(/open this view any time on your child/i)).toBeInTheDocument();
+  });
 });
