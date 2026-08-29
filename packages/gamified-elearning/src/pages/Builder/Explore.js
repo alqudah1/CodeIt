@@ -27,6 +27,10 @@ function typeCategory(t = '') {
   return 'game';
 }
 
+// One friendly face per kind of project, instead of the same muddy gradient
+// on every thumbnail.
+const CATEGORY_EMOJI = { game: '🎮', quiz: '🧠', web: '🌐', tool: '🛠️' };
+
 function CreatorBubble({ name = 'C', creator }) {
   const initial = (name || 'C')[0].toUpperCase();
   const colors = ['#FF7A00','#A855F7','#06B6D4','#10B981','#EC4899','#F59E0B'];
@@ -62,7 +66,6 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
       <div className="exp-card__thumb-wrap">
         <div
           className="exp-card__thumb"
-          style={{ '--pc': project.primaryColor, '--ac': project.accentColor }}
           onClick={() => navigate(`/project/${project.publicId}`)}
           role="button"
           tabIndex={0}
@@ -72,6 +75,7 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
           <span className="exp-card__type-badge">
             {TYPE_LABEL[project.projectType] || project.projectType || 'Project'}
           </span>
+          <span className="exp-card__thumb-emoji" aria-hidden="true">{CATEGORY_EMOJI[cat] || '🎮'}</span>
           <span className="exp-card__thumb-title">{project.title}</span>
         </div>
         {!project.isShowcase && (
@@ -92,11 +96,20 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
           <CreatorBubble name={project.creatorName} creator={project.creator} />
           <span className="exp-card__creator-name">{project.creatorName}</span>
         </div>
-        <div className="exp-card__stats">
-          <StatBadge icon="▶" count={project.plays} />
-          {!project.isShowcase && <StatBadge icon="♥" count={project.likes} />}
-          <StatBadge icon="⤴" count={project.remixes} />
-        </div>
+        {/* A row of zeros reads as an abandoned site. A brand-new project is
+            not abandoned, it is new — so say that, and show numbers only once
+            there are numbers. */}
+        {(project.plays || 0) + (project.likes || 0) + (project.remixes || 0) === 0 ? (
+          <div className="exp-card__stats">
+            <span className="exp-stat exp-stat--new">✨ Just made</span>
+          </div>
+        ) : (
+          <div className="exp-card__stats">
+            {(project.plays || 0) > 0 && <StatBadge icon="▶" count={project.plays} />}
+            {!project.isShowcase && (project.likes || 0) > 0 && <StatBadge icon="♥" count={project.likes} />}
+            {(project.remixes || 0) > 0 && <StatBadge icon="⤴" count={project.remixes} />}
+          </div>
+        )}
       </div>
 
       {/* Actions */}
