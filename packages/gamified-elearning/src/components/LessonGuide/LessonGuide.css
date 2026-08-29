@@ -59,6 +59,39 @@
   font-weight: 600;
 }
 
+/* Read-aloud controls under the hint */
+.lg-bubble__actions {
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.lg-bubble__read,
+.lg-bubble__quiet {
+  font-family: 'Baloo 2', 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 0.84rem;
+  color: #35220E;
+  background: #FFF4E5;
+  border: 2px solid #35220E;
+  border-radius: 999px;
+  padding: 3px 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #35220E;
+}
+
+.lg-bubble__quiet {
+  font-size: 0.9rem;
+  padding: 2px 9px;
+  line-height: 1.2;
+}
+
+.lg-bubble__read:active,
+.lg-bubble__quiet:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 #35220E;
+}
+
 /* Avatar */
 .lg-avatar {
   flex-shrink: 0;
