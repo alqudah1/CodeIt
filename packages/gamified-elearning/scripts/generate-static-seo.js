@@ -739,10 +739,19 @@ const PAGES = [
       'Written to be useful whether or not you ever use CodeIt. Several of these recommend another tool, because for a lot of readers another tool is the right answer.',
     detail: 'Each guide is dated and says when it was last checked against the products it names.',
     type: 'CollectionPage',
-    sections: GUIDE_CONTENT.map((guide) => ({
-      heading: guide.h1,
-      paragraphs: [guide.description],
-    })),
+    // An index whose whole job is pointing at the guides, that linked to none
+    // of them. Every guide had zero inbound links in the crawlable HTML, so a
+    // crawler that does not run JavaScript could reach them only through the
+    // sitemap — the weakest signal there is, and the likeliest reason pages
+    // written for queries with thin competition were not surfacing at all.
+    //
+    // bodyHtml rather than sections, because sections escape their paragraphs
+    // and an index without anchors is the bug being fixed.
+    bodyHtml: GUIDE_CONTENT.map(
+      (guide) =>
+        `<h2><a href="/guide/${escapeHtml(guide.slug)}">${escapeHtml(guide.h1)}</a></h2>\n      ` +
+        `<p>${escapeHtml(guide.description)}</p>`
+    ).join('\n      '),
   },
 
   ...GUIDE_CONTENT.map((guide) => ({
@@ -895,12 +904,67 @@ function breadcrumbHtml(breadcrumbs) {
   return `<nav aria-label="Breadcrumb">${crumbs}</nav>`;
 }
 
+/**
+ * Which guides each page should point at.
+ *
+ * The guides were orphaned: twelve pages, zero inbound links between them. The
+ * index has been fixed above, but an index is one hop from nothing. These are
+ * links from the pages that already rank to the guides that do not, chosen for
+ * genuine topical relevance rather than to spread link equity around — a reader
+ * on /coding-for-kids really is the reader asking what comes after Scratch.
+ */
+const GUIDES_BY_ROUTE = {
+  '/': ['after-scratch', 'ai-built-it-now-edit-it'],
+  '/coding-for-kids': ['after-scratch', 'what-did-my-kid-learn'],
+  '/learn-python-for-kids': ['after-scratch'],
+  '/lessons': ['after-scratch'],
+  '/builder': ['ai-builder-you-can-edit', 'publish-first-project'],
+  '/ai-website-builder-for-kids': ['ai-builder-you-can-edit', 'ai-built-it-now-edit-it'],
+  '/games': ['first-browser-game'],
+  '/python-games-for-kids': ['first-browser-game'],
+  '/first-game-challenge': ['first-browser-game'],
+  '/explore': ['publish-first-project'],
+  '/playground': ['after-scratch'],
+  '/journey': ['what-did-my-kid-learn'],
+  '/blog': ['what-did-my-kid-learn'],
+  '/faq': ['what-did-my-kid-learn'],
+  '/about': ['ai-built-it-now-edit-it'],
+};
+
+function guideLinksFor(route) {
+  const slugs = GUIDES_BY_ROUTE[route === '/' ? '/' : route] || [];
+  return slugs
+    .map((slug) => GUIDE_CONTENT.find((guide) => guide.slug === slug))
+    .filter(Boolean)
+    .map((guide) => `<a href="/guide/${escapeHtml(guide.slug)}">${escapeHtml(guide.h1)}</a>`)
+    .join('\n        ');
+}
+
 function staticContent(page) {
+  // Every page a person can reach should be reachable from every other page.
+  // This list used to hold four routes, which left eleven indexable pages with
+  // no inbound link at all — including /learn-python-for-kids, one of the few
+  // pages that actually ranks. A crawler found them only in the sitemap.
+  //
+  // This is site navigation, not link stuffing: it is the set of sections a
+  // real footer would carry, and the current page is always filtered out.
   const relatedLinks = [
     ['/coding-for-kids', 'Coding for kids: parent guide'],
+    ['/learn-python-for-kids', 'Learn Python for kids'],
     ['/ai-website-builder-for-kids', 'How project building works'],
+    ['/playground', 'Python playground'],
+    ['/games', 'Coding games'],
+    ['/python-games-for-kids', 'Python games for kids'],
+    ['/journey', 'The learning journey'],
+    ['/first-game-challenge', 'First game challenge'],
+    ['/explore', 'Projects other learners built'],
     ['/pricing', 'Free access and family pilot'],
     ['/blog', 'Coding guides'],
+    ['/guide', 'Straight answers about learning to code'],
+    ['/faq', 'Questions parents ask first'],
+    ['/about', 'About CodeIt'],
+    ['/privacy', 'Privacy'],
+    ['/terms', 'Terms'],
   ]
     .filter(([route]) => route !== page.route)
     .map(([route, label]) => `<a href="${route}">${label}</a>`)
@@ -926,6 +990,7 @@ function staticContent(page) {
         <a href="/builder">Build a project</a>
         <a href="/lessons">Browse lessons</a>
         ${relatedLinks}
+        ${guideLinksFor(page.route)}
       </nav>
     </div>
   </main>`;
@@ -1105,6 +1170,26 @@ function writeSitemap(buildDir) {
 
   fs.writeFileSync(path.join(buildDir, 'sitemap.xml'), xml);
   console.log(`Generated sitemap.xml with ${seen.size} URLs.`);
+
+  // Tell IndexNow the sitemap changed.
+  //
+  // submit-indexnow.js has existed for months, works, and had never once run:
+  // nothing invoked it, and when invoked by hand it threw ENOENT because it
+  // read a sitemap file that was deleted when this script took over writing
+  // one. So every page published since then was announced to Bing and Copilot
+  // by nothing at all.
+  //
+  // Production deploys only. Preview builds would announce URLs that are about
+  // to change again, and IndexNow rate-limits repeat submissions. A failure
+  // here is logged and swallowed: a search-engine ping is not worth failing a
+  // deploy over.
+  if (process.env.VERCEL_ENV === 'production') {
+    try {
+      require('./submit-indexnow.js').notify(buildDir);
+    } catch (error) {
+      console.warn(`IndexNow notification skipped: ${error.message}`);
+    }
+  }
 }
 
 function generate(buildDir = path.resolve(__dirname, '../build')) {

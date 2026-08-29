@@ -47,8 +47,30 @@ function submit(payload) {
   });
 }
 
+/**
+ * Where the sitemap actually is.
+ *
+ * This read ../public/sitemap.xml, and that file does not exist: the hand
+ * maintained sitemap was deleted when generate-static-seo.js took over writing
+ * it, and the generated one goes into the build directory. So this script threw
+ * ENOENT on every invocation, which nobody noticed because nothing ever ran it.
+ */
+function readSitemap() {
+  const candidates = [
+    path.resolve(__dirname, '../build/sitemap.xml'),
+    path.resolve(__dirname, '../public/sitemap.xml'),
+  ];
+  for (const file of candidates) {
+    if (fs.existsSync(file)) return fs.readFileSync(file, 'utf8');
+  }
+  throw new Error(
+    `No sitemap found. Looked in:\n  ${candidates.join('\n  ')}\n` +
+      'Run the build first: npm run build generates it as part of postbuild.'
+  );
+}
+
 async function main() {
-  const sitemap = fs.readFileSync(path.resolve(__dirname, '../public/sitemap.xml'), 'utf8');
+  const sitemap = readSitemap();
   const payload = submissionPayload(sitemap);
   const status = await submit(payload);
   console.log(`IndexNow accepted ${payload.urlList.length} CodeIt URLs (HTTP ${status}).`);
@@ -61,4 +83,19 @@ if (require.main === module) {
   });
 }
 
-module.exports = { KEY, KEY_LOCATION, sitemapUrls, submissionPayload };
+/**
+ * Fire-and-forget notification for the build to call. Never throws into the
+ * caller: the sitemap is already written by the time this runs, and a deploy
+ * that fails because a search engine was busy is a worse outcome than a deploy
+ * that is not announced.
+ */
+function notify(buildDir) {
+  const file = buildDir ? path.join(buildDir, 'sitemap.xml') : null;
+  const sitemap = file && fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : readSitemap();
+  const payload = submissionPayload(sitemap);
+  submit(payload)
+    .then((status) => console.log(`IndexNow accepted ${payload.urlList.length} URLs (HTTP ${status}).`))
+    .catch((error) => console.warn(`IndexNow notification failed: ${error.message}`));
+}
+
+module.exports = { KEY, KEY_LOCATION, sitemapUrls, submissionPayload, readSitemap, notify };
