@@ -6526,3 +6526,46 @@ details.bldr-device-sizes .bldr-device-sizes__options {
 }
 .bldr-help-level__options button.is-active { background: var(--arc-sun); }
 .bldr-trust { background: transparent; border: none; box-shadow: none; padding: 0; }
+
+/* ── The Paper Arcade, cabinet chapter II: the last soft-design holdouts ── */
+
+/* The left creator toolbar: a paper strip of keycaps, not a glass blob. */
+.bldr-creator-toolbar {
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: var(--pop-card);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.bldr-creator-tool--active {
+  background: var(--arc-sun) !important;
+  box-shadow: 0 0 0 2px var(--ink) inset;
+}
+
+/* The quest tracker: paper card, ink border, sticker steps. */
+.bldr-activation-card {
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: var(--pop-card);
+}
+.bldr-project-checklist li {
+  border: 2px solid var(--ink-line);
+  border-radius: 999px;
+  background: var(--ground);
+  color: var(--ink-mute);
+}
+.bldr-project-checklist li.is-current {
+  border-color: var(--ink);
+  background: var(--arc-sun);
+  color: var(--ink);
+  box-shadow: 0 2px 0 var(--ink);
+}
+.bldr-project-checklist li.is-done {
+  border-color: var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+}
+.bldr-project-checklist li.is-current > span { background: var(--ink); color: var(--paper); }
+.bldr-project-checklist li.is-done > span { background: var(--arc-mint); color: var(--ink); border: 1.5px solid var(--ink); }
