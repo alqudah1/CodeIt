@@ -384,6 +384,74 @@ const BASE_PAGES = [
 
 const GUIDE_CONTENT = loadGuidePages();
 const PRESS_FACTS = loadPressFacts();
+
+/**
+ * The questions a guide already answers, as Q&A pairs.
+ *
+ * FAQPage existed here and only /faq ever populated it. Meanwhile eight guides
+ * carry forty hand-written questions under a "Common questions" heading — real
+ * questions with real answers, visible on the page, and invisible to anything
+ * that reads structure rather than prose. Assistants pull question-and-answer
+ * pairs in preference to paragraphs, and these are exactly the questions the
+ * guides were written to be found for.
+ *
+ * Deliberately narrow, because FAQ schema that does not match what a reader
+ * sees is a manual action rather than a rich result:
+ *
+ *   * only inside a section whose heading is about questions, which is why the
+ *     six-point checklist in ai-builder-you-can-edit — bold, ends in a question
+ *     mark, and not a FAQ — is not collected;
+ *   * only when a real answer is present, either after the question on the same
+ *     line or in the paragraph below it;
+ *   * links and emphasis are flattened to text, because the schema field is
+ *     text and shipping raw Markdown into it would be gibberish to a reader.
+ */
+const QUESTION_SECTION = /questions/i;
+const BOLD_QUESTION = /^\*\*\s*(?:\d+\.\s*)?(.+?\?)\s*\*\*\s*(.*)$/;
+
+function plainText(markdown) {
+  return String(markdown)
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function guideFaqs(markdown) {
+  const lines = String(markdown || '').split('\n');
+  const faqs = [];
+  let inQuestions = false;
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i].trim();
+
+    if (/^## /.test(line)) {
+      inQuestions = QUESTION_SECTION.test(line.slice(3));
+      continue;
+    }
+    if (!inQuestions) continue;
+
+    const match = BOLD_QUESTION.exec(line);
+    if (!match) continue;
+
+    const question = plainText(match[1]);
+    let answer = plainText(match[2]);
+
+    // Answer on the line below, which is how half of them are written.
+    for (let j = i + 1; !answer && j < lines.length; j += 1) {
+      const next = lines[j].trim();
+      if (!next) continue;
+      if (/^#{1,6} /.test(next) || BOLD_QUESTION.test(next)) break;
+      answer = plainText(next);
+    }
+
+    // A question with no answer is worse than no schema at all.
+    if (question.length > 5 && answer.length >= 20) faqs.push({ q: question, a: answer });
+  }
+
+  return faqs;
+}
 const renderMarkdown = loadMarkdownRenderer();
 const BLOG_CONTENT = loadBlogPosts();
 const LESSON_CONTENT = loadLessons();
@@ -935,6 +1003,7 @@ const PAGES = [
     // about what is being compared. Absent on guides that are not roundups.
     comparesOptions: guide.comparesOptions,
     quotedPrices: guide.quotedPrices,
+    faqs: guideFaqs(guide.markdown),
     // Pre-rendered from the same Markdown the React page renders, so the
     // crawlable HTML and the page a person sees are the same words.
     bodyHtml: renderMarkdown(guide.markdown),
@@ -1515,6 +1584,8 @@ module.exports = {
   BUILD_DATE,
   CONTENT_DATES_PATH,
   contentFingerprint,
+  guideFaqs,
+  plainText,
   statedPrices,
   declaredPrices,
   unaccountedPrices,
