@@ -45,6 +45,14 @@ jobs:
         env:
           CI: true
 
+      # api/share.js is the unfurl: the card WhatsApp draws when a child sends
+      # "play my game" to three friends. It had no test at all, and it works by
+      # string-replacing meta tags in the built index.html — so renaming a tag
+      # in public/index.html would break every shared link with no error
+      # anywhere and a homepage card in its place.
+      - name: Share card tests
+        run: npm run test:api
+
       # The node:test suites under scripts/ never ran here. They are the
       # guards on the things a browser test cannot see — the sitemap's dates, the
       # lesson count, the claims about the product, whether any page is orphaned
