@@ -137,9 +137,45 @@ function clearUnderstanding(storage) {
   try { storage.removeItem(RECORD_KEY); } catch {}
 }
 
+// ── Migration: the records a browser already holds, moved to the account ─────
+//
+// Before the account routes existed, every record lived only here. On sign-in
+// the browser offers them to the server once per account, so no family loses
+// what their child already showed. The server accepts only sentences it wrote
+// itself, so nothing forged survives the crossing. The local copy stays — it
+// is the offline learner's record.
+const SYNC_KEY = 'codeit.understood.synced.v1';
+
+async function syncUnderstandingToAccount(storage, { token, userId, apiBaseUrl, fetchFn }) {
+  if (!token || !userId || !apiBaseUrl) return false;
+  const guard = `${SYNC_KEY}:${userId}`;
+  try { if (storage.getItem(guard) === '1') return false; } catch { return false; }
+
+  const records = listUnderstanding(storage);
+  const doFetch = fetchFn || (typeof fetch === 'function' ? fetch : null);
+  if (!doFetch) return false;
+
+  try {
+    if (records.length) {
+      const res = await doFetch(`${apiBaseUrl}/api/understanding/import`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ records }),
+      });
+      if (!res.ok) return false; // try again next visit
+    }
+    storage.setItem(guard, '1');
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export {
   MAX_RECORDS,
   RECORD_KEY,
+  SYNC_KEY,
+  syncUnderstandingToAccount,
   SKILL_FOR_QUESTION,
   clearUnderstanding,
   hasUnderstood,

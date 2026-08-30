@@ -335,6 +335,10 @@ export default function Profile() {
           project: newest ? { title: newest.title, prompt: newest.prompt, updatedAt: newest.updatedAt } : null,
           concepts: newest ? conceptsIn(newest.code).slice(0, 5) : [],
           lessonsDone: data.lessonsDone || [],
+          // What they EXPLAINED — sentences written by the server when the
+          // child answered questions about their own code. The strongest
+          // evidence on the page, so it renders first.
+          understood: data.understood || [],
         },
       }));
       void trackEvent('parent_evidence_open', null, token);
@@ -700,6 +704,27 @@ export default function Profile() {
                         <div className="profile-evidence">
                           {evidence[child.id] === 'loading' && <p className="profile-evidence__quiet">Reading {child.username}'s own files…</p>}
                           {evidence[child.id] === 'error' && <p className="profile-evidence__quiet">Could not load the evidence just now. Try again in a moment.</p>}
+                          {typeof evidence[child.id] === 'object' && evidence[child.id] !== null
+                            && (evidence[child.id].understood || []).length > 0 && (
+                            <div className="profile-evidence__understood">
+                              <p className="profile-evidence__intro">
+                                What {child.username} explained, in their own projects:
+                              </p>
+                              <ul className="profile-evidence__list">
+                                {evidence[child.id].understood.slice(0, 5).map(entry => (
+                                  <li key={`${entry.projectTitle}-${entry.at}`}>
+                                    <span className="profile-evidence__what">
+                                      <strong>{entry.projectTitle}</strong>
+                                      {entry.at ? ` · ${new Date(entry.at).toLocaleDateString()}` : ''}
+                                    </span>
+                                    {entry.skills.map(skill => (
+                                      <span className="profile-evidence__skill" key={skill}>✓ {skill}</span>
+                                    ))}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
                           {typeof evidence[child.id] === 'object' && evidence[child.id] !== null && (
                             evidence[child.id].project ? (
                               <>

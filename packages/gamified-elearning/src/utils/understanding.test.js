@@ -1,4 +1,5 @@
 import {
+  syncUnderstandingToAccount,
   MAX_RECORDS,
   RECORD_KEY,
   SKILL_FOR_QUESTION,
@@ -193,5 +194,50 @@ describe('the line a parent reads', () => {
     // Whole words: an earlier version used /xp/i, which matches "e-x-p-lained"
     // and failed on the very sentence it was meant to approve.
     expect(summary).not.toMatch(/%|\bscore\b|\bpoints\b|\bxp\b|\brank\b/i);
+  });
+});
+
+// ── The sign-in migration ────────────────────────────────────────────────────
+describe('syncUnderstandingToAccount', () => {
+  const store = () => {
+    const map = new Map();
+    return {
+      getItem: k => (map.has(k) ? map.get(k) : null),
+      setItem: (k, v) => map.set(k, String(v)),
+      removeItem: k => map.delete(k),
+    };
+  };
+
+  test('posts the browser records once per account, then never again', async () => {
+    const storage = store();
+    recordUnderstanding(storage, { projectId: 'p1', projectTitle: 'Maze', skills: ['Worked out how many times a loop repeats'] });
+    const calls = [];
+    const fetchFn = jest.fn(async (url, opts) => { calls.push({ url, body: JSON.parse(opts.body) }); return { ok: true }; });
+
+    const first = await syncUnderstandingToAccount(storage, { token: 't', userId: 7, apiBaseUrl: 'http://x', fetchFn });
+    expect(first).toBe(true);
+    expect(calls[0].url).toBe('http://x/api/understanding/import');
+    expect(calls[0].body.records[0].projectId).toBe('p1');
+
+    const second = await syncUnderstandingToAccount(storage, { token: 't', userId: 7, apiBaseUrl: 'http://x', fetchFn });
+    expect(second).toBe(false);
+    expect(fetchFn).toHaveBeenCalledTimes(1);
+  });
+
+  test('a failed import is retried on the next visit, not marked done', async () => {
+    const storage = store();
+    recordUnderstanding(storage, { projectId: 'p1', projectTitle: 'Maze', skills: ['Worked out how many times a loop repeats'] });
+    const fetchFn = jest.fn(async () => ({ ok: false }));
+    expect(await syncUnderstandingToAccount(storage, { token: 't', userId: 7, apiBaseUrl: 'http://x', fetchFn })).toBe(false);
+    // Next visit tries again.
+    const good = jest.fn(async () => ({ ok: true }));
+    expect(await syncUnderstandingToAccount(storage, { token: 't', userId: 7, apiBaseUrl: 'http://x', fetchFn: good })).toBe(true);
+  });
+
+  test('an empty browser still marks the account synced without a request', async () => {
+    const storage = store();
+    const fetchFn = jest.fn();
+    expect(await syncUnderstandingToAccount(storage, { token: 't', userId: 9, apiBaseUrl: 'http://x', fetchFn })).toBe(true);
+    expect(fetchFn).not.toHaveBeenCalled();
   });
 });

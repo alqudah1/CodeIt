@@ -405,6 +405,18 @@ async function getChildEvidence(adultUserId, childUserId) {
     [childUserId]
   );
 
+  // What this child has EXPLAINED, not just built. This is the half of the
+  // evidence no competitor has, and until these rows existed it lived in one
+  // browser's localStorage where no parent's phone could see it.
+  const [understood] = await db.query(
+    `SELECT project_key, project_title, skills, created_at, updated_at
+       FROM understanding_records
+      WHERE user_id = ?
+      ORDER BY updated_at DESC
+      LIMIT 60`,
+    [childUserId]
+  );
+
   return {
     projects: projects.map(project => ({
       id: project.id,
@@ -415,6 +427,16 @@ async function getChildEvidence(adultUserId, childUserId) {
       updatedAt: project.updated_at,
     })),
     lessonsDone: lessons.map(lesson => ({ id: lesson.lesson_id, title: lesson.title })),
+    understood: understood.map(row => {
+      let skills = [];
+      if (Array.isArray(row.skills)) skills = row.skills;
+      else { try { skills = JSON.parse(row.skills) || []; } catch { skills = []; } }
+      return {
+        projectTitle: row.project_title,
+        skills,
+        at: row.updated_at || row.created_at,
+      };
+    }),
   };
 }
 

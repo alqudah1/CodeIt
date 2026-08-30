@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { trackEvent } from "../utils/trackEvent";
+import { API_BASE_URL } from "../config/api";
+import { syncUnderstandingToAccount } from "../utils/understanding";
 
 export const AuthContext = createContext();
 
@@ -45,6 +47,22 @@ export const AuthProvider = ({ children }) => {
 
     setLoading(false);
   }, []);
+
+  // The understanding records a browser already holds move to the account the
+  // first time this learner signs in here — so no family loses what their
+  // child already showed before the account routes existed. Learners only:
+  // a parent signing in on the family computer must not inherit a child's
+  // evidence.
+  useEffect(() => {
+    if (!token || !user) return;
+    const role = String(user.role || "").toLowerCase();
+    if (role !== "student") return;
+    void syncUnderstandingToAccount(localStorage, {
+      token,
+      userId: user.id || user.user_id || user.userId,
+      apiBaseUrl: API_BASE_URL,
+    });
+  }, [token, user]);
 
   const login = (userData) => {
     const { user, token } = userData;

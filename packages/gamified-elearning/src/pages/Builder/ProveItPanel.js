@@ -87,9 +87,14 @@ export default function ProveItPanel({ code, projectTitle = 'this project', onPr
       // answers — which meant every question always counted and the record was
       // worthless the moment anyone retried.
       const skills = skillsShown(questions, missed);
+      // The ids travel too: the server refuses to take sentences from the
+      // client and writes its own from these ids.
+      const questionIds = (questions || [])
+        .filter(question => question && !missed.includes(question.id))
+        .map(question => question.id);
       setShown(skills);
       setStage('done');
-      if (skills.length) onProved?.({ skills });
+      if (skills.length) onProved?.({ skills, questionIds });
       return;
     }
 

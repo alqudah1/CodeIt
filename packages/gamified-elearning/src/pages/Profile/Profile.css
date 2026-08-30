@@ -778,3 +778,14 @@
 }
 .profile-evidence__offer-link:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
 .profile-evidence__offer-link:active { transform: translateY(2px); box-shadow: 0 0 0 var(--ink); }
+
+/* What the child explained — the strongest evidence, so it reads first. */
+.profile-evidence__understood { margin-bottom: 0.9rem; }
+.profile-evidence__skill {
+  display: block;
+  margin: 2px 0 0 2px;
+  color: #1e6e4e;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.45;
+}

@@ -3330,12 +3330,24 @@ export default function Builder() {
                 code={code}
                 projectTitle={projectName}
                 alreadyProved={hasUnderstood(localStorage, shelfIdRef.current)}
-                onProved={({ skills }) => {
+                onProved={({ skills, questionIds }) => {
+                  const projectId = shelfIdRef.current || previewKeyRef.current;
                   recordUnderstanding(localStorage, {
-                    projectId: shelfIdRef.current || previewKeyRef.current,
+                    projectId,
                     projectTitle: projectName,
                     skills,
                   });
+                  // Signed in, the evidence also goes to the account, where it
+                  // survives a wiped browser and reaches a parent's phone. The
+                  // server writes the sentences from the ids; localStorage
+                  // stays the offline learner's copy.
+                  if (token && Array.isArray(questionIds) && questionIds.length) {
+                    void fetch(`${API_BASE_URL}/api/understanding`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                      body: JSON.stringify({ projectKey: projectId, projectTitle: projectName, questionIds }),
+                    }).catch(() => { /* the local record still exists */ });
+                  }
                   void trackEvent('project_explained', String(skills.length), token);
                 }}
               />
