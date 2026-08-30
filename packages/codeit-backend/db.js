@@ -91,6 +91,14 @@ if (!DATABASE_URL) {
     query(sql, params) {
       return run(postgresPool, sql, params);
     },
+    // DDL, verbatim. The normal path deliberately skips CREATE TABLE IF NOT
+    // EXISTS (a guard against MySQL-era startup DDL re-running on Postgres),
+    // which means intentional DDL - the admin maintenance route - silently
+    // did nothing. This bypasses the converter entirely; use it only for
+    // statements written for Postgres on purpose.
+    rawQuery(sql) {
+      return postgresPool.query(sql);
+    },
     async getConnection() {
       const client = await postgresPool.connect();
       return {

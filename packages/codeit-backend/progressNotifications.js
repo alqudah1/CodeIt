@@ -384,6 +384,9 @@ async function getProgressSummary(userId) {
 
 module.exports = {
   EVENT_LABELS,
+  createToken,
+  hashToken,
+  sendMail,
   escapeHtml,
   getProgressSummary,
   getSettings,

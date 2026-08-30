@@ -395,10 +395,15 @@ router.get('/funnel/lessons', async (_req, res) => {
 // and seven lesson descriptions — and nothing else. Idempotent: safe to press
 // twice. Admin only, like everything on this router.
 router.post('/maintenance/apply-pending', async (_req, res) => {
-  const { CREATE_UNDERSTANDING_RECORDS, LESSON_DESCRIPTION_FIXES } = require('../maintenanceSql');
+  const { CREATE_MONTHLY_DIGEST_LOG, CREATE_UNDERSTANDING_RECORDS, LESSON_DESCRIPTION_FIXES } = require('../maintenanceSql');
   try {
-    for (const statement of CREATE_UNDERSTANDING_RECORDS.split(';').map(s => s.trim()).filter(Boolean)) {
-      await pool.query(statement);
+    // pool.rawQuery, not pool.query: the adapter's normal path skips
+    // CREATE TABLE IF NOT EXISTS by design, and this DDL must actually run.
+    for (const block of [CREATE_UNDERSTANDING_RECORDS, CREATE_MONTHLY_DIGEST_LOG]) {
+      for (const statement of block.split(';').map(s => s.trim()).filter(Boolean)) {
+        if (pool.rawQuery) await pool.rawQuery(statement);
+        else await pool.query(statement);
+      }
     }
     let updated = 0;
     for (const [id, description] of LESSON_DESCRIPTION_FIXES) {
@@ -417,6 +422,36 @@ router.post('/maintenance/apply-pending', async (_req, res) => {
   } catch (error) {
     console.error('admin/maintenance:', error.message);
     res.status(500).json({ error: `Maintenance failed: ${error.message}` });
+  }
+});
+
+// ── The monthly evidence email ──────────────────────────────────────────────
+//
+// Preview first, always: the owner sees the exact rendered email for a real
+// learner before anything is sent to a real family. Send is idempotent per
+// learner per month (monthly_digest_log).
+router.get('/digest/preview/:userId', async (req, res) => {
+  const { previewMonthlyDigest } = require('../digestSender');
+  const userId = Number(req.params.userId);
+  if (!Number.isInteger(userId)) return res.status(400).json({ error: 'Numeric user id required.' });
+  try {
+    const preview = await previewMonthlyDigest(userId);
+    if (!preview) return res.status(404).json({ error: 'No such learner.' });
+    res.json({ success: true, ...preview });
+  } catch (error) {
+    console.error('admin/digest/preview:', error.message);
+    res.status(500).json({ error: 'Could not build the preview.' });
+  }
+});
+
+router.post('/digest/send', async (req, res) => {
+  const { sendMonthlyDigests } = require('../digestSender');
+  try {
+    const outcome = await sendMonthlyDigests({ dryRun: req.query.dry === '1' });
+    res.json({ success: true, ...outcome });
+  } catch (error) {
+    console.error('admin/digest/send:', error.message);
+    res.status(500).json({ error: `Digest failed: ${error.message}` });
   }
 });
 

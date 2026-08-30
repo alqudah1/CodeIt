@@ -442,3 +442,4 @@
 }
 .adm-maint-btn:disabled { opacity: 0.6; cursor: wait; }
 .adm-maint-result { font-weight: 800; color: #1e6e4e; }
+.adm-digest-frame { display: block; width: 100%; max-width: 640px; height: 420px; border: 1px solid #e3d2c2; border-radius: 10px; margin-top: 8px; background: #fff; }

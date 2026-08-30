@@ -39,6 +39,8 @@ const AdminDashboard = () => {
   // database. The endpoint applies exactly two reviewed changes and is
   // idempotent, so this button is safe to press twice.
   const [maint, setMaint] = useState(null);
+  const [digest, setDigest] = useState(null);
+  const [digestPreview, setDigestPreview] = useState(null);
   const runMaintenance = async () => {
     setMaint('running');
     try {
@@ -112,6 +114,65 @@ const AdminDashboard = () => {
             </button>
             {maint && maint !== 'running' && <span className="adm-maint-result"> {maint}</span>}
           </div>
+
+          <div className="adm-section-head">The monthly family email</div>
+          <div className="adm-info">
+            Sends each confirmed parent one email with what their child explained, finished and made
+            this month — real records only, one send per family per month, nothing goes out for an
+            empty month. Preview shows the exact email for a learner before anything is sent.
+            {' '}
+            <button
+              type="button"
+              className="adm-maint-btn"
+              onClick={async () => {
+                const id = window.prompt('Learner user id to preview:');
+                if (!id) return;
+                setDigestPreview('loading');
+                try {
+                  const res = await fetch(`${API_BASE_URL}/api/admin/digest/preview/${Number(id)}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                  });
+                  const body = await res.json();
+                  setDigestPreview(body.success ? body : (body.error || 'Failed.'));
+                } catch { setDigestPreview('Failed — network error.'); }
+              }}
+            >
+              Preview one learner
+            </button>
+            {' '}
+            <button
+              type="button"
+              className="adm-maint-btn"
+              disabled={digest === 'running'}
+              onClick={async () => {
+                setDigest('running');
+                try {
+                  const res = await fetch(`${API_BASE_URL}/api/admin/digest/send`, {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${token}` },
+                  });
+                  const body = await res.json();
+                  setDigest(body.success
+                    ? `Sent ${body.sent} of ${body.eligible} eligible (already sent: ${body.skippedAlreadySent}, quiet months: ${body.skippedNothingToSay}, failed: ${body.failed}).`
+                    : (body.error || 'Failed.'));
+                } catch { setDigest('Failed — network error.'); }
+              }}
+            >
+              {digest === 'running' ? 'Sending…' : "Send this month's emails"}
+            </button>
+            {digest && digest !== 'running' && <span className="adm-maint-result"> {digest}</span>}
+          </div>
+          {digestPreview && digestPreview !== 'loading' && typeof digestPreview === 'object' && (
+            <div className="adm-info">
+              <strong>Subject:</strong> {digestPreview.email?.subject}
+              {digestPreview.hasContent
+                ? <iframe title="Email preview" className="adm-digest-frame" srcDoc={digestPreview.email?.html} />
+                : <p>A quiet month — this learner would receive no email.</p>}
+            </div>
+          )}
+          {typeof digestPreview === 'string' && digestPreview !== 'loading' && (
+            <div className="adm-error">{digestPreview}</div>
+          )}
 
           <div className="adm-section-head">Recent Signups</div>
           <div className="adm-table-wrap">
