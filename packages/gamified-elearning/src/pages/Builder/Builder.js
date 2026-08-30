@@ -2974,9 +2974,14 @@ export default function Builder() {
                       className="bldr-shelf__card"
                       onClick={() => openStarter(item)}
                     >
-                      <span className="bldr-shelf__emoji" aria-hidden="true">{item.emoji}</span>
-                      <span className="bldr-shelf__label">{item.label}</span>
-                      <span className="bldr-shelf__blurb">{item.blurb}</span>
+                      <span className={`bldr-shelf__marquee bldr-shelf__marquee--${shelf.items.indexOf(item) % 4}`} aria-hidden="true">
+                        <span className="bldr-shelf__emoji">{item.emoji}</span>
+                      </span>
+                      <span className="bldr-shelf__meta">
+                        <span className="bldr-shelf__label">{item.label}</span>
+                        <span className="bldr-shelf__blurb">{item.blurb}</span>
+                        <span className="bldr-shelf__play" aria-hidden="true">▶ PLAY</span>
+                      </span>
                     </button>
                   </li>
                 ))}

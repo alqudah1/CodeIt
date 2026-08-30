@@ -6581,3 +6581,72 @@ details.bldr-device-sizes .bldr-device-sizes__options {
 .bldr-shelf__head .bldr-shelf__line { margin: 0; }
 .arcade-sticker { flex-shrink: 0; filter: drop-shadow(0 2px 0 rgba(53, 34, 14, 0.18)); }
 .bldr-hero-pick .arcade-sticker { display: block; margin-bottom: 8px; }
+
+/* ── Mini arcade cabinets ────────────────────────────────────────────────────
+   Mustafa, signed into the live site: "the way the games are displayed is
+   really bad, looks ratchet and cheap." He was right - white index cards
+   with a small emoji are not an arcade. Each starter is now a mini cabinet:
+   a coloured halftone marquee with the game's face big on it, an ink body,
+   and a PLAY key. The colour cycles the arcade palette so a shelf reads as
+   a row of different machines, not a printed grid. */
+.bldr-shelf__card {
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  width: 190px;
+  min-height: 0;
+  border: 2.5px solid var(--ink);
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow: var(--pop-rest);
+  transition: transform 0.09s ease, box-shadow 0.09s ease;
+}
+.bldr-shelf__card:hover,
+.bldr-shelf__card:focus-visible {
+  border-color: var(--ink);
+  transform: translateY(-3px);
+  box-shadow: var(--pop-lift);
+}
+.bldr-shelf__card:active { transform: translateY(2px); box-shadow: var(--pop-down); }
+.bldr-shelf__marquee {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 74px;
+  border-bottom: 2.5px solid var(--ink);
+  background-image: radial-gradient(rgba(53, 34, 14, 0.10) 1.2px, transparent 1.4px);
+  background-size: 11px 11px;
+}
+.bldr-shelf__marquee--0 { background-color: var(--arc-orange); }
+.bldr-shelf__marquee--1 { background-color: var(--arc-sun); }
+.bldr-shelf__marquee--2 { background-color: var(--arc-mint); }
+.bldr-shelf__marquee--3 { background-color: var(--arc-violet); }
+.bldr-shelf__emoji {
+  font-size: 40px;
+  line-height: 1;
+  filter: drop-shadow(0 3px 0 rgba(53, 34, 14, 0.30));
+}
+.bldr-shelf__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px 12px;
+}
+.bldr-shelf__play {
+  align-self: flex-start;
+  margin-top: 5px;
+  padding: 2px 10px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--arc-sun);
+  box-shadow: 0 2px 0 var(--ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: var(--ink);
+  letter-spacing: 0.06em;
+}
+@media (max-width: 640px) {
+  .bldr-shelf__card { width: 165px; }
+  .bldr-shelf__marquee { height: 64px; }
+}

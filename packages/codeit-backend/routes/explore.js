@@ -119,14 +119,21 @@ router.get('/', optionalAuth, async (req, res) => {
       ...project,
       code_sample: project.generated_code,
     }));
-    const withStudioFallback = (rows) => rows.length ? rows : studioRows;
+    // Real projects first, always - but a feed of three cards reads as an
+    // abandoned site, so thin feeds are topped up with the studio's own
+    // playable showcase projects until the community outgrows them.
+    const withStudioTopUp = (rows) => {
+      if (rows.length >= 8) return rows;
+      const have = new Set(rows.map(row => row.public_id));
+      return [...rows, ...studioRows.filter(row => !have.has(row.public_id))].slice(0, 12);
+    };
 
     res.json({
       success:     true,
-      trending:    withStudioFallback(trending).map(r    => formatProject(r, likedSet)),
-      newest:      withStudioFallback(newest).map(r      => formatProject(r, likedSet)),
-      mostPlayed:  withStudioFallback(mostPlayed).map(r  => formatProject(r, likedSet)),
-      mostRemixed: withStudioFallback(mostRemixed).map(r => formatProject(r, likedSet)),
+      trending:    withStudioTopUp(trending).map(r    => formatProject(r, likedSet)),
+      newest:      withStudioTopUp(newest).map(r      => formatProject(r, likedSet)),
+      mostPlayed:  withStudioTopUp(mostPlayed).map(r  => formatProject(r, likedSet)),
+      mostRemixed: withStudioTopUp(mostRemixed).map(r => formatProject(r, likedSet)),
     });
   } catch (err) {
     console.error('Explore feed error:', err.message);

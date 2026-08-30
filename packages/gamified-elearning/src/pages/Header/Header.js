@@ -37,8 +37,10 @@ const PUBLIC_NAV = [
 // their progress, their rank, their avatar, their plan — and the account menu
 // they moved into is where a person looks for exactly that. The four that
 // stayed are the four places to go and do something.
+// Three verbs a child understands, matching what each place does: you PLAY
+// other kids' games, you LEARN lessons, and the big key MAKEs your own.
 const MEMBER_NAV = [
-  { to: "/explore", label: "Explore" },
+  { to: "/explore", label: "Play" },
   { to: "/lessons", label: "Learn" },
 ];
 
@@ -146,7 +148,7 @@ export default function Header() {
                 for one destination taught a child that the words are decoration,
                 so the button now says what it opens and the nav names it. */}
             <Link to="/builder" className="site-header__cta">
-              {user ? "Open studio" : "Start building"}
+              {user ? "🎮 Make something" : "Start building"}
             </Link>
 
             {user ? (
