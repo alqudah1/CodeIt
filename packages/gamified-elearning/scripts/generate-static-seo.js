@@ -1166,6 +1166,21 @@ const GUIDES_BY_ROUTE = {
   '/playground': ['after-scratch'],
   '/journey': ['what-did-my-kid-learn', 'coding-for-kids-by-age'],
   '/blog': ['what-did-my-kid-learn'],
+
+  // The seven blog posts were written in March and point at nothing but the
+  // site nav. Every one of them is the older, weaker answer to a question a
+  // guide now answers better and more recently — the category moved underneath
+  // them, Code.org rebranded in June and Common Sense paused in February — and
+  // a reader who lands on one from search deserves the current page, not a
+  // dead end. Measured before assuming: the worst text overlap between any two
+  // of these pages is 4.3%, so this is not duplication, it is age.
+  '/blog/learn-python-for-kids': ['after-scratch', 'coding-for-kids-by-age'],
+  '/blog/python-coding-games': ['first-browser-game', 'free-coding-for-kids'],
+  '/blog/how-to-start-coding-for-beginners': ['after-scratch', 'free-coding-for-kids'],
+  '/blog/best-coding-games-for-kids': ['first-browser-game', 'best-coding-platforms-for-kids'],
+  '/blog/python-basics-for-beginners': ['after-scratch', 'coding-for-kids-by-age'],
+  '/blog/is-python-good-for-kids': ['coding-for-kids-by-age', 'best-coding-platforms-for-kids'],
+  '/blog/coding-for-kids-beginner-guide': ['best-coding-platforms-for-kids', 'what-did-my-kid-learn'],
   '/faq': ['what-did-my-kid-learn', 'coding-for-kids-by-age'],
   '/pricing': ['tynker-alternative', 'best-coding-platforms-for-kids', 'free-coding-for-kids'],
   '/about': ['ai-built-it-now-edit-it'],
