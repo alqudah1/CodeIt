@@ -42,6 +42,7 @@ const Leaderboard   = lazy(() => import('./pages/Leaderboard'));
 const Playground    = lazy(() => import('./pages/Playground/Playground'));
 const Builder       = lazy(() => import('./pages/Builder/Builder'));
 const PublicProject = lazy(() => import('./pages/Builder/PublicProject'));
+const EvidenceShare = lazy(() => import('./pages/Profile/EvidenceShare'));
 const Explore       = lazy(() => import('./pages/Builder/Explore'));
 const Profile       = lazy(() => import('./pages/Profile/Profile'));
 const Pricing       = lazy(() => import('./pages/Pricing/Pricing'));
@@ -166,6 +167,7 @@ const App = () => (
               {/* ── AI Builder ── */}
               <Route path="/builder"           element={<Builder />} />
               <Route path="/project/:publicId" element={<PublicProject />} />
+              <Route path="/understood/:token" element={<EvidenceShare />} />
               <Route path="/explore"           element={<Explore />} />
 
               {/* ── Pricing ── */}

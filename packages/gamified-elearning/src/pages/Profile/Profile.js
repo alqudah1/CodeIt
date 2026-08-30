@@ -49,6 +49,8 @@ export default function Profile() {
   // asked, 'loading', 'error', or the payload.
   const [evidence, setEvidence] = useState({});
   const [evidenceOpen, setEvidenceOpen] = useState(null);
+  // The sendable link: child.id -> 'making' | copied/shown URL | 'error'.
+  const [shareLinks, setShareLinks] = useState({});
   const [familyLoading, setFamilyLoading] = useState(false);
   const [familyMessage, setFamilyMessage] = useState('');
   const [familySaving, setFamilySaving] = useState(false);
@@ -344,6 +346,27 @@ export default function Profile() {
       void trackEvent('parent_evidence_open', null, token);
     } catch (err) {
       setEvidence(prev => ({ ...prev, [child.id]: 'error' }));
+    }
+  }
+
+  // Mint the link a parent can send — to a grandparent, a teacher, the other
+  // parent. It opens on any phone with no account and shows only the child's
+  // first name and the sentences they earned.
+  async function makeShareLink(child) {
+    setShareLinks(prev => ({ ...prev, [child.id]: 'making' }));
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/understanding/share`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ childId: child.id }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error || 'Could not make the link');
+      const url = `${window.location.origin}${data.path}`;
+      try { await navigator.clipboard.writeText(url); } catch { /* shown below either way */ }
+      setShareLinks(prev => ({ ...prev, [child.id]: url }));
+    } catch {
+      setShareLinks(prev => ({ ...prev, [child.id]: 'error' }));
     }
   }
 
@@ -723,6 +746,25 @@ export default function Profile() {
                                   </li>
                                 ))}
                               </ul>
+                              <div className="profile-evidence__share">
+                                <button
+                                  type="button"
+                                  onClick={() => makeShareLink(child)}
+                                  disabled={shareLinks[child.id] === 'making'}
+                                >
+                                  {shareLinks[child.id] === 'making' ? 'Making the link…' : 'Send this to someone'}
+                                </button>
+                                {typeof shareLinks[child.id] === 'string'
+                                  && shareLinks[child.id] !== 'making' && shareLinks[child.id] !== 'error' && (
+                                  <p className="profile-evidence__share-link">
+                                    Link copied — it opens on any phone, no account needed:{' '}
+                                    <a href={shareLinks[child.id]} target="_blank" rel="noreferrer">{shareLinks[child.id]}</a>
+                                  </p>
+                                )}
+                                {shareLinks[child.id] === 'error' && (
+                                  <p className="profile-evidence__share-link">Could not make the link just now. Try again in a moment.</p>
+                                )}
+                              </div>
                             </div>
                           )}
                           {typeof evidence[child.id] === 'object' && evidence[child.id] !== null && (

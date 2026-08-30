@@ -1,0 +1,113 @@
+/* ── The page a parent sends: phone-first, paper-arcade, quiet ───────────────
+   Most readers arrive on a phone from a family group chat. One column, big
+   type, the sentences doing all the talking. */
+
+.evs {
+  min-height: 100vh;
+  background: var(--ground, #FFF4E5);
+  display: flex;
+  justify-content: center;
+  padding: 20px 14px 48px;
+  font-family: var(--font-body, 'Nunito', sans-serif);
+  color: var(--ink, #35220E);
+}
+
+.evs__card {
+  width: 100%;
+  max-width: 560px;
+  background: var(--paper, #FFFDF7);
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 22px;
+  box-shadow: var(--pop-card, 6px 6px 0 rgba(53, 34, 14, 0.18));
+  padding: 26px 20px 22px;
+}
+
+.evs__kicker {
+  margin: 0 0 6px;
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--arc-orange, #F87824);
+}
+
+.evs__title {
+  margin: 0 0 12px;
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-size: clamp(1.6rem, 6vw, 2.2rem);
+  line-height: 1.12;
+}
+
+.evs__how {
+  margin: 0 0 20px;
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.evs__quiet {
+  font-size: 1rem;
+  color: rgba(53, 34, 14, 0.85);
+}
+
+.evs__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.evs__project {
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  padding: 14px 16px;
+}
+
+.evs__project-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.evs__project-title {
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 700;
+  font-size: 1.08rem;
+}
+
+.evs__date {
+  font-size: 0.82rem;
+  color: rgba(53, 34, 14, 0.85);
+  white-space: nowrap;
+}
+
+.evs__skill {
+  margin: 0 0 6px;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  font-weight: 600;
+  color: #1e6e4e;
+}
+
+.evs__skill span {
+  margin-right: 6px;
+}
+
+.evs__foot {
+  margin: 22px 0 0;
+  padding-top: 14px;
+  border-top: 2px dashed rgba(53, 34, 14, 0.25);
+  font-size: 0.92rem;
+}
+
+.evs__foot a,
+.evs__home {
+  color: var(--arc-orange, #F87824);
+  font-weight: 700;
+}

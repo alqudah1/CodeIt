@@ -127,6 +127,79 @@ router.post('/import', requireAuth, async (req, res) => {
   }
 });
 
+// ── The sendable page ───────────────────────────────────────────────────────
+//
+// A certificate proves attendance; these sentences prove understanding. What
+// makes them count is a parent being able to SEND them — to a grandparent, a
+// teacher, the other parent — as a link that opens on any phone with no
+// account. The link carries a signed token scoped to exactly one thing:
+// reading one learner's evidence. It deliberately does not contain a
+// `user_id` claim, so it can never be replayed as a session token, and the
+// reader endpoint refuses anything without the evidence scope, so a stolen
+// session token can't be turned into someone's evidence page either.
+
+const SHARE_SCOPE = 'evidence-share';
+
+// Signed with a key DERIVED from the session secret, not the secret itself:
+// a share token therefore fails verification everywhere sessions are checked,
+// and a stolen session token fails verification here. The two token families
+// cannot be confused even in principle.
+const SHARE_SECRET = `${JWT_SECRET}.${SHARE_SCOPE}`;
+
+/** First name only — a public page never needs more. */
+function firstNameOf(row) {
+  const name = String(row?.name || row?.username || 'This learner').trim();
+  return name.split(/\s+/)[0] || 'This learner';
+}
+
+// POST /api/understanding/share — mint a link for yourself, or (for a linked
+// parent) for one of your children. Body: { childId? }.
+router.post('/share', requireAuth, async (req, res) => {
+  try {
+    let learnerId = req.user.user_id;
+    const childId = Number(req.body?.childId);
+    if (childId && childId !== learnerId) {
+      const [links] = await pool.query(
+        'SELECT child_user_id FROM parent_child_links WHERE adult_user_id = ? AND child_user_id = ?',
+        [learnerId, childId]
+      );
+      if (!links.length) return res.status(404).json({ error: 'No such learner in this family.' });
+      learnerId = childId;
+    }
+    const token = jwt.sign({ shareScope: SHARE_SCOPE, learner: learnerId }, SHARE_SECRET, { expiresIn: '365d' });
+    return res.json({ success: true, path: `/understood/${token}` });
+  } catch (err) {
+    console.error('Share understanding error:', err.message);
+    return res.status(500).json({ error: 'Could not make the link.' });
+  }
+});
+
+// GET /api/understanding/shared/:token — the public read. No auth: the token
+// IS the permission, and it can read exactly one learner's sentences.
+router.get('/shared/:token', async (req, res) => {
+  let decoded;
+  try {
+    decoded = jwt.verify(req.params.token, SHARE_SECRET);
+  } catch {
+    return res.status(404).json({ error: 'This link is not valid any more.' });
+  }
+  if (decoded?.shareScope !== SHARE_SCOPE || !decoded.learner) {
+    return res.status(404).json({ error: 'This link is not valid any more.' });
+  }
+  try {
+    const [users] = await pool.query(
+      'SELECT name, username FROM Users WHERE user_id = ?',
+      [decoded.learner]
+    );
+    if (!users.length) return res.status(404).json({ error: 'This link is not valid any more.' });
+    const records = await listRecords(decoded.learner);
+    return res.json({ success: true, name: firstNameOf(users[0]), records, summary: summarise(records) });
+  } catch (err) {
+    console.error('Read shared understanding error:', err.message);
+    return res.status(500).json({ error: 'Could not load the page.' });
+  }
+});
+
 // GET /api/understanding — this learner's own records, newest first.
 router.get('/', requireAuth, async (req, res) => {
   try {
