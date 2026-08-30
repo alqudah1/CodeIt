@@ -1,7 +1,7 @@
 {
   "/": {
-    "hash": "1f3f36e0bde9fe89",
-    "date": "2026-08-29"
+    "hash": "e2e791923a9024eb",
+    "date": "2026-08-30"
   },
   "/about": {
     "hash": "e30ff378df2f1aaa",
@@ -48,8 +48,8 @@
     "date": "2026-08-29"
   },
   "/coding-for-kids": {
-    "hash": "9a454b651ddb25dc",
-    "date": "2026-08-29"
+    "hash": "dbc59c24a399ad41",
+    "date": "2026-08-30"
   },
   "/explore": {
     "hash": "401819193188e2bc",
@@ -68,8 +68,8 @@
     "date": "2026-08-29"
   },
   "/guide": {
-    "hash": "3c1838a9a07207cd",
-    "date": "2026-08-29"
+    "hash": "c9d65ea3de8766b3",
+    "date": "2026-08-30"
   },
   "/guide/after-scratch": {
     "hash": "52c9c77935a2d852",
@@ -82,6 +82,10 @@
   "/guide/ai-built-it-now-edit-it": {
     "hash": "0a3e454f718c12a4",
     "date": "2026-08-29"
+  },
+  "/guide/best-coding-platforms-for-kids": {
+    "hash": "d289e938d59f7fdc",
+    "date": "2026-08-30"
   },
   "/guide/code-org-is-now-codeai": {
     "hash": "25ce52da7b508539",
@@ -276,8 +280,8 @@
     "date": "2026-08-29"
   },
   "/pricing": {
-    "hash": "6188b93420475794",
-    "date": "2026-08-29"
+    "hash": "63ffc50641df6a97",
+    "date": "2026-08-30"
   },
   "/privacy": {
     "hash": "43a31ab38cced63d",

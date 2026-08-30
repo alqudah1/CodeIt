@@ -186,7 +186,15 @@ test('private application pages are crawlable but excluded with X-Robots-Tag', (
    Assistants that retrieve this site do not execute JavaScript. These tests
    fail if substantive content stops being present in the static HTML. */
 
-const { HOME_PAGE, PRICING, FAQS } = require('./generate-static-seo');
+const {
+  HOME_PAGE,
+  PRICING,
+  FAQS,
+  statedPrices,
+  declaredPrices,
+  unaccountedPrices,
+  ourPrice,
+} = require('./generate-static-seo');
 
 function bodyText(html) {
   const body = /<body[^>]*>([\s\S]*)<\/body>/i.exec(html)?.[1] ?? '';
@@ -223,10 +231,17 @@ test('homepage states what the product is, who it is for, and what it costs', ()
 });
 
 test('the price is stated in exactly one currency across all routes', () => {
-  const wrong = PRICING.CURRENCY_SYMBOL === 'CA$' ? /US\$\s?\d/ : /CA\$\s?\d/;
+  // A second currency is a bug everywhere except on a page that declares whose
+  // money it is. See unaccountedPrices in the generator for why the exemption
+  // has to be a declaration rather than a relaxation.
   for (const page of [...PAGES, HOME_PAGE]) {
     const text = bodyText(renderRouteDocument(TEMPLATE, page));
-    assert.ok(!wrong.test(text), `${page.route} states a second currency`);
+    const loose = unaccountedPrices(page, text);
+    assert.deepEqual(
+      loose,
+      [],
+      `${page.route} states ${loose.join(', ')}, which is neither our price nor declared in quotedPrices`
+    );
   }
 });
 
@@ -327,12 +342,13 @@ test('guides name competitors — a page that recommends only us does not get ci
 
 test('any price a guide states is the live one', () => {
   for (const guide of PAGES.filter((page) => page.route.startsWith('/guide/'))) {
-    for (const quoted of guide.bodyHtml.match(/(?:CA|US)\$\s?\d+(?:\/[a-z]+)?/g) || []) {
-      assert.ok(
-        quoted.startsWith(PRICING.CURRENCY_SYMBOL) && quoted.includes(String(PRICING.AMOUNT)),
-        `${guide.route} quotes "${quoted}" but the live price is ${PRICING.PRICE_PER_INTERVAL}`
-      );
-    }
+    const loose = unaccountedPrices(guide, guide.bodyHtml);
+    assert.deepEqual(
+      loose,
+      [],
+      `${guide.route} quotes ${loose.join(', ')} but the live price is ${PRICING.PRICE_PER_INTERVAL} ` +
+        'and nothing on the page says that money belongs to somebody else'
+    );
     for (const allowance of guide.bodyHtml.match(/\b(\d+)\s+assisted\s+project\s+builds?\b/gi) || []) {
       assert.ok(
         allowance.startsWith(String(PRICING.FREE_MONTHLY_AI_BUILDS)),
@@ -475,9 +491,14 @@ test('the price comes from src/config/pricing.js, not a second copy', () => {
 test('pages that state a price state exactly one, in one currency', () => {
   for (const page of [...PAGES, HOME_PAGE]) {
     const text = bodyText(renderRouteDocument(TEMPLATE, page));
-    const currencies = new Set((text.match(/(CA|US)\$/g) || []));
-    assert.ok(currencies.size <= 1, `${page.route} mixes currencies: ${[...currencies].join(', ')}`);
-    assert.ok(!/US\$/.test(text), `${page.route} states USD`);
+    const loose = unaccountedPrices(page, text);
+    assert.deepEqual(loose, [], `${page.route} states undeclared money: ${loose.join(', ')}`);
+
+    // Ours still has to be ours, whatever else the page quotes.
+    for (const price of statedPrices(text)) {
+      if (declaredPrices(page).includes(price)) continue;
+      assert.equal(price, ourPrice(), `${page.route} states ${price} as if it were our price`);
+    }
   }
 });
 

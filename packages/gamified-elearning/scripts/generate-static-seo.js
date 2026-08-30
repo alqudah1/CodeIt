@@ -81,6 +81,50 @@ function readContentDates() {
 const CONTENT_DATES = readContentDates();
 const BUILD_DATE = new Date().toISOString().slice(0, 10);
 
+// ── Whose price is this? ─────────────────────────────────────────────────────
+//
+// Four separate guards assumed that every CA$ or US$ amount anywhere on the
+// site was ours. That was true while the site had no comparison pages, and
+// comparison pages are the format that outranks us — the roundups that own
+// "best coding platform for kids" are all comparisons. The first one written
+// broke all four guards by quoting CodeMonkey's US$12 family plan, which is a
+// different twelve dollars from ours.
+//
+// Relaxing the guards to allow US$ would have been the wrong repair: it would
+// let our own price ship in the wrong currency on exactly the pages a parent
+// reads when deciding. So a page instead declares, out loud, which prices
+// belong to somebody else. Everything not declared and not ours is a bug.
+//
+// The declaration is checked in both directions — a declared price that no
+// longer appears on the page fails too — so the list cannot quietly become a
+// blanket exemption for a page nobody rereads.
+const PRICE_IN_TEXT = /(?:CA|US)\$\s?\d+(?:\.\d+)?/g;
+
+function normalisePrice(text) {
+  return String(text).replace(/\s+/g, '');
+}
+
+function ourPrice() {
+  return normalisePrice(`${PRICING.CURRENCY_SYMBOL}${PRICING.AMOUNT}`);
+}
+
+/** Every currency-prefixed amount in some text, normalised. */
+function statedPrices(text) {
+  return (String(text || '').match(PRICE_IN_TEXT) || []).map(normalisePrice);
+}
+
+/** The prices a page says belong to someone else. */
+function declaredPrices(page) {
+  return (Array.isArray(page && page.quotedPrices) ? page.quotedPrices : []).map(normalisePrice);
+}
+
+/** Prices on a page that are neither ours nor declared as someone else's. */
+function unaccountedPrices(page, text) {
+  const declared = new Set(declaredPrices(page));
+  const mine = ourPrice();
+  return statedPrices(text).filter((price) => price !== mine && !declared.has(price));
+}
+
 // Hash the meaning of the page, not the file. The rendered document carries
 // hashed asset filenames and shared boilerplate that change on builds where no
 // page changed at all; hashing those would mark all 69 URLs modified on every
@@ -926,6 +970,7 @@ const PAGES = [
     // Declared in the guide itself, so the page and its structured data agree
     // about what is being compared. Absent on guides that are not roundups.
     comparesOptions: guide.comparesOptions,
+    quotedPrices: guide.quotedPrices,
     // Pre-rendered from the same Markdown the React page renders, so the
     // crawlable HTML and the page a person sees are the same words.
     bodyHtml: renderMarkdown(guide.markdown),
@@ -1075,8 +1120,8 @@ function breadcrumbHtml(breadcrumbs) {
  * on /coding-for-kids really is the reader asking what comes after Scratch.
  */
 const GUIDES_BY_ROUTE = {
-  '/': ['after-scratch', 'ai-built-it-now-edit-it', 'free-coding-for-kids'],
-  '/coding-for-kids': ['after-scratch', 'what-did-my-kid-learn', 'coding-for-kids-by-age'],
+  '/': ['after-scratch', 'best-coding-platforms-for-kids', 'ai-built-it-now-edit-it', 'free-coding-for-kids'],
+  '/coding-for-kids': ['after-scratch', 'best-coding-platforms-for-kids', 'what-did-my-kid-learn', 'coding-for-kids-by-age'],
   '/learn-python-for-kids': ['after-scratch'],
   '/lessons': ['after-scratch', 'free-coding-for-kids'],
   '/builder': ['ai-builder-you-can-edit', 'publish-first-project'],
@@ -1089,7 +1134,7 @@ const GUIDES_BY_ROUTE = {
   '/journey': ['what-did-my-kid-learn', 'coding-for-kids-by-age'],
   '/blog': ['what-did-my-kid-learn'],
   '/faq': ['what-did-my-kid-learn', 'coding-for-kids-by-age'],
-  '/pricing': ['tynker-alternative', 'free-coding-for-kids'],
+  '/pricing': ['tynker-alternative', 'best-coding-platforms-for-kids', 'free-coding-for-kids'],
   '/about': ['ai-built-it-now-edit-it'],
 };
 
@@ -1506,6 +1551,10 @@ module.exports = {
   BUILD_DATE,
   CONTENT_DATES_PATH,
   contentFingerprint,
+  statedPrices,
+  declaredPrices,
+  unaccountedPrices,
+  ourPrice,
   writeContentDates,
   pageLastModified,
   writeLlmsTxt,

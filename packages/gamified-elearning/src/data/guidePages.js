@@ -1543,6 +1543,100 @@ Ages are a starting guess, not a verdict. A confident 9-year-old belongs in the 
 
 Watch what happens when they get stuck. A child in the right tool gets annoyed and tries again. A child in the wrong tool goes quiet and finds something else to do. That signal is more reliable than any age range on this page, including ours.`,
   },
+  {
+    slug: "best-coding-platforms-for-kids",
+    comparesOptions: ["Scratch", "Code.org, now CodeAI", "Tynker", "CodeMonkey", "CodeIt"],
+    // CodeMonkey's own prices, read from app.codemonkey.com/home-plans on
+    // 29 August 2026. Declared because their family plan is US$12 and ours is
+    // CA$12: the same number, different money, on the same page. Undeclared
+    // currency amounts fail the price guards, and a declaration that stops
+    // appearing on the page fails them too.
+    quotedPrices: ["US$7", "US$12", "US$20"],
+    title: "The Best Coding Platforms for Kids, Compared Honestly (2026)",
+    description: "Scratch, Code.org, Tynker and CodeMonkey, with what each is actually best at, what it costs, and the child each one is wrong for. Prices checked 29 August 2026.",
+    h1: "Which coding platform should my child use?",
+    lastVerified: "2026-08-29",
+    targetQueries: ["best coding platform for kids", "best coding app for kids", "best coding website for kids 2026", "tynker vs code.org vs scratch", "codemonkey vs tynker", "scratch vs tynker", "which coding platform for my child", "best coding program for kids", "kids coding platform comparison"],
+    markdown: `**Short answer, by situation.** Under 8 and not reading fluently: Scratch first, Tynker if you want icon coding and can pay. A school or a structured course at no cost: Code.org. A child who likes puzzles and wants text code early: CodeMonkey. A child past blocks who wants to make things rather than take a course: keep reading, and note that we make one of the options on this list.
+
+Prices below were read from each product's own pricing page on 29 August 2026.
+
+Most roundups of this kind rank the four by popularity, which is not a property of your child. The useful question is which one is wrong for them, and every one of these is wrong for somebody.
+
+## Scratch
+
+Free, from MIT, and the reason most children in the world have written any code at all. Blocks snap together, there is nothing to install, and the shared project library is enormous.
+
+**Best for:** a first experience, roughly ages 7 to 11. Nothing else is a better on-ramp and nothing else is as safe a first step.
+
+**Where it stops:** Scratch does not have a next step and does not claim to. It teaches sequencing, loops and conditions in blocks, and then a child gets good at it and there is nowhere to go inside Scratch. That is not a flaw, it is a scope decision by a research group, but it is the single most common reason a parent starts looking at this page.
+
+**Wrong for:** a child who has already made a dozen Scratch projects and is bored, and a teenager who wants to write real code.
+
+## Code.org, now CodeAI
+
+Free, and it stays free. On 2 June 2026 it [rebranded to CodeAI](https://code.org/en-US/codeorg-is-now-codeai), with the Hour of Code becoming the Hour of AI, and it continues to provide free curriculum, tools and professional learning.
+
+**Best for:** structured courses at no cost, and classrooms. Its curriculum work is serious and there is more of it, free, than anyone else offers.
+
+**Where it stops:** it is closed-ended by design. A child works through prepared activities. If what they want is to build their own thing and send someone a link, this is the wrong shape.
+
+**Worth knowing:** the rebrand moved the organisation's centre of gravity toward AI literacy. If you came looking for the coding curriculum specifically, it is still there, but it is no longer the headline. We wrote about [what actually changed](/guide/code-org-is-now-codeai).
+
+**Wrong for:** open-ended making, and a family that wants a product rather than a curriculum.
+
+## Tynker
+
+Paid. From [their pricing page](https://www.tynker.com/parents/pricing/): $18/month billed quarterly, $15/month billed yearly, or $468 once for lifetime. All three cover up to three children, with a 30-day money-back guarantee, and they advertise 5,000+ lessons.
+
+**Best for:** two things nobody else does as well. Icon coding for children who cannot yet read fluently, and Minecraft and Roblox modding for children who already play those games. Both are maintained and both work.
+
+**Where it stops:** it is a course library. The common failure is a subscription bought for a 7-year-old that is still being paid at 11, when the child has outgrown blocks and the text courses feel like homework. At that point cancel it; the library is not the problem, the fit is.
+
+**Wrong for:** a child who wants to build their own thing rather than progress through a path. We wrote a longer look at [when Tynker is still the right answer](/guide/tynker-alternative).
+
+## CodeMonkey
+
+Paid, aimed at grades K to 8. From [their home plans](https://app.codemonkey.com/home-plans): individual from US$7/month billed yearly, family from US$12/month billed yearly, homeschool from US$20/month billed yearly, with higher rates on quarterly billing. It teaches block coding first, then text in CoffeeScript and Python, through game-based challenges.
+
+**Best for:** a child who likes puzzles and rewards, and a parent who wants a clear line from blocks into real text code. The progression is well built and it does move children into typing actual syntax, which is more than most block products manage.
+
+**Where it stops:** every challenge has a correct answer. That is what makes the progression work, and it is also the thing that has aged fastest, because a puzzle with one right answer is exactly what an assistant solves in a second. A child who has worked out that they can ask for the answer will.
+
+**Wrong for:** a child who wants to make something of their own, and any family for whom CoffeeScript being a first text language is a concern. It is a real language and a reasonable teaching choice, but it is not one they will meet again.
+
+## CodeIt
+
+This is us. Weigh it accordingly, and read the disclosure below before you weigh it at all.
+
+A learner describes a website, game or quiz and gets a working version they can play. They change it by moving things, picking colours and fonts, or asking in plain language. A separate view shows what the finished project is made of, and every programming idea in it opens the lesson behind it. There are 31 beginner Python lessons and a Python playground.
+
+The part that is genuinely different: the comprehension questions are generated from the learner's own file. The right answer is whatever they actually wrote, and the wrong options are other real values from the same project, so it cannot be answered from a textbook. Only first attempts count. What a parent gets is a sentence about what their child could explain, not a completion percentage.
+
+Free plan, no card, ten AI-assisted builds a month, with lessons and the playground free for everyone. Family plan CA$12/month, cancellable at any time. That is Canadian dollars against US dollars for Tynker and CodeMonkey, so convert before comparing.
+
+**Best for:** roughly 8 to 16, past blocks, wants to make things, and a parent who wants evidence rather than a badge.
+
+**Wrong for:** pre-readers, where Tynker is better. Minecraft and Roblox, which we do not do at all. Schools, because there is no rostering, no LMS integration, no standards alignment and no teacher dashboards. And anyone who wants a curriculum to hand over and walk away from, which is Code.org or Tynker.
+
+## What the four have in common
+
+All of them answer the same question: how does my child produce code? Blocks, puzzles, guided courses, badges. That question was genuinely hard for twenty years and each of these is a good answer to it.
+
+It is not hard any more. A child with an assistant open has a working game in under a minute. The question that replaced it is whether they understood any of it, and that is a different thing to build for.
+
+## How to actually choose
+
+Ignore the rankings, including this one. Three questions settle it:
+
+1. **Can they read fluently?** If not, the list is Scratch or Tynker and everything else is unusable for them.
+2. **Do they want a course or a thing?** A child who wants to finish a path is served by Code.org, Tynker or CodeMonkey. A child who wants to make something and show someone is not.
+3. **What happens when they get stuck?** A child in the right tool gets annoyed and tries again. A child in the wrong tool goes quiet and finds something else to do. That signal beats every age range on this page.
+
+## Disclosure
+
+We build CodeIt, which is one of the five options above. A comparison written by one of the products is worth reading sceptically. The test is whether it tells you when to buy a competitor, and this one does that four times: Scratch for a first experience, Tynker for pre-readers and for Minecraft, Code.org for a free structured curriculum, and CodeMonkey for a child who likes puzzles. If a page like this never sends you elsewhere, it is an advert.`,
+  },
 ];
 
 export default GUIDE_PAGES;

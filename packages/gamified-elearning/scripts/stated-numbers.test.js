@@ -20,7 +20,14 @@ const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
 
-const { PAGES, HOME_PAGE, renderRouteDocument } = require('./generate-static-seo.js');
+const {
+  PAGES,
+  HOME_PAGE,
+  renderRouteDocument,
+  statedPrices,
+  declaredPrices,
+  ourPrice,
+} = require('./generate-static-seo.js');
 const { loadPricing } = require('./content-loader');
 
 const PRICING = loadPricing();
@@ -76,17 +83,18 @@ test('every stated price is the live one', () => {
   // Toronto than it does anywhere Tynker is sold.
   let checked = 0;
   for (const page of [HOME_PAGE, ...PAGES]) {
-    for (const match of visibleText(page).matchAll(/(CA|US)\$\s?(\d+(?:\.\d+)?)/g)) {
+    const text = visibleText(page);
+    const declared = declaredPrices(page);
+    for (const price of statedPrices(text)) {
       checked += 1;
+      // A page may quote a competitor, but only by declaring whose money it is.
+      // Anything else must be our live price, in our currency.
+      if (declared.includes(price)) continue;
       assert.equal(
-        `${match[1]}$`,
-        PRICING.CURRENCY_SYMBOL,
-        `${page.route || '/'} states ${match[0]}, but the live currency is ${PRICING.CURRENCY_SYMBOL}`
-      );
-      assert.equal(
-        Number(match[2]),
-        PRICING.AMOUNT,
-        `${page.route || '/'} states ${match[0]}, but the live price is ${PRICING.PRICE_PER_INTERVAL}`
+        price,
+        ourPrice(),
+        `${page.route || '/'} states ${price}, but the live price is ${PRICING.PRICE_PER_INTERVAL} ` +
+          'and the page does not declare that amount as somebody else\'s'
       );
     }
   }
@@ -142,4 +150,40 @@ test('a page quoting a competitor price shows the reader when it was checked', (
   }
 
   assert.ok(checked > 0, 'no guide quotes a price; this test examined nothing');
+});
+
+test('a declared competitor price is real, and is not ours in disguise', () => {
+  // quotedPrices exempts an amount from the price guards, so it is the one
+  // field on a page that can hide a mistake. Two ways it could:
+  //
+  //   * it stops matching the page — the competitor changed their price, the
+  //     paragraph was rewritten — and the declaration silently becomes a
+  //     standing exemption for whatever the page says next;
+  //   * somebody declares our own price to quiet a failing guard, which is
+  //     exactly the failure the guards exist to catch.
+  //
+  // Both fail here.
+  let declarations = 0;
+  for (const page of [HOME_PAGE, ...PAGES]) {
+    const declared = declaredPrices(page);
+    if (!declared.length) continue;
+    const present = statedPrices(visibleText(page));
+
+    for (const price of declared) {
+      declarations += 1;
+      assert.notEqual(
+        price,
+        ourPrice(),
+        `${page.route} declares ${price} as somebody else's money, but that is our own price`
+      );
+      assert.ok(
+        present.includes(price),
+        `${page.route} declares ${price} but no longer states it, so the declaration is now a blank exemption`
+      );
+    }
+  }
+  assert.ok(
+    declarations > 0,
+    'no page declares a competitor price; this test examined nothing, which is how an earlier guard passed'
+  );
 });
