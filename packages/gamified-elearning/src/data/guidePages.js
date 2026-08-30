@@ -1409,6 +1409,16 @@ There is a lot of "free" in this category that means a free trial, or a free tie
 
 If you are here because you want your child learning to code without paying, the honest answer is that you can, indefinitely, and most families never need to spend anything.
 
+| Tool | What is free | Best for | Roughly |
+|---|---|---|---|
+| Scratch | All of it, permanently | A first experience, dragging blocks rather than typing | Under about 9, and up |
+| Code.org, now CodeAI | Curriculum, tools and teacher resources | Structured lessons with no account overhead | Primary and secondary |
+| Google CS First | Every lesson, any number of students | A teacher or parent who wants a ready-made unit | Primary and lower secondary |
+| freeCodeCamp | Courses, projects and certifications | A teenager who has decided they want to write real code | Teenagers |
+| The p5.js Web Editor | The editor and the library, open source | Visual and generative work in real JavaScript | Teenagers |
+
+Every claim in that column is quoted from the product's own words further down this page.
+
 ## Scratch
 
 **Free, permanently.** The Scratch Foundation states plainly: *"Scratch is free for everyone. Supporters make that possible."*
@@ -1539,6 +1549,15 @@ At this point the honest advice is to stop using anything designed for children.
 
 **Not us, mostly.** CodeIt goes to 18 and the lessons are useful for a late beginner, but a motivated 16-year-old is better served by freeCodeCamp and we would rather say so.
 
+| Age | Where most children actually are | What fits |
+|---|---|---|
+| 5 to 7 | Reading is not fluent yet | Pictures and icons, not words on a screen |
+| 8 to 11 | The block years | Scratch and its relatives, where a missing semicolon cannot end the session |
+| 12 to 15 | The gap where children quit | Something that produces a visible result fast, and shows the real code behind it |
+| 16 and up | Ready for the real thing | The tools adults use, not a version made simpler |
+
+Every row is argued in the section of the same name below, including where we are not the answer.
+
 ## The one rule that matters more than the age bands
 
 Ages are a starting guess, not a verdict. A confident 9-year-old belongs in the 12-to-15 advice and a hesitant 13-year-old belongs in Scratch, and neither is a problem.
@@ -1564,6 +1583,16 @@ Watch what happens when they get stuck. A child in the right tool gets annoyed a
 Prices below were read from each product's own pricing page on 29 August 2026.
 
 Most roundups of this kind rank the four by popularity, which is not a property of your child. The useful question is which one is wrong for them, and every one of these is wrong for somebody.
+
+| Platform | Cost | Best for | Wrong for |
+|---|---|---|---|
+| Scratch | Free | A first experience, roughly 7 to 11 | A child who has outgrown blocks, and teenagers who want real code |
+| Code.org, now CodeAI | Free | Structured courses at no cost, and classrooms | Open-ended making, and anyone wanting a product rather than a curriculum |
+| Tynker | $15 to $18 a month, or $468 once | Pre-readers, and Minecraft or Roblox modding | A child who wants to build their own thing rather than follow a path |
+| CodeMonkey | US$7 to US$20 a month | Puzzle-lovers, and a clear line from blocks into text code | A child who wants to make something of their own |
+| CodeIt | CA$12/month, free tier | Roughly 8 to 16, past blocks, wants evidence not badges | Pre-readers, Minecraft, and schools |
+
+Prices are each product's own, in each product's own currency, so convert before comparing. The detail behind every row is below.
 
 ## Scratch
 
