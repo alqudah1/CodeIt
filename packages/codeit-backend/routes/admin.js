@@ -406,26 +406,52 @@ router.get('/funnel/lessons', async (_req, res) => {
 router.post('/maintenance/apply-pending', async (_req, res) => {
   const { CREATE_MONTHLY_DIGEST_LOG, CREATE_UNDERSTANDING_RECORDS, LESSON_DESCRIPTION_FIXES } = require('../maintenanceSql');
   try {
-    // pool.rawQuery, not pool.query: the adapter's normal path skips
-    // CREATE TABLE IF NOT EXISTS by design, and this DDL must actually run.
-    for (const block of [CREATE_UNDERSTANDING_RECORDS, CREATE_MONTHLY_DIGEST_LOG]) {
-      for (const statement of block.split(';').map(s => s.trim()).filter(Boolean)) {
-        if (pool.rawQuery) await pool.rawQuery(statement);
-        else await pool.query(statement);
+    // The first press in production taught us two things: the role in
+    // DATABASE_URL may not be allowed to do DDL at all ("permission denied
+    // for schema public"), and one failing step must not take the others
+    // down with it. So each table is checked before it is created, a DDL
+    // refusal is reported instead of thrown — the tables may already exist,
+    // created from the Supabase SQL editor's privileged role — and the
+    // description fixes ALWAYS get their turn, because they are plain
+    // UPDATEs the app role can run.
+    const tables = {};
+    for (const [name, ddl] of [
+      ['understanding_records', CREATE_UNDERSTANDING_RECORDS],
+      ['monthly_digest_log', CREATE_MONTHLY_DIGEST_LOG],
+    ]) {
+      try {
+        const [[probe]] = await pool.query(`SELECT to_regclass('public.${name}') AS reg`);
+        if (probe && probe.reg) { tables[name] = 'already there'; continue; }
+        for (const statement of ddl.split(';').map(s => s.trim()).filter(Boolean)) {
+          if (pool.rawQuery) await pool.rawQuery(statement);
+          else await pool.query(statement);
+        }
+        tables[name] = 'created';
+      } catch (err) {
+        tables[name] = /permission denied/i.test(err.message)
+          ? 'blocked: the database role cannot create tables — run the migration once from the Supabase SQL editor'
+          : `failed: ${err.message}`;
       }
     }
     let updated = 0;
-    for (const [id, description] of LESSON_DESCRIPTION_FIXES) {
-      const [result] = await pool.query('UPDATE lessons SET description = ? WHERE id = ?', [description, id]);
-      updated += result.affectedRows || 0;
+    let descriptionsError = null;
+    try {
+      for (const [id, description] of LESSON_DESCRIPTION_FIXES) {
+        const [result] = await pool.query('UPDATE lessons SET description = ? WHERE id = ?', [description, id]);
+        updated += result.affectedRows || 0;
+      }
+    } catch (err) {
+      descriptionsError = err.message;
     }
     const [rows] = await pool.query(
       'SELECT id, title, description FROM lessons WHERE id IN (3,5,6,7,8,9,10) ORDER BY id'
     );
     res.json({
-      success: true,
-      understandingTable: 'ready',
+      success: !descriptionsError,
+      tables,
+      understandingTable: tables.understanding_records,
       descriptionsUpdated: updated,
+      descriptionsError,
       lessons: rows,
     });
   } catch (error) {

@@ -21,34 +21,16 @@
 -- database changes nothing whatsoever; it exists so an empty database can be
 -- brought up to match.
 --
--- ── The part that is wrong, and is preserved anyway ─────────────────────────
+-- ── Seven descriptions, corrected on 30 August 2026 ─────────────────────────
 --
--- Seven of these sixteen rows carry a description belonging to a different
--- curriculum. They are left exactly as production has them:
---
---    3  Strings              says "Repeat code with for loops and group actions
---                            into reusable functions"
---    5  Simple Repetition    says "Collect items in lists and manipulate text
---                            with string methods"
---    6  For Loops            says "Store key-value pairs in dictionaries and
---                            unique items in sets"
---    7  Basic Lists          says "Read and write files using Python open() and
---                            the with statement"
---    8  Loops with Lists     says "Catch and handle errors gracefully with try
---                            and except"
---    9  Basic Functions      says "Define classes and create objects with
---                            attributes and methods"
---   10  Combining Concepts   says "Import and use Python modules like math,
---                            random and datetime"
---
--- Lesson 7 is the clearest tell: this course has no file-handling lesson at
--- all. These read as the descriptions of an older ten-lesson course, left
--- behind when the titles were rewritten and never updated.
---
--- Recording what is true and changing what is true are two different acts, and
--- a migration that quietly did both would be untrustworthy for either. The
--- correction is a separate migration, for the owner to approve, and it is not
--- in this file.
+-- As first recorded, seven of these sixteen rows carried descriptions from an
+-- older ten-lesson course (lesson 7, "Basic Lists", said "Read and write
+-- files…" — this course has no file-handling lesson at all). Production was
+-- corrected on 30 August 2026, from the Supabase SQL editor, to the summaries
+-- in src/pages/Lessons/lessonRegistry.js — the same texts held in
+-- packages/codeit-backend/maintenanceSql.js. This file now records the
+-- corrected descriptions, so a database rebuilt from migrations matches the
+-- production that exists, not the production that was wrong.
 --
 -- ── What this file cannot reproduce ─────────────────────────────────────────
 --
@@ -69,36 +51,36 @@ values (2, 'Storing Info with Variables', 'Store names, numbers and text using P
   on conflict (id) do nothing;
 
 insert into public.lessons (id, title, description, xp)
-values (3, 'Strings', 'Repeat code with for loops and group actions into reusable functions', 60)
-  on conflict (id) do nothing;   -- ⚠ description does not match this lesson. See the note above.
+values (3, 'Strings', 'Work with text using quotes, len(), and string methods', 60)
+  on conflict (id) do nothing;
 
 insert into public.lessons (id, title, description, xp)
 values (4, 'Making Decisions with If Statements', 'Make decisions in Python using if, elif and else', 60)
   on conflict (id) do nothing;
 
 insert into public.lessons (id, title, description, xp)
-values (5, 'Simple Repetition', 'Collect items in lists and manipulate text with string methods', 70)
-  on conflict (id) do nothing;   -- ⚠ description does not match this lesson. See the note above.
+values (5, 'Simple Repetition', 'Repeat code automatically using for i in range()', 70)
+  on conflict (id) do nothing;
 
 insert into public.lessons (id, title, description, xp)
-values (6, 'For Loops', 'Store key-value pairs in dictionaries and unique items in sets', 60)
-  on conflict (id) do nothing;   -- ⚠ description does not match this lesson. See the note above.
+values (6, 'For Loops', 'Loop over characters and sequences with for loops', 60)
+  on conflict (id) do nothing;
 
 insert into public.lessons (id, title, description, xp)
-values (7, 'Basic Lists', 'Read and write files using Python open() and the with statement', 65)
-  on conflict (id) do nothing;   -- ⚠ description does not match this lesson. See the note above.
+values (7, 'Basic Lists', 'Create and use Python lists. Index, append, and len()', 65)
+  on conflict (id) do nothing;
 
 insert into public.lessons (id, title, description, xp)
-values (8, 'Loops with Lists', 'Catch and handle errors gracefully with try and except', 70)
-  on conflict (id) do nothing;   -- ⚠ description does not match this lesson. See the note above.
+values (8, 'Loops with Lists', 'Combine loops and lists to process collections of data', 70)
+  on conflict (id) do nothing;
 
 insert into public.lessons (id, title, description, xp)
-values (9, 'Basic Functions', 'Define classes and create objects with attributes and methods', 75)
-  on conflict (id) do nothing;   -- ⚠ description does not match this lesson. See the note above.
+values (9, 'Basic Functions', 'Write reusable functions using def, parameters, and return', 75)
+  on conflict (id) do nothing;
 
 insert into public.lessons (id, title, description, xp)
-values (10, 'Combining Concepts', 'Import and use Python modules like math, random and datetime', 80)
-  on conflict (id) do nothing;   -- ⚠ description does not match this lesson. See the note above.
+values (10, 'Combining Concepts', 'Put it all together. Functions, loops, and lists in one program', 80)
+  on conflict (id) do nothing;
 
 insert into public.lessons (id, title, description, xp)
 values (11, 'Numbers & Arithmetic', 'Integers, floats, and arithmetic operators (+, -, *, /, //, %, **)', 190)
