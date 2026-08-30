@@ -121,7 +121,7 @@ const styles = {
     justifyContent: 'center',
     background: 'linear-gradient(135deg, #f0f4ff 0%, #fef6ec 100%)',
     padding: '2rem',
-    fontFamily: "'Nunito', 'Arvo', sans-serif",
+    fontFamily: "'Nunito', 'Trebuchet MS', sans-serif",
   },
   card: {
     background: 'rgba(255,255,255,0.92)',
@@ -156,7 +156,7 @@ const styles = {
     border: '1.5px solid rgba(255,138,61,0.22)',
     background: 'rgba(255,255,255,0.8)',
     color: '#3B2A22',
-    fontFamily: "'Nunito', 'Arvo', sans-serif",
+    fontFamily: "'Nunito', 'Trebuchet MS', sans-serif",
     fontSize: '0.95rem',
     fontWeight: 700,
     cursor: 'pointer',

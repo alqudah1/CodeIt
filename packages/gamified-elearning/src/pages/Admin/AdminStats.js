@@ -95,7 +95,7 @@ const AdminStats = () => {
                 <div className="adm-prog-bar-wrap">
                   <div className="adm-prog-bar-fill" style={{ width: `${row.avg_pct || 0}%` }} />
                 </div>
-                <span className="adm-prog-pct">{row.avg_pct ?? ', '}%</span>
+                <span className="adm-prog-pct">{row.avg_pct ?? 0}%</span>
               </div>
             ))}
           </div>
@@ -176,7 +176,7 @@ const AdminStats = () => {
                     <td><strong>{fmt(row.completions)}</strong></td>
                     <td>
                       <span className={`adm-badge ${row.pct >= 50 ? 'adm-badge-green' : 'adm-badge-amber'}`}>
-                        {row.pct ?? ', '}%
+                        {row.pct ?? 0}%
                       </span>
                     </td>
                   </tr>
@@ -204,7 +204,7 @@ const AdminStats = () => {
                     <td>{fmt(row.unique_students)}</td>
                     <td>
                       <span className={`adm-badge ${(row.avg_score_pct||0) >= 70 ? 'adm-badge-green' : 'adm-badge-amber'}`}>
-                        {row.avg_score_pct ?? ', '}%
+                        {row.avg_score_pct ?? 0}%
                       </span>
                     </td>
                   </tr>

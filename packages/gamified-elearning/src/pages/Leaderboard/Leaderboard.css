@@ -8,7 +8,7 @@
   min-height: 100vh;
   width: 100%;
   background: #FFF7ED;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   color: #3B2A22;
   display: flex;
   flex-direction: column;
@@ -227,13 +227,16 @@
 
 .lb-retry-btn {
   margin-top: 0.4rem;
-  background: linear-gradient(120deg, #FF8A3D, #FFD166);
-  border: none;
+  /* Arcade key, not a gradient pill — the one button system. */
+  background: var(--arc-sun, #FED340);
+  border: 2.5px solid var(--ink, #35220E);
   border-radius: 999px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
   padding: 0.5rem 1.4rem;
+  font-family: var(--font-display, 'Baloo 2', cursive);
   font-size: 0.92rem;
   font-weight: 700;
-  color: #3B2A22;
+  color: var(--ink, #35220E);
   cursor: pointer;
   box-shadow: 0 10px 20px rgba(255, 138, 61, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease;

@@ -106,7 +106,7 @@
 .site-header__nav-link {
   display: inline-block;
   padding: 0.46rem 1.05rem;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 0.9rem;
   font-weight: 700;
   color: #38291F;
@@ -190,7 +190,7 @@
 /* ── "Start Building" CTA ─────────────────────────────────────── */
 .site-header__cta {
   display: inline-block;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 0.88rem;
   font-weight: 800;
   color: #fff;
@@ -376,7 +376,7 @@
 }
 
 .site-header__dropdown-name {
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 0.8125rem;
   font-weight: 800;
   color: #A48773;
@@ -389,7 +389,7 @@
   display: block;
   width: 100%;
   text-align: left;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 0.88rem;
   font-weight: 600;
   color: #38291F;
@@ -428,7 +428,7 @@
 
 /* ── Logout ───────────────────────────────────────────────────── */
 .site-header__logout {
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 0.83rem;
   font-weight: 700;
   color: #785B49;
@@ -450,7 +450,7 @@
 
 /* ── Login link ───────────────────────────────────────────────── */
 .site-header__login {
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 0.88rem;
   font-weight: 700;
   color: #38291F;

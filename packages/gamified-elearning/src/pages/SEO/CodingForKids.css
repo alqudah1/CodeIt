@@ -73,7 +73,7 @@
 .parents-hero h1,
 .parents-section h2,
 .parents-pilot h2 {
-  font-family: 'Arvo', serif;
+  font-family: 'Baloo 2', 'Nunito', sans-serif;
   letter-spacing: -0.035em;
 }
 
@@ -211,7 +211,7 @@
 .parents-project__question {
   max-width: 330px;
   margin: 12px 0 25px;
-  font-family: 'Arvo', serif;
+  font-family: 'Baloo 2', 'Nunito', sans-serif;
   font-size: clamp(1.45rem, 3vw, 2.15rem);
   line-height: 1.2;
 }
@@ -370,7 +370,7 @@
 .parents-loop h3,
 .parents-path h3,
 .parents-faq h3 {
-  font-family: 'Arvo', serif;
+  font-family: 'Baloo 2', 'Nunito', sans-serif;
 }
 
 .parents-loop h3 {
@@ -413,7 +413,7 @@
 
 .parents-path__number {
   color: var(--parents-orange);
-  font-family: 'Arvo', serif;
+  font-family: 'Baloo 2', 'Nunito', sans-serif;
   font-size: 1.2rem;
 }
 

@@ -20,7 +20,7 @@
 }
 
 .founding-signup__heading strong {
-  font-family: "Arvo", serif;
+  font-family: 'Baloo 2', 'Nunito', sans-serif;
   font-size: 0.95rem;
 }
 
@@ -116,7 +116,7 @@
   background: #f0fdf6;
 }
 
-.founding-signup--saved strong { color: #176b4d; font-family: "Arvo", serif; }
+.founding-signup--saved strong { color: #176b4d; font-family: 'Baloo 2', 'Nunito', sans-serif; }
 .founding-signup--saved p { margin: 0.35rem 0 0.55rem; color: #527062; font-size: 0.8125rem; line-height: 1.45; }
 .founding-signup--saved a { color: #176b4d; font-size: 0.8125rem; font-weight: 900; text-decoration: none; }
 

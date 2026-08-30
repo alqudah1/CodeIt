@@ -37,7 +37,7 @@
 }
 
 .spline-scene__loader-text {
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 0.82rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.45);
@@ -63,7 +63,7 @@
 }
 
 .spline-scene__fallback-tagline {
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 0.88rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.5);

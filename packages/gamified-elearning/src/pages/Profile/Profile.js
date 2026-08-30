@@ -426,7 +426,9 @@ export default function Profile() {
         {/* ── Stats grid ── */}
         <div className="profile-stats">
           <div className="profile-stat">
-            <span className="profile-stat__num">{projectCount ?? ', '}</span>
+            {/* Was `projectCount ?? ', '` — a find-replace casualty that showed
+                a child a literal comma. A stat renders a number, always. */}
+            <span className="profile-stat__num">{Number(projectCount) || 0}</span>
             <span className="profile-stat__lbl">Projects built</span>
           </div>
           <div className="profile-stat">

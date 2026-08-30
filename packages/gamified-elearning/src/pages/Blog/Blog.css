@@ -13,7 +13,7 @@
   /* override — keep here so the post page also inherits it */
   min-height: 100vh;
   background: #fffaf5;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   color: #38291f;
   position: relative;
 }
@@ -58,7 +58,7 @@
 
 .bi-title {
   margin: 0 0 0.75rem;
-  font-family: Arvo, Georgia, serif;
+  font-family: 'Baloo 2', 'Nunito', sans-serif;
   font-size: clamp(2.5rem, 5.5vw, 4.2rem);
   font-weight: 700;
   color: #38291f;
@@ -233,7 +233,7 @@
 
 .bi-featured__title {
   margin: 0 0 0.85rem;
-  font-family: Arvo, Georgia, serif;
+  font-family: 'Baloo 2', 'Nunito', sans-serif;
   font-size: clamp(1.55rem, 2.8vw, 2.1rem);
   font-weight: 700;
   color: #38291f;
@@ -420,7 +420,7 @@
 .blog-page {
   min-height: 100vh;
   background: #fffaf5;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   color: #38291f;
   position: relative;
 }

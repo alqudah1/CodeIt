@@ -2,7 +2,7 @@
 .legal-page main { width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: 5rem 0 6rem; }
 .legal-hero { max-width: 850px; margin: 0 auto 3rem; text-align: center; }
 .legal-kicker { margin: 0 0 .8rem; color: #c95f16; font-size: 0.8125rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
-.legal-hero h1 { margin: 0; font-family: Arvo, Georgia, serif; font-size: clamp(2.25rem, 5.6vw, 4.5rem); line-height: 1.06; letter-spacing: -.045em; }
+.legal-hero h1 { margin: 0; font-family: 'Baloo 2', 'Nunito', sans-serif; font-size: clamp(2.25rem, 5.6vw, 4.5rem); line-height: 1.06; letter-spacing: -.045em; }
 .legal-hero > p:not(.legal-kicker) { max-width: 720px; margin: 1.2rem auto 0; color: #704c37; font-size: 1.04rem; line-height: 1.7; }
 .legal-hero small { display: inline-block; margin-top: 1rem; border-radius: 999px; background: #f4e7dc; padding: .42rem .7rem; color: #785b49; font-size: 0.8125rem; font-weight: 850; }
 
@@ -20,7 +20,7 @@
 .legal-content { min-width: 0; }
 .legal-content section { scroll-margin-top: 110px; border-top: 1px solid #ead9cb; padding: 2rem 0; }
 .legal-content section:first-child { border-top: 0; padding-top: .25rem; }
-.legal-content h2 { margin: 0 0 .85rem; font-family: Arvo, Georgia, serif; font-size: clamp(1.45rem, 3vw, 2rem); line-height: 1.2; }
+.legal-content h2 { margin: 0 0 .85rem; font-family: 'Baloo 2', 'Nunito', sans-serif; font-size: clamp(1.45rem, 3vw, 2rem); line-height: 1.2; }
 .legal-content p { margin: .7rem 0 0; color: #634938; font-size: .95rem; line-height: 1.75; }
 .legal-content a { color: #b65316; font-weight: 850; }
 

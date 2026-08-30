@@ -79,7 +79,7 @@ img, video, svg, canvas {
 
 body {
   margin: 0;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* Prevent body-level horizontal overflow — pages must NOT add overflow-x:hidden
@@ -101,7 +101,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
 }
 
 code {
@@ -127,7 +127,7 @@ code {
   border: 1.5px solid rgba(255, 138, 61, 0.22);
   border-radius: 14px;
   padding: 0.75rem 1.4rem;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 0.95rem;
   font-weight: 700;
   color: #3B2A22;

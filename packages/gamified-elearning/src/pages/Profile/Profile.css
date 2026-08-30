@@ -6,7 +6,7 @@
 .profile-page {
   min-height: calc(100vh - var(--header-h));
   background: #FFF6ED;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   color: #1F2937;
   display: flex;
   flex-direction: column;

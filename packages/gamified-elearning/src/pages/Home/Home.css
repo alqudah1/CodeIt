@@ -14,7 +14,7 @@
   min-height: 100vh;
   padding-bottom: 0;
   background: #FFF6ED;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   color: #1F2937;
   overflow-x: clip;
 }
@@ -72,7 +72,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-weight: 800;
   font-size: 1rem;
   border-radius: 999px;
@@ -251,7 +251,7 @@
   align-items: center;
   padding: 0.38rem 0.95rem;
   border-radius: 999px;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 0.8125rem;
   font-weight: 800;
   white-space: nowrap;
@@ -1095,7 +1095,7 @@
 }
 
 .hp-footer__wordmark {
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 1.5rem;
   font-weight: 900;
   letter-spacing: -0.03em;

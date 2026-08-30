@@ -3,7 +3,7 @@
   min-height: 100vh;
   padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 4vw, 2.5rem);
   background: #FFF7ED;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   display: flex;
   align-items: flex-start;
   justify-content: center;

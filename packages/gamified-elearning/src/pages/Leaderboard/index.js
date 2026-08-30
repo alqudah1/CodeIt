@@ -57,7 +57,8 @@ const Leaderboard = () => {
         xpToNextRank: Number(data.xp_to_next_rank) || 0,
       });
     } catch (err) {
-      setError(err.message);
+      console.error('Leaderboard load failed:', err.message);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -159,9 +160,12 @@ const Leaderboard = () => {
         {/* ── Error ───────────────────────────────────────── */}
         {!loading && error && (
           <div className="lb-state-card lb-state-error">
-            <span className="lb-state-icon">😕</span>
-            <p>Couldn&apos;t load the leaderboard right now.</p>
-            <small>{error}</small>
+            <span className="lb-state-icon">😴</span>
+            <p>The scoreboard is taking a nap.</p>
+            {/* Never the raw error — "Unexpected token '<'" was reaching
+                children's screens. The technical detail goes to the console
+                for us; the kid gets one honest sentence and a button. */}
+            <small>Give it a second, then try again.</small>
             <button className="lb-retry-btn" onClick={load}>Try again</button>
           </div>
         )}

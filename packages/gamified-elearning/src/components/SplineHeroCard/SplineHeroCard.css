@@ -24,7 +24,7 @@
     0 24px 60px rgba(0, 0, 0, 0.45),
     0 8px 24px rgba(255, 138, 61, 0.08);
 
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   color: #fff;
   user-select: none;
 }
@@ -110,7 +110,7 @@
 .sphc-cta {
   align-self: flex-start;
   padding: 0.72rem 1.8rem;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 0.95rem;
   font-weight: 800;
   color: #3B2A22;

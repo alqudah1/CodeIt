@@ -31,7 +31,7 @@ const GameHub = () => {
             </Link>
           </div>
         </div>
-        <CharacterSpotlight headline="Cheer squad" cta="Update your buddy" size={220} />
+        <CharacterSpotlight headline="Cheer squad" cta="Update your buddy" size={160} />
       </section>
 
       {/* All 10 cards */}

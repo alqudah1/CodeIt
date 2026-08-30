@@ -141,7 +141,7 @@ export const showXPNotification = (xpEarned, baseXP, bonusXP) => {
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     z-index: 10000;
-    font-family: 'Arvo', serif;
+    font-family: 'Baloo 2', 'Nunito', sans-serif;
     font-weight: bold;
     animation: slideIn 0.3s ease-out;
   `;
@@ -200,7 +200,7 @@ export const showLessonLockedToast = (lessonNum) => {
     border-radius: 999px;
     box-shadow: 0 14px 32px rgba(0,0,0,0.22);
     z-index: 99999;
-    font-family: 'Arvo', serif;
+    font-family: 'Baloo 2', 'Nunito', sans-serif;
     font-size: 1rem;
     font-weight: 700;
     white-space: nowrap;

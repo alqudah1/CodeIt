@@ -15,7 +15,7 @@ const GameComingSoon = ({ gameId }) => {
       alignItems: 'center',
       justifyContent: 'center',
       padding: '2rem',
-      fontFamily: "'Nunito', 'Arvo', sans-serif",
+      fontFamily: "'Nunito', 'Trebuchet MS', sans-serif",
       textAlign: 'center',
       gap: '1.5rem',
     }}>

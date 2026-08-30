@@ -15,7 +15,7 @@
 .fgc-hero { padding: clamp(4.5rem, 9vw, 8rem) 0 5rem; }
 .fgc-hero__grid { display: grid; grid-template-columns: 1.03fr .97fr; gap: clamp(2.5rem, 7vw, 6rem); align-items: center; }
 .fgc-kicker { margin: 0 0 1rem; color: var(--fgc-orange-dark); font-size: 0.8125rem; font-weight: 1000; letter-spacing: .14em; text-transform: uppercase; }
-.fgc-page h1, .fgc-page h2, .fgc-page h3 { font-family: Arvo, Georgia, serif; }
+.fgc-page h1, .fgc-page h2, .fgc-page h3 { font-family: 'Baloo 2', 'Nunito', sans-serif; }
 .fgc-page h1 { max-width: 690px; margin: 0; font-size: clamp(3.4rem, 8vw, 6.8rem); line-height: .93; letter-spacing: -.06em; }
 .fgc-hero__lead { max-width: 660px; margin: 1.7rem 0 2rem; color: #72594a; font-size: clamp(1.05rem, 2vw, 1.24rem); line-height: 1.7; }
 .fgc-button { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: .65rem; border: 2px solid var(--fgc-ink); border-radius: 999px; padding: .8rem 1.3rem; color: var(--fgc-ink); font-weight: 1000; text-decoration: none; transition: transform .18s ease, box-shadow .18s ease; }
@@ -34,7 +34,7 @@
 .fgc-demo__score span + span { border-left: 3px solid var(--fgc-ink); }
 .fgc-demo__score small, .fgc-demo__score strong { display: block; }
 .fgc-demo__score small { color: #72594a; font-size: 0.8125rem; font-weight: 1000; letter-spacing: .09em; }
-.fgc-demo__score strong { margin-top: .35rem; font: 800 1.2rem Arvo, serif; }
+.fgc-demo__score strong { margin-top: .35rem; font: 800 1.2rem 'Baloo 2', 'Nunito', sans-serif; }
 .fgc-proof { border-block: 2px solid var(--fgc-ink); background: #fff; }
 .fgc-proof .fgc-wrap { display: grid; grid-template-columns: repeat(3, 1fr); }
 .fgc-proof p { margin: 0; padding: 1.35rem 1.5rem; }
@@ -62,7 +62,7 @@
 .fgc-steps { margin: 0; padding: 0; list-style: none; border-top: 2px solid var(--fgc-ink); }
 .fgc-steps li { display: grid; grid-template-columns: 54px 1fr; gap: 1rem; border-bottom: 2px solid var(--fgc-ink); padding: 1.35rem .25rem; }
 .fgc-steps li > span { color: var(--fgc-orange-dark); font-weight: 1000; }
-.fgc-steps strong { font: 800 1.16rem Arvo, serif; }
+.fgc-steps strong { font: 800 1.16rem 'Baloo 2', 'Nunito', sans-serif; }
 .fgc-steps p { margin: .35rem 0 0; color: #72594a; line-height: 1.55; }
 .fgc-compete__card { display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: end; border: 3px solid var(--fgc-ink); border-radius: 26px; padding: clamp(1.7rem, 5vw, 3.5rem); background: var(--fgc-yellow); box-shadow: 11px 11px 0 var(--fgc-ink); }
 .fgc-compete__card > div:first-child > p:last-child { max-width: 720px; color: #5f493d; line-height: 1.65; }

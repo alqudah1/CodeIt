@@ -25,7 +25,7 @@
 
 .guide-page h1 {
   margin: 0 0 1rem;
-  font: 700 clamp(1.9rem, 5vw, 2.6rem)/1.15 Arvo, Georgia, serif;
+  font: 700 clamp(1.9rem, 5vw, 2.6rem)/1.15 'Baloo 2', 'Nunito', sans-serif;
   text-wrap: balance;
 }
 
@@ -37,12 +37,12 @@
 
 .guide-body h2 {
   margin: 2.4rem 0 0.6rem;
-  font: 700 1.45rem/1.2 Arvo, Georgia, serif;
+  font: 700 1.45rem/1.2 'Baloo 2', 'Nunito', sans-serif;
   text-wrap: balance;
 }
 .guide-body h3 {
   margin: 1.8rem 0 0.4rem;
-  font: 700 1.12rem/1.25 Arvo, Georgia, serif;
+  font: 700 1.12rem/1.25 'Baloo 2', 'Nunito', sans-serif;
 }
 .guide-body p { margin: 0 0 1rem; }
 .guide-body ul,
@@ -126,5 +126,5 @@
   border: 1px solid var(--guide-rule);
   border-radius: 10px;
 }
-.guide-index__item h2 { margin: 0 0 0.35rem; font: 700 1.08rem/1.25 Arvo, Georgia, serif; }
+.guide-index__item h2 { margin: 0 0 0.35rem; font: 700 1.08rem/1.25 'Baloo 2', 'Nunito', sans-serif; }
 .guide-index__item p { margin: 0; color: var(--guide-soft); font-size: 0.92rem; }

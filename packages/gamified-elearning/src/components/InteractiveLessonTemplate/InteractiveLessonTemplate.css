@@ -9,7 +9,7 @@
 .sl-lesson {
   min-height: 100vh;
   background: #FFF8F2;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   color: #2B2D42;
 }
 
@@ -498,7 +498,7 @@
   border-radius: 8px;
   color: #fff;
   font-weight: 800;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 0.88rem;
   padding: 0.5rem 1.3rem;
   cursor: pointer;
@@ -540,7 +540,7 @@
   color: #fff;
   border: none;
   border-radius: 12px;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 1rem;
   font-weight: 800;
   cursor: pointer;
@@ -941,7 +941,7 @@
   width: 100%;
   padding: 0.85rem 1.5rem;
   border-radius: 14px;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 1rem;
   font-weight: 800;
   cursor: pointer;
@@ -1084,7 +1084,7 @@
   width: 100%;
   padding: 0.95rem 1.5rem;
   border-radius: 14px;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 1.02rem;
   font-weight: 800;
   cursor: pointer;

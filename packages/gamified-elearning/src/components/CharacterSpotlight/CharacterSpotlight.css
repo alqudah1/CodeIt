@@ -1,69 +1,86 @@
+/* ── The buddy card, in the arcade language ──────────────────────────────────
+   The old version was a gradient card on a rigid two-column grid: inside the
+   GameHub sidebar it squeezed its text into a one-word-per-line ladder with
+   the CTA overlapping the avatar. Flex with wrap lets the card fold to one
+   column on its own whenever its container is narrow — no media query
+   guessing at the container's width. */
+
 .character-spotlight {
-    display: grid;
-    width: 100%;
-    margin: 3rem 0;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    gap: 2.2rem;
-    padding: 1.8rem;
-    border-radius: 2rem;
-    background: linear-gradient(135deg, rgba(255, 247, 227, 0.85), rgba(232, 238, 255, 0.92));
-    box-shadow:
-      0 16px 40px rgba(101, 119, 169, 0.25),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.6);
-  }
-  
-  .character-spotlight__media {
-    display: flex;
-    align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 3rem 0;
+  align-items: center;
+  gap: 1.6rem;
+  padding: 1.6rem;
+  border-radius: 20px;
+  background: var(--paper, #FFFDF7);
+  border: 3px solid var(--ink, #35220E);
+  box-shadow: var(--pop-card, 6px 6px 0 rgba(53, 34, 14, 0.18));
+}
+
+.character-spotlight__media {
+  flex: 0 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.character-spotlight__content {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.character-spotlight__content h3 {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-size: 1.3rem;
+  color: var(--ink, #35220E);
+}
+
+.character-spotlight__nickname {
+  margin: 0;
+  font-weight: 800;
+  color: var(--arc-violet, #7B5CD6);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.character-spotlight__summary {
+  margin: 0.5rem 0 1.1rem;
+  color: rgba(53, 34, 14, 0.85);
+  line-height: 1.5;
+}
+
+.character-spotlight__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 999px;
+  background: var(--arc-sun, #FED340);
+  border: 2.5px solid var(--ink, #35220E);
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  color: var(--ink, #35220E);
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.character-spotlight__cta:hover {
+  transform: translateY(-2px);
+}
+
+.character-spotlight__cta:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .character-spotlight {
     justify-content: center;
+    text-align: center;
   }
-  
-  .character-spotlight__content h3 {
-    margin: 0 0 0.5rem;
-    font-size: 1.3rem;
-    color: #3B2A22;
-  }
-  
-  .character-spotlight__nickname {
-    margin: 0;
-    font-weight: 600;
-    color: #552ee5;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-  }
-  
-  .character-spotlight__summary {
-    margin: 0.6rem 0 1.4rem;
-    color: #30415d;
-    line-height: 1.5;
-  }
-  
-  .character-spotlight__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.7rem 1.4rem;
-    border-radius: 999px;
-    background: linear-gradient(135deg, #ff7a8a, #ffac5f);
-    color: #fff;
-    font-weight: 600;
-    text-decoration: none;
-    box-shadow: 0 12px 18px rgba(255, 122, 138, 0.25);
-  }
-  
-  .character-spotlight__cta:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 16px 24px rgba(255, 122, 138, 0.35);
-  }
-  
-  @media (max-width: 768px) {
-    .character-spotlight {
-      grid-template-columns: 1fr;
-      text-align: center;
-    }
-  
-    .character-spotlight__content h3 {
-      font-size: 1.15rem;
-    }
-  }
+}

@@ -56,7 +56,7 @@
 .studio-hero h1 {
   margin-bottom: 1rem;
   max-width: 680px;
-  font-family: "Arvo", serif;
+  font-family: 'Baloo 2', 'Nunito', sans-serif;
   /* 5.15rem is 82px — a poster headline. Two lines of it, plus its own
      1.5rem margin, was 200px of the first screen spent on a sentence, before
      the three games a child can actually tap. */
@@ -252,7 +252,7 @@
 .studio-preview__made-with { position: absolute; top: 1rem; right: 1.2rem; color: var(--studio-ink); font-size: 0.8125rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
 .studio-preview__project-card { position: relative; z-index: 1; width: min(100%, 390px); padding: 2.4rem 1.8rem 1.6rem; text-align: center; background: rgba(255,255,255,0.94); border: 2px solid #6b4fc8; border-radius: 22px; box-shadow: 9px 9px 0 color-mix(in srgb, var(--project-accent) 68%, #f87824); animation: studio-project-in 260ms ease both; }
 .studio-preview__project-kicker { color: var(--project-accent); font-size: 0.8125rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
-.studio-preview__project-title { margin: 0.8rem 0 0.5rem; color: var(--studio-ink); font-family: "Arvo", serif; font-size: clamp(1.35rem, 2.5vw, 2rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.15; }
+.studio-preview__project-title { margin: 0.8rem 0 0.5rem; color: var(--studio-ink); font-family: 'Baloo 2', 'Nunito', sans-serif; font-size: clamp(1.35rem, 2.5vw, 2rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.15; }
 .studio-preview__project-card > p:not(.studio-preview__project-title) { min-height: 2.5em; margin-bottom: 1rem; color: #656b78; font-size: 0.83rem; }
 .studio-preview__project-shapes { display: flex; justify-content: center; gap: 0.45rem; }
 .studio-preview__project-shapes i { width: 42px; height: 10px; background: var(--studio-orange); border-radius: 99px; }
@@ -292,7 +292,7 @@
 }
 .studio-traction__heading h2 {
   margin-bottom: 1rem;
-  font-family: "Arvo", serif;
+  font-family: 'Baloo 2', 'Nunito', sans-serif;
   font-size: clamp(2rem, 4vw, 3.35rem);
   letter-spacing: -0.045em;
   line-height: 1.08;
@@ -338,7 +338,7 @@
 .studio-traction__metrics dd {
   margin: 0;
   color: var(--studio-orange-dark);
-  font-family: "Arvo", serif;
+  font-family: 'Baloo 2', 'Nunito', sans-serif;
   font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -346,14 +346,14 @@
 }
 
 .studio-section-heading { max-width: 760px; margin-bottom: 2.4rem; }
-.studio-section-heading h2, .studio-loop h2, .studio-trust h2, .studio-final h2 { margin-bottom: 1rem; font-family: "Arvo", serif; font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -0.045em; line-height: 1.08; }
+.studio-section-heading h2, .studio-loop h2, .studio-trust h2, .studio-final h2 { margin-bottom: 1rem; font-family: 'Baloo 2', 'Nunito', sans-serif; font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -0.045em; line-height: 1.08; }
 .studio-section-heading > p:last-child, .studio-loop__copy > p, .studio-final p { color: var(--studio-muted); font-size: 1.04rem; line-height: 1.7; }
 
 .studio-start__grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--studio-line); border-bottom: 1px solid var(--studio-line); }
 .studio-start-card { min-height: 310px; padding: 2rem; display: flex; flex-direction: column; border-left: 1px solid var(--studio-line); }
 .studio-start-card:first-child { border-left: 0; }
-.studio-start-card__number { margin-bottom: auto; color: var(--studio-orange); font-family: "Arvo", serif; font-size: 0.82rem; font-weight: 700; }
-.studio-start-card h3 { margin: 2.5rem 0 0.8rem; font-family: "Arvo", serif; font-size: 1.3rem; letter-spacing: -0.025em; }
+.studio-start-card__number { margin-bottom: auto; color: var(--studio-orange); font-family: 'Baloo 2', 'Nunito', sans-serif; font-size: 0.82rem; font-weight: 700; }
+.studio-start-card h3 { margin: 2.5rem 0 0.8rem; font-family: 'Baloo 2', 'Nunito', sans-serif; font-size: 1.3rem; letter-spacing: -0.025em; }
 .studio-start-card p { color: var(--studio-muted); line-height: 1.62; }
 .studio-start-card a, .studio-text-link { margin-top: auto; color: var(--studio-ink); font-size: 0.86rem; font-weight: 900; text-decoration: none; }
 .studio-start-card a:hover, .studio-text-link:hover { color: var(--studio-orange-dark); }
@@ -387,7 +387,7 @@
 }
 .studio-family__copy h2 {
   margin-bottom: 1rem;
-  font-family: "Arvo", serif;
+  font-family: 'Baloo 2', 'Nunito', sans-serif;
   font-size: clamp(2rem, 4vw, 3.5rem);
   letter-spacing: -0.045em;
   line-height: 1.08;
@@ -410,7 +410,7 @@
   border-radius: 16px;
 }
 .studio-family__setup > div { display: grid; gap: 0.2rem; }
-.studio-family__setup strong { font-family: "Arvo", serif; font-size: 0.86rem; }
+.studio-family__setup strong { font-family: 'Baloo 2', 'Nunito', sans-serif; font-size: 0.86rem; }
 .studio-family__setup span { color: var(--studio-muted); font-size: 0.8125rem; line-height: 1.4; }
 .studio-family__setup a {
   min-height: 44px;
@@ -451,7 +451,7 @@
 .studio-family__email-bar { margin: -1.4rem -1.4rem 1.3rem; padding: 0.85rem 1rem; display: flex; align-items: center; gap: 0.65rem; background: #fff7ee; border-bottom: 1px solid #eadfd5; border-radius: 20px 20px 0 0; color: var(--studio-muted); font-size: 0.8125rem; font-weight: 900; }
 .studio-family__email-logo { --brand-logo-width: 34px; }
 .studio-family__email-label { margin-bottom: 0.5rem; color: var(--studio-orange-dark); font-size: 0.8125rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
-.studio-family__email h3 { margin: 0 0 0.65rem; font-family: "Arvo", serif; font-size: clamp(1.35rem, 3vw, 2rem); }
+.studio-family__email h3 { margin: 0 0 0.65rem; font-family: 'Baloo 2', 'Nunito', sans-serif; font-size: clamp(1.35rem, 3vw, 2rem); }
 .studio-family__email > p:not(.studio-family__email-label) { color: var(--studio-muted); line-height: 1.6; }
 .studio-family__email-result { margin-top: 1.3rem; padding: 1rem; display: grid; gap: 0.18rem; background: #dff7ef; border-radius: 13px; }
 .studio-family__email-result span { color: #176b52; font-size: 0.8125rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
@@ -461,7 +461,7 @@
 .studio-trust__points { display: grid; gap: 1.4rem; }
 .studio-trust__points article { padding: 0 0 1.4rem; border-bottom: 1px solid var(--studio-line); }
 .studio-trust__points article:last-child { border-bottom: 0; }
-.studio-trust__points strong { display: block; margin-bottom: 0.4rem; font-family: "Arvo", serif; }
+.studio-trust__points strong { display: block; margin-bottom: 0.4rem; font-family: 'Baloo 2', 'Nunito', sans-serif; }
 .studio-trust__points p { margin: 0; color: var(--studio-muted); line-height: 1.6; }
 
 .studio-final { padding: clamp(3rem, 6vw, 5rem) max(24px, calc((100% - 1120px) / 2)); display: flex; justify-content: space-between; align-items: center; gap: 2rem; background: #ffd9be; }

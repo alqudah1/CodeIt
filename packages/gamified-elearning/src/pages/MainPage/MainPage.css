@@ -48,7 +48,7 @@
   border-radius: 999px;
   background: linear-gradient(120deg, #D95F20, #F59A5A);
   color: #fff;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
@@ -86,7 +86,7 @@
   min-height: 100vh;
   width: 100%;
   background: #FFF7ED;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   color: #041638;
   display: flex;
   flex-direction: column;
@@ -364,7 +364,7 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   letter-spacing: 0.02em;
 }
 
@@ -398,7 +398,7 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
 }
 
 .track-card.quizzes .track-button {
@@ -1268,7 +1268,7 @@
   padding: 0.85rem 2.2rem;
   border: none;
   border-radius: 999px;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 1.05rem;
   font-weight: 800;
   letter-spacing: 0.02em;
@@ -1473,7 +1473,7 @@
   border: none;
   border-radius: 14px;
   padding: 0.9rem 1.2rem;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 1rem;
   font-weight: 800;
   cursor: pointer;
@@ -1750,7 +1750,7 @@
   padding: 0.45rem 1.1rem;
   border: none;
   border-radius: 999px;
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   font-size: 0.84rem;
   font-weight: 800;
   cursor: pointer;
@@ -1913,7 +1913,7 @@
   text-decoration: none;
   transition: transform 0.15s, box-shadow 0.15s;
   box-shadow: 0 6px 16px rgba(86, 54, 211, 0.28);
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
 }
 
 .mp-char-card__link:hover {
@@ -1988,7 +1988,7 @@
   text-decoration: none;
   transition: transform 0.15s, box-shadow 0.15s;
   box-shadow: 0 6px 18px rgba(124,58,237,0.30);
-  font-family: 'Nunito', 'Arvo', sans-serif;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   white-space: nowrap;
 }
 
@@ -2017,7 +2017,7 @@
   box-shadow: 0 12px 32px rgba(185, 85, 25, .08);
 }
 .mp-first-win__copy > span { color: #bd4e14; font-size: 0.8125rem; font-weight: 1000; letter-spacing: .12em; text-transform: uppercase; }
-.mp-first-win__copy h2 { margin: .35rem 0 .55rem; color: #38291f; font-family: Arvo, Georgia, serif; font-size: clamp(1.5rem, 3vw, 2.35rem); line-height: 1.12; }
+.mp-first-win__copy h2 { margin: .35rem 0 .55rem; color: #38291f; font-family: 'Baloo 2', 'Nunito', sans-serif; font-size: clamp(1.5rem, 3vw, 2.35rem); line-height: 1.12; }
 .mp-first-win__copy p { max-width: 620px; margin: 0; color: #72594d; line-height: 1.6; }
 .mp-first-win__steps { display: grid; align-content: center; gap: .6rem; }
 .mp-first-win__steps span { display: flex; align-items: center; gap: .65rem; color: #513b2e; font-size: .82rem; font-weight: 900; }
