@@ -18,7 +18,7 @@ const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
 
-const { applyShareTags, shareImageFor } = require('./share.js');
+const { applyShareTags, shareImageFor, canonicalOrigin } = require('./share.js');
 
 const TEMPLATE = fs.readFileSync(
   path.resolve(__dirname, '../packages/gamified-elearning/public/index.html'),
@@ -122,4 +122,48 @@ test('every share image the shim can name actually exists', () => {
 test('a project that could not be fetched leaves the page untouched', () => {
   assert.equal(applyShareTags(TEMPLATE, null, 'codeitlearn.com', 'abc123'), TEMPLATE);
   assert.equal(applyShareTags(TEMPLATE, {}, 'codeitlearn.com', 'abc123'), TEMPLATE);
+});
+
+test('a project served over www still announces the apex, like every other page', () => {
+  // Vercel serves this site on the apex and on www, and every static page says
+  // the apex whichever host you reached it through. This shim built its URLs
+  // from request.headers.host, so the live unfurl for a real project came back
+  // with a www og:url beside an apex canonical — one project, two identities,
+  // and social platforms key on og:url.
+  const out = applyShareTags(TEMPLATE, PROJECT, 'www.codeitlearn.com', 'abc123');
+
+  assert.equal(
+    tag(out, /<meta property="og:url" content="([^"]*)"/),
+    'https://codeitlearn.com/project/abc123'
+  );
+  assert.equal(
+    tag(out, /<link rel="canonical" href="([^"]*)"/),
+    'https://codeitlearn.com/project/abc123'
+  );
+  assert.equal(
+    tag(out, /<meta property="og:image" content="([^"]*)"/),
+    'https://codeitlearn.com/brand/share-game.png'
+  );
+});
+
+test('a preview deployment does not claim to be the production domain', () => {
+  // The origin is read from the template, and the template on a preview build
+  // carries the production canonical, so a preview unfurl naming the real domain
+  // is correct: the project it describes lives there. What must not happen is a
+  // crash or an empty tag when the template has no canonical at all.
+  assert.equal(canonicalOrigin('<html></html>', 'preview-xyz.vercel.app'), 'https://preview-xyz.vercel.app');
+  assert.equal(canonicalOrigin(TEMPLATE, 'preview-xyz.vercel.app'), 'https://codeitlearn.com');
+});
+
+test('the origin comes from the template, not from a constant in this file', () => {
+  // If the domain moves, public/index.html changes and this must follow. A
+  // hardcoded origin would pass every other test in this file and be wrong.
+  const moved = TEMPLATE.replace(/https:\/\/codeitlearn\.com/g, 'https://example.org');
+  assert.equal(canonicalOrigin(moved, 'codeitlearn.com'), 'https://example.org');
+
+  const out = applyShareTags(moved, PROJECT, 'codeitlearn.com', 'abc123');
+  assert.equal(
+    tag(out, /<meta property="og:url" content="([^"]*)"/),
+    'https://example.org/project/abc123'
+  );
 });
