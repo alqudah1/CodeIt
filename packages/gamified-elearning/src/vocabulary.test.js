@@ -113,9 +113,12 @@ describe('the header agrees with the pages it links to', () => {
     // The nav used to carry a "Studio" link four positions away from a button
     // that went to the same /builder — two controls, one destination, which
     // teaches a child that the words on this page are decoration. The link
-    // went; the rule did not. A signed-in child's one route to /builder still
-    // has to say "studio", and neither may ever say "Build".
-    expect(header).toMatch(/user \? "Open studio" : "Start building"/);
+    // went; the rule did not. The signed-in label later became "Make
+    // something" — the owner's point being that a verb a kid can act on beats
+    // a noun ("in the header there are two things only, how are kids going to
+    // know what to do"). The rule that survives every rename: one control,
+    // one destination, and it may never say "Build".
+    expect(header).toMatch(/user \? "🎮 Make something" : "Start building"/);
     expect(header).not.toMatch(/label: "Build"/);
   });
 
