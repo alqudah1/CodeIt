@@ -2265,7 +2265,7 @@ window.addEventListener('keydown', e => {
 });
 
 startGame();
-<\/script>
+${CLOSE_SCRIPT}
 </body>
 </html>`;
 
