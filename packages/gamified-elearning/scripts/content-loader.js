@@ -54,6 +54,15 @@ function loadEsmDefault(filePath) {
   return sandboxModule.exports;
 }
 
+/** The /press content, as a function of the values that change. */
+function loadPressFacts() {
+  const build = loadEsmDefault(path.join(SRC, 'data/pressFacts.js'));
+  if (typeof build !== 'function') {
+    throw new Error('content-loader: pressFacts.js did not export a function');
+  }
+  return build;
+}
+
 /** All blog posts, in file order. */
 function loadBlogPosts() {
   const posts = loadEsmDefault(path.join(SRC, 'data/blogPosts.js'));
@@ -144,6 +153,7 @@ function loadPageMeta() {
 }
 
 module.exports = {
+  loadPressFacts,
   loadPageMeta,
   loadPricing,
   loadBlogPosts,

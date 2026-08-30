@@ -13,6 +13,7 @@ const {
   loadMarkdownRenderer,
   loadFaqs,
   loadCompany,
+  loadPressFacts,
 } = require('./content-loader');
 
 const SITE = 'https://codeitlearn.com';
@@ -382,6 +383,7 @@ const BASE_PAGES = [
 ───────────────────────────────────────────────────────────── */
 
 const GUIDE_CONTENT = loadGuidePages();
+const PRESS_FACTS = loadPressFacts();
 const renderMarkdown = loadMarkdownRenderer();
 const BLOG_CONTENT = loadBlogPosts();
 const LESSON_CONTENT = loadLessons();
@@ -503,86 +505,27 @@ const IDENTITY_PAGES = [
     // this domain mentions the product. Journalists, directory editors and
     // people writing roundups cite what is easy to cite: one page with the
     // facts, the spelling, the founder, and an honest statement of what the
-    // thing does not do. Every figure here is read from config or the lesson
-    // files rather than typed, so it cannot go stale the way the rest of this
-    // site quietly did.
+    // thing does not do.
+    //
+    // The content is in src/data/pressFacts.js so the React route at /press and
+    // this crawlable copy render the same words. It shipped here first with no
+    // React route at all, which meant a crawler could read the page and a person
+    // arriving from a search result was redirected to the homepage by the
+    // catch-all in App.js. Every figure is passed in from config rather than
+    // typed, so the page other people quote cannot go stale.
     route: '/press',
-    eyebrow: 'Press and facts',
-    h1: 'Everything you need to write about CodeIt.',
-    intro: `CodeIt is a browser-based coding studio for ages 5 to 18, built in ${COMPANY.locationLine()}${COMPANY.founderName ? ` by ${COMPANY.founderName}` : ''}. This page exists so that anyone writing about the product can check a fact without asking, and so that what gets written is accurate.`,
-    detail: 'If something here is unclear or you need a detail that is not on this page, email and ask. A correction is cheaper than a wrong sentence.',
     type: 'AboutPage',
-    sections: [
-      {
-        // Writers copy boilerplate verbatim. If we do not supply a paragraph,
-        // one gets written for us out of whatever the homepage happened to say
-        // that week, and the version that spreads is the one someone guessed.
-        heading: 'The paragraph to quote',
-        paragraphs: [
-          `CodeIt is a browser-based coding studio for ages 5 to 18, built in ${COMPANY.locationLine()}. A learner describes a website, game or quiz and gets a working version they can play, changes it by moving things and picking colours or asking in plain language, then opens a separate view showing what the project is made of and the lesson behind each idea in it. Alongside the studio are ${LESSON_COUNT} beginner Python lessons and a Python playground.`,
-          'Use that as written, or cut it. It is accurate as of the date at the bottom of this page.',
-        ],
-      },
-      {
-        // The one claim on this page nobody else in the category can make, put
-        // where a writer looking for the angle will find it, and stated as a
-        // mechanism rather than an adjective so it can be checked.
-        heading: 'What is actually different about it',
-        paragraphs: [
-          "The comprehension questions are generated from the learner's own file. The correct answer is the value that learner actually wrote, and the wrong options are other real values from the same project, so the question cannot be answered by recalling a lesson or looking anything up. Only first attempts count.",
-          'What a parent reads is a sentence describing something that happened, such as "worked out how many times a loop repeats", rather than a score or a percentage. That is a deliberate limit: a percentage invites comparison between children and says nothing about what one child can do.',
-          'Every other product in this category reports progress, meaning lessons completed, time spent, badges earned. Those answer a different question from the one parents are now asking, which is whether the child understood code an assistant produced.',
-        ],
-      },
-      {
-        heading: 'The name',
-        paragraphs: [
-          `The product is CodeIt. It is registered on external profiles as "${COMPANY.alternateNames[0]}", because "CodeIt" alone collides with several unrelated organisations: a youth outreach programme at MIT, a tutoring company in London at codeitlearning.com, and a software services firm at codeit.us. None of them are us.`,
-          `Written as one word with a capital I: CodeIt. The site is ${COMPANY.url}.`,
-        ],
-      },
-      {
-        heading: 'What it does',
-        paragraphs: [
-          'A learner describes a website, game or quiz and gets a working version they can play immediately. They change it by moving elements, picking colours and fonts, or asking for changes in plain language.',
-          'A separate view shows which programming ideas the finished project uses, and opens the lesson behind each one. Children see the code their project is made of; they are not typing it as the main activity, and describing it that way is the most common error in write-ups.',
-          `Alongside the studio there are ${LESSON_COUNT} beginner Python lessons, each with an explanation, a runnable example, something to write, and a challenge. The lessons are where children write code.`,
-        ],
-      },
-      {
-        heading: 'What it costs',
-        paragraphs: [
-          `Free plan: no card, ${PRICING.FREE_MONTHLY_AI_BUILDS} AI-assisted project builds a month. The lessons and the Python playground stay free regardless of plan.`,
-          `Paid family plan: ${PRICING.PRICE_PER_INTERVAL}, cancellable at any time. Prices are Canadian dollars.`,
-        ],
-      },
-      {
-        heading: 'What it does not do',
-        paragraphs: [
-          'No rostering, no LMS integration, no standards alignment, no teacher dashboards. CodeIt is not built for school or district deployment and is not sold that way.',
-          'It is not right for a pre-reading child; Kodable and codeSpark are built for that and are better at it. It is not right for a learner who mainly wants to keep making games, where CodeCombat or Roblox Studio fit better.',
-        ],
-      },
-      {
-        heading: 'Children and accounts',
-        paragraphs: [
-          'Profiles for ages 5 to 12 are created and managed by a parent or guardian after the adult account email is confirmed. Those managed profiles cannot publish projects publicly. Independent student accounts begin at 13.',
-        ],
-      },
-      {
-        heading: 'Contact',
-        paragraphs: [
-          `${COMPANY.founderName}, founder. ${COMPANY.contactEmail}. Based in ${COMPANY.locationLine()}.`,
-          `Profiles: ${COMPANY.sameAs.join(' · ')}`,
-        ],
-      },
-      {
-        heading: 'Using the logo',
-        paragraphs: [
-          `The mark is at ${COMPANY.url}/brand/codeit-logo-trimmed.png and the square version at ${COMPANY.url}/brand/LogoForSM.png. Use either as-is; please do not recolour or stretch them.`,
-        ],
-      },
-    ],
+    ...PRESS_FACTS({
+      locationLine: COMPANY.locationLine(),
+      founderName: COMPANY.founderName,
+      contactEmail: COMPANY.contactEmail,
+      url: COMPANY.url,
+      primaryAlternateName: COMPANY.alternateNames[0],
+      sameAs: COMPANY.sameAs,
+      pricePerInterval: PRICING.PRICE_PER_INTERVAL,
+      freeMonthlyAiBuilds: PRICING.FREE_MONTHLY_AI_BUILDS,
+      lessonCount: LESSON_COUNT,
+    }),
   },
   {
     route: '/about',
