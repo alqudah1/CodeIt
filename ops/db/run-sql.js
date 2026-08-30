@@ -18,9 +18,34 @@ const path = require('path');
 
 const file = process.argv[2];
 if (!file) {
-  console.error('Usage: DATABASE_URL=… node ops/db/run-sql.js <path-to-sql-file>');
+  console.error('Usage: DATABASE_URL=… node ops/db/run-sql.js <path-to-sql-file> [path-to-env-file]');
   process.exit(2);
 }
+
+// An optional second argument names an env file (e.g. one written by
+// `vercel env pull`). Parsed here rather than `source`d in the shell, because
+// a connection string with shell metacharacters in its password survives a
+// file read and does not survive the shell. Values may be bare, single- or
+// double-quoted.
+const envFile = process.argv[3];
+if (envFile && !process.env.DATABASE_URL) {
+  try {
+    for (const line of fs.readFileSync(path.resolve(envFile), 'utf8').split('\n')) {
+      const match = line.match(/^DATABASE_URL\s*=\s*(.*)\s*$/);
+      if (!match) continue;
+      let value = match[1].trim();
+      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.slice(1, -1);
+      }
+      process.env.DATABASE_URL = value;
+      break;
+    }
+  } catch (err) {
+    console.error(`Could not read env file ${envFile}: ${err.message}`);
+    process.exit(2);
+  }
+}
+
 if (!process.env.DATABASE_URL) {
   console.error('DATABASE_URL is not set. Set it for this one command only; never commit it.');
   process.exit(2);
