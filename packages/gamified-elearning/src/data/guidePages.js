@@ -253,7 +253,14 @@ Common and usually recoverable. The cause is normally the visible-reward drop de
 
 ---
 
-*Last verified: 21 August 2026. Competitor pricing, age ratings and terms were checked on this date and change often — confirm on the vendor's own site before paying.*`,
+*Last verified: 21 August 2026. Competitor pricing, age ratings and terms were checked on this date and change often — confirm on the vendor's own site before paying.*
+
+## Try the translation, not just the theory
+
+CodeIt's studio has a starter written for exactly this crossing: **Cat and mouse chase**, a game where every important line of real JavaScript carries a comment naming the Scratch block it replaces — "forever" becomes the animation loop, "when key pressed" becomes an event listener, "go to random position" becomes two lines of Math.random(). Your kid plays it first, then opens the code and finds a language they already half-speak.
+
+[Open Cat and mouse chase in the studio](/builder?start=cat-chase) — it loads instantly, free, no account needed.
+`,
   },
   {
     slug: "ai-built-it-now-edit-it",
