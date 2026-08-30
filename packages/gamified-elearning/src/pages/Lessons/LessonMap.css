@@ -391,3 +391,49 @@
    how it should be said — a child deciding which lesson to do next deserves
    to read the locked ones' names. */
 .lm-card--locked { opacity: 1; }
+
+/* ── The Paper Arcade, lesson-map chapter II ──────────────────────────────────
+   The map's cards were the last glassy holdouts on the child's daily path:
+   blurred white, watercolour shadows, state told by faint border tints. Now
+   they are paper on ink, and state is said out loud: the next lesson sits on
+   a sun sticker, done lessons wear mint, locked ones a dashed line. */
+.lm-card {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: var(--pop-card);
+  backdrop-filter: none;
+}
+.lm-card--available { background: var(--paper); border-color: var(--ink); }
+.lm-card--available:hover { transform: translateY(-2px); box-shadow: var(--pop-lift); }
+.lm-card--next {
+  background: var(--arc-sun);
+  border-color: var(--ink);
+  box-shadow: var(--pop-lift);
+}
+.lm-card--next:hover { transform: translateY(-2px); box-shadow: var(--pop-lift); }
+.lm-card--completed {
+  background: var(--paper);
+  border-color: var(--ink);
+}
+.lm-card--completed .lm-lesson-num { color: #1e6e4e; }
+.lm-card--locked {
+  background: var(--ground);
+  border: 2px dashed var(--ink-line);
+  box-shadow: none;
+}
+.lm-title { font-family: var(--font-display); color: var(--ink); }
+.lm-card-title { font-family: var(--font-display); color: var(--ink); }
+/* The Unlock badge now sits on the sun card; its old amber-tint failed
+   contrast there. Paper sticker, ink words. */
+.lm-badge--available {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  font-weight: 800;
+}
+/* --ink-mute over the ground colour lands at 4.39:1 for small text; the
+   locked cards' words go one shade darker to clear 4.5. */
+.lm-card--locked .lm-card-title,
+.lm-card--locked .lm-card-desc,
+.lm-card--locked .lm-lesson-num { color: rgba(53, 34, 14, 0.85); }
