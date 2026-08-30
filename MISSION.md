@@ -78,3 +78,46 @@ and the panel reads them with the same concept finder the child's own code
 tab uses, so parent and child are shown the same truth. Proven end to end
 against a real database: consent wall, verified-email wall, the child's
 `let score = 0` on the parent's screen, the stranger turned away.
+
+**30 August — the paying-parent sprint.** Fourteen rounds in one sitting,
+each verified before commit, each landed on his Mac with a tree-hash proof:
+
+*Design.* The studio's first screen, the cabinet, Explore, the pricing page
+and the homepage's hero mock now speak one language — Paper Arcade: paper
+ground, ink borders, hard pop shadows, keycap presses. The giant yellow box
+Mustafa hated turned out to be Pixel's coach ring outlining the whole screen;
+it halos one shelf now. Six hand-drawn SVG stickers and three 1200×630 share
+cards were drawn in the language itself. Explore stopped being a wall of
+identical orange rectangles the same day the seed stopped typing every
+project "game".
+
+*A child alone.* Lessons and quizzes read themselves out loud to a Big-help
+learner — Pixel's voice, one shared mute key — and `lesson-alone.js` walks
+lesson 1 on a phone by taps with a keyboard tripwire at zero, plus a
+solo-reader word budget over all 171 steps. A new starter, Cat and mouse
+chase, is written for the child arriving from Scratch: eleven lines of real
+JavaScript each naming the block they replace.
+
+*The money.* The pricing page shows the monthly email instead of promising
+it — and the email is real now: composed only from live records, previewed
+by the owner before any family receives it, one send per family per month.
+The comprehension evidence moved from one browser's localStorage to the
+account (`understanding_records`), reaches a parent's phone through the
+family panel, and migrates on sign-in so no family loses what their child
+already showed. A parent who tries the studio from pricing gets one quiet
+line back to the decision. Shared projects unfurl as the child's project
+with a drawn card, not as the homepage.
+
+*The measurements.* The lesson retention funnel is an admin table read live
+from the tables, not a number in an argument. Every AI fallback now records
+its cause — no-api-key, timeout, retry-timeout, invalid-output, error — so
+the builder's real failure rate diagnoses itself on production traffic.
+
+*Landed on the way.* Two production blockers found before they bit: the
+Postgres adapter silently skips CREATE TABLE IF NOT EXISTS (the maintenance
+button now uses a raw path), and the sealed-sensitive DATABASE_URL in Vercel
+means the deployed backend is the only thing that can reach the production
+database — which is why the pending fixes ship as one admin button.
+
+Still open, honestly: the owner's push and two button presses close the loop
+in production; my "I would pay for this" waits on seeing that happen live.
