@@ -1510,6 +1510,10 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
     meta: projectCategory(designConfig.category),
   };
   let generationMode = 'fallback';
+  // WHY the AI fell back, when it did. 'fallback' alone told us the failure
+  // rate; it never told us whether the cause was a missing key, a timeout, a
+  // retry timeout, invalid output, or a thrown error - five different fixes.
+  let fallbackReason = 'unknown';
 
   void recordEvent('builder_start', analyticsContext);
   res.once('finish', () => {
@@ -1517,7 +1521,7 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
       void recordEvent('generation_complete', {
         userId: analyticsContext.userId,
         journeyId: analyticsContext.journeyId,
-        meta: generationMode,
+        meta: generationMode === 'ai' ? 'ai' : `fallback-${fallbackReason}`,
       });
       // Only a real AI generation costs a build. A student who received the
       // offline starter template has not spent one.
@@ -1547,6 +1551,7 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
   }
 
   if (!process.env.ANTHROPIC_API_KEY) {
+    fallbackReason = 'no-api-key';
     console.log('Builder: ANTHROPIC_API_KEY missing, serving fallback for type:', designConfig.type);
     const fbHtml = getRichFallback(designConfig, prompt.trim());
     const fbTitle = derivePromptTitle(prompt.trim());
@@ -1596,6 +1601,7 @@ ${designConfig.category === 'game' ? '• Game must be startable, playable, scor
     }
 
     if (attempt1Timedout) {
+      fallbackReason = 'timeout';
       console.log('Builder: attempt1 timeout, using fallback for type:', designConfig.type);
       const fbHtml = getRichFallback(designConfig, prompt.trim());
       const fbTitle = derivePromptTitle(prompt.trim());
@@ -1728,6 +1734,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
       }
 
       if (retryTimedout) {
+        fallbackReason = 'retry-timeout';
         console.log('Builder: retry timeout, using rich fallback for type:', designConfig.type);
         const fbHtml = getRichFallback(designConfig, prompt.trim());
         const fbTitle = derivePromptTitle(prompt.trim());
@@ -1760,6 +1767,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
     }
 
     if (stillBroken || !validateHtml(parsed.html) || !validateInteractivity(parsed.html, designConfig.type)) {
+      fallbackReason = 'invalid-output';
       console.log('Builder: validation failed after retry, using rich fallback for type:', designConfig.type);
       const fbHtml = getRichFallback(designConfig, prompt.trim());
       const fbTitle = derivePromptTitle(prompt.trim());
@@ -1782,6 +1790,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
     generationMode = 'ai';
     res.json({ code: html, html, title, type, summary, conceptsUsed });
   } catch (err) {
+    fallbackReason = 'error';
     console.error('Builder AI error:', err.message);
     try {
       const fbHtml = getRichFallback(designConfig, prompt.trim());

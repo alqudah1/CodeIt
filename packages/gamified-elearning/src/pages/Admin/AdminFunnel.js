@@ -221,7 +221,12 @@ export default function AdminFunnel() {
 
   const recentDaily = (data?.daily || []).slice(-35).reverse();
   const aiGeneratedProjects = generationResults.ai || 0;
-  const fallbackProjects = generationResults.fallback || 0;
+  // 'fallback' is the legacy untagged meta; every new fallback arrives as
+  // fallback-<reason> so the cause is visible, not just the rate.
+  const fallbackReasons = Object.entries(generationResults)
+    .filter(([meta]) => meta === 'fallback' || meta.startsWith('fallback-'))
+    .map(([meta, count]) => [meta === 'fallback' ? 'untagged (older builds)' : meta.replace('fallback-', ''), count]);
+  const fallbackProjects = fallbackReasons.reduce((sum, [, count]) => sum + count, 0);
   const costPerAiGenerated = aiGeneratedProjects && costs?.totals?.estimated_usd != null
     ? costs.totals.estimated_usd / aiGeneratedProjects
     : null;
@@ -516,6 +521,9 @@ export default function AdminFunnel() {
             <article><span>AI-built projects</span><strong>{fmt(aiGeneratedProjects)}</strong></article>
             <article><span>Safe fallback projects</span><strong>{fmt(fallbackProjects)}</strong></article>
             <article><span>AI generation rate</span><strong>{ratio(aiGeneratedProjects, aiGeneratedProjects + fallbackProjects)}</strong></article>
+            {fallbackReasons.filter(([, count]) => count > 0).map(([reason, count]) => (
+              <article key={reason}><span>Fallback: {reason}</span><strong>{fmt(count)}</strong></article>
+            ))}
             <article><span>Cost / AI-built project</span><strong>{usd(costPerAiGenerated)}</strong></article>
             <article><span>Input / output tokens</span><strong>{fmt(costs?.totals?.input_tokens)} / {fmt(costs?.totals?.output_tokens)}</strong></article>
           </div>

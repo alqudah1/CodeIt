@@ -13,7 +13,13 @@ const EVENT_META = Object.freeze({
   new_account_studio_view: new Set(),
   new_account_family_setup_view: new Set(),
   builder_start: new Set(['website', 'game', 'quiz', 'tool', 'other']),
-  generation_complete: new Set(['ai', 'fallback']),
+  generation_complete: new Set([
+    'ai', 'fallback',
+    // fallback-<reason>: the cause, not just the rate. Five causes, five
+    // different fixes.
+    'fallback-no-api-key', 'fallback-timeout', 'fallback-retry-timeout',
+    'fallback-invalid-output', 'fallback-error', 'fallback-unknown',
+  ]),
   guest_draft_recovered: new Set(),
   project_personalize: new Set(),
   activation_account_gate: new Set(['save', 'publish']),
