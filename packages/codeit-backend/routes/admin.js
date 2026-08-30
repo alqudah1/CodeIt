@@ -354,6 +354,38 @@ router.get('/stats', async (_req, res) => {
   }
 });
 
+// ── The lesson retention funnel, measured rather than argued ────────────────
+//
+// "230 started and 11 finished" circulated as a claim with no query behind
+// it. This is the query, run on demand against the live tables. "Started" is
+// a learner who left any trace inside the lesson (a step-XP row) or finished
+// it; "finished" is a completion row. Read-only.
+router.get('/funnel/lessons', async (_req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT l.id, l.title,
+        (SELECT COUNT(DISTINCT u.user_id) FROM (
+           SELECT user_id FROM lesson_step_xp WHERE lesson_id = l.id
+           UNION
+           SELECT user_id FROM Student_Lesson_Progress WHERE lesson_id = l.id
+         ) u) AS started,
+        (SELECT COUNT(*) FROM Student_Lesson_Progress p WHERE p.lesson_id = l.id) AS finished
+      FROM lessons l
+      ORDER BY l.id
+    `);
+    const lessons = rows.map(row => ({
+      id: row.id,
+      title: row.title,
+      started: Number(row.started) || 0,
+      finished: Number(row.finished) || 0,
+    }));
+    res.json({ success: true, lessons });
+  } catch (error) {
+    console.error('admin/funnel/lessons:', error.message);
+    res.status(500).json({ error: 'Could not measure the funnel.' });
+  }
+});
+
 // ── One-time maintenance: the two changes production is waiting for ──────────
 //
 // The owner's machine has no psql and Vercel stores DATABASE_URL as a

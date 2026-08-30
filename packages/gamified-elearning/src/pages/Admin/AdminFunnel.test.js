@@ -17,8 +17,17 @@ jest.mock('./AdminLayout', () => ({ children }) => children);
 
 describe('admin acquisition funnel', () => {
   beforeEach(() => {
-    global.fetch = jest.fn()
-      .mockResolvedValueOnce({
+    // The lesson-funnel fetch fires first and is routed by URL, so the two
+    // order-based mocks below still land on the analytics calls they were
+    // written for.
+    const orderedMocks = [];
+    global.fetch = jest.fn((url) => {
+      if (String(url).includes('/api/admin/funnel/lessons')) {
+        return Promise.resolve({ ok: true, json: async () => ({ success: true, lessons: [] }) });
+      }
+      return Promise.resolve(orderedMocks.shift());
+    });
+    orderedMocks.push({
         ok: true,
         json: async () => ({
           events: [
@@ -111,11 +120,11 @@ describe('admin acquisition funnel', () => {
             },
           ],
         }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ totals: { estimated_usd: 0.08, calls: 8, input_tokens: 1200, output_tokens: 2400 } }),
       });
+    orderedMocks.push({
+      ok: true,
+      json: async () => ({ totals: { estimated_usd: 0.08, calls: 8, input_tokens: 1200, output_tokens: 2400 } }),
+    });
   });
 
   afterEach(() => {

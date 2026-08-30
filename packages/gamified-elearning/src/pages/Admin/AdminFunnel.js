@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { ENDPOINTS } from '../../config/api';
+import { API_BASE_URL, ENDPOINTS } from '../../config/api';
 import AdminLayout from './AdminLayout';
 import './AdminLayout.css';
 import './AdminFunnel.css';
@@ -101,6 +101,7 @@ export default function AdminFunnel() {
   const [days, setDays] = useState(30);
   const [data, setData] = useState(null);
   const [costs, setCosts] = useState(null);
+  const [lessonFunnel, setLessonFunnel] = useState(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -110,6 +111,10 @@ export default function AdminFunnel() {
     setError('');
 
     const headers = { Authorization: `Bearer ${token}` };
+    fetch(`${API_BASE_URL}/api/admin/funnel/lessons`, { headers })
+      .then(async r => { const b = await r.json(); if (r.ok && !cancelled) setLessonFunnel(b.lessons || []); })
+      .catch(() => { /* the section simply stays absent */ });
+
     Promise.all([
       fetch(ENDPOINTS.analytics.funnel(days), { headers }),
       fetch(ENDPOINTS.analytics.costs(days), { headers }),
@@ -284,6 +289,33 @@ export default function AdminFunnel() {
           <p className="funnel-parent-note">
             Student and adult destination rates use signups since {data.activation_entry_tracking_since || 'tracking began'}, when destination tracking became available.
           </p>
+
+          {lessonFunnel && lessonFunnel.length > 0 && (
+            <>
+              <div className="adm-section-head">Lesson retention, measured</div>
+              <div className="adm-table-wrap">
+                <table className="adm-table">
+                  <thead>
+                    <tr><th>Lesson</th><th>Started</th><th>Finished</th><th>Finish rate</th></tr>
+                  </thead>
+                  <tbody>
+                    {lessonFunnel.map(lesson => (
+                      <tr key={lesson.id}>
+                        <td>{lesson.id}. {lesson.title}</td>
+                        <td>{fmt(lesson.started)}</td>
+                        <td>{fmt(lesson.finished)}</td>
+                        <td>{lesson.started > 0 ? `${Math.round((lesson.finished / lesson.started) * 100)}%` : '—'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="funnel-parent-note">
+                Started = left any trace inside the lesson (a step completed, or the lesson finished).
+                Finished = a completion recorded. All-time, straight from the live tables — not an estimate.
+              </p>
+            </>
+          )}
 
           <div className="adm-section-head">What visitors chose on the homepage</div>
           <div className="funnel-parent-grid">
