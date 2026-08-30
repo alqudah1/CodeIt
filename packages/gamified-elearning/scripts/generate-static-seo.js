@@ -14,6 +14,7 @@ const {
   loadFaqs,
   loadCompany,
   loadPressFacts,
+  loadStarterGames,
 } = require('./content-loader');
 
 const SITE = 'https://codeitlearn.com';
@@ -384,6 +385,24 @@ const BASE_PAGES = [
 
 const GUIDE_CONTENT = loadGuidePages();
 const PRESS_FACTS = loadPressFacts();
+
+// The front page's short list of ready-made games, counted rather than typed.
+//
+// The copy said "three ready-made games" and named them, beside
+// `HOME_PICKS = STARTER_GAMES.slice(0, 3)` in another file. Changing that slice
+// to four leaves the sentence claiming three and naming the wrong set, with
+// nothing to notice — which is exactly how "sixteen lessons" survived on three
+// live pages while a guard against it reported success.
+const { HOME_PICKS } = loadStarterGames();
+const HOME_PICK_COUNT = HOME_PICKS.length;
+const COUNT_WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
+
+/** "a, b and c" — a list a person would read out loud. */
+function listSentence(items) {
+  if (items.length <= 1) return items.join('');
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
+}
+
 
 /**
  * The questions a guide already answers, as Q&A pairs.
@@ -895,7 +914,7 @@ const HOME_PAGE = {
       heading: 'How the learning loop works',
       paragraphs: [
         'Make something, play it, change it, see what it is made of, and publish it. Changing a project and watching what moves is what turns a finished thing into something a beginner actually understands.',
-        'Starting takes one tap. The front page offers three ready-made games — catching falling stars, a penalty shootout, and dodging asteroids — that open already running, with no typing and no account. Each one is written to be read: the settings that control it are plain named values at the top of the file, so a first change can be a single number.',
+        `Starting takes one tap. The front page offers ${COUNT_WORDS[HOME_PICK_COUNT] || HOME_PICK_COUNT} ready-made games that open already running, with no typing and no account: ${listSentence(HOME_PICKS.map((game) => game.label.toLowerCase()))}. Each one is written to be read: the settings that control it are plain named values at the top of the file, so a first change can be a single number.`,
       ],
     },
     {
@@ -1606,6 +1625,7 @@ module.exports = {
   BUILD_DATE,
   CONTENT_DATES_PATH,
   contentFingerprint,
+  HOME_PICKS,
   guideFaqs,
   plainText,
   statedPrices,

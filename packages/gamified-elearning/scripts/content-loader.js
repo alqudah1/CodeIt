@@ -54,6 +54,15 @@ function loadEsmDefault(filePath) {
   return sandboxModule.exports;
 }
 
+/** The starter games, including the short list the front page shows. */
+function loadStarterGames() {
+  const module_ = loadEsmDefault(path.join(SRC, 'pages/Builder/starterGames.js'));
+  if (!Array.isArray(module_.HOME_PICKS) || !Array.isArray(module_.STARTER_GAMES)) {
+    throw new Error('content-loader: starterGames.js did not export HOME_PICKS and STARTER_GAMES');
+  }
+  return module_;
+}
+
 /** The /press content, as a function of the values that change. */
 function loadPressFacts() {
   const build = loadEsmDefault(path.join(SRC, 'data/pressFacts.js'));
@@ -153,6 +162,7 @@ function loadPageMeta() {
 }
 
 module.exports = {
+  loadStarterGames,
   loadPressFacts,
   loadPageMeta,
   loadPricing,
