@@ -432,8 +432,9 @@ const BLOG_POSTS = [
       {
         heading: 'The CodeIt Beginner Journey',
         body: [
-          'CodeIt structures the beginner Python journey across ten lessons, each introducing exactly one new concept:',
+          'CodeIt structures the beginner Python journey across 31 lessons, each introducing exactly one new concept. The first sixteen:',
           '1. Hello Python. Print()\n2. Variables. Storing information\n3. Strings. Working with text\n4. If Statements. Making decisions\n5. Simple Loops. For and range()\n6. For Loops. Looping through strings\n7. Lists. Collections of data\n8. Loops with Lists. Combining the two\n9. Functions. Reusable code blocks\n10. Combining Concepts. Putting it all together\n11. Numbers & Arithmetic. Calculating with Python\n12. Booleans & Comparisons. Testing values\n13. Logical Operators. Combining conditions\n14. Type Casting. Converting values\n15. String Formatting. Building clear messages\n16. String Methods. Working with text',
+          'From there the path continues into while loops, break and continue, importing modules, dictionaries, tuples and sets, slicing, list comprehensions, return values, scope, error handling, enumerate and zip, classes and objects, and recursion, ending with a capstone that builds a real game.',
           'After each lesson, a quiz checks understanding. After each quiz, a coding puzzle unlocks. A story-driven challenge where the new concept is the key to winning.',
         ],
       },
@@ -448,9 +449,9 @@ const BLOG_POSTS = [
       {
         heading: 'How Long Does It Take to Learn Python Basics?',
         body: [
-          'With 20 to 30 minutes per day, most kids can work through CodeIt\'s ten beginner lessons in 3 to 4 weeks. That timeline isn\'t the goal. Understanding is. Some kids will fly through; others will take their time on tricky concepts. Both are fine.',
+          'With 20 to 30 minutes per day, most kids can work through the first ten lessons in 3 to 4 weeks. That timeline isn\'t the goal. Understanding is. Some kids will fly through; others will take their time on tricky concepts. Both are fine.',
           'The important thing is consistency. Short sessions every day beat long sessions once a week. Each lesson is designed to be completable in one sitting, so there\'s a natural stopping point that doesn\'t require marathon effort.',
-          'The coding puzzles at the end of each chapter add extra time. And extra reward. A kid who finishes all ten lessons and all ten puzzles has a genuine foundation in Python that they can build on.',
+          'The coding puzzles at the end of each chapter add extra time. And extra reward. A kid who works through the lessons and the puzzles that follow them has a genuine foundation in Python that they can build on.',
         ],
       },
       {

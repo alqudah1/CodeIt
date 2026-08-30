@@ -79,3 +79,49 @@ test('no indexable page is orphaned', () => {
 
   assert.deepEqual(orphans, [], `no page links to: ${orphans.join(', ')}`);
 });
+
+test('every blog post points at the guide that answers its question better', () => {
+  // The seven posts were written in March and linked to nothing but the shared
+  // nav. Each is the older answer to a question a guide now answers more
+  // recently, in a category where the facts moved underneath them: Code.org
+  // rebranded in June, Common Sense paused in February.
+  //
+  // This is not a duplication problem and was not treated as one. The worst
+  // five-gram overlap between any two of these pages is 4.3%, measured before
+  // anything was changed. It is an age problem, and the fix is a route onward
+  // rather than a rewrite.
+  const posts = PAGES.filter((page) => page.route.startsWith('/blog/'));
+  assert.ok(posts.length >= 5, `only ${posts.length} blog posts were examined`);
+
+  for (const post of posts) {
+    const document = renderRouteDocument(TEMPLATE, post);
+    const guides = [...document.matchAll(/href="\/guide\/([a-z-]+)"/g)].map((m) => m[1]);
+    assert.ok(
+      guides.length > 0,
+      `${post.route} links to no guide, so a reader who lands on it from search has nowhere current to go`
+    );
+  }
+});
+
+test('a contextual guide link names a guide that exists', () => {
+  // guideLinksFor silently drops a slug it cannot find, so a typo in the map
+  // removes the link with no error and leaves the page exactly as dead-ended as
+  // it was before anyone tried to fix it.
+  const slugs = new Set(
+    PAGES.filter((page) => page.route.startsWith('/guide/'))
+      .map((page) => page.route.replace('/guide/', ''))
+  );
+
+  const source = fs.readFileSync(path.resolve(__dirname, 'generate-static-seo.js'), 'utf8');
+  const map = /const GUIDES_BY_ROUTE = \{([\s\S]*?)\n\};/.exec(source);
+  assert.ok(map, 'the contextual guide map could not be found, so this test examined nothing');
+
+  const referenced = [...map[1].matchAll(/'([a-z][a-z0-9-]+)'/g)]
+    .map((m) => m[1])
+    .filter((name) => !name.startsWith('blog') && !name.includes('/'));
+
+  assert.ok(referenced.length > 10, `only ${referenced.length} guide slugs were examined`);
+  for (const slug of new Set(referenced)) {
+    assert.ok(slugs.has(slug), `GUIDES_BY_ROUTE points at /guide/${slug}, which does not exist`);
+  }
+});

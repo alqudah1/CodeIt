@@ -57,6 +57,7 @@ const GuideIndex        = lazy(() => import('./pages/Guide/GuideIndex'));
 const GuidePage         = lazy(() => import('./pages/Guide/GuidePage'));
 const About             = lazy(() => import('./pages/About/About'));
 const Faq               = lazy(() => import('./pages/About/Faq'));
+const Press             = lazy(() => import('./pages/Press/Press'));
 const LearnPythonForKids = lazy(() => import('./pages/SEO/LearnPythonForKids'));
 const CodingForKids     = lazy(() => import('./pages/SEO/CodingForKids'));
 const PythonGamesForKids = lazy(() => import('./pages/SEO/PythonGamesForKids'));
@@ -190,6 +191,7 @@ const App = () => (
 
               {/* ── Who we are ── */}
               <Route path="/about" element={<About />} />
+              <Route path="/press" element={<Press />} />
               <Route path="/faq"   element={<Faq />} />
 
               {/* ── SEO landing pages ── */}

@@ -4,7 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { PAGES, renderRouteDocument } = require('./generate-static-seo');
+const { PAGES, renderRouteDocument, pageSchema } = require('./generate-static-seo');
 
 const TEMPLATE = `<!doctype html><html><head>
   <title>Home</title>
@@ -186,7 +186,15 @@ test('private application pages are crawlable but excluded with X-Robots-Tag', (
    Assistants that retrieve this site do not execute JavaScript. These tests
    fail if substantive content stops being present in the static HTML. */
 
-const { HOME_PAGE, PRICING, FAQS } = require('./generate-static-seo');
+const {
+  HOME_PAGE,
+  PRICING,
+  FAQS,
+  statedPrices,
+  declaredPrices,
+  unaccountedPrices,
+  ourPrice,
+} = require('./generate-static-seo');
 
 function bodyText(html) {
   const body = /<body[^>]*>([\s\S]*)<\/body>/i.exec(html)?.[1] ?? '';
@@ -223,10 +231,17 @@ test('homepage states what the product is, who it is for, and what it costs', ()
 });
 
 test('the price is stated in exactly one currency across all routes', () => {
-  const wrong = PRICING.CURRENCY_SYMBOL === 'CA$' ? /US\$\s?\d/ : /CA\$\s?\d/;
+  // A second currency is a bug everywhere except on a page that declares whose
+  // money it is. See unaccountedPrices in the generator for why the exemption
+  // has to be a declaration rather than a relaxation.
   for (const page of [...PAGES, HOME_PAGE]) {
     const text = bodyText(renderRouteDocument(TEMPLATE, page));
-    assert.ok(!wrong.test(text), `${page.route} states a second currency`);
+    const loose = unaccountedPrices(page, text);
+    assert.deepEqual(
+      loose,
+      [],
+      `${page.route} states ${loose.join(', ')}, which is neither our price nor declared in quotedPrices`
+    );
   }
 });
 
@@ -250,10 +265,24 @@ test('blog posts declare headline, author and datePublished', () => {
 });
 
 test('static title matches the rendered h1 subject on blog and lesson pages', () => {
+  // Lessons 17 onward are named "Classes and Objects. Your Own Kind of Thing".
+  // That reads correctly as a heading and badly in a <title>, where the template
+  // appends "for Beginners" and the sentence carries on past its own full stop.
+  // So a lesson title now carries the name and the h1 carries name and subtitle,
+  // and the check is that the title still contains the name — not that it
+  // repeats the whole heading.
+  //
+  // Scoped deliberately: dropping the assertion for lesson pages entirely would
+  // have made this pass, and would have stopped noticing if a title and a
+  // heading ever described different lessons, which is what it is for.
   for (const page of PAGES.filter((p) => p.route.startsWith('/blog/') || p.route.startsWith('/lesson/'))) {
+    const subject = page.route.startsWith('/lesson/')
+      ? page.h1.split(/\.\s+/)[0].replace(/[!.]+$/, '').trim()
+      : page.h1;
+
     assert.ok(
-      page.title.includes(page.h1),
-      `${page.route} title "${page.title}" does not contain its h1 "${page.h1}"`
+      page.title.includes(subject),
+      `${page.route} title "${page.title}" does not name its h1 subject "${subject}"`
     );
   }
 });
@@ -327,12 +356,13 @@ test('guides name competitors — a page that recommends only us does not get ci
 
 test('any price a guide states is the live one', () => {
   for (const guide of PAGES.filter((page) => page.route.startsWith('/guide/'))) {
-    for (const quoted of guide.bodyHtml.match(/(?:CA|US)\$\s?\d+(?:\/[a-z]+)?/g) || []) {
-      assert.ok(
-        quoted.startsWith(PRICING.CURRENCY_SYMBOL) && quoted.includes(String(PRICING.AMOUNT)),
-        `${guide.route} quotes "${quoted}" but the live price is ${PRICING.PRICE_PER_INTERVAL}`
-      );
-    }
+    const loose = unaccountedPrices(guide, guide.bodyHtml);
+    assert.deepEqual(
+      loose,
+      [],
+      `${guide.route} quotes ${loose.join(', ')} but the live price is ${PRICING.PRICE_PER_INTERVAL} ` +
+        'and nothing on the page says that money belongs to somebody else'
+    );
     for (const allowance of guide.bodyHtml.match(/\b(\d+)\s+assisted\s+project\s+builds?\b/gi) || []) {
       assert.ok(
         allowance.startsWith(String(PRICING.FREE_MONTHLY_AI_BUILDS)),
@@ -475,9 +505,14 @@ test('the price comes from src/config/pricing.js, not a second copy', () => {
 test('pages that state a price state exactly one, in one currency', () => {
   for (const page of [...PAGES, HOME_PAGE]) {
     const text = bodyText(renderRouteDocument(TEMPLATE, page));
-    const currencies = new Set((text.match(/(CA|US)\$/g) || []));
-    assert.ok(currencies.size <= 1, `${page.route} mixes currencies: ${[...currencies].join(', ')}`);
-    assert.ok(!/US\$/.test(text), `${page.route} states USD`);
+    const loose = unaccountedPrices(page, text);
+    assert.deepEqual(loose, [], `${page.route} states undeclared money: ${loose.join(', ')}`);
+
+    // Ours still has to be ours, whatever else the page quotes.
+    for (const price of statedPrices(text)) {
+      if (declaredPrices(page).includes(price)) continue;
+      assert.equal(price, ourPrice(), `${page.route} states ${price} as if it were our price`);
+    }
   }
 });
 
@@ -663,5 +698,54 @@ test('no page claims children write or edit code as the main activity', () => {
   ].join('\n');
   for (const pattern of OVERSTATED) {
     assert.ok(!pattern.test(sources), `copy still overstates what children do: ${pattern}`);
+  }
+});
+
+/* ─── Roundups say they are roundups ──────────────────────────────────────
+   Comparison and roundup pages are the two formats that outrank this site on
+   every unbranded query. Article alone describes them as prose; ItemList says
+   they are named options, which is the shape an assistant is assembling when
+   someone asks what to use. */
+
+test('a guide that declares comparesOptions emits an ItemList of them', () => {
+  const { loadGuidePages } = require('./content-loader');
+  let checked = 0;
+
+  for (const guide of loadGuidePages()) {
+    if (!guide.comparesOptions) continue;
+    checked += 1;
+    const page = PAGES.find((entry) => entry.route === `/guide/${guide.slug}`);
+    const parsed = JSON.parse(pageSchema(page));
+    const nodes = Array.isArray(parsed) ? parsed : parsed['@graph'] || [parsed];
+    const list = nodes.find((node) => node['@type'] === 'ItemList');
+
+    assert.ok(list, `/guide/${guide.slug} declares comparesOptions but emits no ItemList`);
+    assert.equal(
+      list.numberOfItems,
+      guide.comparesOptions.length,
+      `/guide/${guide.slug} compares ${guide.comparesOptions.length} things but lists ${list.numberOfItems}`
+    );
+  }
+
+  assert.ok(checked > 0, 'no guide declares comparesOptions; this test examined nothing');
+});
+
+test('every compared option is a heading that really exists on the page', () => {
+  // The list is parsed from the page's own H2s rather than typed beside them.
+  // A section renamed or deleted must not leave structured data still claiming
+  // the page compares something it no longer mentions.
+  const { loadGuidePages } = require('./content-loader');
+  for (const guide of loadGuidePages()) {
+    if (!guide.comparesOptions) continue;
+    const page = PAGES.find((entry) => entry.route === `/guide/${guide.slug}`);
+    const headings = [...String(page.bodyHtml || '').matchAll(/<h2>(.*?)<\/h2>/g)].map((m) =>
+      m[1].replace(/<[^>]+>/g, '').trim()
+    );
+    for (const option of guide.comparesOptions) {
+      assert.ok(
+        headings.includes(option),
+        `/guide/${guide.slug} claims to compare "${option}" but has no such heading`
+      );
+    }
   }
 });

@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('node:crypto');
 
 const {
   loadPageMeta,
@@ -12,6 +13,8 @@ const {
   loadMarkdownRenderer,
   loadFaqs,
   loadCompany,
+  loadPressFacts,
+  loadStarterGames,
 } = require('./content-loader');
 
 const SITE = 'https://codeitlearn.com';
@@ -46,6 +49,134 @@ function commitDate() {
 }
 
 const LAST_MODIFIED = commitDate();
+
+// Why the commit date is not enough on its own.
+//
+// Vercel does not build from a git clone. It unpacks a source archive, so
+// `git log` throws there and commitDate() returns the pinned fallback on every
+// production build. The sitemap that has been live since 25 August announces
+// 2026-08-25 on all 69 URLs, and would have announced it forever, through any
+// number of deploys. The pin was written as a fallback for a case that does not
+// happen locally and happens on every real build.
+//
+// So the date a URL announces is now derived from that URL's own content. A
+// checked-in manifest holds, per route, a fingerprint of the page's title,
+// description and crawlable body, and the date that fingerprint was first seen.
+// A page whose content is unchanged keeps its stored date no matter how many
+// times the site is deployed. A page whose content changed announces today.
+// That is what lastmod is defined to mean, and it needs no git.
+// Overridable so a test can point at a manifest it controls and watch what a
+// wrong fingerprint actually does, rather than asserting that the code reads
+// the way it is supposed to behave.
+const CONTENT_DATES_PATH =
+  process.env.CODEIT_CONTENT_DATES || path.resolve(__dirname, '../src/data/contentDates.json');
+
+function readContentDates() {
+  try {
+    const parsed = JSON.parse(fs.readFileSync(CONTENT_DATES_PATH, 'utf8'));
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+const CONTENT_DATES = readContentDates();
+const BUILD_DATE = new Date().toISOString().slice(0, 10);
+
+// ── Whose price is this? ─────────────────────────────────────────────────────
+//
+// Four separate guards assumed that every CA$ or US$ amount anywhere on the
+// site was ours. That was true while the site had no comparison pages, and
+// comparison pages are the format that outranks us — the roundups that own
+// "best coding platform for kids" are all comparisons. The first one written
+// broke all four guards by quoting CodeMonkey's US$12 family plan, which is a
+// different twelve dollars from ours.
+//
+// Relaxing the guards to allow US$ would have been the wrong repair: it would
+// let our own price ship in the wrong currency on exactly the pages a parent
+// reads when deciding. So a page instead declares, out loud, which prices
+// belong to somebody else. Everything not declared and not ours is a bug.
+//
+// The declaration is checked in both directions — a declared price that no
+// longer appears on the page fails too — so the list cannot quietly become a
+// blanket exemption for a page nobody rereads.
+const PRICE_IN_TEXT = /(?:CA|US)\$\s?\d+(?:\.\d+)?/g;
+
+function normalisePrice(text) {
+  return String(text).replace(/\s+/g, '');
+}
+
+function ourPrice() {
+  return normalisePrice(`${PRICING.CURRENCY_SYMBOL}${PRICING.AMOUNT}`);
+}
+
+/** Every currency-prefixed amount in some text, normalised. */
+function statedPrices(text) {
+  return (String(text || '').match(PRICE_IN_TEXT) || []).map(normalisePrice);
+}
+
+/** The prices a page says belong to someone else. */
+function declaredPrices(page) {
+  return (Array.isArray(page && page.quotedPrices) ? page.quotedPrices : []).map(normalisePrice);
+}
+
+/** Prices on a page that are neither ours nor declared as someone else's. */
+function unaccountedPrices(page, text) {
+  const declared = new Set(declaredPrices(page));
+  const mine = ourPrice();
+  return statedPrices(text).filter((price) => price !== mine && !declared.has(price));
+}
+
+// Hash the meaning of the page, not the file. The rendered document carries
+// hashed asset filenames and shared boilerplate that change on builds where no
+// page changed at all; hashing those would mark all 69 URLs modified on every
+// deploy, which is the same no-information sitemap in the other direction.
+function contentFingerprint(page) {
+  const body = staticContent(page)
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return crypto
+    .createHash('sha1')
+    .update([page.title || '', page.description || '', body].join('\u0000'))
+    .digest('hex')
+    .slice(0, 16);
+}
+
+// Built once, keyed by route, so that only real pages consult the manifest.
+let CONTENT_DATE_BY_ROUTE = null;
+
+function contentDateByRoute() {
+  if (CONTENT_DATE_BY_ROUTE) return CONTENT_DATE_BY_ROUTE;
+  CONTENT_DATE_BY_ROUTE = new Map();
+  for (const page of [HOME_PAGE, ...PAGES]) {
+    const route = page.route || '/';
+    const hash = contentFingerprint(page);
+    const stored = CONTENT_DATES[route];
+    const unchanged =
+      stored && stored.hash === hash && /^\d{4}-\d{2}-\d{2}$/.test(stored.date || '');
+    CONTENT_DATE_BY_ROUTE.set(route, { hash, date: unchanged ? stored.date : BUILD_DATE });
+  }
+  return CONTENT_DATE_BY_ROUTE;
+}
+
+// Refresh the checked-in manifest so the next build has today's fingerprints to
+// compare against. On Vercel the working tree is discarded, and that is fine:
+// an out-of-date manifest still gives every unchanged page its true stored date
+// and every changed page the deploy date. It is only wrong if it is missing.
+function writeContentDates() {
+  const next = {};
+  for (const route of [...contentDateByRoute().keys()].sort()) {
+    const { hash, date } = contentDateByRoute().get(route);
+    next[route] = { hash, date };
+  }
+  try {
+    fs.writeFileSync(CONTENT_DATES_PATH, `${JSON.stringify(next, null, 2)}\n`);
+  } catch {
+    // Read-only filesystem on the build host. Nothing to do and nothing broken.
+  }
+  return next;
+}
 
 // Price and free-plan limits come from src/config/pricing.js — the same file
 // the pricing page reads. This script used to keep its own copy, which is how
@@ -253,9 +384,126 @@ const BASE_PAGES = [
 ───────────────────────────────────────────────────────────── */
 
 const GUIDE_CONTENT = loadGuidePages();
+const PRESS_FACTS = loadPressFacts();
+
+// The front page's short list of ready-made games, counted rather than typed.
+//
+// The copy said "three ready-made games" and named them, beside
+// `HOME_PICKS = STARTER_GAMES.slice(0, 3)` in another file. Changing that slice
+// to four leaves the sentence claiming three and naming the wrong set, with
+// nothing to notice — which is exactly how "sixteen lessons" survived on three
+// live pages while a guard against it reported success.
+const { HOME_PICKS } = loadStarterGames();
+const HOME_PICK_COUNT = HOME_PICKS.length;
+const COUNT_WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
+
+/** "a, b and c" — a list a person would read out loud. */
+function listSentence(items) {
+  if (items.length <= 1) return items.join('');
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
+}
+
+
+/**
+ * The questions a guide already answers, as Q&A pairs.
+ *
+ * FAQPage existed here and only /faq ever populated it. Meanwhile eight guides
+ * carry forty hand-written questions under a "Common questions" heading — real
+ * questions with real answers, visible on the page, and invisible to anything
+ * that reads structure rather than prose. Assistants pull question-and-answer
+ * pairs in preference to paragraphs, and these are exactly the questions the
+ * guides were written to be found for.
+ *
+ * Deliberately narrow, because FAQ schema that does not match what a reader
+ * sees is a manual action rather than a rich result:
+ *
+ *   * only inside a section whose heading is about questions, which is why the
+ *     six-point checklist in ai-builder-you-can-edit — bold, ends in a question
+ *     mark, and not a FAQ — is not collected;
+ *   * only when a real answer is present, either after the question on the same
+ *     line or in the paragraph below it;
+ *   * links and emphasis are flattened to text, because the schema field is
+ *     text and shipping raw Markdown into it would be gibberish to a reader.
+ */
+const QUESTION_SECTION = /questions/i;
+const BOLD_QUESTION = /^\*\*\s*(?:\d+\.\s*)?(.+?\?)\s*\*\*\s*(.*)$/;
+
+function plainText(markdown) {
+  return String(markdown)
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function guideFaqs(markdown) {
+  const lines = String(markdown || '').split('\n');
+  const faqs = [];
+  let inQuestions = false;
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i].trim();
+
+    if (/^## /.test(line)) {
+      inQuestions = QUESTION_SECTION.test(line.slice(3));
+      continue;
+    }
+    if (!inQuestions) continue;
+
+    const match = BOLD_QUESTION.exec(line);
+    if (!match) continue;
+
+    const question = plainText(match[1]);
+    let answer = plainText(match[2]);
+
+    // Answer on the line below, which is how half of them are written.
+    for (let j = i + 1; !answer && j < lines.length; j += 1) {
+      const next = lines[j].trim();
+      if (!next) continue;
+      if (/^#{1,6} /.test(next) || BOLD_QUESTION.test(next)) break;
+      answer = plainText(next);
+    }
+
+    // A question with no answer is worse than no schema at all.
+    if (question.length > 5 && answer.length >= 20) faqs.push({ q: question, a: answer });
+  }
+
+  return faqs;
+}
 const renderMarkdown = loadMarkdownRenderer();
 const BLOG_CONTENT = loadBlogPosts();
 const LESSON_CONTENT = loadLessons();
+
+// Counted, never typed. A page that states "31 lessons" is stating a fact about
+// the curriculum, and the curriculum is the only thing that should be able to
+// change it. This site has already shipped a title advertising 16 lessons
+// against 31, in the same breath as a description saying 31.
+const LESSON_COUNT = LESSON_CONTENT.size;
+
+/**
+ * One name per lesson, taken from the lesson file.
+ *
+ * There were two. LESSONS in this file carries a hand-typed title beside the
+ * topic sentence, and the lesson data files carry their own. They had drifted on
+ * nine of thirty-one, so /lessons announced "Lesson 25: Return Values" while
+ * /lesson/25 was titled "Functions That Give Things Back" — the same lesson,
+ * two names, on the same site, and a crawler seeing both.
+ *
+ * The lesson file wins, because adding a lesson is what creates one. The typed
+ * title survives only as a fallback for a lesson whose data cannot be read.
+ *
+ * Lessons 17 onward carry a subtitle after a full stop — "Classes and Objects.
+ * Your Own Kind of Thing" — which is right in a heading and wrong in a page
+ * title, where the template appends "for Beginners" and produces a sentence
+ * that runs on past its own end. So there are two forms: the short name for the
+ * title, the full one for the heading.
+ */
+function lessonName(number, fallback) {
+  const full = LESSON_CONTENT.get(number)?.title || fallback;
+  const short = String(full).split(/\.\s+/)[0].replace(/[!.]+$/, '').trim();
+  return { full, short: short || full };
+}
 const BLOG_BY_SLUG = new Map(BLOG_CONTENT.map((post) => [post.slug, post]));
 
 /** Blog post -> [{heading, paragraphs:[string]}] */
@@ -309,7 +557,7 @@ function lessonsIndexSections() {
       ],
     },
     ...LESSONS.map(([, title, topic], index) => ({
-      heading: `Lesson ${index + 1}: ${title}`,
+      heading: `Lesson ${index + 1}: ${lessonName(index + 1, title).full}`,
       paragraphs: [`Covers ${topic}.`],
     })),
   ];
@@ -361,6 +609,35 @@ function pricingSections() {
  * here is factual and matches what the React page actually renders.
  */
 const IDENTITY_PAGES = [
+  {
+    // A page for people who might write about CodeIt.
+    //
+    // The binding constraint on being named by an assistant is that nothing off
+    // this domain mentions the product. Journalists, directory editors and
+    // people writing roundups cite what is easy to cite: one page with the
+    // facts, the spelling, the founder, and an honest statement of what the
+    // thing does not do.
+    //
+    // The content is in src/data/pressFacts.js so the React route at /press and
+    // this crawlable copy render the same words. It shipped here first with no
+    // React route at all, which meant a crawler could read the page and a person
+    // arriving from a search result was redirected to the homepage by the
+    // catch-all in App.js. Every figure is passed in from config rather than
+    // typed, so the page other people quote cannot go stale.
+    route: '/press',
+    type: 'AboutPage',
+    ...PRESS_FACTS({
+      locationLine: COMPANY.locationLine(),
+      founderName: COMPANY.founderName,
+      contactEmail: COMPANY.contactEmail,
+      url: COMPANY.url,
+      primaryAlternateName: COMPANY.alternateNames[0],
+      sameAs: COMPANY.sameAs,
+      pricePerInterval: PRICING.PRICE_PER_INTERVAL,
+      freeMonthlyAiBuilds: PRICING.FREE_MONTHLY_AI_BUILDS,
+      lessonCount: LESSON_COUNT,
+    }),
+  },
   {
     route: '/about',
     eyebrow: 'About',
@@ -490,7 +767,7 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'What the journey includes',
       paragraphs: [
-        'The journey sequences the sixteen beginner Python lessons with quizzes and puzzle challenges, so every concept is met, practised, and then used before the next one arrives.',
+        `The journey sequences the ${LESSON_COUNT} beginner Python lessons with quizzes and puzzle challenges, so every concept is met, practised, and then used before the next one arrives.`,
         'A learner always has one clear next step rather than a menu of options, which is the point at which most self-directed beginners stall.',
       ],
     },
@@ -552,7 +829,14 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'What the lesson path covers',
       paragraphs: [
-        'Sixteen sequenced lessons take a beginner from a first print statement through variables, strings, if statements, loops, lists, and reusable functions, then on to arithmetic, booleans, logical operators, type casting, string formatting, and string methods.',
+        // This said "Sixteen sequenced lessons" while there were thirty-one, on
+        // the page that actually ranks, describing half the course to every
+        // parent who found it. The count is now counted, and the sentence that
+        // follows it names what the second half contains — which is what a
+        // parent deciding whether this is worth their evening wants to know,
+        // and was the reason the stale number mattered.
+        `${LESSON_COUNT} sequenced lessons take a beginner from a first print statement through variables, strings, if statements, loops, lists and reusable functions, then on to arithmetic, booleans, logical operators, type casting, string formatting and string methods.`,
+        'From there the path continues into while loops, break and continue, importing modules, dictionaries, tuples and sets, slicing, list comprehensions, return values, scope, error handling with try and except, enumerate and zip, classes and objects, and recursion. It ends with a capstone: building a real game.',
         'Each lesson introduces one idea, gives a runnable example, and ends with a challenge that requires changing the code.',
       ],
     },
@@ -654,7 +938,7 @@ const HOME_PAGE = {
       heading: 'How the learning loop works',
       paragraphs: [
         'Make something, play it, change it, see what it is made of, and publish it. Changing a project and watching what moves is what turns a finished thing into something a beginner actually understands.',
-        'Starting takes one tap. The front page offers three ready-made games — catching falling stars, a penalty shootout, and dodging asteroids — that open already running, with no typing and no account. Each one is written to be read: the settings that control it are plain named values at the top of the file, so a first change can be a single number.',
+        `Starting takes one tap. The front page offers ${COUNT_WORDS[HOME_PICK_COUNT] || HOME_PICK_COUNT} ready-made games that open already running, with no typing and no account: ${listSentence(HOME_PICKS.map((game) => game.label.toLowerCase()))}. Each one is written to be read: the settings that control it are plain named values at the top of the file, so a first change can be a single number.`,
       ],
     },
     {
@@ -708,10 +992,10 @@ const PAGES = [
       route: `/lesson/${number}`,
       // Use the lesson's own title so the static <title>/<h1> match what the
       // React app renders. These previously disagreed on every lesson page.
-      title: `Python Lesson ${number}: ${lesson?.title || title} for Beginners | CodeIt`,
+      title: `Python Lesson ${number}: ${lessonName(number, title).short} for Beginners | CodeIt`,
       description: `Interactive beginner Python lesson about ${topic}. Write and run code directly in your browser.`,
       eyebrow: `Python lesson ${number}`,
-      h1: lesson?.title || title,
+      h1: lessonName(number, title).full,
       intro:
         lesson?.subtitle ||
         `This beginner lesson teaches ${topic}. The explanation, example, and practice activity stay together so students can see what each change does.`,
@@ -723,7 +1007,7 @@ const PAGES = [
       breadcrumbs: [
         ['/', 'Home'],
         ['/lessons', 'Lessons'],
-        [`/lesson/${number}`, lesson?.title || title],
+        [`/lesson/${number}`, lessonName(number, title).full],
       ],
     };
   }),
@@ -765,6 +1049,11 @@ const PAGES = [
     type: 'Article',
     slug: guide.slug,
     datePublished: guide.lastVerified,
+    // Declared in the guide itself, so the page and its structured data agree
+    // about what is being compared. Absent on guides that are not roundups.
+    comparesOptions: guide.comparesOptions,
+    quotedPrices: guide.quotedPrices,
+    faqs: guideFaqs(guide.markdown),
     // Pre-rendered from the same Markdown the React page renders, so the
     // crawlable HTML and the page a person sees are the same words.
     bodyHtml: renderMarkdown(guide.markdown),
@@ -914,10 +1203,10 @@ function breadcrumbHtml(breadcrumbs) {
  * on /coding-for-kids really is the reader asking what comes after Scratch.
  */
 const GUIDES_BY_ROUTE = {
-  '/': ['after-scratch', 'ai-built-it-now-edit-it'],
-  '/coding-for-kids': ['after-scratch', 'what-did-my-kid-learn'],
+  '/': ['after-scratch', 'best-coding-platforms-for-kids', 'ai-built-it-now-edit-it', 'free-coding-for-kids'],
+  '/coding-for-kids': ['after-scratch', 'best-coding-platforms-for-kids', 'what-did-my-kid-learn', 'coding-for-kids-by-age'],
   '/learn-python-for-kids': ['after-scratch'],
-  '/lessons': ['after-scratch'],
+  '/lessons': ['after-scratch', 'free-coding-for-kids'],
   '/builder': ['ai-builder-you-can-edit', 'publish-first-project'],
   '/ai-website-builder-for-kids': ['ai-builder-you-can-edit', 'ai-built-it-now-edit-it'],
   '/games': ['first-browser-game'],
@@ -925,9 +1214,25 @@ const GUIDES_BY_ROUTE = {
   '/first-game-challenge': ['first-browser-game'],
   '/explore': ['publish-first-project'],
   '/playground': ['after-scratch'],
-  '/journey': ['what-did-my-kid-learn'],
+  '/journey': ['what-did-my-kid-learn', 'coding-for-kids-by-age'],
   '/blog': ['what-did-my-kid-learn'],
-  '/faq': ['what-did-my-kid-learn'],
+
+  // The seven blog posts were written in March and point at nothing but the
+  // site nav. Every one of them is the older, weaker answer to a question a
+  // guide now answers better and more recently — the category moved underneath
+  // them, Code.org rebranded in June and Common Sense paused in February — and
+  // a reader who lands on one from search deserves the current page, not a
+  // dead end. Measured before assuming: the worst text overlap between any two
+  // of these pages is 4.3%, so this is not duplication, it is age.
+  '/blog/learn-python-for-kids': ['after-scratch', 'coding-for-kids-by-age'],
+  '/blog/python-coding-games': ['first-browser-game', 'free-coding-for-kids'],
+  '/blog/how-to-start-coding-for-beginners': ['after-scratch', 'free-coding-for-kids'],
+  '/blog/best-coding-games-for-kids': ['first-browser-game', 'best-coding-platforms-for-kids'],
+  '/blog/python-basics-for-beginners': ['after-scratch', 'coding-for-kids-by-age'],
+  '/blog/is-python-good-for-kids': ['coding-for-kids-by-age', 'best-coding-platforms-for-kids'],
+  '/blog/coding-for-kids-beginner-guide': ['best-coding-platforms-for-kids', 'what-did-my-kid-learn'],
+  '/faq': ['what-did-my-kid-learn', 'coding-for-kids-by-age'],
+  '/pricing': ['tynker-alternative', 'best-coding-platforms-for-kids', 'free-coding-for-kids'],
   '/about': ['ai-built-it-now-edit-it'],
 };
 
@@ -963,6 +1268,7 @@ function staticContent(page) {
     ['/guide', 'Straight answers about learning to code'],
     ['/faq', 'Questions parents ask first'],
     ['/about', 'About CodeIt'],
+    ['/press', 'Press and facts'],
     ['/privacy', 'Privacy'],
     ['/terms', 'Terms'],
   ]
@@ -1043,6 +1349,40 @@ function pageSchema(page) {
   }
 
   graph.push(primary);
+
+  // Roundups get an ItemList of what they compare.
+  //
+  // A comparison page is a list, and Article alone does not say so. An
+  // extraction pipeline reading Article sees prose; reading ItemList it sees
+  // named options in order, which is the shape of the answer an assistant is
+  // trying to build when someone asks what to use. These are the two page types
+  // that beat this site on every unbranded query, so it is worth telling a
+  // machine that is what they are.
+  //
+  // The list is parsed from the page's own H2 headings rather than typed
+  // beside them, so a section renamed or removed cannot leave a stale entry
+  // behind claiming the page still compares something it does not.
+  if (page.comparesOptions) {
+    const headings = [...String(page.bodyHtml || '').matchAll(/<h2>(.*?)<\/h2>/g)]
+      .map((match) => match[1].replace(/<[^>]+>/g, '').trim())
+      .filter((heading) => page.comparesOptions.includes(heading));
+
+    if (headings.length) {
+      graph.push({
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        '@id': `${url}#options`,
+        name: page.h1,
+        itemListOrder: 'https://schema.org/ItemListUnordered',
+        numberOfItems: headings.length,
+        itemListElement: headings.map((heading, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: heading,
+        })),
+      });
+    }
+  }
 
   // The 16-lesson sequence is a Course. `LearningResource` alone does not
   // express the sequence, and Course is what most extraction pipelines key on.
@@ -1148,17 +1488,82 @@ function renderRouteDocument(template, page) {
   return html.replace('</head>', `${routeStyle}\n    ${schema}\n  </head>`);
 }
 
+/**
+ * The date a specific page last changed, not the date the site was built.
+ *
+ * Every URL used to carry the same lastmod, which tells a crawler that all 69
+ * pages changed together — that is, nothing useful. A guide verified in March
+ * and a page rewritten this morning looked identical, so the signal was spent
+ * on all of them equally and did no work for any of them.
+ *
+ * Guides carry lastVerified and blog posts carry their own date, both authored
+ * by the person who checked the facts. Those are better evidence of change than
+ * the build clock. Everything else falls back to the commit date.
+ */
+function pageLastModified(page) {
+  const own = page && page.datePublished;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(own || '')) return own;
+
+  // A real page's date comes from its own content. Anything not in the page
+  // list — a bare object in a test, a route added without content — falls back
+  // to the commit date, which is what it always did.
+  const known = contentDateByRoute().get((page && page.route) || '/');
+  return known ? known.date : LAST_MODIFIED;
+}
+
+/**
+ * llms.txt, with the guides in it.
+ *
+ * That file is written for language models, and it listed thirteen product
+ * pages and none of the fifteen guides — the pages that exist specifically to
+ * answer a question, which is the only thing a model fetching this file is
+ * looking for. A model reading it learned what CodeIt sells and nothing about
+ * what CodeIt knows.
+ *
+ * It was also maintained by hand, which on this site has been a reliable way to
+ * make something stop being true. The guide section is generated from
+ * src/data/guidePages.js at build time and replaces anything already under that
+ * heading, so adding a guide adds it here and removing one removes it.
+ */
+function writeLlmsTxt(buildDir) {
+  const source = path.resolve(__dirname, '../public/llms.txt');
+  if (!fs.existsSync(source)) {
+    console.warn('llms.txt not found in public/; skipping.');
+    return;
+  }
+
+  const HEADING = '## Guides';
+  const base = fs.readFileSync(source, 'utf8').split(HEADING)[0].trimEnd();
+
+  const guides = GUIDE_CONTENT.map(
+    (guide) =>
+      `- ${guide.h1}\n  ${SITE}/guide/${guide.slug}\n  ${guide.description}\n  Last checked ${guide.lastVerified}.`
+  ).join('\n\n');
+
+  const body =
+    `${base}\n\n${HEADING}\n\n` +
+    'Long-form answers to specific questions. Several of them recommend a\n' +
+    'competitor, because for many readers a competitor is the right answer.\n' +
+    'Each one states the date its facts were checked.\n\n' +
+    `${guides}\n`;
+
+  fs.writeFileSync(path.join(buildDir, 'llms.txt'), body);
+  console.log(`Wrote llms.txt with ${GUIDE_CONTENT.length} guides.`);
+}
+
 function writeSitemap(buildDir) {
-  const today = LAST_MODIFIED;
-  const urls = [{ route: '/', priority: '1.0' }, ...PAGES.map((page) => ({ route: page.route }))];
+  const urls = [
+    { route: '/', priority: '1.0', page: HOME_PAGE },
+    ...PAGES.map((page) => ({ route: page.route, page })),
+  ];
   const seen = new Set();
   const body = urls
     .filter(({ route }) => (seen.has(route) ? false : seen.add(route)))
     .map(
-      ({ route, priority }) =>
+      ({ route, priority, page }) =>
         `  <url>\n` +
         `    <loc>${SITE}${route === '/' ? '/' : route}</loc>\n` +
-        `    <lastmod>${today}</lastmod>\n` +
+        `    <lastmod>${pageLastModified(page)}</lastmod>\n` +
         (priority ? `    <priority>${priority}</priority>\n` : '') +
         `  </url>`
     )
@@ -1208,7 +1613,9 @@ function generate(buildDir = path.resolve(__dirname, '../build')) {
   // The sitemap is generated from the same PAGES list rather than maintained
   // by hand. A hand-written sitemap is how fifteen lessons went unlisted for
   // months on a site whose entire problem was not being readable.
+  writeContentDates();
   writeSitemap(buildDir);
+  writeLlmsTxt(buildDir);
 
   // Homepage last: it overwrites the template file itself.
   fs.writeFileSync(templatePath, renderRouteDocument(template, HOME_PAGE));
@@ -1233,4 +1640,26 @@ function generate(buildDir = path.resolve(__dirname, '../build')) {
 
 if (require.main === module) generate();
 
-module.exports = { PAGES, HOME_PAGE, PRICING, FAQS, LAST_MODIFIED, generate, renderRouteDocument, pageSchema };
+module.exports = {
+  PAGES,
+  HOME_PAGE,
+  PRICING,
+  FAQS,
+  LAST_MODIFIED,
+  BUILD_DATE,
+  CONTENT_DATES_PATH,
+  contentFingerprint,
+  HOME_PICKS,
+  guideFaqs,
+  plainText,
+  statedPrices,
+  declaredPrices,
+  unaccountedPrices,
+  ourPrice,
+  writeContentDates,
+  pageLastModified,
+  writeLlmsTxt,
+  generate,
+  renderRouteDocument,
+  pageSchema,
+};
