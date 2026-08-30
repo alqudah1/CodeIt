@@ -28,7 +28,10 @@ if (!file) {
 // file read and does not survive the shell. Values may be bare, single- or
 // double-quoted.
 const envFile = process.argv[3];
-if (envFile && !process.env.DATABASE_URL) {
+// When an env file is named, it WINS over whatever the shell already carries -
+// the first production run failed precisely because a mangled value was still
+// exported in the same terminal, and the runner trusted it.
+if (envFile) {
   try {
     for (const line of fs.readFileSync(path.resolve(envFile), 'utf8').split('\n')) {
       const match = line.match(/^DATABASE_URL\s*=\s*(.*)\s*$/);
