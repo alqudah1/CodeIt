@@ -101,8 +101,23 @@ export default function Header() {
     navigate("/login");
   };
 
+  // The skip link every audit looks for first. Pages own their <main>, so the
+  // link finds the current page's main landmark at click time rather than
+  // hard-coding an id into eighteen files.
+  const skipToContent = (event) => {
+    event.preventDefault();
+    const main = document.querySelector('main') || document.querySelector('[role="main"]');
+    if (!main) return;
+    main.setAttribute('tabindex', '-1');
+    main.focus({ preventScroll: false });
+    main.scrollIntoView();
+  };
+
   return (
     <header className="site-header">
+      <a className="site-header__skip" href="#main" onClick={skipToContent}>
+        Skip to content
+      </a>
       <div className="site-header__inner">
         <Link to="/" className="site-header__logo" aria-label="CodeIt home">
           <BrandLogo className="site-header__brand" alt="" />

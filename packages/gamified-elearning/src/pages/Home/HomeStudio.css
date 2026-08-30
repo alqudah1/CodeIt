@@ -813,7 +813,8 @@
   box-shadow: none;
 }
 .studio-preview__idea-list span.is-active {
-  background: var(--arc-violet, #8A6FF0);
+  /* Deeper violet: white on the pale brand violet was under 4.5:1 (a11y sweep). */
+  background: #5B45B8;
   border-color: var(--ink, #35220E);
   color: #fff;
   box-shadow: 0 2px 0 var(--ink, #35220E);

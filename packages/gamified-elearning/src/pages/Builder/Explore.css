@@ -509,7 +509,7 @@
 .exp-card--tool .exp-card__thumb { background: var(--arc-sun); }
 .exp-card__thumb::before { display: none; }
 .exp-card__thumb-emoji {
-  font-size: 44px;
+  font-size: 2.75rem;
   line-height: 1;
   filter: drop-shadow(0 2px 0 rgba(53, 34, 14, 0.35));
 }

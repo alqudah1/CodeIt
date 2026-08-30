@@ -4745,6 +4745,7 @@ export default function Builder() {
                           <input
                             type="color"
                             className="bldr-el-color-input"
+                            aria-label="Text color"
                             value={rgbToHex(elColor)}
                             onChange={e => { setElColor(e.target.value); applyElStyleChange({ color: e.target.value }); }}
                           />
@@ -4757,6 +4758,7 @@ export default function Builder() {
                           <input
                             type="color"
                             className="bldr-el-color-input"
+                            aria-label="Background color"
                             value={rgbToHex(elBgColor)}
                             onChange={e => { setElBgColor(e.target.value); applyElStyleChange({ backgroundColor: e.target.value }); }}
                           />
@@ -4772,6 +4774,7 @@ export default function Builder() {
                       <input
                         type="range"
                         className="bldr-el-range"
+                        aria-label="Padding"
                         min={0}
                         max={80}
                         value={elPadding}
@@ -4784,6 +4787,7 @@ export default function Builder() {
                       <input
                         type="range"
                         className="bldr-el-range"
+                        aria-label="Font size"
                         min={10}
                         max={72}
                         defaultValue={parseInt(selectedEl.styles?.fs) || 16}

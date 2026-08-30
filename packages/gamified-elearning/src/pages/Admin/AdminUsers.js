@@ -105,6 +105,7 @@ const AdminUsers = () => {
       <div className="adm-search-row">
         <input
           className="adm-search-input"
+          aria-label="Search users by name, username or email"
           placeholder="Search by name, username or email…"
           value={draft}
           onChange={e => setDraft(e.target.value)}

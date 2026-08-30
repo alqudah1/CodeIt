@@ -104,6 +104,7 @@ run complaints-check.js
 run first-five-minutes.js
 run kid-alone.js
 run lesson-alone.js
+run a11y-sweep.js
 
 echo
 if [ "$failed" -gt 0 ]; then

@@ -535,3 +535,25 @@
 @media (max-width: 480px) {
   .site-header__inner { padding: 0 1rem; height: 76px; }
 }
+
+/* ── Skip link: invisible until it is the focused thing, then unmissable ── */
+.site-header__skip {
+  position: absolute;
+  left: 12px;
+  top: -100px;
+  z-index: 1000;
+  padding: 10px 18px;
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 999px;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  transition: top 0.15s ease;
+}
+.site-header__skip:focus-visible {
+  top: 12px;
+  outline: 3px solid var(--ink, #35220E);
+  outline-offset: 2px;
+}

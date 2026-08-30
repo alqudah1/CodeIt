@@ -241,9 +241,10 @@ export default function Register() {
 
           <form className="auth-form" onSubmit={submitS(onStudentSubmit)}>
             <div className="auth-field">
-              <label className="auth-label">Username</label>
+              <label className="auth-label" htmlFor="reg-s-username">Username</label>
               <input
                 className="auth-input"
+                id="reg-s-username"
                 {...regS('username', {
                   required: 'Username is required',
                   pattern: {
@@ -263,11 +264,12 @@ export default function Register() {
             </div>
 
             <div className="auth-field">
-              <label className="auth-label">Password</label>
+              <label className="auth-label" htmlFor="reg-s-password">Password</label>
               <div className="auth-input-wrap">
                 <input
                   type={showPw ? 'text' : 'password'}
                   className="auth-input auth-input--has-toggle"
+                  id="reg-s-password"
                   {...regS('password', {
                     required: 'Password is required',
                     minLength: { value: 6, message: 'At least 6 characters' },
@@ -283,10 +285,11 @@ export default function Register() {
             </div>
 
             <div className="auth-field">
-              <label className="auth-label">Birthday</label>
+              <label className="auth-label" htmlFor="reg-s-dob">Birthday</label>
               <input
                 type="date"
                 className="auth-input"
+                id="reg-s-dob"
                 {...regS('dob', {
                   required: 'Birthday is required',
                   validate: {
@@ -342,10 +345,11 @@ export default function Register() {
 
           <form className="auth-form" onSubmit={submitP(onParentEmailSubmit)}>
             <div className="auth-field">
-              <label className="auth-label">Parent or guardian email (optional)</label>
+              <label className="auth-label" htmlFor="reg-s-parent-email">Parent or guardian email (optional)</label>
               <input
                 type="email"
                 className="auth-input"
+                id="reg-s-parent-email"
                 {...regP('parent_email', {
                   pattern: {
                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -409,9 +413,10 @@ export default function Register() {
 
           <form className="auth-form" onSubmit={submitE(onEducatorSubmit)}>
             <div className="auth-field">
-              <label className="auth-label">Full name</label>
+              <label className="auth-label" htmlFor="reg-e-name">Full name</label>
               <input
                 className="auth-input"
+                id="reg-e-name"
                 {...regE('name', { required: 'Name is required' })}
                 placeholder="Your full name"
               />
@@ -419,10 +424,11 @@ export default function Register() {
             </div>
 
             <div className="auth-field">
-              <label className="auth-label">Email</label>
+              <label className="auth-label" htmlFor="reg-e-email">Email</label>
               <input
                 type="email"
                 className="auth-input"
+                id="reg-e-email"
                 {...regE('email', { required: 'Email is required' })}
                 placeholder="you@example.com"
               />
@@ -430,11 +436,12 @@ export default function Register() {
             </div>
 
             <div className="auth-field">
-              <label className="auth-label">Password</label>
+              <label className="auth-label" htmlFor="reg-e-password">Password</label>
               <div className="auth-input-wrap">
                 <input
                   type={showPw ? 'text' : 'password'}
                   className="auth-input auth-input--has-toggle"
+                  id="reg-e-password"
                   {...regE('password', {
                     required: 'Password is required',
                     minLength: { value: 8, message: 'At least 8 characters' },

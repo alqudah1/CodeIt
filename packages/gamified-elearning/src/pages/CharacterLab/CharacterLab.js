@@ -448,6 +448,7 @@ const AvatarLab = () => {
                 <input
                   className="al-field__input"
                   type="email"
+                  aria-label="Parent email"
                   value={parentEmailInput}
                   placeholder="parent@example.com"
                   onChange={e => { setParentEmailInput(e.target.value); setPeStatus(null); setPeError(''); }}

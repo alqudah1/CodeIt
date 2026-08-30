@@ -197,8 +197,10 @@
   text-transform: uppercase;
   white-space: nowrap;
 }
-.sl-jp-node--active  .sl-jp-label { color: #FE582A; }
-.sl-jp-node--upcoming .sl-jp-label { color: #8890a8; }
+/* Both darkened for 4.5:1 contrast on the paper ground — the a11y sweep
+   caught the originals at roughly 3:1. */
+.sl-jp-node--active  .sl-jp-label { color: #B04500; }
+.sl-jp-node--upcoming .sl-jp-label { color: rgba(53, 34, 14, 0.78); }
 
 .sl-jp-connector {
   flex: 1;
@@ -247,7 +249,7 @@
 .sl-card__step-num {
   font-size: 0.8125rem;
   font-weight: 800;
-  color: #8890a8;
+  color: #5F5340; /* darkened (a11y sweep) */
   letter-spacing: 0.04em;
   flex-shrink: 0;
 }
@@ -410,7 +412,7 @@
   margin-left: auto;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #9a8172;
+  color: #6E5546; /* darkened (a11y sweep) */
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -706,7 +708,7 @@
 }
 
 .sl-nav__next {
-  background: #FE582A;
+  background: #CC3F17; /* darkened until white text clears 4.5:1 (a11y sweep) */
   color: #fff;
   border: none;
   border-radius: 11px;
@@ -803,7 +805,7 @@
 
 .sl-builder-link__label {
   font-size: 0.83rem;
-  color: rgba(43, 45, 66, 0.55);
+  color: #5F5A63; /* darkened (a11y sweep) */
   font-weight: 600;
   flex: 1;
   min-width: 100px;
@@ -814,7 +816,7 @@
   align-items: center;
   font-size: 0.83rem;
   font-weight: 800;
-  color: #FF7A00;
+  color: #B84A00; /* was #FF7A00 (a11y sweep) */
   text-decoration: none;
   padding: 0.38rem 1rem;
   border: 1.5px solid rgba(255, 122, 0, 0.28);
@@ -1255,7 +1257,7 @@
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  opacity: 0.55;
+  color: #6A6C75; /* was opacity .55, 3.3:1 (a11y sweep) */
 }
 
 .sl-around__title {
