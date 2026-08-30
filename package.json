@@ -19,7 +19,7 @@
     "check:browser": "ops/checks/run-all.sh",
     "db:migrate:fresh": "node ops/db/migrate.js --fresh --apply",
     "check:seed": "node ops/checks/seed.js",
-    "test:api": "node --test \"api/**/*.test.js\""
+    "test:api": "node --test api/*.test.js"
   },
   "version": "1.0.0",
   "devDependencies": {

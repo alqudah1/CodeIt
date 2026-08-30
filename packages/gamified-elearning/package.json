@@ -28,7 +28,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "verify:lessons": "node scripts/verify-lesson-python.js",
-    "test:seo": "node --test \"scripts/**/*.test.js\""
+    "test:seo": "node --test scripts/*.test.js"
   },
   "eslintConfig": {
     "extends": [
