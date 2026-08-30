@@ -428,3 +428,17 @@
   margin: 0 0 0.75rem;
   font-weight: 700;
 }
+
+.adm-maint-btn {
+  margin-left: 6px;
+  padding: 6px 14px;
+  border: 2px solid #35220E;
+  border-radius: 999px;
+  background: #FF7A00;
+  color: #35220E;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #35220E;
+}
+.adm-maint-btn:disabled { opacity: 0.6; cursor: wait; }
+.adm-maint-result { font-weight: 800; color: #1e6e4e; }

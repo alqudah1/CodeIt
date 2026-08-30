@@ -354,4 +354,38 @@ router.get('/stats', async (_req, res) => {
   }
 });
 
+// ── One-time maintenance: the two changes production is waiting for ──────────
+//
+// The owner's machine has no psql and Vercel stores DATABASE_URL as a
+// sensitive value that can never be read back, so the deployed backend is the
+// only thing that can reach the production database. This applies EXACTLY the
+// two reviewed changes in maintenanceSql.js — the understanding_records table
+// and seven lesson descriptions — and nothing else. Idempotent: safe to press
+// twice. Admin only, like everything on this router.
+router.post('/maintenance/apply-pending', async (_req, res) => {
+  const { CREATE_UNDERSTANDING_RECORDS, LESSON_DESCRIPTION_FIXES } = require('../maintenanceSql');
+  try {
+    for (const statement of CREATE_UNDERSTANDING_RECORDS.split(';').map(s => s.trim()).filter(Boolean)) {
+      await pool.query(statement);
+    }
+    let updated = 0;
+    for (const [id, description] of LESSON_DESCRIPTION_FIXES) {
+      const [result] = await pool.query('UPDATE lessons SET description = ? WHERE id = ?', [description, id]);
+      updated += result.affectedRows || 0;
+    }
+    const [rows] = await pool.query(
+      'SELECT id, title, description FROM lessons WHERE id IN (3,5,6,7,8,9,10) ORDER BY id'
+    );
+    res.json({
+      success: true,
+      understandingTable: 'ready',
+      descriptionsUpdated: updated,
+      lessons: rows,
+    });
+  } catch (error) {
+    console.error('admin/maintenance:', error.message);
+    res.status(500).json({ error: `Maintenance failed: ${error.message}` });
+  }
+});
+
 module.exports = router;

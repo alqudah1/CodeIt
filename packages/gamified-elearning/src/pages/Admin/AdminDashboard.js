@@ -33,6 +33,28 @@ const AdminDashboard = () => {
   const t = data?.totals || {};
   const activity = data?.activity || {};
 
+  // One-time database maintenance. Exists because the owner's machine has no
+  // psql and the connection string in Vercel is sealed as sensitive — the
+  // deployed backend is the only thing that can reach the production
+  // database. The endpoint applies exactly two reviewed changes and is
+  // idempotent, so this button is safe to press twice.
+  const [maint, setMaint] = useState(null);
+  const runMaintenance = async () => {
+    setMaint('running');
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/maintenance/apply-pending`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const body = await res.json();
+      setMaint(body.success
+        ? `Done. Table ${body.understandingTable}, ${body.descriptionsUpdated} descriptions set.`
+        : (body.error || 'Failed.'));
+    } catch {
+      setMaint('Failed — network error.');
+    }
+  };
+
   const CARDS = [
     { key: 'daily_active_users',     label: 'Active Today (DAU)',    cls: 'accent', source: activity },
     { key: 'weekly_active_users',    label: 'Active 7 Days (WAU)',   cls: 'green',  source: activity },
@@ -73,6 +95,22 @@ const AdminDashboard = () => {
                 <div className="adm-stat-lbl">{label}</div>
               </div>
             ))}
+          </div>
+
+          <div className="adm-section-head">Database maintenance</div>
+          <div className="adm-info">
+            Applies the two pending changes: the understanding-records table and seven corrected
+            lesson descriptions. Safe to run more than once.
+            {' '}
+            <button
+              type="button"
+              className="adm-maint-btn"
+              onClick={runMaintenance}
+              disabled={maint === 'running'}
+            >
+              {maint === 'running' ? 'Running…' : 'Apply pending changes'}
+            </button>
+            {maint && maint !== 'running' && <span className="adm-maint-result"> {maint}</span>}
           </div>
 
           <div className="adm-section-head">Recent Signups</div>
