@@ -561,3 +561,19 @@
 .qz-btn-back { border: 2px solid var(--ink); background: var(--paper); box-shadow: var(--pop-down); font-family: var(--font-display); font-weight: 700; }
 .qz-btn-back:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
 .qz-xp-pill { background: var(--arc-sun); border: 2px solid var(--ink); color: var(--ink); font-family: var(--font-display); font-weight: 800; }
+
+/* Read-aloud — the same paper keycap the lesson guide wears. */
+.qz-read-btn {
+  margin-top: 10px;
+  font-family: 'Baloo 2', 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 0.875rem;
+  color: #35220E;
+  background: #FFF4E5;
+  border: 2px solid #35220E;
+  border-radius: 999px;
+  padding: 4px 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #35220E;
+}
+.qz-read-btn:active { transform: translateY(2px); box-shadow: 0 0 0 #35220E; }

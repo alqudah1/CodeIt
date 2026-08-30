@@ -9,10 +9,21 @@ import { getJourneyNext } from "../Journey/journeyNext";
 import { getGameById } from "../Games/gameCatalog";
 import { usePlayerProgress } from "../../hooks/usePlayerProgress";
 import { getXpProgress, getNextUnlock, getNextUnlockLabel } from "../../data/unlocks";
+import { effectiveGuideLevel } from "../../utils/guideLevel";
 import "./Quiz.css";
 
 // Shuffle an array without mutating it
 const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
+
+// Same voice as Pixel and the lesson guide, so the site sounds like one guide.
+function readAloud(text) {
+  if (!text || !window.speechSynthesis || typeof window.SpeechSynthesisUtterance !== "function") return;
+  window.speechSynthesis.cancel();
+  const message = new window.SpeechSynthesisUtterance(text);
+  message.rate = 0.82;
+  message.pitch = 1.08;
+  window.speechSynthesis.speak(message);
+}
 
 // Apply random question order + random option order to a question list
 const applyShuffles = (list) =>
@@ -142,6 +153,28 @@ export default function Quiz() {
     : "";
   const options = q ? q.options || q.choices || q.answers || [] : [];
   const total = questions.length;
+
+  // The question and its answers, said the way a grown-up would read them out.
+  const spokenQuestion = useMemo(() => {
+    if (!q) return "";
+    const parts = options.map((opt, oi) => {
+      const label = opt?.text ?? opt?.label ?? opt ?? "";
+      return `${String.fromCharCode(65 + oi)}: ${label}`;
+    });
+    return `${questionText}. ${parts.join(". ")}`;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [qId, questionText]);
+
+  // A "Big help" learner cannot yet read the question - so it is read to them,
+  // every time it changes, honouring the same mute key Pixel and the lesson
+  // guide use: quiet in one place is quiet everywhere.
+  const guideLevel = effectiveGuideLevel(user);
+  useEffect(() => {
+    if (guideLevel !== "early" || !spokenQuestion) return;
+    try { if (localStorage.getItem("codeit_pixel_quiet") === "1") return; } catch { return; }
+    readAloud(spokenQuestion);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spokenQuestion]);
 
   // ── Select answer ─────────────────────────────────────────────────────────
   const handleSelect = async (optVal) => {
@@ -422,6 +455,14 @@ export default function Quiz() {
         <div className="qz-question-card">
           <span className="qz-q-badge">Q{currentIdx + 1}</span>
           <h2 className="qz-question-text">{questionText}</h2>
+          <button
+            type="button"
+            className="qz-read-btn"
+            onClick={() => readAloud(spokenQuestion)}
+            aria-label="Read this question and its answers to me"
+          >
+            🔊 Read to me
+          </button>
         </div>
 
         {/* Options */}
