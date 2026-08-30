@@ -724,7 +724,7 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'What the journey includes',
       paragraphs: [
-        'The journey sequences the sixteen beginner Python lessons with quizzes and puzzle challenges, so every concept is met, practised, and then used before the next one arrives.',
+        `The journey sequences the ${LESSON_COUNT} beginner Python lessons with quizzes and puzzle challenges, so every concept is met, practised, and then used before the next one arrives.`,
         'A learner always has one clear next step rather than a menu of options, which is the point at which most self-directed beginners stall.',
       ],
     },
@@ -786,7 +786,14 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'What the lesson path covers',
       paragraphs: [
-        'Sixteen sequenced lessons take a beginner from a first print statement through variables, strings, if statements, loops, lists, and reusable functions, then on to arithmetic, booleans, logical operators, type casting, string formatting, and string methods.',
+        // This said "Sixteen sequenced lessons" while there were thirty-one, on
+        // the page that actually ranks, describing half the course to every
+        // parent who found it. The count is now counted, and the sentence that
+        // follows it names what the second half contains — which is what a
+        // parent deciding whether this is worth their evening wants to know,
+        // and was the reason the stale number mattered.
+        `${LESSON_COUNT} sequenced lessons take a beginner from a first print statement through variables, strings, if statements, loops, lists and reusable functions, then on to arithmetic, booleans, logical operators, type casting, string formatting and string methods.`,
+        'From there the path continues into while loops, break and continue, importing modules, dictionaries, tuples and sets, slicing, list comprehensions, return values, scope, error handling with try and except, enumerate and zip, classes and objects, and recursion. It ends with a capstone: building a real game.',
         'Each lesson introduces one idea, gives a runnable example, and ends with a challenge that requires changing the code.',
       ],
     },
