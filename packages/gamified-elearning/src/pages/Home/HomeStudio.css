@@ -776,3 +776,69 @@
 .studio-final .studio-button--dark, .studio-button--dark { color: #fff; }
 /* The home page's own footer small print. */
 .studio-footer__bottom, .studio-footer__bottom span, .studio-footer__bottom a { color: var(--ink-mute); }
+
+/* ── The Paper Arcade, hero-mock chapter ─────────────────────────────────────
+   The mock on the homepage still wore the old design: glassy purples, soft
+   watercolour shadows. It is the second thing a visitor sees and the first
+   promise of what the studio looks like — so it now looks like the studio:
+   sun marquee, ink borders, hard pop shadows, flat arcade colour. */
+.studio-preview {
+  background: var(--paper, #fff);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 18px;
+  box-shadow: var(--pop-card, 0 6px 0 #35220E);
+  overflow: hidden;
+}
+.studio-preview__toolbar {
+  background: var(--arc-sun, #FED340);
+  border-bottom: 2.5px solid var(--ink, #35220E);
+  color: var(--ink, #35220E);
+  font-family: var(--font-display, 'Baloo 2', sans-serif);
+  font-weight: 700;
+}
+.studio-preview__status {
+  background: var(--paper, #fff);
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 999px;
+  box-shadow: 0 2px 0 var(--ink, #35220E);
+  color: var(--ink, #35220E);
+  font-weight: 800;
+}
+.studio-preview__idea-list span {
+  border: 2px solid var(--ink-line, rgba(53,34,14,0.25));
+  border-radius: 999px;
+  background: var(--ground, #FFF4E5);
+  color: var(--ink-mute, rgba(53,34,14,0.74));
+  font-weight: 800;
+  box-shadow: none;
+}
+.studio-preview__idea-list span.is-active {
+  background: var(--arc-violet, #8A6FF0);
+  border-color: var(--ink, #35220E);
+  color: #fff;
+  box-shadow: 0 2px 0 var(--ink, #35220E);
+}
+.studio-preview__canvas {
+  background: var(--project-accent, #8A6FF0);
+  background-image: radial-gradient(rgba(53, 34, 14, 0.10) 1.4px, transparent 1.6px);
+  background-size: 12px 12px;
+  border-bottom: 2.5px solid var(--ink, #35220E);
+}
+.studio-preview__project-card {
+  background: var(--paper, #fff);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 14px;
+  box-shadow: 0 5px 0 var(--ink, #35220E);
+}
+.studio-preview__learn {
+  background: var(--ground, #FFF4E5);
+}
+.studio-preview__learn code {
+  background: #35220E;
+  color: #FFE9C9;
+  border-radius: 8px;
+}
+.studio-preview__project-title {
+  font-family: var(--font-display, 'Baloo 2', sans-serif);
+  color: var(--ink, #35220E);
+}
