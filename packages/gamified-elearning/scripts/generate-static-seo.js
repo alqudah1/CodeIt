@@ -480,6 +480,30 @@ const LESSON_CONTENT = loadLessons();
 // change it. This site has already shipped a title advertising 16 lessons
 // against 31, in the same breath as a description saying 31.
 const LESSON_COUNT = LESSON_CONTENT.size;
+
+/**
+ * One name per lesson, taken from the lesson file.
+ *
+ * There were two. LESSONS in this file carries a hand-typed title beside the
+ * topic sentence, and the lesson data files carry their own. They had drifted on
+ * nine of thirty-one, so /lessons announced "Lesson 25: Return Values" while
+ * /lesson/25 was titled "Functions That Give Things Back" — the same lesson,
+ * two names, on the same site, and a crawler seeing both.
+ *
+ * The lesson file wins, because adding a lesson is what creates one. The typed
+ * title survives only as a fallback for a lesson whose data cannot be read.
+ *
+ * Lessons 17 onward carry a subtitle after a full stop — "Classes and Objects.
+ * Your Own Kind of Thing" — which is right in a heading and wrong in a page
+ * title, where the template appends "for Beginners" and produces a sentence
+ * that runs on past its own end. So there are two forms: the short name for the
+ * title, the full one for the heading.
+ */
+function lessonName(number, fallback) {
+  const full = LESSON_CONTENT.get(number)?.title || fallback;
+  const short = String(full).split(/\.\s+/)[0].replace(/[!.]+$/, '').trim();
+  return { full, short: short || full };
+}
 const BLOG_BY_SLUG = new Map(BLOG_CONTENT.map((post) => [post.slug, post]));
 
 /** Blog post -> [{heading, paragraphs:[string]}] */
@@ -533,7 +557,7 @@ function lessonsIndexSections() {
       ],
     },
     ...LESSONS.map(([, title, topic], index) => ({
-      heading: `Lesson ${index + 1}: ${title}`,
+      heading: `Lesson ${index + 1}: ${lessonName(index + 1, title).full}`,
       paragraphs: [`Covers ${topic}.`],
     })),
   ];
@@ -968,10 +992,10 @@ const PAGES = [
       route: `/lesson/${number}`,
       // Use the lesson's own title so the static <title>/<h1> match what the
       // React app renders. These previously disagreed on every lesson page.
-      title: `Python Lesson ${number}: ${lesson?.title || title} for Beginners | CodeIt`,
+      title: `Python Lesson ${number}: ${lessonName(number, title).short} for Beginners | CodeIt`,
       description: `Interactive beginner Python lesson about ${topic}. Write and run code directly in your browser.`,
       eyebrow: `Python lesson ${number}`,
-      h1: lesson?.title || title,
+      h1: lessonName(number, title).full,
       intro:
         lesson?.subtitle ||
         `This beginner lesson teaches ${topic}. The explanation, example, and practice activity stay together so students can see what each change does.`,
@@ -983,7 +1007,7 @@ const PAGES = [
       breadcrumbs: [
         ['/', 'Home'],
         ['/lessons', 'Lessons'],
-        [`/lesson/${number}`, lesson?.title || title],
+        [`/lesson/${number}`, lessonName(number, title).full],
       ],
     };
   }),

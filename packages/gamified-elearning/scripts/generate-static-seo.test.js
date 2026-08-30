@@ -265,10 +265,24 @@ test('blog posts declare headline, author and datePublished', () => {
 });
 
 test('static title matches the rendered h1 subject on blog and lesson pages', () => {
+  // Lessons 17 onward are named "Classes and Objects. Your Own Kind of Thing".
+  // That reads correctly as a heading and badly in a <title>, where the template
+  // appends "for Beginners" and the sentence carries on past its own full stop.
+  // So a lesson title now carries the name and the h1 carries name and subtitle,
+  // and the check is that the title still contains the name — not that it
+  // repeats the whole heading.
+  //
+  // Scoped deliberately: dropping the assertion for lesson pages entirely would
+  // have made this pass, and would have stopped noticing if a title and a
+  // heading ever described different lessons, which is what it is for.
   for (const page of PAGES.filter((p) => p.route.startsWith('/blog/') || p.route.startsWith('/lesson/'))) {
+    const subject = page.route.startsWith('/lesson/')
+      ? page.h1.split(/\.\s+/)[0].replace(/[!.]+$/, '').trim()
+      : page.h1;
+
     assert.ok(
-      page.title.includes(page.h1),
-      `${page.route} title "${page.title}" does not contain its h1 "${page.h1}"`
+      page.title.includes(subject),
+      `${page.route} title "${page.title}" does not name its h1 subject "${subject}"`
     );
   }
 });
