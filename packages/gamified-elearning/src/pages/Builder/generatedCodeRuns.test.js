@@ -36,10 +36,13 @@ describe.each(STARTER_PROJECTS.map(p => [`${p.kind}: ${p.label}`, p]))('%s', (la
   });
 });
 
-test('all twenty pass, so the validator blocks nothing that works', () => {
+test('every starter passes, so the validator blocks nothing that works', () => {
   const rejected = STARTER_PROJECTS.filter(p => !willRun(p.code));
   expect(rejected.map(p => p.label)).toEqual([]);
-  expect(STARTER_PROJECTS.length).toBe(20);
+  // A floor, not an exact count: the exact number broke the suite the day a
+  // twenty-first starter (Cat and mouse chase) was added, without testing
+  // anything the line above does not already test better.
+  expect(STARTER_PROJECTS.length).toBeGreaterThanOrEqual(20);
 });
 
 // ── And it still catches the thing it is for ─────────────────────────────────
