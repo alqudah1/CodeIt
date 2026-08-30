@@ -401,3 +401,92 @@ h1, h2, h3, .studio-hero h1, .lm-title, .exp-hero__title, .pricing-hero h1,
     transition: none;
   }
 }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   THE DELIGHT CHAPTER — the difference between clean and chic.
+   Mustafa: "the design should let the kids or anyone enjoy looking at."
+   Atmosphere, motion, life. Every animation sits behind a reduced-motion
+   guard; nothing here moves for someone who asked things not to.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Atmosphere: the ground stops being a flat beige void. Two soft colour
+   washes breathe at the top corners of every page, under the dot grid. */
+body {
+  background-image:
+    radial-gradient(1100px 520px at 8% -80px, rgba(254, 211, 64, 0.20), transparent 62%),
+    radial-gradient(1000px 480px at 96% -60px, rgba(255, 122, 0, 0.12), transparent 60%),
+    radial-gradient(rgba(53, 34, 14, 0.055) 1.2px, transparent 1.2px);
+  background-size: auto, auto, 26px 26px;
+  background-attachment: fixed, fixed, scroll;
+}
+
+/* Section titles get a hand-drawn sun squiggle underneath — a sticker pen
+   stroke, not a rule line. Applied to the titles children actually scan. */
+.bldr-shelf__title,
+.exp-hero__title,
+.lm-title {
+  position: relative;
+  display: inline-block;
+}
+.bldr-shelf__title::after,
+.exp-hero__title::after,
+.lm-title::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: -7px;
+  height: 7px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M2 7 Q 12 2 24 6 T 46 6 T 68 6 T 90 6 T 118 5' fill='none' stroke='%23FED340' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat;
+  background-size: 100% 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The machines wake up as they arrive: a soft rise, staggered down the row
+     so the shelf feels dealt onto the table rather than dumped. */
+  @keyframes arcadeDealIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .bldr-shelf__row > li, .exp-card, .lm-card {
+    animation: arcadeDealIn 0.45s ease-out backwards;
+  }
+  .bldr-shelf__row > li:nth-child(1), .exp-card:nth-child(1) { animation-delay: 0.03s; }
+  .bldr-shelf__row > li:nth-child(2), .exp-card:nth-child(2) { animation-delay: 0.09s; }
+  .bldr-shelf__row > li:nth-child(3), .exp-card:nth-child(3) { animation-delay: 0.15s; }
+  .bldr-shelf__row > li:nth-child(4), .exp-card:nth-child(4) { animation-delay: 0.21s; }
+  .bldr-shelf__row > li:nth-child(5), .exp-card:nth-child(5) { animation-delay: 0.27s; }
+  .bldr-shelf__row > li:nth-child(n+6), .exp-card:nth-child(n+6) { animation-delay: 0.33s; }
+  .lm-card { animation-duration: 0.4s; }
+
+  /* Each game's face bobs gently on its marquee, like it is waiting to be
+     picked. Slow and small: alive, not busy. */
+  @keyframes marqueeBob {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-4px) rotate(2deg); }
+  }
+  .bldr-shelf__card .bldr-shelf__emoji { animation: marqueeBob 3.2s ease-in-out infinite; }
+  .bldr-shelf__card:nth-child(odd) .bldr-shelf__emoji { animation-delay: -1.6s; }
+
+  /* Hovering a cabinet makes its PLAY key lean forward, asking to be pressed. */
+  .bldr-shelf__card:hover .bldr-shelf__play {
+    transform: translateY(-2px) rotate(-2deg);
+    background: #FFE16B;
+  }
+  .bldr-shelf__play { transition: transform 0.12s ease, background 0.12s ease; }
+
+  /* Pixel breathes in the corner. */
+  @keyframes pixelBreathe {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  .pixel-guide img { animation: pixelBreathe 3.6s ease-in-out infinite; }
+
+  /* The logo gives one happy wiggle when touched. */
+  @keyframes logoWiggle {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-4deg) scale(1.04); }
+    75% { transform: rotate(3deg) scale(1.03); }
+  }
+  .site-header__logo:hover img, .site-header__brand:hover img { animation: logoWiggle 0.5s ease-in-out; }
+}
