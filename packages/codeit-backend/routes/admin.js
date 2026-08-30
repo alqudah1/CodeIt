@@ -14,11 +14,20 @@ async function requireAdmin(req, res, next) {
   try {
     const payload = jwt.verify(token, JWT_SECRET);
     const [[account]] = await pool.query(
-      'SELECT role, is_admin FROM Users WHERE user_id = ? LIMIT 1',
+      'SELECT role, is_admin, email FROM Users WHERE user_id = ? LIMIT 1',
       [payload.user_id]
     );
+    // The bootstrap: is_admin lives in the database, and on a fresh production
+    // database nobody can set it - the only path to the database is the admin
+    // panel the flag guards. ADMIN_BOOTSTRAP_EMAIL breaks the circle: the
+    // owner names their own email in an environment variable only they can
+    // set, and the account signed in with that email is admin. Unset, this
+    // clause does not exist.
+    const bootstrapEmail = String(process.env.ADMIN_BOOTSTRAP_EMAIL || '').trim().toLowerCase();
+    const isBootstrapOwner = bootstrapEmail
+      && String(account?.email || '').trim().toLowerCase() === bootstrapEmail;
     const isAdmin = account
-      && ((account.role || '').toLowerCase() === 'admin' || Number(account.is_admin) === 1);
+      && ((account.role || '').toLowerCase() === 'admin' || Number(account.is_admin) === 1 || isBootstrapOwner);
     if (!isAdmin) return res.status(403).json({ error: 'Admin access required.' });
     req.admin = { userId: payload.user_id };
     return next();

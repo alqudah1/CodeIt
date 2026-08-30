@@ -142,9 +142,13 @@ router.post('/login', async (req, res) => {
   try {
     connection = await db.getConnection();
     // Search by email OR username so both student and educator accounts work
+    // Usernames match case-insensitively: the owner himself was locked out
+    // of his own site by one missing capital letter, and a child typing
+    // their own name in lowercase deserves to get in. If two accounts ever
+    // differ only by case, the exact match wins.
     const [results] = await connection.query(
-      'SELECT * FROM Users WHERE email = ? OR username = ?',
-      [identifier.toLowerCase(), identifier]
+      'SELECT * FROM Users WHERE email = ? OR LOWER(username) = LOWER(?) ORDER BY (username = ?) DESC LIMIT 1',
+      [identifier.toLowerCase(), identifier, identifier]
     );
 
     if (!results.length) {
