@@ -514,6 +514,27 @@ const IDENTITY_PAGES = [
     type: 'AboutPage',
     sections: [
       {
+        // Writers copy boilerplate verbatim. If we do not supply a paragraph,
+        // one gets written for us out of whatever the homepage happened to say
+        // that week, and the version that spreads is the one someone guessed.
+        heading: 'The paragraph to quote',
+        paragraphs: [
+          `CodeIt is a browser-based coding studio for ages 5 to 18, built in ${COMPANY.locationLine()}. A learner describes a website, game or quiz and gets a working version they can play, changes it by moving things and picking colours or asking in plain language, then opens a separate view showing what the project is made of and the lesson behind each idea in it. Alongside the studio are ${LESSON_COUNT} beginner Python lessons and a Python playground.`,
+          'Use that as written, or cut it. It is accurate as of the date at the bottom of this page.',
+        ],
+      },
+      {
+        // The one claim on this page nobody else in the category can make, put
+        // where a writer looking for the angle will find it, and stated as a
+        // mechanism rather than an adjective so it can be checked.
+        heading: 'What is actually different about it',
+        paragraphs: [
+          "The comprehension questions are generated from the learner's own file. The correct answer is the value that learner actually wrote, and the wrong options are other real values from the same project, so the question cannot be answered by recalling a lesson or looking anything up. Only first attempts count.",
+          'What a parent reads is a sentence describing something that happened, such as "worked out how many times a loop repeats", rather than a score or a percentage. That is a deliberate limit: a percentage invites comparison between children and says nothing about what one child can do.',
+          'Every other product in this category reports progress, meaning lessons completed, time spent, badges earned. Those answer a different question from the one parents are now asking, which is whether the child understood code an assistant produced.',
+        ],
+      },
+      {
         heading: 'The name',
         paragraphs: [
           `The product is CodeIt. It is registered on external profiles as "${COMPANY.alternateNames[0]}", because "CodeIt" alone collides with several unrelated organisations: a youth outreach programme at MIT, a tutoring company in London at codeitlearning.com, and a software services firm at codeit.us. None of them are us.`,

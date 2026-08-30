@@ -459,7 +459,9 @@ Some fundamentals first helps, and a fully AI-first start leaves gaps. But holdi
       "how to check my kid understands their coding project",
       "coding apps for kids that show parents progress"
     ],
-    markdown: `Your child asked an AI for a game. A game appeared. It runs, it looks good, and they are proud of it. You have no way to tell whether they built something or typed a wish and received a result.
+    markdown: `**Short answer:** ask them to do four things with their own code, in this order. Find where something is set. Say what happens if you change it. Change it and get the result they predicted. Write something small from an empty file. A child who can trace and modify understood it. A child who can only point at the line has not yet, and that is a starting point rather than a verdict. The four checks are below, with what to say and what a good answer sounds like.
+
+Your child asked an AI for a game. A game appeared. It runs, it looks good, and they are proud of it. You have no way to tell whether they built something or typed a wish and received a result.
 
 Every parent using an AI tool now has this question, and almost nobody answers it well. Platforms report time spent, lessons completed and badges earned. None of those numbers say whether the child understood what is on their screen. Here is how to find out, whatever tool they use.
 
