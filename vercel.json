@@ -23,13 +23,13 @@
       "destination": "/api/share?pub=:pub*"
     },
     {
-      "source": "/(MainPage|about|faq|press|admin|ai-website-builder-for-kids|blog|builder|character|coding-for-kids|creator-brief|explore|first-game-challenge|forgot-password|game|games|guide|investor-brief|journey|leaderboard|learn-python-for-kids|lesson|lessons|login|parent-review|playground|pricing|privacy|profile|python-games-for-kids|quiz|register|reset-password|terms)(/.*)?",
+      "source": "/(MainPage|about|faq|press|admin|ai-website-builder-for-kids|blog|builder|character|coding-for-kids|creator-brief|explore|first-game-challenge|forgot-password|game|games|guide|investor-brief|journey|leaderboard|learn-python-for-kids|lesson|lessons|login|parent-review|playground|pricing|privacy|profile|python-games-for-kids|quiz|register|reset-password|terms|understood)(/.*)?",
       "destination": "/index.html"
     }
   ],
   "headers": [
     {
-      "source": "/(login|register|forgot-password|reset-password|parent-review|MainPage|admin|character|leaderboard|profile|quiz|project|creator-brief|investor-brief)(/.*)?",
+      "source": "/(login|register|forgot-password|reset-password|parent-review|MainPage|admin|character|leaderboard|profile|quiz|project|creator-brief|investor-brief|understood)(/.*)?",
       "headers": [
         {
           "key": "X-Robots-Tag",
