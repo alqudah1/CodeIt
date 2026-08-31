@@ -1,0 +1,65 @@
+/* A dead end that still feels like the arcade: paper, ink, Pixel, and doors. */
+
+.deadend {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 800px 460px at 8% -100px, rgba(254, 211, 64, 0.2), transparent 60%),
+    radial-gradient(rgba(53, 34, 14, 0.05) 1.2px, transparent 1.2px) 0 0 / 22px 22px,
+    var(--ground, #FFF4E5);
+  color: var(--ink, #35220E);
+}
+
+.deadend__room {
+  max-width: 480px;
+  margin: 8vh auto 0;
+  padding: 2rem 1.4rem 3rem;
+  text-align: center;
+}
+
+.deadend__pixel {
+  width: 96px;
+  height: 96px;
+  filter: drop-shadow(3px 4px 0 rgba(53, 34, 14, 0.18));
+}
+
+.deadend__title {
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  margin: 0.8rem 0 0.4rem;
+}
+
+.deadend__line {
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: rgba(53, 34, 14, 0.88);
+  margin: 0 0 1.4rem;
+}
+
+.deadend__doors {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.deadend__door {
+  display: inline-block;
+  padding: 0.7rem 1.5rem;
+  background: var(--paper, #FFFDF7);
+  color: var(--ink, #35220E);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 999px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 800;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.deadend__door--primary {
+  background: var(--arc-sun, #FED340);
+}
+
+.deadend__door:hover { transform: translateY(-2px); }
+.deadend__door:active { transform: translateY(2px); box-shadow: none; }

@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useParams, Navigate, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
@@ -7,6 +7,7 @@ import ForgotPassword from './pages/Auth/ForgotPassword';
 import ResetPassword from './pages/Auth/ResetPassword';
 import ParentReview from './pages/Auth/ParentReview';
 import { TOTAL_LESSONS } from './pages/Lessons/lessonRegistry';
+import DeadEnd from './components/DeadEnd/DeadEnd';
 import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { CharacterProvider } from './context/CharacterContext';
@@ -103,11 +104,14 @@ const QuizWrapper = () => {
   const id = Number(quizId);
   if (!Number.isInteger(id) || id < 1 || id > TOTAL_LESSONS) {
     return (
-      <div className="app-missing">
-        <h1>That quiz does not exist</h1>
-        <p>There are {TOTAL_LESSONS} lessons, each with its own quiz.</p>
-        <Link to="/lessons">See all the lessons</Link>
-      </div>
+      <DeadEnd
+        title="That quiz doesn't exist"
+        line={`There are ${TOTAL_LESSONS} lessons, and each one has its own quiz.`}
+        doors={[
+          { label: 'See all the lessons', to: '/lessons', primary: true },
+          { label: 'Make something', to: '/builder' },
+        ]}
+      />
     );
   }
   return <Quiz quizId={quizId} />;
@@ -211,8 +215,24 @@ const App = () => (
               <Route path="/admin/funnel"    element={<RequireAdmin><AdminFunnel /></RequireAdmin>} />
               <Route path="/admin/evidence"  element={<RequireAdmin><AdminEvidence /></RequireAdmin>} />
 
-              {/* ── 404 ── */}
-              <Route path="*" element={<Navigate to="/" replace />} />
+              {/* ── 404 ──
+                  Used to silently redirect home, which confuses a kid on a
+                  mistyped link ("where did my page go?") and reads to search
+                  engines as a soft duplicate of the homepage. An honest room
+                  with doors, instead. */}
+              <Route
+                path="*"
+                element={(
+                  <DeadEnd
+                    title="This page wandered off"
+                    line="The link you followed doesn't go anywhere — maybe it was typed a little wrong."
+                    doors={[
+                      { label: 'Go home', to: '/', primary: true },
+                      { label: 'Make something', to: '/builder' },
+                    ]}
+                  />
+                )}
+              />
             </Routes>
           </Suspense>
         </Router>

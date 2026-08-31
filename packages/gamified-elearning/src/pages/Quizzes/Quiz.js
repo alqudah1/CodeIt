@@ -10,6 +10,7 @@ import { getGameById } from "../Games/gameCatalog";
 import { usePlayerProgress } from "../../hooks/usePlayerProgress";
 import { getXpProgress, getNextUnlock, getNextUnlockLabel } from "../../data/unlocks";
 import { effectiveGuideLevel } from "../../utils/guideLevel";
+import DeadEnd from "../../components/DeadEnd/DeadEnd";
 import "./Quiz.css";
 
 // Shuffle an array without mutating it
@@ -298,15 +299,29 @@ export default function Quiz() {
   }
 
   if (loadErr) {
-    return (
-      <div className="qz-page">
-        <div className="qz-error-card">
-          <p>{loadErr}</p>
-          <button className="qz-btn-back" onClick={() => navigate(-1)}>
-            Back
-          </button>
-        </div>
-      </div>
+    // A quiz that can't load is a room with doors, not a bare white card —
+    // the walkthrough found the old version reading as a crash to a child.
+    // Sign-in problems and missing questions are different rooms; neither
+    // ever shows a raw error string.
+    const needsSignIn = /log ?in|token|session/i.test(loadErr);
+    return needsSignIn ? (
+      <DeadEnd
+        title="Time to sign in again"
+        line="Your sign-in fell asleep. Log back in and this quiz will be right here waiting."
+        doors={[
+          { label: 'Log in', to: '/login', primary: true },
+          { label: 'Go home', to: '/' },
+        ]}
+      />
+    ) : (
+      <DeadEnd
+        title="This quiz isn't ready yet"
+        line={`Quiz ${quizId} has no questions loaded right now — that's on us, not you. The lesson covers everything the quiz would ask.`}
+        doors={[
+          { label: `Open Lesson ${quizId}`, to: `/lesson/${quizId}`, primary: true },
+          { label: 'Make something instead', to: '/builder' },
+        ]}
+      />
     );
   }
 
