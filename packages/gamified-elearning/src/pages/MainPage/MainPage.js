@@ -10,13 +10,16 @@ import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
 import { useSEO } from '../../hooks/useSEO';
 import { getXpProgress, getNextUnlock, getNextUnlockLabel } from '../../data/unlocks';
 import { isFirstWinState } from '../../utils/firstWin';
-import { TOTAL_LESSONS } from '../Lessons/lessonRegistry';
+import { TOTAL_LESSONS, lessonSummaries } from '../Lessons/lessonRegistry';
 import FirstWinPanel from './FirstWinPanel';
 import './MainPage.css';
 
-// Live content totals — updated whenever new lessons/quizzes ship
-const LESSON_TOTAL      = 16;   // interactive lessons 1-16
-const QUIZ_TOTAL        = 16;   // lesson quizzes 1-16
+// Live content totals — derived from the lesson registry, never typed by
+// hand. This page used to say "3 of 16" while its own achievements card said
+// "All 31 lessons done": two hardcoded counts on one screen, one of them
+// years stale. One source of truth now.
+const LESSON_TOTAL      = TOTAL_LESSONS;
+const QUIZ_TOTAL        = TOTAL_LESSONS;   // every lesson has its own quiz
 
 // Journey puzzle totals — only count puzzles with real map coordinates (xPct > 0)
 // Lessons 1-3 each have 3 visible journey puzzles = 9 live puzzles
@@ -25,27 +28,10 @@ const LIVE_PUZZLE_TOTAL = world1.nodes.filter(
   n => (n.type === 'puzzle' || n.type === 'boss') && n.xPct > 0
 ).length;
 
-const ALL_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+const ALL_IDS = Array.from({ length: TOTAL_LESSONS }, (_, i) => i + 1);
 
-const LESSON_TITLES = [
-  null,
-  'Hello Python',
-  'Storing Info with Variables',
-  'Strings',
-  'Making Decisions with If Statements',
-  'Simple Repetition',
-  'For Loops',
-  'Basic Lists',
-  'Loops with Lists',
-  'Basic Functions',
-  'Combining Concepts',
-  'Numbers & Arithmetic',
-  'Booleans & Comparisons',
-  'Logical Operators',
-  'Type Casting',
-  'String Formatting',
-  'String Methods',
-];
+// Titles come from the registry too — the hand-typed list stopped at 16.
+const LESSON_TITLES = [null, ...lessonSummaries().map(l => l.title)];
 
 // Achievement definitions — all derived from live progress data
 const buildAchievements = (lessons, quizzes, puzzles, streak) => [
@@ -75,6 +61,10 @@ const MainPage = () => {
   const [xp,     setXp]     = useState(null);
   const [streak, setStreak] = useState(null);
   const [progressLoading, setProgressLoading] = useState(true);
+
+  // Her machines: the projects this kid has actually made, shown as arcade
+  // cabinets in her own room. null = still loading, [] = none yet.
+  const [machines, setMachines] = useState(null);
 
   // Counts derived from arrays
   const completedLessons = completedLessonsArr.length;
@@ -120,12 +110,18 @@ const MainPage = () => {
     };
 
     fetchProgress();
+
+    // Her machines, for the room. A failure just means the shelf stays quiet.
+    fetch(`${API_BASE_URL}/api/builder/projects`, { headers })
+      .then(r => r.json())
+      .then(d => setMachines(d.success ? (d.projects || []).slice(0, 6) : []))
+      .catch(() => setMachines([]));
   }, [user, token]);
 
   // "Your Next Mission" — sequential: lesson → quiz → puzzle (puzzles only for lessons 1-PUZZLE_LESSON_MAX)
   const nextMission = useMemo(() => {
     if (progressLoading) return null;
-    for (let n = 1; n <= 16; n++) {
+    for (let n = 1; n <= TOTAL_LESSONS; n++) {
       if (!completedLessonsArr.includes(n)) {
         return {
           type:    'lesson',
@@ -333,6 +329,36 @@ const MainPage = () => {
                 </div>
               </div>
             </div>
+          </section>
+        )}
+
+        {/* ══════════════════════════════════════════════════════
+            YOUR MACHINES. The kid's own projects as arcade cabinets —
+            the reason this page is a room and not a menu.
+        ══════════════════════════════════════════════════════ */}
+        {Array.isArray(machines) && machines.length > 0 && (
+          <section className="mp-machines" aria-labelledby="mp-machines-title">
+            <h2 id="mp-machines-title" className="mp-machines__title">Your machines</h2>
+            <ul className="mp-machines__row">
+              {machines.map((m, i) => (
+                <li key={m.id}>
+                  <Link to={`/builder?project=${m.id}`} className="mp-machine">
+                    <span className={`mp-machine__marquee mp-machine__marquee--${i % 4}`} aria-hidden="true">
+                      {({ game: '🕹️', quiz: '❓', shop: '🧁', website: '🌐', tool: '🔧', story: '📖' })[m.project_type] || '✨'}
+                    </span>
+                    <span className="mp-machine__name">{m.title}</span>
+                    <span className="mp-machine__play">▶ PLAY</span>
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link to="/builder" className="mp-machine mp-machine--new">
+                  <span className="mp-machine__marquee mp-machine__marquee--new" aria-hidden="true">＋</span>
+                  <span className="mp-machine__name">New machine</span>
+                  <span className="mp-machine__play">Make it</span>
+                </Link>
+              </li>
+            </ul>
           </section>
         )}
 

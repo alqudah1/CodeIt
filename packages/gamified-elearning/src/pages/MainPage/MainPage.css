@@ -2112,3 +2112,216 @@
    greyed-out failure. */
 .mp-streak-card--cold { border-style: dashed; }
 .mp-streak-card--hot { border: 2.5px solid var(--ink); box-shadow: var(--pop-rest); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE ARCADE ROOM CHAPTER — step 2 of the walkthrough plan.
+   The owner's brief, verbatim: "after people sign up how are they not
+   active… the website looks so AI and not like a gamified e-learning
+   platform." This chapter turns the returning kid's dashboard into their own
+   arcade room: their machines as cabinets, one loud next-thing, paper and
+   ink everywhere. It appends, so it wins ties against the rules above.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Her machines ── */
+.mp-machines { margin: 1.6rem 0; }
+.mp-machines__title {
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-size: 1.35rem;
+  color: var(--ink, #35220E);
+  margin: 0 0 0.7rem;
+}
+.mp-machines__row {
+  list-style: none;
+  margin: 0;
+  padding: 0.2rem 0.2rem 0.6rem;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 150px;
+  gap: 0.9rem;
+  overflow-x: auto;
+}
+.mp-machine {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper, #FFFDF7);
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 16px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  text-decoration: none;
+  color: var(--ink, #35220E);
+  overflow: hidden;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.mp-machine:hover {
+  transform: translateY(-3px) rotate(-0.5deg);
+  box-shadow: var(--pop-lift, 5px 6px 0 rgba(53, 34, 14, 0.22));
+}
+.mp-machine:active { transform: translateY(1px); box-shadow: none; }
+.mp-machine__marquee {
+  display: grid;
+  place-items: center;
+  height: 64px;
+  font-size: 2rem;
+  border-bottom: 3px solid var(--ink, #35220E);
+  background:
+    radial-gradient(rgba(255, 255, 255, 0.35) 1.5px, transparent 1.5px) 0 0 / 9px 9px,
+    var(--arc-orange, #F87824);
+}
+.mp-machine__marquee--1 { background-color: var(--arc-sun, #FED340); }
+.mp-machine__marquee--2 { background-color: var(--arc-mint, #27AE7E); }
+.mp-machine__marquee--3 { background-color: var(--arc-violet, #7B5CD6); }
+.mp-machine__marquee--new {
+  background: var(--ground, #FFF4E5);
+  color: var(--ink, #35220E);
+  font-size: 2.2rem;
+  font-weight: 800;
+}
+.mp-machine--new { border-style: dashed; }
+.mp-machine__name {
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.25;
+  padding: 0.55rem 0.7rem 0.2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.5em;
+}
+.mp-machine__play {
+  margin: 0.35rem 0.7rem 0.7rem;
+  align-self: flex-start;
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  padding: 0.28rem 0.85rem;
+  background: var(--arc-sun, #FED340);
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 999px;
+  box-shadow: 2px 2px 0 rgba(53, 34, 14, 0.22);
+}
+
+/* ── The mission card becomes the room's marquee ── */
+.mp-mission {
+  background: var(--paper, #FFFDF7);
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 20px;
+  box-shadow: var(--pop-card, 6px 6px 0 rgba(53, 34, 14, 0.18));
+}
+.mp-mission__eyebrow {
+  color: var(--arc-orange-deep, #A84A00);
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  letter-spacing: 0.1em;
+}
+.mp-mission__title { font-family: var(--font-display, 'Baloo 2', cursive); color: var(--ink, #35220E); }
+.mp-mission__btn {
+  background: var(--arc-orange, #F87824);
+  color: #fff;
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 999px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 800;
+}
+.mp-mission__btn:hover { transform: translateY(-2px); box-shadow: var(--pop-lift, 5px 6px 0 rgba(53, 34, 14, 0.22)); }
+.mp-mission__btn:active { transform: translateY(2px); box-shadow: none; }
+.mp-mission__ring-fill { stroke: var(--arc-orange, #F87824); }
+
+/* ── Character, level, streak: paper and ink ── */
+.mp-char-card,
+.mp-level-card,
+.mp-streak-card,
+.cp-progress-card,
+.mp-achievements,
+.mp-builder-cta,
+.cp-leaderboard {
+  background: var(--paper, #FFFDF7);
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 18px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+}
+.mp-streak-card--cold { border-style: dashed; opacity: 1; }
+.mp-char-card__link {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 999px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 700;
+}
+.mp-char-card__link:hover { transform: translateY(-2px); }
+.mp-char-card__link:active { transform: translateY(2px); box-shadow: none; }
+.mp-level-card__badge {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 14px;
+  box-shadow: 2.5px 2.5px 0 rgba(53, 34, 14, 0.22);
+}
+.mp-level-card__lvl-sup, .mp-level-card__lvl-num { color: var(--ink, #35220E); }
+.mp-level-card__bar-wrap {
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 999px;
+  background: var(--ground, #FFF4E5);
+  overflow: hidden;
+}
+.mp-level-card__bar-fill { background: var(--arc-mint, #27AE7E); }
+.mp-char-card__bar { border: 2px solid var(--ink, #35220E); border-radius: 999px; background: var(--ground, #FFF4E5); overflow: hidden; }
+.mp-char-card__bar-fill { background: var(--arc-mint, #27AE7E); }
+.mp-streak-card__number {
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  color: var(--arc-orange, #F87824);
+}
+.mp-streak-card--hot .mp-streak-card__number { color: var(--arc-orange, #F87824); }
+
+/* ── Progress bars in the progress card ── */
+.cp-progress-card .cp-bar, .cp-progress-card [class*="bar-track"], .cp-progress-card progress {
+  border-radius: 999px;
+}
+.cp-progress-card__heading, .mp-achievements__heading {
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  color: var(--ink, #35220E);
+}
+
+/* ── Achievements as stickers ── */
+.mp-ach-card {
+  background: #fff;
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 14px;
+  box-shadow: 2.5px 2.5px 0 rgba(53, 34, 14, 0.18);
+}
+.mp-ach-card__badge {
+  background: var(--arc-mint, #27AE7E);
+  color: #fff;
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+/* ── Studio CTA and leaderboard preview ── */
+.mp-builder-cta__btn {
+  background: var(--arc-orange, #F87824);
+  color: #fff;
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 999px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 800;
+}
+.mp-builder-cta__btn:hover { transform: translateY(-2px); }
+.mp-builder-cta__btn:active { transform: translateY(2px); box-shadow: none; }
+.mp-builder-cta__badge {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+/* ── Tracks grid cards ── */
+.tracks-grid .track-card, .tracks-grid > article, .tracks-grid > div {
+  border-radius: 18px;
+}
