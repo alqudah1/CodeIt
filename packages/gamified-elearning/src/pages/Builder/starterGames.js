@@ -107,6 +107,14 @@ let fallSpeed  = 3;
 let starSize   = 18;
 let starColour = '#FFD84D';
 let basketWide = 90;
+
+// You, in the game: if CodeIt handed us your avatar, you are the catcher.
+// (In Scratch: this is like choosing your own sprite as the player.)
+let playerImg = null;
+if (window.CODEIT_PLAYER_SPRITE) {
+  playerImg = new Image();
+  playerImg.src = window.CODEIT_PLAYER_SPRITE;
+}
 let startLives = 3;
 
 const canvas = document.getElementById('screen');
@@ -207,6 +215,11 @@ function draw() {
   pen.beginPath();
   pen.roundRect(basketX - basketWide / 2, basketY, basketWide, 26, 12);
   pen.fill();
+
+  // Your avatar stands behind the basket, catching with you.
+  if (playerImg && playerImg.complete && playerImg.naturalWidth > 0) {
+    pen.drawImage(playerImg, basketX - 26, basketY - 56, 52, 52);
+  }
 
   requestAnimationFrame(draw);
 }
@@ -1594,6 +1607,11 @@ function startGame() {
   playerX = field.clientWidth * 0.06;
   playerY = field.clientHeight * 0.08;
   player.style.background = playerColour;
+  // You, in the game: if CodeIt handed us your avatar, the runner is YOU.
+  if (window.CODEIT_PLAYER_SPRITE) {
+    player.style.background = "url('" + window.CODEIT_PLAYER_SPRITE + "') center / contain no-repeat";
+    player.style.borderRadius = '10px';
+  }
   document.getElementById('scoreLabel').textContent = score;
   document.getElementById('msgLabel').textContent = 'Get all the coins';
   document.getElementById('gameOver').style.display = 'none';

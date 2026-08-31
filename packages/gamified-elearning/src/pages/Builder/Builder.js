@@ -88,6 +88,7 @@ import {
   storeGuideLevelOverride,
   storedGuideLevelOverride,
 } from '../../utils/guideLevel';
+import { avatarSpriteDataUri, injectPlayerSprite } from '../../utils/avatarSprite';
 
 // One hand-drawn sticker per shelf and per ask-for-anything card, in the
 // design language itself. Decorative: the words beside them do the talking.
@@ -751,10 +752,12 @@ function injectBridge(html) {
  * The storage shim has to go first — a game reads its high score on the line it
  * starts on, and the editor bridge does not run until something is clicked.
  */
-function preparePreview(html, seed) {
+function preparePreview(html, seed, spriteUri) {
   // The error watcher goes in last so it ends up first in the document: a
-  // project that throws on its opening line still gets reported.
-  return injectErrorReporter(injectBridge(injectPreviewStorage(html, seed)));
+  // project that throws on its opening line still gets reported. The player
+  // sprite goes in with the rest: starters that know about it draw the kid's
+  // own avatar as the player; every other project ignores it.
+  return injectErrorReporter(injectBridge(injectPreviewStorage(injectPlayerSprite(html, spriteUri), seed)));
 }
 
 function rgbToHex(rgb) {
@@ -771,7 +774,7 @@ export default function Builder() {
   });
 
   const { user, token } = useContext(AuthContext);
-  const { awardXP }     = useCharacter();
+  const { awardXP, character } = useCharacter();
   const navigate        = useNavigate();
   const location        = useLocation();
   const isNewAccountWelcome = Boolean(user)
@@ -2760,9 +2763,13 @@ export default function Builder() {
   // after the iframe already has its srcDoc, and by then the game has read its
   // high score and found nothing. Re-read on every rebuild so an edit does not
   // roll a child's score back to whatever it was when they opened the page.
+  // The kid's avatar, as a sprite, handed to every preview. Changing your
+  // outfit in the lab changes the player in every game you open, because the
+  // sprite is injected at run time, never baked into the saved code.
+  const playerSpriteUri = useMemo(() => avatarSpriteDataUri(character), [character]);
   const previewDoc = useMemo(
-    () => preparePreview(code, loadPreviewStorage(previewKey)),
-    [code, previewKey]
+    () => preparePreview(code, loadPreviewStorage(previewKey), playerSpriteUri),
+    [code, previewKey, playerSpriteUri]
   );
 
   // ── The controls this particular project offers ──────────────────────────
