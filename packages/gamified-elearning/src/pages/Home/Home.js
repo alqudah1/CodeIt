@@ -16,6 +16,8 @@ import Evidence from "./Evidence";
 import { listProjects, migrateLegacyDraft } from "../../utils/projectShelf";
 import "./Home.css";
 import "./HomeStudio.css";
+import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
+import { useCharacterDisplay } from '../../context/CharacterContext';
 
 const PROJECT_IDEAS = [
   {
@@ -148,6 +150,7 @@ function StudioPreview() {
 
 export default function Home() {
   const { user, token } = useAuth();
+  const { character } = useCharacterDisplay();
   const navigate = useNavigate();
   const ideaInputRef = useRef(null);
   const [heroIdea, setHeroIdea] = useState("");
@@ -221,7 +224,17 @@ export default function Home() {
           <section className="studio-hero" aria-labelledby="studio-title">
             <div className="studio-hero__copy">
               <p className="studio-kicker">Coding for ages 5 to 18</p>
-              {user && <p className="studio-welcome">Welcome back, {user.name || "Builder"}.</p>}
+              {/* A returning kid gets their OWN face here, not just their name.
+                  The same avatar they built in the lab and play as in their
+                  games — so the hero is unmistakably theirs. */}
+              {user && (
+                <p className="studio-welcome">
+                  <span className="studio-welcome__face" aria-hidden="true">
+                    <CharacterAvatar character={character} compact size={44} />
+                  </span>
+                  Welcome back, {user.name || "Builder"}.
+                </p>
+              )}
               {/* A returning child does not need the pitch. They have already
                   bought it. They made something. On a phone this headline is
                   350px tall, which pushed their own work off the first screen,

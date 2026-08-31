@@ -881,58 +881,6 @@
 }
 .profile-stat__lbl { color: rgba(53, 34, 14, 0.85); }
 
-/* ── The trophy wall itself ── */
-.profile-trophies { padding: 1.4rem 1.5rem 1.2rem; }
-.profile-trophies__eyebrow {
-  margin: 0 0 2px;
-  font-family: var(--font-display, 'Baloo 2', cursive);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--arc-orange-deep, #A84A00);
-}
-.profile-trophies__title {
-  margin: 0 0 0.9rem;
-  font-family: var(--font-display, 'Baloo 2', cursive);
-  font-size: 1.3rem;
-  color: var(--ink, #35220E);
-}
-.profile-trophies__wall {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 0.8rem;
-}
-.profile-trophy {
-  background: #fff;
-  border: 2.5px solid var(--ink, #35220E);
-  border-radius: 14px;
-  box-shadow: 2.5px 2.5px 0 rgba(53, 34, 14, 0.18);
-  padding: 0.7rem 0.9rem;
-}
-.profile-trophy__project {
-  display: block;
-  font-family: var(--font-display, 'Baloo 2', cursive);
-  font-weight: 700;
-  margin-bottom: 0.3rem;
-}
-.profile-trophy__skill {
-  display: block;
-  color: #1e6e4e;
-  font-weight: 700;
-  font-size: 0.875rem;
-  line-height: 1.45;
-  margin: 2px 0 0 2px;
-}
-.profile-trophies__hint {
-  margin: 0.9rem 0 0;
-  font-size: 0.9rem;
-  color: rgba(53, 34, 14, 0.85);
-}
-
 /* Parent-updates and family cards inherit .profile-card; their inner notice
    boxes get paper treatment too. */
 .profile-parent__notice {
@@ -947,3 +895,129 @@
   letter-spacing: 0.08em;
 }
 .profile-card h2 { font-family: var(--font-display, 'Baloo 2', cursive); color: var(--ink, #35220E); }
+
+/* ── The medal case ──────────────────────────────────────────────────────────
+   The first version was a list of white cards with green ticks, which read as
+   a receipt. Kids collect THINGS: this is a case of five medals with ribbon
+   tails, the un-won ones sitting as empty dashed slots you can see waiting.
+   Nothing here is invented — a locked slot says "not yet". */
+
+.profile-medals { padding: 1.5rem 1.5rem 1.3rem; }
+.profile-medals__eyebrow {
+  margin: 0 0 2px;
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--arc-orange-deep, #A84A00);
+}
+.profile-medals__title {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-size: 1.45rem;
+  color: var(--ink, #35220E);
+}
+.profile-medals__how {
+  margin: 0 0 1.3rem;
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: rgba(53, 34, 14, 0.85);
+}
+
+.profile-medals__case {
+  list-style: none;
+  margin: 0;
+  padding: 0.2rem 0 0.6rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(122px, 1fr));
+  gap: 1rem 0.7rem;
+}
+
+.medal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.1rem;
+}
+
+/* The disc, with two ribbon tails behind it. */
+.medal__disc {
+  position: relative;
+  width: 62px;
+  height: 62px;
+  margin-bottom: 0.85rem;
+  border-radius: 50%;
+  border: 3px solid var(--ink, #35220E);
+  background: var(--ground, #FFF4E5);
+  display: grid;
+  place-items: center;
+  box-shadow: 3px 3px 0 rgba(53, 34, 14, 0.2);
+}
+.medal--won .medal__disc {
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.75), transparent 45%),
+    var(--arc-sun, #FED340);
+}
+.medal__face { font-size: 1.6rem; line-height: 1; }
+.medal:not(.medal--won) .medal__face {
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: rgba(53, 34, 14, 0.35);
+}
+.medal:not(.medal--won) .medal__disc { border-style: dashed; }
+
+.medal__ribbon {
+  position: absolute;
+  bottom: -14px;
+  width: 15px;
+  height: 26px;
+  background: var(--arc-orange, #F87824);
+  border: 2.5px solid var(--ink, #35220E);
+  z-index: -1;
+}
+.medal__ribbon--l { left: 9px;  transform: rotate(9deg);  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%); }
+.medal__ribbon--r { right: 9px; transform: rotate(-9deg); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%); }
+.medal:not(.medal--won) .medal__ribbon { background: rgba(53, 34, 14, 0.12); border-color: rgba(53, 34, 14, 0.3); }
+
+.medal__name {
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--ink, #35220E);
+  line-height: 1.2;
+}
+.medal__where {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1e6e4e;
+  line-height: 1.3;
+}
+.medal__locked {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(53, 34, 14, 0.6);
+}
+
+.profile-medals__hint {
+  margin: 0.7rem 0 0;
+  padding-top: 0.9rem;
+  border-top: 2px dashed rgba(53, 34, 14, 0.22);
+  font-size: 0.9rem;
+  color: rgba(53, 34, 14, 0.85);
+}
+
+/* Won medals settle into the case one after another. */
+@media (prefers-reduced-motion: no-preference) {
+  .medal--won .medal__disc { animation: medalDrop 0.45s cubic-bezier(0.2, 1.3, 0.5, 1) both; }
+  .medal:nth-child(2) .medal__disc { animation-delay: 0.07s; }
+  .medal:nth-child(3) .medal__disc { animation-delay: 0.14s; }
+  .medal:nth-child(4) .medal__disc { animation-delay: 0.21s; }
+  .medal:nth-child(5) .medal__disc { animation-delay: 0.28s; }
+  @keyframes medalDrop {
+    from { transform: translateY(-16px) rotate(-12deg); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+}

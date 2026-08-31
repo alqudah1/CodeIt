@@ -5,6 +5,8 @@ import { useAuth } from '../../context/AuthContext';
 import Header from '../Header/Header';
 import { lessonSummaries } from './lessonRegistry';
 import './LessonMap.css';
+import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
+import { useCharacterDisplay } from '../../context/CharacterContext';
 
 const FALLBACK_LESSONS = lessonSummaries();
 const LESSON_META = Object.fromEntries(
@@ -14,6 +16,7 @@ const LESSON_META = Object.fromEntries(
 const LessonMap = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
+  const { character } = useCharacterDisplay();
   const [lessons, setLessons] = useState(FALLBACK_LESSONS);
   const [completedIds, setCompletedIds] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -154,10 +157,20 @@ const LessonMap = () => {
                   tabIndex={status === 'locked' ? -1 : 0}
                   aria-label={`Lesson ${lesson.id}: ${lesson.title}. ${status}`}
                 >
-                  {/* Number bubble */}
+                    {/* Number bubble — and on the lesson you are up to, YOU are
+                      standing on it. This is the journey map's one good idea,
+                      moved into the page that actually holds all 31 lessons. */}
                   <div className={`lm-emoji lm-emoji--${status}`} aria-hidden="true">
                     {lesson.id}
                   </div>
+                  {isNext && (
+                    <span className="lm-you" aria-hidden="true">
+                      <span className="lm-you__ring">
+                        <CharacterAvatar character={character} compact size={52} />
+                      </span>
+                      <span className="lm-you__flag">YOU</span>
+                    </span>
+                  )}
 
                   {/* Content */}
                   <div className="lm-card-body">

@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useParams, Navigate } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
@@ -35,7 +35,6 @@ const Game8        = lazy(() => import('./pages/Games/Game8'));
 const Game9        = lazy(() => import('./pages/Games/Game9'));
 const Game10       = lazy(() => import('./pages/Games/Game10'));
 
-const JourneyMap    = lazy(() => import('./pages/Journey/JourneyMap'));
 const JourneyPuzzle = lazy(() => import('./pages/Journey/JourneyPuzzle'));
 
 const CharacterLab  = lazy(() => import('./pages/CharacterLab/CharacterLab'));
@@ -158,7 +157,14 @@ const App = () => (
               <Route path="/game/10" element={<Game10 />} />
 
               {/* ── Journey ── */}
-              <Route path="/journey"                          element={<JourneyMap />} />
+              {/* One path, not two. The journey map was a second course running
+                  beside /lessons — same 31 lessons, its own half-empty map,
+                  and a child had to guess which one was "the" course. The
+                  lesson map absorbed its one good idea (you, standing on the
+                  step you are up to) and this route now sends everyone there.
+                  The puzzle routes below still work: challenges link to them
+                  directly and they are real screens. */}
+              <Route path="/journey" element={<Navigate to="/lessons" replace />} />
               <Route path="/journey/puzzle/:lessonId/:slot"  element={<JourneyPuzzle />} />
 
               {/* ── Character & Social ── */}

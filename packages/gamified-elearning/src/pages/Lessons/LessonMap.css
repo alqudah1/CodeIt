@@ -437,3 +437,61 @@
 .lm-card--locked .lm-card-title,
 .lm-card--locked .lm-card-desc,
 .lm-card--locked .lm-lesson-num { color: rgba(53, 34, 14, 0.85); }
+
+/* ── You are here ────────────────────────────────────────────────────────────
+   The owner's call: one path, not two. The journey map was a second, mostly
+   empty course running beside this one; its one good idea — seeing yourself
+   standing on the path — lives here now, on the page that holds all 31
+   lessons. Your avatar stands on the lesson you are up to. */
+
+.lm-card { position: relative; }
+
+.lm-you {
+  position: absolute;
+  left: -14px;
+  top: -34px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  filter: drop-shadow(2px 3px 0 rgba(53, 34, 14, 0.22));
+}
+/* The avatar carries its own square backdrop; a round frame turns it into a
+   game token instead of a floating box. */
+.lm-you__ring {
+  display: inline-flex;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 3px solid var(--ink, #35220E);
+  background: var(--arc-sun, #FED340);
+  overflow: hidden;
+}
+.lm-you__ring svg { display: block; width: 100%; height: 100%; }
+
+.lm-you__flag {
+  margin-top: -6px;
+  padding: 1px 9px;
+  background: var(--arc-sun, #FED340);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 999px;
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 800;
+  font-size: 0.85rem;   /* 13.6px — the readable-words check floor is 13 */
+  letter-spacing: 0.07em;
+  color: var(--ink, #35220E);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lm-you { animation: lmYouHop 2.4s ease-in-out infinite; }
+  @keyframes lmYouHop {
+    0%, 88%, 100% { transform: translateY(0); }
+    93%           { transform: translateY(-7px); }
+  }
+}
+
+@media (max-width: 640px) {
+  .lm-you { left: -8px; top: -28px; transform-origin: bottom center; }
+  .lm-you__ring { width: 42px; height: 42px; }
+}

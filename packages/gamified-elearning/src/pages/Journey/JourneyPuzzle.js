@@ -163,8 +163,8 @@ const JourneyPuzzle = () => {
         <Header />
         <div className="jp-notfound">
           <h2>Puzzle not found</h2>
-          <button className="jp-btn jp-btn--ghost" onClick={() => navigate('/journey')}>
-            Back to Journey
+          <button className="jp-btn jp-btn--ghost" onClick={() => navigate('/lessons')}>
+            Back to lessons
           </button>
         </div>
       </>
@@ -176,8 +176,8 @@ const JourneyPuzzle = () => {
       <Header />
       <div className="jp-page">
         <div className="jp-container">
-          <button className="jp-back" onClick={() => navigate('/journey')}>
-            &#8592; Back to Journey
+          <button className="jp-back" onClick={() => navigate('/lessons')}>
+            &#8592; Back to lessons
           </button>
 
           <div className="jp-header">

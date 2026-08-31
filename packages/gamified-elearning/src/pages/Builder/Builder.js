@@ -2980,11 +2980,7 @@ export default function Builder() {
             Tap one. It opens straight away, and then you can change anything in it.
           </p>
           {SHELVES.map((shelf, shelfIdx) => (
-            <div
-              className="bldr-shelf"
-              key={shelf.kind}
-              data-codeit-coach={coachStage.target === 'pick' && shelfIdx === 0 ? 'current' : undefined}
-            >
+            <div className="bldr-shelf" key={shelf.kind}>
               <div className="bldr-shelf__head">
                 {(() => { const Art = SHELF_STICKERS[shelf.kind]; return Art ? <Art size={40} /> : null; })()}
                 <div>
@@ -2999,6 +2995,10 @@ export default function Builder() {
                       type="button"
                       className="bldr-shelf__card"
                       onClick={() => openStarter(item)}
+                      data-codeit-coach={
+                        coachStage.target === 'pick' && shelfIdx === 0 && shelf.items.indexOf(item) === 0
+                          ? 'current' : undefined
+                      }
                     >
                       <span className={`bldr-shelf__marquee bldr-shelf__marquee--${shelf.items.indexOf(item) % 4}`} aria-hidden="true">
                         <span className="bldr-shelf__emoji">{item.emoji}</span>

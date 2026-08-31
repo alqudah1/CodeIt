@@ -573,3 +573,19 @@
   transform: translate(-50%, -58%);
   pointer-events: none;
 }
+
+/* Two keys side by side in the explore hero: play something at random, or go
+   make your own. The dice is the interactive one — kids press it repeatedly,
+   and every press is another project actually played. */
+.exp-hero__keys {
+  display: inline-flex;
+  gap: 0.7rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.exp-hero__cta--surprise {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+}
+.exp-hero__cta--surprise:hover { transform: translateY(-2px) rotate(-1.5deg); }
+.exp-hero__cta--surprise:active { transform: translateY(2px); box-shadow: none; }

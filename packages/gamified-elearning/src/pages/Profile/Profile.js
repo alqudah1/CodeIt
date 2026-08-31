@@ -25,6 +25,32 @@ const LEVEL_TITLES = [
   'Legend',
 ];
 
+// ── The medal case ──────────────────────────────────────────────────────────
+//
+// The five ideas the studio can actually ask a child to explain, mirroring
+// SKILL_FOR_QUESTION in the backend. Showing the un-won ones as empty slots is
+// what makes it a collection rather than a list — and it invents nothing: a
+// locked medal says "not yet", never that it was earned.
+const MEDALS = [
+  { id: 'loop-count',     icon: '\u{1F501}', name: 'Loop Reader',   match: /how many times a loop/i },
+  { id: 'increment',      icon: '\u{2795}',  name: 'Score Keeper',  match: /adds to the score/i },
+  { id: 'clicks',         icon: '\u{1F446}', name: 'Click Master',  match: /run when you click/i },
+  { id: 'starting-value', icon: '\u{1F4E6}', name: 'Value Finder',  match: /starting value/i },
+  { id: 'background',     icon: '\u{1F3A8}', name: 'Colour Tracer', match: /colour in the stylesheet/i },
+];
+
+/** Which medals this learner has actually won, and where. Records only. */
+function medalsFrom(records) {
+  const won = [];
+  for (const medal of MEDALS) {
+    for (const record of records || []) {
+      const hit = (record.skills || []).find(skill => medal.match.test(skill));
+      if (hit) { won.push({ ...medal, projectTitle: record.projectTitle }); break; }
+    }
+  }
+  return won;
+}
+
 function getLevelTitle(level) {
   return LEVEL_TITLES[Math.min(level, LEVEL_TITLES.length - 1)] || 'Master Creator';
 }
@@ -74,6 +100,7 @@ export default function Profile() {
   // Juice: XP counts up on arrival.
 
   const shownXP = useCountUp(totalXP);
+  const earnedMedals = medalsFrom(trophies);
   const level      = Math.floor(totalXP / XP_PER_LEVEL) + 1;
   const xpInLevel  = totalXP % XP_PER_LEVEL;
   const xpProgress = (xpInLevel / XP_PER_LEVEL) * 100;
@@ -465,22 +492,37 @@ export default function Profile() {
             Every plaque is a sentence the server wrote only after this kid
             answered questions about code in their own project. Kids collect;
             nothing here can be earned by just showing up. */}
-        {String(user.role).toLowerCase() === 'student' && trophies.length > 0 && (
-          <section className="profile-card profile-trophies" aria-labelledby="profile-trophies-title">
-            <p className="profile-trophies__eyebrow">Proved it</p>
-            <h2 id="profile-trophies-title" className="profile-trophies__title">Things you can explain</h2>
-            <ul className="profile-trophies__wall">
-              {trophies.slice(0, 8).map(record => (
-                <li className="profile-trophy" key={record.projectKey}>
-                  <span className="profile-trophy__project">🏅 {record.projectTitle}</span>
-                  {record.skills.map(skill => (
-                    <span className="profile-trophy__skill" key={skill}>✓ {skill}</span>
-                  ))}
-                </li>
-              ))}
+        {String(user.role).toLowerCase() === 'student' && (
+          <section className="profile-card profile-medals" aria-labelledby="profile-medals-title">
+            <p className="profile-medals__eyebrow">Your medal case</p>
+            <h2 id="profile-medals-title" className="profile-medals__title">
+              {earnedMedals.length} of {MEDALS.length} medals earned
+            </h2>
+            <p className="profile-medals__how">
+              A medal is only yours once you have explained that idea inside a project you made.
+            </p>
+            <ul className="profile-medals__case">
+              {MEDALS.map(medal => {
+                const won = earnedMedals.find(e => e.id === medal.id);
+                return (
+                  <li className={`medal${won ? ' medal--won' : ''}`} key={medal.id}>
+                    <span className="medal__disc" aria-hidden="true">
+                      <span className="medal__face">{won ? medal.icon : '?'}</span>
+                      <span className="medal__ribbon medal__ribbon--l" />
+                      <span className="medal__ribbon medal__ribbon--r" />
+                    </span>
+                    <span className="medal__name">{medal.name}</span>
+                    {won
+                      ? <span className="medal__where">in {won.projectTitle}</span>
+                      : <span className="medal__locked">Not yet</span>}
+                  </li>
+                );
+              })}
             </ul>
-            <p className="profile-trophies__hint">
-              Earn more by pressing <strong>Prove it</strong> after you play your own projects in the studio.
+            <p className="profile-medals__hint">
+              {earnedMedals.length === 0
+                ? 'Open a project in the studio and press Prove it to win your first one.'
+                : 'Win the rest by pressing Prove it after you play your own projects.'}
             </p>
           </section>
         )}

@@ -129,6 +129,18 @@ export function useCharacter() {
   return ctx;
 }
 
+// ── For pages that only DRAW the avatar ─────────────────────────────────────
+//
+// useCharacter throws without a provider, which is right for anything that
+// saves or levels up a character. But a page that merely shows a face — the
+// hero greeting, the you-are-here marker on the lesson map — must never be
+// taken down by a decoration. This returns the default character instead of
+// throwing, so those pages render everywhere, tests included.
+export function useCharacterDisplay() {
+  const ctx = useContext(CharacterContext);
+  return ctx || { character: DEFAULT_CHARACTER, characterLoaded: false };
+}
+
 export function getDefaultCharacter() {
   return DEFAULT_CHARACTER;
 }

@@ -303,7 +303,27 @@ export default function Explore() {
       <div className="exp-hero">
         <div className="exp-hero__inner">
           <h1 className="exp-hero__title">Explore projects other learners made</h1>
-          <Link to="/builder" className="exp-hero__cta">Make one</Link>
+          <div className="exp-hero__keys">
+            {/* Interactive, not just a shelf: this opens one of the projects
+                on screen at random. Kids press it repeatedly, which is the
+                point — every press is another project played. */}
+            <button
+              type="button"
+              className="exp-hero__cta exp-hero__cta--surprise"
+              onClick={() => {
+                const pool = [
+                  ...(data?.trending || []), ...(data?.newest || []),
+                  ...(data?.mostPlayed || []), ...(data?.mostRemixed || []),
+                ].filter(p => p.publicId);
+                if (!pool.length) return;
+                const pick = pool[Math.floor(Math.random() * pool.length)];
+                navigate(`/project/${pick.publicId}`);
+              }}
+            >
+              🎲 Surprise me
+            </button>
+            <Link to="/builder" className="exp-hero__cta">Make one</Link>
+          </div>
         </div>
       </div>
 
