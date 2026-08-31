@@ -881,6 +881,8 @@ export default function Builder() {
   const [historyLoading, setHistoryLoading]     = useState(false);
   const [restoringVersion, setRestoringVersion] = useState(false);
   const [savedProjectId, setSavedProjectId]     = useState(null);
+  // One paper burst on a kid's first-ever save (juice pass, once per browser).
+  const [paperBurst, setPaperBurst] = useState(false);
   const [activeVersionId, setActiveVersionId]   = useState(null);
 
   const promptRef  = useRef(null);
@@ -2141,6 +2143,18 @@ export default function Builder() {
         ? prev.map(project => project.id === projectRecord.id ? projectRecord : project)
         : [projectRecord, ...prev]);
       setSavedProjectId(projectRecord.id);
+      // The once-in-a-lifetime moment: a kid's FIRST project saved. One paper
+      // burst, once ever per browser, never again — celebration that repeats
+      // is wallpaper. (CSS side is reduced-motion-guarded.)
+      if (!isUpdating) {
+        try {
+          if (!localStorage.getItem('codeit_first_save_burst')) {
+            localStorage.setItem('codeit_first_save_burst', '1');
+            setPaperBurst(true);
+            setTimeout(() => setPaperBurst(false), 1800);
+          }
+        } catch (_) { /* storage blocked: skip the confetti, keep the save */ }
+      }
       // Keep a restorable snapshot alongside the latest project state.
       const versionRes = await fetch(`${API_BASE_URL}/api/builder/projects/${projectRecord.id}/versions`, {
         method: 'POST',
@@ -2813,6 +2827,11 @@ export default function Builder() {
     <>
       <Header />
       <div className={`bldr-page${hasResult ? ' bldr-studio-mode' : ''}`}>
+        {paperBurst && (
+          <div className="bldr-paper-burst" aria-hidden="true">
+            {Array.from({ length: 14 }, (_, i) => <span key={i} className={`bldr-paper-burst__bit bldr-paper-burst__bit--${i}`} />)}
+          </div>
+        )}
 
         {/* The bridge back for a parent arriving from the pricing page. */}
         {parentTrail && (

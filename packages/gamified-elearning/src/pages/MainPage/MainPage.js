@@ -12,6 +12,7 @@ import { getXpProgress, getNextUnlock, getNextUnlockLabel } from '../../data/unl
 import { isFirstWinState } from '../../utils/firstWin';
 import { TOTAL_LESSONS, lessonSummaries } from '../Lessons/lessonRegistry';
 import FirstWinPanel from './FirstWinPanel';
+import useCountUp from '../../hooks/useCountUp';
 import './MainPage.css';
 
 // Live content totals — derived from the lesson registry, never typed by
@@ -197,6 +198,8 @@ const MainPage = () => {
   );
 
   const levelInfo = useMemo(() => getXpProgress(xp), [xp]);
+  // Juice: the XP total counts up when the room opens (reduced-motion users get the real number instantly).
+  const shownXp = useCountUp(xp ?? 0);
   const showFirstWin = isFirstWinState({
     loading: progressLoading,
     completedLessons,
@@ -418,7 +421,7 @@ const MainPage = () => {
                 <div className="mp-level-card__identity">
                   <span className="mp-level-card__title">{levelInfo.title}</span>
                   <span className="mp-level-card__xp-total">
-                    {(xp ?? 0).toLocaleString()} XP total
+                    {shownXp.toLocaleString()} XP total
                   </span>
                 </div>
               </div>

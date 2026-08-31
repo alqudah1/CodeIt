@@ -5,6 +5,7 @@ import { useCharacter } from '../../context/CharacterContext';
 import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
 import Header from '../Header/Header';
 import { API_BASE_URL } from '../../config/api';
+import useCountUp from '../../hooks/useCountUp';
 import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
 import { trackEvent } from '../../utils/trackEvent';
@@ -69,6 +70,10 @@ export default function Profile() {
   });
 
   const totalXP    = stats?.totalXP ?? 0;
+
+  // Juice: XP counts up on arrival.
+
+  const shownXP = useCountUp(totalXP);
   const level      = Math.floor(totalXP / XP_PER_LEVEL) + 1;
   const xpInLevel  = totalXP % XP_PER_LEVEL;
   const xpProgress = (xpInLevel / XP_PER_LEVEL) * 100;
@@ -419,7 +424,7 @@ export default function Profile() {
               <span className="profile-level-lbl">Level</span>
             </div>
             <div className="profile-xp-meta">
-              <p className="profile-xp-total">{totalXP} XP total</p>
+              <p className="profile-xp-total">{shownXP} XP total</p>
               <p className="profile-xp-next">{XP_PER_LEVEL - xpInLevel} XP to Level {nextLevel}</p>
             </div>
           </div>
@@ -451,7 +456,7 @@ export default function Profile() {
             <span className="profile-stat__lbl">Best streak</span>
           </div>
           <div className="profile-stat">
-            <span className="profile-stat__num">{totalXP}</span>
+            <span className="profile-stat__num">{shownXP}</span>
             <span className="profile-stat__lbl">Total XP</span>
           </div>
         </div>

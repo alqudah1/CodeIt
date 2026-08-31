@@ -11,6 +11,7 @@ import { usePlayerProgress } from "../../hooks/usePlayerProgress";
 import { getXpProgress, getNextUnlock, getNextUnlockLabel } from "../../data/unlocks";
 import { effectiveGuideLevel } from "../../utils/guideLevel";
 import DeadEnd from "../../components/DeadEnd/DeadEnd";
+import useCountUp from "../../hooks/useCountUp";
 import "./Quiz.css";
 
 // Shuffle an array without mutating it
@@ -69,6 +70,9 @@ export default function Quiz() {
   const [done, setDone] = useState(false);
   const [results, setResults] = useState(null);
   const [submitErr, setSubmitErr] = useState("");
+  // Juice: the earned XP counts up on the results screen. Top-level because
+  // hooks cannot live inside the `if (done)` branch that renders it.
+  const shownQuizXp = useCountUp(done ? (results?.xpEarned ?? 0) : 0);
 
   // Journey-aware routing
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
@@ -366,7 +370,7 @@ export default function Quiz() {
             <span className="qz-score-total">{tot}</span>
           </div>
 
-          <div className="qz-xp-pill">+{xp} XP earned</div>
+          <div className="qz-xp-pill">+{shownQuizXp} XP earned</div>
 
           {(() => {
             const newXp = (preQuizXp || 0) + (xp || 0);

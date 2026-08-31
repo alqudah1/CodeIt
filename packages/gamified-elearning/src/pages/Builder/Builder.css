@@ -6650,3 +6650,45 @@ details.bldr-device-sizes .bldr-device-sizes__options {
   .bldr-shelf__card { width: 165px; }
   .bldr-shelf__marquee { height: 64px; }
 }
+
+/* ── The first-save paper burst (juice pass) ─────────────────────────────────
+   Fires exactly once per browser, on a kid's first-ever saved project. Paper
+   confetti in the arcade palette, falling like the site's own material.
+   Entirely inside the reduced-motion guard: anyone who asks for stillness
+   never sees it. */
+@media (prefers-reduced-motion: no-preference) {
+  .bldr-paper-burst {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3000;
+    overflow: hidden;
+  }
+  .bldr-paper-burst__bit {
+    position: absolute;
+    top: -24px;
+    width: 12px;
+    height: 18px;
+    border: 2px solid var(--ink, #35220E);
+    border-radius: 3px;
+    animation: bldrPaperFall 1.6s ease-in forwards;
+  }
+  @keyframes bldrPaperFall {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(105vh) rotate(540deg); opacity: 0.9; }
+  }
+  .bldr-paper-burst__bit--0  { left: 6%;  background: var(--arc-sun, #FED340);    animation-delay: 0s; }
+  .bldr-paper-burst__bit--1  { left: 13%; background: var(--arc-orange, #F87824); animation-delay: .08s; }
+  .bldr-paper-burst__bit--2  { left: 20%; background: var(--arc-mint, #27AE7E);   animation-delay: .02s; }
+  .bldr-paper-burst__bit--3  { left: 27%; background: var(--arc-violet, #7B5CD6); animation-delay: .12s; }
+  .bldr-paper-burst__bit--4  { left: 34%; background: var(--arc-sun, #FED340);    animation-delay: .05s; }
+  .bldr-paper-burst__bit--5  { left: 41%; background: var(--arc-orange, #F87824); animation-delay: .15s; }
+  .bldr-paper-burst__bit--6  { left: 48%; background: var(--arc-mint, #27AE7E);   animation-delay: .01s; }
+  .bldr-paper-burst__bit--7  { left: 55%; background: var(--arc-violet, #7B5CD6); animation-delay: .1s; }
+  .bldr-paper-burst__bit--8  { left: 62%; background: var(--arc-sun, #FED340);    animation-delay: .06s; }
+  .bldr-paper-burst__bit--9  { left: 69%; background: var(--arc-orange, #F87824); animation-delay: .13s; }
+  .bldr-paper-burst__bit--10 { left: 76%; background: var(--arc-mint, #27AE7E);   animation-delay: .03s; }
+  .bldr-paper-burst__bit--11 { left: 83%; background: var(--arc-violet, #7B5CD6); animation-delay: .09s; }
+  .bldr-paper-burst__bit--12 { left: 90%; background: var(--arc-sun, #FED340);    animation-delay: .04s; }
+  .bldr-paper-burst__bit--13 { left: 96%; background: var(--arc-orange, #F87824); animation-delay: .11s; }
+}
