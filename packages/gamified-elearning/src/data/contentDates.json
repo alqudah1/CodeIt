@@ -1,298 +1,298 @@
 {
   "/": {
-    "hash": "608f6c311597a2f7",
+    "hash": "e4ba8c2cc44665bc",
     "date": "2026-08-30"
   },
   "/about": {
-    "hash": "042b8eeac82d76ec",
+    "hash": "cb8d6b1a2b1258e7",
     "date": "2026-08-31"
   },
   "/ai-website-builder-for-kids": {
-    "hash": "9733c143e5845211",
+    "hash": "b1a3bc1384c37aed",
     "date": "2026-08-29"
   },
   "/blog": {
-    "hash": "9d51f3fa984d4a41",
+    "hash": "74fcca1456d4a10d",
     "date": "2026-08-29"
   },
   "/blog/best-coding-games-for-kids": {
-    "hash": "5039e4ac8b9c557a",
-    "date": "2026-08-30"
+    "hash": "20219e1eb4e00a71",
+    "date": "2026-03-27"
   },
   "/blog/coding-for-kids-beginner-guide": {
-    "hash": "074819d9a4fc7370",
-    "date": "2026-08-30"
+    "hash": "6d7bb2697723be43",
+    "date": "2026-03-27"
   },
   "/blog/how-to-start-coding-for-beginners": {
-    "hash": "384160dc1537962a",
-    "date": "2026-08-30"
+    "hash": "3e7f93c2e0aedcf2",
+    "date": "2026-03-11"
   },
   "/blog/is-python-good-for-kids": {
-    "hash": "20f3427c091390a4",
-    "date": "2026-08-30"
+    "hash": "49c141acac5ae725",
+    "date": "2026-03-27"
   },
   "/blog/learn-python-for-kids": {
-    "hash": "cb78d8e452147323",
-    "date": "2026-08-30"
+    "hash": "677ab13515ebf6b0",
+    "date": "2026-03-11"
   },
   "/blog/python-basics-for-beginners": {
-    "hash": "74b16190e41ea31c",
-    "date": "2026-08-30"
+    "hash": "bba5d932892dbf4f",
+    "date": "2026-03-27"
   },
   "/blog/python-coding-games": {
-    "hash": "4f0d5447a62909fc",
-    "date": "2026-08-30"
+    "hash": "572abf89455eca08",
+    "date": "2026-03-11"
   },
   "/builder": {
-    "hash": "878442ddf94f1a5f",
+    "hash": "eba19b8be45f57de",
     "date": "2026-08-29"
   },
   "/coding-for-kids": {
-    "hash": "dbc59c24a399ad41",
+    "hash": "19a45831bcb5ce25",
     "date": "2026-08-30"
   },
   "/explore": {
-    "hash": "401819193188e2bc",
+    "hash": "ec538fbc2214f017",
     "date": "2026-08-29"
   },
   "/faq": {
-    "hash": "88decb2f0cdba49b",
+    "hash": "992ed079acc191cb",
     "date": "2026-08-29"
   },
   "/first-game-challenge": {
-    "hash": "32fa1c020ddd742b",
+    "hash": "ba86422155956c15",
     "date": "2026-08-29"
   },
   "/games": {
-    "hash": "e19166da4a83fec1",
+    "hash": "8e46bc8a5b310c1c",
     "date": "2026-08-29"
   },
   "/guide": {
-    "hash": "cefc48a38dc78de2",
+    "hash": "77d7f5951d02fde1",
     "date": "2026-08-31"
   },
   "/guide/after-scratch": {
-    "hash": "f14b3a1556c4cb63",
+    "hash": "4fe0d2c0ecd5d340",
     "date": "2026-08-31"
   },
   "/guide/ai-builder-you-can-edit": {
-    "hash": "ec396615f5077a0d",
-    "date": "2026-08-30"
+    "hash": "6e08c18625831b0d",
+    "date": "2026-08-23"
   },
   "/guide/ai-built-it-now-edit-it": {
-    "hash": "2e5c4405d0328138",
-    "date": "2026-08-30"
+    "hash": "e72a298e3144321a",
+    "date": "2026-08-21"
   },
   "/guide/best-coding-platforms-for-kids": {
-    "hash": "66dfda80053ec659",
+    "hash": "a003509b22eef609",
     "date": "2026-08-31"
   },
   "/guide/code-org-is-now-codeai": {
-    "hash": "e5733639f60c45a2",
+    "hash": "5d5f5821ace96d93",
     "date": "2026-08-31"
   },
   "/guide/coding-for-kids-by-age": {
-    "hash": "a4fe49998ad4c41a",
+    "hash": "c841d32153925fd2",
     "date": "2026-08-31"
   },
   "/guide/common-sense-education-paused-edtech-reviews": {
-    "hash": "93b6c3d7876601e7",
+    "hash": "3a36cf6b14aee503",
     "date": "2026-08-31"
   },
   "/guide/first-browser-game": {
-    "hash": "92009dc4c4e32573",
-    "date": "2026-08-30"
+    "hash": "8f2864e56ccef799",
+    "date": "2026-08-23"
   },
   "/guide/free-coding-for-kids": {
-    "hash": "77ce0fae78c352f2",
+    "hash": "67451489642ec948",
     "date": "2026-08-31"
   },
   "/guide/glitch-for-classrooms": {
-    "hash": "c9a7de64437ec1e1",
-    "date": "2026-08-30"
+    "hash": "a7d7a40c5bb0b46a",
+    "date": "2026-08-25"
   },
   "/guide/glitch-shutdown": {
-    "hash": "4c023335cc8eed25",
-    "date": "2026-08-30"
+    "hash": "3f0614d44c8a774e",
+    "date": "2026-08-23"
   },
   "/guide/publish-first-project": {
-    "hash": "2ec5799331441c37",
-    "date": "2026-08-30"
+    "hash": "99a62f4912b56701",
+    "date": "2026-08-23"
   },
   "/guide/replit-teams-for-education-shut-down": {
-    "hash": "b31d280c8beadee8",
+    "hash": "63a9315ee71930ef",
     "date": "2026-08-31"
   },
   "/guide/tynker-alternative": {
-    "hash": "deed8dbeeefa38e4",
+    "hash": "69ce7363b2d271b0",
     "date": "2026-08-31"
   },
   "/guide/what-did-my-kid-learn": {
-    "hash": "806fee3f6223b2d4",
-    "date": "2026-08-30"
+    "hash": "9062bc9a9b830bf3",
+    "date": "2026-08-25"
   },
   "/guide/what-happened-to-juni-learning": {
-    "hash": "0a389141f1415694",
+    "hash": "ece917fb1f077aa4",
     "date": "2026-08-31"
   },
   "/journey": {
-    "hash": "6dbf6e79e39a6b4c",
+    "hash": "c0433644468bfce2",
     "date": "2026-08-30"
   },
   "/learn-python-for-kids": {
-    "hash": "7375033ed14f432e",
+    "hash": "bec06d6124cc8979",
     "date": "2026-08-30"
   },
   "/lesson/1": {
-    "hash": "bb9fdc04b266be9b",
-    "date": "2026-08-31"
+    "hash": "a3ccec4e3c80dd6a",
+    "date": "2026-08-30"
   },
   "/lesson/10": {
-    "hash": "7055e7e6e6f19281",
-    "date": "2026-08-31"
+    "hash": "a571585ed903887b",
+    "date": "2026-08-30"
   },
   "/lesson/11": {
-    "hash": "7243186ba4c4eeb8",
-    "date": "2026-08-31"
+    "hash": "64e65481a6028930",
+    "date": "2026-08-30"
   },
   "/lesson/12": {
-    "hash": "e50658dd98ac601f",
-    "date": "2026-08-31"
+    "hash": "ead7ce42838570b5",
+    "date": "2026-08-30"
   },
   "/lesson/13": {
-    "hash": "be873c0e353e2df7",
-    "date": "2026-08-31"
+    "hash": "414e8737d4e1f4f3",
+    "date": "2026-08-30"
   },
   "/lesson/14": {
-    "hash": "7e021931bc5fd1e7",
-    "date": "2026-08-31"
+    "hash": "1c960f31ce06f57b",
+    "date": "2026-08-30"
   },
   "/lesson/15": {
-    "hash": "1366b0736d9a384b",
-    "date": "2026-08-31"
+    "hash": "16fe8b068f26498c",
+    "date": "2026-08-30"
   },
   "/lesson/16": {
-    "hash": "02c9fbf77337e5f5",
-    "date": "2026-08-31"
+    "hash": "30e0bdea18099c5a",
+    "date": "2026-08-30"
   },
   "/lesson/17": {
-    "hash": "4b68343e9e87aeac",
-    "date": "2026-08-31"
+    "hash": "636e1fc7de52143d",
+    "date": "2026-08-30"
   },
   "/lesson/18": {
-    "hash": "44fb683cee333a57",
-    "date": "2026-08-31"
+    "hash": "d430bc4024e19099",
+    "date": "2026-08-30"
   },
   "/lesson/19": {
-    "hash": "1603a29554fe0218",
-    "date": "2026-08-31"
+    "hash": "2aa841a8287d0ede",
+    "date": "2026-08-30"
   },
   "/lesson/2": {
-    "hash": "4a562bc212302b32",
-    "date": "2026-08-31"
+    "hash": "78b27b6429059916",
+    "date": "2026-08-30"
   },
   "/lesson/20": {
-    "hash": "fd7cc4b0798ee512",
-    "date": "2026-08-31"
+    "hash": "5a0251643af3f1be",
+    "date": "2026-08-30"
   },
   "/lesson/21": {
-    "hash": "79d9bd29c59e2229",
-    "date": "2026-08-31"
+    "hash": "9f90680258d4f0b6",
+    "date": "2026-08-30"
   },
   "/lesson/22": {
-    "hash": "a35c84e583a92958",
-    "date": "2026-08-31"
+    "hash": "0fa98ef3f50303a1",
+    "date": "2026-08-30"
   },
   "/lesson/23": {
-    "hash": "c3f78af161f8066c",
-    "date": "2026-08-31"
+    "hash": "c89269220d026136",
+    "date": "2026-08-30"
   },
   "/lesson/24": {
-    "hash": "3e7910a1f0be4385",
-    "date": "2026-08-31"
+    "hash": "7926e3594cc27891",
+    "date": "2026-08-30"
   },
   "/lesson/25": {
-    "hash": "15eb773229a3986c",
-    "date": "2026-08-31"
+    "hash": "9502d81a91ae6d1f",
+    "date": "2026-08-30"
   },
   "/lesson/26": {
-    "hash": "f4df973f57f4ae1a",
-    "date": "2026-08-31"
+    "hash": "99a6abe6ad9fa825",
+    "date": "2026-08-30"
   },
   "/lesson/27": {
-    "hash": "14adc3890115d234",
-    "date": "2026-08-31"
+    "hash": "667b656880bf84bc",
+    "date": "2026-08-30"
   },
   "/lesson/28": {
-    "hash": "beaf1a9a979f4b41",
-    "date": "2026-08-31"
+    "hash": "8c472824b9edbbd2",
+    "date": "2026-08-30"
   },
   "/lesson/29": {
-    "hash": "109ae67bfcd0cdb8",
-    "date": "2026-08-31"
+    "hash": "0c6a7708fcdb6fde",
+    "date": "2026-08-30"
   },
   "/lesson/3": {
-    "hash": "730bbb9cd5a76722",
-    "date": "2026-08-31"
+    "hash": "432fcd3f8d88e754",
+    "date": "2026-08-30"
   },
   "/lesson/30": {
-    "hash": "00a6a0523871f619",
-    "date": "2026-08-31"
+    "hash": "7e1abfd67b2d4bd0",
+    "date": "2026-08-30"
   },
   "/lesson/31": {
-    "hash": "b269a263c4b71c9a",
-    "date": "2026-08-31"
+    "hash": "d5fd6e3ddaf03e95",
+    "date": "2026-08-30"
   },
   "/lesson/4": {
-    "hash": "1fe98d70893a1b56",
-    "date": "2026-08-31"
+    "hash": "a586e4c1cdbdc4cd",
+    "date": "2026-08-30"
   },
   "/lesson/5": {
-    "hash": "c4efe72a439dd93f",
-    "date": "2026-08-31"
+    "hash": "acf7176da746d0e8",
+    "date": "2026-08-30"
   },
   "/lesson/6": {
-    "hash": "3d18cdc3f8044243",
-    "date": "2026-08-31"
+    "hash": "7ab471f54e590308",
+    "date": "2026-08-30"
   },
   "/lesson/7": {
-    "hash": "16349b4dd7c24a6e",
-    "date": "2026-08-31"
+    "hash": "e6bb1a5de7f30d37",
+    "date": "2026-08-30"
   },
   "/lesson/8": {
-    "hash": "a6e8caddf60c4049",
-    "date": "2026-08-31"
+    "hash": "84b03c878455aa48",
+    "date": "2026-08-30"
   },
   "/lesson/9": {
-    "hash": "7043d89b58f07b66",
-    "date": "2026-08-31"
+    "hash": "97263ebbe100eac3",
+    "date": "2026-08-30"
   },
   "/lessons": {
-    "hash": "f9d81e6ce10a6082",
+    "hash": "793841c59fcca12f",
     "date": "2026-08-30"
   },
   "/playground": {
-    "hash": "5379e20017dbd34e",
+    "hash": "7f02e77c3ca37038",
     "date": "2026-08-29"
   },
   "/press": {
-    "hash": "96529a91877b2447",
-    "date": "2026-08-31"
+    "hash": "6dbace44ce524437",
+    "date": "2026-08-30"
   },
   "/pricing": {
-    "hash": "63ffc50641df6a97",
+    "hash": "d21661e119cbdebe",
     "date": "2026-08-30"
   },
   "/privacy": {
-    "hash": "43a31ab38cced63d",
+    "hash": "25dfc87a3191d891",
     "date": "2026-08-29"
   },
   "/python-games-for-kids": {
-    "hash": "25174fc5482ab752",
+    "hash": "bd8b5a2a27314ea7",
     "date": "2026-08-29"
   },
   "/terms": {
-    "hash": "2e98ce3d2d7ba448",
+    "hash": "a155f693fbeb765e",
     "date": "2026-08-29"
   }
 }

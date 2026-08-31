@@ -60,23 +60,39 @@ test('the date is computed, not assigned from the pinned constant', () => {
   );
 });
 
-test('a page that carries its own date uses it, not the build date', () => {
+test('a page that carries its own date never announces older than it', () => {
   // Every URL used to share one lastmod, which tells a crawler that all 69
   // pages changed at once — no information at all. Guides carry lastVerified
   // and blog posts carry their own date, both set by whoever checked the facts,
   // and those are better evidence than the build clock.
+  //
+  // This asserted equality until 31 August 2026, which had the effect of
+  // freezing a guide's lastmod at the date its facts were checked however much
+  // the page changed afterwards. Eight guides gained a whole
+  // question-and-answer section that day and went on announcing 21 August.
+  // lastmod does not mean "facts checked on"; it means this URL changed. So
+  // the rule is now the later of the two, and the direction is what matters:
+  // an authored date must never make a page look staler than its content is.
   const dated = [HOME_PAGE, ...PAGES].filter((page) =>
     /^\d{4}-\d{2}-\d{2}$/.test(page.datePublished || '')
   );
   assert.ok(dated.length > 0, 'no page carries its own date; this test examined nothing');
 
   for (const page of dated) {
-    assert.equal(
-      pageLastModified(page),
-      page.datePublished,
-      `${page.route} has its own date but the sitemap would announce the build date`
+    assert.ok(
+      pageLastModified(page) >= page.datePublished,
+      `${page.route} announces ${pageLastModified(page)}, older than its own ${page.datePublished}`
     );
   }
+
+  // And a page whose content is newer than its authored date must say so, or
+  // the freshest work on the site is the work a crawler is told to ignore.
+  const moved = dated.filter((page) => pageLastModified(page) > page.datePublished);
+  assert.ok(
+    moved.length > 0,
+    'no page reports content newer than its authored date; if that is really true, ' +
+      'this test is no longer examining the case it was written for'
+  );
 
   const distinct = new Set([HOME_PAGE, ...PAGES].map(pageLastModified));
   assert.ok(

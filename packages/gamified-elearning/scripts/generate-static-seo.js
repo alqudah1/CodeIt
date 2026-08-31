@@ -138,6 +138,17 @@ function unaccountedPrices(page, text) {
 // deploy, which is the same no-information sitemap in the other direction.
 function contentFingerprint(page) {
   const body = staticContent(page)
+    // The shared "Continue on CodeIt" nav is on every page and is not this
+    // page's content. Hashing it meant adding one link to that list marked all
+    // 74 URLs as modified on the same day, which is the no-information sitemap
+    // this function exists to prevent, arriving by the other door. A March blog
+    // post does not become fresh because a new guide was written.
+    .replace(/<nav aria-label="Continue on CodeIt">[\s\S]*?<\/nav>/g, ' ')
+    // And the date line has to come out, because it now reports the date this
+    // fingerprint produced. Leaving it in makes the hash depend on its own
+    // output: a page would change once for its content and once more on the
+    // next build for the date the first change gave it.
+    .replace(/<p>(?:<time[\s\S]*?<\/time>[,\s]*)+<\/p>/g, ' ')
     .replace(/<[^>]+>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -1303,6 +1314,27 @@ function guideLinksFor(route) {
     .join('\n        ');
 }
 
+/**
+ * The visible date line. See the comment at its call site for why "Published"
+ * was the wrong word on two thirds of the pages that used it.
+ */
+function dateLineFor(page) {
+  const authored = page && page.datePublished;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(authored || '')) return '';
+
+  const changed = pageLastModified(page);
+  const parts = [];
+
+  if (page.type === 'BlogPosting') {
+    parts.push(`<time datetime="${escapeHtml(authored)}">Published ${escapeHtml(authored)}</time>`);
+  }
+  if (changed > authored) {
+    parts.push(`<time datetime="${escapeHtml(changed)}">Updated ${escapeHtml(changed)}</time>`);
+  }
+
+  return parts.length ? `<p>${parts.join(', ')}</p>` : '';
+}
+
 function staticContent(page) {
   // Every page a person can reach should be reachable from every other page.
   // This list used to hold four routes, which left eleven indexable pages with
@@ -1334,9 +1366,21 @@ function staticContent(page) {
     .map(([route, label]) => `<a href="${route}">${label}</a>`)
     .join('\n        ');
 
-  const dateLine = page.datePublished
-    ? `<p><time datetime="${escapeHtml(page.datePublished)}">Published ${escapeHtml(page.datePublished)}</time></p>`
-    : '';
+  // The visible date, and what it is honestly called.
+  //
+  // This said "Published <date>" for every page carrying a date. On a guide
+  // that date is lastVerified, which is not a publication date, so every guide
+  // displayed "Published 2026-08-21" for a day on which nothing was published,
+  // directly above its own "Last verified 2026-08-21" line and its body's
+  // "Last verified: 21 August 2026". Three statements of one date, and the
+  // most prominent one was the one calling it the wrong thing.
+  //
+  // A blog post's date really is a publication date, so that one keeps the
+  // word. Guides say nothing here, because the page says "last verified"
+  // twice already. Both gain an updated date when the content is newer than
+  // the authored one, which is the only thing on this line a reader could not
+  // already find.
+  const dateLine = dateLineFor(page);
 
   return `<main class="static-home-shell static-route-shell" data-static-route="${escapeHtml(page.route)}">
     <div class="static-home-shell__inner">
@@ -1400,7 +1444,13 @@ function pageSchema(page) {
     primary.mainEntityOfPage = { '@type': 'WebPage', '@id': url };
     if (page.datePublished) {
       primary.datePublished = page.datePublished;
-      primary.dateModified = page.datePublished;
+      // Not the same date. dateModified said "published", so every guide's
+      // structured data claimed it had never been touched since its facts were
+      // checked, on the same day eight of them gained a whole
+      // question-and-answer section. Same mistake as the sitemap's lastmod,
+      // one file away, and it is the field Google actually reads for article
+      // freshness.
+      primary.dateModified = pageLastModified(page);
     }
     if (bodyText) primary.articleBody = bodyText;
     if (bodyText) primary.wordCount = bodyText.split(/\s+/).length;
@@ -1559,14 +1609,25 @@ function renderRouteDocument(template, page) {
  * the build clock. Everything else falls back to the commit date.
  */
 function pageLastModified(page) {
-  const own = page && page.datePublished;
-  if (/^\d{4}-\d{2}-\d{2}$/.test(own || '')) return own;
-
-  // A real page's date comes from its own content. Anything not in the page
-  // list — a bare object in a test, a route added without content — falls back
-  // to the commit date, which is what it always did.
   const known = contentDateByRoute().get((page && page.route) || '/');
-  return known ? known.date : LAST_MODIFIED;
+  const changed = known ? known.date : LAST_MODIFIED;
+
+  const own = page && page.datePublished;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(own || '')) return changed;
+
+  // The later of the two, and the reason is worth writing down.
+  //
+  // This returned lastVerified alone, so a guide's lastmod was frozen at the
+  // date its facts were checked no matter what happened to the page after. On
+  // 31 August 2026 eight guides gained a whole question-and-answer section,
+  // and several had a competitor's price rewritten, and every one of them went
+  // on announcing 21, 26 or 29 August. Sitemap lastmod does not mean "facts
+  // checked on". It means this URL changed, and they had.
+  //
+  // lastVerified still wins when it is the later date, which is the case that
+  // made it worth having: somebody re-reads a source, confirms nothing moved,
+  // and the page is genuinely fresher than its bytes suggest.
+  return own > changed ? own : changed;
 }
 
 /**
