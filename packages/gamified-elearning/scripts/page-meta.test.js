@@ -97,3 +97,36 @@ test('the rendered page shows what pageMeta says', () => {
     assert.equal(rendered, META[route].description, `${route} rendered a description pageMeta does not hold`);
   }
 });
+
+test('an indexable page does not spend its title on the brand name alone', () => {
+  // Found live on 30 August 2026: /about was titled 'About CodeIt'. Twelve
+  // characters, one word that is not the brand, on the page an assistant reads
+  // when it is asked who makes this thing and where it is from. Nothing caught
+  // it, because nothing looked at title quality at all — only at whether the
+  // two copies of the title agreed with each other, and they agreed perfectly
+  // on saying nothing.
+  //
+  // Signed-in app pages are exempt: they carry noindex, so a short title is
+  // correct there. The sitemap is what decides, because it is the same list
+  // that decides what Google is asked to look at.
+  const sitemapRoutes = new Set(
+    [HOME_PAGE, ...PAGES]
+      .filter((page) => page.noindex !== true)
+      .map((page) => page.route || '/')
+  );
+
+  const offenders = [];
+  for (const [route, entry] of Object.entries(META)) {
+    if (!sitemapRoutes.has(route)) continue;
+    const withoutBrand = entry.title
+      .replace(/codeit ?(learn)?/gi, ' ')
+      .replace(/[^A-Za-z0-9]+/g, ' ')
+      .trim();
+    const words = withoutBrand ? withoutBrand.split(/\s+/) : [];
+    if (words.length < 2) offenders.push(`${route}: ${JSON.stringify(entry.title)}`);
+  }
+
+  assert.deepEqual(offenders, [],
+    'these titles say nothing a search for the brand would not already find:\n  ' +
+      offenders.join('\n  '));
+});

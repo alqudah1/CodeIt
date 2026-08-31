@@ -161,7 +161,21 @@ function loadPageMeta() {
   return meta;
 }
 
+/**
+ * Every price this site states about a competitor, with the source it came
+ * from and the date it was read. See src/data/competitorPrices.js for why one
+ * file rather than each guide holding its own copy.
+ */
+function loadCompetitorPrices() {
+  const ledger = loadEsmDefault(path.join(SRC, 'data/competitorPrices.js'));
+  if (!ledger || typeof ledger !== 'object' || !Object.keys(ledger).length) {
+    throw new Error('content-loader: competitorPrices.js did not export a non-empty object');
+  }
+  return ledger;
+}
+
 module.exports = {
+  loadCompetitorPrices,
   loadStarterGames,
   loadPressFacts,
   loadPageMeta,

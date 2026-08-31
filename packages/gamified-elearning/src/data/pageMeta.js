@@ -30,7 +30,11 @@ const PAGE_META = {
     description: 'Track your Python lessons, quizzes, and coding challenges. See your XP, streak, achievements, and next mission on your CodeIt progress page.',
   },
   '/about': {
-    title: 'About CodeIt',
+    // Was 'About CodeIt' until 30 August 2026, which spent the most valuable
+    // sixty characters on a page an assistant reads when it is asked who makes
+    // this and where, and said nothing but the brand name. page-meta.test.js
+    // now refuses a title that is the brand plus one word.
+    title: 'About CodeIt: A Toronto Coding Studio for Ages 5\u201318',
     description: 'CodeIt is a browser-based coding studio for ages 5–18, built in Toronto. Learners describe a website, game or quiz, change it by moving things and picking colours, then see the code behind it.',
   },
   '/ai-website-builder-for-kids': {

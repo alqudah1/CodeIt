@@ -125,3 +125,30 @@ test('a contextual guide link names a guide that exists', () => {
     assert.ok(slugs.has(slug), `GUIDES_BY_ROUTE points at /guide/${slug}, which does not exist`);
   }
 });
+
+test('every lesson page links to guides, and to guides that exist', () => {
+  // The count that made this necessary, from 30 August 2026: thirty-one lesson
+  // pages, zero guide links between them. Lessons are 31 of the 74 indexable
+  // URLs and were four of the six pages Google had actually indexed, so the
+  // crawler's live frontier on this site had no route to a guide at all.
+  //
+  // 'no indexable page is orphaned' above could not see this. It counts links
+  // arriving at a page, and the guides each had one from /guide, so they
+  // passed. Nothing counted links leaving the pages that were already ranking.
+  const slugs = new Set(loadGuidePages().map((guide) => guide.slug));
+  const lessons = PAGES.filter((page) => /^\/lesson\/\d+$/.test(page.route || ''));
+
+  assert.ok(lessons.length >= 31, `expected the lesson pages, found ${lessons.length}`);
+
+  const empty = [];
+  const unknown = [];
+  for (const page of lessons) {
+    const html = renderRouteDocument(TEMPLATE, page);
+    const linked = [...html.matchAll(/href="\/guide\/([a-z0-9-]+)"/g)].map((m) => m[1]);
+    if (!linked.length) empty.push(page.route);
+    for (const slug of linked) if (!slugs.has(slug)) unknown.push(`${page.route} -> ${slug}`);
+  }
+
+  assert.deepEqual(empty, [], `these lesson pages link to no guide: ${empty.join(', ')}`);
+  assert.deepEqual(unknown, [], `these lesson pages link to a guide that does not exist: ${unknown.join(', ')}`);
+});

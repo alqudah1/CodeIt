@@ -40,12 +40,26 @@ const escapeHtml = (s) => String(s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
+// Which card unfurls for this project.
+//
+// This used to compare project_type against a list of exact strings, which was
+// wrong for a reason worth writing down: nothing guarantees project_type is one
+// bare word from a fixed list. designEngine.js emits single words, but the
+// column is free text and the live database held 'interactive-website', so a
+// child's one-page website was going out to WhatsApp wearing the game card.
+//
+// So: read the words, do not match the whole. Anything unrecognised still gets
+// the game card, because most projects are games and a wrong-but-present card
+// beats no card at all.
+const SITE_WORDS = /\b(website|site|webpage|page|portfolio|restaurant|shop|store|sports|blog|landing|homepage|resume|business)\b/;
+const QUIZ_WORDS = /\b(quiz|quizzes|trivia)\b/;
+
 function shareImageFor(projectType) {
-  const t = String(projectType || '').toLowerCase();
-  if (t === 'quiz') return '/brand/share-quiz.png';
-  if (['website', 'portfolio', 'restaurant', 'shop', 'sports', 'blog', 'landing'].includes(t)) {
-    return '/brand/share-site.png';
-  }
+  // Split on anything that is not a letter so 'interactive-website',
+  // 'personal_portfolio_site' and 'one page website' all read the same.
+  const t = String(projectType || '').toLowerCase().replace(/[^a-z]+/g, ' ').trim();
+  if (QUIZ_WORDS.test(t)) return '/brand/share-quiz.png';
+  if (SITE_WORDS.test(t)) return '/brand/share-site.png';
   return '/brand/share-game.png';
 }
 

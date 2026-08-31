@@ -19,7 +19,8 @@
 const test = require('node:test');
 const assert = require('node:assert');
 
-const { PAGES, plainText } = require('./generate-static-seo.js');
+const { PAGES, plainText, guideFaqs } = require('./generate-static-seo.js');
+const { loadGuidePages } = require('./content-loader');
 
 const GUIDES = PAGES.filter((page) => page.route.startsWith('/guide/'));
 
@@ -129,4 +130,63 @@ test('the schema graph actually carries the pairs', () => {
     assert.equal(entry.acceptedAnswer['@type'], 'Answer');
     assert.ok(entry.acceptedAnswer.text.length >= 20);
   }
+});
+
+test('a question wrapped in quotation marks is still a question', () => {
+  // Found on 30 August 2026. Three guides had written twelve question-and-answer
+  // pairs between them, under a heading the parser recognised, in the bold
+  // format it expects, and produced no FAQPage schema at all. The reason was a
+  // quotation mark: the questions are written as **"Is it still free?"** and the
+  // pattern required the '?' to sit immediately before the closing '**'.
+  //
+  // A fourth guide lost its whole section to a heading that said "question"
+  // rather than "questions".
+  //
+  // Nothing caught either one, because every test here asked whether the pairs
+  // that were found were well-formed. None asked whether pairs that exist in
+  // the markdown were found at all.
+  const cases = [
+    ['**"Is it still free?"** Yes, it remains free for K-12 use.', 'Is it still free?'],
+    ["**'Can I still trust the frozen reviews?'** Partly, and only for what ages slowly.", 'Can I still trust the frozen reviews?'],
+    ['**“Is Acely worth anything to us?”** Only if you have a high-schooler sitting standardised tests.', 'Is Acely worth anything to us?'],
+    ['**Is it still free?** Yes, and it remains free for K-12 use.', 'Is it still free?'],
+  ];
+
+  for (const [line, expected] of cases) {
+    const faqs = guideFaqs(`## Common questions\n\n${line}\n`);
+    assert.equal(faqs.length, 1, `no question was found in: ${line}`);
+    assert.equal(faqs[0].q, expected, `the quotation marks were kept in: ${line}`);
+  }
+});
+
+test('a section headed "question" is read like one headed "questions"', () => {
+  const faqs = guideFaqs(
+    '## The follow-up question parents actually ask\n\n**Is it still free?** Yes, it remains free for K-12 use.\n'
+  );
+  assert.equal(faqs.length, 1, 'a singular heading lost the whole section');
+});
+
+test('every guide that wrote a question section produces schema from it', () => {
+  // The count, not the shape. If a guide has a heading with "question" in it and
+  // bold lines ending in a question mark underneath, every one of those lines
+  // must come out as a pair. This is the test that would have caught the bug.
+  const BOLD_LINE = /^\*\*.*\*\*/;
+  const shortfalls = [];
+
+  for (const guide of loadGuidePages()) {
+    const lines = guide.markdown.split('\n');
+    let inSection = false;
+    let written = 0;
+    for (const raw of lines) {
+      const line = raw.trim();
+      if (/^## /.test(line)) { inSection = /questions?\b/i.test(line.slice(3)); continue; }
+      if (!inSection || !BOLD_LINE.test(line)) continue;
+      // Only count lines that are actually phrased as questions.
+      if (/\?["'”]?\s*\*\*/.test(line)) written += 1;
+    }
+    const parsed = guideFaqs(guide.markdown).length;
+    if (parsed < written) shortfalls.push(`${guide.slug}: wrote ${written}, schema got ${parsed}`);
+  }
+
+  assert.deepEqual(shortfalls, [], `question pairs written but never published as schema:\n  ${shortfalls.join('\n  ')}`);
 });

@@ -102,18 +102,64 @@ test('a project title cannot inject markup into the card', () => {
   assert.ok(!out.includes('<b>x</b>'), 'a creator name escaped its attribute');
 });
 
+// The vocabulary below is not invented here. Every entry on the left is a
+// project_type this system has actually produced: the first block is every
+// `type:` designEngine.js returns, paired with the `category:` it returns
+// alongside it, and the second block is what the live /api/explore was
+// serving on 30 August 2026. The old version of this test asserted three
+// types, all three of which the code already handled, so it could never have
+// caught the bug it was supposed to guard: a one-page website was unfurling
+// with the game card because the classifier matched types exactly and the
+// string in the database was 'interactive-website'.
+const SITE = '/brand/share-site.png';
+const GAME = '/brand/share-game.png';
+const QUIZ = '/brand/share-quiz.png';
+
+const VOCABULARY = [
+  // designEngine.js: category 'website'
+  ['portfolio', SITE], ['restaurant', SITE], ['sports', SITE],
+  ['shop', SITE], ['blog', SITE], ['landing', SITE], ['website', SITE],
+  // designEngine.js: category 'game'
+  ['basketball', GAME], ['clicker', GAME], ['cooking', GAME], ['dodge', GAME],
+  ['maze', GAME], ['memory', GAME], ['platformer', GAME], ['puzzle', GAME],
+  ['racing', GAME], ['reaction', GAME], ['runner', GAME], ['soccer', GAME],
+  ['survival', GAME], ['tower', GAME], ['typing', GAME], ['game', GAME],
+  // designEngine.js: category 'tool'. A tool is not a game, but there is no
+  // tool card, and the game card is the closer of the two we have.
+  ['calculator', GAME], ['drawing', GAME], ['flashcards', GAME],
+  ['simulator', GAME], ['timer', GAME],
+  // quiz has its own card, which is why the shim classifies it before
+  // designEngine's 'game' category would swallow it
+  ['quiz', QUIZ],
+  // seen live on /api/explore, 30 August 2026
+  ['interactive-website', SITE],
+];
+
 test('the image matches the kind of thing the child made', () => {
-  assert.equal(shareImageFor('quiz'), '/brand/share-quiz.png');
-  assert.equal(shareImageFor('portfolio'), '/brand/share-site.png');
-  assert.equal(shareImageFor('dodge'), '/brand/share-game.png');
-  assert.equal(shareImageFor(undefined), '/brand/share-game.png');
+  for (const [type, expected] of VOCABULARY) {
+    assert.equal(shareImageFor(type), expected,
+      `project_type '${type}' unfurls with the wrong card`);
+  }
+  assert.equal(shareImageFor(undefined), GAME, 'no type at all must still name a card');
+  assert.equal(shareImageFor(''), GAME);
+});
+
+test('a compound type is read by its words, not matched whole', () => {
+  // This is the property that broke. The builder does not guarantee its
+  // project_type is one bare word from a fixed list, so an exact-match
+  // classifier silently mislabels anything it has not seen before.
+  assert.equal(shareImageFor('interactive-website'), SITE);
+  assert.equal(shareImageFor('one page website'), SITE);
+  assert.equal(shareImageFor('personal_portfolio_site'), SITE);
+  assert.equal(shareImageFor('MULTIPLE-CHOICE QUIZ'), QUIZ);
+  assert.equal(shareImageFor('endless runner game'), GAME);
 });
 
 test('every share image the shim can name actually exists', () => {
   // A missing file is a broken image in every unfurl, and nothing else would
   // report it: the function returns a path, not a file.
   const brand = path.resolve(__dirname, '../packages/gamified-elearning/public');
-  for (const type of ['quiz', 'website', 'dodge', undefined]) {
+  for (const [type] of [...VOCABULARY, [undefined]]) {
     const file = path.join(brand, shareImageFor(type));
     assert.ok(fs.existsSync(file), `${file} is referenced by the share card and does not exist`);
   }

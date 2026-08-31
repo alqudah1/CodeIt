@@ -100,7 +100,12 @@ const BUILD_DATE = new Date().toISOString().slice(0, 10);
 // The declaration is checked in both directions — a declared price that no
 // longer appears on the page fails too — so the list cannot quietly become a
 // blanket exemption for a page nobody rereads.
-const PRICE_IN_TEXT = /(?:CA|US)\$\s?\d+(?:\.\d+)?/g;
+// Thousands separators are part of the number. Without the comma group this
+// read "US$1,750" as "US$1", so every currency-marked price over 999 arrived
+// at the guards as a different, meaningless amount, and no declaration could
+// ever match it. Found on 31 August 2026 when a school site licence was first
+// written with its currency marked.
+const PRICE_IN_TEXT = /(?:CA|US)\$\s?\d(?:[\d,]*\d)?(?:\.\d+)?/g;
 
 function normalisePrice(text) {
   return String(text).replace(/\s+/g, '');
@@ -425,13 +430,27 @@ function listSentence(items) {
  *   * links and emphasis are flattened to text, because the schema field is
  *     text and shipping raw Markdown into it would be gibberish to a reader.
  */
-const QUESTION_SECTION = /questions/i;
-const BOLD_QUESTION = /^\*\*\s*(?:\d+\.\s*)?(.+?\?)\s*\*\*\s*(.*)$/;
+// 'questions?' rather than 'questions': one guide headed its section "The
+// follow-up question parents actually ask", singular, and lost the entire
+// section to the missing letter.
+const QUESTION_SECTION = /questions?\b/i;
+
+// The optional quotation marks are the whole point. Four guides write their
+// questions as **"Is it still free?"**, which is a perfectly ordinary way to
+// quote a parent, and the pattern used to require the '?' to sit immediately
+// before the closing '**'. Twelve written question-and-answer pairs across
+// three guides produced no FAQPage schema because of that one character.
+const BOLD_QUESTION = /^\*\*\s*(?:\d+\.\s*)?["'\u201c\u2018]?(.+?\?)["'\u201d\u2019]?\s*\*\*\s*(.*)$/;
 
 function plainText(markdown) {
   return String(markdown)
     .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
     .replace(/\*\*([^*]+)\*\*/g, '$1')
+    // Italics too. This stripped bold and not emphasis, so a recovered FAQ
+    // answer carried literal asterisks into the schema while the rendered page
+    // showed <em>, and the visibility guard below correctly refused it: schema
+    // whose answer text is not on the page is a manual action, not a rich result.
+    .replace(/\*([^*\n]+)\*/g, '$1')
     .replace(/`([^`]+)`/g, '$1')
     .replace(/\s+/g, ' ')
     .trim();
@@ -1234,10 +1253,49 @@ const GUIDES_BY_ROUTE = {
   '/faq': ['what-did-my-kid-learn', 'coding-for-kids-by-age'],
   '/pricing': ['tynker-alternative', 'best-coding-platforms-for-kids', 'free-coding-for-kids'],
   '/about': ['ai-built-it-now-edit-it'],
+
+  // A journalist who reaches the press page is the one reader most likely to
+  // follow a link and most likely to cite what is behind it. It pointed at no
+  // guide at all. These three are the ones with dated, sourced, checkable
+  // claims about things that actually happened in the category.
+  '/press': [
+    'code-org-is-now-codeai',
+    'common-sense-education-paused-edtech-reviews',
+    'free-coding-for-kids',
+  ],
 };
 
+/**
+ * Which guides a lesson page points at.
+ *
+ * Measured on 30 August 2026: all thirty-one lesson pages linked to zero
+ * guides. That matters more than the count suggests, because the lesson pages
+ * are the ones Google has actually indexed — a site: search that day returned
+ * the homepage, one blog post, and lessons 4, 11, 13 and 15, and no guide at
+ * all. So the crawler's whole live frontier on this site was pages with no
+ * route to the thing the guides exist to do. The guides' only inbound links
+ * came from pages Google had not indexed yet.
+ *
+ * These are chosen by what the reader of that lesson is actually in the middle
+ * of, not to spread links evenly. A child on lesson 1 has just made the jump
+ * from blocks; a parent watching lesson 6 is asking whether any of it stuck; a
+ * child finishing the capstone wants the thing they built to exist somewhere
+ * other than a tab. Two per lesson, because a third would be filler.
+ */
+function guidesForLesson(number) {
+  if (number <= 3)  return ['after-scratch', 'coding-for-kids-by-age'];
+  if (number <= 10) return ['what-did-my-kid-learn', 'after-scratch'];
+  if (number <= 16) return ['what-did-my-kid-learn', 'free-coding-for-kids'];
+  if (number <= 24) return ['first-browser-game', 'what-did-my-kid-learn'];
+  if (number <= 30) return ['first-browser-game', 'ai-built-it-now-edit-it'];
+  return ['first-browser-game', 'publish-first-project'];
+}
+
 function guideLinksFor(route) {
-  const slugs = GUIDES_BY_ROUTE[route === '/' ? '/' : route] || [];
+  const lesson = /^\/lesson\/(\d+)$/.exec(route || '');
+  const slugs = lesson
+    ? guidesForLesson(Number(lesson[1]))
+    : GUIDES_BY_ROUTE[route === '/' ? '/' : route] || [];
   return slugs
     .map((slug) => GUIDE_CONTENT.find((guide) => guide.slug === slug))
     .filter(Boolean)
