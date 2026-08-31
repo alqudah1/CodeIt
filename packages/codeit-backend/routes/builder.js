@@ -7,6 +7,7 @@ const designEngine = require('../designEngine');
 const { JWT_SECRET } = require('../config');
 const { recordEvent } = require('../analytics');
 const { projectCategory, normalizeJourneyId } = require('../analyticsEvents');
+const { projectKind } = require('../projectKind');
 const { recordAIUsage } = require('../aiUsage');
 const { recordMilestoneAndNotify } = require('../progressNotifications');
 const { findShowcaseProject } = require('../showcaseProjects');
@@ -240,10 +241,12 @@ function validateInteractivity(html, type) {
   // Must not be truncated
   if (!/<\/html>/i.test(html)) return false;
 
-  const t = (type || '').toLowerCase();
-  const isGame = ['game', 'clicker', 'runner', 'memory', 'reaction', 'soccer', 'platformer', 'dodge', 'racing', 'typing', 'tower', 'maze', 'survival', 'puzzle', 'basketball', 'cooking'].includes(t);
-  const isQuiz = t === 'quiz';
-  const isWebsite = ['website', 'portfolio', 'restaurant', 'shop', 'sports', 'blog', 'landing'].includes(t);
+  // One classifier for the whole backend (projectKind.js) — this inline list
+  // had already drifted from the one in analyticsEvents.
+  const kind = projectKind(type);
+  const isGame = kind === 'game';
+  const isQuiz = kind === 'quiz';
+  const isWebsite = kind === 'website';
 
   if (isGame) {
     if (!/score/i.test(html)) return false;

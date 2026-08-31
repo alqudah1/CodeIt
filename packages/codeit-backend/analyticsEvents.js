@@ -56,13 +56,12 @@ function eventRequiresMeta(eventName) {
   return Boolean(allowed && allowed.size > 0);
 }
 
+// One classifier for the whole backend (projectKind.js). The exact-string
+// list this used to hold sent 'interactive-website' and 'simulator' to
+// 'other', so analytics and the monthly evidence email mislabelled them.
+const { projectKind } = require('./projectKind');
 function projectCategory(value) {
-  const normalized = typeof value === 'string' ? value.trim().toLowerCase() : '';
-  if (normalized === 'quiz') return 'quiz';
-  if (['website', 'portfolio', 'restaurant', 'shop', 'sports', 'blog', 'landing'].includes(normalized)) return 'website';
-  if (['tool', 'calculator', 'timer', 'drawing', 'flashcards'].includes(normalized)) return 'tool';
-  if (['game', 'clicker', 'runner', 'memory', 'reaction', 'soccer', 'platformer', 'dodge', 'racing', 'typing', 'tower', 'maze', 'survival', 'puzzle', 'basketball', 'cooking'].includes(normalized)) return 'game';
-  return 'other';
+  return projectKind(value);
 }
 
 function normalizeJourneyId(value) {
