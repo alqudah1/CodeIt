@@ -696,3 +696,50 @@
     font-size: 1.7rem;
   }
 }
+
+/* ═══ ARCADE CHAPTER — step 4. Soft white cards and gradient pills become
+   paper, ink and sun. Layout untouched; the lab already worked. ═══ */
+.al-section, .al-preview-card, .al-summary-card {
+  background: var(--paper, #FFFDF7);
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 18px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+}
+.al-btn--primary {
+  background: var(--arc-orange, #F87824);
+  color: #fff;
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 999px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 800;
+}
+.al-btn--primary:hover { transform: translateY(-2px); opacity: 1; }
+.al-btn--primary:active { transform: translateY(2px); box-shadow: none; }
+.al-pill {
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 999px;
+  background: var(--paper, #FFFDF7);
+  color: var(--ink, #35220E);
+  font-weight: 700;
+}
+.al-pill.is-active {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  box-shadow: 2.5px 2.5px 0 rgba(53, 34, 14, 0.22);
+}
+.al-level-badge {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 999px;
+  font-weight: 800;
+}
+.al-xp-bar-fill { background: var(--arc-mint, #27AE7E); }
+.al-toast {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  border: 2.5px solid var(--ink, #35220E);
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  font-weight: 800;
+}

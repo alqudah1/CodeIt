@@ -753,3 +753,28 @@
 .jm-levelup-toast__unlocks {
   color: #745d50;
 }
+
+/* ── Arcade keys on the journey map (step 4). The wood world stays — it is a
+   designed place — but every button joins the one button system. ── */
+.jm-cta {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 999px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 800;
+}
+.jm-cta:hover { transform: translateY(-2px); }
+.jm-cta:active { transform: translateY(2px); box-shadow: none; }
+.jm-cta--done {
+  background: var(--arc-mint, #27AE7E);
+  color: #fff;
+  border: 3px solid var(--ink, #35220E);
+}
+.jm-tl-badge--current {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  border: 3px solid var(--ink, #35220E);
+  box-shadow: 2.5px 2.5px 0 rgba(0, 0, 0, 0.35);
+}

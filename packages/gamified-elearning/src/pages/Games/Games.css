@@ -291,3 +291,87 @@
   }
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CABINET CHAPTER — step 4 of the walkthrough plan. The pastel-gradient
+   challenge cards were the abandoned old language one click from the studio's
+   cabinets. Each card is a cabinet now: paper body, ink border, and a
+   halftone marquee tinted by the challenge's own accent (--gc-accent, set
+   inline from the catalog). Appended, so it wins ties.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.game-card {
+  position: relative;
+  background: var(--paper, #FFFDF7);
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 18px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  color: var(--ink, #35220E);
+  overflow: hidden;
+  padding-top: 3.4rem;
+}
+.game-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2.6rem;
+  background:
+    radial-gradient(rgba(255, 255, 255, 0.35) 1.5px, transparent 1.5px) 0 0 / 9px 9px,
+    var(--gc-accent, var(--arc-orange, #F87824));
+  border-bottom: 3px solid var(--ink, #35220E);
+}
+.game-card:hover { transform: translateY(-3px); box-shadow: var(--pop-lift, 5px 6px 0 rgba(53, 34, 14, 0.22)); }
+.game-card h2 { color: var(--ink, #35220E); font-family: var(--font-display, 'Baloo 2', cursive); }
+.game-card p { color: rgba(53, 34, 14, 0.85); }
+.game-card__meta { position: absolute; top: 0.55rem; left: 1rem; z-index: 1; }
+.game-card__difficulty {
+  background: var(--paper, #FFFDF7);
+  color: var(--ink, #35220E);
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 999px;
+  font-weight: 800;
+  padding: 0.2rem 0.75rem;
+}
+.game-card__tags li {
+  background: var(--ground, #FFF4E5);
+  color: var(--ink, #35220E);
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 999px;
+  font-weight: 700;
+}
+.game-card__xp .label { color: rgba(53, 34, 14, 0.85); }
+.game-card__xp strong { color: var(--arc-orange-deep, #A84A00); font-family: var(--font-display, 'Baloo 2', cursive); }
+.game-card__launch {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 999px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 800;
+}
+.game-card__launch:hover { transform: translateY(-2px); }
+.game-card__launch:active { transform: translateY(2px); box-shadow: none; }
+.game-card--coming-soon { border-style: dashed; }
+.game-card--coming-soon::before { opacity: 0.5; }
+.game-card__soon-badge {
+  background: var(--ground, #FFF4E5);
+  color: var(--ink, #35220E);
+  border: 2px dashed var(--ink, #35220E);
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+/* Hero: one button system, no gradient pills */
+.game-hero__pill,
+.game-cta.primary {
+  background: var(--arc-orange, #F87824);
+  color: #fff;
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 999px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 800;
+}
+.game-hero__pill:hover, .game-cta.primary:hover { transform: translateY(-2px); opacity: 1; }
+.game-hero__pill:active, .game-cta.primary:active { transform: translateY(2px); box-shadow: none; }

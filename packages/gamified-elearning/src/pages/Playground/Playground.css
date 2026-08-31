@@ -210,3 +210,19 @@
     display: none;
   }
 }
+
+/* ── Arcade chips in the playground (step 4) ── */
+.pg-preset-btn {
+  background: var(--paper, #FFFDF7);
+  color: var(--ink, #35220E);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 999px;
+  box-shadow: 2px 2px 0 rgba(53, 34, 14, 0.18);
+  font-weight: 700;
+}
+.pg-preset-btn:hover { transform: translateY(-1px); background: var(--ground, #FFF4E5); }
+.pg-preset-btn--active, .pg-preset-btn--active:hover {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  border-color: var(--ink, #35220E);
+}

@@ -40,7 +40,7 @@ const GameHub = () => {
           <article
             key={game.id}
             className={`game-card${game.comingSoon ? ' game-card--coming-soon' : ''}`}
-            style={{ background: game.gradient }}
+            style={{ '--gc-accent': game.accent }}
           >
             <div className="game-card__meta">
               <span className="game-card__difficulty">{game.difficulty}</span>

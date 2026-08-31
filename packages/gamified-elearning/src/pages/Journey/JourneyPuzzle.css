@@ -340,3 +340,16 @@
   color: #c85a00;
   font-size: 0.8125rem;
 }
+
+/* ── Arcade keys in the puzzle room (step 4) ── */
+.jp-btn--primary, .jp-btn--check {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 999px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 800;
+}
+.jp-btn--primary:hover, .jp-btn--check:hover { transform: translateY(-2px); }
+.jp-btn--primary:active, .jp-btn--check:active { transform: translateY(2px); box-shadow: none; }
