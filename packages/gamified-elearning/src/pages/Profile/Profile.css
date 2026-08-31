@@ -813,3 +813,137 @@
   word-break: break-all;
 }
 .profile-evidence__share-link a { color: var(--arc-orange, #F87824); font-weight: 700; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE TROPHY WALL CHAPTER — step 3 of the walkthrough plan.
+   The walkthrough verdict on this page: "grey office-tool settings page."
+   It becomes the kid's trophy wall: paper and ink everywhere, the level as
+   a sun coin, streaks as tickets, and the plaques of explained skills —
+   the one thing no competitor can issue. Appended, so it wins ties.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.profile-page {
+  background:
+    radial-gradient(ellipse 900px 520px at 6% -120px, rgba(254, 211, 64, 0.20), transparent 60%),
+    radial-gradient(rgba(53, 34, 14, 0.05) 1.2px, transparent 1.2px) 0 0 / 22px 22px,
+    var(--ground, #FFF4E5);
+  color: var(--ink, #35220E);
+}
+
+.profile-name {
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  color: var(--ink, #35220E);
+}
+.profile-title-badge {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 999px;
+  box-shadow: 2.5px 2.5px 0 rgba(53, 34, 14, 0.2);
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 700;
+}
+.profile-avatar { filter: drop-shadow(3px 4px 0 rgba(53, 34, 14, 0.18)); }
+
+.profile-card {
+  background: var(--paper, #FFFDF7);
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 18px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+}
+
+.profile-level-bubble {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  border: 3px solid var(--ink, #35220E);
+  box-shadow: 2.5px 2.5px 0 rgba(53, 34, 14, 0.22);
+}
+.profile-level-num, .profile-level-lbl { color: var(--ink, #35220E); }
+.profile-xp-total { font-family: var(--font-display, 'Baloo 2', cursive); color: var(--ink, #35220E); }
+
+.profile-bar-wrap {
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 999px;
+  background: var(--ground, #FFF4E5);
+  overflow: hidden;
+}
+.profile-bar-fill { background: var(--arc-mint, #27AE7E); }
+
+.profile-stat {
+  background: var(--paper, #FFFDF7);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 14px;
+  box-shadow: 2.5px 2.5px 0 rgba(53, 34, 14, 0.18);
+}
+.profile-stat__num {
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  color: var(--arc-orange, #F87824);
+}
+.profile-stat__lbl { color: rgba(53, 34, 14, 0.85); }
+
+/* ── The trophy wall itself ── */
+.profile-trophies { padding: 1.4rem 1.5rem 1.2rem; }
+.profile-trophies__eyebrow {
+  margin: 0 0 2px;
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--arc-orange-deep, #A84A00);
+}
+.profile-trophies__title {
+  margin: 0 0 0.9rem;
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-size: 1.3rem;
+  color: var(--ink, #35220E);
+}
+.profile-trophies__wall {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0.8rem;
+}
+.profile-trophy {
+  background: #fff;
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 14px;
+  box-shadow: 2.5px 2.5px 0 rgba(53, 34, 14, 0.18);
+  padding: 0.7rem 0.9rem;
+}
+.profile-trophy__project {
+  display: block;
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.profile-trophy__skill {
+  display: block;
+  color: #1e6e4e;
+  font-weight: 700;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  margin: 2px 0 0 2px;
+}
+.profile-trophies__hint {
+  margin: 0.9rem 0 0;
+  font-size: 0.9rem;
+  color: rgba(53, 34, 14, 0.85);
+}
+
+/* Parent-updates and family cards inherit .profile-card; their inner notice
+   boxes get paper treatment too. */
+.profile-parent__notice {
+  background: rgba(254, 211, 64, 0.14);
+  border: 2px dashed rgba(53, 34, 14, 0.4);
+  border-radius: 12px;
+  color: var(--ink, #35220E);
+}
+.profile-parent__eyebrow {
+  color: var(--arc-orange-deep, #A84A00);
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  letter-spacing: 0.08em;
+}
+.profile-card h2 { font-family: var(--font-display, 'Baloo 2', cursive); color: var(--ink, #35220E); }

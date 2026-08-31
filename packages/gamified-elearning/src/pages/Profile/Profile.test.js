@@ -165,8 +165,10 @@ describe('parent progress availability', () => {
     mockFetchMode = 'unavailable';
     render(<Profile />);
 
-    expect(await screen.findByText('Parent updates are not connected in this preview yet.')).toBeInTheDocument();
-    expect(screen.getByText(/No parent email has been collected here/i)).toBeInTheDocument();
+    // Kid-readable words, never infrastructure talk: the old copy mentioned
+    // "this server" and "the email service" on a child's screen.
+    expect(await screen.findByText(/Parent updates aren.t switched on right now/i)).toBeInTheDocument();
+    expect(screen.getByText(/Your grown-up can still see everything you make/i)).toBeInTheDocument();
     expect(screen.queryByLabelText('Parent or guardian email')).not.toBeInTheDocument();
   });
 

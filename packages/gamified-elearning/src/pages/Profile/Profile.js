@@ -38,6 +38,9 @@ export default function Profile() {
   const { character, stats }     = useCharacter();
   const navigate                 = useNavigate();
   const [projectCount, setProjectCount] = useState(null);
+  // The trophy wall: sentences the server wrote when this kid explained code
+  // in their own projects. Real records only — an empty wall stays empty.
+  const [trophies, setTrophies] = useState([]);
   const [parentSettings, setParentSettings] = useState(null);
   const [progressSummary, setProgressSummary] = useState(null);
   const [parentStatus, setParentStatus] = useState('');
@@ -96,6 +99,14 @@ export default function Profile() {
       .then(r => r.json())
       .then(d => { if (d.success) setProjectCount(d.projects.length); })
       .catch(() => {});
+    if (String(user?.role).toLowerCase() === 'student') {
+      fetch(`${API_BASE_URL}/api/understanding`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then(r => r.json())
+        .then(d => { if (d.success) setTrophies((d.records || []).filter(rec => (rec.skills || []).length > 0)); })
+        .catch(() => {});
+    }
 
     if (String(user.role).toLowerCase() === 'student') {
       setParentLoading(true);
@@ -445,6 +456,30 @@ export default function Profile() {
           </div>
         </div>
 
+        {/* ── The trophy wall ─────────────────────────────────────────────
+            Every plaque is a sentence the server wrote only after this kid
+            answered questions about code in their own project. Kids collect;
+            nothing here can be earned by just showing up. */}
+        {String(user.role).toLowerCase() === 'student' && trophies.length > 0 && (
+          <section className="profile-card profile-trophies" aria-labelledby="profile-trophies-title">
+            <p className="profile-trophies__eyebrow">Proved it</p>
+            <h2 id="profile-trophies-title" className="profile-trophies__title">Things you can explain</h2>
+            <ul className="profile-trophies__wall">
+              {trophies.slice(0, 8).map(record => (
+                <li className="profile-trophy" key={record.projectKey}>
+                  <span className="profile-trophy__project">🏅 {record.projectTitle}</span>
+                  {record.skills.map(skill => (
+                    <span className="profile-trophy__skill" key={skill}>✓ {skill}</span>
+                  ))}
+                </li>
+              ))}
+            </ul>
+            <p className="profile-trophies__hint">
+              Earn more by pressing <strong>Prove it</strong> after you play your own projects in the studio.
+            </p>
+          </section>
+        )}
+
         {String(user.role).toLowerCase() === 'student' && (
           <section className="profile-card profile-card--parent" aria-labelledby="parent-updates-title">
             <div className="profile-parent__heading">
@@ -465,13 +500,13 @@ export default function Profile() {
               </div>
             )}
 
+            {/* Never infrastructure words on a kid's screen. The old copy
+                talked about "this server" and "the email service" — that
+                sentence was for us, not for her. */}
             {!parentLoading && parentLoadError && (
               <div className="profile-parent__notice is-planned" role="status">
-                <strong>{parentLoadError}</strong>
-                <p>
-                  CodeIt can track learning milestones, but this server has not enabled the parent
-                  confirmation and email service. No parent email has been collected here.
-                </p>
+                <strong>Parent updates aren&rsquo;t switched on right now.</strong>
+                <p>Your grown-up can still see everything you make on the family page.</p>
               </div>
             )}
 
