@@ -38,6 +38,7 @@ const MAX_CODE_BYTES = 400 * 1024;   // a generated project is far below this
 const MAX_TITLE = 120;
 const MAX_LABEL = 40;
 const PUBLIC_ID_RE = /^[a-f0-9]{12}$/;
+const SITE_URL = (process.env.PUBLIC_SITE_URL || 'https://codeitlearn.com').replace(/\/+$/, '');
 
 // Same shape as the limiter in foundingWaitlist.js: per-IP, in-memory, self
 // cleaning. Anonymous writes need a ceiling that a signed-in write does not.
@@ -161,6 +162,113 @@ router.post('/:publicId/report', rateLimit, async (req, res) => {
   } catch (error) {
     console.error('unlisted report:', error.message);
     return res.status(500).json({ error: 'Could not send the report.' });
+  }
+});
+
+// ── The optional grown-up email ─────────────────────────────────────────────
+//
+// Asked for AFTER the project is already saved, never before, and never as a
+// condition of saving. If it is left blank the save has already happened and
+// nothing changes.
+//
+// It does NOT write to adult_email_verifications. That table is keyed
+// user_id NOT NULL PRIMARY KEY REFERENCES Users(user_id), so an anonymous
+// save has no row to write; and its meaning is "the adult who owns account N
+// confirmed this address", which an address typed by a stranger is not. See
+// the migration for the full reasoning and the upgrade path.
+//
+// Double opt in, because a form that mails any address an anonymous visitor
+// types is an abuse vector. One confirmation goes out, and nothing else until
+// it is clicked.
+router.post('/:publicId/email', rateLimit, async (req, res) => {
+  const { publicId } = req.params;
+  if (!PUBLIC_ID_RE.test(publicId)) return res.status(404).json({ error: 'Project not found.' });
+
+  const email = String(req.body?.email || '').trim().toLowerCase();
+  // Blank is a valid answer: the field is optional and the project is saved
+  // either way. Say so plainly rather than returning an error.
+  if (!email) return res.json({ success: true, skipped: true });
+  if (email.length > 255 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'That does not look like an email address.' });
+  }
+
+  try {
+    const [rows] = await pool.query(
+      'SELECT public_id FROM unlisted_projects WHERE public_id = ?', [publicId]
+    );
+    if (!rows.length) return res.status(404).json({ error: 'Project not found.' });
+
+    const confirmToken = crypto.randomBytes(32).toString('hex');
+    const confirmHash = crypto.createHash('sha256').update(confirmToken).digest('hex');
+    const unsubToken = crypto.randomBytes(32).toString('hex');
+
+    await pool.query(
+      `INSERT INTO project_link_emails (email, project_public_id, confirm_token_hash, unsubscribe_token)
+       VALUES (?, ?, ?, ?)
+       ON CONFLICT (email, project_public_id) DO UPDATE
+         SET confirm_token_hash = EXCLUDED.confirm_token_hash`,
+      [email, publicId, confirmHash, unsubToken]
+    );
+
+    // The confirmation itself is sent by the existing mailer if one is
+    // configured. When it is not, the honest answer is that nothing was sent,
+    // rather than a claim that it was.
+    let delivery = 'not_configured';
+    try {
+      const { sendMail } = require('../familyAccounts');
+      if (typeof sendMail === 'function') {
+        await sendMail({
+          to: email,
+          subject: 'Confirm you want this CodeIt project link',
+          text: `Someone saved a project on CodeIt and asked us to send you the link.\n\n`
+            + `Confirm to receive it: ${SITE_URL}/api/builder/unlisted/confirm/${confirmToken}\n\n`
+            + `If that was not you, ignore this email and nothing further will be sent.`,
+        });
+        delivery = 'sent';
+      }
+    } catch (mailError) {
+      console.error('unlisted email send:', mailError.message);
+      delivery = 'failed';
+    }
+
+    return res.json({ success: true, delivery });
+  } catch (error) {
+    console.error('unlisted email:', error.message);
+    return res.status(500).json({ error: 'Could not save that address.' });
+  }
+});
+
+// GET /api/builder/unlisted/confirm/:token — the second half of the opt in.
+router.get('/confirm/:token', async (req, res) => {
+  const token = String(req.params.token || '');
+  if (!/^[a-f0-9]{64}$/.test(token)) return res.status(404).send('Link not valid.');
+  try {
+    const hash = crypto.createHash('sha256').update(token).digest('hex');
+    const [result] = await pool.query(
+      'UPDATE project_link_emails SET confirmed_at = NOW(), confirm_token_hash = NULL WHERE confirm_token_hash = ?',
+      [hash]
+    );
+    if (!result.affectedRows) return res.status(404).send('That link has already been used.');
+    return res.redirect(`${SITE_URL}/?confirmed=1`);
+  } catch (error) {
+    console.error('unlisted confirm:', error.message);
+    return res.status(500).send('Could not confirm just now.');
+  }
+});
+
+// GET /api/builder/unlisted/unsubscribe/:token — one click, always available.
+router.get('/unsubscribe/:token', async (req, res) => {
+  const token = String(req.params.token || '');
+  if (!/^[a-f0-9]{64}$/.test(token)) return res.status(404).send('Link not valid.');
+  try {
+    await pool.query(
+      'UPDATE project_link_emails SET unsubscribed_at = NOW(), confirmed_at = NULL WHERE unsubscribe_token = ?',
+      [token]
+    );
+    return res.send('You will not receive any more CodeIt project emails.');
+  } catch (error) {
+    console.error('unlisted unsubscribe:', error.message);
+    return res.status(500).send('Could not unsubscribe just now.');
   }
 });
 

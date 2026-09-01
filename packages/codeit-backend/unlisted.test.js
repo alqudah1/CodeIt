@@ -24,13 +24,43 @@ const SCHEMA_SRC = fs.readFileSync(
 );
 const SCHEMA = SCHEMA_SRC.split('\n').filter(line => !line.trim().startsWith('--')).join('\n');
 
-test('an unlisted project collects no personal information', () => {
-  // The brief asked for a required parent email. An email typed by an
-  // anonymous visitor who may be a child is not verifiable consent, and
-  // CodeIt already records real consent in adult_email_verifications. If a
-  // column or a field for one ever appears here, this fails.
-  assert.ok(!/email/i.test(SCHEMA), 'the unlisted table must have no email column');
-  assert.ok(!/\bemail\b/i.test(ROUTE), 'the unlisted route must not read an email');
+test('the project record itself collects no personal information', () => {
+  // The project row must never carry an identity. The optional grown-up email
+  // lives in a separate table and is tested below.
+  const projectTable = SCHEMA.slice(
+    SCHEMA.indexOf('create table if not exists public.unlisted_projects'),
+    SCHEMA.indexOf('alter table')
+  );
+  assert.ok(!/email/i.test(projectTable), 'unlisted_projects must have no email column');
+  assert.ok(!/child|parent_name|full_name/i.test(projectTable), 'no identity columns');
+});
+
+test('the optional email never touches the consent record', () => {
+  // adult_email_verifications means "the adult who owns account N confirmed
+  // this address", with parent_child_links hanging consent_version and
+  // public_sharing_allowed off it. An address typed by an anonymous visitor
+  // means none of that. If this route ever writes there, the consent record
+  // stops being trustworthy, so this fails loudly.
+  assert.ok(!/adult_email_verifications/.test(ROUTE),
+    'the anonymous route must never write to the consent table');
+  assert.ok(!/parent_child_links/.test(ROUTE),
+    'the anonymous route must never write to the family link table');
+  assert.match(ROUTE, /project_link_emails/, 'it uses its own honest table');
+});
+
+test('a blank email is a valid answer, not an error', () => {
+  // The field is optional and the project is already saved by this point.
+  assert.match(ROUTE, /if \(!email\) return res\.json\(\{ success: true, skipped: true \}\)/,
+    'blank must return success, never a 400');
+});
+
+test('the email capture is double opt in with a way out', () => {
+  assert.match(ROUTE, /confirm_token_hash/, 'a confirmation must be required');
+  assert.match(ROUTE, /unsubscribe_token/, 'every row must carry an unsubscribe token');
+  // Nothing may be marked confirmed at the moment it is typed.
+  const insert = ROUTE.slice(ROUTE.indexOf('INSERT INTO project_link_emails'));
+  assert.ok(!/confirmed_at/.test(insert.slice(0, 400)),
+    'the insert must not pre-confirm the address');
 });
 
 test('unlisted projects never enter a public feed', () => {
