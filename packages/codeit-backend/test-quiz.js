@@ -25,6 +25,7 @@ const foundingWaitlistRoutes = require('./routes/foundingWaitlist');
 const adminRoutes = require('./routes/admin');
 const familyRoutes = require('./routes/family');
 const understandingRoutes = require('./routes/understanding');
+const unlistedRoutes = require('./routes/unlisted');
 const activityRoutes = require('./routes/activity');
 const billingRoutes = require('./routes/billing');
 const { legacyAccessGuard } = require('./legacyParentReview');
@@ -83,6 +84,9 @@ app.use('/api/rewards', rewardsRoutes);
 app.use('/api/lessons', lessonsRoutes);
 app.use('/api/puzzles', puzzlesRoutes);
 app.use('/api/journey', journeyRoutes);
+// The more specific mount goes first: '/api/builder' also matches
+// '/api/builder/unlisted', and relying on that falling through is fragile.
+app.use('/api/builder/unlisted', unlistedRoutes);
 app.use('/api/builder', builderRoutes);
 app.use('/api/explore', exploreRoutes);
 app.use('/api/analytics', analyticsRoutes);
