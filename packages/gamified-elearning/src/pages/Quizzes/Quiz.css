@@ -577,3 +577,28 @@
   box-shadow: 0 2px 0 #35220E;
 }
 .qz-read-btn:active { transform: translateY(2px); box-shadow: 0 0 0 #35220E; }
+
+/* ══════════════════════════════════════════════════════════════
+   THE STUDIO DOOR ON THE RESULTS SCREEN
+   Round 46 put this at the end of a lesson and missed the surface
+   the more diligent learners actually reach: a lesson with a quiz
+   ends here, and this screen used to end at the dashboard.
+   ══════════════════════════════════════════════════════════════ */
+.qz-btn-forward--studio {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  font-size: 1.02rem;
+  line-height: 1.25;
+  text-align: center;
+}
+.qz-btn-forward--studio::before {
+  content: '\1F528';
+  margin-right: 0.5rem;
+}
+.qz-btn-forward--quiet {
+  background: var(--paper, #FFFDF7);
+  color: var(--ink, #35220E);
+}
+@media (max-width: 520px) {
+  .qz-btn-forward--studio { font-size: 0.95rem; }
+}

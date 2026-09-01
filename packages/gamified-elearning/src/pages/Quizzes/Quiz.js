@@ -12,6 +12,8 @@ import { getXpProgress, getNextUnlock, getNextUnlockLabel } from "../../data/unl
 import { effectiveGuideLevel } from "../../utils/guideLevel";
 import DeadEnd from "../../components/DeadEnd/DeadEnd";
 import useCountUp from "../../hooks/useCountUp";
+import { builderPromptFor } from "../Lessons/lessonRegistry";
+import { trackEvent } from "../../utils/trackEvent";
 import "./Quiz.css";
 
 // Shuffle an array without mutating it
@@ -79,6 +81,10 @@ export default function Quiz() {
   const nextRoute   = searchParams.get("next")  || null;
   const journeyNode = searchParams.get("node")  || null;
   const fromJourney = searchParams.get("from")  === "journey";
+  // The project this lesson unlocks, read from the registry so the quiz and
+  // the lesson can never offer two different things for the same concept.
+  const studioPrompt = fromJourney ? null : builderPromptFor(quizId);
+
 
   const quizQuestionsUrl = useMemo(
     () => `${API_BASE_URL}/api/quiz/${quizId}/questions`,
@@ -435,6 +441,31 @@ export default function Quiz() {
               >
                 Go to Challenge {quizId}
               </button>
+            ) : studioPrompt ? (
+              /* ── The studio door, second surface ──
+                 Round 46 put this at the end of a lesson. It was only half the
+                 exit: a lesson WITH a quiz sends the learner lesson -> quiz,
+                 and the quiz results screen ended at the dashboard. So the
+                 learners who did the more thorough thing, the ones who sat the
+                 quiz, were the ones who never got offered the studio.
+
+                 Production, read 1 September 2026: 236 learners finished a
+                 lesson, 23 ever made a project. Same door, same measurement,
+                 the surface that was missed. */
+              <>
+                <button
+                  className="qz-btn-forward qz-btn-forward--studio"
+                  onClick={() => {
+                    void trackEvent('quiz_to_studio', String(quizId), token);
+                    navigate(`/builder?prompt=${encodeURIComponent(studioPrompt)}&from=quiz-${quizId}`);
+                  }}
+                >
+                  Build {studioPrompt}
+                </button>
+                <button className="qz-btn-forward qz-btn-forward--quiet" onClick={() => navigate("/MainPage")}>
+                  Back to your progress
+                </button>
+              </>
             ) : (
               <button className="qz-btn-forward" onClick={() => navigate("/MainPage")}>
                 Back to your progress
