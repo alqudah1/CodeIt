@@ -128,6 +128,65 @@ router.get('/overview', async (_req, res) => {
   }
 });
 
+// ── Where we actually lose people ───────────────────────────────────────────
+//
+// Every number below is already collected; nothing new is measured and nothing
+// is estimated. What was missing was the ORDER — thirteen stat tiles cannot
+// answer "is our problem discovery, activation, or retention?", and that
+// question was being answered by opinion.
+//
+// The steps are the real sequence a learner goes through, each counted as
+// DISTINCT LEARNERS (not events), so the drop between two steps is a number of
+// people, not a ratio of activity. A step that counts nobody reports zero
+// rather than being hidden.
+router.get('/funnel/activation', async (_req, res) => {
+  try {
+    const [[row]] = await pool.query(`
+      SELECT
+        (SELECT COUNT(*) FROM Users) AS signed_up,
+        (SELECT COUNT(DISTINCT user_id) FROM User_Character) AS made_an_avatar,
+        (SELECT COUNT(DISTINCT user_id) FROM ai_projects) AS made_a_project,
+        (SELECT COUNT(DISTINCT user_id) FROM ai_projects WHERE is_public = 1) AS published_one,
+        (SELECT COUNT(DISTINCT user_id) FROM Student_Lesson_Progress) AS finished_a_lesson,
+        (SELECT COUNT(*) FROM Students WHERE current_streak > 1) AS came_back_twice,
+        (SELECT COUNT(DISTINCT user_id) FROM understanding_records) AS explained_their_code
+    `);
+
+    const signedUp = Number(row.signed_up) || 0;
+    const step = (label, value, note) => ({
+      label,
+      learners: Number(value) || 0,
+      pctOfSignups: signedUp ? Math.round((Number(value) || 0) / signedUp * 1000) / 10 : 0,
+      note,
+    });
+
+    const steps = [
+      step('Signed up', row.signed_up, 'every account, including parents and admins'),
+      step('Made an avatar', row.made_an_avatar, 'opened the character lab and saved a look'),
+      step('Made a project', row.made_a_project, 'the activation moment: they built something'),
+      step('Published one', row.published_one, 'made it public, so it can be shared'),
+      step('Finished a lesson', row.finished_a_lesson, 'completed at least one of the 31 lessons'),
+      step('Came back a second day', row.came_back_twice, 'streak above 1, so not a one-visit account'),
+      step('Explained their own code', row.explained_their_code, 'the evidence loop: earned at least one sentence'),
+    ];
+
+    // The biggest single drop, named. This is the sentence the admin page
+    // exists to produce.
+    let biggestDrop = null;
+    for (let i = 1; i < steps.length; i += 1) {
+      const lost = steps[i - 1].learners - steps[i].learners;
+      if (lost > 0 && (!biggestDrop || lost > biggestDrop.lost)) {
+        biggestDrop = { from: steps[i - 1].label, to: steps[i].label, lost };
+      }
+    }
+
+    res.json({ success: true, steps, biggestDrop });
+  } catch (error) {
+    console.error('admin/funnel/activation:', error.message);
+    res.status(500).json({ error: 'Could not measure activation.' });
+  }
+});
+
 router.get('/users', async (req, res) => {
   const search = String(req.query.search || '').trim();
   const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);

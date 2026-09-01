@@ -28,6 +28,15 @@ const AdminDashboard = () => {
         else setData(body);
       })
       .catch(() => setError('Failed to load overview'));
+
+    // Where we actually lose people. Same data the tiles above are built from,
+    // put in the order a learner goes through it.
+    fetch(`${API_BASE_URL}/api/admin/funnel/activation`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(r => r.json())
+      .then(body => { if (body.success) setFunnel(body); })
+      .catch(() => {});
   }, [token, logout, navigate]);
 
   const t = data?.totals || {};
@@ -38,6 +47,7 @@ const AdminDashboard = () => {
   // deployed backend is the only thing that can reach the production
   // database. The endpoint applies exactly two reviewed changes and is
   // idempotent, so this button is safe to press twice.
+  const [funnel, setFunnel] = useState(null);
   const [maint, setMaint] = useState(null);
   const [digest, setDigest] = useState(null);
   const [digestPreview, setDigestPreview] = useState(null);
@@ -98,6 +108,38 @@ const AdminDashboard = () => {
               </div>
             ))}
           </div>
+
+          {funnel && funnel.steps && (
+            <>
+              <div className="adm-section-head">Where we lose people</div>
+              <div className="adm-info">
+                Every number here is already collected; this is the same data as the tiles
+                above, in the order a learner goes through it. Each step counts <strong>distinct
+                learners</strong>, so a drop is a number of people, not a change in activity.
+                {funnel.biggestDrop && (
+                  <p className="adm-funnel__verdict">
+                    Biggest single drop: <strong>{funnel.biggestDrop.lost} learners</strong> between
+                    “{funnel.biggestDrop.from}” and “{funnel.biggestDrop.to}”.
+                  </p>
+                )}
+              </div>
+              <ol className="adm-funnel">
+                {funnel.steps.map(s => (
+                  <li className="adm-funnel__step" key={s.label}>
+                    <div className="adm-funnel__row">
+                      <span className="adm-funnel__label">{s.label}</span>
+                      <span className="adm-funnel__count">{fmt(s.learners)}</span>
+                      <span className="adm-funnel__pct">{s.pctOfSignups}%</span>
+                    </div>
+                    <div className="adm-funnel__bar">
+                      <div className="adm-funnel__fill" style={{ width: `${s.pctOfSignups}%` }} />
+                    </div>
+                    <span className="adm-funnel__note">{s.note}</span>
+                  </li>
+                ))}
+              </ol>
+            </>
+          )}
 
           <div className="adm-section-head">Database maintenance</div>
           <div className="adm-info">
