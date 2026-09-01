@@ -13,6 +13,7 @@ const { recordMilestoneAndNotify } = require('../progressNotifications');
 const { findShowcaseProject } = require('../showcaseProjects');
 const { initializeProjectRewards, awardProjectXp: persistProjectXp } = require('../projectRewards');
 const { checkAiBuildAllowance } = require('../entitlements');
+const { projectName } = require('../projectName');
 const billingStore = require('../billingStore');
 const { assertCanPublish, isBillingConfigured } = require('./billing');
 
@@ -706,7 +707,7 @@ async function runPolishPass(html, type) {
 function buildFallbackWebsite(designConfig, userPrompt) {
   const palette = designConfig.palette;
   const type = designConfig.type;
-  const title = userPrompt.length > 40 ? userPrompt.slice(0, 40) + '...' : userPrompt;
+  const title = projectName(userPrompt);
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1223,10 +1224,10 @@ draw();
 }
 
 // ── Derive a short display title from a raw prompt ────────────────────────────
+// One naming rule for the whole product. See projectName.js for why the old
+// six-words-of-the-prompt rule had to go.
 function derivePromptTitle(prompt) {
-  const clean = (prompt || '').trim().replace(/^(build|make|create|generate|a|an|the)\s+/gi, '');
-  const words = clean.split(/\s+/).slice(0, 6).join(' ');
-  return words.charAt(0).toUpperCase() + words.slice(1);
+  return projectName(prompt);
 }
 
 // ── Landing page fallback ─────────────────────────────────────────────────────

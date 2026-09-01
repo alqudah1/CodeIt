@@ -89,6 +89,7 @@ import {
   storedGuideLevelOverride,
 } from '../../utils/guideLevel';
 import { avatarSpriteDataUri, injectPlayerSprite } from '../../utils/avatarSprite';
+import { projectName } from '../../utils/projectName';
 
 // One hand-drawn sticker per shelf and per ask-for-anything card, in the
 // design language itself. Decorative: the words beside them do the talking.
@@ -718,11 +719,10 @@ function isValidHtml(str) {
   );
 }
 
+// One naming rule for the whole product, shared with the server. See
+// utils/projectName.js for the classroom session that made this necessary.
 function deriveProjectName(rawPrompt) {
-  const clean = rawPrompt.trim().replace(/^(build |make |create |generate |a |an |the )+/gi, '');
-  const words = clean.split(/\s+/).slice(0, 6);
-  if (!words.length) return rawPrompt;
-  return words[0].charAt(0).toUpperCase() + words[0].slice(1) + (words.length > 1 ? ' ' + words.slice(1).join(' ') : '');
+  return projectName(rawPrompt);
 }
 
 function extractColors(html) {
