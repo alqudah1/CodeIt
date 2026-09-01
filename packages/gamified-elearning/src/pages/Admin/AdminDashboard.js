@@ -111,15 +111,20 @@ const AdminDashboard = () => {
 
           {funnel && funnel.steps && (
             <>
-              <div className="adm-section-head">Where we lose people</div>
+              <div className="adm-section-head">What learners actually reach</div>
               <div className="adm-info">
                 Every number here is already collected; this is the same data as the tiles
-                above, in the order a learner goes through it. Each step counts <strong>distinct
-                learners</strong>, so a drop is a number of people, not a change in activity.
-                {funnel.biggestDrop && (
+                above. Each line counts <strong>distinct learners</strong>, never events, so
+                every number is a count of people. These are milestones, not a funnel: a
+                learner can reach them in any order, so the difference between two lines is
+                not a drop-off.
+                {funnel.gap && (
                   <p className="adm-funnel__verdict">
-                    Biggest single drop: <strong>{funnel.biggestDrop.lost} learners</strong> between
-                    “{funnel.biggestDrop.from}” and “{funnel.biggestDrop.to}”.
+                    <strong>{funnel.gap.lessons}</strong> learners finished a lesson.
+                    {' '}<strong>{funnel.gap.projects}</strong> ever built a project
+                    {' '}— <strong>{funnel.gap.buildRate}%</strong> of them. Lessons are the part
+                    every free competitor also has; building and explaining a real project is
+                    the part nothing else has.
                   </p>
                 )}
               </div>
