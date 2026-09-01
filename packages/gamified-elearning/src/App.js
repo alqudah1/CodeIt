@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useParams, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
@@ -35,6 +35,7 @@ const Game8        = lazy(() => import('./pages/Games/Game8'));
 const Game9        = lazy(() => import('./pages/Games/Game9'));
 const Game10       = lazy(() => import('./pages/Games/Game10'));
 
+const JourneyPath   = lazy(() => import('./pages/Journey/JourneyPath'));
 const JourneyPuzzle = lazy(() => import('./pages/Journey/JourneyPuzzle'));
 
 const CharacterLab  = lazy(() => import('./pages/CharacterLab/CharacterLab'));
@@ -157,14 +158,16 @@ const App = () => (
               <Route path="/game/10" element={<Game10 />} />
 
               {/* ── Journey ── */}
-              {/* One path, not two. The journey map was a second course running
-                  beside /lessons — same 31 lessons, its own half-empty map,
-                  and a child had to guess which one was "the" course. The
-                  lesson map absorbed its one good idea (you, standing on the
-                  step you are up to) and this route now sends everyone there.
-                  The puzzle routes below still work: challenges link to them
-                  directly and they are real screens. */}
-              <Route path="/journey" element={<Navigate to="/lessons" replace />} />
+              {/* One path, not two — but /journey is not free to redirect.
+                  It is one of the 74 URLs in the sitemap, with its own
+                  generated static HTML and schema, and the lesson pages link
+                  to it. A redirect behind a canonical sitemap entry is the
+                  soft-404 pattern that already cost this domain once (/press).
+                  So the duplicate COURSE is gone — the lesson map absorbed its
+                  one good idea, your avatar standing on the step you are up to
+                  — and this route keeps a real page that says what the static
+                  HTML already promises, with one door to the single path. */}
+              <Route path="/journey" element={<JourneyPath />} />
               <Route path="/journey/puzzle/:lessonId/:slot"  element={<JourneyPuzzle />} />
 
               {/* ── Character & Social ── */}

@@ -1,0 +1,71 @@
+/* /journey — the structured-practice explainer, in the arcade language. */
+
+.jpath {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 900px 520px at 6% -120px, rgba(254, 211, 64, 0.2), transparent 60%),
+    radial-gradient(rgba(53, 34, 14, 0.05) 1.2px, transparent 1.2px) 0 0 / 22px 22px,
+    var(--ground, #FFF4E5);
+  color: var(--ink, #35220E);
+}
+
+.jpath__main { max-width: 720px; margin: 0 auto; padding: 2.6rem 1.3rem 4rem; }
+
+.jpath__eyebrow {
+  margin: 0 0 4px;
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--arc-orange-deep, #A84A00);
+}
+.jpath__title {
+  margin: 0 0 0.8rem;
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-size: clamp(1.9rem, 5.4vw, 2.7rem);
+  line-height: 1.08;
+}
+.jpath__intro { margin: 0 0 2rem; font-size: 1.05rem; line-height: 1.6; max-width: 62ch; }
+
+.jpath__steps { list-style: none; margin: 0 0 2rem; padding: 0; display: grid; gap: 0.9rem; }
+.jpath__step {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: var(--paper, #FFFDF7);
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 18px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  padding: 1.1rem 1.2rem;
+}
+.jpath__step-num {
+  flex: 0 0 auto;
+  width: 42px; height: 42px;
+  display: grid; place-items: center;
+  border: 3px solid var(--ink, #35220E);
+  border-radius: 50%;
+  background: var(--arc-sun, #FED340);
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 800;
+  font-size: 1.15rem;
+  box-shadow: 2.5px 2.5px 0 rgba(53, 34, 14, 0.2);
+}
+.jpath__step-title { margin: 0 0 0.2rem; font-family: var(--font-display, 'Baloo 2', cursive); font-size: 1.12rem; }
+.jpath__step-body { margin: 0; line-height: 1.55; color: rgba(53, 34, 14, 0.88); }
+
+.jpath__doors { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+.jpath__door {
+  padding: 0.75rem 1.6rem;
+  background: var(--paper, #FFFDF7);
+  color: var(--ink, #35220E);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 999px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-weight: 800;
+  text-decoration: none;
+}
+.jpath__door--primary { background: var(--arc-sun, #FED340); }
+.jpath__door:hover { transform: translateY(-2px); }
+.jpath__door:active { transform: translateY(2px); box-shadow: none; }
