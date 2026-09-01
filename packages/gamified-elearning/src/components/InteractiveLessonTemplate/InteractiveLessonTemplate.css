@@ -1315,3 +1315,27 @@
 .sl-gate-card__btn--ghost, .sl-completion-card__btn--ghost { background: var(--paper); color: var(--ink); }
 .sl-completion-card__btn--builder { background: var(--arc-violet-deep); color: #fff; }
 .sl-completion-card__badge { background: var(--arc-mint); border: 2px solid var(--ink); color: #fff; font-family: var(--font-display); }
+
+/* ══════════════════════════════════════════════════════════════
+   THE STUDIO DOOR
+   The end of a lesson used to point at the next lesson. Production
+   said 236 learners finished a lesson and 23 ever made a project,
+   so the door to the studio is now the loudest thing on the card
+   rather than the quiet second button underneath.
+   ══════════════════════════════════════════════════════════════ */
+.sl-completion-card__btn--studio {
+  background: var(--arc-sun);
+  color: var(--ink);
+  font-size: 1.05rem;
+  padding: 0.95rem 1.3rem;
+  width: 100%;
+  text-align: center;
+  line-height: 1.25;
+}
+.sl-completion-card__btn--studio::before {
+  content: '\1F528';
+  margin-right: 0.5rem;
+}
+@media (max-width: 520px) {
+  .sl-completion-card__btn--studio { font-size: 0.98rem; }
+}

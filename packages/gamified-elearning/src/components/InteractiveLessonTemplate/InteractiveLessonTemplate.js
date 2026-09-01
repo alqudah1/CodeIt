@@ -6,6 +6,7 @@ import LessonGuide from '../LessonGuide/LessonGuide';
 import CharacterAvatar from '../CharacterAvatar/CharacterAvatar';
 import './InteractiveLessonTemplate.css';
 import { trackExerciseCompletion, trackStaticLessonCompletion } from '../../utils/progressTracker';
+import { trackEvent } from '../../utils/trackEvent';
 import { getJourneyNext } from '../../pages/Journey/journeyNext';
 import { useProgress } from '../../context/ProgressContext';
 import { AuthContext } from '../../context/AuthContext';
@@ -471,6 +472,12 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   };
 
   // Can the current step be proceeded past?
+  // The one project this lesson unlocks. Null on a lesson that has none, and
+  // every branch below reads it rather than calling builderPromptFor twice —
+  // the button label and the sentence above it must never name different things.
+  const lessonPrompt = builderPromptFor(id);
+  const studioPrompt = completionData.fromJourney ? null : lessonPrompt;
+
   const canProceed = currentStep?.type === 'concept' || isCurrentDone;
 
   // The lesson either side of this one, when there is one. getLessonEntry
@@ -581,16 +588,43 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                 </p>
               );
             })()}
+            {/* ── The studio door ──
+                326 accounts, read from production on 1 Sept: 236 learners
+                finished a lesson and 23 ever made a project. Learners reach
+                the commodity part of this site and almost never reach the
+                part that is ours. The end of a lesson was sending them to
+                the next lesson, and the studio sat underneath as the second
+                button nobody pressed.
+
+                So when the lesson has something to build, that is the door
+                in front. The quiz does not disappear, it moves one place
+                down and still says its own name. This is a test with a
+                number attached: re-read the milestone table in a week. If
+                the build rate moves, this was the bottleneck. If it does
+                not, the hypothesis was wrong and we say so. */}
             <p className="sl-completion-card__cta-hint">
               {completionData.fromJourney
                 ? 'Head back to the Journey Map to continue your path.'
-                : completionData.quizExists
-                  ? `Quiz ${completionData.quizId} is now unlocked. Test what you just learned.`
-                  : 'Nice work. Carry straight on to the next lesson.'}
+                : studioPrompt
+                  ? `You just learned ${title}. Here is something that uses it: ${studioPrompt}. Go and change it until it is yours.`
+                  : completionData.quizExists
+                    ? `Quiz ${completionData.quizId} is now unlocked. Test what you just learned.`
+                    : 'Nice work. Carry straight on to the next lesson.'}
             </p>
             <div className="sl-completion-card__actions">
+              {studioPrompt && (
+                <button
+                  className="sl-completion-card__btn sl-completion-card__btn--primary sl-completion-card__btn--studio"
+                  onClick={() => {
+                    void trackEvent('lesson_to_studio', String(id), token);
+                    navigate(`/builder?prompt=${encodeURIComponent(studioPrompt)}&from=lesson-${id}`);
+                  }}
+                >
+                  Build {studioPrompt}
+                </button>
+              )}
               <button
-                className="sl-completion-card__btn sl-completion-card__btn--primary"
+                className={`sl-completion-card__btn ${studioPrompt ? 'sl-completion-card__btn--builder' : 'sl-completion-card__btn--primary'}`}
                 onClick={() => navigate(completionData.nextRoute)}
               >
                 {completionData.fromJourney
@@ -599,14 +633,6 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                     ? `Start Quiz ${completionData.quizId}`
                     : (Number(completionData.quizId) < TOTAL_LESSONS ? 'Next lesson' : 'Go and build something')}
               </button>
-              {builderPromptFor(id) && (
-                <button
-                  className="sl-completion-card__btn sl-completion-card__btn--builder"
-                  onClick={() => navigate(`/builder?prompt=${encodeURIComponent(builderPromptFor(id))}`)}
-                >
-                  Open this in the studio
-                </button>
-              )}
               <button
                 className="sl-completion-card__btn sl-completion-card__btn--ghost"
                 onClick={() => navigate('/lessons')}
@@ -964,11 +990,11 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
         )}
 
         {/* ── Use this in AI Builder ─────────────────────────── */}
-        {builderPromptFor(id) && (
+        {lessonPrompt && (
           <div className="sl-builder-link">
             <span className="sl-builder-link__label">Want to see this in action?</span>
             <a
-              href={`/builder?prompt=${encodeURIComponent(builderPromptFor(id))}`}
+              href={`/builder?prompt=${encodeURIComponent(lessonPrompt)}&from=lesson-${id}`}
               className="sl-builder-link__btn"
             >
               Open this in the studio
