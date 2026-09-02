@@ -12,7 +12,8 @@ const { recordAIUsage } = require('../aiUsage');
 const { recordMilestoneAndNotify } = require('../progressNotifications');
 const { findShowcaseProject } = require('../showcaseProjects');
 const { initializeProjectRewards, awardProjectXp: persistProjectXp } = require('../projectRewards');
-const { checkAiBuildAllowance } = require('../entitlements');
+const { checkAiBuildAllowance, planForSubscription } = require('../entitlements');
+const { modelForBuild } = require('../modelRouting');
 const { projectName } = require('../projectName');
 const billingStore = require('../billingStore');
 const { assertCanPublish, isBillingConfigured } = require('./billing');
@@ -1589,6 +1590,11 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
     }
   });
 
+  // Which plan is paying for this build. Read from the subscription the
+  // allowance check already loads, so model routing costs no extra query, and
+  // defaulting to 'free' means a billing fault spends less rather than more.
+  let planId = 'free';
+
   // Monthly AI allowance for signed-in accounts. Anonymous visitors are held by
   // the hourly rate limiter above. Falls open if billing is not configured.
   if (isBillingConfigured() && req.user?.user_id) {
@@ -1597,6 +1603,7 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
         billingStore.getSubscriptionByUserId(req.user.user_id),
         billingStore.countAiBuildsThisMonth(req.user.user_id),
       ]);
+      planId = planForSubscription(subscription)?.id || 'free';
       const allowance = checkAiBuildAllowance(subscription, buildsThisMonth);
       if (!allowance.allowed) {
         return res.status(402).json({ code: allowance.code, error: allowance.message });
@@ -1640,7 +1647,7 @@ ${designConfig.category === 'game' ? '• Game must be startable, playable, scor
     try {
       message = await Promise.race([
         createTrackedMessage('build_initial', {
-          model:      'claude-haiku-4-5-20251001',
+          model:      modelForBuild(designConfig.type, planId, 0).model,
           max_tokens: maxTok,
           system:     cached(systemPrompt),
           messages:   [{ role: 'user', content: userMsg }],
@@ -1769,7 +1776,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
       try {
         retryResponse = await Promise.race([
           createTrackedMessage('build_retry', {
-            model:      'claude-haiku-4-5-20251001',
+            model:      modelForBuild(designConfig.type, planId, 1).model,
             max_tokens: maxTok,
             system:     cached(systemPrompt),
             messages: [
