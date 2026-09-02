@@ -71,6 +71,25 @@ const EVENT_META = Object.freeze({
   // Student_Lesson_Progress, which cannot say when one happened relative to
   // anything else. An event can.
   lesson_complete: new Set(),
+
+  // ── The two stages that had no event of any kind ──────────────────────
+  //
+  // Asked for on 2 September 2026: a prospective measurement framework needs
+  // a denominator for "entered the studio" and for "started a lesson", and
+  // neither existed.
+  //
+  // Studio entry was measurable only through two specific doors
+  // (lesson_to_studio, quiz_to_studio), a welcome banner that fires only for
+  // ?welcome=1, and four of the roughly forty links that reach /builder. So
+  // "of learners who entered the studio, how many generated a project" had no
+  // honest denominator. studio_view is every arrival, by any route.
+  //
+  // lesson_start is the counterpart. learning_start already exists but it is
+  // a click on a call to action on the home page and the SEO pages, not a
+  // lesson opening, and using one as the other is the kind of substitution
+  // that produces a number nobody can defend.
+  studio_view: new Set(),
+  lesson_start: new Set(),
 });
 
 const CLIENT_REPORTED_EVENTS = new Set([
@@ -84,6 +103,8 @@ const CLIENT_REPORTED_EVENTS = new Set([
   'shelf_project_reopened', 'project_explained', 'builder_look_inside',
   'publish_refused', 'publish_celebrate_share', 'parent_evidence_open',
   'billing_portal_open', 'billing_checkout_start',
+  // Added 2 September 2026: the two missing denominators.
+  'studio_view', 'lesson_start',
 ]);
 const JOURNEY_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const CAMPAIGN_PATTERN = /^[a-z0-9][a-z0-9-]{1,23}$/;

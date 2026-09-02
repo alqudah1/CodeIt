@@ -268,7 +268,13 @@ describe('studio opening', () => {
     expect(screen.getByRole('button', { name: /Play my changes/i })).toHaveClass('bldr-activation-card__primary');
     fireEvent.click(screen.getByRole('button', { name: /Play my changes/i }));
     expect(screen.getByRole('button', { name: /Keep my project/i })).toHaveClass('bldr-activation-card__primary');
-    expect(trackEvent).toHaveBeenCalledTimes(1);
+    // Counted by name rather than in total. The total was 1 until the studio
+    // started reporting its own arrivals, and a test that fails when an
+    // unrelated event is added is a test about the wrong thing: the invariant
+    // here is that personalising fires exactly one project_personalize, not
+    // that the studio is silent.
+    const personalizeCalls = trackEvent.mock.calls.filter(c => c[0] === 'project_personalize');
+    expect(personalizeCalls).toHaveLength(1);
     expect(trackEvent).toHaveBeenCalledWith('project_personalize', null, null);
   });
 

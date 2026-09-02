@@ -800,6 +800,25 @@ export default function Builder() {
     void trackEvent('new_account_studio_view', null, token);
   }, [isNewAccountWelcome, token, user?.id, user?.userId]);
 
+  // ── Every arrival at the studio, by any route ─────────────────────────────
+  //
+  // new_account_studio_view above fires only for ?welcome=1, and the two
+  // studio doors fire only from a lesson or a quiz. Roughly forty links in
+  // this app reach /builder and four of them said so. That left "of learners
+  // who entered the studio, how many generated a project" with no honest
+  // denominator, which is the first question anyone asks about this page.
+  //
+  // Once per mount rather than once per render, and it does not wait for a
+  // token: a signed-out child in the studio is exactly the arrival we most
+  // need to count.
+  const studioViewSentRef = useRef(false);
+  useEffect(() => {
+    if (studioViewSentRef.current) return;
+    studioViewSentRef.current = true;
+    void trackEvent('studio_view', null, token);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // ── Build state ────────────────────────────────────────────────────────────
   const [prompt, setPrompt]             = useState('');
   const [builtPrompt, setBuiltPrompt]   = useState('');

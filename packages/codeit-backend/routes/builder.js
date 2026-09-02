@@ -2062,6 +2062,18 @@ router.put('/projects/:id', requireAuth, async (req, res) => {
     } else {
       await pool.query('UPDATE ai_projects SET title = ?, updated_at = NOW() WHERE id = ?', [title.trim(), id]);
     }
+
+    // A re-save is a save. This route recorded nothing, so a child who built
+    // something, saved it, improved it and saved it again registered once, and
+    // the second save - the one that says they came back to their own work -
+    // was invisible. Only a full save counts; renaming a project is not one.
+    if (isFullSave) {
+      void recordEvent('project_save', {
+        userId,
+        meta: projectCategory(project_type || 'website'),
+      }).catch(() => {});
+    }
+
     const [rows] = await pool.query('SELECT * FROM ai_projects WHERE id = ? AND user_id = ?', [id, userId]);
     res.json({ success: true, project: rows[0] });
   } catch (err) {

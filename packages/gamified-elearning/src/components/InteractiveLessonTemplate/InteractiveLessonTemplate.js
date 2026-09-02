@@ -200,6 +200,17 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const navigate   = useNavigate();
   const location   = useLocation();
   const { markLessonComplete } = useProgress();
+
+  // ── Opening a lesson ──────────────────────────────────────────────────────
+  //
+  // learning_start already existed, but it is a click on a call to action on
+  // the home page and the SEO pages, not a lesson opening. Using one as the
+  // other would give "of learners who started a lesson, how many finished it"
+  // a denominator counted somewhere else entirely. This is the lesson itself.
+  //
+  // Keyed on the lesson id so moving between lessons counts each one, and
+  // guarded by a ref so a re-render does not.
+  const lessonStartSentRef = useRef(null);
   const { user, token } = useContext(AuthContext) || {};
   const { character } = useCharacter();
   const { xp, level, xpToNext } = usePlayerProgress(token);
@@ -243,6 +254,14 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
 
   // ── Gate: lesson N requires lesson N-1 complete (logged-in users only) ──
   const [gateStatus, setGateStatus] = useState(lessonId === 1 ? 'open' : 'checking');
+  useEffect(() => {
+    if (gateStatus !== 'open') return;          // a locked lesson was not started
+    if (lessonStartSentRef.current === lessonId) return;
+    lessonStartSentRef.current = lessonId;
+    void trackEvent('lesson_start', null, token);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lessonId, gateStatus]);
+
 
   // ── Completion screen ──────────────────────────────────────────────────
   const [completionData, setCompletionData] = useState(null); // { xpEarned, nextRoute }
