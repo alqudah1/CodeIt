@@ -47,22 +47,24 @@ Point 1 is the hard one. Almost every replacement below asks the student to sign
 
 For a middle-school class this is the deciding constraint, not features. Verified today against each platform's own terms:
 
-| Platform | Age minimum | Account required | School email or admin needed | Remix / fork flow | Live URL | Managed Chromebook | Cost |
-|---|---|---|---|---|---|---|---|
-| [CodeHS Free](https://codehs.com/free) | Teacher creates student accounts; no public age gate found (unverified) | Yes, teacher-issued | No | Starter code in assignments; sandbox for free builds | Web projects run in CodeHS | Browser only | Free, no card |
-| [Pickcode](https://pickcode.io/) | Unverified | Yes, teacher-issued | No | Lessons with starter code | Shareable project links (unverified) | Browser only | Free tier for unlimited projects; Pro $500/teacher/yr + ~$5/student/semester |
-| [Scratch](https://scratch.mit.edu/educators/) | Teacher Accounts create student accounts without student email | Yes | No | "Remix" is native and closest in spirit to Glitch | Project page URL | Browser only | Free |
-| [p5.js Web Editor](https://editor.p5js.org/) | Unverified | To save; not to view or run | No | Duplicate a sketch (sign-in needed to save) | Yes, sketch URL | Browser only | Free |
-| [Neocities](https://neocities.org/) | Terms state no minimum for account creation | Yes, one per site | No | None — upload files | Yes, free subdomain | Browser only | Free: 1 GB, 200 GB bandwidth, file-type limits. Supporter $5/mo |
-| [GitHub Pages](https://pages.github.com/) + template repos | **13+** | Yes | No | "Use this template" is the nearest true remix | Yes | Browser only | Free |
-| [GitHub Codespaces](https://github.com/features/codespaces) | **13+** | Yes | No | Open any repo in a browser VS Code | Port forwarding, not permanent hosting | Browser only | Free personal tier: 120 core-hours, 15 GB-months/mo |
-| [Classroom 50](https://classroom50.org/) | 13+ (rides on GitHub accounts) | Yes | You own a GitHub org | Assignment repos, autograded | Via GitHub Pages | Browser + CLI | Free, open source |
-| [CodeSandbox](https://codesandbox.io/) | Unverified | Yes | No | Fork | Yes | Browser only | Free: 400 credits/mo, 20 sandboxes; freezes when credits run out |
-| [StackBlitz](https://stackblitz.com/) | Unverified | To save | No | Fork | Yes | Browser only | Free tier |
-| [Netlify](https://www.netlify.com/) | **13+** | Yes | No | Drag-and-drop deploy | Yes | Browser only | Free tier, no card |
-| [Vercel](https://vercel.com/) | **16+** | Yes | No | Deploy from repo | Yes | Browser only | Free tier |
-| [CodePen](https://codepen.io/) | Terms state services are **not available to minors under 18**; 13–17 require a guardian-created and guardian-managed account | Yes, to save | No | Fork a pen | Pen URL, not a site | Browser only | Free tier |
-| [itch.io](https://itch.io/) | 13+ to use; **18+ or parental consent to publish** | Yes | No | None | Yes, game page | Browser only | Free |
+Every option below needs an account, and an email address to create one. All are browser-based, so they run on a managed Chromebook with nothing to install.
+
+| Platform | Age minimum | School email or admin needed | Remix / fork flow | Live URL | Cost |
+|---|---|---|---|---|---|
+| [CodeHS Free](https://codehs.com/free) | Teacher creates student accounts; no public age gate found (unverified) | No | Starter code in assignments; sandbox for free builds | Web projects run in CodeHS | Free, no card |
+| [Pickcode](https://pickcode.io/) | Unverified | No | Lessons with starter code | Shareable project links (unverified) | Free tier for unlimited projects; Pro $500/teacher/yr + ~$5/student/semester |
+| [Scratch](https://scratch.mit.edu/educators/) | Teacher Accounts create student accounts without student email | No | "Remix" is native and closest in spirit to Glitch | Project page URL | Free |
+| [p5.js Web Editor](https://editor.p5js.org/) | Unverified | No | Duplicate a sketch (sign-in needed to save) | Yes, sketch URL | Free |
+| [Neocities](https://neocities.org/) | Terms state no minimum for account creation | No | None — upload files | Yes, free subdomain | Free: 1 GB, 200 GB bandwidth, file-type limits. Supporter $5/mo |
+| [GitHub Pages](https://pages.github.com/) + template repos | **13+** | No | "Use this template" is the nearest true remix | Yes | Free |
+| [GitHub Codespaces](https://github.com/features/codespaces) | **13+** | No | Open any repo in a browser VS Code | Port forwarding, not permanent hosting | Free personal tier: 120 core-hours, 15 GB-months/mo |
+| [Classroom 50](https://classroom50.org/) | 13+ (rides on GitHub accounts) | You own a GitHub org | Assignment repos, autograded | Via GitHub Pages | Free, open source |
+| [CodeSandbox](https://codesandbox.io/) | Unverified | No | Fork | Yes | Free: 400 credits/mo, 20 sandboxes; freezes when credits run out |
+| [StackBlitz](https://stackblitz.com/) | Unverified | No | Fork | Yes | Free tier |
+| [Netlify](https://www.netlify.com/) | **13+** | No | Drag-and-drop deploy | Yes | Free tier, no card |
+| [Vercel](https://vercel.com/) | **16+** | No | Deploy from repo | Yes | Free tier |
+| [CodePen](https://codepen.io/) | Terms state services are **not available to minors under 18**; 13–17 require a guardian-created and guardian-managed account | No | Fork a pen | Pen URL, not a site | Free tier |
+| [itch.io](https://itch.io/) | 13+ to use; **18+ or parental consent to publish** | No | None | Yes, game page | Free |
 
 Two entries in that table surprise most teachers. **Vercel is 16+, not 13+** — most guides get this wrong, and it quietly rules out every middle school. **CodePen's terms are stricter than its reputation**: they state the service is not available to minors, with 13–17-year-olds requiring a guardian-managed account. Read that clause yourself before you put thirty student sign-ups through it.
 
@@ -574,7 +576,7 @@ Lessons completed and levels cleared are attendance records. They say the child 
 
 ### Disclosure: we make a tool in this space
 
-We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5 to 18, so treat this as an ad. A learner describes a website, game or quiz; AI builds a working first version in plain HTML, CSS and JavaScript; the learner then changes it in place, moving elements, picking colours and fonts, or asking for a change in plain language, with no rebuild and no wait, and a separate view shows which programming ideas the finished project uses and links each one to its lesson. Errors are caught in the sandbox, rewritten in plain language and pointed at the learner's own line number, and one button restores the last version that ran. Understanding checks are generated from the learner's own file, with wrong answers taken from other real values in that file, and **only first-attempt correct answers are recorded** for the parent view. Finished work sits on a shelf on the front page instead of being overwritten by the next project. Profiles for ages 5 to 12 are parent-managed and email-verified; independent accounts start at 13. Free now, no card required.
+We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5 to 18, so treat this as an ad. A learner describes a website, game or quiz, and AI builds a working first version in plain HTML, CSS and JavaScript. They then change it in place: moving elements, picking colours and fonts, or asking for a change in plain language. A separate view shows which programming ideas the finished project uses, and links each one to its lesson. Errors are caught in the sandbox, rewritten in plain language and pointed at the learner's own line number, and one button restores the last version that ran. Understanding checks are generated from the learner's own file, with wrong answers taken from other real values in that file, and **only first-attempt correct answers are recorded** for the parent view. Finished work sits on a shelf on the front page instead of being overwritten by the next project. Profiles for ages 5 to 12 are parent-managed and email-verified; independent accounts start at 13. Free now, no card required.
 
 **Who this is not for.** We have no study showing this improves learning outcomes, and we do not claim this evidence proves a child could write code from scratch or transfer the idea elsewhere — the limits above apply to us too. Managed under-13 profiles cannot publish publicly. There are 31 beginner Python lessons and **no web curriculum**; the web side is the builder itself. If your household rule is no AI at all, we generate code, so we are wrong for you. For Minecraft or Roblox mods, see [Tynker](https://www.tynker.com/); for coding games, [CodeCombat](https://codecombat.com/); for a professional workflow, a teenager should use real developer tools. We have no school, district or teacher-dashboard product.
 
@@ -643,7 +645,7 @@ If the project was a static site (HTML, CSS, JavaScript, no server), the files w
 
 ## Where to go now, by what you were using Glitch for
 
-| You used Glitch to… | Best move now | Real friction |
+| You used Glitch to… | Best move now | What you actually run into |
 |---|---|---|
 | Host a static site (HTML/CSS/JS) | [Neocities](https://neocities.org/) or [GitHub Pages](https://pages.github.com/) | Neocities: account + email; its terms state no minimum age. GitHub Pages: **13+ required**, and you need basic repo concepts. |
 | Host a static site with drag-and-drop | [Netlify](https://www.netlify.com/) drop | Account required; terms state 13+. No card for the free tier. |
@@ -716,16 +718,18 @@ If your project is HTML, CSS and JavaScript only, it is a **static site**, and s
 
 ## The options, with the real friction
 
-| Option | Account | Email | Card | Git / CLI | Minimum age | Free custom domain |
-|---|---|---|---|---|---|---|
-| [Neocities](https://neocities.org/) | Yes | Yes | No | No — upload files in the browser | Terms state none | No (paid feature) |
-| [GitHub Pages](https://pages.github.com/) | Yes | Yes | No | Some. Repo concepts at minimum | **13+** | Yes, if you own a domain |
-| [Netlify](https://www.netlify.com/) drop | Yes | Yes | No | No — drag a folder | 13+ | Yes, if you own a domain |
-| [Vercel](https://vercel.com/) | Yes | Yes | No | Usually git or CLI | **16+** | Yes, if you own a domain |
-| [Nekoweb](https://nekoweb.org/) | Yes | Yes | No | No — browser editor | Check current terms | No |
-| [Cloudflare Pages](https://pages.cloudflare.com/) | Yes | Yes | No | Git or CLI | 13+ (18 to contract) | Yes, if you own a domain |
-| [CodePen](https://codepen.io/) | Yes | Yes | No | No | 13+ | No |
-| [itch.io](https://itch.io/) (games) | Yes | Yes | No | No — upload a zip | 13 to use; **18+ or guardian consent to publish** | No |
+Every option below needs an account and an email address. None of them asks for a card on the free tier.
+
+| Option | Git / CLI | Minimum age | Free custom domain |
+|---|---|---|---|
+| [Neocities](https://neocities.org/) | No — upload files in the browser | Terms state none | No (paid feature) |
+| [GitHub Pages](https://pages.github.com/) | Some. Repo concepts at minimum | **13+** | Yes, if you own a domain |
+| [Netlify](https://www.netlify.com/) drop | No — drag a folder | 13+ | Yes, if you own a domain |
+| [Vercel](https://vercel.com/) | Usually git or CLI | **16+** | Yes, if you own a domain |
+| [Nekoweb](https://nekoweb.org/) | No — browser editor | Check current terms | No |
+| [Cloudflare Pages](https://pages.cloudflare.com/) | Git or CLI | 13+ (18 to contract) | Yes, if you own a domain |
+| [CodePen](https://codepen.io/) | No | 13+ | No |
+| [itch.io](https://itch.io/) (games) | No — upload a zip | 13 to use; **18+ or guardian consent to publish** | No |
 
 "Free custom domain" means the host serves a domain you own at no extra charge — you still buy the domain separately. "No card" means the free tier does not ask for one at signup; that can change, so check before relying on it.
 
@@ -861,17 +865,17 @@ The practical upshot for anyone following an old tutorial: the code mostly still
 
 A reasonable order: plain JavaScript first, then KAPLAY or p5.js depending on whether the interest is arcade games or visual art, then Phaser if the projects outgrow it.
 
-## Where a browser game can be shared
-
-A browser game is a website, so everything on the publishing side applies. Any static host will serve it: [Neocities](https://neocities.org/), [GitHub Pages](https://pages.github.com/) (13+ to hold an account), [Netlify](https://www.netlify.com/).
-
-[itch.io](https://itch.io/) is the natural home for games specifically, and it accepts HTML5 uploads as a zip. Note its terms carefully before assuming a child can use it: players must be 13 or older, and **publishers must be 18 or older, or have parental or guardian consent.** For a young creator that means a parent is involved by design, not by accident.
-
 ## What to build first
 
 Something too small. The most common failure is a first project scoped like a commercial game, which stalls in week two and ends the interest.
 
 A good first browser game has one mechanic, one screen, no levels, no saving and no menu. Snake, Pong or a clicker teaches the loop, input handling and collision detection — most of what any 2D game is. Add a second thing only after the first works.
+
+## Where a browser game can be shared
+
+A browser game is a website, so everything on the publishing side applies. Any static host will serve it: [Neocities](https://neocities.org/), [GitHub Pages](https://pages.github.com/) (13+ to hold an account), [Netlify](https://www.netlify.com/).
+
+[itch.io](https://itch.io/) is the natural home for games specifically, and it accepts HTML5 uploads as a zip. Note its terms carefully before assuming a child can use it: players must be 13 or older, and **publishers must be 18 or older, or have parental or guardian consent.** For a young creator that means a parent is involved by design, not by accident.
 
 ---
 
@@ -1254,7 +1258,7 @@ We are going to be direct: **CodeIt is not a relevant recommendation for the aud
 
 For school-facing coding curriculum specifically, the established options are [CodeAI](https://code.org/en-US/codeai) (formerly Code.org, free, K–12), [CodeHS](https://codehs.com/) (grades 6–12), [Kodable](https://www.kodable.com/) for K-5, and [Scratch](https://scratch.mit.edu/) (free, MIT). Evaluate those through the process above rather than taking our word for it.
 
-We wrote this page because the facts were being reported wrongly — specifically the widespread claim that Common Sense stopped rating edtech entirely, when its privacy program demonstrably still issues new ratings. Getting that on the record is the only thing we wanted from it.`,
+We wrote this page because the facts were being reported wrongly — specifically the widespread claim that Common Sense stopped rating edtech entirely, when its privacy program demonstrably still issues new ratings.`,
   },
   {
     slug: "replit-teams-for-education-shut-down",
@@ -1407,7 +1411,7 @@ Free plan: no card, ten AI-assisted builds a month, and the lessons and Python p
 
 ## The version of this page you should trust
 
-Any comparison page written by one of the products is worth reading sceptically, including this one. The test is whether it tells you when to buy the competitor. This one does, three times, in the section above. If a page never does that, it is an advert.
+Any comparison page written by one of the products is worth reading sceptically, including this one. The test is whether it tells you when to buy the competitor. If a page never does that, it is an advert.
 ## Common questions
 
 **Is Tynker worth it?**
@@ -1598,6 +1602,12 @@ Blocks start feeling babyish somewhere around 11 or 12. But the adult text-code 
 
 If your 13-year-old is thriving in Scratch, leave them there. This band is about the ones who have stopped.
 
+## The one rule that matters more than the age bands
+
+Ages are a starting guess, not a verdict. A confident 9-year-old belongs in the 12-to-15 advice and a hesitant 13-year-old belongs in Scratch, and neither is a problem.
+
+Watch what happens when they get stuck. A child in the right tool gets annoyed and tries again. A child in the wrong tool goes quiet and finds something else to do. That signal is more reliable than any age range on this page, including ours.
+
 ## Ages 16 and up: use the real thing
 
 At this point the honest advice is to stop using anything designed for children.
@@ -1617,11 +1627,6 @@ At this point the honest advice is to stop using anything designed for children.
 
 Every row is argued in the section of the same name below, including where we are not the answer.
 
-## The one rule that matters more than the age bands
-
-Ages are a starting guess, not a verdict. A confident 9-year-old belongs in the 12-to-15 advice and a hesitant 13-year-old belongs in Scratch, and neither is a problem.
-
-Watch what happens when they get stuck. A child in the right tool gets annoyed and tries again. A child in the wrong tool goes quiet and finds something else to do. That signal is more reliable than any age range on this page, including ours.
 ## Common questions
 
 **What age should kids start coding?**
@@ -1748,7 +1753,7 @@ Ignore the rankings, including this one. Three questions settle it:
 
 ## Disclosure
 
-We build CodeIt, which is one of the five options above. A comparison written by one of the products is worth reading sceptically. The test is whether it tells you when to buy a competitor, and this one does that four times: Scratch for a first experience, Tynker for pre-readers and for Minecraft, Code.org for a free structured curriculum, and CodeMonkey for a child who likes puzzles. If a page like this never sends you elsewhere, it is an advert.
+We build CodeIt, which is one of the five options above. A comparison written by one of the products is worth reading sceptically. The test is whether it tells you when to buy a competitor. If a page like this never sends you elsewhere, it is an advert.
 ## Common questions
 
 **What is the best coding platform for kids?**
