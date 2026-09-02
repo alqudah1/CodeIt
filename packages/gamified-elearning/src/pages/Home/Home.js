@@ -266,7 +266,7 @@ export default function Home() {
                   everyone has to pay first. */}
               <YourShelf
                 projects={shelf}
-                onOpen={(project) => trackEvent("landing_cta_click", `shelf-${project.projectType}`)}
+                onOpen={() => trackEvent("landing_cta_click", "shelf")}
               />
 
               <div className="pick">
@@ -283,7 +283,7 @@ export default function Home() {
                       <Link
                         className="pick__card"
                         to={`/builder?start=${game.id}`}
-                        onClick={() => trackEvent("landing_cta_click", `starter-${game.id}`)}
+                        onClick={() => trackEvent("landing_cta_click", "starter")}
                       >
                         <span className="pick__emoji" aria-hidden="true">{game.emoji}</span>
                         <span className="pick__label">{game.label}</span>

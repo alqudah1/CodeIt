@@ -456,7 +456,7 @@ export default function Quiz() {
                 <button
                   className="qz-btn-forward qz-btn-forward--studio"
                   onClick={() => {
-                    void trackEvent('quiz_to_studio', String(quizId), token);
+                    void trackEvent('quiz_to_studio', null, token);
                     navigate(`/builder?prompt=${encodeURIComponent(studioPrompt)}&from=quiz-${quizId}`);
                   }}
                 >

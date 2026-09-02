@@ -616,7 +616,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                 <button
                   className="sl-completion-card__btn sl-completion-card__btn--primary sl-completion-card__btn--studio"
                   onClick={() => {
-                    void trackEvent('lesson_to_studio', String(id), token);
+                    void trackEvent('lesson_to_studio', null, token);
                     navigate(`/builder?prompt=${encodeURIComponent(studioPrompt)}&from=lesson-${id}`);
                   }}
                 >

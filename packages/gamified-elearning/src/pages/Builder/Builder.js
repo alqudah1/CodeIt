@@ -819,6 +819,13 @@ export default function Builder() {
   const [hasPersonalized, setHasPersonalized] = useState(false);
   const [hasPlayedOnce, setHasPlayedOnce] = useState(false);
   const [hasTestedLatest, setHasTestedLatest] = useState(false);
+  // The message listener below is registered once, so it cannot read state.
+  // These refs carry the two values it needs. playedReportedRef resets with
+  // every new build, so 'project_played' is one event per project rather than
+  // one per click.
+  const playedReportedRef = useRef(false);
+  const tokenRef = useRef(null);
+  useEffect(() => { tokenRef.current = token; }, [token]);
   const [guestDraftRecovered, setGuestDraftRecovered] = useState(false);
   const [guideLevelOverride, setGuideLevelOverride] = useState(storedGuideLevelOverride);
   const [coachOpen, setCoachOpen] = useState(() => learnerGuideLevel(user) !== 'independent');
@@ -1015,6 +1022,7 @@ export default function Builder() {
   function trackPersonalizationOnce() {
     setHasPersonalized(true);
     setHasTestedLatest(false);
+    playedReportedRef.current = false;
     // A changed project must be opened again before it can pass the quality
     // check. Leaving play mode makes that next action unambiguous.
     setIsPlayMode(false);
@@ -1766,6 +1774,16 @@ export default function Builder() {
       if (d.type === 'CODEIT_PLAYED') {
         // Students naturally test by using the buttons inside their game or
         // website—not by finding a separate CodeIt control.
+        //
+        // This is also the gate on Save and Publish, and until 1 September
+        // 2026 it emitted nothing, so the drop between a project being
+        // generated and a project being saved could not be attributed to
+        // anything. Fired once per build, not once per click, because the
+        // question is whether the child touched their project at all.
+        if (!playedReportedRef.current) {
+          playedReportedRef.current = true;
+          void trackEvent('project_played', null, tokenRef.current);
+        }
         setHasPlayedOnce(true);
         setHasTestedLatest(true);
       }
@@ -1862,6 +1880,7 @@ export default function Builder() {
     setHasPersonalized(false);
     setHasPlayedOnce(false);
     setHasTestedLatest(false);
+    playedReportedRef.current = false;
     setCoachOpen(true);
     setGuestDraftRecovered(false);
     const previewType = detectProjectType(text);
@@ -2449,6 +2468,7 @@ export default function Builder() {
     setHasPersonalized(false);
     setHasPlayedOnce(false);
     setHasTestedLatest(false);
+    playedReportedRef.current = false;
     setGuestDraftRecovered(false);
     setSelectedEl(null);
     setShowElPanel(false);

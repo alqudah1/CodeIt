@@ -1,4 +1,5 @@
 const express = require('express');
+const { recordEvent } = require('../analytics');
 const pool = require('../db');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
@@ -88,6 +89,14 @@ router.post('/:id/complete', authenticateToken, async (req, res) => {
         title: lessonRows[0].title || `Lesson ${lessonId}`,
         detail: `Earned ${xpReward} XP`,
       }).catch(error => console.error('Lesson milestone error:', error.message));
+
+      // The milestone table counts lesson completions by reading
+      // Student_Lesson_Progress, which can say how many but never when, and
+      // never in relation to anything else. Without an event, the question
+      // "did this learner reach the studio after finishing a lesson" has no
+      // answer even in principle. Fired only on a first completion, so a
+      // repeat visit to a finished lesson does not inflate it.
+      void recordEvent('lesson_complete', { userId }).catch(() => {});
     }
 
     res.json({
