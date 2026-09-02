@@ -824,6 +824,13 @@ export default function Builder() {
   const [builtPrompt, setBuiltPrompt]   = useState('');
   const [code, setCode]                 = useState('');
   const [builtSummary, setBuiltSummary] = useState('');
+  // True when the server could not build the child's idea and served a canned
+  // starter instead. Walked on 1 September 2026: three specific prompts, three
+  // generic templates. A child who asked for a cat jumping over boxes was
+  // handed "Click the stars before they disappear" under a heading made from
+  // their own words. They know instantly that it did not listen, and no amount
+  // of routing them to the studio survives that.
+  const [isStarter, setIsStarter] = useState(false);
   const [aiTitle, setAiTitle]           = useState('');
   const [projectType, setProjectType]   = useState('website');
   const [conceptsUsed, setConceptsUsed] = useState([]);
@@ -1042,6 +1049,7 @@ export default function Builder() {
     setHasPersonalized(true);
     setHasTestedLatest(false);
     playedReportedRef.current = false;
+    setIsStarter(false);
     // A changed project must be opened again before it can pass the quality
     // check. Leaving play mode makes that next action unambiguous.
     setIsPlayMode(false);
@@ -1900,6 +1908,7 @@ export default function Builder() {
     setHasPlayedOnce(false);
     setHasTestedLatest(false);
     playedReportedRef.current = false;
+    setIsStarter(false);
     setCoachOpen(true);
     setGuestDraftRecovered(false);
     const previewType = detectProjectType(text);
@@ -1948,8 +1957,12 @@ export default function Builder() {
       if (!isValidHtml(html)) throw new Error('The builder returned an incomplete page. Please try again.');
       setCode(html);
       setBuiltPrompt(text);
-      setBuiltSummary(data.isFallback ? 'Starter ready. Add your own details next' : (data.summary || ''));
-      setAiTitle(data.title || '');
+      setIsStarter(Boolean(data.isFallback));
+      setBuiltSummary(data.isFallback ? '' : (data.summary || ''));
+      // A starter must not wear the child's title. "Game where a cat jumps"
+      // printed above a star-clicking game is the sentence that teaches a
+      // nine-year-old this site does not listen.
+      setAiTitle(data.isFallback ? '' : (data.title || ''));
       setProjectType(data.type || 'website');
       setConceptsUsed(Array.isArray(data.conceptsUsed) ? data.conceptsUsed : []);
       setPromptHistory([text]);
@@ -2488,6 +2501,7 @@ export default function Builder() {
     setHasPlayedOnce(false);
     setHasTestedLatest(false);
     playedReportedRef.current = false;
+    setIsStarter(false);
     setGuestDraftRecovered(false);
     setSelectedEl(null);
     setShowElPanel(false);
@@ -2733,7 +2747,7 @@ export default function Builder() {
   const mineThemes = guideLevel === 'early' ? FIRST_CHANGE_THEMES : PRESET_PALETTES;
   const coachStage = !code
     ? prompt.trim()
-      ? { number: 2, icon: '🟣', title: 'Press “Build my project”', detail: 'The big purple button makes your idea.', target: 'build' }
+      ? { number: 2, icon: '🟠', title: 'Press “Build my project”', detail: 'The big orange button makes your idea.', target: 'build' }
       // Step 1 used to read "Press Game, Website, or Quiz", which points at the
       // buttons that send an idea to the model and then show a blank screen for
       // ten to twenty seconds. That is the slowest path in the product, and it
@@ -3315,6 +3329,11 @@ export default function Builder() {
                   ))}
                 </div>
               </div>
+              {/* Said out loud, in the child's words, because the alternative
+                  is letting them work it out for themselves. A build that
+                  quietly hands back a template teaches a nine-year-old that
+                  the site does not listen, and that lesson is not recoverable
+                  by a nicer button somewhere else. */}
               <div className="bldr-success-banner__copy">
                 {/* One row: the name, then the honest state as a small sticker.
                     The escalation still earns itself — ready → personalized by
@@ -3326,14 +3345,32 @@ export default function Builder() {
                     strangers are. And builtSummary restated what the child is
                     looking at. Between them and the shelf below, the game
                     started a full card lower than it needed to. */}
-                <h2 className="bldr-success-banner__name">{projectName}</h2>
+                <h2 className="bldr-success-banner__name">{isStarter ? 'A starter to change' : projectName}</h2>
                 <span className="bldr-success-banner__label">
-                  {editCount > 0
-                    ? `${editCount} edit${editCount > 1 ? 's' : ''} applied`
-                    : hasPersonalized ? 'Personalized by you' : 'Ready for your first change'}
+                  {isStarter
+                    ? 'Not your idea yet'
+                    : editCount > 0
+                      ? `${editCount} edit${editCount > 1 ? 's' : ''} applied`
+                      : hasPersonalized ? 'Personalized by you' : 'Ready for your first change'}
                 </span>
                 {isSaved && <span className="bldr-success-banner__saved">Saved</span>}
               </div>
+              {isStarter && (
+                <div className="bldr-starter-notice" role="status">
+                  <strong>I could not build your idea just now.</strong>
+                  <p>
+                    This is a starter you can change instead. Your words are still in the box, so
+                    you can press Build again and it will try properly.
+                  </p>
+                  <button
+                    type="button"
+                    className="bldr-starter-notice__retry"
+                    onClick={() => { if (builtPrompt) { setPrompt(builtPrompt); callBuilder(builtPrompt); } }}
+                  >
+                    Try my idea again
+                  </button>
+                </div>
+              )}
               <div className="bldr-success-banner__deck">
                 {/* The controls that lived on their own empty shelf below.
                     A marquee with the knobs on it is an arcade cabinet; a
@@ -4310,7 +4347,17 @@ export default function Builder() {
               <button
                 type="button"
                 className="bldr-startover"
-                onClick={() => setShowStartOver(open => !open)}
+                onClick={() => setShowStartOver(open => {
+                  const opening = !open;
+                  // Opening this box used to leave the last idea in the
+                  // textarea, so a child typing their second idea sent
+                  // "a game where a cat jumps over boxesa website about my
+                  // dog Rex" as one prompt without ever seeing it happen.
+                  // Closing it puts their idea back, because changing your
+                  // mind about starting over should not cost you your words.
+                  setPrompt(opening ? '' : builtPrompt);
+                  return opening;
+                })}
                 aria-expanded={showStartOver}
               >
                 {showStartOver ? 'Back to my project' : '+ Make something else'}
@@ -4501,7 +4548,7 @@ export default function Builder() {
 
                 <div className="bldr-edit-panel__guide" role="group" aria-label="How to change your project">
                   <span><b>1</b> Pick an idea</span>
-                  <span><b>2</b> Press the purple button</span>
+                  <span><b>2</b> Press the orange button</span>
                   <span><b>3</b> Play it again</span>
                 </div>
 

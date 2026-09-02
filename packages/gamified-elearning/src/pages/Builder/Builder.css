@@ -6724,3 +6724,48 @@ details.bldr-device-sizes .bldr-device-sizes__options {
   .pixel-guide--inline .pixel-guide__bubble { max-width: none; flex: 1; }
   .pixel-guide--inline .pixel-guide__pal { width: 56px; height: 56px; flex: none; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   THE STARTER NOTICE
+   When the server cannot build the child's idea it returns a
+   canned starter. Until 2 September 2026 the studio presented
+   that starter as their project, under a heading made from their
+   own words: "Game where a cat jumps" above a star-clicking game.
+   A nine-year-old reads that and knows the thing did not listen.
+   So it says so, in their words, with the way back.
+   ══════════════════════════════════════════════════════════════ */
+.bldr-starter-notice {
+  width: 100%;
+  margin: 0 0 0.85rem;
+  padding: 0.85rem 1rem;
+  background: #FFF4E5;
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 16px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53,34,14,0.9));
+}
+.bldr-starter-notice strong {
+  display: block;
+  font-family: var(--font-display, inherit);
+  font-size: 1.02rem;
+  color: var(--ink, #35220E);
+  margin-bottom: 0.3rem;
+}
+.bldr-starter-notice p {
+  margin: 0 0 0.7rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #4A3722;
+}
+.bldr-starter-notice__retry {
+  font-family: var(--font-display, inherit);
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  border: 2.5px solid var(--ink, #35220E);
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  cursor: pointer;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53,34,14,0.9));
+}
+.bldr-starter-notice__retry:active { transform: translateY(3px); box-shadow: none; }
