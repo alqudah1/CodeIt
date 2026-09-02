@@ -831,6 +831,23 @@ export default function Builder() {
   // their own words. They know instantly that it did not listen, and no amount
   // of routing them to the studio survives that.
   const [isStarter, setIsStarter] = useState(false);
+
+  // ── The link a child can send with no account ────────────────────────────
+  //
+  // Watched in a classroom: a nine-year-old typed forty words describing a
+  // two-player fighting game and finished the sentence with "so i can play
+  // with my friends". That is why they built it. There was no way to do it.
+  //
+  // Sharing needed an account, a save, a personalisation and a play, and then
+  // a publish. Five gates between making a thing and handing it to someone.
+  //
+  // Unlisted projects were built for exactly this and shipped complete: the
+  // route, the rate limit, the report flag, the tables created in production
+  // on 1 September. Nothing in the browser had ever called them. This is the
+  // call. No account, no email, no personal data, and the link is the only
+  // credential.
+  const [friendLink, setFriendLink] = useState(null);
+  const [friendStatus, setFriendStatus] = useState(null);
   const [aiTitle, setAiTitle]           = useState('');
   const [projectType, setProjectType]   = useState('website');
   const [conceptsUsed, setConceptsUsed] = useState([]);
@@ -2514,6 +2531,34 @@ export default function Builder() {
     setShowWow(false);
     promptRef.current?.focus();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSendToFriend = async () => {
+    if (!code || friendStatus === 'making') return;
+    setFriendStatus('making');
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/builder/unlisted`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code,
+          title: projectName || 'My project',
+          projectType,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error || 'Could not make a link.');
+      const url = `${window.location.origin}${data.path}`;
+      setFriendLink(url);
+      setFriendStatus('ready');
+      void trackEvent('project_share', 'creator', token);
+      // The link is the deliverable, so it is put on the clipboard straight
+      // away as well as shown. A child who taps once and walks off with it
+      // has still got what they came for.
+      try { await navigator.clipboard.writeText(url); } catch (_) {}
+    } catch (error) {
+      setFriendStatus('error');
+    }
   };
 
   // ── Share project ──────────────────────────────────────────────────────────
@@ -4463,6 +4508,37 @@ export default function Builder() {
                     : user?.managedProfile ? 'Private profile' : 'Share'}
                 </button>
               ))}
+
+              {/* ── Send it to a friend ──────────────────────────────────
+                  Available the moment something exists, with no account, no
+                  save and no publish in front of it. Publishing is still
+                  there and still does more: it puts the project in Explore,
+                  counts plays, and lets other children remix it. This is the
+                  smaller thing a child actually asked for. */}
+              {code && !isStarter && !isPublished && (
+                <div className="bldr-friend">
+                  <button
+                    className="bldr-action-btn bldr-action-btn--friend"
+                    onClick={handleSendToFriend}
+                    disabled={editing || friendStatus === 'making'}
+                  >
+                    {friendStatus === 'making'
+                      ? <><span className="bldr-spinner bldr-spinner--sm" />Making a link...</>
+                      : friendStatus === 'error' ? 'Try again'
+                      : friendStatus === 'ready' ? 'Link copied. Send it!'
+                      : 'Send it to a friend'}
+                  </button>
+                  {friendLink && (
+                    <p className="bldr-friend__link" role="status">
+                      <span className="bldr-friend__url">{friendLink}</span>
+                      <span className="bldr-friend__note">
+                        Anyone with this link can play it. It is not listed anywhere and it does not
+                        need an account.
+                      </span>
+                    </p>
+                  )}
+                </div>
+              )}
 
               {/* The reason, in the server's own words, and it stays put. It
                   used to vanish after three seconds — long enough to be seen

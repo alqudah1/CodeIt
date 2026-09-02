@@ -15,6 +15,8 @@ import {
 
 export default function PublicProject() {
   const { publicId }        = useParams();
+  // "u-" marks a link nobody had to make an account to create.
+  const unlistedId = /^u-[a-f0-9]{12}$/.test(publicId || '') ? publicId.slice(2) : null;
   const { user, token }     = useContext(AuthContext);
   const navigate            = useNavigate();
 
@@ -52,12 +54,38 @@ export default function PublicProject() {
     let cancelled = false;
     async function load() {
       try {
-        const res  = await fetch(`${API_BASE_URL}/api/builder/pub/${publicId}`);
+        // ── Two kinds of link on one route ────────────────────────────────
+        //
+        // A published project belongs to an account and lives at
+        // /project/<id>. An unlisted one belongs to nobody, collects no
+        // personal data, and the server mints it at /project/u-<id>.
+        //
+        // The unlisted feature shipped complete: the route, the rate limit,
+        // the report flag, the tables created in production on 1 September.
+        // Nothing in the browser had ever called it, and the server was
+        // handing back a path this page could not read, because it sent
+        // "u-<id>" to an endpoint that only knows published ids.
+        //
+        // A prefix rather than a second route, so the four lists that have to
+        // agree for any new URL stay as they are.
+        const res = await fetch(unlistedId
+          ? `${API_BASE_URL}/api/builder/unlisted/${unlistedId}`
+          : `${API_BASE_URL}/api/builder/pub/${publicId}`);
         const data = await res.json();
         if (!res.ok || !data.success) throw new Error(data.error || 'Not found');
-        if (!cancelled) setProject(data.project);
-        // Fire-and-forget view count
-        fetch(`${API_BASE_URL}/api/builder/pub/${publicId}/view`, { method: 'POST' }).catch(() => {});
+        if (!cancelled) {
+          // The two endpoints name the code field differently. Normalised here
+          // rather than in the render, so nothing below has to know which kind
+          // of link it is looking at.
+          setProject(unlistedId
+            ? { ...data.project, generated_code: data.project.code }
+            : data.project);
+        }
+        // Fire-and-forget view count. The unlisted read counts its own views
+        // server-side, so this only applies to published projects.
+        if (!unlistedId) {
+          fetch(`${API_BASE_URL}/api/builder/pub/${publicId}/view`, { method: 'POST' }).catch(() => {});
+        }
       } catch (err) {
         if (!cancelled) setError(err.message);
       } finally {
@@ -66,7 +94,7 @@ export default function PublicProject() {
     }
     load();
     return () => { cancelled = true; };
-  }, [publicId]);
+  }, [publicId, unlistedId]);
 
   // After login redirect, auto-complete remix if intent was saved
   useEffect(() => {
@@ -240,6 +268,7 @@ export default function PublicProject() {
               >
                 Build your own
               </Link>
+              {!unlistedId && (
               <button
                 className="pp-cta-btn pp-cta-btn--remix"
                 onClick={handleRemix}
@@ -250,6 +279,7 @@ export default function PublicProject() {
                   : remixStatus === 'error' ? 'Try again'
                   : 'Remix this'}
               </button>
+              )}
               <button
                 className="pp-cta-btn pp-cta-btn--copy"
                 onClick={handleShare}

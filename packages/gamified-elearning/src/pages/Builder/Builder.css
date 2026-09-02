@@ -6794,3 +6794,43 @@ details.bldr-device-sizes .bldr-device-sizes__options {
   min-height: 0;
 }
 .bldr-shelf__play { margin-top: auto; }
+
+/* ══════════════════════════════════════════════════════════════
+   SEND IT TO A FRIEND
+   "so i can play with my friends" is how a nine-year-old finished
+   a forty-word description of a two-player game. It was the
+   reason they built it, and there were five gates between making
+   the thing and handing it to someone: account, save, change,
+   play, publish. This is the door with none of them.
+   ══════════════════════════════════════════════════════════════ */
+.bldr-friend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+.bldr-action-btn--friend {
+  background: var(--arc-mint, #27AE7E);
+  color: #fff;
+}
+.bldr-friend__link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  background: var(--paper, #FFFDF7);
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 12px;
+}
+.bldr-friend__url {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+  color: var(--ink, #35220E);
+  word-break: break-all;
+}
+.bldr-friend__note {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #6B5540;
+}
