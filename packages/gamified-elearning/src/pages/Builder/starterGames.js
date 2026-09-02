@@ -64,7 +64,16 @@ const SHARED_STYLE = `
     position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 2;
     margin: 0; padding: 7px 16px; border-radius: 99px;
     background: rgba(0,0,0,.42); font-size: 14px; opacity: .9; pointer-events: none;
-    white-space: nowrap;
+    /* It used to be white-space: nowrap, and three of the eleven starter
+       games scrolled sideways on a phone because of it: maze at 422px,
+       cat-chase at 413px and whack at 406px, on a 390px screen. The hint is
+       centred with translateX(-50%), so a line it cannot break pushes past
+       both edges and drags the whole page with it. The longest three tips
+       measure 455, 436 and 422 pixels. Every tip is short enough to stay on
+       one line on any normal screen, so this only ever fires where it has
+       to. */
+    max-width: calc(100% - 24px);
+    text-align: center;
     /* Gets out of the way on its own. A first-time hint that never leaves ends
        up sitting on top of the game. In the catch game it printed straight
        across the basket. */
@@ -1918,7 +1927,7 @@ ${SHARED_STYLE}
     position: absolute; left: 50%; top: 9%; transform: translateX(-50%);
     z-index: 2; margin: 0; font-size: 17px; font-weight: 700;
     background: rgba(0,0,0,.32); padding: 7px 18px; border-radius: 99px;
-    white-space: nowrap;
+    max-width: calc(100% - 24px); text-align: center;
   }
 </style>
 </head>

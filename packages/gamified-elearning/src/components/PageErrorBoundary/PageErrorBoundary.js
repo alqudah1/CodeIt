@@ -40,7 +40,12 @@ class PageErrorBoundary extends React.Component {
   render() {
     if (!this.state.failed) return this.props.children;
     return (
-      <div className="page-error" role="alert">
+      // data-page-error is what smoke-every-page.cjs looks for. Without it the
+      // boundary hides the very failure the smoke run exists to find: a page
+      // that crashes now paints a friendly card, which is more than five words,
+      // so a blank-page check calls it healthy. The boundary was added the same
+      // day as the checker and nearly blinded it.
+      <div className="page-error" role="alert" data-page-error="1">
         <div className="page-error__card">
           <p className="page-error__title">This page did not load.</p>
           <p className="page-error__body">
