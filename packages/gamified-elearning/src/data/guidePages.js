@@ -238,7 +238,7 @@ CodeIt is a browser-based studio where kids build websites, games and quizzes by
 
 Two things we will not blur:
 
-- **Our structured lesson sequence is Python, not web.** It is 31 beginner lessons, starting with print, variables, strings, conditionals, loops, lists and functions. The HTML/CSS/JS side is learn-by-editing-your-own-project, not a graded course. If you want a sequenced web curriculum with lessons and checkpoints, we do not have one.
+- **Our structured lesson sequence is Python, not web.** It is 31 beginner lessons, [starting with print](/lesson/1), then variables, strings, conditionals, loops, lists and functions. The HTML/CSS/JS side is learn-by-editing-your-own-project, not a graded course. If you want a sequenced web curriculum with lessons and checkpoints, we do not have one.
 - **Under-13 managed profiles cannot publish publicly.** Sharing happens inside the parent-managed account. If your child's main motivation is a public link, wait until 13 or choose something else.
 
 **CodeIt is not for you if:** your kid wants Minecraft or Roblox mods (go to Tynker), wants to keep making games above all (go to CodeCombat), cannot read yet (go to codeSpark), wants deep Python (go to Codecademy at 16+, or CodeCombat now), needs offline access, or you are buying for a school — we have no school, district, rostering or teacher-dashboard product.
@@ -426,7 +426,7 @@ CodeIt is a browser-based studio where kids build websites, games and quizzes by
 
 Things we will not blur:
 
-- **Our structured lesson sequence is Python only** — thirty-one beginner lessons, starting with print, variables, strings, conditionals, loops, lists and functions. The web side is learn-by-editing-your-own-project. There is no web curriculum.
+- **Our structured lesson sequence is Python only** — thirty-one beginner lessons, [starting with print](/lesson/1), then variables, strings, conditionals, loops, lists and functions. The web side is learn-by-editing-your-own-project. There is no web curriculum.
 - **Under-13 managed profiles cannot publish publicly.** Sharing happens inside the parent-managed account.
 - **Ages 5 to 12 require a parent-managed profile.** This is not a set-and-forget product for young children.
 
@@ -580,7 +580,7 @@ Lessons completed and levels cleared are attendance records. They say the child 
 
 ### Disclosure: we make a tool in this space
 
-We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5 to 18, so treat this as an ad. A learner describes a website, game or quiz, and AI builds a working first version in plain HTML, CSS and JavaScript. They then change it in place: moving elements, picking colours and fonts, or asking for a change in plain language. A separate view shows which programming ideas the finished project uses, and links each one to its lesson. Errors are caught in the sandbox, rewritten in plain language and pointed at the learner's own line number, and one button restores the last version that ran. Understanding checks are generated from the learner's own file, with wrong answers taken from other real values in that file, and **only first-attempt correct answers are recorded** for the parent view. Finished work sits on a shelf on the front page instead of being overwritten by the next project. Profiles for ages 5 to 12 are parent-managed and email-verified; independent accounts start at 13. Free now, no card required.
+We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5 to 18, so treat this as an ad. A learner describes a website, game or quiz, and AI builds a working first version in plain HTML, CSS and JavaScript. They then change it in place: moving elements, picking colours and fonts, or asking for a change in plain language. A separate view shows which programming ideas the finished project uses, and links each one to its lesson. Errors are caught in the sandbox, rewritten in plain language and pointed at the learner's own line number, and one button restores the last version that ran. [Understanding checks](/builder) are generated from the learner's own file, with wrong answers taken from other real values in that file, and **only first-attempt correct answers are recorded** for the parent view. Finished work sits on a shelf on the front page instead of being overwritten by the next project. Profiles for ages 5 to 12 are parent-managed and email-verified; independent accounts start at 13. Free now, no card required.
 
 **Who this is not for.** We have no study showing this improves learning outcomes, and we do not claim this evidence proves a child could write code from scratch or transfer the idea elsewhere — the limits above apply to us too. Managed under-13 profiles cannot publish publicly. There are 31 beginner Python lessons and **no web curriculum**; the web side is the builder itself. If your household rule is no AI at all, we generate code, so we are wrong for you. For Minecraft or Roblox mods, see [Tynker](https://www.tynker.com/); for coding games, [CodeCombat](https://codecombat.com/); for a professional workflow, a teenager should use real developer tools. We have no school, district or teacher-dashboard product.
 
@@ -888,7 +888,7 @@ A browser game is a website, so everything on the publishing side applies. Any s
 
 ### Disclosure: we make a tool in this space
 
-We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner describes a website, game or quiz and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows what the project is made of and opens the lesson behind each idea it used. The project stays open and changeable rather than locked. The loop is: make something, play it, change it, see what it is made of, and publish it. Free tier: a monthly allowance of assisted project builds, two learner profiles with parent view — free now, no card required. Ages 5-18, with parent-managed, email-verified profiles for 5-12 and independent accounts from 13.
+We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner [describes a website, game or quiz](/builder) and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows what the project is made of and opens the lesson behind each idea it used. The project stays open and changeable rather than locked. The loop is: make something, play it, change it, see what it is made of, and publish it. Free tier: a monthly allowance of assisted project builds, two learner profiles with parent view — free now, no card required. Ages 5-18, with parent-managed, email-verified profiles for 5-12 and independent accounts from 13.
 
 **Who this is not for.** Games here are browser games in HTML, CSS and JavaScript. We do not do Unity, Godot, Roblox Lua or pygame, there is no multiplayer, no mobile app export, and no route to an app store — if any of those is the goal, use the tool built for it. We also have no web curriculum: there are 31 beginner Python lessons, but the web side is the builder itself, not a course. And note that managed under-13 profiles cannot publish publicly, so if the goal is a link a young child can send around, a parent-owned itch.io or Neocities account is the more direct route.
 
@@ -988,7 +988,7 @@ The fix is not avoiding AI. It is choosing output small enough to read. A single
 
 ### Disclosure: we make a tool in this space
 
-We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5-18. A learner describes a website, game or quiz and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows what the project is made of and opens the lesson behind each idea it used. The generated project stays editable, not locked. The loop is: make something, play it, change it, see what it is made of, and publish it. Free tier: a monthly allowance of assisted project builds and two learner profiles with parent view — free now, no card required. Profiles for ages 5-12 are parent-managed and email-verified; independent accounts start at 13.
+We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5-18. A learner describes a website, game or quiz and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows [what the project is made of](/builder) and opens the lesson behind each idea it used. The generated project stays editable, not locked. The loop is: make something, play it, change it, see what it is made of, and publish it. Free tier: a monthly allowance of assisted project builds and two learner profiles with parent view — free now, no card required. Profiles for ages 5-12 are parent-managed and email-verified; independent accounts start at 13.
 
 **Who this is not for, stated plainly.** We do not compete with Lovable, v0 or Bolt on capability, and we are not trying to. Those tools build far more than we do — real applications, databases, authentication, production deployment — and if you are shipping a product, they are the right choice and we are not. Our output is deliberately small and plain so a beginner can read it, which is the opposite trade-off from theirs. We also do not host your own domain, have no multiplayer or app export, and have no web curriculum — there are 31 beginner Python lessons, but the web side is the builder itself. Managed under-13 profiles cannot publish publicly.
 
@@ -1096,7 +1096,7 @@ If your child is under 8 and not yet reading fluently, start at codeSpark or Kod
 
 This page is published by **CodeIt** (codeitlearn.com), which makes a browser-based coding studio for kids ages 5–18. So we have an interest here, and you should read the recommendations above with that in mind — we listed the competitors we did because they are the honest answers, including where they beat us.
 
-Where CodeIt genuinely fits a former Juni family: kids who want to *build* things — websites, games, quizzes — and then open up the real HTML, CSS and JavaScript underneath to see how they work. Projects can be generated with AI assistance and stay editable afterwards rather than becoming a locked result. The free plan does not expire and needs no card: ten assisted project builds a month and two learner profiles under a parent view. A paid family plan is available at CA$12 a month, cancellable at any time.
+Where CodeIt genuinely fits a former Juni family: kids who want to [*build* things](/builder), websites, games, quizzes, and then open up the real HTML, CSS and JavaScript underneath to see how they work. Projects can be generated with AI assistance and stay editable afterwards rather than becoming a locked result. The free plan does not expire and needs no card: ten assisted project builds a month and two learner profiles under a parent view. A paid family plan is available at CA$12 a month, cancellable at any time.
 
 Where CodeIt does not fit: we are not a live-tutoring replacement. There is no instructor on a call. If the scheduled human relationship was the point of Juni for your child, Create & Learn or a local tutor is the better answer, not us. Ages 5–12 use parent-managed, email-verified profiles that cannot publish publicly; independent accounts start at 13.`,
   },
@@ -1181,7 +1181,7 @@ Scratch is the closest thing to "Code.org before the shift" that still exists at
 
 This page is published by **CodeIt** (codeitlearn.com). We make a browser-based coding studio for kids and we compete for the same attention CodeAI gets, so weigh our framing accordingly. We have tried to describe the change without spinning it: CodeAI is free, it is large, its CS curriculum is still real, and for many families continuing there is the right call.
 
-Where CodeIt is a genuine fit is the specific gap described above. Kids describe a website, game or quiz, play what comes back, and change it by moving things and picking colours. A tab then shows what the project is made of and opens the lesson behind each idea in it. AI can help generate a project, but the output stays **editable instead of becoming a locked AI result** — which is the whole point if your worry is that AI tools produce black boxes. The free plan does not expire and needs no card: ten assisted project builds a month and two learner profiles under a parent view. A paid family plan is available at CA$12 a month, cancellable at any time. There is also a 31-lesson beginner Python sequence.
+Where CodeIt is a genuine fit is the specific gap described above. Kids describe a website, game or quiz, play what comes back, and change it by moving things and picking colours. A tab then shows what the project is made of and opens the lesson behind each idea in it. AI can help generate a project, but the output stays **editable instead of becoming a locked AI result** — which is the whole point if your worry is that AI tools produce black boxes. The free plan does not expire and needs no card: ten assisted project builds a month and two learner profiles under a parent view. A paid family plan is available at CA$12 a month, cancellable at any time. There is also a [31-lesson beginner Python sequence](/lessons).
 
 Where CodeIt is not a fit: we are a consumer product for families. We have no school, district, rostering, LMS or teacher-dashboard features. If you are a teacher looking at this because your school used Code.org, CodeAI or CodeHS is the right place to stay. And if your child is under 8 and pre-reading, use codeSpark or Kodable, not us.`,
   },
@@ -1354,7 +1354,7 @@ This page is published by **CodeIt** (codeitlearn.com), which makes a browser-ba
 
 For a classroom, the honest recommendations are the ones above: CodeHS for a full secondary CS course, CodeAI for free K–12, Codeanywhere or CodeSandbox if the IDE was the part you needed, GitHub Classroom for older students on professional tooling.
 
-The one place we might be worth a look is well outside a school: a **homeschooling parent or an after-school setting with one or two children**, where you want kids building websites, games and quizzes and then opening up the real HTML, CSS and JavaScript underneath. AI can help generate a project and the result stays editable rather than becoming a locked AI result. The free plan does not expire and needs no card: ten assisted project builds a month and two learner profiles under a parent view. A paid family plan is available at CA$12 a month, cancellable at any time. There is also a 31-lesson beginner Python sequence. Ages 5–12 use parent-managed, email-verified profiles that cannot publish publicly; independent accounts start at 13.
+The one place we might be worth a look is well outside a school: a **homeschooling parent or an after-school setting with one or two children**, where you want [kids building websites, games and quizzes](/builder) and then opening up the real HTML, CSS and JavaScript underneath. AI can help generate a project and the result stays editable rather than becoming a locked AI result. The free plan does not expire and needs no card: ten assisted project builds a month and two learner profiles under a parent view. A paid family plan is available at CA$12 a month, cancellable at any time. There is also a 31-lesson beginner Python sequence. Ages 5–12 use parent-managed, email-verified profiles that cannot publish publicly; independent accounts start at 13.
 
 If that is not your situation, take the list above and ignore us.`,
   },
@@ -1412,7 +1412,7 @@ At that point you are paying a monthly fee for a library, and the child is not o
 
 ## Disclosure: we make one of these
 
-CodeIt is a browser-based coding studio for ages 5 to 18, built in Toronto. A learner describes a website, game or quiz, plays what comes back, and changes it by moving things and picking colours or asking in plain language. A separate view shows what the finished project is made of and opens the lesson behind each idea in it. There are 31 beginner Python lessons.
+CodeIt is a browser-based coding studio for ages 5 to 18, built in Toronto. A learner describes a website, game or quiz, plays what comes back, and changes it by moving things and picking colours or asking in plain language. A separate view shows what the finished project is made of and opens the lesson behind each idea in it. There are [31 beginner Python lessons](/lessons).
 
 Free plan: no card, ten AI-assisted builds a month, and the lessons and Python playground stay free. Paid family plan CA$12 a month, cancellable at any time. Note that is Canadian dollars against Tynker's US dollars, so compare the numbers in your own currency rather than taking the gap at face value.
 
@@ -1523,7 +1523,7 @@ There is more detail in [Tynker alternatives](/guide/tynker-alternative), includ
 
 ## Disclosure: we make one of these
 
-CodeIt has a free plan with no card: ten AI-assisted project builds a month, and the Python lessons and playground stay free regardless. The paid family plan is CA$12 a month, cancellable at any time, in Canadian dollars.
+CodeIt has a free plan with no card: ten AI-assisted project builds a month, and the Python lessons and [playground](/playground) stay free regardless. The paid family plan is CA$12 a month, cancellable at any time, in Canadian dollars.
 
 A learner describes a website, game or quiz, plays what comes back, and changes it by moving things and picking colours. A separate view shows what the finished project is made of and opens the lesson behind each idea in it.
 
@@ -1613,7 +1613,7 @@ Blocks start feeling babyish somewhere around 11 or 12. But the adult text-code 
 
 **Code.org** continues to work here, and its later courses are text-based.
 
-**Where CodeIt fits, plainly:** this band is the whole reason we exist. A learner describes a website, game or quiz, plays it, changes it by moving things and picking colours, and a separate view shows what the finished project is made of and opens the lesson behind each idea in it. Free plan, no card, ten AI-assisted builds a month, lessons and playground free regardless. Paid family plan CA$12 a month in Canadian dollars.
+**Where CodeIt fits, plainly:** this band is the whole reason we exist. A learner describes a website, game or quiz, plays it, changes it by moving things and picking colours, and a separate view shows what the finished project is made of and opens the lesson behind each idea in it. [Free plan, no card](/pricing), ten AI-assisted builds a month, lessons and playground free regardless. Paid family plan CA$12 a month in Canadian dollars.
 
 If your 13-year-old is thriving in Scratch, leave them there. This band is about the ones who have stopped.
 
@@ -1743,7 +1743,7 @@ Paid, aimed at grades K to 8. From [their home plans](https://app.codemonkey.com
 
 This is us. Weigh it accordingly, and read the disclosure below before you weigh it at all.
 
-A learner describes a website, game or quiz and gets a working version they can play. They change it by moving things, picking colours and fonts, or asking in plain language. A separate view shows what the finished project is made of, and every programming idea in it opens the lesson behind it. There are 31 beginner Python lessons and a Python playground.
+A learner describes a website, game or quiz and gets a working version they can play. They change it by moving things, picking colours and fonts, or asking in plain language. A separate view shows what the finished project is made of, and every programming idea in it opens the lesson behind it. There are [31 beginner Python lessons](/lessons) and a Python playground.
 
 The part that is genuinely different: the comprehension questions are generated from the learner's own file. The right answer is whatever they actually wrote, and the wrong options are other real values from the same project, so it cannot be answered from a textbook. Only first attempts count. What a parent gets is a sentence about what their child could explain, not a completion percentage.
 

@@ -232,8 +232,8 @@ const BLOG_POSTS = [
         heading: 'Where Coding Games Fit in the Learning Journey',
         body: [
           'On CodeIt a lesson is followed by a quiz. The first ten lessons also have a puzzle after the quiz; lessons eleven onward do not have puzzles yet. The lesson introduces the concept, the quiz checks understanding, and the puzzle makes the concept real. Every lesson ends with the studio, where you build something that uses what you just learned.',
-          'This structure means kids never encounter a puzzle they haven\'t been prepared for. The challenge isn\'t "do you know this?". it\'s "can you apply what you just learned?"',
-          'The full journey. Lessons, quizzes, puzzles, and boss challenges. Is mapped out in the Journey Map. Each completed step unlocks the next.',
+          'This structure means kids never encounter a puzzle they haven\'t been prepared for. The challenge is not "do you know this?" but "can you apply what you just learned?"',
+          'The full journey of lessons, quizzes, puzzles and boss challenges is mapped out in the Journey Map. Each completed step unlocks the next.',
         ],
       },
     ],
@@ -294,7 +294,7 @@ const BLOG_POSTS = [
           'As programmes get longer, it helps to organise code into named blocks that can be reused. These are called functions.',
           'def greet(name):\n    print("Hello, " + name)\n\ngreet("Alex")\ngreet("Jordan")',
           'The function greet() takes a name and prints a greeting. You can call it as many times as you want, with any name, without repeating the print line each time.',
-          'Functions are the building blocks of clean, readable code. Every Python programme. From a one-page script to a million-line app. Is built from functions.',
+          'Functions are the building blocks of clean, readable code. Every Python programme is built from functions, from a one-page script to a million-line app.',
         ],
       },
       {
@@ -302,7 +302,7 @@ const BLOG_POSTS = [
         body: [
           'Most real programmes need to handle collections of data, not just single values. Python lists make this easy:',
           'fruits = ["apple", "banana", "cherry"]\nfor fruit in fruits:\n    print(fruit)',
-          'The list stores three items. The for loop goes through each one and prints it. This pattern. Create a list, loop through it. Appears in almost every Python programme written at any level.',
+          'The list stores three items. The for loop goes through each one and prints it. Create a list, then loop through it: that pattern appears in almost every Python programme written at any level.',
           'Understanding lists and how to combine them with loops and conditions is the final piece of the beginner Python puzzle. CodeIt covers all of this across Lessons 7 and 8.',
         ],
       },
@@ -358,7 +358,7 @@ const BLOG_POSTS = [
       {
         heading: 'What Age Is Right to Start Python?',
         body: [
-          'Most children can start learning Python from around age 9 or 10, when reading comprehension and logical thinking are well developed. Some younger children. Particularly those who are already comfortable with reading and basic maths. Can start at 7 or 8 with some parental support.',
+          'Most children can start learning Python from around age 9 or 10, when reading comprehension and logical thinking are well developed. Some younger children can start at 7 or 8 with parental support, particularly those already comfortable with reading and basic maths.',
           'The key factor isn\'t age. It\'s whether the child is curious and patient enough to follow instructions and observe what happens. A motivated 8-year-old will learn faster than a bored 12-year-old.',
           'Parents and legal guardians can create private managed profiles for ages 5 to 12 after confirming the adult account email. Independent CodeIt student accounts are designed for ages 13 to 18, and the lessons also work for older beginners.',
         ],
@@ -459,14 +459,14 @@ const BLOG_POSTS = [
         body: [
           'Do kids need a special computer? No. CodeIt runs in any modern web browser. Any laptop, desktop, or tablet works.',
           'What if my child gets stuck? Each lesson has examples, and each puzzle links back to the relevant lesson. The hint system and the ability to re-read the lesson are usually enough to get unstuck.',
-          'Is it really free? Yes. The full beginner journey. All 31 lessons, their quizzes, and the 30 coding puzzles. Is free to access. Creating an account unlocks progress tracking, XP, and the leaderboard.',
+          'Is it really free? Yes. The full beginner journey is free to access, including all 31 lessons, their quizzes, and the 30 coding puzzles. Creating an account unlocks progress tracking, XP, and the leaderboard.',
           'What comes after the beginner journey? CodeIt\'s beginner curriculum covers the core Python concepts. From there, kids can explore more advanced topics: dictionaries, file handling, object-oriented programming, and building real projects.',
         ],
       },
       {
         heading: 'Ready to Start?',
         body: [
-          'Getting started takes less than a minute. Create a free account, open Lesson 1, and write the first line of Python. The whole journey. And a lot of fun. Is waiting on the other side.',
+          'Getting started takes less than a minute. Create a free account, open Lesson 1, and write the first line of Python. The whole journey is waiting on the other side.',
           'Read our guide to learning Python for kids for more detail on the lesson sequence, or explore the Python games for kids page to see the coding puzzles.',
         ],
       },
