@@ -159,3 +159,50 @@ describe('the data separates the right rule from the wrong one', () => {
     expect(src).toMatch(/word = "Elephant"/);
   });
 });
+
+// ── Legitimate alternative solutions ─────────────────────────────────────────
+//
+// The risk with a source check is the exact opposite of the one it fixes. A
+// regex that is too strict rejects a child who solved the puzzle a different
+// way, and being told no for a correct answer is worse than being told yes for
+// a wrong one: the first teaches a child that the site is broken, the second
+// only fails to teach them something.
+//
+// Twenty alternatives, each a real way a child might write it. Outputs are what
+// python3 actually prints for that code, captured rather than typed.
+const ALTERNATIVES = [
+  ['1-b', 'single quotes', 'print(\'Space mail delivered via Python!\')', 'Space mail delivered via Python!\n'],
+  ['1-boss', 'literal dashes', 'print("----------")\nprint("My Mission")\nprint("----------")', '----------\nMy Mission\n----------\n'],
+  ['2-a', 'variables then f-string', 'name="Alex"\nage=12\ncity="London"\nprint(f"{name}")\nprint(f"{age}")\nprint(f"{city}")', 'Alex\n12\nLondon\n'],
+  ['2-boss', 'f-strings', 'name="Alex"\nage=12\ncity="London"\nprint(f"Name: {name}")\nprint(f"Age: {age}")\nprint(f"City: {city}")', 'Name: Alex\nAge: 12\nCity: London\n'],
+  ['3-a', 'f-string join', 'first="Ada"\nlast="Lovelace"\nprint(f"{first} {last}")', 'Ada Lovelace\n'],
+  ['3-a', 'comma print', 'first="Ada"\nlast="Lovelace"\nprint(first, last)', 'Ada Lovelace\n'],
+  ['3-b', 'variable then print', 'word="python"\nbig=word.upper()\nn=len(word)\nprint(big)\nprint("Letters:", n)', 'PYTHON\nLetters: 6\n'],
+  ['3-boss', 'upper on the whole thing', 'name="coder"\ngreeting=("Hello, " + name + "!").upper()\nprint(greeting)', 'HELLO, CODER!\n'],
+  ['5-a', 'while-free, range only', 'for i in range(0, 5):\n    print(i)', '0\n1\n2\n3\n4\n'],
+  ['5-b', 'range with step', 'for i in range(1, 6, 1):\n    print(i)', '1\n2\n3\n4\n5\n'],
+  ['5-boss', 'f-string in loop', 'for i in range(1, 6):\n    print(f"Round {i}")', 'Round 1\nRound 2\nRound 3\nRound 4\nRound 5\n'],
+  ['6-b', 'cases reordered', 'word = "Adventure"\nfor char in word:\n    if char in "AEIOUaeiou":\n        print(char)', 'A\ne\nu\ne\n'],
+  ['6-b', 'lower() comparison', 'word = "Adventure"\nfor char in word:\n    if char.lower() in "aeiou":\n        print(char)', 'A\ne\nu\ne\n'],
+  ['6-boss', 'count plus-equals', 'word = "Elephant"\ncount = 0\nfor char in word:\n    if char in "aeiouAEIOU":\n        count += 1\nprint("Vowels:", count)', 'Vowels: 3\n'],
+  ['8-b', 'not less-than', 'scores = [75, 90, 60, 85, 80, 55, 95]\nfor score in scores:\n    if not score < 80:\n        print(score)', '90\n85\n80\n95\n'],
+  ['8-boss', 'count plus-equals', 'scores = [75, 90, 60, 85, 80, 55, 95]\ncount = 0\nfor score in scores:\n    if score >= 80:\n        count += 1\nprint("High scores:", count)', 'High scores: 4\n'],
+  ['9-a', 'blank line between calls', 'def say_hi():\n    print("Hello there!")\n\nsay_hi()\n\nsay_hi()\n\nsay_hi()', 'Hello there!\nHello there!\nHello there!\n'],
+  ['9-boss', 'print(add(...)) directly', 'def add(a, b):\n    return a + b\nprint("Sum:", add(3, 4))', 'Sum: 7\n'],
+  ['10-b', 'startswith', 'names = ["Alice", "Bob", "Anna", "Charlie", "Amy", "Mary-Anne"]\nfor name in names:\n    if name.startswith("A"):\n        print(name)', 'Alice\nAnna\nAmy\n'],
+  ['10-boss', 'f-string greeting', 'def greet_all(names):\n    for n in names:\n        print(f"Hello, {n}!")\ngreet_all(["Alice", "Bob", "Charlie"])', 'Hello, Alice!\nHello, Bob!\nHello, Charlie!\n'],
+];
+
+describe('a child who solved it differently is not blocked', () => {
+  test.each(ALTERNATIVES)('%s accepts: %s', (key, _label, code, output) => {
+    const result = PUZZLE_CONFIGS[key].validator(output, code);
+    expect(result.pass).toBe(true);
+  });
+
+  test('the source checks are narrow enough to have alternatives at all', () => {
+    // If this list ever shrinks to only the hintCode shape, the checks have
+    // been tightened past the point of being fair.
+    expect(ALTERNATIVES.length).toBeGreaterThanOrEqual(20);
+    expect(new Set(ALTERNATIVES.map(a => a[0])).size).toBeGreaterThanOrEqual(15);
+  });
+});
