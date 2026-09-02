@@ -41,6 +41,24 @@ describe('what we say about puzzles matches what exists', () => {
     );
   });
 
+  // The blunt guard, added after the same assumption was found written into
+  // the blog in eight separate places rather than one. A count that changes is
+  // a signal to re-read the copy, and a failing build is the only reliable way
+  // to make that happen.
+  test('puzzle coverage is still ten lessons, or this copy needs rechecking', () => {
+    expect(highest).toBe(10);
+    expect(coveredLessons).toHaveLength(10);
+  });
+
+  test('no published sentence promises a puzzle after every quiz or chapter', () => {
+    expect(POSTS).not.toMatch(/After each quiz, a coding puzzle unlocks/i);
+    expect(POSTS).not.toMatch(/Passing the quiz unlocks the puzzle/i);
+    expect(POSTS).not.toMatch(/puzzles at the end of each chapter/i);
+    expect(POSTS).not.toMatch(/All lessons, quizzes, and puzzles/i);
+    expect(POSTS).not.toMatch(/After completing a lesson, the corresponding puzzle unlocks/i);
+    expect(POSTS).not.toMatch(/quizzes and coding puzzles reinforce each concept/i);
+  });
+
   test('the blog names the real number of lessons that have a puzzle', () => {
     const words = { 10: 'ten', 11: 'eleven', 12: 'twelve', 15: 'fifteen', 20: 'twenty', 31: 'thirty-one' };
     const expected = words[highest] || String(highest);

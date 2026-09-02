@@ -84,7 +84,7 @@ const BLOG_POSTS = [
       {
         heading: 'Coding Puzzles on CodeIt',
         body: [
-          'Each CodeIt puzzle is tied to a specific Python lesson. After completing a lesson, the corresponding puzzle unlocks. Here\'s what to expect:',
+          'Each CodeIt puzzle is tied to a specific Python lesson. Puzzles cover the first ten lessons, and completing one of those lessons unlocks its puzzle. Here\'s what to expect:',
           '• Puzzle 1: Talking Robot. Use print() to guide a robot through a story\n• Puzzle 2: Apple Game. Use variables to track and update a score\n• Puzzle 3: Loop Game. Use for loops to repeat actions efficiently\n• Puzzle 4: Condition Game. Use if/else to make decisions\n• Puzzle 5: Math Game. Use expressions to solve arithmetic challenges',
           'Each puzzle runs in a real Python environment directly in the browser. No installs, no setup, just code and run.',
         ],
@@ -93,7 +93,7 @@ const BLOG_POSTS = [
         heading: 'The Journey Map: A Coding Adventure',
         body: [
           'CodeIt\'s Journey Map turns the learning path into a literal adventure. Each node on the map represents a lesson, quiz, or puzzle.',
-          'Completing a lesson unlocks the quiz. Passing the quiz unlocks the puzzle. Beating the puzzle earns XP and advances you to the next chapter.',
+          'Completing a lesson unlocks the quiz. In the first ten lessons, passing the quiz also unlocks a puzzle. Beating the puzzle earns XP and advances you to the next chapter.',
           'Mini puzzles and boss challenges make each chapter feel like a game level. The boss puzzle for Chapter 1, for example, requires combining print(), variables, and user input in a single program.',
         ],
       },
@@ -384,7 +384,7 @@ const BLOG_POSTS = [
         body: [
           'CodeIt is a free, gamified platform built specifically for kids learning Python. Lessons are short, interactive, and structured so each one builds directly on the last.',
           'The journey starts at Lesson 1: Hello Python. One lesson, one concept, one line of code. It takes about 15 minutes and leaves kids with a working programme they wrote themselves.',
-          'From there, quizzes and coding puzzles reinforce each concept before the next one is introduced. The current beginner journey includes 31 lessons, matching quizzes, and coding puzzles, with the learning activities available free today.',
+          'From there, quizzes reinforce each concept before the next one is introduced, and coding puzzles do the same across the first ten lessons. The current beginner journey includes 31 lessons with matching quizzes, and 30 coding puzzles, with the learning activities available free today.',
         ],
       },
     ],
@@ -435,7 +435,7 @@ const BLOG_POSTS = [
           'CodeIt structures the beginner Python journey across 31 lessons, each introducing exactly one new concept. The first sixteen:',
           '1. Hello Python. Print()\n2. Variables. Storing information\n3. Strings. Working with text\n4. If Statements. Making decisions\n5. Simple Loops. For and range()\n6. For Loops. Looping through strings\n7. Lists. Collections of data\n8. Loops with Lists. Combining the two\n9. Functions. Reusable code blocks\n10. Combining Concepts. Putting it all together\n11. Numbers & Arithmetic. Calculating with Python\n12. Booleans & Comparisons. Testing values\n13. Logical Operators. Combining conditions\n14. Type Casting. Converting values\n15. String Formatting. Building clear messages\n16. String Methods. Working with text',
           'From there the path continues into while loops, break and continue, importing modules, dictionaries, tuples and sets, slicing, list comprehensions, return values, scope, error handling, enumerate and zip, classes and objects, and recursion, ending with a capstone that builds a real game.',
-          'After each lesson, a quiz checks understanding. After each quiz, a coding puzzle unlocks. A story-driven challenge where the new concept is the key to winning.',
+          'After each lesson, a quiz checks understanding. Through the first ten lessons, each quiz also unlocks a coding puzzle. A story-driven challenge where the new concept is the key to winning.',
         ],
       },
       {
@@ -451,7 +451,7 @@ const BLOG_POSTS = [
         body: [
           'With 20 to 30 minutes per day, most kids can work through the first ten lessons in 3 to 4 weeks. That timeline isn\'t the goal. Understanding is. Some kids will fly through; others will take their time on tricky concepts. Both are fine.',
           'The important thing is consistency. Short sessions every day beat long sessions once a week. Each lesson is designed to be completable in one sitting, so there\'s a natural stopping point that doesn\'t require marathon effort.',
-          'The coding puzzles at the end of each chapter add extra time. And extra reward. A kid who works through the lessons and the puzzles that follow them has a genuine foundation in Python that they can build on.',
+          'The coding puzzles in the first ten chapters add extra time. And extra reward. A kid who works through the lessons and the puzzles that follow them has a genuine foundation in Python that they can build on.',
         ],
       },
       {
@@ -459,7 +459,7 @@ const BLOG_POSTS = [
         body: [
           'Do kids need a special computer? No. CodeIt runs in any modern web browser. Any laptop, desktop, or tablet works.',
           'What if my child gets stuck? Each lesson has examples, and each puzzle links back to the relevant lesson. The hint system and the ability to re-read the lesson are usually enough to get unstuck.',
-          'Is it really free? Yes. The full beginner journey. All lessons, quizzes, and puzzles. Is free to access. Creating an account unlocks progress tracking, XP, and the leaderboard.',
+          'Is it really free? Yes. The full beginner journey. All 31 lessons, their quizzes, and the 30 coding puzzles. Is free to access. Creating an account unlocks progress tracking, XP, and the leaderboard.',
           'What comes after the beginner journey? CodeIt\'s beginner curriculum covers the core Python concepts. From there, kids can explore more advanced topics: dictionaries, file handling, object-oriented programming, and building real projects.',
         ],
       },

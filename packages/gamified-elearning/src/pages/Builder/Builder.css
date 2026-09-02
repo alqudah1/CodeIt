@@ -6769,3 +6769,28 @@ details.bldr-device-sizes .bldr-device-sizes__options {
   box-shadow: var(--pop-rest, 3px 3px 0 rgba(53,34,14,0.9));
 }
 .bldr-starter-notice__retry:active { transform: translateY(3px); box-shadow: none; }
+
+/* ══════════════════════════════════════════════════════════════
+   CABINETS THE SAME HEIGHT, PLAY BUTTONS ON ONE LINE
+   Spotted on a phone on 2 September 2026. "Catch the falling
+   stars" wraps to two lines and "Penalty shootout" does not, so
+   the two cabinets beside each other were different heights and
+   their PLAY buttons sat at different levels. A shelf of arcade
+   cabinets is a row of equal things; ragged ones read as a
+   mistake, and the eye has to hunt for each button.
+
+   The row already scrolls horizontally, so the fix is stretch
+   plus a bottom-pinned button rather than a fixed height, which
+   would clip a long name at a large text size.
+   ══════════════════════════════════════════════════════════════ */
+.bldr-shelf__row { align-items: stretch; }
+/* The cabinets sit inside list items. Stretching the row stretches the li, so
+   the card itself has to fill it or nothing visible changes. Measured before
+   and after: three distinct heights in one row became one. */
+.bldr-shelf__row > li { display: flex; }
+.bldr-shelf__card { height: 100%; }
+.bldr-shelf__meta {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.bldr-shelf__play { margin-top: auto; }
