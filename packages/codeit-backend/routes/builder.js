@@ -1479,7 +1479,24 @@ function end(){on=false;clearInterval(sp);clearInterval(ct);document.querySelect
 </html>`;
 }
 
+// Stamped on every canned starter this server hands back. proveIt.js in the
+// browser reads it and refuses to generate "show it's yours" questions from a
+// template, because a child cannot prove they wrote something they did not.
+// See proveIt.js for the outage that made this necessary.
+const STARTER_MARKER = '<!--codeit-starter-template-->';
+
+function markStarter(html) {
+  if (typeof html !== 'string' || html.includes('codeit-starter-template')) return html;
+  return html.includes('<!DOCTYPE html>')
+    ? html.replace('<!DOCTYPE html>', `<!DOCTYPE html>${STARTER_MARKER}`)
+    : STARTER_MARKER + html;
+}
+
 function getRichFallback(designConfig, userPrompt) {
+  return markStarter(getRichFallbackHtml(designConfig, userPrompt));
+}
+
+function getRichFallbackHtml(designConfig, userPrompt) {
   const type = designConfig.type;
   const cat  = designConfig.category;
   switch (type) {

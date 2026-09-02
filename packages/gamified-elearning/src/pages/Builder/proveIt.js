@@ -271,7 +271,24 @@ const GENERATORS = [
  * enough that we can ask about honestly. A caller that gets an empty list
  * should let the child through, not block them: the failure is ours.
  */
+// A canned starter carries this marker, stamped by the server when it cannot
+// reach the model and by the browser's own copies of the same templates.
+//
+// Between an unknown date and 21:45 on 1 September 2026 every build fell back
+// to one of those templates, so every child received the same file. This
+// engine read it and asked all of them the same questions about the same two
+// variables, and the answers were written as evidence a parent could be sent.
+// The evidence page tells that parent the questions "cannot be shared between
+// two children"; for the length of the outage that was false.
+//
+// The panel already refuses to render on a fallback build. This is the second
+// guard, at the engine, so it holds even if that flag is ever lost in a
+// refactor. Two independent guards, because one was not enough to notice an
+// outage that lasted weeks.
+const STARTER_MARKER = 'codeit-starter-template';
+
 function questionsFor(html, { max = 3 } = {}) {
+  if (typeof html === 'string' && html.includes(STARTER_MARKER)) return [];
   const facts = readProject(html);
   const questions = [];
   for (const generate of GENERATORS) {
@@ -322,6 +339,7 @@ function isEnoughToProve(questions) {
 
 export {
   MIN_QUESTIONS_TO_PROVE,
+  STARTER_MARKER,
   gradeAttempt,
   isEnoughToProve,
   questionsFor,

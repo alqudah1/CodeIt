@@ -31,7 +31,7 @@ import './ProveItPanel.css';
 // files whose names differ only by case cannot coexist on a case-insensitive
 // filesystem — which is what every Mac in this project's history has used. The
 // build catches it, but only after the rename has already been made.
-export default function ProveItPanel({ code, projectTitle = 'this project', onProved, alreadyProved = false }) {
+export default function ProveItPanel({ code, projectTitle = 'this project', onProved, alreadyProved = false, isStarter = false }) {
   const questions = useMemo(() => questionsFor(code, { max: 3 }), [code]);
 
   const [stage, setStage] = useState(alreadyProved ? 'done' : 'idle');
@@ -40,6 +40,23 @@ export default function ProveItPanel({ code, projectTitle = 'this project', onPr
   const [chosen, setChosen] = useState(null);
   const [missed, setMissed] = useState([]);
   const [shown, setShown] = useState([]);
+
+  // ── Never ask a child to prove they wrote a template ─────────────────────
+  //
+  // Between an unknown date and 21:45 on 1 September 2026 the studio could not
+  // reach the model and served canned starters instead. Every child received
+  // the same file, so this panel asked all of them the same three questions
+  // about the same two variables, and wrote the answers to the account as
+  // evidence a parent could be sent.
+  //
+  // The evidence page tells that parent these questions "cannot be shared
+  // between two children". For the length of that outage, that sentence was
+  // false, and the child had not written the code they were being asked about.
+  //
+  // The server already returned isFallback on every one of those builds and
+  // nothing read it. It is read here now. This is the belt; the synthetic
+  // check that fails when a build comes back isFallback is the braces.
+  if (isStarter) return null;
 
   // Nothing we can ask about honestly, so we do not ask. A child is never shown
   // a made-up question about a project too simple to have anything in it.
