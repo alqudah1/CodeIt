@@ -51,6 +51,19 @@ const CLIENT_ALLOWED = new Set(
   [...clientBlock.slice(0, clientBlock.indexOf(']')).matchAll(/'([^']+)'/g)].map(m => m[1]),
 );
 
+// The browser's own gate, read from the real file for the same reason. This
+// list was the hole in this test: every check below compared the browser's
+// calls against the SERVER's allowlists, and trackEvent has an allowlist of
+// its own that must let the call out of the browser first. On 2 September 2026
+// eighteen names had been added to the server and none to this one, so the
+// events the previous audit "fixed" were still going nowhere.
+const trackSrc = fs.readFileSync(path.join(SRC, 'utils/trackEvent.js'), 'utf8');
+const gateBlock = trackSrc.slice(
+  trackSrc.indexOf('const CLIENT_EVENTS'),
+  trackSrc.indexOf(']);', trackSrc.indexOf('const CLIENT_EVENTS')),
+);
+const BROWSER_GATE = new Set([...gateBlock.matchAll(/"([a-z_]+)"/g)].map(m => m[1]));
+
 // Only literal first arguments can be checked. A computed name is invisible
 // here, which is itself a reason to keep event names literal.
 const CALL = /trackEvent\(\s*(['"])([a-z_]+)\1\s*(?:,\s*(?:(['"])([^'"]*)\3|([^,)]+)))?/g;
@@ -106,6 +119,43 @@ describe('the browser and the server agree on analytics', () => {
       return new RegExp(`trackEvent\\(\\s*['"]${name}['"]\\s*\\)`).test(file);
     });
     expect(trulyMissing).toEqual([]);
+  });
+
+  test('the browser gate and the server allowlist are the same list', () => {
+    const missingFromBrowser = [...CLIENT_ALLOWED].filter(name => !BROWSER_GATE.has(name));
+    const missingFromServer = [...BROWSER_GATE].filter(name => !CLIENT_ALLOWED.has(name));
+    expect(missingFromBrowser).toEqual([]);
+    expect(missingFromServer).toEqual([]);
+  });
+
+  test('every event the browser fires can get out of the browser', () => {
+    const blocked = calls
+      .filter(c => !BROWSER_GATE.has(c.name))
+      .map(c => `${c.name} (${c.file})`);
+    expect(blocked).toEqual([]);
+  });
+
+  test('the gate is not empty, so a broken read cannot pass this suite', () => {
+    expect(BROWSER_GATE.size).toBeGreaterThan(20);
+  });
+
+  test('the money path is recorded by the server, not claimed by a browser', () => {
+    // A browser that has navigated to Stripe cannot report either half of the
+    // pair, and one that stayed must not be able to claim it did.
+    for (const name of ['ai_limit_reached', 'checkout_start', 'checkout_complete']) {
+      expect(EVENT_NAMES.has(name)).toBe(true);
+      expect(CLIENT_ALLOWED.has(name)).toBe(false);
+      expect(BROWSER_GATE.has(name)).toBe(false);
+    }
+  });
+
+  test('every upgrade offer is counted where it is shown and where it is clicked', () => {
+    const sources = new Set(
+      calls.filter(c => c.name === 'upgrade_prompt_shown' || c.name === 'upgrade_click')
+        .map(c => c.literalMeta),
+    );
+    expect(sources.has('build-limit')).toBe(true);
+    expect(sources.has('header')).toBe(true);
   });
 
   test('the studio door is measurable, because that is the whole point of it', () => {

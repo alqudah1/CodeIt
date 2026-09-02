@@ -1976,7 +1976,11 @@ export default function Builder() {
       // own panel with a way forward, not the red error card.
       if (res.status === 402 && data.code === 'FREE_AI_LIMIT_REACHED') {
         setLimitReached(data.error || data.message || '');
-        void trackEvent('ai_limit_reached', null, token);
+        // The refusal itself is recorded by the server, which is the only
+        // place that knows it happened. What the browser knows, and the
+        // server cannot, is whether the offer was actually put in front of
+        // anyone.
+        void trackEvent('upgrade_prompt_shown', 'build-limit', token);
         return;
       }
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
@@ -3358,7 +3362,7 @@ export default function Builder() {
               <Link
                 className="bldr-action-btn bldr-action-btn--primary bldr-action-btn--sm"
                 to="/pricing#codeit-plus"
-                onClick={() => void trackEvent('ai_limit_upgrade_click', null, token)}
+                onClick={() => void trackEvent('upgrade_click', 'build-limit', token)}
               >
                 See CodeIt Plus
               </Link>
@@ -4593,7 +4597,10 @@ export default function Builder() {
                   <span>
                     {publishRefusal.message}
                     {publishRefusal.code === 'PLAN_UPGRADE_REQUIRED' && (
-                      <> <Link to="/pricing#codeit-plus">See CodeIt Plus</Link></>
+                      <>{' '}<Link
+                        to="/pricing#codeit-plus"
+                        onClick={() => void trackEvent('upgrade_click', 'publish-refused', token)}
+                      >See CodeIt Plus</Link></>
                     )}
                   </span>
                 </p>

@@ -15,7 +15,8 @@ jest.mock('../../context/CharacterContext', () => ({
 }));
 jest.mock('../../components/CharacterAvatar/CharacterAvatar', () => () => null);
 jest.mock('../../components/BrandLogo/BrandLogo', () => () => null);
-jest.mock('../../utils/trackEvent', () => ({ trackEvent: jest.fn() }));
+const mockTrack = jest.fn();
+jest.mock('../../utils/trackEvent', () => ({ trackEvent: (...args) => mockTrack(...args) }));
 
 // The header asks the billing API once per mount for an adult account. Each
 // test says what that answer is; the default is the free plan, which is also
@@ -68,7 +69,7 @@ describe('header navigation', () => {
 // CodeIt's first paying family said subscribing took too many buttons. From a
 // signed-in adult's studio the plan page was two taps behind an avatar.
 describe('the shortcut to subscribing', () => {
-  afterEach(() => { mockBilling = { billingEnabled: false, plan: 'free' }; });
+  afterEach(() => { mockBilling = { billingEnabled: false, plan: 'free' }; mockTrack.mockClear(); });
 
   test('an adult on the free plan gets one tap to the paid card', async () => {
     mockBilling = { billingEnabled: true, plan: 'free' };
@@ -78,6 +79,11 @@ describe('the shortcut to subscribing', () => {
     // One destination, one control: Plan leaves the menu while this is up.
     fireEvent.click(screen.getByRole('button', { name: /account menu/i }));
     expect(screen.queryByRole('menuitem', { name: 'Plan' })).not.toBeInTheDocument();
+    // Shown is counted as well as clicked. A click count with no denominator
+    // cannot tell a control nobody presses from one nobody is offered.
+    expect(mockTrack).toHaveBeenCalledWith('upgrade_prompt_shown', 'header', 'token-abc');
+    fireEvent.click(link);
+    expect(mockTrack).toHaveBeenCalledWith('upgrade_click', 'header', 'token-abc');
   });
 
   test('a subscriber is never sold to again', async () => {
@@ -86,6 +92,7 @@ describe('the shortcut to subscribing', () => {
     fireEvent.click(await screen.findByRole('button', { name: /account menu/i }));
     expect(screen.queryByRole('link', { name: 'Get Plus' })).not.toBeInTheDocument();
     expect(screen.getByRole('menuitem', { name: 'Plan' })).toHaveAttribute('href', '/pricing');
+    expect(mockTrack).not.toHaveBeenCalledWith('upgrade_prompt_shown', 'header', 'token-abc');
   });
 
   test('a child is never sold to at all', async () => {

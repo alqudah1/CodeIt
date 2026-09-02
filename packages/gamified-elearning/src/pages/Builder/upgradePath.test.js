@@ -43,12 +43,14 @@ describe('hitting the monthly AI limit', () => {
 
   test('the panel offers a way forward and a way to stay', () => {
     expect(BUILDER).toMatch(/to="\/pricing#codeit-plus"/);
-    expect(BUILDER).toMatch(/ai_limit_upgrade_click/);
+    expect(BUILDER).toMatch(/trackEvent\('upgrade_click', 'build-limit'/);
     expect(BUILDER).toMatch(/setLimitReached\(''\)/);
   });
 
-  test('reaching the wall is measured, so the upgrade rate has a denominator', () => {
-    expect(BUILDER).toMatch(/trackEvent\('ai_limit_reached'/);
+  test('the offer is counted where it is shown, so the click has a denominator', () => {
+    // The refusal itself is recorded by the server at the 402. What only the
+    // browser knows is whether the panel was ever rendered for anyone.
+    expect(BUILDER).toMatch(/trackEvent\('upgrade_prompt_shown', 'build-limit'/);
   });
 
   test('a new build clears the last panel', () => {

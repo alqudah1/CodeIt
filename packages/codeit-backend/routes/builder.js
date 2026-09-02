@@ -1606,6 +1606,13 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
       planId = planForSubscription(subscription)?.id || 'free';
       const allowance = checkAiBuildAllowance(subscription, buildsThisMonth);
       if (!allowance.allowed) {
+        // Recorded here rather than in the browser: this refusal is the single
+        // most useful number the product was not collecting, and the server is
+        // the only place that knows it happened for certain.
+        void recordEvent('ai_limit_reached', {
+          userId: analyticsContext.userId,
+          journeyId: analyticsContext.journeyId,
+        });
         return res.status(402).json({ code: allowance.code, error: allowance.message });
       }
     } catch (error) {

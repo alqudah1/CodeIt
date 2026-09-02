@@ -28,6 +28,11 @@ const STAGES = [
   ['project_remix', 'Projects remixed'],
   ['return_use', 'Daily returns'],
   ['pricing_view', 'Pricing views'],
+  ['ai_limit_reached', 'Hit the monthly AI limit'],
+  ['upgrade_prompt_shown', 'Upgrade offers shown'],
+  ['upgrade_click', 'Upgrade offers clicked'],
+  ['checkout_start', 'Checkouts started'],
+  ['checkout_complete', 'Checkouts completed'],
   ['pricing_interest', 'Plan interest'],
   ['pilot_join', 'Pilot joins'],
   ['pilot_confirmation', 'Pilot confirmation attempts'],
@@ -214,10 +219,30 @@ export default function AdminFunnel() {
     ['Shared visitors → remixed', ratio(journeyMetric('project_remix'), acquisitionSources.project || 0)],
     ['New accounts → return days', ratio(journeyMetric('return_use'), journeyMetric('signup_complete'))],
     ['Pricing view → interest', ratio(journeyMetric('pricing_interest'), journeyMetric('pricing_view'))],
+    ['Upgrade offer → click', ratio(counts.upgrade_click || 0, counts.upgrade_prompt_shown || 0)],
+    ['Upgrade click → checkout', ratio(counts.checkout_start || 0, counts.upgrade_click || 0)],
+    ['Checkout → paid', ratio(counts.checkout_complete || 0, counts.checkout_start || 0)],
     ['Pilot request → setup email', ratio(pilotConfirmations.sent || 0, counts.pilot_join || 0)],
     ['Pilot request → learner profile', ratio(journeyMetric('family_child_created'), journeyMetric('pilot_join'))],
     ['Parent guide → pilot join', ratio(pilotJoinSources['parents-guide'] || 0, journeyMetric('parent_guide_view'))],
   ] : [];
+
+  // ── The money path ─────────────────────────────────────────────────────
+  //
+  // Counted, not journey-counted: checkout_start and checkout_complete are
+  // recorded by the server, which has a user id and no journey id, so a
+  // journey ratio would divide by something these events never carry.
+  const buildDistribution = data?.ai_build_distribution || [];
+  const accountsAtLimit = buildDistribution
+    .filter((row) => Number(row.builds) >= 10)
+    .reduce((sum, row) => sum + Number(row.accounts || 0), 0);
+  const accountsBuilding = buildDistribution
+    .reduce((sum, row) => sum + Number(row.accounts || 0), 0);
+  const busiestAccount = buildDistribution
+    .reduce((max, row) => Math.max(max, Number(row.builds) || 0), 0);
+  // A start with no complete is either an abandoned checkout or the webhook
+  // failure this code has always warned about: a card charged, no access.
+  const checkoutGap = Math.max(0, (counts.checkout_start || 0) - (counts.checkout_complete || 0));
 
   const recentDaily = (data?.daily || []).slice(-35).reverse();
   const aiGeneratedProjects = generationResults.ai || 0;
@@ -528,6 +553,52 @@ export default function AdminFunnel() {
             <article><span>Input / output tokens</span><strong>{fmt(costs?.totals?.input_tokens)} / {fmt(costs?.totals?.output_tokens)}</strong></article>
           </div>
           <p className="funnel-cost-note">AI-built projects and safe fallbacks are shown separately so the cost per working AI result is not understated. The estimate uses the standard Claude Haiku 4.5 list price; timed-out calls are still counted when Anthropic finishes them.</p>
+
+          <div className="adm-section-head">The money path</div>
+          <div className="funnel-cost-grid">
+            <article><span>Hit the monthly AI limit</span><strong>{fmt(counts.ai_limit_reached)}</strong></article>
+            <article><span>Upgrade offers shown</span><strong>{fmt(counts.upgrade_prompt_shown)}</strong></article>
+            <article><span>Upgrade offers clicked</span><strong>{fmt(counts.upgrade_click)}</strong></article>
+            <article><span>Checkouts started</span><strong>{fmt(counts.checkout_start)}</strong></article>
+            <article><span>Checkouts completed</span><strong>{fmt(counts.checkout_complete)}</strong></article>
+            <article className={checkoutGap > 0 ? 'is-urgent' : undefined}>
+              <span>Started, not completed</span><strong>{fmt(checkoutGap)}</strong>
+            </article>
+          </div>
+          <p className="funnel-cost-note">
+            Started but not completed is normally an abandoned checkout. If one of these
+            is more than an hour old and the account still has no access, check the Stripe
+            webhook before assuming the parent changed their mind: a card can be charged
+            with no access granted, and this is the only place that shows it.
+          </p>
+
+          <div className="adm-section-head">Builds used per account this month</div>
+          <div className="funnel-cost-grid">
+            <article><span>Accounts that built anything</span><strong>{fmt(accountsBuilding)}</strong></article>
+            <article><span>Reached the free limit of ten</span><strong>{fmt(accountsAtLimit)}</strong></article>
+            <article><span>Busiest account</span><strong>{fmt(busiestAccount)}</strong></article>
+          </div>
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead><tr><th>AI builds this month</th><th>Accounts</th></tr></thead>
+              <tbody>
+                {buildDistribution.length === 0 && (
+                  <tr><td colSpan={2} className="adm-loading">No AI builds recorded this month yet.</td></tr>
+                )}
+                {buildDistribution.map((row) => (
+                  <tr key={row.builds}>
+                    <td>{row.builds}</td>
+                    <td><strong>{fmt(row.accounts)}</strong></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="funnel-cost-note">
+            The paid plan sells more AI builds than the free ten. If nobody in this table
+            is near ten, the plan is priced on something families are not running out of,
+            and the offer needs to change rather than the checkout button.
+          </p>
 
           <div className="adm-section-head">Recent event activity</div>
           <div className="adm-table-wrap">

@@ -13,6 +13,7 @@ const {
 } = require('../billingEvents');
 const store = require('../billingStore');
 const { studentAgeEligibility } = require('../studentAge');
+const { recordEvent } = require('../analytics');
 
 const router = express.Router();
 
@@ -206,6 +207,11 @@ router.post('/checkout', authenticateToken, async (req, res) => {
       allow_promotion_codes: true,
     });
 
+    // The start half of the pair. Recorded after Stripe has actually created
+    // the session, so it counts intents that reached Stripe rather than clicks
+    // on a button that then failed.
+    void recordEvent('checkout_start', { userId });
+
     res.json({ url: session.url });
   } catch (error) {
     // Stripe's own error code is safe to surface and is the difference between
@@ -310,6 +316,9 @@ async function applyEvent(event) {
     const fields = subscriptionFields(subscription);
     if (!fields || !belongsToCodeIt(fields)) return;
     await store.upsertSubscription(userId, fields);
+    // The complete half. This line is one of two places in the product where
+    // money becomes access, and until now neither left a trace.
+    void recordEvent('checkout_complete', { userId });
     return;
   }
 

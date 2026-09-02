@@ -122,6 +122,16 @@ export default function Header() {
     };
   }, [dropOpen]);
 
+  // Once per mount, and only when the control is actually rendered. Without a
+  // shown count, a click count is a number with no denominator: nobody could
+  // tell a control nobody presses from a control nobody is offered.
+  const plusShownRef = useRef(false);
+  useEffect(() => {
+    if (!showGetPlus || plusShownRef.current) return;
+    plusShownRef.current = true;
+    void trackEvent("upgrade_prompt_shown", "header", token);
+  }, [showGetPlus, token]);
+
   const handleLogout = () => {
     setDropOpen(false);
     logout();
@@ -193,7 +203,7 @@ export default function Header() {
               <Link
                 to="/pricing#codeit-plus"
                 className="site-header__plus"
-                onClick={() => void trackEvent("header_get_plus_click", null, token)}
+                onClick={() => void trackEvent("upgrade_click", "header", token)}
               >
                 Get Plus
               </Link>

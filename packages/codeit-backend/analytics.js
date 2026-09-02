@@ -256,6 +256,35 @@ async function getFunnelReport(requestedDays = 30) {
         leadsByEmail.set(key, { ...lead, name: existing?.name || null });
       }
     }
+    // ── How many builds an account actually uses in a month ──────────────
+    //
+    // The plan sells ten AI builds a month. Nobody had ever counted how many
+    // families get anywhere near ten, so "unlimited AI builds" was being
+    // priced at CA$12 without knowing whether the limit binds on anyone. If
+    // the top of this distribution is four, the plan is selling the wrong
+    // thing and the price conversation reopens.
+    //
+    // Run apart from the batch above and allowed to fail on its own: the
+    // billing tables are created by the billing migration, and a deploy
+    // without them must still return the rest of this report.
+    let aiBuildDistribution = null;
+    try {
+      const [rows] = await pool.query(
+        `SELECT builds, COUNT(*) AS accounts
+           FROM (
+             SELECT user_id, COUNT(*) AS builds
+               FROM ai_build_usage
+              WHERE created_at >= date_trunc('month', now())
+              GROUP BY user_id
+           ) per_account
+          GROUP BY builds
+          ORDER BY builds`
+      );
+      aiBuildDistribution = rows;
+    } catch (err) {
+      console.error('AI build distribution failed:', err.message);
+    }
+
     const foundingLeads = [...leadsByEmail.values()]
       .sort((a, b) => new Date(b.interested_at) - new Date(a.interested_at))
       .slice(0, 100);
@@ -273,6 +302,7 @@ async function getFunnelReport(requestedDays = 30) {
       student_age_audit: studentAgeRows[0] || null,
       progress_email_delivery: progressDeliveries,
       founding_leads: foundingLeads,
+      ai_build_distribution: aiBuildDistribution,
     };
   } catch (err) {
     console.error('Analytics report failed:', err.message);

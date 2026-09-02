@@ -67,14 +67,34 @@ const EVENT_META = Object.freeze({
   billing_portal_open: new Set(),
   billing_checkout_start: new Set(),
 
-  // Added 2 September 2026, after the first paying family said subscribing
-  // took too many buttons. These three are the only way to tell whether the
-  // shorter path is the reason someone paid, or whether it only moved a
-  // control nobody presses. The wall event is the denominator: how many
-  // families reach the monthly limit at all.
+  // ── The money path ────────────────────────────────────────────────────
+  //
+  // Asked for on 2 September 2026: routes/billing.js recorded no events at
+  // all, so 326 accounts and one subscriber could not be turned into a single
+  // rate. pricing_view already existed; these five are the rest of it.
+  //
+  // ai_limit_reached is recorded by the server at the 402, not by the browser.
+  // The 402 is the fact; whether a browser was still listening when it arrived
+  // is not. It carries no count: at the moment of the refusal the number of
+  // builds this month is always the plan's limit, so it would say the same
+  // thing every time. The distribution that actually answers "is anyone near
+  // ten" comes from counting generation_complete per account.
   ai_limit_reached: new Set(),
-  ai_limit_upgrade_click: new Set(),
-  header_get_plus_click: new Set(),
+
+  // One name with a source rather than one name per surface. A surface added
+  // later needs a value here, not a new event, a new client allowlist entry
+  // and a new column in the report.
+  upgrade_prompt_shown: new Set(['build-limit', 'header', 'publish-refused']),
+  upgrade_click: new Set(['build-limit', 'header', 'publish-refused']),
+
+  // The pair. checkout_start is a Stripe session actually created;
+  // checkout_complete is the webhook that granted access. The gap between them
+  // is the abandonment rate, and a start with no complete after an hour is the
+  // shape of the webhook failure this code has always warned about: a card
+  // charged and no access given. Both are server-side, because a browser that
+  // has navigated to Stripe cannot report either one.
+  checkout_start: new Set(),
+  checkout_complete: new Set(),
 
   // Server-side. The milestone table counts lesson completions from
   // Student_Lesson_Progress, which cannot say when one happened relative to
@@ -114,8 +134,11 @@ const CLIENT_REPORTED_EVENTS = new Set([
   'billing_portal_open', 'billing_checkout_start',
   // Added 2 September 2026: the two missing denominators.
   'studio_view', 'lesson_start',
-  // Added 2 September 2026: the shorter path to subscribing.
-  'ai_limit_reached', 'ai_limit_upgrade_click', 'header_get_plus_click',
+  // Added 2 September 2026: the shorter path to subscribing. ai_limit_reached,
+  // checkout_start and checkout_complete are deliberately absent: they are
+  // recorded by the server, and a browser must not be able to claim any of
+  // them.
+  'upgrade_prompt_shown', 'upgrade_click',
 ]);
 const JOURNEY_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const CAMPAIGN_PATTERN = /^[a-z0-9][a-z0-9-]{1,23}$/;
