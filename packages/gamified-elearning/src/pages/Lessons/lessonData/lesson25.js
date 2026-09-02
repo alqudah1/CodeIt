@@ -50,7 +50,7 @@ const lesson25 = {
       type: 'example',
       id: 'example',
       title: 'Two Answers at Once',
-      description: 'Return several values separated by commas, and unpack them on the other side.',
+      description: 'Return several values separated by commas, and unpack them on the other side. min, max and sum are built into Python and do what their names say: the smallest, the largest, and everything added up.',
       code: 'def stats(numbers):\n    return min(numbers), max(numbers), sum(numbers)\n\nlowest, highest, total = stats([4, 9, 2, 7])\nprint("Lowest:", lowest)\nprint("Highest:", highest)\nprint("Total:", total)',
       expectedOutput: /Total: 22/,
     },
