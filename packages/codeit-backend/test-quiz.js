@@ -29,15 +29,31 @@ const unlistedRoutes = require('./routes/unlisted');
 const activityRoutes = require('./routes/activity');
 const billingRoutes = require('./routes/billing');
 const { legacyAccessGuard } = require('./legacyParentReview');
+const { studioReadiness, studioReadinessMessage } = require('./studioReadiness');
 
 const app = express();
 app.set('trust proxy', 1);
-app.get('/health', (req, res) => {
-  res.json({ ok: true });
-});
-app.get('/api/health', (req, res) => {
-  res.json({ ok: true });
-});
+// ── Health ────────────────────────────────────────────────────────────────
+//
+// { ok: true } answered yes while every build in production returned a canned
+// starter instead of the child's idea, for an unknown length of time, because
+// a missing model key is not an outage: the process starts, the route answers
+// 200, and nothing anywhere notices. Health now reports whether the studio can
+// do the thing the product is named for. It never reports the key itself.
+const healthBody = () => {
+  const studio = studioReadiness(process.env);
+  return { ok: true, studio: { ready: studio.ready, missing: studio.missing } };
+};
+app.get('/health', (req, res) => { res.json(healthBody()); });
+app.get('/api/health', (req, res) => { res.json(healthBody()); });
+
+// Said once, at boot, in plain words. A line in the log is not a guard, but it
+// is the difference between a person seeing this on the day it breaks and
+// nobody seeing it for months.
+{
+  const studio = studioReadiness(process.env);
+  if (!studio.ready) console.error(studioReadinessMessage(studio));
+}
 const configuredOrigins = (process.env.CORS_ORIGINS || '')
   .split(',')
   .map(origin => origin.trim())

@@ -231,7 +231,7 @@ const BLOG_POSTS = [
       {
         heading: 'Where Coding Games Fit in the Learning Journey',
         body: [
-          'On CodeIt, coding games are the third step in every chapter: lesson, then quiz, then puzzle. The lesson introduces the concept. The quiz checks understanding. The puzzle makes the concept real.',
+          'On CodeIt a lesson is followed by a quiz. The first ten lessons also have a puzzle after the quiz; lessons eleven onward do not have puzzles yet. The lesson introduces the concept, the quiz checks understanding, and the puzzle makes the concept real. Every lesson ends with the studio, where you build something that uses what you just learned.',
           'This structure means kids never encounter a puzzle they haven\'t been prepared for. The challenge isn\'t "do you know this?". it\'s "can you apply what you just learned?"',
           'The full journey. Lessons, quizzes, puzzles, and boss challenges. Is mapped out in the Journey Map. Each completed step unlocks the next.',
         ],
