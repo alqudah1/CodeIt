@@ -204,7 +204,7 @@ export default function Pricing() {
           <article className="pricing-card">
             <p className="pricing-card__eyebrow">For every beginner</p>
             <h2>Free</h2>
-            <div className="pricing-price"><strong>{CURRENCY_SYMBOL}0</strong><span>free forever, no card</span></div>
+            <div className="pricing-price"><strong>{CURRENCY_SYMBOL}0</strong><span>free now, no card required</span></div>
             <p className="pricing-card__summary">Learn the basics and make a real first project without a credit card.</p>
             <ul>{FREE_FEATURES.map((feature) => <li key={feature}>{feature}</li>)}</ul>
             {/* ?from=pricing lets the studio show one dismissible line bridging the

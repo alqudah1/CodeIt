@@ -152,6 +152,42 @@ async function awardProjectXp(userId, projectId, awardType) {
   return persistProjectXp(pool, projectXpReady, userId, projectId, awardType);
 }
 
+
+// ── Prompt caching ───────────────────────────────────────────────────────────
+//
+// The build system prompt is roughly 6,000 tokens and identical for every build
+// of the same category, and it was being sent at full input price on every
+// call. Cache reads are a tenth of the base input price, so on a cached call a
+// build costs about $0.023 instead of $0.029, close to a fifth off.
+//
+// TWO THINGS THAT MAKE THIS SMALLER THAN IT LOOKS, both worth knowing before
+// anyone counts on the saving.
+//
+// Haiku 4.5 will not cache anything under 4,096 tokens. Below that the block is
+// silently ignored: not cached, no error. EDIT_SYSTEM_PROMPT is about 540
+// tokens and POLISH_SYSTEM_PROMPT about 900, so marking either would have been
+// configuration that looks like it is working and is not. They are left as
+// plain strings, and the guard below makes marking them impossible rather than
+// merely wrong.
+//
+// And a cache entry lives five minutes. At ten families the second build of the
+// same category inside five minutes will often not happen, so most calls pay
+// the 1.25x write and never get a read. This saves real money at volume and
+// close to nothing during a pilot. Worth having, not worth counting.
+//
+// Verify it is actually working by reading cache_creation_input_tokens and
+// cache_read_input_tokens on the response. Both zero means nothing was cached.
+const MIN_CACHEABLE_TOKENS = 4096;
+
+function cached(text) {
+  // A rough token count is enough: the point is to catch a prompt that is
+  // obviously too short, not to predict the tokeniser. Below the floor the
+  // plain string is returned, so the call still works and nothing pretends.
+  const approxTokens = String(text || '').length / 3.7;
+  if (approxTokens < MIN_CACHEABLE_TOKENS) return text;
+  return [{ type: 'text', text, cache_control: { type: 'ephemeral' } }];
+}
+
 // ── Response parsing helpers ──────────────────────────────────────────────────
 function parseBuilderResponse(rawText) {
   // Strategy 1: <META>{...}</META><HTML>...</HTML> structured format
@@ -1606,7 +1642,7 @@ ${designConfig.category === 'game' ? '• Game must be startable, playable, scor
         createTrackedMessage('build_initial', {
           model:      'claude-haiku-4-5-20251001',
           max_tokens: maxTok,
-          system:     systemPrompt,
+          system:     cached(systemPrompt),
           messages:   [{ role: 'user', content: userMsg }],
         }),
         new Promise(function(_, reject) {
@@ -1735,7 +1771,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
           createTrackedMessage('build_retry', {
             model:      'claude-haiku-4-5-20251001',
             max_tokens: maxTok,
-            system:     systemPrompt,
+            system:     cached(systemPrompt),
             messages: [
               { role: 'user',      content: userMsg },
               { role: 'assistant', content: rawText },
