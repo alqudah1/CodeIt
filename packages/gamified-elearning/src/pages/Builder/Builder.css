@@ -6692,3 +6692,35 @@ details.bldr-device-sizes .bldr-device-sizes__options {
   .bldr-paper-burst__bit--12 { left: 90%; background: var(--arc-sun, #FED340);    animation-delay: .04s; }
   .bldr-paper-burst__bit--13 { left: 96%; background: var(--arc-orange, #F87824); animation-delay: .11s; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   PIXEL, IN THE PAGE RATHER THAN OVER IT
+   Walked on 2 September 2026. Fixed to the bottom right, the
+   bubble sat on top of the starter shelf: two cards obscured on a
+   classroom monitor, and on a phone the whole second card and its
+   PLAY button, under the words "Tap a game to open it".
+   Before a project exists there is nothing to stand beside, so he
+   stands in the flow, above the shelf he is pointing at.
+   ══════════════════════════════════════════════════════════════ */
+.pixel-guide--inline {
+  position: static;
+  right: auto;
+  bottom: auto;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto 0.75rem;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.pixel-guide--inline .pixel-guide__bubble {
+  max-width: 420px;
+  transform-origin: left center;
+  border-radius: 18px 18px 18px 4px;
+}
+@media (max-width: 640px) {
+  .pixel-guide--inline { gap: 8px; padding: 0 0.75rem; }
+  .pixel-guide--inline .pixel-guide__bubble { max-width: none; flex: 1; }
+  .pixel-guide--inline .pixel-guide__pal { width: 56px; height: 56px; flex: none; }
+}

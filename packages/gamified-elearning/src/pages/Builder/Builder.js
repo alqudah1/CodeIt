@@ -2950,8 +2950,19 @@ export default function Builder() {
             rule is about hands, not screens: playing, dragging elements, or
             using any tool panel means hands are busy, and Pixel steps aside.
             When the hands stop, he is back with the next step. */}
+        {/* Before a project exists, Pixel stands in the page rather than over
+            it. Walked on 2 September 2026 at 1366x768 and 390x844: the bubble
+            is fixed to the bottom right, the starter shelf runs along the
+            bottom of the first screen, and on a phone the bubble covered the
+            whole second game card including its PLAY button. A guide that
+            hides the thing it is pointing at, while saying "tap a game to open
+            it", is worse than no guide.
+
+            Once a project exists the floating position is right, because then
+            the thing on screen is the child's own project and Pixel should be
+            beside it rather than pushing it down. */}
         {!isPlayMode && !editModeOn && !studioPanel && (
-        <aside className={`pixel-guide${coachOpen ? '' : ' pixel-guide--resting'}`}>
+        <aside className={`pixel-guide${coachOpen ? '' : ' pixel-guide--resting'}${!code ? ' pixel-guide--inline' : ''}`}>
           {coachOpen && (
             <div className={`pixel-guide__bubble pixel-guide__bubble--${guideLevel}`} role="status" aria-live="polite">
               <span className="pixel-guide__step">Pixel · Step {coachStage.number}</span>
