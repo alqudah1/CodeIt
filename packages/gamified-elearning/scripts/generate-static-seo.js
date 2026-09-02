@@ -400,6 +400,42 @@ const BASE_PAGES = [
 ───────────────────────────────────────────────────────────── */
 
 const GUIDE_CONTENT = loadGuidePages();
+
+/* ── The lessons behind a guide, in the crawlable HTML ──────────────────────
+ *
+ * The React page renders this block too, but a crawler never runs React. The
+ * whole reason for the change is a crawl-budget problem, so a version that
+ * exists only in the rendered view would have been worth nothing: verified
+ * immediately after writing it, all sixteen generated guide pages contained
+ * zero links to /lesson/N.
+ *
+ * Titles come from the same lesson data files the registry reads, so the
+ * static page and the React page name every lesson identically and neither
+ * can hold a stale label.
+ */
+function relatedLessonsHtml(ids) {
+  const items = (ids || [])
+    .map((id) => {
+      const lesson = LESSON_CONTENT.get(Number(id));
+      return lesson ? { id, title: lesson.title || `Lesson ${id}` } : null;
+    })
+    .filter(Boolean);
+  if (!items.length) return '';
+  const lis = items
+    .map(
+      (l) =>
+        `<li><a href="/lesson/${l.id}"><span class="guide-related__num">Lesson ${l.id}</span> ` +
+        `<span class="guide-related__name">${escapeHtml(l.title)}</span></a></li>`,
+    )
+    .join('');
+  return (
+    '<aside class="guide-related" aria-labelledby="guide-related-title">' +
+    '<h2 id="guide-related-title" class="guide-related__title">The lessons behind this guide</h2>' +
+    `<ul class="guide-related__list">${lis}</ul></aside>`
+  );
+}
+
+
 const PRESS_FACTS = loadPressFacts();
 
 // The front page's short list of ready-made games, counted rather than typed.
@@ -1086,7 +1122,7 @@ const PAGES = [
     faqs: guideFaqs(guide.markdown),
     // Pre-rendered from the same Markdown the React page renders, so the
     // crawlable HTML and the page a person sees are the same words.
-    bodyHtml: renderMarkdown(guide.markdown),
+    bodyHtml: renderMarkdown(guide.markdown) + relatedLessonsHtml(guide.relatedLessons),
     breadcrumbs: [
       ['/', 'Home'],
       ['/guide', 'Guides'],

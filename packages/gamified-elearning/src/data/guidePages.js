@@ -14,6 +14,7 @@
 const GUIDE_PAGES = [
   {
     slug: "glitch-for-classrooms",
+    relatedLessons: [1, 9],
     title: "Glitch for Classrooms: What Teachers Use Now",
     description: "Glitch ended hosting in July 2025. A teacher's replacement guide: remixable starters, age gates, Chromebook fit, and what to do with old projects.",
     h1: "My class used Glitch. What do we use now?",
@@ -110,6 +111,7 @@ CodeIt is a browser-based studio for ages 5–18. A learner describes a website,
   },
   {
     slug: "after-scratch",
+    relatedLessons: [1, 2, 4],
     // CodeMonkey's own prices, from app.codemonkey.com/home-plans, re-read
     // 31 August 2026. These were written as bare "$8" and "$13", which slipped
     // past the price guards entirely: an unmarked dollar amount is not read as
@@ -273,6 +275,7 @@ CodeIt's studio has a starter written for exactly this crossing: **Cat and mouse
   },
   {
     slug: "ai-built-it-now-edit-it",
+    relatedLessons: [2, 4, 9],
     title: "Your Kid Used AI to Write Their Code. Now What?",
     description: "AI wrote your kid's project. The learning isn't lost, but it hasn't happened yet. What to ask, what to try this week, and both sides of vibe coding.",
     h1: "Your kid used AI to write their code. Now what?",
@@ -454,6 +457,7 @@ Some fundamentals first helps, and a fully AI-first start leaves gaps. But holdi
   },
   {
     slug: "what-did-my-kid-learn",
+    relatedLessons: [4, 6, 9],
     title: "Did My Kid Learn Anything, or Did AI Do It?",
     description: "Your child built something with AI and it works. Here is how to tell whether they understood it — four checks you can run this week, on any platform.",
     h1: "Did my kid learn anything, or did AI do it?",
@@ -592,6 +596,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5 to 18, 
   },
   {
     slug: "glitch-shutdown",
+    relatedLessons: [1, 9],
     title: "Glitch Shut Down: Where Beginner Web Projects Live Now",
     description: "Glitch ended web hosting on 8 July 2025. What was lost, what happened to existing projects, why redirects expire, and where to go now.",
     h1: "Glitch shut down. Where do beginner web projects live now?",
@@ -692,6 +697,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner de
   },
   {
     slug: "publish-first-project",
+    relatedLessons: [1, 15],
     title: "How to Publish a First Website for Free (Real Friction)",
     description: "Putting a first website online free: which hosts need an account, a card, git knowledge, or a minimum age — and which quietly exclude kids.",
     h1: "How to actually publish a first website for free",
@@ -797,6 +803,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner de
   },
   {
     slug: "first-browser-game",
+    relatedLessons: [6, 19, 31],
     title: "Make a Small Browser Game You Can Actually Read",
     description: "How to build a browser game you can share as a link and understand the code of — plain JavaScript, KAPLAY (formerly Kaboom.js), Phaser and p5.js compared.",
     h1: "Make a small browser game you can actually read",
@@ -903,6 +910,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner de
   },
   {
     slug: "ai-builder-you-can-edit",
+    relatedLessons: [2, 9, 25],
     title: "AI Built Your Website. Can You Change It?",
     description: "Lovable, v0 and Bolt all let you export code, so the lock-in question is subtler. A six-point checklist for judging any AI builder.",
     h1: "AI built your website. Can you change it?",
@@ -1002,6 +1010,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5-18. A l
   },
   {
     slug: "what-happened-to-juni-learning",
+    relatedLessons: [1, 4],
     // Competitor prices this page quotes, all in US dollars, marked so the
     // price guards can see them. Same reason as after-scratch: bare dollar
     // amounts were invisible to the guard.
@@ -1093,6 +1102,7 @@ Where CodeIt does not fit: we are not a live-tutoring replacement. There is no i
   },
   {
     slug: "code-org-is-now-codeai",
+    relatedLessons: [1, 6],
     // Kodable's family price, from kodable.com/parents, read 31 August 2026.
     // Declared so the price guards can see it is somebody else's money.
     quotedPrices: ["US$119.99"],
@@ -1177,6 +1187,7 @@ Where CodeIt is not a fit: we are a consumer product for families. We have no sc
   },
   {
     slug: "common-sense-education-paused-edtech-reviews",
+    relatedLessons: [1, 10],
     title: "Common Sense Paused Edtech Reviews",
     description: "Common Sense Education paused all edtech product reviews from February 2026. Its privacy ratings still run. What schools should use instead.",
     h1: "Common Sense Paused Edtech Reviews",
@@ -1262,6 +1273,7 @@ We wrote this page because the facts were being reported wrongly — specificall
   },
   {
     slug: "replit-teams-for-education-shut-down",
+    relatedLessons: [1, 9],
     title: "Replit Teams for Education Shut Down",
     description: "Replit discontinued Teams for Education on 1 August 2024. Replit itself still operates but has exited education. Where teachers moved next.",
     h1: "Replit Teams for Education Shut Down",
@@ -1348,6 +1360,7 @@ If that is not your situation, take the list above and ignore us.`,
   },
   {
     slug: "tynker-alternative",
+    relatedLessons: [1, 4, 6],
     title: "Tynker Alternatives: What to Use, and When Tynker Is Still the Answer",
     description: "Tynker costs $15 to $18 a month for up to three children. What the alternatives actually are, what each one is better at, and the cases where you should stay.",
     h1: "Is Tynker worth it, and what else is there?",
@@ -1435,6 +1448,7 @@ When the child has stopped opening it. The common pattern is a plan bought for a
   },
   {
     slug: "free-coding-for-kids",
+    relatedLessons: [1, 3, 6],
     comparesOptions: ["Scratch", "Code.org, now CodeAI", "Google CS First", "freeCodeCamp", "The p5.js Web Editor"],
     title: "Free Coding for Kids: What Is Actually Free in 2026",
     description: "Six platforms that cost nothing, what each is genuinely good at, and which one to pick by what your child wants to make. Every claim checked against the source.",
@@ -1543,6 +1557,7 @@ Usually that "free" means a trial or a tier that ends a few lessons in. The five
   },
   {
     slug: "coding-for-kids-by-age",
+    relatedLessons: [1, 6, 20],
     // Kodable's own prices, from kodable.com/parents and kodable.com/plans,
     // read 31 August 2026. The family plans and the school site licences are
     // different products and this page is the one that says so, so it quotes
@@ -1653,6 +1668,7 @@ Watch what happens when they get stuck. A child in the right tool gets annoyed a
   },
   {
     slug: "best-coding-platforms-for-kids",
+    relatedLessons: [1, 9, 31],
     comparesOptions: ["Scratch", "Code.org, now CodeAI", "Tynker", "CodeMonkey", "CodeIt"],
     // CodeMonkey's own prices, read from app.codemonkey.com/home-plans.
     // Corrected 31 August 2026: this page said US$7 individual and US$12

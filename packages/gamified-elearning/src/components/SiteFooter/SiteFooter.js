@@ -3,12 +3,21 @@ import { Link } from 'react-router-dom';
 import BrandLogo from '../BrandLogo/BrandLogo';
 import './SiteFooter.css';
 
-const LESSONS = [
-  { id: 1,  label: 'Hello Python' },
-  { id: 2,  label: 'Variables' },
-  { id: 4,  label: 'If Statements' },
-  { id: 6,  label: 'Loops' },
-];
+// ── Why this list is gone ────────────────────────────────────────────────────
+//
+// Four lessons were hardcoded here when the curriculum was shorter: 1, 2, 4
+// and 6. They stayed while it grew to thirty-one, so the footer of every page
+// on the site quietly asserted that four of thirty-one lessons were the ones
+// worth linking, and lessons 7 to 31 had no link anywhere outside the lesson
+// section itself.
+//
+// The honest replacement is not a longer list. A footer carrying all
+// thirty-one is a sitemap dump on every page, which dilutes the thing it is
+// meant to strengthen. The guides now carry two or three targeted lesson
+// links each, chosen for the subject of the guide, which is a better signal
+// than the same four links repeated site-wide.
+//
+// So the footer says "All beginner lessons" and means it.
 
 export default function SiteFooter() {
   return (
@@ -32,11 +41,6 @@ export default function SiteFooter() {
             <li><Link to="/ai-website-builder-for-kids">AI website builder for kids</Link></li>
             <li><Link to="/playground">Python playground</Link></li>
             <li><Link to="/lessons">All beginner lessons</Link></li>
-            {LESSONS.map(l => (
-              <li key={l.id}>
-                <Link to={`/lesson/${l.id}`}>{l.label}</Link>
-              </li>
-            ))}
           </ul>
         </div>
 

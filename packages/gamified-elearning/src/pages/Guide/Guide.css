@@ -128,3 +128,60 @@
 }
 .guide-index__item h2 { margin: 0 0 0.35rem; font: 700 1.08rem/1.25 'Baloo 2', 'Nunito', sans-serif; }
 .guide-index__item p { margin: 0; color: var(--guide-soft); font-size: 0.92rem; }
+
+/* ══════════════════════════════════════════════════════════════
+   THE LESSONS BEHIND THIS GUIDE
+   Across all sixteen guide bodies there were four internal links
+   and none pointed at a lesson, while eighteen of thirty-one
+   lesson pages sat in "Discovered - currently not indexed".
+   Two or three per guide, never a sitemap dump.
+   ══════════════════════════════════════════════════════════════ */
+.guide-related {
+  margin: 2.5rem 0 1.5rem;
+  padding: 1.25rem 1.4rem;
+  background: var(--paper, #FFFDF7);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 16px;
+  box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.9));
+}
+.guide-related__title {
+  margin: 0 0 0.85rem;
+  font-family: var(--font-display, inherit);
+  font-size: 1.15rem;
+  color: var(--ink, #35220E);
+}
+.guide-related__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.guide-related__list a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding: 0.5rem 0.7rem;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--ink, #35220E);
+  background: rgba(254, 211, 64, 0.16);
+  border: 2px solid rgba(53, 34, 14, 0.18);
+}
+.guide-related__list a:hover,
+.guide-related__list a:focus-visible {
+  background: rgba(254, 211, 64, 0.34);
+  border-color: var(--ink, #35220E);
+}
+.guide-related__num {
+  font-family: var(--font-display, inherit);
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #A8560B;
+  white-space: nowrap;
+}
+.guide-related__name { font-weight: 700; }
