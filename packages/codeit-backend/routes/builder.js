@@ -634,6 +634,7 @@ UNIVERSAL RULES (enforced — no exceptions):
 7. Responsive layout: flex/grid with flex-wrap, max-width on all containers, min 320px works
 8. At least one CSS animation plays during gameplay or on interaction
 9. Close all tags properly — output must end with </html>
+10. ${NO_DASHES_RULE}
 
 OUTPUT FORMAT — return EXACTLY this structure, nothing else:
 <META>{"title":"3–5 word title","type":"${type}","summary":"We built ... (max 20 words)","conceptsUsed":["variables","events","loops","functions"]}</META>
@@ -645,6 +646,25 @@ OUTPUT FORMAT — return EXACTLY this structure, nothing else:
 
 // ── Polish Pass ───────────────────────────────────────────────────────────────
 // Runs after successful generation. Improves visual quality without touching JS.
+// ── One punctuation rule, in every prompt that can write visible words ──────
+//
+// The owner asked for the em-dashes to come out of the site. They were also
+// coming out of the model: a child's project is written by these prompts, and
+// a published project sits on codeitlearn.com/project/<id>, so the studio was
+// producing on his own domain exactly the thing he asked us to stop writing.
+//
+// Defined once. Three prompts write text a person reads (build, edit, and the
+// single-element editor); POLISH_SYSTEM_PROMPT is excluded because it is
+// forbidden to touch anything but CSS and class attributes.
+//
+// The prompts' own prose still contains dashes. It is plausible that a prompt
+// written in a style teaches that style, and it is untested, so it is not being
+// rewritten on a guess while three other changes are queued against this file.
+// Ship the explicit rule, read the next twenty generated projects, then decide.
+const NO_DASHES_RULE = 'NEVER use an em-dash or an en-dash in ANY text the project displays: '
+  + 'headings, buttons, labels, hints, result messages, placeholder copy, footer text. '
+  + 'Use a comma, a colon or a full stop instead.';
+
 const POLISH_SYSTEM_PROMPT = `You are a UI polish specialist. You receive a finished, working interactive HTML project and make it look significantly more polished. You ONLY touch CSS and HTML class attributes. You never touch JavaScript.
 
 ═══ PRESERVE EXACTLY ═══
@@ -813,7 +833,7 @@ ${WEBSITE_CSS}
     <div class="feature-card" data-delay="2" style="animation:slideUp .55s .22s ease both">
       <div class="feature-icon">⚡</div>
       <h3>Interactive</h3>
-      <p>Every button does something — nothing is just for show.</p>
+      <p>Every button does something. Nothing is just for show.</p>
     </div>
     <div class="feature-card" data-delay="3" style="animation:slideUp .55s .34s ease both">
       <div class="feature-icon">🎯</div>
@@ -834,7 +854,7 @@ ${WEBSITE_CSS}
 </section>
 
 <footer class="footer">
-  <p>Made with CodeIt — your AI creative studio</p>
+  <p>Made with CodeIt, your AI creative studio</p>
 </footer>
 
 <script>
@@ -1222,7 +1242,7 @@ h1{font-size:2rem;font-weight:900;letter-spacing:-.5px}
 <div class="ov on" id="s-ov">
   <div class="box">
     <h2>Penalty Kick</h2>
-    <p>Click anywhere inside the goal to shoot! The goalkeeper will try to stop you. You have 5 shots — score as many as you can!</p>
+    <p>Click anywhere inside the goal to shoot! The goalkeeper will try to stop you. You have 5 shots, so score as many as you can!</p>
     <button class="btn" onclick="startGame()">Kick Off!</button>
   </div>
 </div>
@@ -1440,12 +1460,12 @@ footer{padding:32px 24px;text-align:center;border-top:1px solid var(--b);color:v
   </div>
   <p class="cok" id="cok">You're on the list! We'll be in touch soon.</p>
 </section>
-<footer><p>Made with <span style="color:var(--p)">CodeIt</span> — your AI creative studio</p></footer>
+<footer><p>Made with <span style="color:var(--p)">CodeIt</span>, your AI creative studio</p></footer>
 <script>
 var yr=false;
 function go(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
 function toggleP(){yr=!yr;document.getElementById('ptog').classList.toggle('yr',yr);document.getElementById('ml').classList.toggle('on',!yr);document.getElementById('yl').classList.toggle('on',yr);document.getElementById('p1').textContent=yr?'$0':'$0';document.getElementById('p2').textContent=yr?'$15':'$19';document.getElementById('p2r').textContent=yr?'per month, billed yearly':'per month';}
-var FAQS=[{q:'Is there a free plan?',a:'Yes! Starter is completely free forever. No credit card needed.'},{q:'Can I cancel anytime?',a:'Absolutely. Cancel from your account settings. No questions asked.'},{q:'Do you offer refunds?',a:'Yes — 30-day money-back guarantee on all paid plans.'},{q:'Is my data secure?',a:'We use industry-standard encryption for all data at rest and in transit.'}];
+var FAQS=[{q:'Is there a free plan?',a:'Write what your free plan includes here.'},{q:'Can I cancel anytime?',a:'Say how someone cancels, in one sentence.'},{q:'Do you offer refunds?',a:'Put your own refund policy here.'},{q:'Is my data secure?',a:'Describe how you look after people\'s information.'}];
 var fl=document.getElementById('fl');
 fl.innerHTML=FAQS.map(function(f,i){return '<div class="fi2"><button class="fq" onclick="tF('+i+')">'+f.q+'<span class="fa2">▾</span></button><div class="fac"><div class="fai">'+f.a+'</div></div></div>';}).join('');
 function tF(i){document.querySelectorAll('.fi2')[i].classList.toggle('open');}
@@ -1906,6 +1926,7 @@ YOUR ROLE: Make ONLY the requested change. Preserve everything else exactly.
 2. Complete <style> block — all original CSS plus your additions/changes
 3. Complete <script> block — all original JS plus your additions/changes
 4. Never return partial code, diffs, or "// unchanged" placeholders — always the full file
+5. ${NO_DASHES_RULE}
 
 Return EXACTLY this format — nothing else before or after:
 <CODE>
@@ -2330,7 +2351,8 @@ router.post('/patch', optionalAuth, helperLimiter, async (req, res) => {
       system:     `You are a precise HTML element editor for a kids coding platform.
 The user selected one element and wants to change it.
 Return ONLY the updated outer HTML for that single element — no markdown, no code fences, no explanation.
-Preserve the element's id attribute exactly. Keep existing classes and structure unless the instruction says otherwise.`,
+Preserve the element's id attribute exactly. Keep existing classes and structure unless the instruction says otherwise.
+${NO_DASHES_RULE}`,
       messages: [
         {
           role:    'user',

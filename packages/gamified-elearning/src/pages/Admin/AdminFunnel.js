@@ -334,6 +334,7 @@ export default function AdminFunnel() {
                         <td>{lesson.id}. {lesson.title}</td>
                         <td>{fmt(lesson.started)}</td>
                         <td>{fmt(lesson.finished)}</td>
+                        {/* allow-em-dash: the empty-cell mark in an internal table, not a sentence. */}
                         <td>{lesson.started > 0 ? `${Math.round((lesson.finished / lesson.started) * 100)}%` : '—'}</td>
                       </tr>
                     ))}

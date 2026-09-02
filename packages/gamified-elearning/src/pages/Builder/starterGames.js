@@ -66,7 +66,7 @@ const SHARED_STYLE = `
     background: rgba(0,0,0,.42); font-size: 14px; opacity: .9; pointer-events: none;
     white-space: nowrap;
     /* Gets out of the way on its own. A first-time hint that never leaves ends
-       up sitting on top of the game — in the catch game it printed straight
+       up sitting on top of the game. In the catch game it printed straight
        across the basket. */
     animation: fadeTip .8s 3s forwards;
   }
@@ -2189,7 +2189,7 @@ function moveMouseSomewhere() {
   mouse.y = 90 + Math.random() * (height - 180);
 }
 
-// In Scratch: "when this sprite touched" — here we measure the distance.
+// In Scratch: "when this sprite touched". Here we measure the distance.
 function touching(a, b, closerThan) {
   const dx = a.x - b.x, dy = a.y - b.y;
   return Math.sqrt(dx * dx + dy * dy) < closerThan;

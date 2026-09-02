@@ -42,7 +42,7 @@ export default function Faq() {
         <h1>Questions parents ask first</h1>
         <div className="guide-body">
           <p>
-            Including the ones with awkward answers. If something here is out of date, it is a bug, 
+            Including the ones with awkward answers. If something here is out of date, it is a bug,
             tell us.
           </p>
           {FAQS.map(({ q, a }) => (

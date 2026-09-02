@@ -20,7 +20,7 @@ const GUIDE_PAGES = [
     h1: "My class used Glitch. What do we use now?",
     lastVerified: "2026-08-25",
     targetQueries: ["my class used Glitch for coding projects what should we use now", "glitch alternative for classroom", "glitch shut down what do teachers use", "free coding platform for middle school no installs", "remixable starter project for a class like glitch", "coding site for students under 13 chromebook", "replacement for glitch and replit teams for education", "student web hosting age requirements school"],
-    markdown: `**Short answer:** for most classes, the closest working replacements are [CodeHS Free](https://codehs.com/free) if you want a full course and roster in one place, [Pickcode](https://pickcode.io/) if you want a lighter tool with starter code and assignments, and [Neocities](https://neocities.org/) or the [p5.js Web Editor](https://editor.p5js.org/) if you only need students to build and share small web projects. None of them reproduce the exact Glitch loop — one link, thirty remixes, thirty live URLs in a minute — and it is worth knowing that before you plan the unit.
+    markdown: `**Short answer:** for most classes, the closest working replacements are [CodeHS Free](https://codehs.com/free) if you want a full course and roster in one place, [Pickcode](https://pickcode.io/) if you want a lighter tool with starter code and assignments, and [Neocities](https://neocities.org/) or the [p5.js Web Editor](https://editor.p5js.org/) if you only need students to build and share small web projects. None of them reproduce the exact Glitch loop (one link, thirty remixes, thirty live URLs in a minute), and it is worth knowing that before you plan the unit.
 
 This page is only about classroom use. If you are looking for general hosting for your own projects, that is a different question, covered separately in [Glitch shut down: where beginner web projects live now](/guide/glitch-shutdown).
 
@@ -56,7 +56,7 @@ Every option below needs an account, and an email address to create one. All are
 | [Pickcode](https://pickcode.io/) | Unverified | No | Lessons with starter code | Shareable project links (unverified) | Free tier for unlimited projects; Pro $500/teacher/yr + ~$5/student/semester |
 | [Scratch](https://scratch.mit.edu/educators/) | Teacher Accounts create student accounts without student email | No | "Remix" is native and closest in spirit to Glitch | Project page URL | Free |
 | [p5.js Web Editor](https://editor.p5js.org/) | Unverified | No | Duplicate a sketch (sign-in needed to save) | Yes, sketch URL | Free |
-| [Neocities](https://neocities.org/) | Terms state no minimum for account creation | No | None — upload files | Yes, free subdomain | Free: 1 GB, 200 GB bandwidth, file-type limits. Supporter $5/mo |
+| [Neocities](https://neocities.org/) | Terms state no minimum for account creation | No | None, upload files | Yes, free subdomain | Free: 1 GB, 200 GB bandwidth, file-type limits. Supporter $5/mo |
 | [GitHub Pages](https://pages.github.com/) + template repos | **13+** | No | "Use this template" is the nearest true remix | Yes | Free |
 | [GitHub Codespaces](https://github.com/features/codespaces) | **13+** | No | Open any repo in a browser VS Code | Port forwarding, not permanent hosting | Free personal tier: 120 core-hours, 15 GB-months/mo |
 | [Classroom 50](https://classroom50.org/) | 13+ (rides on GitHub accounts) | You own a GitHub org | Assignment repos, autograded | Via GitHub Pages | Free, open source |
@@ -77,7 +77,7 @@ Two entries in that table surprise most teachers. **Vercel is 16+, not 13+**: mo
 
 **Students needed a live URL to share.** Neocities is the least encumbered option: a free account, 1 GB, a real URL, no card, and terms that set no account minimum age. GitHub Pages is better if you want version history and are 13+. Skip Vercel for school-age classes on the age rule alone.
 
-**No installs on locked-down machines.** Every option here is browser-only. If you just need students to edit files without any account at all, [vscode.dev](https://vscode.dev/) opens a full editor in a tab and can open a local folder — no sign-in, no hosting.
+**No installs on locked-down machines.** Every option here is browser-only. If you just need students to edit files without any account at all, [vscode.dev](https://vscode.dev/) opens a full editor in a tab and can open a local folder, with no sign-in and no hosting.
 
 **Small Node or Express projects.** Be prepared for disappointment. Free hosting for student-run servers has largely gone; [Render](https://render.com/), [Railway](https://railway.com/) and [Fly.io](https://fly.io/) all want a repo, an account and usually a card, and their free tiers sleep or expire. GitHub Codespaces is the closest thing left, and its forwarded ports are for development, not for a public class showcase. If your unit depended on a live Node backend per student, plan to rewrite it as front-end JavaScript or budget for hosting.
 
@@ -207,13 +207,13 @@ Start here: **Can they read fluently?** No → stay in blocks. Yes → **do they
 | Your kid | Best next step | Where to go |
 |---|---|---|
 | Under 8, or still reading slowly | Stay in blocks; add harder projects | [codeSpark](https://www.beginlearning.com/codespark/pdp) (word-free, now sold through Begin), [Kodable](https://www.kodable.com/parents) (paid for families, US$119.99/yr) |
-| 8–12, loved making **games** and wants to keep making games | Typed Python or JavaScript inside a game world | [CodeCombat](https://codecombat.com/) — freemium, roughly 9+, the strongest "keep making games" answer |
+| 8–12, loved making **games** and wants to keep making games | Typed Python or JavaScript inside a game world | [CodeCombat](https://codecombat.com/): freemium, roughly 9+, the strongest "keep making games" answer |
 | 8–12, obsessed with **Minecraft or Roblox** | Modding path, the motivation is already there | [Tynker](https://www.tynker.com/) ($15/mo billed yearly, or $468 lifetime, up to 3 children) |
 | 9–13, loved the "look what I made" part; wants something others can open | HTML, CSS, JavaScript in a browser | Any browser-based web editor; see the disclosure below |
 | 9–13, loved the **puzzles and logic**, not the art | Structured typed-code puzzles | [CodeMonkey](https://www.codemonkey.com/) (US$8/mo individual, US$13/mo family, K–8), [CodeCombat](https://codecombat.com/) |
-| 10+, more curious about **AI** than about code | AI literacy alongside coding | [CodeAI](https://code.org/) — this is Code.org, which rebranded in June 2026 and shifted emphasis toward AI literacy; free |
+| 10+, more curious about **AI** than about code | AI literacy alongside coding | [CodeAI](https://code.org/): this is Code.org, which rebranded in June 2026 and shifted emphasis toward AI literacy; free |
 | 11–13, asking for **Python by name** | Python, but inside something with visible output | [CodeCombat](https://codecombat.com/)'s Python path first; a beginner Python sequence second. Note Codecademy's 16+ age gate |
-| 13–15, self-directed, reads well | Real adult-track courses | [Codecademy](https://www.codecademy.com/) (free Basic, ~$14.99/mo Plus — check the 16+ term), [freeCodeCamp](https://www.freecodecamp.org/) |
+| 13–15, self-directed, reads well | Real adult-track courses | [Codecademy](https://www.codecademy.com/) (free Basic, ~$14.99/mo Plus, and check the 16+ term), [freeCodeCamp](https://www.freecodecamp.org/) |
 | 15–18, wants a portfolio or a job someday | Full certification tracks | [freeCodeCamp](https://www.freecodecamp.org/), free, with real projects |
 
 ## What the first three months actually look like
@@ -327,7 +327,7 @@ Reading finished code feels like learning and mostly is not, the fluency illusio
 
 1. **It is unenforceable.** There is a phone, a friend's laptop, and school-issued tools.
 2. **It moves the behaviour underground.** What you lose is not the AI use. It is the conversation, the only thing that actually changes how they use it.
-3. **It is already inside the software.** Search, documentation, editors, and the learning platforms themselves. [CodeAI](https://code.org/) — Code.org, which rebranded in June 2026 — moved toward AI literacy rather than away from it. The industry will not help you hold this line.
+3. **It is already inside the software.** Search, documentation, editors, and the learning platforms themselves. [CodeAI](https://code.org/), Code.org, which rebranded in June 2026, moved toward AI literacy rather than away from it. The industry will not help you hold this line.
 4. **Directing an AI is a real skill.** It will be assumed of them the way search was assumed of you. A ban practises the wrong thing.
 
 A ban converts a teachable moment into a compliance problem, and those you lose slowly.
@@ -430,7 +430,7 @@ Things we will not blur:
 - **Under-13 managed profiles cannot publish publicly.** Sharing happens inside the parent-managed account.
 - **Ages 5 to 12 require a parent-managed profile.** This is not a set-and-forget product for young children.
 
-**CodeIt is not for you if:** your household rule is no AI at all, we generate code, so we are the wrong product; your kid wants Minecraft or Roblox mods ([Tynker](https://www.tynker.com/)); your kid mainly wants to keep making games ([CodeCombat](https://codecombat.com/)); your teen wants a professional AI development workflow (they should be using real developer tools); you want a sequenced web-development course; or you are buying for a school — we have no school, district, rostering or teacher-dashboard product.
+**CodeIt is not for you if:** your household rule is no AI at all, we generate code, so we are the wrong product; your kid wants Minecraft or Roblox mods ([Tynker](https://www.tynker.com/)); your kid mainly wants to keep making games ([CodeCombat](https://codecombat.com/)); your teen wants a professional AI development workflow (they should be using real developer tools); you want a sequenced web-development course; or you are buying for a school, because we have no school, district, rostering or teacher-dashboard product.
 
 ---
 
@@ -480,7 +480,7 @@ Every parent using an AI tool now has this question, and almost nobody answers i
 
 ## What "learning" even means when AI wrote the first draft
 
-Drop the idea that learning means typing every character. Following a tutorial line by line, remixing someone else's [Scratch](https://scratch.mit.edu/) project — these are how beginners have always started, and all involved code the child did not invent.
+Drop the idea that learning means typing every character. Following a tutorial line by line, remixing someone else's [Scratch](https://scratch.mit.edu/) project: these are how beginners have always started, and all involved code the child did not invent.
 
 What matters is whether the child can **operate** on the code in front of them. Four abilities, in order of difficulty:
 
@@ -572,7 +572,7 @@ Both are true. Reading-first is a good start and a bad finish. If your child has
 | Course-based | [Codecademy](https://www.codecademy.com/), [Khan Academy](https://www.khanacademy.org/computing/computer-programming) | Lessons completed |
 | Game-based | [CodeCombat](https://codecombat.com/), [CodeMonkey](https://www.codemonkey.com/) | Levels cleared |
 | Sandbox | [Roblox Studio](https://create.roblox.com/) | Whatever the child shows you |
-| Professional AI builders | [Lovable](https://lovable.dev/), [v0](https://v0.app/), [Bolt](https://bolt.new/) | Nothing — not education products, and they do not claim to be |
+| Professional AI builders | [Lovable](https://lovable.dev/), [v0](https://v0.app/), [Bolt](https://bolt.new/) | Nothing, not education products, and they do not claim to be |
 
 Lessons completed and levels cleared are attendance records. They say the child was present. They do not say what the child could do with their own program, which is what you actually asked.
 
@@ -654,7 +654,7 @@ If the project was a static site (HTML, CSS, JavaScript, no server), the files w
 |---|---|---|
 | Host a static site (HTML/CSS/JS) | [Neocities](https://neocities.org/) or [GitHub Pages](https://pages.github.com/) | Neocities: account + email; its terms state no minimum age. GitHub Pages: **13+ required**, and you need basic repo concepts. |
 | Host a static site with drag-and-drop | [Netlify](https://www.netlify.com/) drop | Account required; terms state 13+. No card for the free tier. |
-| Same, on Vercel | [Vercel](https://vercel.com/) | Account required; **its terms state you must be at least 16** — higher than most people assume, and it rules out a lot of learners. |
+| Same, on Vercel | [Vercel](https://vercel.com/) | Account required; **its terms state you must be at least 16**, higher than most people assume, and it rules out a lot of learners. |
 | Share a code snippet or demo | [CodePen](https://codepen.io/) or [JSFiddle](https://jsfiddle.net/) | Fine for a snippet or single page. These are not whole-site hosts; do not try to make one a website. |
 | Publish a browser game | [itch.io](https://itch.io/) | Account required. Users 13+; **publishers must be 18+ or have parental/guardian consent.** |
 | Run a small Node/Express backend for free | No clean answer. See below. | This is the genuine gap. |
@@ -712,7 +712,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner de
       "is it safe for my child's website to be public",
       "free static site hosting no credit card"
     ],
-    markdown: `**Short answer:** if you have a folder with an \`index.html\` file in it, you can have a public link in about ten minutes for no money, and the two most common good choices are [Neocities](https://neocities.org/) and [GitHub Pages](https://pages.github.com/). The catch is not price — it is friction, and the friction is different for a 30-year-old than for a 10-year-old.
+    markdown: `**Short answer:** if you have a folder with an \`index.html\` file in it, you can have a public link in about ten minutes for no money, and the two most common good choices are [Neocities](https://neocities.org/) and [GitHub Pages](https://pages.github.com/). The catch is not price. It is friction, and the friction is different for a 30-year-old than for a 10-year-old.
 
 This page lists the real requirements for each option: whether you need an account, an email address, a credit card, any knowledge of git or a command line, and, the one most guides skip, whether there is a minimum age that silently rules a child out.
 
@@ -728,14 +728,14 @@ Every option below needs an account and an email address. None of them asks for 
 
 | Option | Git / CLI | Minimum age | Free custom domain |
 |---|---|---|---|
-| [Neocities](https://neocities.org/) | No — upload files in the browser | Terms state none | No (paid feature) |
+| [Neocities](https://neocities.org/) | No, upload files in the browser | Terms state none | No (paid feature) |
 | [GitHub Pages](https://pages.github.com/) | Some. Repo concepts at minimum | **13+** | Yes, if you own a domain |
-| [Netlify](https://www.netlify.com/) drop | No — drag a folder | 13+ | Yes, if you own a domain |
+| [Netlify](https://www.netlify.com/) drop | No, drag a folder | 13+ | Yes, if you own a domain |
 | [Vercel](https://vercel.com/) | Usually git or CLI | **16+** | Yes, if you own a domain |
-| [Nekoweb](https://nekoweb.org/) | No — browser editor | Check current terms | No |
+| [Nekoweb](https://nekoweb.org/) | No, browser editor | Check current terms | No |
 | [Cloudflare Pages](https://pages.cloudflare.com/) | Git or CLI | 13+ (18 to contract) | Yes, if you own a domain |
 | [CodePen](https://codepen.io/) | No | 13+ | No |
-| [itch.io](https://itch.io/) (games) | No — upload a zip | 13 to use; **18+ or guardian consent to publish** | No |
+| [itch.io](https://itch.io/) (games) | No, upload a zip | 13 to use; **18+ or guardian consent to publish** | No |
 
 "Free custom domain" means the host serves a domain you own at no extra charge, you still buy the domain separately. "No card" means the free tier does not ask for one at signup; that can change, so check before relying on it.
 
@@ -818,7 +818,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner de
       "roblox vs javascript game for kids",
       "phaser vs p5.js for beginners"
     ],
-    markdown: `**Short answer:** if you want a game that runs at a link and whose code you can understand and change, build it in plain HTML, CSS and JavaScript, or with a small library like [KAPLAY](https://kaplayjs.com/), [Phaser](https://phaser.io/) or [p5.js](https://p5js.org/). If instead the goal is a game your friends will actually play, [Roblox](https://www.roblox.com/) wins on distribution and nothing else is close — those are two different goals and it is worth deciding which one you have before you start.
+    markdown: `**Short answer:** if you want a game that runs at a link and whose code you can understand and change, build it in plain HTML, CSS and JavaScript, or with a small library like [KAPLAY](https://kaplayjs.com/), [Phaser](https://phaser.io/) or [p5.js](https://p5js.org/). If instead the goal is a game your friends will actually play, [Roblox](https://www.roblox.com/) wins on distribution and nothing else is close. Those are two different goals and it is worth deciding which one you have before you start.
 
 This page is about the first goal: a small game, running in a browser, made of code you can open and read. It also covers what happened to Kaboom.js, because a lot of tutorials still use a name that no longer exists.
 
@@ -858,7 +858,7 @@ Start with no library anyway. Understanding the loop is what makes every later t
 
 If you search for a beginner JavaScript game library, you will find a lot of writing about **Kaboom.js**. That name is retired.
 
-Kaboom.js was built at [Replit](https://replit.com/). After Replit stopped developing it, the community took the project over — but Replit kept the original repository and the "Kaboom" trademark, so the community version was renamed. It now lives at [kaplayjs.com](https://kaplayjs.com/) and [github.com/kaplayjs/kaplay](https://github.com/kaplayjs/kaplay), and is community-maintained and open source.
+Kaboom.js was built at [Replit](https://replit.com/). After Replit stopped developing it, the community took the project over, but Replit kept the original repository and the "Kaboom" trademark, so the community version was renamed. It now lives at [kaplayjs.com](https://kaplayjs.com/) and [github.com/kaplayjs/kaplay](https://github.com/kaplayjs/kaplay), and is community-maintained and open source.
 
 The practical upshot for anyone following an old tutorial: the code mostly still works. KAPLAY was built as a drop-in successor, so in most cases you change the import or script tag to point at KAPLAY and the rest of the tutorial's code is unchanged. If a tutorial's example fails, check the library reference first. The name is usually the problem, not your typing.
 
@@ -868,7 +868,7 @@ The practical upshot for anyone following an old tutorial: the code mostly still
 |---|---|---|---|
 | [KAPLAY](https://kaplayjs.com/) | Arcade and platform games, sprites, collisions | Low | The former Kaboom.js. Has an online playground. Friendliest of the three for a first sprite game. |
 | [Phaser](https://phaser.io/) | Bigger, more serious 2D games | Medium | The most established. Far more tutorials and Stack Overflow answers, which matters when stuck. Heavier to start. |
-| [p5.js](https://p5js.org/) | Visual, creative, generative work; simple games | Low | Not a game library — a creative coding library. Excellent if the interest is drawing, animation and art as much as games. Strong beginner documentation. |
+| [p5.js](https://p5js.org/) | Visual, creative, generative work; simple games | Low | Not a game library, a creative coding library. Excellent if the interest is drawing, animation and art as much as games. Strong beginner documentation. |
 
 A reasonable order: plain JavaScript first, then KAPLAY or p5.js depending on whether the interest is arcade games or visual art, then Phaser if the projects outgrow it.
 
@@ -925,7 +925,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner [d
       "learn to code with ai website builder",
       "ai builder or learn html css javascript"
     ],
-    markdown: `**Short answer:** with the main tools, [Lovable](https://lovable.dev/), [v0](https://v0.app/), [Bolt](https://bolt.new/) — yes. All three show you the code, let you edit it, and let you get it out, and Vercel states plainly that it does not own what v0 generates. The lock-in worry that dominated conversation about these tools in 2024 is largely out of date, and it is worth saying so before criticising anything.
+    markdown: `**Short answer:** with the main tools, [Lovable](https://lovable.dev/), [v0](https://v0.app/), [Bolt](https://bolt.new/), yes. All three show you the code, let you edit it, and let you get it out, and Vercel states plainly that it does not own what v0 generates. The lock-in worry that dominated conversation about these tools in 2024 is largely out of date, and it is worth saying so before criticising anything.
 
 The real problem is narrower and less discussed: **exportable is not the same as readable.** You can download a folder you cannot understand, and if you cannot understand it you still cannot fix it, extend it, or move it without the tool that made it. This page gives a six-point checklist for judging any AI builder, and it separates the answer for someone shipping a product from the answer for someone trying to learn.
 
@@ -937,7 +937,7 @@ The real problem is narrower and less discussed: **exportable is not the same as
 | [v0](https://v0.app/) (Vercel) | Yes | Yes | Export locally; two-way GitHub sync with branches and pull requests | "Vercel doesn't own the code generated based on your queries and prompts" |
 | [Bolt](https://bolt.new/) | Yes, code view | Yes | Download as a zip; GitHub sync | Runs locally after \`npm install\` |
 | [Replit Agent](https://replit.com/) | Yes | Yes, full IDE | Git and download | Standard Replit terms |
-| [Base44](https://base44.com/), [Mocha](https://getmocha.com/), [Dyad](https://www.dyad.sh/) | Varies | Varies | Varies — check before depending on it | Varies |
+| [Base44](https://base44.com/), [Mocha](https://getmocha.com/), [Dyad](https://www.dyad.sh/) | Varies | Varies | Varies, check before depending on it | Varies |
 
 So the crude version of the criticism, "AI builders trap your code", is not accurate about the leaders. Where a claim varies by plan, check the current documentation rather than trusting any comparison page, including this one.
 
@@ -1149,7 +1149,7 @@ Both of those sentences are true at once. Anyone telling you only the first ("no
 |---|---|---|
 | A free, structured K–12 CS course sequence | Still there, still free | Fine to continue. Bookmark your course directly rather than navigating from the homepage |
 | Your child to understand how AI works and how to use it critically | Now a core strength | This is the direction the organisation has chosen; expect the newest material here |
-| Deep, typed programming practice | Was never CodeAI's centre of gravity | Look at [CodeCombat](https://codecombat.com/), [CodeMonkey](https://www.codemonkey.com/), or [Codecademy](https://www.codecademy.com/) — note Codecademy's Terms of Service §1.A require users to be 16 or older |
+| Deep, typed programming practice | Was never CodeAI's centre of gravity | Look at [CodeCombat](https://codecombat.com/), [CodeMonkey](https://www.codemonkey.com/), or [Codecademy](https://www.codecademy.com/), and note Codecademy's Terms of Service §1.A require users to be 16 or older |
 | Open-ended creative building | Limited | [Scratch](https://scratch.mit.edu/) remains the strongest free option here |
 | A classroom platform for a school | Still a schools platform | CodeAI and [CodeHS](https://codehs.com/) (grades 6–12) remain the main free/low-cost school-facing options |
 
@@ -1231,7 +1231,7 @@ Second, and more practically: **these are not like-for-like swaps.** Common Sens
 
 | Source | What it is | Methodology | Cost |
 |---|---|---|---|
-| [ISTE EdTech Index / Learning Technology Directory](https://iste.org/edtech-index) | The largest active edtech directory; descends from the EdSurge Product Index, running since 2012 | **Validation-badge system** — products earn badges against criteria — rather than a single learning-quality score | Free to browse; free to list |
+| [ISTE EdTech Index / Learning Technology Directory](https://iste.org/edtech-index) | The largest active edtech directory; descends from the EdSurge Product Index, running since 2012 | **Validation-badge system**, products earn badges against criteria, rather than a single learning-quality score | Free to browse; free to list |
 | [EdTech Impact](https://edtechimpact.com/) | Directory built around verified reviews from educators who have used the product | Aggregated practitioner reviews | Free to browse |
 | Common Sense **Privacy** ratings | Still-active data-privacy evaluations from Common Sense itself | Structured privacy rubric, percentage rating | Free |
 
@@ -1297,7 +1297,7 @@ If you are a teacher who ran a class on Replit, the honest state of the world is
 
 **What did not happen:** Replit did not shut down. It continues as a company with a healthy consumer and developer product. Any page telling you "Replit is dead" is wrong in the same way that "Code.org no longer exists" is wrong. The company pivoted its focus; it did not disappear.
 
-**Why coverage is so thin:** this is the part worth naming. When a widely used classroom tool is discontinued, you would expect a wave of migration guides. That did not really happen here. The most substantive migration write-ups came from two vendors with an obvious interest, [Codeanywhere](https://codeanywhere.com/) and [Pickcode](https://pickcode.io/) — and beyond those, teachers have largely been left to work it out in forums and staff rooms. The demand for a straight answer is real and mostly unserved, which is why this page exists.
+**Why coverage is so thin:** this is the part worth naming. When a widely used classroom tool is discontinued, you would expect a wave of migration guides. That did not really happen here. The most substantive migration write-ups came from two vendors with an obvious interest, [Codeanywhere](https://codeanywhere.com/) and [Pickcode](https://pickcode.io/). Beyond those, teachers have largely been left to work it out in forums and staff rooms. The demand for a straight answer is real and mostly unserved, which is why this page exists.
 
 Read the vendor migration posts. They are useful. Just read them knowing they are written by people who want your class on their platform, exactly as you should read this page knowing who published it.
 
@@ -1323,7 +1323,7 @@ The mistake to avoid is picking a tool that nails the first column and discoveri
 | [Pickcode](https://pickcode.io/) | Younger or beginner classes | Purpose-built for teaching, published a Replit migration guide | Newer and smaller than what you are leaving; evaluate longevity |
 | GitHub Codespaces + Classroom | High school, students headed toward real software work | Genuinely industry-standard tooling and workflow | Steepest setup cost; account and age requirements need checking for minors; free-tier limits change |
 | [freeCodeCamp](https://www.freecodecamp.org/) | Motivated high-schoolers, zero budget | Free, substantial, well-maintained | Nominally 13+, built for adults, no teacher view at all |
-| [Codecademy](https://www.codecademy.com/) | Older students only | Free Basic tier, $14.99/mo Plus | Its Terms of Service §1.A state "You must be 16 years or older to use the Services" — that rules it out for most middle school and much of high school |
+| [Codecademy](https://www.codecademy.com/) | Older students only | Free Basic tier, $14.99/mo Plus | Its Terms of Service §1.A state "You must be 16 years or older to use the Services", which rules it out for most middle school and much of high school |
 | [Scratch](https://scratch.mit.edu/) (MIT) | Younger classes, ages 8–16 | Free, stable, enormous community, not going anywhere | Block-based; not a substitute if you were teaching typed Python or JavaScript |
 | [CodeCombat](https://codecombat.com/) | Ages ~9+, engagement problems | Typed Python or JavaScript inside an RPG; freemium | Game framing does not suit every class |
 
@@ -1402,7 +1402,7 @@ At that point you are paying a monthly fee for a library, and the child is not o
 
 ## The alternatives, and what each is actually for
 
-**[Code.org](https://code.org/)** — free, and it stays free. Rebranded to CodeAI on 2 June 2026, with the Hour of Code now the Hour of AI, and it [continues to provide free curriculum, tools and professional learning resources](https://code.org/en-US/codeorg-is-now-codeai). Best for structured courses at no cost. Weakest at open-ended making: a child who wants to build their own thing and share a link will find it closed-ended.
+**[Code.org](https://code.org/).** Free, and it stays free. Rebranded to CodeAI on 2 June 2026, with the Hour of Code now the Hour of AI, and it [continues to provide free curriculum, tools and professional learning resources](https://code.org/en-US/codeorg-is-now-codeai). Best for structured courses at no cost. Weakest at open-ended making: a child who wants to build their own thing and share a link will find it closed-ended.
 
 **Scratch**: free, from MIT, block-based, and still the best on-ramp there is. It is not an alternative to Tynker so much as the thing Tynker's early levels are competing with. If your child is happy in Scratch, there is no reason to pay anyone.
 
@@ -1491,7 +1491,7 @@ Block-based, from MIT, and still the best on-ramp that exists. A child drags blo
 
 ## Google CS First
 
-**Free, unambiguously.** Google's own wording: *"CS First is totally free of charge, any number of students, all materials, as many lessons as you want."*
+**Free, unambiguously.** Google's own wording: *"CS First is totally free of charge — any number of students, all materials, as many lessons as you want."*
 
 Video tutorials with block coding built on Scratch, organised into themed units like sports, art and game design.
 
@@ -1581,9 +1581,9 @@ Everything below is checked against each product's own site, quoted where it mat
 
 At this age the constraint is not intelligence, it is reading speed. A tool that requires reading each block will exhaust a five-year-old before they build anything.
 
-**[ScratchJr](https://www.scratchjr.org/)** — their site states it is for *"young children (ages 5-7)"*. Picture blocks, no text, made for exactly this window. This is the default recommendation.
+**[ScratchJr](https://www.scratchjr.org/).** Their site states it is for *"young children (ages 5-7)"*. Picture blocks, no text, made for exactly this window. This is the default recommendation.
 
-**[Kodable](https://www.kodable.com/parents)** — paid for families: a seven-day trial with no card, then US$24.99 a month, US$119.99 a year, or US$199.99 once, covering up to four children. The free Kickstart plan people mention is on the school plans page, where the paid tiers run US$1,750, US$2,500 and US$3,500 a year per site. Do not assume either price is the other.
+**[Kodable](https://www.kodable.com/parents).** Paid for families: a seven-day trial with no card, then US$24.99 a month, US$119.99 a year, or US$199.99 once, covering up to four children. The free Kickstart plan people mention is on the school plans page, where the paid tiers run US$1,750, US$2,500 and US$3,500 a year per site. Do not assume either price is the other.
 
 **Tynker**: [icon coding for pre-readers](https://www.tynker.com/pricing/) is genuinely well built and one of the few paid things at this age worth the money. Family plans are $18/month quarterly, $15/month yearly at $180, or $468 lifetime for up to three children.
 
@@ -1593,11 +1593,11 @@ At this age the constraint is not intelligence, it is reading speed. A tool that
 
 This is the sweet spot for block coding and where most children start and stay for two or three years.
 
-**[Scratch](https://scratch.mit.edu/)** — *"Scratch is free for everyone"* (Scratch Foundation). Still the best on-ramp that exists, and the community is a large part of why. If your child is happy here, there is no reason to pay anyone anything.
+**[Scratch](https://scratch.mit.edu/).** *"Scratch is free for everyone"* (Scratch Foundation). Still the best on-ramp that exists, and the community is a large part of why. If your child is happy here, there is no reason to pay anyone anything.
 
-**[Google CS First](https://csfirst.withgoogle.com/)** — *"totally free of charge — any number of students, all materials, as many lessons as you want."* Video-led units built on Scratch. Best if you want structure rather than a blank canvas.
+**[Google CS First](https://csfirst.withgoogle.com/).** *"totally free of charge — any number of students, all materials, as many lessons as you want."* Video-led units built on Scratch. Best if you want structure rather than a blank canvas.
 
-**[Code.org](https://code.org/)** — now CodeAI since 2 June 2026, still free, still at the same address. Courses with a path through them.
+**[Code.org](https://code.org/).** Now CodeAI since 2 June 2026, still free, still at the same address. Courses with a path through them.
 
 **Where CodeIt starts to fit:** the top of this band, around 10 or 11, for a child who wants to make a thing and share it rather than complete a course.
 
@@ -1609,7 +1609,7 @@ Blocks start feeling babyish somewhere around 11 or 12. But the adult text-code 
 
 **What works:** anything where they still make something they care about on day one, but the real code is visible. **What fails:** a syntax course. They will complete two lessons and never return.
 
-**[The p5.js Web Editor](https://editor.p5js.org/)** — p5.js is *"a free and open-source JavaScript library"*, and the editor runs in the browser with nothing to install. Excellent for a 14-year-old who wants to make visual things. No guidance at all, which suits some children and loses others.
+**[The p5.js Web Editor](https://editor.p5js.org/).** p5.js is *"a free and open-source JavaScript library"*, and the editor runs in the browser with nothing to install. Excellent for a 14-year-old who wants to make visual things. No guidance at all, which suits some children and loses others.
 
 **Code.org** continues to work here, and its later courses are text-based.
 
@@ -1627,7 +1627,7 @@ Watch what happens when they get stuck. A child in the right tool gets annoyed a
 
 At this point the honest advice is to stop using anything designed for children.
 
-**[freeCodeCamp](https://www.freecodecamp.org/)** — *"Every aspect of freeCodeCamp is 100% free. The courses, the projects, even the certifications."* Project-based, serious, and the right answer for a teenager who has decided they want this.
+**[freeCodeCamp](https://www.freecodecamp.org/).** *"Every aspect of freeCodeCamp is 100% free. The courses, the projects, even the certifications."* Project-based, serious, and the right answer for a teenager who has decided they want this.
 
 **The p5.js editor**, a plain text editor, or whatever a working developer uses. A 16-year-old who wants to build things should be building them with the tools that build things.
 

@@ -25,6 +25,8 @@
 
 var LEAD = /^(?:please\s+|can\s+you\s+|build\s+|make\s+|create\s+|generate\s+|design\s+|a\s+|an\s+|the\s+|me\s+|my\s+)+/i;
 var CALLED = /\b(?:called|named)\s+([a-z0-9][a-z0-9' -]{0,38})/i;
+// allow-em-dash: the character below is inside a regular expression that has
+// to MATCH the dashes a child types. It is not copy.
 var CLAUSE = /\s+(?:that|which|so|where|then|when|but|because|and\s+make|and\s+then)\s+|\s+[-—]+\s*|[,.;:!?]/i;
 var TRAILING = /^(?:and|or|with|that|which|so|then|a|an|the|of|for|to|in|on|at|is|are|it|my|your|you|can|will|has|have|but|as|by|from)$/i;
 var MAX_WORDS = 5;
