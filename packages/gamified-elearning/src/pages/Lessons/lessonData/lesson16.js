@@ -9,7 +9,7 @@ const lesson16 = {
       type: 'concept',
       id: 'concept',
       title: 'Strings Have Built-In Superpowers',
-      body: 'Python strings come with methods. Functions you call with a dot. The most useful ones are: .strip() removes leading and trailing spaces. .replace(old, new) swaps one piece of text for another. .split() breaks a string into a list of words. .join(list) glues a list of strings back together. .find(text) returns the position of the first match (-1 if not found). .count(text) counts how many times something appears.',
+      body: 'Python strings come with methods. Functions you call with a dot. The ones you will use here are: .strip() removes leading and trailing spaces. .replace(old, new) swaps one piece of text for another. .split() breaks a string into a list of words. .join(list) glues a list of strings back together. .lower() makes every letter small. .capitalize() makes the first letter a capital and the rest small.',
       highlight: '"  hello  ".strip()      # "hello"\n"a,b,c".split(",")       # ["a", "b", "c"]\n",".join(["a","b","c"])  # "a,b,c"',
       code: 'print("  hello  ".strip())\nprint("a,b,c".split(","))\nprint(",".join(["a", "b", "c"]))',
     },

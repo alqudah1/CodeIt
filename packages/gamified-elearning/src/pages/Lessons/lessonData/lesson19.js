@@ -43,7 +43,7 @@ const lesson19 = {
       title: 'The Maths Toolbox Too',
       body: 'random is not the only one. Math holds things like pi and square roots. Every module works the same way: import it, then reach for its tools with a dot.',
       highlight: 'import math\n\nmath.pi          # 3.14159...\nmath.sqrt(16)    # 4.0\nmath.floor(2.7)  # 2',
-      code: 'import math\n\nprint("Pi is about", round(math.pi, 2))\nprint("The square root of 81 is", math.sqrt(81))',
+      code: 'import math\n\nprint("Pi is about", round(math.pi, 2))\nprint("The square root of 81 is", math.sqrt(81))\nprint("2.7 rounded down is", math.floor(2.7))',
     },
     {
       type: 'tryit',
