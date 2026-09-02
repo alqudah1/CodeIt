@@ -3503,6 +3503,28 @@ export default function Builder() {
                   {isPlayMode ? 'Compact' : 'Play'}
                 </button>
               </div>
+
+              {/* ── The door to the lesson behind what they just made ────────
+                  The whole idea of the product is that a child learns the code
+                  under their own project. That was true inside a tab called
+                  "The code", which is a thing you have to know to look for.
+                  This says it in words, on the banner, at the moment the
+                  project appears, and it only appears when the tab it opens
+                  has something in it. */}
+              {conceptsFound.length > 0 && (
+                <button
+                  type="button"
+                  className="bldr-success-banner__save bldr-success-banner__behind"
+                  onClick={() => {
+                    setWorkspaceTab('learn');
+                    void trackEvent('learn_the_code_behind', null, token);
+                  }}
+                >
+                  <span>Learn the code behind it</span>
+                  <small>{conceptSummary(conceptsFound)}</small>
+                </button>
+              )}
+
               {!isSaved && isPersonalized && hasTestedLatest && (
                 <button
                   type="button"
@@ -5111,25 +5133,15 @@ export default function Builder() {
                 It is the best thing on this tab. Every row is something found
                 in the child's own file, with the count, the line number and
                 their own line. It goes first. */}
-            {onTab('learn') && conceptsFound.length > 0 && (
-              <div className="bldr-lessons-used">
-                <div className="bldr-lessons-used__header">
-                  <span className="bldr-lessons-used__title">What you used in this project</span>
-                  <span className="bldr-lessons-used__sub">
-                    {conceptSummary(conceptsFound)} Tap any one to learn it properly.
-
-            {/* ── What you actually used, read out of the code ──────────────
-                Both blocks here used to come from `detectLessonIds`, which
-                matched keywords in the child's PROMPT. Type "a space game" and
-                it announced variables, if statements, for loops and functions
-                whether or not one of them was in the file, then opened a lesson
-                teaching something the project did not contain.
-
-                Now every row is something found in their own code, with the
-                line it is on and the line itself. */}
-            {/* Concepts used by AI */}
-            {/* The code itself, first. This tab is called "The code" and until
-                now it showed everything except the code. */}
+            {/* ── The code, first ────────────────────────────────────────
+                This tab is called "The code" and for a while it did not show
+                any code when there was nothing else to show. The editor block
+                had been pasted INSIDE the concept list's header, so both the
+                concepts and the code were rendered by one condition:
+                conceptsFound.length > 0. A project the concept reader found
+                nothing in produced a completely blank tab. A person told us
+                exactly that: "when he presses on learn the screen is empty".
+                It is its own block now. */}
             {onTab('learn') && code && (
               <CodePanel
                 code={code}
@@ -5147,6 +5159,17 @@ export default function Builder() {
                 guideLevel={guideLevel}
               />
             )}
+
+            {/* ── What you made, before the file you made it in ──────────────
+                Every row is something found in the child's own file, with the
+                count, the line number and their own line. Read out of the code,
+                never out of the prompt: see codeConcepts.js. */}
+            {onTab('learn') && conceptsFound.length > 0 && (
+              <div className="bldr-lessons-used">
+                <div className="bldr-lessons-used__header">
+                  <span className="bldr-lessons-used__title">What you used in this project</span>
+                  <span className="bldr-lessons-used__sub">
+                    {conceptSummary(conceptsFound)} Tap any one to learn it properly.
                   </span>
                 </div>
                 <div className="bldr-concept-list">
@@ -5168,11 +5191,33 @@ export default function Builder() {
                       </div>
 
                       <p className="bldr-concept__note">{concept.note}</p>
-                      <Link to={`/lesson/${concept.lessonId}`} className="bldr-lesson-chip__learn">
+                      <Link
+                        to={`/lesson/${concept.lessonId}`}
+                        className="bldr-lesson-chip__learn"
+                        onClick={() => void trackEvent('learn_the_code_behind', null, token)}
+                      >
                         Learn {concept.lessonTitle}
                       </Link>
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* Nothing matched, which is not the same as nothing to say. The
+                tab must never be empty: a person who taps "The code" and sees
+                white space learns that the button is broken. */}
+            {onTab('learn') && code && conceptsFound.length === 0 && (
+              <div className="bldr-lessons-used">
+                <div className="bldr-lessons-used__header">
+                  <span className="bldr-lessons-used__title">The code is above</span>
+                  <span className="bldr-lessons-used__sub">
+                    Nothing in this project lines up with a lesson yet. Change something
+                    in the code and it will show up here.{' '}
+                    <Link to="/lessons" onClick={() => void trackEvent('learn_the_code_behind', null, token)}>
+                      Start the lessons instead
+                    </Link>
+                  </span>
                 </div>
               </div>
             )}

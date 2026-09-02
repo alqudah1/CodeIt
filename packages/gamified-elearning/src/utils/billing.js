@@ -12,6 +12,16 @@ const BILLING_BASE = `${API_BASE_URL}/api/billing`;
 // does: the free plan, with billing hidden entirely.
 export const DEFAULT_BILLING_STATE = Object.freeze({
   billingEnabled: false,
+  // Who may buy: an adult, on their own account, not a managed profile. The
+  // server decides it from date of birth, because the role on the account
+  // stopped meaning "child" the day an adult created a learner account.
+  //
+  // null is "not answered yet", and it is deliberately not false. The price
+  // control is fail-closed (shown only on an explicit true, so a child is
+  // never offered one) and the contact form is fail-open (blocked only on an
+  // explicit false, so an adult is never turned away by a fetch that has not
+  // come back).
+  canSubscribe: null,
   plan: 'free',
   planLabel: 'Free',
   canPublish: true,

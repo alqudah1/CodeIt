@@ -103,7 +103,7 @@ describe('builder authentication return', () => {
     });
     render(<Register />);
 
-    fireEvent.click(screen.getByRole('button', { name: /I am a Student/i }));
+    fireEvent.click(screen.getByRole('button', { name: /I am learning to code/i }));
     fireEvent.change(screen.getByPlaceholderText('e.g. coder_alex42'), { target: { value: 'learner_9' } });
     fireEvent.change(screen.getByPlaceholderText('Choose a password'), { target: { value: 'test-password' } });
     fireEvent.change(document.querySelector('input[type="date"]'), { target: { value: '2010-01-01' } });
@@ -152,7 +152,7 @@ describe('builder authentication return', () => {
     });
     render(<Register />);
 
-    fireEvent.click(screen.getByRole('button', { name: /Publish with a Student account/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Publish with a learner account/i }));
     expect(screen.getByRole('heading', { name: 'Create an account to publish' })).toBeInTheDocument();
     fireEvent.change(screen.getByPlaceholderText('e.g. coder_alex42'), { target: { value: 'builder_10' } });
     fireEvent.change(screen.getByPlaceholderText('Choose a password'), { target: { value: 'test-password' } });
@@ -174,7 +174,7 @@ describe('builder authentication return', () => {
     render(<Register />);
 
     expect(screen.getByRole('heading', { name: 'Save your project' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Save with a Student account/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Save with a learner account/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Sign in' })).toHaveAttribute(
       'href',
       '/login?from=builder&action=save'
@@ -207,7 +207,7 @@ describe('builder authentication return', () => {
 
     expect(screen.getByRole('heading', { name: 'Create a private learner profile' })).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Your full name')).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /I am a Student/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /I am learning to code/i })).not.toBeInTheDocument();
     expect(screen.getByText(/After confirming your email/i)).toBeInTheDocument();
   });
 

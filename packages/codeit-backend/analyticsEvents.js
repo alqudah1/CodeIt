@@ -96,6 +96,13 @@ const EVENT_META = Object.freeze({
   checkout_start: new Set(),
   checkout_complete: new Set(),
 
+  // The door from a finished project to the lesson behind it. The product's
+  // whole claim is that a child learns the code under what they built; until
+  // now that door was a tab, and a tab is something you have to know to look
+  // for. If this stays near zero the claim is not being delivered, whatever
+  // the home page says.
+  learn_the_code_behind: new Set(),
+
   // Server-side. The milestone table counts lesson completions from
   // Student_Lesson_Progress, which cannot say when one happened relative to
   // anything else. An event can.
@@ -138,7 +145,7 @@ const CLIENT_REPORTED_EVENTS = new Set([
   // checkout_start and checkout_complete are deliberately absent: they are
   // recorded by the server, and a browser must not be able to claim any of
   // them.
-  'upgrade_prompt_shown', 'upgrade_click',
+  'upgrade_prompt_shown', 'upgrade_click', 'learn_the_code_behind',
 ]);
 const JOURNEY_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const CAMPAIGN_PATTERN = /^[a-z0-9][a-z0-9-]{1,23}$/;

@@ -139,9 +139,28 @@ router.get('/status', authenticateToken, async (req, res) => {
       ? await store.getSubscriptionByUserId(req.user.user_id)
       : null;
     const buildsThisMonth = await store.countAiBuildsThisMonth(req.user.user_id).catch(() => 0);
+
+    // Who may buy, decided here rather than by the role on the account.
+    // The pricing page used to refuse anyone whose role was 'student', which
+    // was the same thing as an age rule for as long as students were children.
+    // Now that an adult can hold a learner account, role says nothing about
+    // it: the rule is a managed profile never buys, and neither does anyone
+    // under 18. The same two conditions the checkout route already enforces,
+    // so the page and the endpoint cannot disagree.
+    let canSubscribe = !req.user.managedProfile;
+    if (canSubscribe) {
+      const [rows] = await pool.query('SELECT dob FROM Users WHERE user_id = ?', [req.user.user_id]);
+      const dob = rows[0]?.dob;
+      if (dob) {
+        const age = studentAgeEligibility(String(dob).slice(0, 10)).age;
+        if (age !== null && age < 18) canSubscribe = false;
+      }
+    }
+
     res.json({
       billingEnabled: isConfigured(),
       buildsThisMonth,
+      canSubscribe,
       ...entitlementsFor(subscription),
     });
   } catch (error) {

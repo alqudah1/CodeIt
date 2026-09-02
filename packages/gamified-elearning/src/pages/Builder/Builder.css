@@ -864,6 +864,23 @@
   .bldr-success-banner__save { width: 100%; }
 }
 
+/* The learn door on the banner. Same shape as Save so it reads as a real
+   control, a different colour so the two are never confused: orange keeps the
+   project, violet opens the lesson underneath it. */
+.bldr-success-banner__behind {
+  background: #6A4BC4;
+  box-shadow: 0 5px 0 rgba(58, 38, 112, 0.18), 0 10px 22px rgba(58, 38, 112, 0.16);
+}
+.bldr-success-banner__behind:hover {
+  background: #5B3FB0;
+}
+.bldr-success-banner__behind small {
+  max-width: 240px;
+  text-align: center;
+  line-height: 1.25;
+  opacity: 0.92;
+}
+
 /* ── Footer action buttons (below preview) ───────────────────── */
 .bldr-result__footer {
   display: flex;

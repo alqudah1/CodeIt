@@ -26,11 +26,20 @@ function ageOnDate(dob, now = new Date()) {
   return age;
 }
 
+// Who may hold their own learner account.
+//
+// Until 2 September 2026 this refused anyone over 18 and told them to use the
+// Parent or Educator option. A 23-year-old who wanted to learn to code was
+// therefore offered two doors, neither of which was his: he is not a child and
+// he is not a parent, and the account he was pushed into is built around
+// managing somebody else's learning. He said so, and he was right.
+//
+// The rule that matters is the one under 13, which is the law. Above 13 there
+// is no reason to ask a person's age before letting them learn.
 function studentAgeEligibility(dob, now = new Date()) {
   const age = ageOnDate(dob, now);
   if (age === null || age < 0) return { allowed: false, reason: 'invalid', age: null };
   if (age < 13) return { allowed: false, reason: 'parent_required', age };
-  if (age > 18) return { allowed: false, reason: 'adult_account', age };
   return { allowed: true, reason: 'eligible', age };
 }
 

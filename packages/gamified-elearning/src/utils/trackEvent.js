@@ -51,6 +51,7 @@ const CLIENT_EVENTS = new Set([
   "lesson_start",
   "upgrade_prompt_shown",
   "upgrade_click",
+  "learn_the_code_behind",
 ]);
 
 export async function trackEvent(eventName, meta = null, explicitToken = null) {

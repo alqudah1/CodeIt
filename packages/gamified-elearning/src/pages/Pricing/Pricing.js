@@ -60,7 +60,11 @@ const FAQ = [
 
 export default function Pricing() {
   const { user, token } = useAuth();
-  const isStudentAccount = String(user?.role || '').toLowerCase() === 'student';
+  // Who may buy is an age question, not a role question. It used to be read
+  // from the role, which refused every learner account: correct while every
+  // learner was a child, wrong the moment a 23-year-old signed up to learn to
+  // code. The server answers it now, from date of birth and managed-profile
+  // status, which is what the checkout endpoint itself enforces.
   const [interestStatus, setInterestStatus] = useState(() => (
     localStorage.getItem('codeit_founding_waitlist_contacted') === 'yes' ? 'saved' : 'idle'
   ));
@@ -156,7 +160,9 @@ export default function Pricing() {
   const registerInterest = async (event) => {
     event.preventDefault();
     if (interestStatus === 'saving' || interestStatus === 'saved') return;
-    if (isStudentAccount) {
+    // Same question as the subscribe button, answered the other way round: an
+    // explicit no blocks, an unanswered one does not. Nobody is charged here.
+    if (user && billing.canSubscribe === false) {
       setInterestStatus('parent-required');
       return;
     }
@@ -269,10 +275,12 @@ export default function Pricing() {
                     Card changes and cancellation happen on Stripe. CodeIt never stores your card.
                   </p>
                 </>
-              ) : isStudentAccount ? (
+              ) : (user && billing.canSubscribe === false) ? (
                 <p className="pricing-plan-state" role="status">
                   Ask a parent or guardian to set this up from their own account. CodeIt does not sell to children.
                 </p>
+              ) : (user && billing.canSubscribe !== true) ? (
+                <p className="pricing-plan-state" role="status">Checking your account…</p>
               ) : !user ? (
                 <>
                   <Link className="pricing-button pricing-button--primary" to="/login?from=pricing">

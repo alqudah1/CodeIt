@@ -47,7 +47,7 @@ export default function Terms() {
           <div className="legal-content">
             <section id="eligibility">
               <h2>Eligibility and younger learners</h2>
-              <p>Independent student accounts are for learners ages 13 to 18. For a learner ages 5 to 12, a parent or legal guardian must use the Parent / Educator path, confirm the adult account email, review the family privacy notice, and explicitly create a managed profile. Managed younger profiles cannot publish projects publicly.</p>
+              <p>Independent learner accounts are for ages 13 and up, including adults. For a learner ages 5 to 12, a parent or legal guardian must use the Parent / Educator path, confirm the adult account email, review the family privacy notice, and explicitly create a managed profile. Managed younger profiles cannot publish projects publicly.</p>
             </section>
 
             <section id="accounts">

@@ -183,17 +183,17 @@ export default function Register() {
             <button className="auth-path-card auth-path-card--student" onClick={() => setStep('student')}>
               <span className="auth-path-card__title">
                 {hasBuilderDraft
-                  ? `${builderActionWord === 'publish' ? 'Publish' : 'Save'} with a Student account (13 to 18)`
-                  : 'I am a Student (13 to 18)'}
+                  ? `${builderActionWord === 'publish' ? 'Publish' : 'Save'} with a learner account`
+                  : 'I am learning to code'}
               </span>
-              <span className="auth-path-card__desc">Use a username. No student email needed</span>
+              <span className="auth-path-card__desc">Ages 13 and up. Use a username, no email needed</span>
             </button>
 
             <button className="auth-path-card auth-path-card--educator" onClick={() => setStep('educator')}>
               <span className="auth-path-card__title">
                 {hasBuilderDraft ? 'Continue with a Parent or Educator' : 'I am a Parent or Educator'}
               </span>
-              <span className="auth-path-card__desc">Required to manage a private profile for ages 5 to 12</span>
+              <span className="auth-path-card__desc">Set up and manage a private profile for a child aged 5 to 12</span>
             </button>
 
             <button className="auth-path-card auth-path-card--guest" onClick={() => navigate('/builder')}>
@@ -299,14 +299,17 @@ export default function Register() {
                       const age = Math.floor(
                         (new Date() - new Date(v)) / (365.25 * 24 * 60 * 60 * 1000)
                       );
-                      return (age >= 13 && age <= 18) || 'Student accounts are for ages 13 to 18. Younger learners need parent-managed access.';
+                      // Only the lower bound is a rule. The upper one used to
+                      // turn a 23-year-old away from a site that teaches people
+                      // to code.
+                      return age >= 13 || 'Learners under 13 need a parent or guardian to set up their access.';
                     },
                   },
                 })}
               />
               {errS.dob && <span className="error">{errS.dob.message}</span>}
               {!errS.dob && (
-                <span className="auth-hint">Independent student accounts are for ages 13 to 18. A parent or guardian can create a private profile for ages 5 to 12.</span>
+                <span className="auth-hint">Learner accounts are for ages 13 and up. A parent or guardian can create a private profile for ages 5 to 12.</span>
               )}
             </div>
 

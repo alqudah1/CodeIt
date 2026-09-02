@@ -124,3 +124,27 @@ test('no build call site still names a model directly', () => {
     assert.match(site[2], /modelForBuild\(/, `build_${site[1]} still hardcodes a model`);
   }
 });
+
+// ── A page whose value is its words is not a cheap page ──────────────────────
+//
+// The first version of this table put every "static" page on haiku on the
+// grounds that a larger model draws the same layout. A real shared project
+// proved the reasoning incomplete: designEngine supplies the layout, so the
+// model's only contribution to a portfolio or a restaurant page is the writing,
+// and the writing is what the person who received the link judged.
+test('pages whose value is the copy are not built by the cheapest model', () => {
+  for (const type of ['portfolio', 'landing', 'restaurant', 'shop', 'sports', 'cooking']) {
+    assert.ok(
+      modelForBuild(type, 'free').tier >= 1,
+      `${type} should not be built by the cheapest model`
+    );
+  }
+});
+
+// The counterpart, so this does not quietly become "everything on sonnet".
+// A quiz and a set of flashcards are structured content, not written content.
+test('structured content stays on the cheapest model', () => {
+  for (const type of ['quiz', 'flashcards', 'blog']) {
+    assert.strictEqual(modelForBuild(type, 'plus').tier, 0, type);
+  }
+});

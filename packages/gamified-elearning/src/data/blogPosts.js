@@ -360,7 +360,7 @@ const BLOG_POSTS = [
         body: [
           'Most children can start learning Python from around age 9 or 10, when reading comprehension and logical thinking are well developed. Some younger children can start at 7 or 8 with parental support, particularly those already comfortable with reading and basic maths.',
           'The key factor isn\'t age. It\'s whether the child is curious and patient enough to follow instructions and observe what happens. A motivated 8-year-old will learn faster than a bored 12-year-old.',
-          'Parents and legal guardians can create private managed profiles for ages 5 to 12 after confirming the adult account email. Independent CodeIt student accounts are designed for ages 13 to 18, and the lessons also work for older beginners.',
+          'Parents and legal guardians can create private managed profiles for ages 5 to 12 after confirming the adult account email. Independent CodeIt learner accounts are for ages 13 and up, including adults learning from scratch.',
         ],
       },
       {

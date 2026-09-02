@@ -16,7 +16,7 @@ const FAQS = [
   },
   {
     q: 'What ages can use the CodeIt studio?',
-    a: 'Parents and legal guardians can create private managed profiles for learners ages 5 to 12. Independent student accounts are for ages 13 to 18. Anyone can try the studio without creating an account.',
+    a: 'Parents and legal guardians can create private managed profiles for learners ages 5 to 12. Independent learner accounts are for ages 13 and up. Anyone can try the studio without creating an account.',
   },
   {
     q: 'Can a child publish a website publicly?',

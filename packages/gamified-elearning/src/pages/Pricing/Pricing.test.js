@@ -166,7 +166,7 @@ describe('Pricing', () => {
     global.fetch.mockImplementation((url) => Promise.resolve({
       ok: true,
       json: async () => (String(url).includes('/api/billing/')
-        ? { billingEnabled: true, plan: 'free', canPublish: false, ...billingState }
+        ? { billingEnabled: true, plan: 'free', canPublish: false, canSubscribe: true, ...billingState }
         : { ready: true }),
     }));
   }
@@ -228,14 +228,29 @@ describe('Pricing', () => {
     expect(screen.getByText(/confirm the full total before anything is charged/i)).toBeInTheDocument();
   });
 
+  // Who may buy is decided by the server from date of birth and managed-profile
+  // status, not by the role on the account. It used to be the role, which was
+  // the same answer for as long as every learner was a child, and the wrong one
+  // the moment a 23-year-old created a learner account to teach himself to code.
   test('never asks a child to pay', async () => {
     mockAuth = { user: { id: 3, role: 'Student', name: 'Sara' }, token: 'student-token' };
-    mockBilling({});
+    mockBilling({ canSubscribe: false });
     renderPricing();
 
     expect(await screen.findByRole('heading', { name: 'CodeIt Plus' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Subscribe/i })).not.toBeInTheDocument();
     expect(screen.getByText(/Ask a parent or guardian/i)).toBeInTheDocument();
+  });
+
+  test('an adult learner on a learner account is offered the plan', async () => {
+    // Same role as the child above. The server says this one is an adult.
+    mockAuth = { user: { id: 4, role: 'Student', name: 'Omar' }, token: 'adult-learner-token' };
+    mockBilling({ canSubscribe: true });
+    renderPricing();
+
+    expect(await screen.findByRole('heading', { name: 'CodeIt Plus' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Subscribe for CA\$12\/month/i })).toBeEnabled();
+    expect(screen.queryByText(/Ask a parent or guardian/i)).not.toBeInTheDocument();
   });
 
   test('shows a subscriber their renewal date and a way to cancel', async () => {

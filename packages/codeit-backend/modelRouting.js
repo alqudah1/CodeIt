@@ -40,20 +40,34 @@ const PLUS_MAX_TIER = 2;   // opus
 // them individually. They are marked so that reviewing them is a single pass
 // rather than an archaeology exercise.
 const TIER_BY_TYPE = Object.freeze({
-  // Given.
+  // Given. blog stays at haiku deliberately: a blog is a container for words
+  // the child writes themselves, not words the model writes for them.
   blog:        0,
   quiz:        0,
   dodge:       1,
   platformer:  2,
 
-  // Derived: static or near-static pages. A larger model produces the same
-  // page more expensively.
-  landing:     0,
-  portfolio:   0,
-  restaurant:  0,
-  shop:        0,
-  sports:      0,
-  cooking:     0,
+  // Corrected 2 September 2026. These were derived as "static or near-static
+  // pages, where a larger model produces the same page more expensively". The
+  // layout part of that is true and the conclusion was still wrong: on a page
+  // like this the scaffold comes from designEngine, so the ONLY thing the model
+  // contributes is the writing, and the writing is the entire thing a person
+  // judges.
+  //
+  // The evidence is a real shared project, u-e61e190fde00, built by a paying
+  // customer's friend and sent back with "the result he got is not nice". It
+  // classified as portfolio, so it ran on haiku, and it came back headed
+  // "Welcome to My World" and "I'm Creative & Awesome" over a hundred lines of
+  // working JavaScript. The machinery was fine. The words were filler.
+  //
+  // So: pages whose value is the copy move to sonnet. flashcards and quiz stay
+  // on haiku, because their content is structured rather than written.
+  landing:     1,
+  portfolio:   1,
+  restaurant:  1,
+  shop:        1,
+  sports:      1,
+  cooking:     1,
   flashcards:  0,
 
   // Derived: one mechanic, one screen, real interaction and state.

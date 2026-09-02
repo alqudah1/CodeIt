@@ -34,13 +34,6 @@ router.post('/signup', async (req, res) => {
         error: 'Learners under 13 need a parent or guardian to create and manage their access. You can still try CodeIt without an account.',
       });
     }
-    if (eligibility.reason === 'adult_account') {
-      return res.status(400).json({
-        code: 'ADULT_ACCOUNT_REQUIRED',
-        field: 'dob',
-        error: 'Use the Parent or Educator option for adult accounts.',
-      });
-    }
   } else {
     if (!name || !name.trim())   return res.status(400).json({ error: 'Name is required' });
     if (!email || !email.trim()) return res.status(400).json({ error: 'Email is required' });
