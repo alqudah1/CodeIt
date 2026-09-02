@@ -556,9 +556,10 @@ export const PUZZLE_CONFIGS = {
       (output, code) => {
         const lines = cleanLines(output);
         if (!lines.length) return NO_OUTPUT;
-        const appends = (String(code || '').match(/\.append\s*\(/g) || []).length;
-        if (code && appends < 2) {
-          return { pass: false, message: `Found ${appends} .append() call(s), expected 2: cherry, then a fruit of your choice.` };
+        // Same reasoning: a loop is one call site and two appends. What has to
+        // be true is that cherry was not simply typed into the starting list.
+        if (/=\s*\[[^\]]*cherry/i.test(String(code || ''))) {
+          return { pass: false, message: 'Add "cherry" with .append() rather than typing it into the list at the top.' };
         }
         const last = lines[lines.length - 1];
         if (!/^\[.*\]$/.test(last)) {
@@ -566,6 +567,13 @@ export const PUZZLE_CONFIGS = {
         }
         if (!last.includes('cherry')) {
           return { pass: false, message: 'The list printed, but "cherry" is not in it. Append it first.' };
+        }
+        // Two ways round the goal that a correct-looking list does not reveal:
+        // editing the literal at the top, and building a new list with +. The
+        // starter's own two items have to survive, and cherry has to arrive
+        // through .append rather than by being typed into the list.
+        if (!last.includes('apple') || !last.includes('banana')) {
+          return { pass: false, message: 'The list should still start with apple and banana. Append to it rather than replacing it.' };
         }
         const items = last.slice(1, -1).split(',').filter(x => x.trim()).length;
         if (items < 4) {
@@ -597,9 +605,14 @@ export const PUZZLE_CONFIGS = {
       (output, code) => {
         const lines = cleanLines(output);
         if (!lines.length) return NO_OUTPUT;
-        const appends = (String(code || '').match(/\.append\s*\(/g) || []).length;
-        if (code && appends < 3) {
-          return { pass: false, message: `Found ${appends} .append() call(s), expected 3.` };
+        if (code && !/\.append\s*\(/.test(String(code))) {
+          return { pass: false, message: 'Use .append() to add the items rather than writing the list out.' };
+        }
+        // Three appends onto a list that already had items in it satisfies
+        // "use .append() three times" while never building the list up from
+        // nothing, which is the thing the puzzle is for.
+        if (code && !/=\s*\[\s*\]/.test(String(code))) {
+          return { pass: false, message: 'Start from an empty list, items = [], and append the three things onto it.' };
         }
         const listLine = lines.find(l => /^\[.*\]$/.test(l));
         if (!listLine) {

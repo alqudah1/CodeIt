@@ -50,10 +50,10 @@ const lesson6 = {
       type: 'challenge',
       id: 'challenge',
       title: 'Loop with If',
-      description: 'Run this to see only the vowels in a word. Try changing "Python" to another word!',
+      description: 'You have used in to walk through things: for char in word. It has a second job. Between two things, char in "aeiouAEIOU" asks a question: is this character one of those? Run this to see only the vowels in a word, then try changing "Python" to another word.',
       code: 'word = "Python"\nfor char in word:\n    if char in "aeiouAEIOU":\n        print(char, "is a vowel")',
       successPattern: /vowel/i,
-      hint: 'The if checks whether each character is a vowel. Change "Python" to another word!',
+      hint: 'The if asks whether the character is inside the string of vowels. That is what in means here, which is a different job from the in that walks through a word. Change "Python" to another word.',
       xp: 20,
     },
   ]

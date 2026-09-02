@@ -206,3 +206,43 @@ describe('a child who solved it differently is not blocked', () => {
     expect(new Set(ALTERNATIVES.map(a => a[0])).size).toBeGreaterThanOrEqual(15);
   });
 });
+
+// ── The three open-ended puzzles ─────────────────────────────────────────────
+//
+// 1-a says "say anything you like". 7-b says "one more fruit of your choice".
+// 7-boss says "any three items". The answer is genuinely the child's, so there
+// is no expected output and an output match cannot work. These check the code
+// for the one thing each goal names, and the output wherever it still means
+// something.
+//
+// Two ways round 7-b that a correct-looking printed list does not reveal:
+// editing the literal at the top so cherry was never appended, and building a
+// new list with +. And one round 7-boss: three appends onto a list that was
+// already populated satisfies "use .append() three times" while never building
+// the list up from nothing, which is what the puzzle is for.
+const OPEN_ENDED_CHEATS = [
+  ['7-b', 'literal edited, no append', 'fruits = ["apple", "banana", "cherry", "mango"]\nprint(fruits)', '[\'apple\', \'banana\', \'cherry\', \'mango\']\n'],
+  ['7-b', 'plus concatenation', 'fruits = ["apple", "banana"]\nfruits = fruits + ["cherry", "mango"]\nprint(fruits)', '[\'apple\', \'banana\', \'cherry\', \'mango\']\n'],
+  ['7-b', 'cherry typed, mango appended', 'fruits = ["apple", "banana", "cherry"]\nfruits.append("mango")\nfruits.append("kiwi")\nprint(fruits)', '[\'apple\', \'banana\', \'cherry\', \'mango\', \'kiwi\']\n'],
+  ['7-boss', 'list started populated', 'items = ["sword", "map", "rope"]\nitems.append("a")\nitems.append("b")\nitems.append("c")\nprint(items)\nprint("Count:", len(items))', '[\'sword\', \'map\', \'rope\', \'a\', \'b\', \'c\']\nCount: 6\n'],
+];
+
+// Counting .append( occurrences in the source blocked the loop below, and a
+// loop is a better answer than three separate lines: one call site, three
+// appends. What the goal requires is that the items were appended rather than
+// typed, and the printed list already proves how many arrived.
+const OPEN_ENDED_ALTERNATIVES = [
+  ['7-b', 'other order', 'fruits = ["apple", "banana"]\nfruits.append("mango")\nfruits.append("cherry")\nprint(fruits)', '[\'apple\', \'banana\', \'mango\', \'cherry\']\n'],
+  ['7-boss', 'loop appends four', 'items = []\nfor x in ["a","b","c","d"]:\n    items.append(x)\nprint(items)\nprint("Count:", len(items))', '[\'a\', \'b\', \'c\', \'d\']\nCount: 4\n'],
+  ['7-boss', 'numbers appended', 'items = []\nitems.append(1)\nitems.append(2)\nitems.append(3)\nprint(items)\nprint("Count:", len(items))', '[1, 2, 3]\nCount: 3\n'],
+];
+
+describe('the open-ended three', () => {
+  test.each(OPEN_ENDED_CHEATS)('%s rejects: %s', (key, _label, code, output) => {
+    expect(PUZZLE_CONFIGS[key].validator(output, code).pass).toBe(false);
+  });
+
+  test.each(OPEN_ENDED_ALTERNATIVES)('%s accepts: %s', (key, _label, code, output) => {
+    expect(PUZZLE_CONFIGS[key].validator(output, code).pass).toBe(true);
+  });
+});

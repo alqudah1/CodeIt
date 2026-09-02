@@ -10,7 +10,7 @@ const lesson22 = {
       type: 'concept',
       id: 'concept',
       title: 'Locked and Unique',
-      body: 'A tuple looks like a list but uses round brackets, and once it is made it cannot be changed. A set uses curly braces and silently throws away any duplicates. Curly braces made a dictionary back in lesson 20, and they make a set here. Python tells them apart by what is inside: pairs with colons make a dictionary, plain values make a set. Empty braces are a dictionary, so an empty set has to be written set(). Both are ordinary Python, and both save you from a whole class of bug.',
+      body: 'A tuple looks like a list but uses round brackets, and once it is made it cannot be changed. Round brackets have meant call this function up to now, and here they hold a list of values instead; a name in front of them means a call, and nothing in front means a tuple. A set uses curly braces and silently throws away any duplicates. Curly braces made a dictionary back in lesson 20, and they make a set here. Python tells them apart by what is inside: pairs with colons make a dictionary, plain values make a set. Empty braces are a dictionary, so an empty set has to be written set(). Both are ordinary Python, and both save you from a whole class of bug.',
       highlight: 'screen = (800, 600)      # a tuple. Locked\nplayers = {"Sam", "Ada"}  # a set. No repeats\nscores  = {"Sam": 10}     # colons, so a dictionary\nempty   = set()           # {} would be a dictionary\n\nplayers.add("Sam")        # already there, nothing happens',
       code: 'screen = (800, 600)\nprint("Width:", screen[0])\n\nplayers = {"Sam", "Ada", "Sam"}\nprint("Players:", len(players))',
     },
