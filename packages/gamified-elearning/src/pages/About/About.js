@@ -29,7 +29,7 @@ export default function About() {
 
           <h2>Why it exists</h2>
           <p>
-            Most tools for young coders are block-based, and blocks are a good on-ramp —{' '}
+            Most tools for young coders are block-based, and blocks are a good on-ramp,{' '}
             <a href="https://scratch.mit.edu/" target="_blank" rel="noopener noreferrer">Scratch</a>{' '}
             in particular has taught an enormous number of children to think in loops and
             conditionals. The gap is on the other side of it.
@@ -64,7 +64,7 @@ export default function About() {
             results.
           </p>
           <p>
-            It is <strong>not</strong> right for a pre-reading child —{' '}
+            It is <strong>not</strong> right for a pre-reading child,{' '}
             <a href="https://www.kodable.com/" target="_blank" rel="noopener noreferrer">Kodable</a>{' '}
             and{' '}
             <a href="https://codespark.com/" target="_blank" rel="noopener noreferrer">codeSpark</a>{' '}
@@ -112,7 +112,7 @@ export default function About() {
               <h2>Contact</h2>
               <p>
                 <a href={`mailto:${COMPANY.contactEmail}`}>{COMPANY.contactEmail}</a>
-                {COMPANY.founderName ? ` — ${COMPANY.founderName}` : ''}
+                {COMPANY.founderName ? `, ${COMPANY.founderName}` : ''}
               </p>
             </>
           ) : null}

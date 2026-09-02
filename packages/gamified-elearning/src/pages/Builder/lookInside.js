@@ -82,7 +82,7 @@ function lookInside(concepts, completedLessons) {
     // Not "you built this". They changed one thing, which is true and is
     // enough, and it is the first true version of that sentence the studio has
     // been able to say.
-    sentence: `You changed it, so it is yours now. It uses ${found.label} — yours is on line ${found.line}.`,
+    sentence: `You changed it, so it is yours now. It uses ${found.label}. Yours is on line ${found.line}.`,
     lessonLabel: `Learn ${found.lessonTitle}`,
     lessonId: found.lessonId,
     rest: others > 0

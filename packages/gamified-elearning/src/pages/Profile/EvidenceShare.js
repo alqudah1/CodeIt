@@ -37,7 +37,7 @@ const EvidenceShare = () => {
       <div className="evs">
         <div className="evs__card">
           <h1 className="evs__title">This link has expired</h1>
-          <p>{state.message || 'Ask the family for a fresh one — they can make another in a few seconds.'}</p>
+          <p>{state.message || 'Ask the family for a fresh one. They can make another in a few seconds.'}</p>
           <Link className="evs__home" to="/">What is CodeIt?</Link>
         </div>
       </div>
@@ -54,13 +54,13 @@ const EvidenceShare = () => {
         <h1 className="evs__title">What {name} can explain</h1>
         <p className="evs__how">
           {name} built these projects on CodeIt, then answered questions about the code inside
-          them. Each sentence below was recorded only after a correct explanation — nothing here
+          them. Each sentence below was recorded only after a correct explanation. Nothing here
           is generated, estimated, or awarded for showing up.
         </p>
 
         {shown.length === 0 && (
           <p className="evs__quiet">
-            {name} hasn&rsquo;t recorded an explanation yet — the first one lands here the moment
+            {name} hasn&rsquo;t recorded an explanation yet. The first one lands here the moment
             they prove one in the studio.
           </p>
         )}
@@ -84,7 +84,7 @@ const EvidenceShare = () => {
         </ul>
 
         <p className="evs__foot">
-          From <Link to="/">CodeIt</Link> — where kids describe an idea, get a real program,
+          From <Link to="/">CodeIt</Link>, where kids describe an idea, get a real program,
           and learn to change the code inside it.
         </p>
       </div>

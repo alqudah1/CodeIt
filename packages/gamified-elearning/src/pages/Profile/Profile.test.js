@@ -248,7 +248,7 @@ describe('parent progress availability', () => {
     await screen.findByText('Star catcher');
     expect(screen.getByText('Variables')).toBeInTheDocument();
     expect(screen.getByText(/let score = 0/)).toBeInTheDocument();
-    expect(screen.getByText(/own file — not an example, not a summary/i)).toBeInTheDocument();
+    expect(screen.getByText(/own file, not an example, not a summary/i)).toBeInTheDocument();
     expect(screen.getByText(/Hello Python, Storing Info with Variables/)).toBeInTheDocument();
 
     // And it folds away.

@@ -28,7 +28,7 @@ This page is only about classroom use. If you are looking for general hosting fo
 
 Before anything else, two things that affect teachers right now, in August 2026:
 
-- **GitHub Classroom's last day is 28 August 2026.** No new classrooms can be created, and classroom-specific data — assignment definitions, autograding tests, submission history — is deleted after 4 September 2026. GitHub accounts, repositories and organizations are unaffected. There is an export utility; use it this week if you have anything in there. ([GitHub community FAQ](https://github.com/orgs/community/discussions/145312))
+- **GitHub Classroom's last day is 28 August 2026.** No new classrooms can be created, and classroom-specific data, assignment definitions, autograding tests, submission history, is deleted after 4 September 2026. GitHub accounts, repositories and organizations are unaffected. There is an export utility; use it this week if you have anything in there. ([GitHub community FAQ](https://github.com/orgs/community/discussions/145312))
 - **Trinket's last day is 31 August 2026.** Export before then: Account Settings does a bulk export, the Share button downloads a single trinket, and the Courses menu exports a course. Only saved versions are included, so anything left unsaved in an editor is lost. The code was open-sourced, but as the team put it, open source does not mean the site stays online. A community-run instance exists at [trinket.strivemath.org](https://trinket.strivemath.org/), which Trinket does not guarantee. Download your trinkets from Account Settings before the date. ([Trinket announcement](https://trinket.io/announcement))
 
 Add these to Glitch (July 2025) and Replit's Teams for Education (retired 1 August 2024), and four of the browser-based classroom tools teachers relied on have closed inside two years. That is the context you are planning in, and it is a reasonable argument for choosing tools that either charge money or are backed by a foundation, rather than free products from venture-funded startups.
@@ -67,13 +67,13 @@ Every option below needs an account, and an email address to create one. All are
 | [CodePen](https://codepen.io/) | Terms state services are **not available to minors under 18**; 13–17 require a guardian-created and guardian-managed account | No | Fork a pen | Pen URL, not a site | Free tier |
 | [itch.io](https://itch.io/) | 13+ to use; **18+ or parental consent to publish** | No | None | Yes, game page | Free |
 
-Two entries in that table surprise most teachers. **Vercel is 16+, not 13+** — most guides get this wrong, and it quietly rules out every middle school. **CodePen's terms are stricter than its reputation**: they state the service is not available to minors, with 13–17-year-olds requiring a guardian-managed account. Read that clause yourself before you put thirty student sign-ups through it.
+Two entries in that table surprise most teachers. **Vercel is 16+, not 13+**: most guides get this wrong, and it quietly rules out every middle school. **CodePen's terms are stricter than its reputation**: they state the service is not available to minors, with 13–17-year-olds requiring a guardian-managed account. Read that clause yourself before you put thirty student sign-ups through it.
 
 "Managed Chromebook" above means the tool is browser-only and needs no local install. It does not mean your district has allowlisted the domain. Ask your admin to allow the site and any preview subdomains before the lesson, not during it.
 
 ## Choosing by what you used Glitch for
 
-**You posted one starter link and everyone remixed it.** Scratch is the only mainstream tool where remix works exactly as it did on Glitch, but it is blocks, not HTML. For text-based work, the honest closest match is a **GitHub template repository** — you build one repo, tick "Template repository" in settings, and students click "Use this template" to get their own copy. That requires 13+ accounts and about twenty minutes of setup pain the first time. For under-13 classes, CodeHS and Pickcode solve it a different way: the teacher issues the accounts and attaches starter code to an assignment, so no student ever signs up for anything.
+**You posted one starter link and everyone remixed it.** Scratch is the only mainstream tool where remix works exactly as it did on Glitch, but it is blocks, not HTML. For text-based work, the honest closest match is a **GitHub template repository**: you build one repo, tick "Template repository" in settings, and students click "Use this template" to get their own copy. That requires 13+ accounts and about twenty minutes of setup pain the first time. For under-13 classes, CodeHS and Pickcode solve it a different way: the teacher issues the accounts and attaches starter code to an assignment, so no student ever signs up for anything.
 
 **Students needed a live URL to share.** Neocities is the least encumbered option: a free account, 1 GB, a real URL, no card, and terms that set no account minimum age. GitHub Pages is better if you want version history and are 13+. Skip Vercel for school-age classes on the age rule alone.
 
@@ -83,9 +83,9 @@ Two entries in that table surprise most teachers. **Vercel is 16+, not 13+** —
 
 ## Your old class projects
 
-Glitch code was downloadable from the dashboard through the end of 2025; that route is closed now. Redirects had to be configured before 31 December 2025 and were promised to work "at least through the end of 2026" — so any glitch.me link in a course page, handout, LMS module or student portfolio is on a clock that runs out within months. Repoint them now. Note that glitch.com itself now redirects to the company blog, which is why searching for classroom guidance still surfaces a dead product's own marketing.
+Glitch code was downloadable from the dashboard through the end of 2025; that route is closed now. Redirects had to be configured before 31 December 2025 and were promised to work "at least through the end of 2026", so any glitch.me link in a course page, handout, LMS module or student portfolio is on a clock that runs out within months. Repoint them now. Note that glitch.com itself now redirects to the company blog, which is why searching for classroom guidance still surfaces a dead product's own marketing.
 
-If you did not export, check whether projects were ever pushed to GitHub, and check the Internet Archive for the rendered page — that gets you the front-end HTML and CSS of a static project, though not a Node backend or its data.
+If you did not export, check whether projects were ever pushed to GitHub, and check the Internet Archive for the rendered page. That gets you the front-end HTML and CSS of a static project, though not a Node backend or its data.
 
 ---
 
@@ -93,7 +93,7 @@ If you did not export, check whether projects were ever pushed to GitHub, and ch
 
 **CodeIt is not a schools product, and this page would be dishonest if it implied otherwise.** There is no rostering, no LMS integration, no standards alignment, no teacher dashboard, no class management and no bulk account creation. A teacher with thirty students cannot run CodeIt the way they ran Glitch. If you are the teacher this page is written for, the recommendation above stands: CodeHS, Pickcode, Classroom 50 with GitHub Pages, Neocities or the p5.js editor.
 
-CodeIt is a browser-based studio for ages 5–18. A learner describes a website, game or quiz and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows what the project is made of and opens the lesson behind each idea it used. Profiles for ages 5–12 are parent-managed and email-verified, and **managed under-13 profiles cannot publish publicly**; independent accounts start at 13. The free plan does not expire, needs no card, and includes ten assisted project builds a month across two learner profiles under one parent view. The family plan is CA$12/month, cancellable any time. There are 31 beginner Python lessons; there is no web curriculum, because the web side is the builder rather than a course. The honest fit is a homeschool parent, a small after-school club, or one or two children — not a class.
+CodeIt is a browser-based studio for ages 5–18. A learner describes a website, game or quiz and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows what the project is made of and opens the lesson behind each idea it used. Profiles for ages 5–12 are parent-managed and email-verified, and **managed under-13 profiles cannot publish publicly**; independent accounts start at 13. The free plan does not expire, needs no card, and includes ten assisted project builds a month across two learner profiles under one parent view. The family plan is CA$12/month, cancellable any time. There are 31 beginner Python lessons; there is no web curriculum, because the web side is the builder rather than a course. The honest fit is a homeschool parent, a small after-school club, or one or two children, not a class.
 
 ---
 
@@ -133,7 +133,7 @@ CodeIt is a browser-based studio for ages 5–18. A learner describes a website,
       "coding for 10 year old after scratch",
       "scratch alternatives for older kids"
     ],
-    markdown: `**Short answer:** for most kids aged 9 to 13 who have outgrown Scratch, HTML, CSS and JavaScript in a browser is a better next step than Python. The feedback stays visual and immediate, there is nothing to install, and the thing they build is a real thing they can look at. Python is the right next step for a narrower group — kids around 12 and up who asked for it by name, or who are heading toward data, AI, or school computer science.
+    markdown: `**Short answer:** for most kids aged 9 to 13 who have outgrown Scratch, HTML, CSS and JavaScript in a browser is a better next step than Python. The feedback stays visual and immediate, there is nothing to install, and the thing they build is a real thing they can look at. Python is the right next step for a narrower group, kids around 12 and up who asked for it by name, or who are heading toward data, AI, or school computer science.
 
 But before you pick anything, check whether your kid is actually ready to leave Scratch. Most are not yet, and the signal parents usually read as readiness is something else entirely.
 
@@ -177,18 +177,18 @@ Python is not a hard language. The problem is what happens to the reward-per-eff
 | Something to show off in 20 minutes | Something to show off in several weeks |
 | Syntax errors are structurally impossible | One missing colon stops everything |
 
-A kid who was building playable games last month is now printing \`Hello, world\` and getting it wrong. They do not experience that as "the tool changed." They experience it as "I got worse at coding," and a meaningful number quietly conclude they are not a coding person. Python's real advantages — readability, libraries, a path into data and AI — show up around hour 20 to 40. Many kids never get there.
+A kid who was building playable games last month is now printing \`Hello, world\` and getting it wrong. They do not experience that as "the tool changed." They experience it as "I got worse at coding," and a meaningful number quietly conclude they are not a coding person. Python's real advantages, readability, libraries, a path into data and AI, show up around hour 20 to 40. Many kids never get there.
 
 ## Why HTML, CSS and JavaScript is usually the better bridge
 
 1. **The browser is the runtime.** No install, no environment, no version conflicts. The wall that stops beginners before line one is simply absent.
-2. **It fails gracefully.** A malformed HTML tag renders imperfectly instead of refusing to run. Partial correctness produces partial results — which is exactly what block coding trained them to expect.
+2. **It fails gracefully.** A malformed HTML tag renders imperfectly instead of refusing to run. Partial correctness produces partial results, which is exactly what block coding trained them to expect.
 3. **Feedback stays visual and fast.** Change a colour, save, refresh, see it. That loop is the thing they liked about Scratch, preserved.
 4. **The output is a real artifact.** A page. A game with buttons and images. Not a console.
 5. **The entire web is a worked example.** View Source and Inspect work on every site they already use. No other beginner language has millions of readable examples one right-click away.
 6. **It is genuinely real code.** Brackets, quotes, semicolons, functions, conditionals, loops, event handlers. A kid who learns what a function and a loop are in JavaScript has learned them once, for good. Python later becomes syntax reskinning rather than a fresh start.
 
-Two honest caveats. JavaScript has real weirdness — \`==\` versus \`===\`, type coercion, asynchronous code — that bites eventually. And HTML and CSS alone are markup and styling, not programming; the programming starts at JavaScript. Some kids build a good-looking page and stall there. Fine outcome, but do not mistake it for learning to program.
+Two honest caveats. JavaScript has real weirdness, \`==\` versus \`===\`, type coercion, asynchronous code, that bites eventually. And HTML and CSS alone are markup and styling, not programming; the programming starts at JavaScript. Some kids build a good-looking page and stall there. Fine outcome, but do not mistake it for learning to program.
 
 ## The gap nobody serves well: ages 9 to 13 who want real typed code
 
@@ -198,7 +198,7 @@ This is worth stating plainly, because it explains why your search returned only
 
 So the best-known platforms for real typed code are age-gated or aimed above exactly the children who just outgrew Scratch. That is a structural gap, not an oversight.
 
-One more note: if you find a 2023 or 2024 article recommending Juni Learning, it is closed. Juni wound down its tutoring business in September 2025 — a California WARN notice covering 121 employees — and consolidated onto its test-prep spinout, Acely. Do not sign up.
+One more note: if you find a 2023 or 2024 article recommending Juni Learning, it is closed. Juni wound down its tutoring business in September 2025, a California WARN notice covering 121 employees, and consolidated onto its test-prep spinout, Acely. Do not sign up.
 
 ## Decision table: pick by your kid's actual signals
 
@@ -208,7 +208,7 @@ Start here: **Can they read fluently?** No → stay in blocks. Yes → **do they
 |---|---|---|
 | Under 8, or still reading slowly | Stay in blocks; add harder projects | [codeSpark](https://www.beginlearning.com/codespark/pdp) (word-free, now sold through Begin), [Kodable](https://www.kodable.com/parents) (paid for families, US$119.99/yr) |
 | 8–12, loved making **games** and wants to keep making games | Typed Python or JavaScript inside a game world | [CodeCombat](https://codecombat.com/) — freemium, roughly 9+, the strongest "keep making games" answer |
-| 8–12, obsessed with **Minecraft or Roblox** | Modding path — the motivation is already there | [Tynker](https://www.tynker.com/) ($15/mo billed yearly, or $468 lifetime, up to 3 children) |
+| 8–12, obsessed with **Minecraft or Roblox** | Modding path, the motivation is already there | [Tynker](https://www.tynker.com/) ($15/mo billed yearly, or $468 lifetime, up to 3 children) |
 | 9–13, loved the "look what I made" part; wants something others can open | HTML, CSS, JavaScript in a browser | Any browser-based web editor; see the disclosure below |
 | 9–13, loved the **puzzles and logic**, not the art | Structured typed-code puzzles | [CodeMonkey](https://www.codemonkey.com/) (US$8/mo individual, US$13/mo family, K–8), [CodeCombat](https://codecombat.com/) |
 | 10+, more curious about **AI** than about code | AI literacy alongside coding | [CodeAI](https://code.org/) — this is Code.org, which rebranded in June 2026 and shifted emphasis toward AI literacy; free |
@@ -241,7 +241,7 @@ Two things we will not blur:
 - **Our structured lesson sequence is Python, not web.** It is 31 beginner lessons, [starting with print](/lesson/1), then variables, strings, conditionals, loops, lists and functions. The HTML/CSS/JS side is learn-by-editing-your-own-project, not a graded course. If you want a sequenced web curriculum with lessons and checkpoints, we do not have one.
 - **Under-13 managed profiles cannot publish publicly.** Sharing happens inside the parent-managed account. If your child's main motivation is a public link, wait until 13 or choose something else.
 
-**CodeIt is not for you if:** your kid wants Minecraft or Roblox mods (go to Tynker), wants to keep making games above all (go to CodeCombat), cannot read yet (go to codeSpark), wants deep Python (go to Codecademy at 16+, or CodeCombat now), needs offline access, or you are buying for a school — we have no school, district, rostering or teacher-dashboard product.
+**CodeIt is not for you if:** your kid wants Minecraft or Roblox mods (go to Tynker), wants to keep making games above all (go to CodeCombat), cannot read yet (go to codeSpark), wants deep Python (go to Codecademy at 16+, or CodeCombat now), needs offline access, or you are buying for a school, we have no school, district, rostering or teacher-dashboard product.
 
 ---
 
@@ -251,7 +251,7 @@ Two things we will not blur:
 Usually not. Scratch officially covers 8 to 16, and advanced projects involve cloning, lists, custom blocks and real algorithmic thinking. Social embarrassment is a legitimate reason to move on, but it is a social reason, not an educational one.
 
 **Should we skip straight to Python because it is what schools use?**
-Only if your child is around 12 or older and wants it. Younger than that, setup friction and text-only output cause more quitting than the language is worth. The concepts transfer either way — a loop is a loop.
+Only if your child is around 12 or older and wants it. Younger than that, setup friction and text-only output cause more quitting than the language is worth. The concepts transfer either way. A loop is a loop.
 
 **Is HTML actually coding?**
 HTML and CSS are markup and styling. JavaScript is programming. The web path works as a bridge because it starts with the forgiving parts and adds real programming gradually.
@@ -264,13 +264,13 @@ Common and usually recoverable. The cause is normally the visible-reward drop de
 
 ---
 
-*Last verified: 21 August 2026. Competitor pricing, age ratings and terms were checked on this date and change often — confirm on the vendor's own site before paying.*
+*Last verified: 21 August 2026. Competitor pricing, age ratings and terms were checked on this date and change often, confirm on the vendor's own site before paying.*
 
 ## Try the translation, not just the theory
 
-CodeIt's studio has a starter written for exactly this crossing: **Cat and mouse chase**, a game where every important line of real JavaScript carries a comment naming the Scratch block it replaces — "forever" becomes the animation loop, "when key pressed" becomes an event listener, "go to random position" becomes two lines of Math.random(). Your kid plays it first, then opens the code and finds a language they already half-speak.
+CodeIt's studio has a starter written for exactly this crossing: **Cat and mouse chase**, a game where every important line of real JavaScript carries a comment naming the Scratch block it replaces, "forever" becomes the animation loop, "when key pressed" becomes an event listener, "go to random position" becomes two lines of Math.random(). Your kid plays it first, then opens the code and finds a language they already half-speak.
 
-[Open Cat and mouse chase in the studio](/builder?start=cat-chase) — it loads instantly, free, no account needed.
+[Open Cat and mouse chase in the studio](/builder?start=cat-chase), it loads instantly, free, no account needed.
 `,
   },
   {
@@ -290,7 +290,7 @@ CodeIt's studio has a starter written for exactly this crossing: **Cat and mouse
       "ai coding tools for kids parents guide",
       "does ai stop kids learning to program"
     ],
-    markdown: `**Short answer:** the learning is not lost, but it has not happened yet either. It happens in what your child does next — changing the code, watching it break, and working out why — and you can start that this week with three questions, on any platform, without knowing how to code yourself.
+    markdown: `**Short answer:** the learning is not lost, but it has not happened yet either. It happens in what your child does next, changing the code, watching it break, and working out why, and you can start that this week with three questions, on any platform, without knowing how to code yourself.
 
 In practice the tool is usually ChatGPT, Claude or whatever their friends are using, and which one matters far less than what happens after the code arrives. This page covers why kids reach for AI (it is rational, not lazy), what is genuinely lost when code arrives finished, why banning it fails, and where the "should kids learn vibe coding" argument actually stands. We build a product in this space and say so plainly near the end.
 
@@ -298,9 +298,9 @@ In practice the tool is usually ChatGPT, Claude or whatever their friends are us
 
 Do the arithmetic from a 10-year-old's side. They want a working snake game. Route one is six hours of typing, punctuation errors and frustration. Route two is thirty seconds. No child picks route one on principle.
 
-It is also not new. Kids have always optimised for the artifact rather than the process — copying tutorial code without reading it, remixing [Scratch](https://scratch.mit.edu/) projects and swapping the sprites, dropping free models into a Roblox game. AI is that instinct with a much better tool attached.
+It is also not new. Kids have always optimised for the artifact rather than the process, copying tutorial code without reading it, remixing [Scratch](https://scratch.mit.edu/) projects and swapping the sprites, dropping free models into a Roblox game. AI is that instinct with a much better tool attached.
 
-Two things follow. "Lazy" is the wrong diagnosis, and an expensive one: a kid told the shortcut is laziness stops telling you they used it, and you lose the conversation, which is the only tool that works here. And "make the thing" and "learn to make the thing" are different goals — only the first is your child's. The job is not to talk them out of it, but to attach the learning to it.
+Two things follow. "Lazy" is the wrong diagnosis, and an expensive one: a kid told the shortcut is laziness stops telling you they used it, and you lose the conversation, which is the only tool that works here. And "make the thing" and "learn to make the thing" are different goals, only the first is your child's. The job is not to talk them out of it, but to attach the learning to it.
 
 ## What is actually lost when the code arrives finished
 
@@ -312,7 +312,7 @@ What is lost is the debugging loop, which is where learning actually lives:
 
 That loop is the whole mechanism. It is how a kid builds a working mental model of what a computer does, and it only runs when something behaves unexpectedly. Code that arrives finished skips every step.
 
-Reading finished code feels like learning and mostly is not — the fluency illusion. You recognise the material, so you rate your understanding highly, right up until you have to produce it. Watching someone play piano is not practice.
+Reading finished code feels like learning and mostly is not, the fluency illusion. You recognise the material, so you rate your understanding highly, right up until you have to produce it. Watching someone play piano is not practice.
 
 | What AI takes over | Does it matter? |
 |---|---|
@@ -326,7 +326,7 @@ Reading finished code feels like learning and mostly is not — the fluency illu
 ## Why "just ban it" fails
 
 1. **It is unenforceable.** There is a phone, a friend's laptop, and school-issued tools.
-2. **It moves the behaviour underground.** What you lose is not the AI use — it is the conversation, the only thing that actually changes how they use it.
+2. **It moves the behaviour underground.** What you lose is not the AI use. It is the conversation, the only thing that actually changes how they use it.
 3. **It is already inside the software.** Search, documentation, editors, and the learning platforms themselves. [CodeAI](https://code.org/) — Code.org, which rebranded in June 2026 — moved toward AI literacy rather than away from it. The industry will not help you hold this line.
 4. **Directing an AI is a real skill.** It will be assumed of them the way search was assumed of you. A ban practises the wrong thing.
 
@@ -348,21 +348,21 @@ This is the distinction that matters, and it has nothing to do with whether AI w
 
 **The one-question test.** Ask for a change nobody asked the AI for: "make the ball speed up each bounce," or "make the button turn green when you win." If the answer is a new prompt, you are in vending machine mode. If they open the code and start hunting, you are in draft mode.
 
-Which mode a kid ends up in is mostly a property of the tool, not the child. Plenty of AI tools hand back a locked result — a file you cannot see into, or a chat answer that must be copied somewhere else before it will run. Whether a kid modifies the output is largely decided by whether modifying it is easy.
+Which mode a kid ends up in is mostly a property of the tool, not the child. Plenty of AI tools hand back a locked result. A file you cannot see into, or a chat answer that must be copied somewhere else before it will run. Whether a kid modifies the output is largely decided by whether modifying it is easy.
 
 ## Four things to try this week
 
 Each takes about ten minutes and works with any tool, including a plain chatbot. You do not need to understand the code.
 
-**1. Change one thing — but predict first.** Point at a number. "What happens if we make this 5 instead of 20?" Make them answer out loud before running it. The prediction is the exercise; running it is just marking.
+**1. Change one thing, but predict first.** Point at a number. "What happens if we make this 5 instead of 20?" Make them answer out loud before running it. The prediction is the exercise; running it is just marking.
 
 **2. Break it on purpose.** Save first, then delete a line and ask what will stop working. Then restore it. Kids who have never deliberately broken code are afraid of it, and fear is what stops them experimenting.
 
-**3. Ask about one line — but ask the better question.** Not "what does this do," which they answer by reading it back to you. Ask "what would go wrong if this line wasn't there?" That needs a mental model, not recall.
+**3. Ask about one line, but ask the better question.** Not "what does this do," which they answer by reading it back to you. Ask "what would go wrong if this line wasn't there?" That needs a mental model, not recall.
 
-**4. Add one thing the AI did not.** A scoreboard, a second colour, a sound, a restart button. This is the real assessment. If they can add a feature, they understood it. If not, they did not — and now you both know, without an argument.
+**4. Add one thing the AI did not.** A scoreboard, a second colour, a sound, a restart button. This is the real assessment. If they can add a feature, they understood it. If not, they did not, and now you both know, without an argument.
 
-**Bonus: keep the prompt.** Have them write down what they asked for before reading what came back, then compare. What did the AI add, skip, or quietly change? That is specification practice — the half of the skill most likely to still matter in ten years.
+**Bonus: keep the prompt.** Have them write down what they asked for before reading what came back, then compare. What did the AI add, skip, or quietly change? That is specification practice, the half of the skill most likely to still matter in ten years.
 
 ## A short script for the conversation
 
@@ -387,8 +387,8 @@ The term came into wide use in 2025. It means roughly: describe what you want in
 | The case for | The case against |
 |---|---|
 | It is increasingly how software actually gets built; pretending otherwise trains kids for a world that is leaving | You cannot evaluate output you cannot read, and evaluation is the skill everyone agrees survives |
-| The durable skills shift to specification and judgment — saying precisely what you want, and telling whether you got it | Debugging generated code needs more understanding, not less; when it breaks, the kid is stranded in code they never wrote |
-| It keeps motivation alive, and motivation is the scarcest resource in kids' coding — most quitting happens before any concept lands | The fluency illusion is strong; kids badly over-rate what they know, and the correction arrives late and hard |
+| The durable skills shift to specification and judgment, saying precisely what you want, and telling whether you got it | Debugging generated code needs more understanding, not less; when it breaks, the kid is stranded in code they never wrote |
+| It keeps motivation alive, and motivation is the scarcest resource in kids' coding, most quitting happens before any concept lands | The fluency illusion is strong; kids badly over-rate what they know, and the correction arrives late and hard |
 | It lowers the barrier for kids who would never have survived setup and syntax, including kids with no parent who codes | Models produce plausible, subtly wrong code, and a beginner has no way to detect it. Confidence without accuracy is worse than neither |
 | Professionals already work this way, and pretending they do not is dishonest with older teens | The workflow is a moving target. Betting a child's decade of learning on the 2026 way of prompting is a genuine gamble |
 
@@ -422,22 +422,22 @@ Yes to those keeps the debugging loop intact. No has replaced the loop with a de
 
 We make **CodeIt** (codeitlearn.com). Treat this as an ad.
 
-CodeIt is a browser-based studio where kids build websites, games and quizzes by describing them, then change them by moving things and picking colours, and can open a tab that shows what the project is made of and links to a lesson for each idea in it. The AI-assisted project generation is built so the result stays editable instead of becoming a locked AI result — the specific mechanic this page is about. The loop is: make something, play it, change it, see what it is made of, and publish it. Ages 5 to 18, with parent-managed, email-verified private profiles for ages 5 to 12 and independent accounts from 13. The free plan does not expire, needs no card, and includes ten assisted project builds a month with two learner profiles under a parent view. A paid family plan is available at CA$12 a month and can be cancelled at any time.
+CodeIt is a browser-based studio where kids build websites, games and quizzes by describing them, then change them by moving things and picking colours, and can open a tab that shows what the project is made of and links to a lesson for each idea in it. The AI-assisted project generation is built so the result stays editable instead of becoming a locked AI result. The specific mechanic this page is about. The loop is: make something, play it, change it, see what it is made of, and publish it. Ages 5 to 18, with parent-managed, email-verified private profiles for ages 5 to 12 and independent accounts from 13. The free plan does not expire, needs no card, and includes ten assisted project builds a month with two learner profiles under a parent view. A paid family plan is available at CA$12 a month and can be cancelled at any time.
 
 Things we will not blur:
 
-- **Our structured lesson sequence is Python only** — thirty-one beginner lessons, [starting with print](/lesson/1), then variables, strings, conditionals, loops, lists and functions. The web side is learn-by-editing-your-own-project. There is no web curriculum.
+- **Our structured lesson sequence is Python only**: thirty-one beginner lessons, [starting with print](/lesson/1), then variables, strings, conditionals, loops, lists and functions. The web side is learn-by-editing-your-own-project. There is no web curriculum.
 - **Under-13 managed profiles cannot publish publicly.** Sharing happens inside the parent-managed account.
 - **Ages 5 to 12 require a parent-managed profile.** This is not a set-and-forget product for young children.
 
-**CodeIt is not for you if:** your household rule is no AI at all — we generate code, so we are the wrong product; your kid wants Minecraft or Roblox mods ([Tynker](https://www.tynker.com/)); your kid mainly wants to keep making games ([CodeCombat](https://codecombat.com/)); your teen wants a professional AI development workflow (they should be using real developer tools); you want a sequenced web-development course; or you are buying for a school — we have no school, district, rostering or teacher-dashboard product.
+**CodeIt is not for you if:** your household rule is no AI at all, we generate code, so we are the wrong product; your kid wants Minecraft or Roblox mods ([Tynker](https://www.tynker.com/)); your kid mainly wants to keep making games ([CodeCombat](https://codecombat.com/)); your teen wants a professional AI development workflow (they should be using real developer tools); you want a sequenced web-development course; or you are buying for a school — we have no school, district, rostering or teacher-dashboard product.
 
 ---
 
 ## Common questions
 
 **Is using AI to write code cheating?**
-For a personal project, no — it is how the tools work now. For graded schoolwork where the teacher said not to, yes, and that is an honesty conversation rather than a technology one.
+For a personal project, no, it is how the tools work now. For graded schoolwork where the teacher said not to, yes, and that is an honesty conversation rather than a technology one.
 
 **My child cannot explain any of the code. Should I worry?**
 Not immediately. Ask them to add one small feature the AI did not build. If they can, the understanding is ahead of the explaining. If they cannot, you have found the real gap, and the four exercises above are the fix.
@@ -453,13 +453,13 @@ Some fundamentals first helps, and a fully AI-first start leaves gaps. But holdi
 
 ---
 
-*Last verified: 21 August 2026. Platform names, pricing and terms were checked on this date and change often — confirm on the vendor's own site before paying.*`,
+*Last verified: 21 August 2026. Platform names, pricing and terms were checked on this date and change often, confirm on the vendor's own site before paying.*`,
   },
   {
     slug: "what-did-my-kid-learn",
     relatedLessons: [4, 6, 9],
     title: "Did My Kid Learn Anything, or Did AI Do It?",
-    description: "Your child built something with AI and it works. Here is how to tell whether they understood it — four checks you can run this week, on any platform.",
+    description: "Your child built something with AI and it works. Here is how to tell whether they understood it, four checks you can run this week, on any platform.",
     h1: "Did my kid learn anything, or did AI do it?",
     lastVerified: "2026-08-25",
     targetQueries: [
@@ -495,7 +495,7 @@ Most parents fear the child is at zero. Usually they are somewhere in the middle
 
 ## Four checks you can run this week
 
-None require you to code, and all work on any platform — [Scratch](https://scratch.mit.edu/), [Tynker](https://www.tynker.com/), [Roblox Studio](https://create.roblox.com/), [Lovable](https://lovable.dev/), anything.
+None require you to code, and all work on any platform, [Scratch](https://scratch.mit.edu/), [Tynker](https://www.tynker.com/), [Roblox Studio](https://create.roblox.com/), [Lovable](https://lovable.dev/), anything.
 
 **1. Predict, then run.** Ask them to change one number and say what will happen *before* pressing run. The prediction is the whole test. Being wrong and then saying "oh, I see why" counts as a pass.
 
@@ -509,7 +509,7 @@ A script that works for a non-technical parent:
 
 > "Show me the part that makes it move."
 > "If I made that number twice as big, what happens?"
-> "Okay — try it. Were you right?"
+> "Okay, try it. Were you right?"
 > "Can you break it so it stops working? Now put it back."
 > "What would you add next?"
 
@@ -517,7 +517,7 @@ Five minutes, every couple of weeks. You will hear the change in the answers lon
 
 ## Why most comprehension quizzes are worth so little
 
-Most platforms attach quizzes to lessons, and almost all ask general questions: *what does a for loop do?* A child can answer that correctly and understand nothing about the program they just made — or get it right only because they remember the phrasing from a video ten minutes earlier.
+Most platforms attach quizzes to lessons, and almost all ask general questions: *what does a for loop do?* A child can answer that correctly and understand nothing about the program they just made, or get it right only because they remember the phrasing from a video ten minutes earlier.
 
 There is a sharper kind of question, and the difference is not cosmetic.
 
@@ -526,18 +526,18 @@ There is a sharper kind of question, and the difference is not cosmetic.
 | Example | "What does a variable do?" | "In your project, what does \`fallSpeed\` start as?" |
 | Can be answered by | Recalling a lesson | Reading their own code |
 | Can be looked up | Yes | No |
-| Can be memorised | Yes | No — every project differs |
+| Can be memorised | Yes | No, every project differs |
 | Proves | Familiarity with a term | They opened the file and traced a value |
 
 A question drawn from the child's own file cannot be answered from general knowledge, looked up, or shared between two children. There is no way to get it right except by reading what you wrote. That is the entire argument, and it is worth more than any streak counter.
 
-The same logic applies to the wrong answers. If the choices are \`0\`, \`1\` and \`100\` and the real value is \`3\`, a child can guess. If the wrong answers are other real numbers from the same file, guessing collapses — every option looks plausible, and only reading resolves it.
+The same logic applies to the wrong answers. If the choices are \`0\`, \`1\` and \`100\` and the real value is \`3\`, a child can guess. If the wrong answers are other real numbers from the same file, guessing collapses. Every option looks plausible, and only reading resolves it.
 
 ## The rule that makes it evidence: first try only
 
 Here is the part most systems get wrong. If a child can retry a question until it turns green, it has stopped measuring comprehension and started measuring persistence with a mouse. Everyone eventually gets 100%.
 
-So the rule has to be: **only answers correct on the first attempt count as evidence.** Retries still help the child — getting it wrong and seeing why is how people learn — but they should not count toward what a parent is shown. A record built this way is small and honest. One built on retry-until-right is large and meaningless.
+So the rule has to be: **only answers correct on the first attempt count as evidence.** Retries still help the child, getting it wrong and seeing why is how people learn, but they should not count toward what a parent is shown. A record built this way is small and honest. One built on retry-until-right is large and meaningless.
 
 ## What this proves, and what it does not
 
@@ -550,19 +550,19 @@ It is **not** proof:
 - That they understand *why* it is written that way rather than another way.
 - That they will remember it in six weeks.
 
-Transfer — using an idea in a new situation — is what everyone actually wants, and nobody in this market measures it well. Any product claiming a handful of in-project questions prove your child "understands programming" is overclaiming. The honest version is narrower: here is what they demonstrated, on this project, on the first try.
+Transfer, using an idea in a new situation, is what everyone actually wants, and nobody in this market measures it well. Any product claiming a handful of in-project questions prove your child "understands programming" is overclaiming. The honest version is narrower: here is what they demonstrated, on this project, on the first try.
 
 ## The fair case for starting from generated code
 
 There is a serious argument on the other side and it deserves a straight presentation.
 
-Working programmers read and modify far more code than they write from scratch. Joining a team means opening a codebase you did not write and finding your way around it. Reading unfamiliar code is not a lesser skill than authoring it — for most professional work it is the more used one. A child who spends a year reading, tracing and modifying real code is practising much of what the job consists of.
+Working programmers read and modify far more code than they write from scratch. Joining a team means opening a codebase you did not write and finding your way around it. Reading unfamiliar code is not a lesser skill than authoring it, for most professional work it is the more used one. A child who spends a year reading, tracing and modifying real code is practising much of what the job consists of.
 
 The alternative for a beginner was often worse: a blank screen, a syntax error, no idea why, and quitting in week two. That is why [Scratch](https://scratch.mit.edu/) and [Tynker](https://www.tynker.com/) use blocks and why [CodeCombat](https://codecombat.com/) and [CodeMonkey](https://www.codemonkey.com/) wrap the work in a game. Generated code removes blank-page failure another way.
 
 The counter-argument is equally real: fluency comes from production, not only recognition. Struggling to make something work from nothing builds durable knowledge that reading does not. [Codecademy](https://www.codecademy.com/) and [Khan Academy](https://www.khanacademy.org/computing/computer-programming) are built on that premise, and they are not wrong.
 
-Both are true. Reading-first is a good start and a bad finish. If your child has used AI tools for months and never started from nothing, that is the gap to close — not because the AI work was fake, but because it was one half.
+Both are true. Reading-first is a good start and a bad finish. If your child has used AI tools for months and never started from nothing, that is the gap to close, not because the AI work was fake, but because it was one half.
 
 ## What different tools tell a parent
 
@@ -582,7 +582,7 @@ Lessons completed and levels cleared are attendance records. They say the child 
 
 We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5 to 18, so treat this as an ad. A learner describes a website, game or quiz, and AI builds a working first version in plain HTML, CSS and JavaScript. They then change it in place: moving elements, picking colours and fonts, or asking for a change in plain language. A separate view shows which programming ideas the finished project uses, and links each one to its lesson. Errors are caught in the sandbox, rewritten in plain language and pointed at the learner's own line number, and one button restores the last version that ran. [Understanding checks](/builder) are generated from the learner's own file, with wrong answers taken from other real values in that file, and **only first-attempt correct answers are recorded** for the parent view. Finished work sits on a shelf on the front page instead of being overwritten by the next project. Profiles for ages 5 to 12 are parent-managed and email-verified; independent accounts start at 13. Free now, no card required.
 
-**Who this is not for.** We have no study showing this improves learning outcomes, and we do not claim this evidence proves a child could write code from scratch or transfer the idea elsewhere — the limits above apply to us too. Managed under-13 profiles cannot publish publicly. There are 31 beginner Python lessons and **no web curriculum**; the web side is the builder itself. If your household rule is no AI at all, we generate code, so we are wrong for you. For Minecraft or Roblox mods, see [Tynker](https://www.tynker.com/); for coding games, [CodeCombat](https://codecombat.com/); for a professional workflow, a teenager should use real developer tools. We have no school, district or teacher-dashboard product.
+**Who this is not for.** We have no study showing this improves learning outcomes, and we do not claim this evidence proves a child could write code from scratch or transfer the idea elsewhere, the limits above apply to us too. Managed under-13 profiles cannot publish publicly. There are 31 beginner Python lessons and **no web curriculum**; the web side is the builder itself. If your household rule is no AI at all, we generate code, so we are wrong for you. For Minecraft or Roblox mods, see [Tynker](https://www.tynker.com/); for coding games, [CodeCombat](https://codecombat.com/); for a professional workflow, a teenager should use real developer tools. We have no school, district or teacher-dashboard product.
 
 ---
 
@@ -590,7 +590,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5 to 18, 
 
 **What is the single best check?** Ask them to predict what a change will do before running it. Everything else is a variation on that.
 
-**My child just says "the AI did it."** That is information, not failure. Ask a smaller question — one line, one number.
+**My child just says "the AI did it."** That is information, not failure. Ask a smaller question, one line, one number.
 
 **Should I stop them using AI tools?** Not necessarily. Pair it with something requiring production from nothing: a course, a class, or adding one feature unaided.`,
   },
@@ -613,7 +613,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5 to 18, 
     ],
     markdown: `**Short answer:** Glitch ended all web app hosting and user app profiles on **8 July 2025**, citing "high operational costs and increasing misuse by bad actors." If you followed a tutorial that told you to "remix this on Glitch," that instruction no longer works, and the glitch.me link you were given is either dead or running on a redirect that is close to expiring.
 
-This page covers what exactly stopped working, what happened to projects people had already built, why the redirects are on a clock, and where to go now — sorted by what you were actually using Glitch for. Some of those use cases have a clean replacement. One of them does not.
+This page covers what exactly stopped working, what happened to projects people had already built, why the redirects are on a clock, and where to go now, sorted by what you were actually using Glitch for. Some of those use cases have a clean replacement. One of them does not.
 
 ## What shut down, and when
 
@@ -625,7 +625,7 @@ This page covers what exactly stopped working, what happened to projects people 
 | **31 December 2025** | Final deadline to configure a project URL redirect. After this, no new redirects. |
 | End of 2026 | Redirects were promised to work "at least through the end of 2026." That is the floor, not a guarantee of more. |
 
-That last row is the part most people miss. If you set up a redirect in 2025 and stopped thinking about it, it is now on borrowed time: the only commitment made was "at least through the end of 2026." Anything pointing at that URL — a portfolio, a course page, a README, a school handout — should be repointed now rather than after it breaks.
+That last row is the part most people miss. If you set up a redirect in 2025 and stopped thinking about it, it is now on borrowed time: the only commitment made was "at least through the end of 2026." Anything pointing at that URL, a portfolio, a course page, a README, a school handout, should be repointed now rather than after it breaks.
 
 Glitch said it would "focus on helping developers share and discover remixable apps." The company did not disappear. The hosting did.
 
@@ -640,11 +640,11 @@ Glitch put four things in the same browser tab, with no setup between them:
 3. **Instant hosting.** Every project had a live URL from the first second, updating as you typed.
 4. **No account friction to *see* things.** You could look at and copy real, running code before committing to anything.
 
-The combination is what has no replacement. Plenty of services do any one of these well. Almost nothing does all four with zero setup, which is precisely why so many beginner tutorials, school courses and "build your first web app" guides leaned on it — and why so many of those guides are now quietly broken. If you are working through a tutorial that mentions Glitch, the tutorial is stale. That is not your mistake.
+The combination is what has no replacement. Plenty of services do any one of these well. Almost nothing does all four with zero setup, which is precisely why so many beginner tutorials, school courses and "build your first web app" guides leaned on it, and why so many of those guides are now quietly broken. If you are working through a tutorial that mentions Glitch, the tutorial is stale. That is not your mistake.
 
 ## What happened to projects people had already made
 
-Code was downloadable from the dashboard through the end of 2025. If you did that, you have a folder of files and you can move it anywhere below. If you did not, the window has closed and the dashboard-based export route is gone. Check old email for anything you sent yourself, and check whether the project was ever pushed to GitHub — a fair number of Glitch projects were.
+Code was downloadable from the dashboard through the end of 2025. If you did that, you have a folder of files and you can move it anywhere below. If you did not, the window has closed and the dashboard-based export route is gone. Check old email for anything you sent yourself, and check whether the project was ever pushed to GitHub, a fair number of Glitch projects were.
 
 If the project was a static site (HTML, CSS, JavaScript, no server), the files will work anywhere. If it had a Node backend, environment variables and any data stored in the project will not have come along cleanly.
 
@@ -663,7 +663,7 @@ If the project was a static site (HTML, CSS, JavaScript, no server), the files w
 
 ## The part with no good answer: free Node backends
 
-If your Glitch project had a server — an Express app, a Discord bot, a webhook receiver, anything with a database — there is no free replacement that works the way Glitch did.
+If your Glitch project had a server, an Express app, a Discord bot, a webhook receiver, anything with a database, there is no free replacement that works the way Glitch did.
 
 [Render](https://render.com/), [Railway](https://railway.com/) and [Fly.io](https://fly.io/) all host Node apps. All three involve a git repo or a CLI, an account, and free tiers that sleep, expire, or ask for a card at some point. [Cloudflare Workers](https://workers.cloudflare.com/) has a generous free tier but a different programming model that older tutorials will not match.
 
@@ -677,9 +677,9 @@ Most beginner tutorials that used Glitch built static pages, not servers. In tha
 
 ### Disclosure: we make a tool in this space
 
-We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner describes a website, game or quiz and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows what the project is made of and opens the lesson behind each idea it used. The project stays open and changeable rather than locked. Free tier: a monthly allowance of assisted project builds and two learner profiles with parent view — free now, no card required. Ages 5-18, with parent-managed, email-verified profiles for 5-12 and independent accounts from 13.
+We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner describes a website, game or quiz and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows what the project is made of and opens the lesson behind each idea it used. The project stays open and changeable rather than locked. Free tier: a monthly allowance of assisted project builds and two learner profiles with parent view, free now, no card required. Ages 5-18, with parent-managed, email-verified profiles for 5-12 and independent accounts from 13.
 
-**Who this is not for, and where we are not the answer on this page.** If your goal is to get a Glitch project you already built back online, it is not a migration tool and not a host for your existing files — use Neocities or GitHub Pages. If you need a Node backend, we do not do that at all. And importantly for this topic: **managed under-13 profiles cannot publish publicly.** If the whole point is a live link a child can send to friends, that constraint matters, and for a child under 13 a parent-owned Neocities or GitHub Pages account is the more honest route. This is a tool for the learning loop — make something, change it, then see what it is made of, save it — not a replacement for hosting.
+**Who this is not for, and where we are not the answer on this page.** If your goal is to get a Glitch project you already built back online, it is not a migration tool and not a host for your existing files, use Neocities or GitHub Pages. If you need a Node backend, we do not do that at all. And importantly for this topic: **managed under-13 profiles cannot publish publicly.** If the whole point is a live link a child can send to friends, that constraint matters, and for a child under 13 a parent-owned Neocities or GitHub Pages account is the more honest route. This is a tool for the learning loop, make something, change it, then see what it is made of, save it, not a replacement for hosting.
 
 ---
 
@@ -699,7 +699,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner de
     slug: "publish-first-project",
     relatedLessons: [1, 15],
     title: "How to Publish a First Website for Free (Real Friction)",
-    description: "Putting a first website online free: which hosts need an account, a card, git knowledge, or a minimum age — and which quietly exclude kids.",
+    description: "Putting a first website online free: which hosts need an account, a card, git knowledge, or a minimum age, and which quietly exclude kids.",
     h1: "How to actually publish a first website for free",
     lastVerified: "2026-08-23",
     targetQueries: [
@@ -714,13 +714,13 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner de
     ],
     markdown: `**Short answer:** if you have a folder with an \`index.html\` file in it, you can have a public link in about ten minutes for no money, and the two most common good choices are [Neocities](https://neocities.org/) and [GitHub Pages](https://pages.github.com/). The catch is not price — it is friction, and the friction is different for a 30-year-old than for a 10-year-old.
 
-This page lists the real requirements for each option: whether you need an account, an email address, a credit card, any knowledge of git or a command line, and — the one most guides skip — whether there is a minimum age that silently rules a child out.
+This page lists the real requirements for each option: whether you need an account, an email address, a credit card, any knowledge of git or a command line, and, the one most guides skip, whether there is a minimum age that silently rules a child out.
 
 ## First, what "publishing" actually means
 
 A website is a folder of files. Publishing means putting that folder on a computer that is always on, so anyone with the address can ask for those files. That computer is the host; the address is the URL.
 
-If your project is HTML, CSS and JavaScript only, it is a **static site**, and static hosting is free almost everywhere because serving a file is cheap. Nearly every first website is static, which is good news. You need one file named exactly \`index.html\` — that is the page a host shows when someone visits the address with nothing after it.
+If your project is HTML, CSS and JavaScript only, it is a **static site**, and static hosting is free almost everywhere because serving a file is cheap. Nearly every first website is static, which is good news. You need one file named exactly \`index.html\`: that is the page a host shows when someone visits the address with nothing after it.
 
 ## The options, with the real friction
 
@@ -737,18 +737,18 @@ Every option below needs an account and an email address. None of them asks for 
 | [CodePen](https://codepen.io/) | No | 13+ | No |
 | [itch.io](https://itch.io/) (games) | No — upload a zip | 13 to use; **18+ or guardian consent to publish** | No |
 
-"Free custom domain" means the host serves a domain you own at no extra charge — you still buy the domain separately. "No card" means the free tier does not ask for one at signup; that can change, so check before relying on it.
+"Free custom domain" means the host serves a domain you own at no extra charge, you still buy the domain separately. "No card" means the free tier does not ask for one at signup; that can change, so check before relying on it.
 
 ## The 13+ problem nobody mentions
 
 This is the single most useful thing on this page. **GitHub requires account holders to be 13 or older.** Its terms say so plainly, because of US children's privacy law. So do Netlify, CodePen and Cloudflare. Vercel goes further and requires 16.
 
-Nearly every "publish your first website free" tutorial recommends GitHub Pages without mentioning this. If you are a parent following one of those guides with a 9-year-old, you will get most of the way through and then be asked for a date of birth. The workaround people reach for — entering a false birth year — creates an account that violates the terms and that your child does not legally control.
+Nearly every "publish your first website free" tutorial recommends GitHub Pages without mentioning this. If you are a parent following one of those guides with a 9-year-old, you will get most of the way through and then be asked for a date of birth. The workaround people reach for, entering a false birth year, creates an account that violates the terms and that your child does not legally control.
 
 The honest options for a child under 13 who wants a public link:
 
 1. **A parent-owned account.** The parent creates and owns the GitHub, Neocities or Netlify account and publishes the child's work under it. This is legitimate, it is what the terms contemplate, and it keeps an adult in the loop. It is the route we would suggest first.
-2. **Neocities**, whose terms do not state a minimum age — though a parent should still set it up and hold the login.
+2. **Neocities**, whose terms do not state a minimum age, though a parent should still set it up and hold the login.
 3. **Do not publish publicly yet.** Share the actual file instead. An HTML file opens in any browser by double-clicking it, and can be emailed or put in a shared drive. Relatives can see the project without it being on the open internet.
 
 Option three is underrated. A public URL is not a requirement for a child to be proud of something.
@@ -757,7 +757,7 @@ Option three is underrated. A public URL is not a requirement for a child to be 
 
 The honest answer has three parts, and only one of them is about hackers.
 
-**The code is not the risk.** A static page cannot be broken into in any meaningful sense — there is no login, no database, nothing to steal. The worst realistic outcome is that someone copies the source, which is how the web has always worked.
+**The code is not the risk.** A static page cannot be broken into in any meaningful sense. There is no login, no database, nothing to steal. The worst realistic outcome is that someone copies the source, which is how the web has always worked.
 
 **The content is the risk.** Kids put their full name, school, town, sports team and photos into an "About Me" page, because that is what a personal page is. That becomes public and searchable. Before anything goes live, read every word on the page with an adult. First name only is a reasonable default.
 
@@ -775,15 +775,15 @@ If you would rather learn what professionals use, do the same project on GitHub 
 
 ## What about a domain name?
 
-You cannot get a genuinely good custom domain for free. Registrars charge roughly $10-15 a year for a \`.com\`. Hosts above will serve a domain you own at no extra cost, but the domain itself is the paid part. For a first project, the free subdomain you are given — \`yourname.neocities.org\`, \`yourname.github.io\` — is completely fine.
+You cannot get a genuinely good custom domain for free. Registrars charge roughly $10-15 a year for a \`.com\`. Hosts above will serve a domain you own at no extra cost, but the domain itself is the paid part. For a first project, the free subdomain you are given, \`yourname.neocities.org\`, \`yourname.github.io\`, is completely fine.
 
 ---
 
 ### Disclosure: we make a tool in this space
 
-We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner describes a website, game or quiz and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows what the project is made of and opens the lesson behind each idea it used. The project stays open and changeable, not locked. The loop is: make something, play it, change it, see what it is made of, and publish it. Free tier: a monthly allowance of assisted builds, two learner profiles with parent view — free now, no card required.
+We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner describes a website, game or quiz and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows what the project is made of and opens the lesson behind each idea it used. The project stays open and changeable, not locked. The loop is: make something, play it, change it, see what it is made of, and publish it. Free tier: a monthly allowance of assisted builds, two learner profiles with parent view, free now, no card required.
 
-**Where we are not the answer.** This page is about publishing, and on publishing we are not the strongest option. It does not host your own domain and is not a general web host — if you already have files and want them online, Neocities or GitHub Pages is the right tool and we would point you there. Most importantly: **managed profiles for under-13s cannot publish publicly.** For a child under 13 whose specific goal is a public link, a parent-owned Neocities or GitHub Pages account is the honest route, not us. Independent accounts start at 13; profiles for ages 5-12 are parent-managed and email-verified.
+**Where we are not the answer.** This page is about publishing, and on publishing we are not the strongest option. It does not host your own domain and is not a general web host, if you already have files and want them online, Neocities or GitHub Pages is the right tool and we would point you there. Most importantly: **managed profiles for under-13s cannot publish publicly.** For a child under 13 whose specific goal is a public link, a parent-owned Neocities or GitHub Pages account is the honest route, not us. Independent accounts start at 13; profiles for ages 5-12 are parent-managed and email-verified.
 
 ---
 
@@ -805,7 +805,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner de
     slug: "first-browser-game",
     relatedLessons: [6, 19, 31],
     title: "Make a Small Browser Game You Can Actually Read",
-    description: "How to build a browser game you can share as a link and understand the code of — plain JavaScript, KAPLAY (formerly Kaboom.js), Phaser and p5.js compared.",
+    description: "How to build a browser game you can share as a link and understand the code of, plain JavaScript, KAPLAY (formerly Kaboom.js), Phaser and p5.js compared.",
     h1: "Make a small browser game you can actually read",
     lastVerified: "2026-08-23",
     targetQueries: [
@@ -826,7 +826,7 @@ This page is about the first goal: a small game, running in a browser, made of c
 
 | Route | Language | Runs in a browser? | Share as a link? | Can a beginner read the code? |
 |---|---|---|---|---|
-| **Plain HTML/CSS/JS** | JavaScript | Yes | Yes | Yes — this is the point |
+| **Plain HTML/CSS/JS** | JavaScript | Yes | Yes | Yes. This is the point |
 | **KAPLAY / Phaser / p5.js** | JavaScript | Yes | Yes | Yes, with a bit of library learning |
 | **[Scratch](https://scratch.mit.edu/)** | Blocks | Yes | Yes, on Scratch | There is no text code to read |
 | **[Roblox](https://create.roblox.com/)** | Lua | No, needs the Roblox app | Only inside Roblox | Partly, but the platform is most of the work |
@@ -842,15 +842,15 @@ Two rows deserve a straight answer.
 
 ## The plain JavaScript route
 
-You can build a real game with no library at all. A web page can already draw shapes, respond to key presses and run a loop many times a second — that is a game engine in miniature, in about thirty lines.
+You can build a real game with no library at all. A web page can already draw shapes, respond to key presses and run a loop many times a second. That is a game engine in miniature, in about thirty lines.
 
 Every browser game has the same three parts:
 
-1. **State** — variables holding where things are and what the score is.
-2. **A loop** — a function that runs roughly 60 times a second, updates the state, and redraws.
-3. **Input** — event listeners for keys, clicks or taps that change the state.
+1. **State**: variables holding where things are and what the score is.
+2. **A loop**: a function that runs roughly 60 times a second, updates the state, and redraws.
+3. **Input**: event listeners for keys, clicks or taps that change the state.
 
-Games that work well with no library: Pong, Snake, a clicker, Breakout, a memory game, a quiz, a simple maze. Games that do not: anything with many animated sprites, physics or scrolling levels — that is where a library earns its place.
+Games that work well with no library: Pong, Snake, a clicker, Breakout, a memory game, a quiz, a simple maze. Games that do not: anything with many animated sprites, physics or scrolling levels. That is where a library earns its place.
 
 Start with no library anyway. Understanding the loop is what makes every later tool make sense.
 
@@ -860,7 +860,7 @@ If you search for a beginner JavaScript game library, you will find a lot of wri
 
 Kaboom.js was built at [Replit](https://replit.com/). After Replit stopped developing it, the community took the project over — but Replit kept the original repository and the "Kaboom" trademark, so the community version was renamed. It now lives at [kaplayjs.com](https://kaplayjs.com/) and [github.com/kaplayjs/kaplay](https://github.com/kaplayjs/kaplay), and is community-maintained and open source.
 
-The practical upshot for anyone following an old tutorial: the code mostly still works. KAPLAY was built as a drop-in successor, so in most cases you change the import or script tag to point at KAPLAY and the rest of the tutorial's code is unchanged. If a tutorial's example fails, check the library reference first — the name is usually the problem, not your typing.
+The practical upshot for anyone following an old tutorial: the code mostly still works. KAPLAY was built as a drop-in successor, so in most cases you change the import or script tag to point at KAPLAY and the rest of the tutorial's code is unchanged. If a tutorial's example fails, check the library reference first. The name is usually the problem, not your typing.
 
 ## The three libraries worth knowing
 
@@ -876,7 +876,7 @@ A reasonable order: plain JavaScript first, then KAPLAY or p5.js depending on wh
 
 Something too small. The most common failure is a first project scoped like a commercial game, which stalls in week two and ends the interest.
 
-A good first browser game has one mechanic, one screen, no levels, no saving and no menu. Snake, Pong or a clicker teaches the loop, input handling and collision detection — most of what any 2D game is. Add a second thing only after the first works.
+A good first browser game has one mechanic, one screen, no levels, no saving and no menu. Snake, Pong or a clicker teaches the loop, input handling and collision detection, most of what any 2D game is. Add a second thing only after the first works.
 
 ## Where a browser game can be shared
 
@@ -888,9 +888,9 @@ A browser game is a website, so everything on the publishing side applies. Any s
 
 ### Disclosure: we make a tool in this space
 
-We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner [describes a website, game or quiz](/builder) and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows what the project is made of and opens the lesson behind each idea it used. The project stays open and changeable rather than locked. The loop is: make something, play it, change it, see what it is made of, and publish it. Free tier: a monthly allowance of assisted project builds, two learner profiles with parent view — free now, no card required. Ages 5-18, with parent-managed, email-verified profiles for 5-12 and independent accounts from 13.
+We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner [describes a website, game or quiz](/builder) and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows what the project is made of and opens the lesson behind each idea it used. The project stays open and changeable rather than locked. The loop is: make something, play it, change it, see what it is made of, and publish it. Free tier: a monthly allowance of assisted project builds, two learner profiles with parent view, free now, no card required. Ages 5-18, with parent-managed, email-verified profiles for 5-12 and independent accounts from 13.
 
-**Who this is not for.** Games here are browser games in HTML, CSS and JavaScript. We do not do Unity, Godot, Roblox Lua or pygame, there is no multiplayer, no mobile app export, and no route to an app store — if any of those is the goal, use the tool built for it. We also have no web curriculum: there are 31 beginner Python lessons, but the web side is the builder itself, not a course. And note that managed under-13 profiles cannot publish publicly, so if the goal is a link a young child can send around, a parent-owned itch.io or Neocities account is the more direct route.
+**Who this is not for.** Games here are browser games in HTML, CSS and JavaScript. We do not do Unity, Godot, Roblox Lua or pygame, there is no multiplayer, no mobile app export, and no route to an app store, if any of those is the goal, use the tool built for it. We also have no web curriculum: there are 31 beginner Python lessons, but the web side is the builder itself, not a course. And note that managed under-13 profiles cannot publish publicly, so if the goal is a link a young child can send around, a parent-owned itch.io or Neocities account is the more direct route.
 
 ---
 
@@ -925,7 +925,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner [d
       "learn to code with ai website builder",
       "ai builder or learn html css javascript"
     ],
-    markdown: `**Short answer:** with the main tools — [Lovable](https://lovable.dev/), [v0](https://v0.app/), [Bolt](https://bolt.new/) — yes. All three show you the code, let you edit it, and let you get it out, and Vercel states plainly that it does not own what v0 generates. The lock-in worry that dominated conversation about these tools in 2024 is largely out of date, and it is worth saying so before criticising anything.
+    markdown: `**Short answer:** with the main tools, [Lovable](https://lovable.dev/), [v0](https://v0.app/), [Bolt](https://bolt.new/) — yes. All three show you the code, let you edit it, and let you get it out, and Vercel states plainly that it does not own what v0 generates. The lock-in worry that dominated conversation about these tools in 2024 is largely out of date, and it is worth saying so before criticising anything.
 
 The real problem is narrower and less discussed: **exportable is not the same as readable.** You can download a folder you cannot understand, and if you cannot understand it you still cannot fix it, extend it, or move it without the tool that made it. This page gives a six-point checklist for judging any AI builder, and it separates the answer for someone shipping a product from the answer for someone trying to learn.
 
@@ -939,13 +939,13 @@ The real problem is narrower and less discussed: **exportable is not the same as
 | [Replit Agent](https://replit.com/) | Yes | Yes, full IDE | Git and download | Standard Replit terms |
 | [Base44](https://base44.com/), [Mocha](https://getmocha.com/), [Dyad](https://www.dyad.sh/) | Varies | Varies | Varies — check before depending on it | Varies |
 
-So the crude version of the criticism — "AI builders trap your code" — is not accurate about the leaders. Where a claim varies by plan, check the current documentation rather than trusting any comparison page, including this one.
+So the crude version of the criticism, "AI builders trap your code", is not accurate about the leaders. Where a claim varies by plan, check the current documentation rather than trusting any comparison page, including this one.
 
 ## The problem that is real
 
 Download a Lovable or v0 project and look at what arrives. Typically a Next.js or React application, Tailwind for styling, shadcn/ui components, a package manifest, a build configuration, and somewhere between forty and two hundred files. It will not open in a browser by double-clicking; it needs Node.js and a build step before it shows anything.
 
-That is a completely normal professional codebase, and for a working developer it is ideal — familiar, standard, immediately productive.
+That is a completely normal professional codebase, and for a working developer it is ideal, familiar, standard, immediately productive.
 
 For a beginner it is a wall. The gap between "I made a website" and "I understand this folder" is enormous, and nothing in the export closes it. The export right is real; the practical freedom is not, because freedom to modify code you cannot read is theoretical.
 
@@ -962,7 +962,7 @@ This is the distinction that matters:
 
 Before depending on any AI builder, get an answer to each of these. They are ordered from easiest to verify to most often skipped.
 
-**1. Can you see the code?** Not a preview — the actual files. If a tool never shows source, that is disqualifying for anything beyond a throwaway prototype.
+**1. Can you see the code?** Not a preview, the actual files. If a tool never shows source, that is disqualifying for anything beyond a throwaway prototype.
 
 **2. Can you edit it, and do your edits survive?** The second half is the important one. Some tools let you type in a file and then overwrite your changes on the next generation. Make a small manual edit, prompt again, check it is still there.
 
@@ -970,7 +970,7 @@ Before depending on any AI builder, get an answer to each of these. They are ord
 
 **4. Who owns it?** Read the terms. v0's position is explicit and good. Do not assume; several smaller tools are vaguer.
 
-**5. What happens if you stop paying?** Usually the code stays yours and the hosting does not, so the site goes offline while the files survive — an acceptable trade if you know in advance. Check separately what happens to any database or auth the builder set up, which most often does not come along.
+**5. What happens if you stop paying?** Usually the code stays yours and the hosting does not, so the site goes offline while the files survive, an acceptable trade if you know in advance. Check separately what happens to any database or auth the builder set up, which most often does not come along.
 
 **6. Can *you* read what it made?** The skipped question. Open a file at random. If you cannot roughly describe what it does, the code is closed to you regardless of the licence.
 
@@ -980,7 +980,7 @@ One through five are about the tool. Six is about you, and it decides whether yo
 
 **If you are shipping a product,** these tools are good and the criticism above mostly does not apply to you. A working application in an afternoon, in a standard stack any developer can pick up, with GitHub sync and clear ownership, is a strong offer. You do not need to read every Tailwind class to run a business. Use them.
 
-**If the point was to learn,** the calculus inverts. The speed that makes these tools valuable to a founder is exactly what removes the learning, because learning happens in the loop of predicting, changing one thing, being wrong, and working out why. A finished forty-file application does not run that loop — not because it hides anything, but because there is no gap for you to close. Generating a second app teaches about as much as the first.
+**If the point was to learn,** the calculus inverts. The speed that makes these tools valuable to a founder is exactly what removes the learning, because learning happens in the loop of predicting, changing one thing, being wrong, and working out why. A finished forty-file application does not run that loop, not because it hides anything, but because there is no gap for you to close. Generating a second app teaches about as much as the first.
 
 The fix is not avoiding AI. It is choosing output small enough to read. A single HTML file with its CSS and JavaScript can be understood by a determined beginner in an evening. A Next.js application cannot, and no amount of export freedom changes it.
 
@@ -988,9 +988,9 @@ The fix is not avoiding AI. It is choosing output small enough to read. A single
 
 ### Disclosure: we make a tool in this space
 
-We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5-18. A learner describes a website, game or quiz and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows [what the project is made of](/builder) and opens the lesson behind each idea it used. The generated project stays editable, not locked. The loop is: make something, play it, change it, see what it is made of, and publish it. Free tier: a monthly allowance of assisted project builds and two learner profiles with parent view — free now, no card required. Profiles for ages 5-12 are parent-managed and email-verified; independent accounts start at 13.
+We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5-18. A learner describes a website, game or quiz and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows [what the project is made of](/builder) and opens the lesson behind each idea it used. The generated project stays editable, not locked. The loop is: make something, play it, change it, see what it is made of, and publish it. Free tier: a monthly allowance of assisted project builds and two learner profiles with parent view, free now, no card required. Profiles for ages 5-12 are parent-managed and email-verified; independent accounts start at 13.
 
-**Who this is not for, stated plainly.** We do not compete with Lovable, v0 or Bolt on capability, and we are not trying to. Those tools build far more than we do — real applications, databases, authentication, production deployment — and if you are shipping a product, they are the right choice and we are not. Our output is deliberately small and plain so a beginner can read it, which is the opposite trade-off from theirs. We also do not host your own domain, have no multiplayer or app export, and have no web curriculum — there are 31 beginner Python lessons, but the web side is the builder itself. Managed under-13 profiles cannot publish publicly.
+**Who this is not for, stated plainly.** We do not compete with Lovable, v0 or Bolt on capability, and we are not trying to. Those tools build far more than we do, real applications, databases, authentication, production deployment, and if you are shipping a product, they are the right choice and we are not. Our output is deliberately small and plain so a beginner can read it, which is the opposite trade-off from theirs. We also do not host your own domain, have no multiplayer or app export, and have no web curriculum. There are 31 beginner Python lessons, but the web side is the builder itself. Managed under-13 profiles cannot publish publicly.
 
 ---
 
@@ -998,7 +998,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5-18. A l
 
 **Do I own the code an AI builder writes?** With v0, Vercel states it does not own the generated code. Lovable puts repositories in your own GitHub account, private by default. Read the terms for anything smaller; ownership language varies.
 
-**What happens if I stop paying?** Typically your code survives and your hosting does not. Check separately what happens to any database, authentication or storage the builder configured — that is the part that usually does not travel.
+**What happens if I stop paying?** Typically your code survives and your hosting does not. Check separately what happens to any database, authentication or storage the builder configured. That is the part that usually does not travel.
 
 **Can I edit AI-generated code by hand?** Yes, in all the major tools. The thing to test is whether the AI's next generation overwrites your manual edits. Make one small change, prompt again, and see.
 
@@ -1026,7 +1026,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio for ages 5-18. A l
       "juni learning alternatives for kids coding",
       "junilearning.com redirects to acely"
     ],
-    markdown: `Juni Learning shut down its one-to-one online coding tutoring business in the autumn of 2025 and consolidated onto Acely, its own AI test-prep product. If you type junilearning.com into a browser today, you get an HTTP 302 redirect to acely.com — not because the domain was sold to a stranger, but because Acely and Juni come from the same company and the same founder.
+    markdown: `Juni Learning shut down its one-to-one online coding tutoring business in the autumn of 2025 and consolidated onto Acely, its own AI test-prep product. If you type junilearning.com into a browser today, you get an HTTP 302 redirect to acely.com, not because the domain was sold to a stranger, but because Acely and Juni come from the same company and the same founder.
 
 That distinction matters, and almost every roundup of "kids coding sites" still gets it wrong. This page states what is actually documented, what is not, and what the practical options are for a family that was using Juni for weekly tutoring.
 
@@ -1044,17 +1044,17 @@ That distinction matters, and almost every roundup of "kids coding sites" still 
 
 This is the part that most secondhand write-ups have backwards. Several still describe the redirect as "the domain was sold" or imply an unrelated buyer picked it up.
 
-Acely is a Juni spinout. It went through Y Combinator's W18 batch — the same batch and the same founder, Vivian Shen, behind Juni. Acely came out of beta in January 2024 as an AI-driven standardised-test-prep product. Juni's own legal documents ended up hosted on acely.ai domains, which is about as clear a signal of shared corporate ownership as you can get without a press release.
+Acely is a Juni spinout. It went through Y Combinator's W18 batch, the same batch and the same founder, Vivian Shen, behind Juni. Acely came out of beta in January 2024 as an AI-driven standardised-test-prep product. Juni's own legal documents ended up hosted on acely.ai domains, which is about as clear a signal of shared corporate ownership as you can get without a press release.
 
 So the accurate one-sentence version is: **Juni Learning sunset its 1:1 coding tutoring business and consolidated the company onto its test-prep product, Acely.**
 
-The wrong versions, which you will see repeated, are "Juni Learning died," "the company went bankrupt," and "the domain got bought by a test-prep company." None of those are supported by anything on the record. A 121-person WARN filing plus a consolidation onto a sibling product is a strategic exit from one line of business — a serious one for the people laid off and for families mid-course, but not the same event as a corporate failure.
+The wrong versions, which you will see repeated, are "Juni Learning died," "the company went bankrupt," and "the domain got bought by a test-prep company." None of those are supported by anything on the record. A 121-person WARN filing plus a consolidation onto a sibling product is a strategic exit from one line of business, a serious one for the people laid off and for families mid-course, but not the same event as a corporate failure.
 
 We are also not going to tell you *why* it happened. There is no public statement from the company explaining the decision, no filing that spells out the economics, and no reporting that establishes a cause. Anyone who tells you confidently that it was AI, or tutoring margins, or the funding market is guessing.
 
 ## What Juni actually was, so you can replace the right thing
 
-Juni's core product was **live, scheduled, human one-to-one instruction** — a real instructor on a video call, weekly, with a coding curriculum wrapped around it. That is a fundamentally different product from a self-serve app, and it is the reason a straight swap is hard. Most of what gets recommended as a "Juni alternative" is self-serve software, which is cheaper and more flexible but is not the thing you were buying.
+Juni's core product was **live, scheduled, human one-to-one instruction**: a real instructor on a video call, weekly, with a coding curriculum wrapped around it. That is a fundamentally different product from a self-serve app, and it is the reason a straight swap is hard. Most of what gets recommended as a "Juni alternative" is self-serve software, which is cheaper and more flexible but is not the thing you were buying.
 
 Sort your replacement by which half of Juni you cared about.
 
@@ -1094,7 +1094,7 @@ If your child is under 8 and not yet reading fluently, start at codeSpark or Kod
 
 ## Disclosure: who published this page
 
-This page is published by **CodeIt** (codeitlearn.com), which makes a browser-based coding studio for kids ages 5–18. So we have an interest here, and you should read the recommendations above with that in mind — we listed the competitors we did because they are the honest answers, including where they beat us.
+This page is published by **CodeIt** (codeitlearn.com), which makes a browser-based coding studio for kids ages 5–18. So we have an interest here, and you should read the recommendations above with that in mind. We listed the competitors we did because they are the honest answers, including where they beat us.
 
 Where CodeIt genuinely fits a former Juni family: kids who want to [*build* things](/builder), websites, games, quizzes, and then open up the real HTML, CSS and JavaScript underneath to see how they work. Projects can be generated with AI assistance and stay editable afterwards rather than becoming a locked result. The free plan does not expire and needs no card: ten assisted project builds a month and two learner profiles under a parent view. A paid family plan is available at CA$12 a month, cancellable at any time.
 
@@ -1117,7 +1117,7 @@ Where CodeIt does not fit: we are not a live-tutoring replacement. There is no i
       "does codeai still teach coding",
       "code.org name change 2026"
     ],
-    markdown: `Code.org announced an organisation-wide rebrand to **CodeAI** on 2 June 2026. The name changed; the URL did not. code.org is still live, still in active use, and still free — so if you have been told "Code.org shut down" or "Code.org no longer exists," that is wrong, and it is the single most repeated error about this story.
+    markdown: `Code.org announced an organisation-wide rebrand to **CodeAI** on 2 June 2026. The name changed; the URL did not. code.org is still live, still in active use, and still free, so if you have been told "Code.org shut down" or "Code.org no longer exists," that is wrong, and it is the single most repeated error about this story.
 
 What did change is the organisation's stated emphasis. CodeAI now describes its mission in terms of **digital fluency** spanning AI science, computer science and data science, rather than computer science alone. The December Hour of Code event is now the **Hour of AI**. Whether that shift is good for your child is a real question with a real answer, and it depends on what you wanted out of the site. This page lays out the evidence and then answers it directly.
 
@@ -1135,9 +1135,9 @@ Leadership context: **Karim Meghji** has been CEO since February 2026, roughly f
 
 ## The honest answer to "does it still teach coding?"
 
-Yes — and the emphasis has moved.
+Yes, and the emphasis has moved.
 
-The computer science curriculum still exists. CS Discoveries, CS Principles, the block-based courses for younger students, the whole existing library — that material did not evaporate on 2 June 2026. A parent whose child is halfway through a course is not stranded.
+The computer science curriculum still exists. CS Discoveries, CS Principles, the block-based courses for younger students, the whole existing library. That material did not evaporate on 2 June 2026. A parent whose child is halfway through a course is not stranded.
 
 At the same time, an organisation does not rename itself, restate its mission around digital fluency, and rename its flagship annual event without meaning it. The new material, the new promotion, and the framing at the top of the funnel are AI-forward. CS is now one of three named strands rather than the whole point.
 
@@ -1163,7 +1163,7 @@ Both of those sentences are true at once. Anyone telling you only the first ("no
 | [Kodable](https://www.kodable.com/parents) | US$119.99/yr for families, four children | 4–10 | K-5 focused. Its free Kickstart plan is a school plan |
 | [CodeCombat](https://codecombat.com/) | Freemium | ~9+ | Typed Python/JS in a game |
 
-Scratch is the closest thing to "Code.org before the shift" that still exists at zero cost, and it is not going anywhere — it is an MIT project, not a venture-funded product.
+Scratch is the closest thing to "Code.org before the shift" that still exists at zero cost, and it is not going anywhere. It is an MIT project, not a venture-funded product.
 
 ## The follow-up questions parents actually ask
 
@@ -1173,7 +1173,7 @@ Scratch is the closest thing to "Code.org before the shift" that still exists at
 
 **"Should I be worried that my child will only learn AI prompting instead of programming?"** This is a fair concern and the honest answer is: watch what they actually do, not what the platform is called. There is a real difference between a child who produces a result with AI and a child who can open up the result, read it, and change it. If your child is using AI tools and never looks underneath, that is a gap regardless of which site they are on. The fix is picking activities that end with the child writing and running code themselves, not picking a vendor.
 
-**"Is Hour of AI still worth participating in?"** For most families and classrooms, yes — the value of that event was always the low-friction, one-hour on-ramp, and that has not changed. Just know what your child is signing up for is now framed around AI concepts.
+**"Is Hour of AI still worth participating in?"** For most families and classrooms, yes. The value of that event was always the low-friction, one-hour on-ramp, and that has not changed. Just know what your child is signing up for is now framed around AI concepts.
 
 ---
 
@@ -1181,7 +1181,7 @@ Scratch is the closest thing to "Code.org before the shift" that still exists at
 
 This page is published by **CodeIt** (codeitlearn.com). We make a browser-based coding studio for kids and we compete for the same attention CodeAI gets, so weigh our framing accordingly. We have tried to describe the change without spinning it: CodeAI is free, it is large, its CS curriculum is still real, and for many families continuing there is the right call.
 
-Where CodeIt is a genuine fit is the specific gap described above. Kids describe a website, game or quiz, play what comes back, and change it by moving things and picking colours. A tab then shows what the project is made of and opens the lesson behind each idea in it. AI can help generate a project, but the output stays **editable instead of becoming a locked AI result** — which is the whole point if your worry is that AI tools produce black boxes. The free plan does not expire and needs no card: ten assisted project builds a month and two learner profiles under a parent view. A paid family plan is available at CA$12 a month, cancellable at any time. There is also a [31-lesson beginner Python sequence](/lessons).
+Where CodeIt is a genuine fit is the specific gap described above. Kids describe a website, game or quiz, play what comes back, and change it by moving things and picking colours. A tab then shows what the project is made of and opens the lesson behind each idea in it. AI can help generate a project, but the output stays **editable instead of becoming a locked AI result**: which is the whole point if your worry is that AI tools produce black boxes. The free plan does not expire and needs no card: ten assisted project builds a month and two learner profiles under a parent view. A paid family plan is available at CA$12 a month, cancellable at any time. There is also a [31-lesson beginner Python sequence](/lessons).
 
 Where CodeIt is not a fit: we are a consumer product for families. We have no school, district, rostering, LMS or teacher-dashboard features. If you are a teacher looking at this because your school used Code.org, CodeAI or CodeHS is the right place to stay. And if your child is under 8 and pre-reading, use codeSpark or Kodable, not us.`,
   },
@@ -1199,7 +1199,7 @@ Where CodeIt is not a fit: we are a consumer product for families. We have no sc
       "iste edtech index vs common sense",
       "are common sense privacy ratings still active"
     ],
-    markdown: `Common Sense Education **paused all edtech product reviews beginning February 2026**. The existing review pages are still online but frozen — they carry notices saying they are no longer being updated. Separately and importantly, Common Sense's **Privacy Program is still fully operating**, which is a distinction most secondhand summaries have blurred into "Common Sense stopped rating edtech." That is not what happened.
+    markdown: `Common Sense Education **paused all edtech product reviews beginning February 2026**. The existing review pages are still online but frozen. They carry notices saying they are no longer being updated. Separately and importantly, Common Sense's **Privacy Program is still fully operating**, which is a distinction most secondhand summaries have blurred into "Common Sense stopped rating edtech." That is not what happened.
 
 If you are a teacher, coach, or district buyer who used those reviews as a filter, the practical consequence is this: you have lost your single best free source of *learning-quality* ratings, you have not lost your privacy ratings, and no direct replacement with the same methodology exists. This page covers what is verified, what the real alternatives are, and how to run an evaluation yourself now that the shortcut is gone.
 
@@ -1211,7 +1211,7 @@ If you are a teacher, coach, or district buyer who used those reviews as a filte
 
 **The pages are frozen, not deleted.** Review pages remain reachable and readable. They carry a notice indicating they are no longer being updated. Nothing has been taken down as of this page's verification date.
 
-**Privacy ratings continue.** The Common Sense Privacy Program is a separate operation from the learning-quality reviews and it is still running. The clearest proof is a fresh evaluation issued **26 March 2026** — well after the review pause took effect — for the product Yourway, which received a **93% privacy rating**, announced via PR Newswire. A dormant program does not issue new evaluations with new scores.
+**Privacy ratings continue.** The Common Sense Privacy Program is a separate operation from the learning-quality reviews and it is still running. The clearest proof is a fresh evaluation issued **26 March 2026**, well after the review pause took effect, for the product Yourway, which received a **93% privacy rating**, announced via PR Newswire. A dormant program does not issue new evaluations with new scores.
 
 This is the split to hold in your head:
 
@@ -1227,7 +1227,7 @@ Two cautions before the table.
 
 First: **ISTE does not describe itself as Common Sense's successor.** That framing comes from trade press coverage, which points to ISTE as the leading alternative. ISTE has not claimed the mantle, and it would be dishonest to put those words in their mouth.
 
-Second, and more practically: **these are not like-for-like swaps.** Common Sense's reviews produced an editorial learning-quality judgement — a human reviewer scoring pedagogy against a rubric. The main alternative works differently. If you copy a Common Sense-shaped process onto a differently-shaped directory, you will think you have replaced the signal when you have not.
+Second, and more practically: **these are not like-for-like swaps.** Common Sense's reviews produced an editorial learning-quality judgement, a human reviewer scoring pedagogy against a rubric. The main alternative works differently. If you copy a Common Sense-shaped process onto a differently-shaped directory, you will think you have replaced the signal when you have not.
 
 | Source | What it is | Methodology | Cost |
 |---|---|---|---|
@@ -1241,7 +1241,7 @@ The honest summary: **ISTE's index is the best place to discover and shortlist p
 
 The learning-quality judgement now has to come from you or your colleagues. That is more work, but it is not mysterious. A workable process:
 
-1. **Screen for privacy first**, using Common Sense Privacy ratings. This is still free, still active, and still the fastest way to eliminate products outright. Anything with a poor privacy rating is done — no further evaluation needed.
+1. **Screen for privacy first**, using Common Sense Privacy ratings. This is still free, still active, and still the fastest way to eliminate products outright. Anything with a poor privacy rating is done, no further evaluation needed.
 2. **Shortlist on the ISTE index**, filtering for the badges and evidence claims relevant to your use case.
 3. **Check practitioner reviews** on EdTech Impact for whether the thing survives contact with a real classroom.
 4. **Run your own 20-minute check** on the two or three survivors. Ask: What does a student actually *do* for the first ten minutes? Is there a task with a right answer, or only exploration? Can a teacher see what a student produced without buying a higher tier? What happens to student work if you stop paying?
@@ -1265,11 +1265,11 @@ Steps 4 and 5 are what the Common Sense reviews were doing on your behalf. Rebui
 
 This page is published by **CodeIt** (codeitlearn.com), which makes a browser-based coding studio for families with kids ages 5–18.
 
-We are going to be direct: **CodeIt is not a relevant recommendation for the audience of this page.** If you arrived here, you are almost certainly evaluating software for a school or district. CodeIt has no school or district features — no rostering, no LMS integration, no teacher dashboards, no standards alignment. We are a consumer product bought by parents. Putting ourselves on your shortlist would waste your time.
+We are going to be direct: **CodeIt is not a relevant recommendation for the audience of this page.** If you arrived here, you are almost certainly evaluating software for a school or district. CodeIt has no school or district features, no rostering, no LMS integration, no teacher dashboards, no standards alignment. We are a consumer product bought by parents. Putting ourselves on your shortlist would waste your time.
 
 For school-facing coding curriculum specifically, the established options are [CodeAI](https://code.org/en-US/codeai) (formerly Code.org, free, K–12), [CodeHS](https://codehs.com/) (grades 6–12), [Kodable](https://www.kodable.com/) for K-5, and [Scratch](https://scratch.mit.edu/) (free, MIT). Evaluate those through the process above rather than taking our word for it.
 
-We wrote this page because the facts were being reported wrongly — specifically the widespread claim that Common Sense stopped rating edtech entirely, when its privacy program demonstrably still issues new ratings.`,
+We wrote this page because the facts were being reported wrongly, specifically the widespread claim that Common Sense stopped rating edtech entirely, when its privacy program demonstrably still issues new ratings.`,
   },
   {
     slug: "replit-teams-for-education-shut-down",
@@ -1285,7 +1285,7 @@ We wrote this page because the facts were being reported wrongly — specificall
       "replit classroom replacement 2026",
       "what to use instead of replit in class"
     ],
-    markdown: `Replit discontinued **Teams for Education on 1 August 2024**. Replit the company is still very much operating — it did not go out of business — but it has exited the education market, and there is no sign of it coming back. Two years on, that combination still confuses people: the product you are searching for is gone, the brand you associate with it is thriving, and most search results predate the change.
+    markdown: `Replit discontinued **Teams for Education on 1 August 2024**. Replit the company is still very much operating, it did not go out of business, but it has exited the education market, and there is no sign of it coming back. Two years on, that combination still confuses people: the product you are searching for is gone, the brand you associate with it is thriving, and most search results predate the change.
 
 If you are a teacher who ran a class on Replit, the honest state of the world is that **no single product replaced it**. Teams for Education combined a zero-install browser IDE, real multiplayer collaboration, and a class management layer in one free package. The successors split those functions apart. This page explains what was lost, what the actual options are, and how to choose between them without wasting a term on the wrong one.
 
@@ -1293,11 +1293,11 @@ If you are a teacher who ran a class on Replit, the honest state of the world is
 
 ## What actually happened, and what didn't
 
-**What happened:** Teams for Education was discontinued on 1 August 2024. The education-specific tier — the teacher-facing class layer — went away.
+**What happened:** Teams for Education was discontinued on 1 August 2024. The education-specific tier, the teacher-facing class layer, went away.
 
 **What did not happen:** Replit did not shut down. It continues as a company with a healthy consumer and developer product. Any page telling you "Replit is dead" is wrong in the same way that "Code.org no longer exists" is wrong. The company pivoted its focus; it did not disappear.
 
-**Why coverage is so thin:** this is the part worth naming. When a widely used classroom tool is discontinued, you would expect a wave of migration guides. That did not really happen here. The most substantive migration write-ups came from two vendors with an obvious interest — [Codeanywhere](https://codeanywhere.com/) and [Pickcode](https://pickcode.io/) — and beyond those, teachers have largely been left to work it out in forums and staff rooms. The demand for a straight answer is real and mostly unserved, which is why this page exists.
+**Why coverage is so thin:** this is the part worth naming. When a widely used classroom tool is discontinued, you would expect a wave of migration guides. That did not really happen here. The most substantive migration write-ups came from two vendors with an obvious interest, [Codeanywhere](https://codeanywhere.com/) and [Pickcode](https://pickcode.io/) — and beyond those, teachers have largely been left to work it out in forums and staff rooms. The demand for a straight answer is real and mostly unserved, which is why this page exists.
 
 Read the vendor migration posts. They are useful. Just read them knowing they are written by people who want your class on their platform, exactly as you should read this page knowing who published it.
 
@@ -1336,7 +1336,7 @@ The mistake to avoid is picking a tool that nails the first column and discoveri
 
 ## Follow-up questions teachers actually ask
 
-**"Can students still just use Replit individually?"** Replit still operates a non-education product. Before pointing minors at it, check Replit's current terms and age requirements yourself — those are exactly the terms most likely to have changed since 2024, and a two-year-old blog post is not a safe source for them.
+**"Can students still just use Replit individually?"** Replit still operates a non-education product. Before pointing minors at it, check Replit's current terms and age requirements yourself, those are exactly the terms most likely to have changed since 2024, and a two-year-old blog post is not a safe source for them.
 
 **"What happened to the code my classes wrote?"** If it was not exported before the shutdown, assume it is gone. The durable lesson: on any platform you adopt next, confirm on day one that student work exports as plain files, and do an export at the end of every term. This is the single cheapest habit that protects you from the next discontinuation.
 
@@ -1404,11 +1404,11 @@ At that point you are paying a monthly fee for a library, and the child is not o
 
 **[Code.org](https://code.org/)** — free, and it stays free. Rebranded to CodeAI on 2 June 2026, with the Hour of Code now the Hour of AI, and it [continues to provide free curriculum, tools and professional learning resources](https://code.org/en-US/codeorg-is-now-codeai). Best for structured courses at no cost. Weakest at open-ended making: a child who wants to build their own thing and share a link will find it closed-ended.
 
-**Scratch** — free, from MIT, block-based, and still the best on-ramp there is. It is not an alternative to Tynker so much as the thing Tynker's early levels are competing with. If your child is happy in Scratch, there is no reason to pay anyone.
+**Scratch**: free, from MIT, block-based, and still the best on-ramp there is. It is not an alternative to Tynker so much as the thing Tynker's early levels are competing with. If your child is happy in Scratch, there is no reason to pay anyone.
 
-**The p5.js Web Editor** — free, text-based JavaScript, no account needed to start. Best for a teenager who already wants to write code. Nothing about it is designed for children, and that is the point.
+**The p5.js Web Editor**: free, text-based JavaScript, no account needed to start. Best for a teenager who already wants to write code. Nothing about it is designed for children, and that is the point.
 
-**CodeIt** — this is us, so weigh it accordingly.
+**CodeIt**: this is us, so weigh it accordingly.
 
 ## Disclosure: we make one of these
 
@@ -1491,7 +1491,7 @@ Block-based, from MIT, and still the best on-ramp that exists. A child drags blo
 
 ## Google CS First
 
-**Free, unambiguously.** Google's own wording: *"CS First is totally free of charge — any number of students, all materials, as many lessons as you want."*
+**Free, unambiguously.** Google's own wording: *"CS First is totally free of charge, any number of students, all materials, as many lessons as you want."*
 
 Video tutorials with block coding built on Scratch, organised into themed units like sports, art and game design.
 
@@ -1505,7 +1505,7 @@ Video tutorials with block coding built on Scratch, organised into themed units 
 
 **Best for:** a motivated teenager who has decided they want to be able to build things properly.
 
-**Where it stops:** it was not designed for children. There is no hand-holding, no age gating in the interface, and the tone assumes an adult career-changer. A 10-year-old will usually bounce off it, and that is not a criticism of freeCodeCamp — it is not what they built.
+**Where it stops:** it was not designed for children. There is no hand-holding, no age gating in the interface, and the tone assumes an adult career-changer. A 10-year-old will usually bounce off it, and that is not a criticism of freeCodeCamp. It is not what they built.
 
 ## The p5.js Web Editor
 
@@ -1527,7 +1527,7 @@ CodeIt has a free plan with no card: ten AI-assisted project builds a month, and
 
 A learner describes a website, game or quiz, plays what comes back, and changes it by moving things and picking colours. A separate view shows what the finished project is made of and opens the lesson behind each idea in it.
 
-**Where we fit that the list above does not:** the gap between Scratch and freeCodeCamp — a child roughly 8 to 16 who has outgrown blocks but is not going to sit through an adult curriculum. That gap is the reason CodeIt exists, and if your child is not in it, one of the free tools above is the better answer and this page has tried to say which.
+**Where we fit that the list above does not:** the gap between Scratch and freeCodeCamp, a child roughly 8 to 16 who has outgrown blocks but is not going to sit through an adult curriculum. That gap is the reason CodeIt exists, and if your child is not in it, one of the free tools above is the better answer and this page has tried to say which.
 
 **What we do not do:** no rostering, no LMS integration, no standards alignment, no teacher dashboards. Not a schools product.
 
@@ -1585,7 +1585,7 @@ At this age the constraint is not intelligence, it is reading speed. A tool that
 
 **[Kodable](https://www.kodable.com/parents)** — paid for families: a seven-day trial with no card, then US$24.99 a month, US$119.99 a year, or US$199.99 once, covering up to four children. The free Kickstart plan people mention is on the school plans page, where the paid tiers run US$1,750, US$2,500 and US$3,500 a year per site. Do not assume either price is the other.
 
-**Tynker** — [icon coding for pre-readers](https://www.tynker.com/pricing/) is genuinely well built and one of the few paid things at this age worth the money. Family plans are $18/month quarterly, $15/month yearly at $180, or $468 lifetime for up to three children.
+**Tynker**: [icon coding for pre-readers](https://www.tynker.com/pricing/) is genuinely well built and one of the few paid things at this age worth the money. Family plans are $18/month quarterly, $15/month yearly at $180, or $468 lifetime for up to three children.
 
 **Not us.** CodeIt asks a child to describe what they want in words. A five-year-old who cannot yet type a sentence will not get far. We are honest about that on our own pricing page and we will be honest about it here.
 

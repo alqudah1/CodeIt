@@ -326,7 +326,7 @@ export default function Quiz() {
     ) : (
       <DeadEnd
         title="This quiz isn't ready yet"
-        line={`Quiz ${quizId} has no questions loaded right now — that's on us, not you. The lesson covers everything the quiz would ask.`}
+        line={`Quiz ${quizId} has no questions loaded right now. That's on us, not you. The lesson covers everything the quiz would ask.`}
         doors={[
           { label: `Open Lesson ${quizId}`, to: `/lesson/${quizId}`, primary: true },
           { label: 'Make something instead', to: '/builder' },

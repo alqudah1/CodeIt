@@ -119,7 +119,7 @@ function composeMonthlyEmail({ studentName, month, unsubscribeToken, now = new D
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;color:#3d302b">
         <div style="font-size:24px;font-weight:800;color:#f87824">CodeIt</div>
         <h1 style="font-size:24px">What ${safeName} built in ${when}</h1>
-        <p>Everything below is from ${safeName}'s own work this month — nothing generated, nothing estimated.</p>
+        <p>Everything below is from ${safeName}'s own work this month. Nothing generated, nothing estimated.</p>
         ${sections.join('')}
         <p style="margin-top:18px"><a href="${SITE_URL}/profile" style="color:#c94f0c;font-weight:700">See it all on the family page</a></p>
         <p style="font-size:12px;color:#72594d">You receive this because you confirmed progress emails for this CodeIt account.

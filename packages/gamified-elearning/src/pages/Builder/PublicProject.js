@@ -257,7 +257,7 @@ export default function PublicProject() {
               You just played {project.creator_name ? `${project.creator_name}'s` : 'a'} game.
             </strong>
             <p className="pp-invite__line">
-              Someone learning to code made this. You can make your own — free,
+              Someone learning to code made this. You can make your own: free,
               nothing to download, and it starts right now.
             </p>
             <div className="pp-actions">

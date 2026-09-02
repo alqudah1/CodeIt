@@ -234,7 +234,7 @@ const App = () => (
                 element={(
                   <DeadEnd
                     title="This page wandered off"
-                    line="The link you followed doesn't go anywhere — maybe it was typed a little wrong."
+                    line="The link you followed doesn't go anywhere. Maybe it was typed a little wrong."
                     doors={[
                       { label: 'Go home', to: '/', primary: true },
                       { label: 'Make something', to: '/builder' },

@@ -841,7 +841,7 @@ export default function Profile() {
                                 {typeof shareLinks[child.id] === 'string'
                                   && shareLinks[child.id] !== 'making' && shareLinks[child.id] !== 'error' && (
                                   <p className="profile-evidence__share-link">
-                                    Link copied — it opens on any phone, no account needed:{' '}
+                                    Link copied. It opens on any phone, no account needed:{' '}
                                     <a href={shareLinks[child.id]} target="_blank" rel="noreferrer">{shareLinks[child.id]}</a>
                                   </p>
                                 )}
@@ -869,7 +869,7 @@ export default function Profile() {
                                   ))}
                                 </ul>
                                 <p className="profile-evidence__note">
-                                  Every line above is from {child.username}'s own file — not an example, not a summary.
+                                  Every line above is from {child.username}'s own file, not an example, not a summary.
                                   {evidence[child.id].lessonsDone.length > 0 && (
                                     <> Lessons finished: {evidence[child.id].lessonsDone.map(l => l.title).join(', ')}.</>
                                   )}
@@ -882,7 +882,7 @@ export default function Profile() {
                                     nothing charges today), and one link. */}
                                 <div className="profile-evidence__offer">
                                   <span>
-                                    Want more of this? The family pilot is free — more projects,
+                                    Want more of this? The family pilot is free: more projects,
                                     two learners, and one email a month with exactly this kind of evidence.
                                   </span>
                                   <Link
@@ -896,7 +896,7 @@ export default function Profile() {
                               </>
                             ) : (
                               <p className="profile-evidence__quiet">
-                                No saved projects yet — the evidence starts with their first save.
+                                No saved projects yet. The evidence starts with their first save.
                               </p>
                             )
                           )}

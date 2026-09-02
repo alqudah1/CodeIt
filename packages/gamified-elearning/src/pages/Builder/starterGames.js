@@ -2113,7 +2113,7 @@ ${SHARED_STYLE}
 
 <div class="hud"><span>🐭 <b id="scoreLabel">0</b></span><span>⏱ <b id="timeLabel">30</b></span></div>
 <canvas id="screen"></canvas>
-<p class="tip">Move your finger — the cat follows it. Catch the mouse!</p>
+<p class="tip">Move your finger and the cat follows it. Catch the mouse!</p>
 
 <div class="over" id="gameOver">
   <h2>Time's up!</h2>

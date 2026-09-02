@@ -67,7 +67,7 @@ const PAGE_META = {
   },
   '/faq': {
     title: 'CodeIt FAQ: Ages, Cost, Safety & What It Does Not Do',
-    description: 'Straight answers about CodeIt — age ranges, what it costs, whether projects are public, what it does not do, and how it differs from Scratch.',
+    description: 'Straight answers about CodeIt, age ranges, what it costs, whether projects are public, what it does not do, and how it differs from Scratch.',
   },
   '/first-game-challenge': {
     title: 'Build Your First Game Free | 10-Minute Coding Challenge | CodeIt',
@@ -134,7 +134,7 @@ const PAGE_META = {
     description: 'Your avatar, XP, and level on CodeIt.',
   },
   '/python-games-for-kids': {
-    title: 'Python Games for Kids | Real Coding Puzzles — CodeIt',
+    title: 'Python Games for Kids | Real Coding Puzzles, CodeIt',
     description: 'Use real Python to solve browser-based games and coding puzzles about variables, loops, decisions, and beginner programming.',
   },
   '/register': {

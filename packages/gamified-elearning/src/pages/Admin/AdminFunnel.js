@@ -342,7 +342,7 @@ export default function AdminFunnel() {
               </div>
               <p className="funnel-parent-note">
                 Started = left any trace inside the lesson (a step completed, or the lesson finished).
-                Finished = a completion recorded. All-time, straight from the live tables — not an estimate.
+                Finished = a completion recorded. All-time, straight from the live tables, not an estimate.
               </p>
             </>
           )}

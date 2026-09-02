@@ -24,8 +24,8 @@ function milestoneEmail({ studentName, eventType, title, detail, targetUrl, unsu
     : '';
   const unsubscribeUrl = `${SITE_URL}/api/progress-notifications/unsubscribe/${unsubscribeToken}`;
   return {
-    subject: `CodeIt progress: ${subjectName} — ${label}`,
-    text: `${studentName} — ${label}: ${title}${detail ? `. ${detail}` : ''}`,
+    subject: `CodeIt progress: ${subjectName}, ${label}`,
+    text: `${studentName}, ${label}: ${title}${detail ? `. ${detail}` : ''}`,
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;color:#3d302b">
         <div style="font-size:24px;font-weight:800;color:#f87824">CodeIt</div>

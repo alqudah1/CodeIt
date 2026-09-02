@@ -877,6 +877,18 @@ export default function Builder() {
   const [guestDraftRecovered, setGuestDraftRecovered] = useState(false);
   const [guideLevelOverride, setGuideLevelOverride] = useState(storedGuideLevelOverride);
   const [coachOpen, setCoachOpen] = useState(() => learnerGuideLevel(user) !== 'independent');
+
+  // ── When the studio stops narrating ──────────────────────────────────────
+  //
+  // "Too much text and talking", from a 23-year-old who signed up to learn to
+  // code. He is on the level called "Explore myself", which until now only
+  // decided how many colour swatches he was offered: the mascot still reopened
+  // after every build, the companion still appeared, and a celebration overlay
+  // still covered his project for four seconds.
+  //
+  // Read at the top so every handler below agrees, and read live rather than
+  // frozen, because a person can change the level while the page is open.
+  const quietStudio = (guideLevelOverride || learnerGuideLevel(user)) === 'independent';
   const coachRestTimer = useRef(null);
   const [pixelQuiet, setPixelQuiet] = useState(() => {
     try { return localStorage.getItem('codeit_pixel_quiet') === '1'; } catch (_) { return false; }
@@ -1931,7 +1943,11 @@ export default function Builder() {
     setHasTestedLatest(false);
     playedReportedRef.current = false;
     setIsStarter(false);
-    setCoachOpen(true);
+    // Reopened for a learner who wants the guidance, not for one who has said
+    // they want to explore on their own. A 23-year-old told us there is too
+    // much text and talking, and this was a mascot reappearing after every
+    // single build no matter how many times it had been put away.
+    setCoachOpen(quietStudio ? false : true);
     setGuestDraftRecovered(false);
     const previewType = detectProjectType(text);
     setLoadingPreviewType(previewType);
@@ -2010,10 +2026,12 @@ export default function Builder() {
       fetchAiMissions(html, builtType, data.title || '', token).then(aiMissions => {
         if (aiMissions) setMissions(aiMissions);
       });
-      // Companion
-      setCompanionVisible(true);
-      // Wow moment — once per session, with a short delay so the iframe renders first
-      if (!wowShownRef.current) {
+      // Companion and the celebration overlay: both are for someone who needs
+      // to be told that something good happened. An independent learner can
+      // see that for themselves, and being congratulated by a cartoon is the
+      // fastest way to make an adult close the tab.
+      setCompanionVisible(!quietStudio);
+      if (!wowShownRef.current && !quietStudio) {
         wowShownRef.current = true;
         setWowType(builtType);
         setTimeout(() => {
@@ -2847,8 +2865,9 @@ export default function Builder() {
   // that needs big help should never have help disappear on a timer.
   const coachStageNumber = coachStage.number;
   useEffect(() => {
-    setCoachOpen(true);
     const level = guideLevelOverride || learnerGuideLevel(user);
+    if (level === 'independent') return undefined;
+    setCoachOpen(true);
     // ── Pixel speaks first for children who cannot read yet ─────────────────
     //
     // Mustafa's bar: can the kid do it alone? For a five-year-old the bubble
@@ -3671,7 +3690,7 @@ export default function Builder() {
                   </span>
                 </div>
                 <button type="button" onClick={handleSaveProject}>
-                  Keep it forever — free
+                  Keep it forever, free
                 </button>
               </aside>
             )}
@@ -4512,7 +4531,7 @@ export default function Builder() {
                       {aiTitle || 'Your project'} is on the internet now.
                     </strong>
                     <p className="bldr-live-card__line">
-                      Anyone you send this link to can play it right now — no app, no account.
+                      Anyone you send this link to can play it right now, no app, no account.
                     </p>
                     <code className="bldr-live-card__url">codeitlearn.com/project/{publicId}</code>
                     <div className="bldr-live-card__actions">

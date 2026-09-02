@@ -374,7 +374,7 @@ describe('studio opening', () => {
     expect(screen.getByRole('button', { name: /Keep my project/i })).toBeInTheDocument();
     expect(trackEvent).toHaveBeenCalledWith('guest_draft_recovered');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Keep it forever — free' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Keep it forever, free' }));
     expect(mockNavigate).toHaveBeenCalledWith('/register?from=builder&action=save', {
       state: { from: '/builder', resumeBuilderAction: 'save' },
     });
@@ -425,6 +425,40 @@ describe('studio opening', () => {
     expect(screen.getByRole('button', { name: 'Send it to someone' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Done' }));
     expect(screen.queryByText(/is on the internet now/i)).not.toBeInTheDocument();
+  });
+
+  // ── "Too much text and talking" ────────────────────────────────────────
+  //
+  // From a 23-year-old who signed up to learn to code. The level called
+  // "Explore myself" is what an adult account gets by default, and it used to
+  // change almost nothing: the mascot reopened after every build, a companion
+  // appeared, and a confetti overlay covered the project.
+  test('an independent learner is not narrated at', async () => {
+    render(
+      <AuthContext.Provider value={{ user: { id: 11, name: 'Omar', role: 'student', learningMode: 'independent' }, token: 'adult-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /Build a Quiz/i }));
+    await screen.findByRole('button', { name: /Play everything/i });
+
+    expect(document.querySelector('.bldr-wow-overlay')).toBeNull();
+    expect(document.querySelector('.pixel-guide__title')).toBeNull();
+  });
+
+  // The same studio, for a child. Everything above still has to be there.
+  test('a guided learner still gets the guidance', async () => {
+    render(
+      <AuthContext.Provider value={{ user: { id: 12, name: 'Sara', role: 'student', learningMode: 'guided' }, token: 'child-token' }}>
+        <Builder />
+      </AuthContext.Provider>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /Build a Quiz/i }));
+    await screen.findByRole('button', { name: /Play everything/i });
+
+    expect(document.querySelector('.pixel-guide__title')).not.toBeNull();
   });
 
   test('keeps a managed learner private and guides them into learning', async () => {

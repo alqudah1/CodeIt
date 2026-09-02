@@ -70,7 +70,7 @@ export default function Privacy() {
 
             <section id="payments">
               <h2>Payments</h2>
-              <p>Subscriptions are processed by Stripe. Card details are entered on Stripe&rsquo;s own payment form and go directly to Stripe — they never reach CodeIt and are never stored on our servers. What CodeIt keeps is Stripe&rsquo;s identifiers for the customer and the subscription, the plan status, and the renewal date, so the account knows what it is entitled to.</p>
+              <p>Subscriptions are processed by Stripe. Card details are entered on Stripe&rsquo;s own payment form and go directly to Stripe. They never reach CodeIt and are never stored on our servers. What CodeIt keeps is Stripe&rsquo;s identifiers for the customer and the subscription, the plan status, and the renewal date, so the account knows what it is entitled to.</p>
               <p>Stripe is an independent controller of the payment information it collects and handles it under its own privacy policy. Billing email, such as a receipt or a failed-payment notice, may be sent by Stripe or by CodeIt to the adult account holder.</p>
               <p>Only an adult account can start a subscription. A managed learner profile, or an account whose date of birth indicates the holder is under 18, cannot subscribe and is never asked for payment details.</p>
               <p>Payment records are kept for as long as tax and accounting obligations require, which is longer than the 13 months that applies to product analytics.</p>

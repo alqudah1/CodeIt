@@ -24,7 +24,7 @@ const FAQS = [
   },
   {
     q: 'Is CodeIt free?',
-    a: 'There is a free plan that does not expire and needs no card, including ten assisted project builds a month. A paid family plan is available at CA$12 per month, cancellable at any time. Nothing starts charging on its own — a subscription begins only when someone chooses to start one.',
+    a: 'There is a free plan that does not expire and needs no card, including ten assisted project builds a month. A paid family plan is available at CA$12 per month, cancellable at any time. Nothing starts charging on its own. A subscription begins only when someone chooses to start one.',
   },
   {
     q: 'Are projects public?',
@@ -44,7 +44,7 @@ const FAQS = [
   },
   {
     q: 'What does CodeIt not do?',
-    a: 'There is no rostering, LMS integration, standards alignment or teacher dashboard, so it is not currently a fit for a school or district deployment. It needs an internet connection and cannot be used offline. The structured lesson sequence is Python only — there is no web curriculum, and the web side is the project builder itself. Games are browser projects in HTML, CSS and JavaScript, not Unity, Godot, Roblox or pygame.',
+    a: 'There is no rostering, LMS integration, standards alignment or teacher dashboard, so it is not currently a fit for a school or district deployment. It needs an internet connection and cannot be used offline. The structured lesson sequence is Python only. There is no web curriculum, and the web side is the project builder itself. Games are browser projects in HTML, CSS and JavaScript, not Unity, Godot, Roblox or pygame.',
   },
   {
     q: 'Can my child just use AI to build the project for them?',

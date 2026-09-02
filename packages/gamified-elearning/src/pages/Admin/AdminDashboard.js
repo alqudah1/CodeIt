@@ -63,7 +63,7 @@ const AdminDashboard = () => {
         ? `Done. Table ${body.understandingTable}, ${body.descriptionsUpdated} descriptions set.`
         : (body.error || 'Failed.'));
     } catch {
-      setMaint('Failed — network error.');
+      setMaint('Failed: network error.');
     }
   };
 
@@ -121,8 +121,8 @@ const AdminDashboard = () => {
                 {funnel.gap && (
                   <p className="adm-funnel__verdict">
                     <strong>{funnel.gap.lessons}</strong> learners finished a lesson.
-                    {' '}<strong>{funnel.gap.projects}</strong> ever built a project
-                    {' '}— <strong>{funnel.gap.buildRate}%</strong> of them. Lessons are the part
+                    {' '}<strong>{funnel.gap.projects}</strong> ever built a project,
+                    {' '}<strong>{funnel.gap.buildRate}%</strong> of them. Lessons are the part
                     every free competitor also has; building and explaining a real project is
                     the part nothing else has.
                   </p>
@@ -165,7 +165,7 @@ const AdminDashboard = () => {
           <div className="adm-section-head">The monthly family email</div>
           <div className="adm-info">
             Sends each confirmed parent one email with what their child explained, finished and made
-            this month — real records only, one send per family per month, nothing goes out for an
+            this month. Real records only, one send per family per month, nothing goes out for an
             empty month. Preview shows the exact email for a learner before anything is sent.
             {' '}
             <button
@@ -181,7 +181,7 @@ const AdminDashboard = () => {
                   });
                   const body = await res.json();
                   setDigestPreview(body.success ? body : (body.error || 'Failed.'));
-                } catch { setDigestPreview('Failed — network error.'); }
+                } catch { setDigestPreview('Failed: network error.'); }
               }}
             >
               Preview one learner
@@ -202,7 +202,7 @@ const AdminDashboard = () => {
                   setDigest(body.success
                     ? `Sent ${body.sent} of ${body.eligible} eligible (already sent: ${body.skippedAlreadySent}, quiet months: ${body.skippedNothingToSay}, failed: ${body.failed}).`
                     : (body.error || 'Failed.'));
-                } catch { setDigest('Failed — network error.'); }
+                } catch { setDigest('Failed: network error.'); }
               }}
             >
               {digest === 'running' ? 'Sending…' : "Send this month's emails"}
@@ -214,7 +214,7 @@ const AdminDashboard = () => {
               <strong>Subject:</strong> {digestPreview.email?.subject}
               {digestPreview.hasContent
                 ? <iframe title="Email preview" className="adm-digest-frame" srcDoc={digestPreview.email?.html} />
-                : <p>A quiet month — this learner would receive no email.</p>}
+                : <p>A quiet month. This learner would receive no email.</p>}
             </div>
           )}
           {typeof digestPreview === 'string' && digestPreview !== 'loading' && (

@@ -17,7 +17,7 @@ test('describes every generated format as a project rather than a website', () =
     unsubscribeToken: 'safe-token',
   });
 
-  assert.equal(email.subject, 'CodeIt progress: creative_coder — Project created');
+  assert.equal(email.subject, 'CodeIt progress: creative_coder, Project created');
   assert.match(email.text, /Space quiz/);
   assert.match(email.html, /quiz project created/);
   assert.doesNotMatch(email.subject, /Website created/);
