@@ -52,6 +52,7 @@ const CLIENT_EVENTS = new Set([
   "upgrade_prompt_shown",
   "upgrade_click",
   "learn_the_code_behind",
+  "page_crash",
 ]);
 
 export async function trackEvent(eventName, meta = null, explicitToken = null) {

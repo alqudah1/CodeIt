@@ -47,9 +47,13 @@ function readHint(text) {
 
 const LessonGuide = ({ stepType, isCurrentDone, isLastStep }) => {
   const { user } = useContext(AuthContext) || {};
-  const { character } = useCharacter();
+  const { character } = useCharacter() || {};
   const hint = getHint(stepType, isCurrentDone, isLastStep);
-  const name = character.nickname || 'Guide';
+  // Read defensively for the same reason the lesson page above it now does:
+  // this component sits on all 31 lesson pages, and a null read here takes the
+  // whole page down with it. The context supplies a default character, so this
+  // is belt and braces, not a known fault.
+  const name = character?.nickname || 'Guide';
   const guideLevel = effectiveGuideLevel(user);
   const [quiet, setQuiet] = useState(() => {
     try { return localStorage.getItem('codeit_pixel_quiet') === '1'; } catch (_) { return false; }

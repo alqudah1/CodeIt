@@ -35,7 +35,17 @@ describe('the studio door at the end of a lesson', () => {
   });
 
   test('the journey keeps its own door rather than being sent to the studio', () => {
-    expect(CODE).toMatch(/completionData\.fromJourney \? null : lessonPrompt/);
+    // This assertion used to require the exact text
+    //     completionData.fromJourney ? null : lessonPrompt
+    // which is the line that white-screened all 31 lessons for a day: it runs
+    // on the first render, when completionData is still null. So this test's
+    // passing condition WAS the presence of the crash, and five siblings like
+    // it stayed green while the curriculum was unreachable.
+    //
+    // The optional chain is now required, and lessonPageMounts.test.js renders
+    // the component so no string assertion is ever the only thing standing
+    // between a child and a blank page again.
+    expect(CODE).toMatch(/completionData\?\.fromJourney \? null : lessonPrompt/);
   });
 
   test('the click is measurable, or the test it belongs to cannot be read', () => {

@@ -8,6 +8,7 @@ import ResetPassword from './pages/Auth/ResetPassword';
 import ParentReview from './pages/Auth/ParentReview';
 import { TOTAL_LESSONS } from './pages/Lessons/lessonRegistry';
 import DeadEnd from './components/DeadEnd/DeadEnd';
+import PageErrorBoundary from './components/PageErrorBoundary/PageErrorBoundary';
 import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { CharacterProvider } from './context/CharacterContext';
@@ -124,6 +125,11 @@ const App = () => (
         <Router>
           <AcquisitionTracker />
           <ActivityTracker />
+          {/* One throw in one page component used to unmount the entire app:
+              all 31 lessons went white on 1 September and stayed that way for
+              a day. Inside Router, so the boundary's own links work; outside
+              Suspense, so a lazy chunk that fails to load lands here too. */}
+          <PageErrorBoundary>
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* ── Public / always-eager ── */}
@@ -244,6 +250,7 @@ const App = () => (
               />
             </Routes>
           </Suspense>
+          </PageErrorBoundary>
         </Router>
       </CharacterProvider>
     </ProgressProvider>

@@ -495,7 +495,13 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   // every branch below reads it rather than calling builderPromptFor twice —
   // the button label and the sentence above it must never name different things.
   const lessonPrompt = builderPromptFor(id);
-  const studioPrompt = completionData.fromJourney ? null : lessonPrompt;
+  // completionData is null until the lesson is finished, and this line runs on
+  // every render including the first. Without the optional chain it threw
+  // "Cannot read properties of null" before a single word of the lesson was
+  // painted, on all 31 lessons, from 1 September until 2 September. The
+  // fromJourney distinction only matters inside the completion card below,
+  // which is already behind `if (completionData)`.
+  const studioPrompt = completionData?.fromJourney ? null : lessonPrompt;
 
   const canProceed = currentStep?.type === 'concept' || isCurrentDone;
 

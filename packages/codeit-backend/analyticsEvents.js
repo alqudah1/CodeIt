@@ -103,6 +103,14 @@ const EVENT_META = Object.freeze({
   // the home page says.
   learn_the_code_behind: new Set(),
 
+  // A page component threw and the error boundary caught it. Carries no
+  // message, no stack and no URL on purpose: a browser must not be able to
+  // post arbitrary text into the ingest, and a count is enough to know that
+  // pages are dying. Silence here is the normal state, and the reason the
+  // white-screened curriculum went unnoticed for a day is that there was no
+  // count to be non-zero.
+  page_crash: new Set(),
+
   // Server-side. The milestone table counts lesson completions from
   // Student_Lesson_Progress, which cannot say when one happened relative to
   // anything else. An event can.
@@ -145,7 +153,7 @@ const CLIENT_REPORTED_EVENTS = new Set([
   // checkout_start and checkout_complete are deliberately absent: they are
   // recorded by the server, and a browser must not be able to claim any of
   // them.
-  'upgrade_prompt_shown', 'upgrade_click', 'learn_the_code_behind',
+  'upgrade_prompt_shown', 'upgrade_click', 'learn_the_code_behind', 'page_crash',
 ]);
 const JOURNEY_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const CAMPAIGN_PATTERN = /^[a-z0-9][a-z0-9-]{1,23}$/;
