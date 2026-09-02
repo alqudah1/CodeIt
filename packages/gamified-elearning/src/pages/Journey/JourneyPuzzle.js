@@ -68,6 +68,7 @@ const JourneyPuzzle = () => {
   const config = PUZZLE_CONFIGS[configKey];
 
   const [lastOutput, setLastOutput] = useState('');
+  const [lastCode, setLastCode] = useState('');
   const [checkResult, setCheckResult] = useState(null);
   const [alreadyDone, setAlreadyDone] = useState(false);
   const [completing, setCompleting] = useState(false);
@@ -107,8 +108,20 @@ const JourneyPuzzle = () => {
       .catch(() => {});
   }, [token, config]);
 
-  const handleOutput = useCallback((output) => {
+  // ── The second argument that was already being passed ────────────────────
+  //
+  // CodeRunnerPython has always called onOutput(result, code), with a comment
+  // saying the student's source goes with the output precisely so a step can
+  // check that the idea it taught is actually in there. This handler dropped
+  // it, and every validator only ever saw the output.
+  //
+  // That is why print(1) cleared a boss puzzle about writing a function: from
+  // the output alone there is nothing to tell the two apart. Reading the source
+  // is a blunt tool and it is used sparingly, only where the stated goal names
+  // something the output cannot reveal.
+  const handleOutput = useCallback((output, code) => {
     setLastOutput(output);
+    setLastCode(code || '');
     setCheckResult(null);
   }, []);
 
@@ -119,7 +132,7 @@ const JourneyPuzzle = () => {
 
   const handleCheck = async () => {
     if (!config) return;
-    const result = config.validator(lastOutput);
+    const result = config.validator(lastOutput, lastCode);
     setCheckResult(result);
 
     if (!result.pass) {

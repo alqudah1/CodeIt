@@ -2,6 +2,108 @@
 // id = lessonId * 100 + slot (1=A, 2=B, 3=Boss)
 // validator(output) => { pass: bool, message: string }
 
+
+// ── How these puzzles are checked ────────────────────────────────────────────
+//
+// The thirty puzzles for lessons 1 to 10 have been live for months, and until
+// 2 September 2026 twenty of the twenty-four that are meant to test something
+// did not test it. They asked whether the right text appeared somewhere in the
+// output, not whether the output was right.
+//
+// The two worst were the ones a child reaches last:
+//   print(1)                      cleared the lesson 9 boss, whose task is to
+//                                 define a function, return from it, and call it
+//   print("hello") three times    cleared the lesson 10 boss, the final puzzle
+//                                 of the journey, and printed "Journey finished!"
+//
+// Others: 3-boss taught .upper() and accepted any single capital letter
+// anywhere, so "Hello, Coder!" passed. 3-a had a dead branch that could never
+// fire, so "Ada" and "Lovelace" on separate lines passed a puzzle about joining
+// them. 6-boss and 8-boss counted three by looking for the character "3", so
+// "Vowels: 30" passed. 8-b and 10-b asked for a loop with a condition and
+// accepted the list printed whole.
+//
+// Every expected output below was DERIVED by running the puzzle's own hintCode,
+// not typed by hand. Typing them is how the old ones drifted from what the
+// lesson actually teaches.
+//
+// Two rules:
+//   exact()    the output must be these lines, in this order, and nothing else.
+//   requires   a source check, used only where the stated goal names something
+//              the output cannot reveal: a function was defined, a value was
+//              returned, a loop was written. Where the output can show it, the
+//              output is what gets checked. A regex for "def" is easy to
+//              satisfy without understanding, so it is the last resort rather
+//              than the first.
+//
+// No lookbehind in any pattern. Safari support is recent and this runs on
+// whatever a child's family owns.
+
+const NO_OUTPUT = { pass: false, message: 'Run your code first. No output detected.' };
+
+function cleanLines(output) {
+  return String(output || '')
+    .split('\n')
+    .map(l => l.trim())
+    .filter(l => l && !l.startsWith('\u274c'));
+}
+
+/**
+ * Ordered, exact line matching with a diagnosis that names the wrong value.
+ *
+ * The first difference is reported BEFORE the line count. Checking the count
+ * first meant three different mistakes that happen to produce the same number
+ * of lines all got the same sentence back, which tells a child nothing about
+ * which mistake they made.
+ */
+function exact(expected, concept, done = 'Puzzle complete! Great work.') {
+  return (output, code = '') => {
+    const lines = cleanLines(output);
+    if (!lines.length) return NO_OUTPUT;
+    const overlap = Math.min(lines.length, expected.length);
+    for (let i = 0; i < overlap; i += 1) {
+      if (lines[i] !== expected[i]) {
+        return { pass: false, message: `Line ${i + 1} shows "${lines[i]}" but should show "${expected[i]}". ${concept}` };
+      }
+    }
+    if (lines.length > expected.length) {
+      return { pass: false, message: `Line ${expected.length + 1} shows "${lines[overlap]}" but nothing should print after line ${expected.length}. ${concept}` };
+    }
+    if (lines.length < expected.length) {
+      return { pass: false, message: `Only ${lines.length} of ${expected.length} line(s) printed. The next one should be "${expected[overlap]}". ${concept}` };
+    }
+    return { pass: true, message: done };
+  };
+}
+
+/** Source checks run before the output is looked at, so the advice matches the gap. */
+function requires(checks, next) {
+  return (output, code = '') => {
+    const src = String(code || '');
+    // With no source available the source checks are skipped rather than
+    // failed. JourneyPuzzle passes it; a caller that does not must not be told
+    // the child did nothing wrong in a way that blocks them.
+    if (src.trim()) {
+      for (const [pattern, message] of checks) {
+        if (!pattern.test(src)) return { pass: false, message };
+      }
+    }
+    return next(output, src);
+  };
+}
+
+/**
+ * "Defined but never called": strip the def lines, then look for the call.
+ *
+ * A helper that built the call regex was written alongside this and never
+ * used, because each caller needs a slightly different shape. Deleted rather
+ * than kept: an unused export is a thing the next person has to read and rule
+ * out. CI catches it, which is why CI treats warnings as errors.
+ */
+function bodyWithoutDefs(code) {
+  return String(code || '').replace(/^\s*def\s+.*$/gm, '');
+}
+
 const nonEmpty = (output) => {
   const lines = output.split('\n').filter(l => l.trim() && !l.startsWith('❌'));
   if (lines.length === 0) return { pass: false, message: 'Run your code first. No output detected.' };
@@ -33,9 +135,16 @@ export const PUZZLE_CONFIGS = {
     hintCode: `print("Hello from Python!")\nprint("Hello again!")\nprint("One more!")`,
     starterCode: `print("Hello from Python!")\n# Add two more print lines below:\n`,
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      const lines = output.split('\n').filter(l => l.trim());
-      if (lines.length < 3) return { pass: false, message: `Got ${lines.length} line(s). Add ${3 - lines.length} more print() line(s)!` };
+      const lines = cleanLines(output);
+      if (!lines.length) return NO_OUTPUT;
+      if (lines.length < 3) {
+        return { pass: false, message: `Got ${lines.length} line(s). Add ${3 - lines.length} more print() line(s).` };
+      }
+      // "3 different messages" is the stated goal, so three copies of the same
+      // line is not it.
+      if (new Set(lines).size < 3) {
+        return { pass: false, message: 'Three lines printed, but some are the same. Make each message different.' };
+      }
       return { pass: true, message: 'Three messages sent! Great work.' };
     },
   },
@@ -56,12 +165,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `print("Space mail delivered via Python!")`,
     starterCode: `# Fix this line. Replace ___ with Python\nprint("Space mail delivered via ___!")\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      if (!output.includes('Python')) return { pass: false, message: 'Output must contain the word "Python". Replace ___ with Python.' };
-      if (!output.toLowerCase().includes('space mail')) return { pass: false, message: 'Keep the "Space mail delivered" text in your message.' };
-      return { pass: true, message: 'Space mail delivered via Python!' };
-    },
+    validator: exact(['Space mail delivered via Python!'], 'print() shows exactly what is inside the quotes.', 'Message fixed!'),
   },
 
   '1-boss': {
@@ -80,12 +184,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `print("----------")\nprint("My Mission")\nprint("----------")`,
     starterCode: `# A banner has 3 lines: divider, title, divider\nprint("----------")\n# Add your title here:\n\n# Add the closing divider here:\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      const lines = output.split('\n').filter(l => l.trim());
-      if (lines.length < 3) return { pass: false, message: `Got ${lines.length} line(s). Need 3 lines: divider, title, divider.` };
-      return { pass: true, message: 'Banner printed! Boss cleared!' };
-    },
+    validator: exact(['----------', 'My Mission', '----------'], 'Three print() lines: the dashes, the title, the dashes again.', 'Banner printed!'),
   },
 
   // ──── LESSON 2: Variables ─────────────────────────────────────────────────
@@ -110,15 +209,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `name = "Alex"\nage = 12\ncity = "London"\n\nprint(name)\nprint(age)\nprint(city)`,
     starterCode: `name = "Alex"\nage = 12\ncity = "London"\n\n# Print all three variables below:\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      if (!output.includes('Alex'))   return { pass: false, message: 'name not printed. Use print(name).' };
-      if (!output.includes('12'))     return { pass: false, message: 'age not printed. Use print(age).' };
-      if (!output.includes('London')) return { pass: false, message: 'city not printed. Use print(city).' };
-      const lines = output.split('\n').filter(l => l.trim());
-      if (lines.length < 3) return { pass: false, message: 'Print all 3 variables. Need 3 output lines.' };
-      return { pass: true, message: 'Vault unlocked! All three values received.' };
-    },
+    validator: exact(['Alex', '12', 'London'], 'Store each value in a variable, then print the variable.', 'Variables stored!'),
   },
 
   '2-b': {
@@ -137,11 +228,27 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `name = "Alex"\nage = 12\n\nprint(name, "is", age, "years old.")`,
     starterCode: `name = "Alex"\nage = 12\n\n# Print one sentence using both variables.\n# Hint: print(name, "is", age, "years old.")\n`,
+    // The values here are the CHILD'S OWN CHOICE, so an exact match against the
+    // hintCode would replace a validator that accepts wrong answers with one
+    // that rejects right ones. That is the worse of the two failures. Caught by
+    // reading the stated goal rather than trusting the derived output.
     validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      if (!output.includes('Alex'))                    return { pass: false, message: 'Output must include the name value.' };
-      if (!output.toLowerCase().includes('years old')) return { pass: false, message: 'Output must include "years old".' };
-      return { pass: true, message: 'Introduction printed!' };
+      const lines = cleanLines(output);
+      if (!lines.length) return NO_OUTPUT;
+      if (lines.length !== 1) {
+        return { pass: false, message: `Got ${lines.length} lines, expected 1. Print one sentence that uses both variables.` };
+      }
+      const line = lines[0];
+      if (!line.includes('Alex')) {
+        return { pass: false, message: `The sentence shows "${line}" with no name in it. Use the name variable.` };
+      }
+      if (!/\b12\b/.test(line)) {
+        return { pass: false, message: `The sentence shows "${line}" with no age in it. Use the age variable rather than leaving it out.` };
+      }
+      if (!/years old/i.test(line)) {
+        return { pass: false, message: `The sentence shows "${line}". It needs to include the phrase "years old".` };
+      }
+      return { pass: true, message: 'Sentence built!' };
     },
   },
 
@@ -161,15 +268,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `name = "Alex"\nage = 12\ncity = "London"\n\nprint("Name:", name)\nprint("Age:", age)\nprint("City:", city)`,
     starterCode: `name = "Alex"\nage = 12\ncity = "London"\n\n# Print the profile card below:\n# Example first line: print("Name:", name)\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      const lines = output.split('\n').filter(l => l.trim());
-      if (lines.length < 3) return { pass: false, message: `Got ${lines.length} line(s). Need 3 labelled lines.` };
-      if (!output.includes('Name:')) return { pass: false, message: 'Output must contain "Name:".' };
-      if (!output.includes('Age:'))  return { pass: false, message: 'Output must contain "Age:".' };
-      if (!output.includes('City:')) return { pass: false, message: 'Output must contain "City:".' };
-      return { pass: true, message: 'Profile card complete! Boss cleared!' };
-    },
+    validator: exact(['Name: Alex', 'Age: 12', 'City: London'], 'Print a label and its variable on each line.', 'Profile card printed!'),
   },
 
   // ──── LESSON 3: Strings ───────────────────────────────────────────────────
@@ -194,13 +293,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `first = "Ada"\nlast = "Lovelace"\n\nprint(first + " " + last)`,
     starterCode: `first = "Ada"\nlast = "Lovelace"\n\n# Join first + " " + last and print the result:\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      if (!output.includes('Ada'))      return { pass: false, message: 'Output must include "Ada". Use first in your print.' };
-      if (!output.includes('Lovelace')) return { pass: false, message: 'Output must include "Lovelace". Use last in your print.' };
-      if (!output.includes('Ada Lovelace') && !output.includes('Ada') ) return { pass: false, message: 'Join with a space: first + " " + last' };
-      return { pass: true, message: 'Full name joined! Strings connected.' };
-    },
+    validator: exact(['Ada Lovelace'], 'Join the two names with + and a space between them.', 'Names joined!'),
   },
 
   '3-b': {
@@ -219,12 +312,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `name = "Python"\n\nprint(name.upper())\nprint("Letters:", len(name))`,
     starterCode: `name = "Python"\n\n# Print the name in UPPERCASE:\n\n# Print the number of letters:\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      if (!output.includes('PYTHON')) return { pass: false, message: 'Missing uppercase. Use print(name.upper()).' };
-      if (!output.includes('6') && !output.includes('Letters')) return { pass: false, message: 'Missing letter count. Use print("Letters:", len(name)).' };
-      return { pass: true, message: 'String tricks complete! Puzzle solved.' };
-    },
+    validator: requires([[/\.upper\s*\(/, 'Use .upper() to make the word uppercase.'], [/\blen\s*\(/, 'Use len() to count the letters.']], exact(['PYTHON', 'Letters: 6'], 'Use .upper() for the word and len() for the count.', 'String tools working!')),
   },
 
   '3-boss': {
@@ -243,14 +331,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `name = "Coder"\n\ngreeting = "Hello, " + name + "!"\nprint(greeting.upper())`,
     starterCode: `name = "Coder"\n\n# Build the greeting: "Hello, " + name + "!"\n# Then print it in UPPERCASE\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      if (!output.toUpperCase().includes('HELLO')) return { pass: false, message: 'Output must include HELLO. Join: "Hello, " + name + "!"' };
-      if (!output.toUpperCase().includes('CODER')) return { pass: false, message: 'Output must include CODER. Use name in your greeting.' };
-      const hasUpper = output.split('').some(c => c === c.toUpperCase() && c.match(/[A-Z]/));
-      if (!hasUpper) return { pass: false, message: 'Print the greeting in UPPERCASE using .upper().' };
-      return { pass: true, message: 'Greeting built and shouted! Boss cleared!' };
-    },
+    validator: requires([[/\.upper\s*\(/, 'The whole greeting has to be uppercase. Use .upper() on it.']], exact(['HELLO, CODER!'], 'Build the greeting first, then call .upper() on the whole thing.', 'Loud greeting sent!')),
   },
 
   // ──── LESSON 4: Conditionals ──────────────────────────────────────────────
@@ -308,12 +389,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `temp1 = 22\nif temp1 > 30:\n    print("Hot day!")\nelif temp1 > 15:\n    print("Warm day!")\n\ntemp2 = 8\nif temp2 > 30:\n    print("Hot day!")\nelif temp2 > 15:\n    print("Warm day!")\nelse:\n    print("Cold day!")`,
     starterCode: `temp1 = 22\nif temp1 > 30:\n    print("Hot day!")\nelif temp1 > 15:\n    # Add: print("Warm day!")\n\ntemp2 = 8\nif temp2 > 30:\n    print("Hot day!")\nelif temp2 > 15:\n    print("Warm day!")\nelse:\n    # Add: print("Cold day!")\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      if (!output.includes('Warm')) return { pass: false, message: 'Missing Warm. Add print("Warm day!") inside the first elif.' };
-      if (!output.includes('Cold')) return { pass: false, message: 'Missing Cold. Add print("Cold day!") inside the second else.' };
-      return { pass: true, message: 'Temperature report complete! Boss cleared!' };
-    },
+    validator: exact(['Warm day!', 'Cold day!'], 'One if for the warm day and one for the cold day.', 'Both branches worked!'),
   },
 
   // ──── LESSON 5: Simple Repetition ────────────────────────────────────────
@@ -337,12 +413,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `for i in range(5):\n    print(i)`,
     starterCode: `for i in range(5):\n    # Type: print(i)\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      const lines = output.split('\n').filter(l => l.trim());
-      if (lines.length < 5) return { pass: false, message: `Got ${lines.length} line(s). The loop should print 5 numbers (0 to 4).` };
-      return { pass: true, message: 'Loop running! 5 numbers printed.' };
-    },
+    validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Write a for loop. Printing the numbers one at a time is not a loop.']], exact(['0', '1', '2', '3', '4'], 'print(i) inside the loop prints the counter, 0 to 4.', 'Loop running!')),
   },
 
   '5-b': {
@@ -360,14 +431,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `# Count from 1 to 5\nfor i in range(1, 6):\n    print(i)`,
     starterCode: `# Count from 1 to 5\nfor i in range(1, 6):\n    # Type: print(i)\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      const lines = output.split('\n').filter(l => l.trim());
-      if (lines.length < 5) return { pass: false, message: `Got ${lines.length} line(s). Need 5 numbers (1 to 5).` };
-      if (!output.includes('1')) return { pass: false, message: 'Output should start at 1. Use range(1, 6).' };
-      if (!output.includes('5')) return { pass: false, message: 'Output should end at 5. Use range(1, 6).' };
-      return { pass: true, message: 'Counted from 1 to 5! Puzzle solved.' };
-    },
+    validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Write a for loop rather than five print lines.']], exact(['1', '2', '3', '4', '5'], 'range(1, 6) counts 1 to 5.', 'Counted to five!')),
   },
 
   '5-boss': {
@@ -385,13 +449,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `for i in range(1, 6):\n    print("Round", i)`,
     starterCode: `# Print: Round 1, Round 2, Round 3, Round 4, Round 5\nfor i in range(1, 6):\n    # Add your print here\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      const lines = output.split('\n').filter(l => l.trim());
-      if (lines.length < 5) return { pass: false, message: `Got ${lines.length} line(s). The loop should print 5 rounds.` };
-      if (!output.toLowerCase().includes('round')) return { pass: false, message: 'Each line should include the word "Round". Try: print("Round", i)' };
-      return { pass: true, message: 'Five rounds complete! Boss cleared!' };
-    },
+    validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Write a for loop rather than five print lines.']], exact(['Round 1', 'Round 2', 'Round 3', 'Round 4', 'Round 5'], 'Print the word Round and the counter together inside the loop.', 'Five rounds printed!')),
   },
 
   // ──── LESSON 6: For Loops ─────────────────────────────────────────────────
@@ -432,15 +490,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `word = "Python"\nfor char in word:\n    if char in "aeiouAEIOU":\n        print(char)`,
     starterCode: `word = "Python"\nfor char in word:\n    # Add: if char in "aeiouAEIOU":\n    #         print(char)\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      const vowels = output.split('\n').filter(l => 'aeiouAEIOU'.includes(l.trim()) && l.trim().length === 1);
-      if (vowels.length === 0) return { pass: false, message: 'No vowels found. Add: if char in "aeiouAEIOU": then print(char)' };
-      if (output.toLowerCase().includes('p') && output.split('\n').some(l => l.trim() === 'P')) {
-        return { pass: false, message: 'Only print vowels. Check your if condition.' };
-      }
-      return { pass: true, message: 'Vowels found! Loop + if works.' };
-    },
+    validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Loop through the letters rather than printing the answer.'], [/\bif\b/, 'Use an if inside the loop to pick out the vowels.']], exact(['o'], 'Loop through the word and print a letter only if it is a vowel.', 'Vowel found!')),
   },
 
   '6-boss': {
@@ -459,12 +509,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `word = "elephant"\ncount = 0\n\nfor char in word:\n    if char in "aeiouAEIOU":\n        count = count + 1\n\nprint("Vowels:", count)`,
     starterCode: `word = "elephant"\ncount = 0\n\nfor char in word:\n    if char in "aeiouAEIOU":\n        # Add: count = count + 1\n\nprint("Vowels:", count)\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      if (!output.includes('Vowels:')) return { pass: false, message: 'Output must include "Vowels:". Keep the print("Vowels:", count) line.' };
-      if (!output.includes('3')) return { pass: false, message: '"elephant" has 3 vowels (e, e, a). Add count = count + 1 inside the if block.' };
-      return { pass: true, message: '3 vowels counted! Boss cleared!' };
-    },
+    validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Loop through the letters rather than printing the answer.'], [/\bif\b/, 'Use an if inside the loop to decide what to count.']], exact(['Vowels: 3'], 'Count in the loop, then print the total once at the end.', 'Vowels counted!')),
   },
 
   // ──── LESSON 7: Basic Lists ───────────────────────────────────────────────
@@ -506,16 +551,29 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `fruits = ["apple", "banana"]\n\nfruits.append("cherry")\nfruits.append("mango")\n\nprint(fruits)`,
     starterCode: `fruits = ["apple", "banana"]\n\n# Add "cherry" to the list:\n# Your code here\n\n# Add one more fruit:\n# Your code here\n\nprint(fruits)\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      if (!output.includes('cherry')) return { pass: false, message: 'Missing "cherry". Use fruits.append("cherry").' };
-      if (!output.includes('apple'))  return { pass: false, message: 'Keep "apple" in the list. Do not remove it.' };
-      const match = output.match(/\[([^\]]+)\]/);
-      if (!match) return { pass: false, message: 'Print the list using print(fruits).' };
-      const items = match[1].split(',').map(s => s.trim());
-      if (items.length < 4) return { pass: false, message: `List has ${items.length} item(s). Append at least 2 more.` };
-      return { pass: true, message: 'List built! Puzzle complete.' };
-    },
+    validator: requires(
+      [[/\.append\s*\(/, 'Use .append() to add to the list rather than rewriting it.']],
+      (output, code) => {
+        const lines = cleanLines(output);
+        if (!lines.length) return NO_OUTPUT;
+        const appends = (String(code || '').match(/\.append\s*\(/g) || []).length;
+        if (code && appends < 2) {
+          return { pass: false, message: `Found ${appends} .append() call(s), expected 2: cherry, then a fruit of your choice.` };
+        }
+        const last = lines[lines.length - 1];
+        if (!/^\[.*\]$/.test(last)) {
+          return { pass: false, message: `The last line shows "${last}". Print the whole list so every item is visible.` };
+        }
+        if (!last.includes('cherry')) {
+          return { pass: false, message: 'The list printed, but "cherry" is not in it. Append it first.' };
+        }
+        const items = last.slice(1, -1).split(',').filter(x => x.trim()).length;
+        if (items < 4) {
+          return { pass: false, message: `The list has ${items} item(s), expected 4 after two appends.` };
+        }
+        return { pass: true, message: 'List grown! Both items added.' };
+      },
+    ),
   },
 
   '7-boss': {
@@ -533,18 +591,32 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `items = []\n\nitems.append("apple")\nitems.append("banana")\nitems.append("cherry")\n\nprint(items)\nprint("Count:", len(items))`,
     starterCode: `items = []\n\n# Append three things to items:\n# Your code here\n\nprint(items)\nprint("Count:", len(items))\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      if (!output.includes('Count:')) return { pass: false, message: 'Keep print("Count:", len(items)) at the bottom.' };
-      if (!output.includes('3') && !output.includes('4') && !output.includes('5')) {
-        return { pass: false, message: 'Add at least 3 items with .append() before printing.' };
-      }
-      const match = output.match(/\[([^\]]+)\]/);
-      if (!match) return { pass: false, message: 'Print the list using print(items).' };
-      const count = match[1].split(',').length;
-      if (count < 3) return { pass: false, message: `List has ${count} item(s). Append at least 3 items.` };
-      return { pass: true, message: 'List built and counted! Boss cleared!' };
-    },
+    validator: requires(
+      [[/\.append\s*\(/, 'Use .append() to add the items rather than writing the list out.'],
+       [/\blen\s*\(/, 'Use len() to count the items rather than typing the number.']],
+      (output, code) => {
+        const lines = cleanLines(output);
+        if (!lines.length) return NO_OUTPUT;
+        const appends = (String(code || '').match(/\.append\s*\(/g) || []).length;
+        if (code && appends < 3) {
+          return { pass: false, message: `Found ${appends} .append() call(s), expected 3.` };
+        }
+        const listLine = lines.find(l => /^\[.*\]$/.test(l));
+        if (!listLine) {
+          return { pass: false, message: 'Print the whole list on its own line so every item is visible.' };
+        }
+        const count = lines.find(l => /^Count:/.test(l));
+        if (!count) {
+          return { pass: false, message: 'Print "Count:" followed by len() of the list.' };
+        }
+        const items = listLine.slice(1, -1).split(',').filter(x => x.trim()).length;
+        const shown = Number((count.match(/(\d+)/) || [])[1]);
+        if (shown !== items) {
+          return { pass: false, message: `The list has ${items} item(s) but Count says ${shown}. Use len() on the list rather than typing a number.` };
+        }
+        return { pass: true, message: 'Three items added and counted!' };
+      },
+    ),
   },
 
   // ──── LESSON 8: Loops with Lists ─────────────────────────────────────────
@@ -585,16 +657,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `scores = [75, 90, 60, 85, 55, 95]\n\nfor score in scores:\n    if score >= 80:\n        print(score)`,
     starterCode: `scores = [75, 90, 60, 85, 55, 95]\n\nfor score in scores:\n    # Add: if score >= 80:\n    #         print(score)\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      if (!output.includes('90')) return { pass: false, message: '90 should be printed. Add: if score >= 80: then print(score).' };
-      if (!output.includes('85')) return { pass: false, message: '85 should be printed. Check your if condition.' };
-      if (!output.includes('95')) return { pass: false, message: '95 should be printed. Make sure the loop runs for all scores.' };
-      if (output.includes('75') || output.includes('60') || output.includes('55')) {
-        return { pass: false, message: 'Only print scores >= 80. Check your if condition.' };
-      }
-      return { pass: true, message: 'Only high scores printed! Loop filter works.' };
-    },
+    validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Loop through the list rather than printing it whole.'], [/\bif\b/, 'Use an if inside the loop to keep only the high scores.']], exact(['90', '85', '95'], 'Print a score only if it is 80 or more, one per line.', 'High scores found!')),
   },
 
   '8-boss': {
@@ -613,12 +676,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `scores = [75, 90, 60, 85, 55, 95]\ncount = 0\n\nfor score in scores:\n    if score >= 80:\n        count = count + 1\n\nprint("High scores:", count)`,
     starterCode: `scores = [75, 90, 60, 85, 55, 95]\ncount = 0\n\nfor score in scores:\n    if score >= 80:\n        # Add: count = count + 1\n\nprint("High scores:", count)\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      if (!output.includes('High scores:')) return { pass: false, message: 'Keep print("High scores:", count) at the bottom.' };
-      if (!output.includes('3')) return { pass: false, message: 'There are 3 scores >= 80 (90, 85, 95). Add count = count + 1 inside the if block.' };
-      return { pass: true, message: '3 high scores counted! Boss cleared!' };
-    },
+    validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Loop through the list rather than printing the answer.'], [/\bif\b/, 'Use an if inside the loop to decide what to count.']], exact(['High scores: 3'], 'Count in the loop, then print the total once at the end.', 'Scores counted!')),
   },
 
   // ──── LESSON 9: Basic Functions ──────────────────────────────────────────
@@ -642,12 +700,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `def say_hi():\n    print("Hello there!")\n\nsay_hi()\nsay_hi()\nsay_hi()`,
     starterCode: `def say_hi():\n    print("Hello there!")\n\n# Call say_hi() three times:\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      const lines = output.split('\n').filter(l => l.trim().toLowerCase().includes('hello'));
-      if (lines.length < 3) return { pass: false, message: `Found ${lines.length} Hello message(s). Call say_hi() three times!` };
-      return { pass: true, message: 'Three hellos sent! Function works.' };
-    },
+    validator: requires([[/\bdef\s+say_hi\s*\(/, 'Define the function first: def say_hi():'], [/\bsay_hi\s*\(\s*\)/, 'Call the function by writing say_hi() on its own line, three times.']], exact(['Hello there!', 'Hello there!', 'Hello there!'], 'Call the function rather than printing your own message.', 'Three hellos sent!')),
   },
 
   '9-b': {
@@ -665,14 +718,28 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `def greet(name):\n    print("Hello,", name + "!")\n\ngreet("Alice")\ngreet("Bob")\ngreet("Sam")`,
     starterCode: `def greet(name):\n    print("Hello,", name + "!")\n\n# Call greet() three times with different names:\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      const lines = output.split('\n').filter(l => l.trim().toLowerCase().includes('hello'));
-      if (lines.length < 3) return { pass: false, message: `Found ${lines.length} greeting(s). Call greet() three times with different names!` };
-      const names = new Set(lines.map(l => l.replace(/hello,\s*/i, '').replace('!', '').trim().toLowerCase()));
-      if (names.size < 2) return { pass: false, message: 'Use at least 2 different names when calling greet().' };
-      return { pass: true, message: 'Three greetings sent! Puzzle complete.' };
-    },
+    // The values here are the CHILD'S OWN CHOICE, so an exact match against the
+    // hintCode would replace a validator that accepts wrong answers with one
+    // that rejects right ones. That is the worse of the two failures. Caught by
+    // reading the stated goal rather than trusting the derived output.
+    validator: requires(
+      [[/\bgreet\s*\(/, 'Call greet() below the function, once for each name.']],
+      (output) => {
+        const lines = cleanLines(output);
+        if (!lines.length) return NO_OUTPUT;
+        const bad = lines.findIndex(l => !/^Hello, .+!$/.test(l));
+        if (bad !== -1) {
+          return { pass: false, message: `Line ${bad + 1} shows "${lines[bad]}" but greet() prints "Hello, name!". Call the function rather than printing your own line.` };
+        }
+        if (lines.length !== 3) {
+          return { pass: false, message: `Got ${lines.length} greeting(s), expected 3. Call greet() three times.` };
+        }
+        if (new Set(lines).size < 3) {
+          return { pass: false, message: 'Three greetings, but some use the same name. Use a different name each time.' };
+        }
+        return { pass: true, message: 'Greeted everyone!' };
+      },
+    ),
   },
 
   '9-boss': {
@@ -690,14 +757,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `def add(a, b):\n    return a + b\n\nresult = add(3, 4)\nprint("Sum:", result)`,
     starterCode: `# Define a function called add that takes a and b\n# and returns a + b\n\n# Then call it with two numbers and print the result\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      const lines = output.split('\n').filter(l => l.trim());
-      if (lines.length === 0) return { pass: false, message: 'No output detected. Call your function and print the result.' };
-      const hasNumber = lines.some(l => /\d/.test(l));
-      if (!hasNumber) return { pass: false, message: 'Output should be a number. Use print() to show the result.' };
-      return { pass: true, message: 'Function written and called! Boss cleared!' };
-    },
+    validator: requires([[/\bdef\s+add\s*\(/, 'No function called add yet. Start with def add(a, b):'], [/\breturn\b/, 'add() needs to return a + b, not print it. Add a return line inside the function.']], exact(['Sum: 7'], 'Call add() with two numbers and print what comes back.', 'Function written, called, and printed. Boss cleared!')),
   },
 
   // ──── LESSON 10: Combining Concepts ──────────────────────────────────────
@@ -738,16 +798,7 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `names = ["Alice", "Bob", "Anna", "Charlie", "Amy"]\n\nfor name in names:\n    if name[0] == "A":\n        print(name)`,
     starterCode: `names = ["Alice", "Bob", "Anna", "Charlie", "Amy"]\n\nfor name in names:\n    # Add: if name[0] == "A":\n    #         print(name)\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      if (!output.includes('Alice')) return { pass: false, message: '"Alice" should be printed. Add: if name[0] == "A": then print(name).' };
-      if (!output.includes('Anna'))  return { pass: false, message: '"Anna" should be printed. Make sure the loop checks all names.' };
-      if (!output.includes('Amy'))   return { pass: false, message: '"Amy" should be printed. Make sure the loop runs for all names.' };
-      if (output.includes('Bob') || output.includes('Charlie')) {
-        return { pass: false, message: 'Only print names starting with A. Check your if condition.' };
-      }
-      return { pass: true, message: 'Only A-names printed! Puzzle complete.' };
-    },
+    validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Loop through the names rather than printing the list.'], [/\bif\b/, 'Use an if inside the loop to keep only the names starting with A.']], exact(['Alice', 'Anna', 'Amy'], 'Print a name only if it starts with A, one per line.', 'Filtered the list!')),
   },
 
   '10-boss': {
@@ -766,11 +817,28 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `def greet_all(names):\n    for name in names:\n        print("Hello, " + name + "!")\n\ngreet_all(["Alice", "Bob", "Charlie"])`,
     starterCode: `# Define greet_all(names) that loops through the list\n# and prints "Hello, " + name + "!" for each name\n\n# Then call it with a list of 3 or more names\n`,
-    validator: (output) => {
-      if (!output || !output.trim()) return { pass: false, message: 'Run your code first. No output detected.' };
-      const lines = output.split('\n').filter(l => l.trim().toLowerCase().includes('hello'));
-      if (lines.length < 3) return { pass: false, message: `Found ${lines.length} greeting(s). Call your function with a list of at least 3 names.` };
-      return { pass: true, message: 'Mini program complete! Journey finished!' };
-    },
+    // The values here are the CHILD'S OWN CHOICE, so an exact match against the
+    // hintCode would replace a validator that accepts wrong answers with one
+    // that rejects right ones. That is the worse of the two failures. Caught by
+    // reading the stated goal rather than trusting the derived output.
+    validator: requires(
+      [[/\bdef\s+greet_all\s*\(/, 'No function called greet_all yet. Start with def greet_all(names):'],
+       [/\bfor\b[\s\S]*\bin\b/, 'greet_all() needs a for loop so it works for any length of list.']],
+      (output, code) => {
+        const lines = cleanLines(output);
+        if (!lines.length) return NO_OUTPUT;
+        if (code && !/\bgreet_all\s*\(\s*\[/.test(bodyWithoutDefs(code))) {
+          return { pass: false, message: 'Defined but never called with a list. Try greet_all(["Alice", "Bob", "Charlie"]).' };
+        }
+        const bad = lines.findIndex(l => !/^Hello, .+!$/.test(l));
+        if (bad !== -1) {
+          return { pass: false, message: `Line ${bad + 1} shows "${lines[bad]}" but each line should read "Hello, name!".` };
+        }
+        if (lines.length < 3) {
+          return { pass: false, message: `Found ${lines.length} greeting(s). Call greet_all() with a list of at least 3 names.` };
+        }
+        return { pass: true, message: 'Mini program complete! Journey finished!' };
+      },
+    ),
   },
 };
