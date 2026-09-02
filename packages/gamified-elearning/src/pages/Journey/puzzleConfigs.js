@@ -471,7 +471,7 @@ export const PUZZLE_CONFIGS = {
       'Change the word and run again.',
       'Try your own name instead of "Python".',
     ],
-    starterCode: `word = "Python"\nfor char in word:\n    print(char)`,
+    starterCode: `word = "Adventure"\nfor char in word:\n    print(char)`,
     validator: nonEmpty,
   },
 
@@ -488,9 +488,9 @@ export const PUZZLE_CONFIGS = {
       'Check if char is in "aeiouAEIOU".',
       'Try: if char in "aeiouAEIOU": then print(char)',
     ],
-    hintCode: `word = "Python"\nfor char in word:\n    if char in "aeiouAEIOU":\n        print(char)`,
-    starterCode: `word = "Python"\nfor char in word:\n    # Add: if char in "aeiouAEIOU":\n    #         print(char)\n`,
-    validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Loop through the letters rather than printing the answer.'], [/\bif\b/, 'Use an if inside the loop to pick out the vowels.']], exact(['o'], 'Loop through the word and print a letter only if it is a vowel.', 'Vowel found!')),
+    hintCode: `word = "Adventure"\nfor char in word:\n    if char in "aeiouAEIOU":\n        print(char)`,
+    starterCode: `word = "Adventure"\nfor char in word:\n    # Add: if char in "aeiouAEIOU":\n    #         print(char)\n`,
+    validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Loop through the letters rather than printing the answer.'], [/\bif\b/, 'Use an if inside the loop to pick out the vowels.']], exact(['A', 'e', 'u', 'e'], 'Loop through the word and print a letter only if it is a vowel.', 'Vowel found!')),
   },
 
   '6-boss': {
@@ -507,8 +507,8 @@ export const PUZZLE_CONFIGS = {
       'Write: count = count + 1',
       'Put it indented inside the if block.',
     ],
-    hintCode: `word = "elephant"\ncount = 0\n\nfor char in word:\n    if char in "aeiouAEIOU":\n        count = count + 1\n\nprint("Vowels:", count)`,
-    starterCode: `word = "elephant"\ncount = 0\n\nfor char in word:\n    if char in "aeiouAEIOU":\n        # Add: count = count + 1\n\nprint("Vowels:", count)\n`,
+    hintCode: `word = "Elephant"\ncount = 0\n\nfor char in word:\n    if char in "aeiouAEIOU":\n        count = count + 1\n\nprint("Vowels:", count)`,
+    starterCode: `word = "Elephant"\ncount = 0\n\nfor char in word:\n    if char in "aeiouAEIOU":\n        # Add: count = count + 1\n\nprint("Vowels:", count)\n`,
     validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Loop through the letters rather than printing the answer.'], [/\bif\b/, 'Use an if inside the loop to decide what to count.']], exact(['Vowels: 3'], 'Count in the loop, then print the total once at the end.', 'Vowels counted!')),
   },
 
@@ -655,9 +655,9 @@ export const PUZZLE_CONFIGS = {
       'Check if score is >= 80.',
       'Try: if score >= 80: then print(score)',
     ],
-    hintCode: `scores = [75, 90, 60, 85, 55, 95]\n\nfor score in scores:\n    if score >= 80:\n        print(score)`,
-    starterCode: `scores = [75, 90, 60, 85, 55, 95]\n\nfor score in scores:\n    # Add: if score >= 80:\n    #         print(score)\n`,
-    validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Loop through the list rather than printing it whole.'], [/\bif\b/, 'Use an if inside the loop to keep only the high scores.']], exact(['90', '85', '95'], 'Print a score only if it is 80 or more, one per line.', 'High scores found!')),
+    hintCode: `scores = [75, 90, 60, 85, 80, 55, 95]\n\nfor score in scores:\n    if score >= 80:\n        print(score)`,
+    starterCode: `scores = [75, 90, 60, 85, 80, 55, 95]\n\nfor score in scores:\n    # Add: if score >= 80:\n    #         print(score)\n`,
+    validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Loop through the list rather than printing it whole.'], [/\bif\b/, 'Use an if inside the loop to keep only the high scores.']], exact(['90', '85', '80', '95'], 'Print a score only if it is 80 or more, one per line.', 'High scores found!')),
   },
 
   '8-boss': {
@@ -674,9 +674,9 @@ export const PUZZLE_CONFIGS = {
       'Write: count = count + 1',
       'Put it indented inside the if block.',
     ],
-    hintCode: `scores = [75, 90, 60, 85, 55, 95]\ncount = 0\n\nfor score in scores:\n    if score >= 80:\n        count = count + 1\n\nprint("High scores:", count)`,
-    starterCode: `scores = [75, 90, 60, 85, 55, 95]\ncount = 0\n\nfor score in scores:\n    if score >= 80:\n        # Add: count = count + 1\n\nprint("High scores:", count)\n`,
-    validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Loop through the list rather than printing the answer.'], [/\bif\b/, 'Use an if inside the loop to decide what to count.']], exact(['High scores: 3'], 'Count in the loop, then print the total once at the end.', 'Scores counted!')),
+    hintCode: `scores = [75, 90, 60, 85, 80, 55, 95]\ncount = 0\n\nfor score in scores:\n    if score >= 80:\n        count = count + 1\n\nprint("High scores:", count)`,
+    starterCode: `scores = [75, 90, 60, 85, 80, 55, 95]\ncount = 0\n\nfor score in scores:\n    if score >= 80:\n        # Add: count = count + 1\n\nprint("High scores:", count)\n`,
+    validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Loop through the list rather than printing the answer.'], [/\bif\b/, 'Use an if inside the loop to decide what to count.']], exact(['High scores: 4'], 'Count in the loop, then print the total once at the end.', 'Scores counted!')),
   },
 
   // ──── LESSON 9: Basic Functions ──────────────────────────────────────────
@@ -796,8 +796,8 @@ export const PUZZLE_CONFIGS = {
       'name[0] gets the first letter.',
       'Try: if name[0] == "A": then print(name)',
     ],
-    hintCode: `names = ["Alice", "Bob", "Anna", "Charlie", "Amy"]\n\nfor name in names:\n    if name[0] == "A":\n        print(name)`,
-    starterCode: `names = ["Alice", "Bob", "Anna", "Charlie", "Amy"]\n\nfor name in names:\n    # Add: if name[0] == "A":\n    #         print(name)\n`,
+    hintCode: `names = ["Alice", "Bob", "Anna", "Charlie", "Amy", "Mary-Anne"]\n\nfor name in names:\n    if name[0] == "A":\n        print(name)`,
+    starterCode: `names = ["Alice", "Bob", "Anna", "Charlie", "Amy", "Mary-Anne"]\n\nfor name in names:\n    # Add: if name[0] == "A":\n    #         print(name)\n`,
     validator: requires([[/\bfor\b[\s\S]*\bin\b/, 'Loop through the names rather than printing the list.'], [/\bif\b/, 'Use an if inside the loop to keep only the names starting with A.']], exact(['Alice', 'Anna', 'Amy'], 'Print a name only if it starts with A, one per line.', 'Filtered the list!')),
   },
 

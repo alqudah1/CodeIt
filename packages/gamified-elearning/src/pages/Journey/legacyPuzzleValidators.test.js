@@ -95,3 +95,67 @@ describe('legacy puzzle validators', () => {
     expect(page).toMatch(/config\.validator\(lastOutput, lastCode\)/);
   });
 });
+
+// ── Data defects, which no validator can recover ─────────────────────────────
+//
+// Separate from the validator problem. These puzzles would have failed to catch
+// their own misconception even with a perfect validator, because the test data
+// could not tell the right rule from the plausible wrong one.
+//
+//   8-b / 8-boss  scores were [75, 90, 60, 85, 55, 95] with no 80 in the list,
+//                 so `score > 80` and `score >= 80` printed the same thing. The
+//                 puzzle teaches the boundary and removed the boundary from the
+//                 data. 80 added.
+//   10-b          names had no capital A anywhere except first, so `"A" in name`
+//                 and `name[0] == "A"` agreed. The puzzle is about indexing and
+//                 a child who never indexed passed. "Mary-Anne" added. Ana,
+//                 Sasha, Noah, Aaron and Dana all fail to separate them,
+//                 because a lowercase a does not match "A".
+//   6-b / 6-boss  found by applying the same question to the rest: the words
+//                 had no capital vowel, so the "aeiouAEIOU" the hint asks for
+//                 was indistinguishable from "aeiou". "Python" also had a
+//                 single vowel, so `char == "o"` passed a vowel puzzle.
+//                 Now "Adventure" and "Elephant".
+//
+// The question to ask of any puzzle teaching a boundary or a position: does the
+// data contain the case that separates the right rule from the plausible wrong
+// one. A >= needs an equal value present. A name[0] needs a mid-string match.
+const MISCONCEPTIONS = [
+  ['8-b', 'score > 80 rather than >= 80',
+    'scores = [75, 90, 60, 85, 80, 55, 95]\nfor score in scores:\n    if score > 80:\n        print(score)',
+    '90\n85\n95\n'],
+  ['8-boss', 'score > 80 rather than >= 80',
+    'scores = [75, 90, 60, 85, 80, 55, 95]\ncount = 0\nfor score in scores:\n    if score > 80:\n        count = count + 1\nprint("High scores:", count)',
+    'High scores: 3\n'],
+  ['10-b', '"A" in name rather than name[0] == "A"',
+    'names = ["Alice", "Bob", "Anna", "Charlie", "Amy", "Mary-Anne"]\nfor name in names:\n    if "A" in name:\n        print(name)',
+    'Alice\nAnna\nAmy\nMary-Anne\n'],
+  ['6-b', 'lowercase vowels only, capital missed',
+    'word = "Adventure"\nfor char in word:\n    if char in "aeiou":\n        print(char)',
+    'e\nu\ne\n'],
+  ['6-boss', 'lowercase vowels only, capital missed',
+    'word = "Elephant"\ncount = 0\nfor char in word:\n    if char in "aeiou":\n        count = count + 1\nprint("Vowels:", count)',
+    'Vowels: 2\n'],
+];
+
+describe('the data separates the right rule from the wrong one', () => {
+  test.each(MISCONCEPTIONS)('%s rejects: %s', (key, _label, code, output) => {
+    expect(PUZZLE_CONFIGS[key].validator(output, code).pass).toBe(false);
+  });
+
+  test('the boundary value is actually present in the scores list', () => {
+    const src = fs.readFileSync(path.join(__dirname, 'puzzleConfigs.js'), 'utf8');
+    expect(src).toMatch(/scores = \[75, 90, 60, 85, 80, 55, 95\]/);
+  });
+
+  test('a capital A appears somewhere other than first', () => {
+    const src = fs.readFileSync(path.join(__dirname, 'puzzleConfigs.js'), 'utf8');
+    expect(src).toMatch(/"Mary-Anne"/);
+  });
+
+  test('the vowel words contain a capital vowel', () => {
+    const src = fs.readFileSync(path.join(__dirname, 'puzzleConfigs.js'), 'utf8');
+    expect(src).toMatch(/word = "Adventure"/);
+    expect(src).toMatch(/word = "Elephant"/);
+  });
+});
