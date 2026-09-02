@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Header from '../Header/Header';
 import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
@@ -71,10 +71,29 @@ export default function Pricing() {
   const [billing, setBilling] = useState(DEFAULT_BILLING_STATE);
   const [billingBusy, setBillingBusy] = useState(false);
   const [billingError, setBillingError] = useState('');
+  const { hash } = useLocation();
 
   useSEO({
     canonical: '/pricing',
   });
+
+  // /pricing#codeit-plus and /pricing#family-pilot were already linked from
+  // six places and neither of them moved the page: this is a single-page app,
+  // so the browser resolves the fragment before React has rendered the card.
+  // A parent following "See CodeIt Plus" landed at the top of a long page and
+  // had to find the plan themselves. The delay is for the paid card, which
+  // does not exist in the DOM until the billing endpoint has answered.
+  useEffect(() => {
+    if (!hash) return undefined;
+    const id = hash.slice(1);
+    const timer = setTimeout(() => {
+      const target = document.getElementById(id);
+      if (target && typeof target.scrollIntoView === 'function') {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 80);
+    return () => clearTimeout(timer);
+  }, [hash, billing.billingEnabled]);
 
   useEffect(() => {
     let cancelled = false;

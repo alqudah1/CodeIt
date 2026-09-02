@@ -67,6 +67,15 @@ const EVENT_META = Object.freeze({
   billing_portal_open: new Set(),
   billing_checkout_start: new Set(),
 
+  // Added 2 September 2026, after the first paying family said subscribing
+  // took too many buttons. These three are the only way to tell whether the
+  // shorter path is the reason someone paid, or whether it only moved a
+  // control nobody presses. The wall event is the denominator: how many
+  // families reach the monthly limit at all.
+  ai_limit_reached: new Set(),
+  ai_limit_upgrade_click: new Set(),
+  header_get_plus_click: new Set(),
+
   // Server-side. The milestone table counts lesson completions from
   // Student_Lesson_Progress, which cannot say when one happened relative to
   // anything else. An event can.
@@ -105,6 +114,8 @@ const CLIENT_REPORTED_EVENTS = new Set([
   'billing_portal_open', 'billing_checkout_start',
   // Added 2 September 2026: the two missing denominators.
   'studio_view', 'lesson_start',
+  // Added 2 September 2026: the shorter path to subscribing.
+  'ai_limit_reached', 'ai_limit_upgrade_click', 'header_get_plus_click',
 ]);
 const JOURNEY_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const CAMPAIGN_PATTERN = /^[a-z0-9][a-z0-9-]{1,23}$/;

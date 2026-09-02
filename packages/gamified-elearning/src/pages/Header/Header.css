@@ -217,6 +217,33 @@
   outline-offset: 3px;
 }
 
+/* ── Get Plus (adult accounts without a subscription only) ───── */
+/* Deliberately quieter than the orange key beside it. Making something
+   is still the point of the site; this is the shortcut the first paying
+   family asked for, not a second primary button. */
+.site-header__plus {
+  display: inline-block;
+  font-family: 'Nunito', 'Trebuchet MS', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #6A4BC4;
+  text-decoration: none;
+  padding: 0.46rem 0.95rem;
+  border-radius: 999px;
+  background: rgba(123, 92, 214, 0.08);
+  border: 2px solid rgba(123, 92, 214, 0.35);
+  white-space: nowrap;
+  transition: background 0.18s, border-color 0.18s;
+}
+.site-header__plus:hover {
+  background: rgba(123, 92, 214, 0.16);
+  border-color: rgba(123, 92, 214, 0.55);
+}
+.site-header__plus:focus-visible {
+  outline: 2px solid #7B5CD6;
+  outline-offset: 3px;
+}
+
 /* ── XP popup (floats above avatar on XP earn) ───────────────── */
 .site-header__xp-popup {
   position: absolute;

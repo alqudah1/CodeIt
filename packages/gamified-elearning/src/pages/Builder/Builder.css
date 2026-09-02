@@ -579,6 +579,60 @@
   font-style: italic;
 }
 
+/* ════════════════════════════════════════════════════════════
+   MONTHLY AI ALLOWANCE REACHED
+   Deliberately not the red error card. Nothing has gone wrong,
+   and the panel that tells a parent the price should not look
+   like a failure.
+════════════════════════════════════════════════════════════ */
+.bldr-limit-card {
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 1.75rem;
+  background: var(--paper, #FFFDF7);
+  border: 2px solid rgba(123,92,214,0.28);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(123,92,214,0.10);
+  animation: bldr-reveal 0.3s ease both;
+}
+
+.bldr-limit-card__body {
+  flex: 1 1 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.bldr-limit-card__title {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #38291F;
+}
+
+.bldr-limit-card__sub {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #5b5147;
+  line-height: 1.45;
+}
+
+.bldr-limit-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.bldr-limit-card__actions a {
+  text-decoration: none;
+}
+
 .bldr-error-inline {
   margin: 0;
   padding: 0.6rem 1rem;

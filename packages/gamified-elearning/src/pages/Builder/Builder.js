@@ -858,6 +858,11 @@ export default function Builder() {
   const [loading, setLoading]           = useState(false);
   const [buildStep, setBuildStep]       = useState(0);
   const [error, setError]               = useState('');
+  // The monthly free AI limit is not an error. A parent whose child has just
+  // hit it is more willing to pay at that second than at any other point in
+  // the product, and until today they were shown a red card that said "We
+  // couldn't build that yet" with no button on it.
+  const [limitReached, setLimitReached] = useState('');
   const [buildKey, setBuildKey]         = useState(0);
   const [hasPersonalized, setHasPersonalized] = useState(false);
   const [hasPlayedOnce, setHasPlayedOnce] = useState(false);
@@ -1932,6 +1937,7 @@ export default function Builder() {
     setLoadingPreviewType(previewType);
     setLoading(true);
     setError('');
+    setLimitReached('');
     setCode('');
     setBuiltSummary('');
     setAiTitle('');
@@ -1966,6 +1972,13 @@ export default function Builder() {
         throw new Error('The studio is temporarily unavailable. Please try again in a moment.');
       }
       const data = await res.json();
+      // 402 with this code is the monthly allowance, not a fault. It gets its
+      // own panel with a way forward, not the red error card.
+      if (res.status === 402 && data.code === 'FREE_AI_LIMIT_REACHED') {
+        setLimitReached(data.error || data.message || '');
+        void trackEvent('ai_limit_reached', null, token);
+        return;
+      }
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
       const generatedHtml = data.html || data.code;
       const html = data.isFallback
@@ -2729,6 +2742,7 @@ export default function Builder() {
   // ── Derived ────────────────────────────────────────────────────────────────
   const hasResult   = !loading && code;
   const hasError    = !loading && error;
+  const hasLimit    = !loading && Boolean(limitReached);
   const earnsProjectXp = String(user?.role || '').toLowerCase() === 'student';
   const activeBuildSteps = getBuildSteps(loadingPreviewType);
   const loadingTitle = loadingPreviewType === 'quiz' ? 'Building your quiz...'
@@ -3141,7 +3155,7 @@ export default function Builder() {
               nobody has made yet", they have already had one thing work, and
               waiting twenty seconds for their own idea is a trade they
               understand rather than a blank screen they cannot explain. */}
-        {!code && !loading && !error && (
+        {!code && !loading && !error && !limitReached && (
           <div className="bldr-hero-picks">
             <p className="bldr-hero-picks__label">Or ask for something nobody has made yet</p>
             <div className="bldr-hero-picks__grid">
@@ -3326,6 +3340,36 @@ export default function Builder() {
             <button className="bldr-action-btn bldr-action-btn--primary bldr-action-btn--sm" onClick={handleBuild}>
               Try again
             </button>
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════
+            MONTHLY AI ALLOWANCE REACHED
+        ════════════════════════════════════════ */}
+        {hasLimit && (
+          <div className="bldr-limit-card" role="status">
+            <div className="bldr-limit-card__body">
+              <p className="bldr-limit-card__title">That is this month's free AI builds used up.</p>
+              <p className="bldr-limit-card__sub">
+                {limitReached || 'Every lesson, puzzle and project stays open, and you can keep changing anything you have already built.'}
+              </p>
+            </div>
+            <div className="bldr-limit-card__actions">
+              <Link
+                className="bldr-action-btn bldr-action-btn--primary bldr-action-btn--sm"
+                to="/pricing#codeit-plus"
+                onClick={() => void trackEvent('ai_limit_upgrade_click', null, token)}
+              >
+                See CodeIt Plus
+              </Link>
+              <button
+                type="button"
+                className="bldr-action-btn bldr-action-btn--sm"
+                onClick={() => setLimitReached('')}
+              >
+                {code ? 'Keep editing' : 'Keep looking around'}
+              </button>
+            </div>
           </div>
         )}
 
@@ -4549,7 +4593,7 @@ export default function Builder() {
                   <span>
                     {publishRefusal.message}
                     {publishRefusal.code === 'PLAN_UPGRADE_REQUIRED' && (
-                      <> <Link to="/pricing">See CodeIt Plus</Link></>
+                      <> <Link to="/pricing#codeit-plus">See CodeIt Plus</Link></>
                     )}
                   </span>
                 </p>

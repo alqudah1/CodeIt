@@ -4,6 +4,8 @@ import { AuthContext } from "../../context/AuthContext";
 import { useCharacter } from "../../context/CharacterContext";
 import CharacterAvatar from "../../components/CharacterAvatar/CharacterAvatar";
 import BrandLogo from "../../components/BrandLogo/BrandLogo";
+import { DEFAULT_BILLING_STATE, fetchBillingStatus, isPlusMember } from "../../utils/billing";
+import { trackEvent } from "../../utils/trackEvent";
 import "./Header.css";
 
 // Nine controls used to sit in this header — logo, six nav links, the primary
@@ -57,12 +59,13 @@ const MEMBER_ACCOUNT_NAV = [
 const XP_PER_LEVEL = 100;
 
 export default function Header() {
-  const { user, logout } = useContext(AuthContext);
+  const { user, token, logout } = useContext(AuthContext);
   const { character, stats, pendingXP, clearPendingXP } = useCharacter();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropOpen, setDropOpen] = useState(false);
+  const [billing, setBilling] = useState(DEFAULT_BILLING_STATE);
   const dropRef = useRef(null);
 
   // CodeIt does not sell to children, so a managed child profile never sees
@@ -70,14 +73,38 @@ export default function Header() {
   // dangling a price in front of a nine-year-old.
   const navLinks = (user ? MEMBER_NAV : PUBLIC_NAV)
     .filter(link => !link.adultsOnly || !user?.managedProfile);
+
+  // The first family to pay said it took too many buttons, and they were
+  // right: from a signed-in adult's studio, the plan page was two taps behind
+  // an avatar. This is one tap, and only for the person allowed to buy.
+  const isAdultAccount = Boolean(user)
+    && !user.managedProfile
+    && String(user.role || "").toLowerCase() !== "student";
+  const showGetPlus = isAdultAccount && billing.billingEnabled && !isPlusMember(billing);
+
+  // Two controls with one destination is the mistake this header already made
+  // once with Studio. When Get Plus is in the top bar, Plan leaves the menu;
+  // when it is not, Plan is how a subscriber manages their billing.
   const accountLinks = (user ? MEMBER_ACCOUNT_NAV : [])
-    .filter(link => !link.adultsOnly || !user?.managedProfile);
+    .filter(link => !link.adultsOnly || !user?.managedProfile)
+    .filter(link => !(showGetPlus && link.to === "/pricing"));
   const level = stats?.totalXP >= 0 ? Math.floor(stats.totalXP / XP_PER_LEVEL) + 1 : null;
 
   useEffect(() => {
     setMenuOpen(false);
     setDropOpen(false);
   }, [location.pathname]);
+
+  // Asked once per mount, and only for an adult account. A failure is silent:
+  // the header keeps the default free-plan state, which shows nothing new.
+  useEffect(() => {
+    if (!token || !isAdultAccount) return undefined;
+    let cancelled = false;
+    fetchBillingStatus(token)
+      .then((state) => { if (!cancelled) setBilling(state); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [token, isAdultAccount]);
 
   useEffect(() => {
     if (!dropOpen) return undefined;
@@ -162,6 +189,16 @@ export default function Header() {
             {/* The nav item beside this one goes to the same place. Two labels
                 for one destination taught a child that the words are decoration,
                 so the button now says what it opens and the nav names it. */}
+            {showGetPlus && (
+              <Link
+                to="/pricing#codeit-plus"
+                className="site-header__plus"
+                onClick={() => void trackEvent("header_get_plus_click", null, token)}
+              >
+                Get Plus
+              </Link>
+            )}
+
             <Link to="/builder" className="site-header__cta">
               {user ? "🎮 Make something" : "Start building"}
             </Link>

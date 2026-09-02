@@ -8,6 +8,7 @@ jest.mock('react-router-dom', () => {
   const React = require('react');
   return {
     Link: ({ children, to, ...props }) => React.createElement('a', { href: to, ...props }, children),
+    useLocation: () => ({ pathname: '/pricing', hash: '' }),
   };
 }, { virtual: true });
 jest.mock('../Header/Header', () => () => null);
