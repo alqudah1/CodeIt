@@ -9,9 +9,9 @@
 // their time. It is here so both read the same answer.
 
 const GUIDE_LEVELS = [
-  { id: 'early',       icon: '🧸', label: 'Big help',       ages: 'about 5 to 7' },
-  { id: 'guided',      icon: '🧭', label: 'Some help',      ages: 'about 8 to 12' },
-  { id: 'independent', icon: '🚀', label: 'Explore myself', ages: 'about 13 and up' },
+  { id: 'early',       icon: 'wave',   label: 'Big help',       ages: 'about 5 to 7' },
+  { id: 'guided',      icon: 'target', label: 'Some help',      ages: 'about 8 to 12' },
+  { id: 'independent', icon: 'rocket', label: 'Explore myself', ages: 'about 13 and up' },
 ];
 
 const GUIDE_LEVEL_IDS = GUIDE_LEVELS.map(level => level.id);

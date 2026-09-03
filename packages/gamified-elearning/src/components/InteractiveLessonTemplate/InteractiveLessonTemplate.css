@@ -281,13 +281,19 @@
 }
 
 /* Young learners should never have to guess the next click. */
+/* Was a bright yellow panel with a 2px sun border, sitting directly above a
+   second bright yellow panel, both above the code the step is teaching. Three
+   things shouting in the same voice, and the loudest of them was the
+   housekeeping. This is an inset now: it recedes, and the code is what the
+   page is about. See the surface scale in styles/arcade.css. */
 .sl-now {
-  margin: 0 0 1.25rem;
-  padding: 1rem 1.1rem;
-  border: 2px solid #fed340;
-  border-radius: 16px;
-  background: #fff9df;
-  color: #38291f;
+  margin: 0 0 1.1rem;
+  padding: 0.8rem 1rem 0.8rem 0.9rem;
+  border: 0;
+  border-left: 3px solid var(--arc-sun, #FED340);
+  border-radius: 10px;
+  background: rgba(53, 34, 14, 0.045);
+  color: #4a3a2c;
 }
 
 .sl-now__eyebrow {
@@ -1139,9 +1145,9 @@
   gap: 0.6rem;
   margin: 0 0 1.1rem;
   padding: 0.85rem 1rem;
-  border-radius: 14px;
-  background: rgba(254, 211, 64, 0.14);
-  border: 1.5px solid rgba(254, 211, 64, 0.4);
+  border-radius: 12px;
+  background: rgba(53, 34, 14, 0.028);
+  border: 0;
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.55;
@@ -1300,7 +1306,7 @@
 .sl-strip__back:hover { transform: translateY(-1px); box-shadow: var(--pop-rest); }
 .sl-jp-dot { border: 2px solid var(--ink); font-family: var(--font-display); box-shadow: 2px 2px 0 rgba(53,34,14,0.18); }
 .sl-jp-node--active .sl-jp-dot { background: var(--arc-sun); color: var(--ink); }
-.sl-now { border-left: 4px solid var(--arc-sun); }
+/* The left rule is set on .sl-now itself now, in the block above. */
 .sl-tag--done { background: var(--arc-mint); color: var(--ink); border: 1.5px solid var(--ink); }
 .sl-gate-card__btn, .sl-completion-card__btn {
   border: 2.5px solid var(--ink);

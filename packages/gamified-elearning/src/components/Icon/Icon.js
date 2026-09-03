@@ -207,6 +207,169 @@ const paths = {
       <path d="M14.4 3.6a5 5 0 0 0-4.6 6.9L3.9 16.4a2 2 0 0 0 2.8 2.8l5.9-5.9a5 5 0 0 0 6.9-4.6c0-.8-.2-1.5-.5-2.2l-3 3-2.6-2.6 3-3a5 5 0 0 0-2-.3Z" fill={MINT} />
     </>
   ),
+  medal1: (
+    <>
+      <path d="M8.4 3.5 12 9.4 15.6 3.5" fill="none" />
+      <circle cx="12" cy="15" r="6.2" fill={SUN} />
+      <path d="M11 12.4h1.4v5.2" fill="none" />
+    </>
+  ),
+  medal2: (
+    <>
+      <path d="M8.4 3.5 12 9.4 15.6 3.5" fill="none" />
+      <circle cx="12" cy="15" r="6.2" fill="#D9DDE3" />
+      <path d="M10.2 13.4a1.8 1.8 0 0 1 3.4.9c0 1.4-3.4 2-3.4 3.3h3.6" fill="none" />
+    </>
+  ),
+  medal3: (
+    <>
+      <path d="M8.4 3.5 12 9.4 15.6 3.5" fill="none" />
+      <circle cx="12" cy="15" r="6.2" fill="#E0A26B" />
+      <path d="M10.3 13.2a1.7 1.7 0 1 1 1.4 2.6 1.7 1.7 0 1 1-1.4 2.6" fill="none" />
+    </>
+  ),
+  target: (
+    <>
+      <circle cx="12" cy="12" r="8.4" fill={PAPER} />
+      <circle cx="12" cy="12" r="4.8" fill={ORANGE} />
+      <circle cx="12" cy="12" r="1.6" fill={PAPER} />
+    </>
+  ),
+  sprout: (
+    <>
+      <path d="M12 20.5v-6.4" fill="none" />
+      <path d="M12 14.1C12 11 9.8 8.8 6.6 8.8c0 3.1 2.2 5.3 5.4 5.3Z" fill={MINT} />
+      <path d="M12 14.1c0-3.4 2.4-5.8 5.8-5.8 0 3.4-2.4 5.8-5.8 5.8Z" fill={MINT} />
+    </>
+  ),
+  moon: (
+    <path d="M20 14.4A8.4 8.4 0 0 1 9.6 4a8.5 8.5 0 1 0 10.4 10.4Z" fill={VIOLET} />
+  ),
+  bolt: (
+    <path d="M13.6 2.8 5.6 13.4h5.2l-1.4 7.8 8.2-10.8h-5.2Z" fill={SUN} />
+  ),
+  ball: (
+    <>
+      <circle cx="12" cy="12" r="8.4" fill={PAPER} />
+      <path d="M12 7.4 15.4 9.9 14.1 13.9H9.9L8.6 9.9Z" fill={INK} stroke="none" />
+      <path d="M12 3.6v3.8M4.4 10.2 8.6 9.9M19.6 10.2 15.4 9.9M8 19.6l1.9-5.7M16 19.6l-1.9-5.7" fill="none" />
+    </>
+  ),
+  paw: (
+    <>
+      <ellipse cx="8" cy="8.6" rx="1.9" ry="2.4" fill={ORANGE} />
+      <ellipse cx="12.6" cy="7.4" rx="1.9" ry="2.4" fill={ORANGE} />
+      <ellipse cx="17" cy="9.6" rx="1.9" ry="2.3" fill={ORANGE} />
+      <path d="M12 12.4c3 0 5 2 5 4.2 0 2-1.7 3.3-3.6 2.9-1-.2-1.8-.2-2.8 0-1.9.4-3.6-.9-3.6-2.9 0-2.2 2-4.2 5-4.2Z" fill={SUN} />
+    </>
+  ),
+  shop: (
+    <>
+      <path d="M4.4 8.6h15.2l-1.2 11.2H5.6Z" fill={SUN} />
+      <path d="M8.8 8.6V6.4a3.2 3.2 0 0 1 6.4 0v2.2" fill="none" />
+    </>
+  ),
+  // The eleven starter games. These are the first pictures a child meets, so
+  // they are pictures rather than labels: a rocket, a balloon, a cat.
+  rocket: (
+    <>
+      <path d="M12 2.6c3.1 2.4 4.8 6 4.8 9.9L12 17.4l-4.8-4.9c0-3.9 1.7-7.5 4.8-9.9Z" fill={PAPER} />
+      <circle cx="12" cy="10" r="2.1" fill={VIOLET} />
+      <path d="M7.2 12.5 4.6 15v3.4l3.2-2M16.8 12.5 19.4 15v3.4l-3.2-2" fill={ORANGE} />
+      <path d="M10.3 18.4 12 21.6l1.7-3.2" fill={SUN} />
+    </>
+  ),
+  balloon: (
+    <>
+      <path d="M12 3.2c3.3 0 5.6 2.5 5.6 5.8 0 3.7-3.4 6.6-5.6 6.6S6.4 12.7 6.4 9C6.4 5.7 8.7 3.2 12 3.2Z" fill="#F0698E" />
+      <path d="M12 15.6 11 17.4h2Z" fill={INK} stroke="none" />
+      <path d="M12 17.6c1.6 1.4-1.6 2.2 0 3.6" fill="none" />
+    </>
+  ),
+  snake: (
+    <>
+      <path d="M5 17.4h7.6a3.2 3.2 0 0 0 0-6.4H9.4a3.2 3.2 0 0 1 0-6.4H17" fill="none" strokeWidth="2.6" />
+      <circle cx="18.4" cy="4.6" r="2" fill={MINT} />
+      <circle cx="19" cy="4.2" r="0.5" fill={INK} stroke="none" />
+    </>
+  ),
+  bricks: (
+    <>
+      <rect x="3.4" y="5" width="7.6" height="4.6" rx="1" fill={ORANGE} />
+      <rect x="13" y="5" width="7.6" height="4.6" rx="1" fill={SUN} />
+      <rect x="3.4" y="11.4" width="7.6" height="4.6" rx="1" fill={SUN} />
+      <rect x="13" y="11.4" width="7.6" height="4.6" rx="1" fill={ORANGE} />
+      <circle cx="12" cy="20" r="2.2" fill={PAPER} />
+    </>
+  ),
+  runner: (
+    <>
+      <circle cx="14.4" cy="5.2" r="2.2" fill={SUN} />
+      <path d="M13.6 9 9.8 11.4l1.6 3.4-2.2 5" fill="none" />
+      <path d="M11.4 14.8 15.6 15l1.6 4.8" fill="none" />
+      <path d="M13.6 9.4 17.8 11" fill="none" />
+      <path d="M4.6 10.6h3.2M3.6 14h2.6" fill="none" />
+    </>
+  ),
+  puzzle: (
+    <path d="M9.6 3.6h4.8v2a1.8 1.8 0 1 0 3.6 0v-2h2.4v16.8H4.6V3.6h2.4v2a1.8 1.8 0 1 0 2.6 0Z" fill={VIOLET} />
+  ),
+  mallet: (
+    <>
+      <rect x="4.4" y="4.4" width="11" height="6.4" rx="2" fill={ORANGE} transform="rotate(-16 9.9 7.6)" />
+      <path d="M11 11.6 18.6 20" fill="none" strokeWidth="2.4" />
+    </>
+  ),
+  cat: (
+    <>
+      <path d="M5.6 9.6 6 4.6l4 3.1a8.6 8.6 0 0 1 4 0l4-3.1.4 5A7.4 7.4 0 0 1 20 14c0 4-3.6 6.6-8 6.6S4 18 4 14a7.4 7.4 0 0 1 1.6-4.4Z" fill={SUN} />
+      <circle cx="9.6" cy="13.4" r="0.9" fill={INK} stroke="none" />
+      <circle cx="14.4" cy="13.4" r="0.9" fill={INK} stroke="none" />
+      <path d="M12 15.4v1.2M10.6 17.4h2.8" fill="none" />
+    </>
+  ),
+  // The starter quizzes and websites.
+  maths: (
+    <>
+      <rect x="4" y="4" width="16" height="16" rx="3" fill={PAPER} />
+      <path d="M7.4 9.2h4M9.4 7.2v4" fill="none" />
+      <path d="M13 9.2h3.6" fill="none" />
+      <path d="M7.6 15.2h4M13 14h3.6M13 16.6h3.6" fill="none" />
+    </>
+  ),
+  crystal: (
+    <>
+      <path d="M12 3.4 18 9.2 12 20.6 6 9.2Z" fill={VIOLET} />
+      <path d="M6 9.2h12M12 3.4 9.4 9.2 12 20.6 14.6 9.2Z" fill="none" />
+    </>
+  ),
+  cupcake: (
+    <>
+      <path d="M6.6 11.4h10.8L16 20.4H8Z" fill={PAPER} />
+      <path d="M6 11.4c0-3.2 2.7-5.6 6-5.6s6 2.4 6 5.6Z" fill="#F0698E" />
+      <path d="M12 3.2v2.2" fill="none" />
+    </>
+  ),
+  shoe: (
+    <>
+      <path d="M3.6 16.6c0-1.6.8-2.6 2.4-3.2l3.4-1.4 2.2-3.4 3 1.6-.6 2.4 5.4 2.6c.8.4 1 1 1 1.8v2.2H3.6Z" fill={MINT} />
+      <path d="M8 15.2l1.6 1.4M11 14l1.6 1.4M14 13.4l1.6 1.4" fill="none" />
+    </>
+  ),
+  dog: (
+    <>
+      <path d="M6.4 6.4 5 11.6c0 4 3.1 6.6 7 6.6s7-2.6 7-6.6L17.6 6.4l-3 2.4a8.6 8.6 0 0 0-5.2 0Z" fill="#C98A52" />
+      <circle cx="9.8" cy="12.6" r="0.9" fill={INK} stroke="none" />
+      <circle cx="14.2" cy="12.6" r="0.9" fill={INK} stroke="none" />
+      <path d="M12 14.6v1.4" fill="none" />
+    </>
+  ),
+  thread: (
+    <>
+      <circle cx="12" cy="12" r="8.2" fill="#F0698E" />
+      <path d="M6.4 8.4c3.4 1 6.8 3.4 9 6.8M8.4 5.6c3.6 1.6 6.8 4.6 8.6 8.4M5.6 12.4c2.6 1 5 2.8 6.6 5.2" fill="none" />
+    </>
+  ),
   book: (
     <>
       <path d="M4 5.2c2.6-1 5.3-1 8 0v14c-2.7-1-5.4-1-8 0Z" fill={PAPER} />

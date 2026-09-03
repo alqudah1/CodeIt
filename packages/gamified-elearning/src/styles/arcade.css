@@ -85,6 +85,45 @@
   --pop-lift: 0 7px 0 var(--ink);
   --pop-down: 0 1px 0 var(--ink);
   --pop-card: 6px 6px 0 rgba(53, 34, 14, 0.14);
+
+  /* ── Three surfaces, not one ─────────────────────────────────────────────
+     A screenshot audit on 3 September: every box on the site was the same
+     box. Nav pills, game cards, hint panels, the guide bubble, tabs and the
+     primary button all carried the same 2.5px ink border, the same radius and
+     the same hard shadow. So a hint looked exactly as important as the thing
+     a child is supposed to press, and nothing on the page felt considered.
+
+     One page. Cards that hold a thing you act on. Insets that hold something
+     the page is telling you. An inset has no shadow and no ink border, and
+     that is the whole difference: it recedes.
+
+       .surface-card   a project, a lesson, a plan, a choice
+       .surface-inset  a hint, an aside, a note, a status line
+       .surface-quiet  the same, one step further back again */
+  --inset-bg: rgba(53, 34, 14, 0.045);
+  --inset-line: rgba(53, 34, 14, 0.10);
+  --quiet-bg: rgba(53, 34, 14, 0.028);
+}
+
+.surface-card {
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: var(--pop-card);
+}
+
+.surface-inset {
+  background: var(--inset-bg);
+  border: 1.5px solid var(--inset-line);
+  border-radius: 14px;
+  box-shadow: none;
+}
+
+.surface-quiet {
+  background: var(--quiet-bg);
+  border: 0;
+  border-radius: 12px;
+  box-shadow: none;
 }
 
 /* ── The ground: a play mat, not a blank page ─────────────────────────────── */

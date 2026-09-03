@@ -2305,7 +2305,7 @@ const STARTER_GAMES = [
   {
     id: 'catch-stars',
     label: 'Catch the falling stars',
-    emoji: '⭐',
+    icon: 'star',
     blurb: 'Catch stars in your basket!',
     prompt: 'a game where you catch falling stars in a basket',
     code: CATCH_STARS,
@@ -2313,7 +2313,7 @@ const STARTER_GAMES = [
   {
     id: 'penalty',
     label: 'Penalty shootout',
-    emoji: '⚽',
+    icon: 'ball',
     blurb: 'Five shots. Score them all!',
     prompt: 'a football penalty shootout game with a moving goalkeeper',
     code: PENALTY,
@@ -2321,7 +2321,7 @@ const STARTER_GAMES = [
   {
     id: 'dodge',
     label: 'Dodge the asteroids',
-    emoji: '🚀',
+    icon: 'rocket',
     blurb: 'Dodge the rocks. Fly far!',
     prompt: 'a space game where you fly a rocket and dodge asteroids',
     code: DODGE,
@@ -2329,7 +2329,7 @@ const STARTER_GAMES = [
   {
     id: 'pop-balloons',
     label: 'Pop the balloons',
-    emoji: '🎈',
+    icon: 'balloon',
     blurb: 'Pop them before they fly away!',
     prompt: 'a game where balloons float up the screen and you tap them to pop them before a timer runs out',
     code: POP_BALLOONS,
@@ -2337,7 +2337,7 @@ const STARTER_GAMES = [
   {
     id: 'snake',
     label: 'Snake',
-    emoji: '🐍',
+    icon: 'snake',
     blurb: 'Eat apples. Grow long. Do not crash!',
     prompt: 'a snake game where you eat apples, grow longer, and lose if you hit the wall or your own tail',
     code: SNAKE,
@@ -2345,7 +2345,7 @@ const STARTER_GAMES = [
   {
     id: 'bricks',
     label: 'Brick breaker',
-    emoji: '🧱',
+    icon: 'bricks',
     blurb: 'Bounce the ball. Smash every brick!',
     prompt: 'a brick breaker game with a paddle, a bouncing ball, and rows of bricks to smash',
     code: BRICKS,
@@ -2353,7 +2353,7 @@ const STARTER_GAMES = [
   {
     id: 'jumper',
     label: 'Jump the gap',
-    emoji: '🏃',
+    icon: 'runner',
     blurb: 'Tap to jump. How far can you go?',
     prompt: 'a one-button endless runner where you tap to jump over gaps in the ground',
     code: JUMPER,
@@ -2361,7 +2361,7 @@ const STARTER_GAMES = [
   {
     id: 'maze',
     label: 'Build a maze',
-    emoji: '🧩',
+    icon: 'puzzle',
     blurb: 'Drag the walls. Make your own maze!',
     prompt: 'a maze game where the walls, coins and door are page elements you can drag to build your own level',
     code: MAZE,
@@ -2369,7 +2369,7 @@ const STARTER_GAMES = [
   {
     id: 'whack',
     label: 'Whack a mole',
-    emoji: '🔨',
+    icon: 'mallet',
     blurb: 'Move the holes. Whack them all!',
     prompt: 'a whack-a-mole game with a grid of holes, a thirty second timer and a score',
     code: WHACK,
@@ -2377,7 +2377,7 @@ const STARTER_GAMES = [
   {
     id: 'memory',
     label: 'Colour memory',
-    emoji: '🎨',
+    icon: 'palette',
     blurb: 'Watch the pattern. Copy it back!',
     prompt: 'a colour memory game where the game flashes a pattern that grows by one each round and you repeat it',
     code: MEMORY,
@@ -2385,7 +2385,7 @@ const STARTER_GAMES = [
   {
     id: 'cat-chase',
     label: 'Cat and mouse chase',
-    emoji: '🐱',
+    icon: 'cat',
     blurb: 'From Scratch? See what is under the blocks!',
     prompt: 'a cat and mouse chase game where the cat follows your finger and catches the mouse',
     code: CAT_CHASE,

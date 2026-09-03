@@ -5,6 +5,7 @@ import { useCharacter } from '../../context/CharacterContext';
 import { API_BASE_URL, ENDPOINTS } from '../../config/api';
 import { world1 } from '../../data/journey/world1';
 import Header from '../Header/Header';
+import Icon from '../../components/Icon/Icon';
 import LeaderboardPreview from '../../components/LeaderboardPreview';
 import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
 import { useSEO } from '../../hooks/useSEO';
@@ -347,7 +348,7 @@ const MainPage = () => {
                 <li key={m.id}>
                   <Link to={`/builder?project=${m.id}`} className="mp-machine">
                     <span className={`mp-machine__marquee mp-machine__marquee--${i % 4}`} aria-hidden="true">
-                      {({ game: '🕹️', quiz: '❓', shop: '🧁', website: '🌐', tool: '🔧', story: '📖' })[m.project_type] || '✨'}
+                      <Icon name={({ game: 'game', quiz: 'quiz', shop: 'shop', website: 'site', tool: 'tool', story: 'book' })[m.project_type] || 'sparkle'} size={22} />
                     </span>
                     <span className="mp-machine__name">{m.title}</span>
                     <span className="mp-machine__play">▶ PLAY</span>

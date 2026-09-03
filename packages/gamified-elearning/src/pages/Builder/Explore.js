@@ -9,6 +9,7 @@ import {
 import Header from '../Header/Header';
 import { AuthContext } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
+import Icon from '../../components/Icon/Icon';
 import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
 import './Explore.css';
@@ -129,7 +130,7 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
             there are numbers. */}
         {(project.plays || 0) + (project.likes || 0) + (project.remixes || 0) === 0 ? (
           <div className="exp-card__stats">
-            <span className="exp-stat exp-stat--new">✨ Just made</span>
+            <span className="exp-stat exp-stat--new"><Icon name="sparkle" size={15} /> Just made</span>
           </div>
         ) : (
           <div className="exp-card__stats">
@@ -328,7 +329,7 @@ export default function Explore() {
                 navigate(`/project/${pick.publicId}`);
               }}
             >
-              🎲 Surprise me
+              <Icon name="target" size={18} /> Surprise me
             </button>
             {/* "Make one" used to sit here, going to /builder, four positions
                 from the header key that already says Start building or Make

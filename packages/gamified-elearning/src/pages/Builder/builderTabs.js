@@ -32,13 +32,13 @@ const TABS = [
   {
     id: 'change',
     label: 'Change',
-    icon: '🎨',
+    icon: 'palette',
     blurb: 'Make it yours. Colours, words, or ask for something new.',
   },
   {
     id: 'learn',
     label: 'The code',
-    icon: '🔍',
+    icon: 'search',
     blurb: 'See what your project is made of and how it works.',
   },
   {
@@ -47,7 +47,7 @@ const TABS = [
     // A tab called Keep above a button called Save is two words for one act.
     id: 'keep',
     label: 'Save',
-    icon: '💾',
+    icon: 'save',
     blurb: 'Save your project, or share it so people can play it.',
   },
 ];

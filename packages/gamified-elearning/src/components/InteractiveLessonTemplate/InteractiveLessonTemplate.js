@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import CodeRunnerPython from '../CodeRunnerPython';
+import Icon from '../Icon/Icon';
 import Header from '../../pages/Header/Header';
 import LessonGuide from '../LessonGuide/LessonGuide';
 import CharacterAvatar from '../CharacterAvatar/CharacterAvatar';
@@ -748,6 +749,17 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
           {/* Step title */}
           <h2 className="sl-card__title">{currentStep?.title}</h2>
 
+          {/* ── One voice per screen ──────────────────────────────────────
+              A phone screenshot of lesson 1: a numbered "What to do now"
+              panel, then a story panel, then the prose, then KEY IDEA, then a
+              floating guide bubble printing itself across the code. Five
+              things telling a person what to do before the thing itself.
+
+              A learner on "Explore myself", which is what every adult account
+              and every teenager gets, does not need to be told to read the box
+              and press the button. They keep the story, the lesson and the
+              code. The younger levels keep all of it. */}
+          {guideLevel !== 'independent' && (
           <aside className="sl-now" aria-live="polite" aria-label="What to do now">
             <span className="sl-now__eyebrow">What to do now</span>
             <ol>
@@ -756,12 +768,13 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               ))}
             </ol>
           </aside>
+          )}
 
           {/* A reason to care, before the code. Every step may set its own; the
               lesson's own story line opens step one. */}
           {(currentStep?.story || (stepIdx === 0 && lessonData.story)) && (
             <p className="sl-story">
-              <span className="sl-story__icon" aria-hidden="true">💬</span>
+              <span className="sl-story__icon"><Icon name="chat" size={20} /></span>
               {currentStep?.story || lessonData.story}
             </p>
           )}
@@ -830,7 +843,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                   the last thing a child found. */}
               {feedback[stepIdx] === 'incorrect' && !isCurrentDone && (
                 <div className="sl-feedback sl-feedback--incorrect" role="status">
-                  <span className="sl-feedback__icon" aria-hidden="true">✗</span>
+                  <span className="sl-feedback__icon"><Icon name="cross" size={20} /></span>
                   <div>{feedbackText[stepIdx] || 'Not quite. Try again.'}</div>
                 </div>
               )}
@@ -900,7 +913,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               {/* ── Incorrect feedback ───────────────────── */}
               {feedback[stepIdx] === 'incorrect' && !isCurrentDone && (
                 <div className="sl-feedback sl-feedback--incorrect">
-                  <span className="sl-feedback__icon" aria-hidden="true">✗</span>
+                  <span className="sl-feedback__icon"><Icon name="cross" size={20} /></span>
                   <div>{feedbackText[stepIdx] || 'Not quite. Check your output above and try again.'}</div>
                 </div>
               )}

@@ -1,3 +1,4 @@
+import { ICON_NAMES } from '../../components/Icon/Icon';
 import { SHELVES, STARTER_PROJECTS, STARTER_PROJECT_IDS, starterProjectById } from './starterProjects';
 import { STARTER_GAMES } from './starterGames';
 import { conceptsIn } from './codeConcepts';
@@ -49,7 +50,7 @@ describe.each(STARTER_PROJECTS.map(project => [`${project.kind}: ${project.label
   '%s', (label, project) => {
     test('is described in words a child can choose from', () => {
       expect(project.label.length).toBeGreaterThan(3);
-      expect(project.emoji.length).toBeGreaterThan(0);
+      expect(ICON_NAMES).toContain(project.icon);
       expect(project.blurb.length).toBeGreaterThan(15);
       // The blurb sits under the label on a card. Longer than this wraps to
       // three lines on a phone and the row stops being scannable.

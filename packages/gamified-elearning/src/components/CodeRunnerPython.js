@@ -71,7 +71,7 @@ const CodeRunnerPython = ({ lessonId, starterCode, title, height = '220px', onOu
       })
       .catch((err) => {
         console.error('CodeRunnerPython: Pyodide error', err);
-        if (!cancelled && mountedRef.current) setOutput('❌ Could not load Python. Please refresh and try again.');
+        if (!cancelled && mountedRef.current) setOutput('Could not load Python. Please refresh and try again.');
       });
 
     return () => { cancelled = true; };
@@ -98,7 +98,7 @@ const CodeRunnerPython = ({ lessonId, starterCode, title, height = '220px', onOu
     } catch (err) {
       const raw = err.message || 'An error occurred';
       const msg = cleanPythonError(raw);
-      if (mountedRef.current) setOutput('❌ ' + msg);
+      if (mountedRef.current) setOutput(msg);
       if (onOutput) onOutput(msg, code);
     } finally {
       if (mountedRef.current) setRunning(false);

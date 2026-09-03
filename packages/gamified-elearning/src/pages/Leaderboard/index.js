@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
+import Icon from '../../components/Icon/Icon';
 import { useNavigate } from 'react-router-dom';
 import { ENDPOINTS } from '../../config/api';
 import { AuthContext } from '../../context/AuthContext';
@@ -6,7 +7,7 @@ import Header from '../Header/Header';
 import { useSEO } from '../../hooks/useSEO';
 import './Leaderboard.css';
 
-const MEDALS = ['🥇', '🥈', '🥉'];
+const MEDALS = ['medal1', 'medal2', 'medal3'];
 
 // Assign a consistent avatar colour based on the first character of a name
 const AVATAR_COLOURS = [
@@ -81,7 +82,7 @@ const Leaderboard = () => {
           <button className="lb-back-btn" onClick={() => navigate('/MainPage')}>
             ← Back to your progress
           </button>
-          <h1 className="lb-title">🏆 Leaderboard</h1>
+          <h1 className="lb-title"><Icon name="trophy" size={28} /> Leaderboard</h1>
           <p className="lb-subtitle">
             CodeIt creators ranked by XP from projects, lessons, quizzes, and puzzles.
           </p>
@@ -96,7 +97,7 @@ const Leaderboard = () => {
         {!loading && !error && summary.currentRank && (
           <div className="lb-my-rank-card">
             <span className="lb-my-rank-icon">
-              {summary.currentRank <= 3 ? MEDALS[summary.currentRank - 1] : '🎯'}
+              <Icon name={summary.currentRank <= 3 ? MEDALS[summary.currentRank - 1] : 'target'} size={26} />
             </span>
             <span className="lb-my-rank-text">
               Your rank:&nbsp;
@@ -115,7 +116,7 @@ const Leaderboard = () => {
         {/* ── "Not ranked yet" callout (logged in, no XP yet) */}
         {!loading && !error && isLoggedIn && !summary.currentRank && (
           <div className="lb-not-ranked-card">
-            <span className="lb-my-rank-icon">🌱</span>
+            <span className="lb-my-rank-icon"><Icon name="sprout" size={24} /></span>
             <span className="lb-my-rank-text">
               You&apos;re not on the board yet , {' '}
               save a project or complete a lesson to earn XP and climb the ranks!
@@ -125,7 +126,7 @@ const Leaderboard = () => {
 
         {!loading && !isLoggedIn && (
           <div className="lb-state-card">
-            <span className="lb-state-icon">🏆</span>
+            <span className="lb-state-icon"><Icon name="trophy" size={30} /></span>
             <h2>Sign in to join the competition</h2>
             <p>Your rank is private to CodeIt members, and every coder uses a playful alias.</p>
             <button className="lb-retry-btn" onClick={() => navigate('/login')}>
@@ -160,7 +161,7 @@ const Leaderboard = () => {
         {/* ── Error ───────────────────────────────────────── */}
         {!loading && error && (
           <div className="lb-state-card lb-state-error">
-            <span className="lb-state-icon">😴</span>
+            <span className="lb-state-icon"><Icon name="moon" size={30} /></span>
             <p>The scoreboard is taking a nap.</p>
             {/* Never the raw error — "Unexpected token '<'" was reaching
                 children's screens. The technical detail goes to the console
@@ -173,7 +174,7 @@ const Leaderboard = () => {
         {/* ── Empty ───────────────────────────────────────── */}
         {!loading && !error && isLoggedIn && rows.length === 0 && (
           <div className="lb-state-card">
-            <span className="lb-state-icon">🌱</span>
+            <span className="lb-state-icon"><Icon name="sprout" size={30} /></span>
             <p>No scores yet. Be the first on the board!</p>
           </div>
         )}

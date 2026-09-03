@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { API_BASE_URL } from "../../config/api";
+import Icon from "../../components/Icon/Icon";
 import { useAuth } from "../../context/AuthContext";
 import { useCharacter } from "../../context/CharacterContext";
 import CharacterAvatar from "../../components/CharacterAvatar/CharacterAvatar";
@@ -511,7 +512,7 @@ export default function Quiz() {
             onClick={() => readAloud(spokenQuestion)}
             aria-label="Read this question and its answers to me"
           >
-            🔊 Read to me
+            <Icon name="speaker" size={18} /> Read to me
           </button>
         </div>
 
@@ -533,7 +534,7 @@ export default function Quiz() {
                   <span className="qz-opt-icon">✓</span>
                 )}
                 {revealed && val === selected && val !== correctAnswerText && (
-                  <span className="qz-opt-icon">✗</span>
+                  <span className="qz-opt-icon"><Icon name="cross" size={18} /></span>
                 )}
               </button>
             );

@@ -118,7 +118,10 @@ describe('the header agrees with the pages it links to', () => {
     // a noun ("in the header there are two things only, how are kids going to
     // know what to do"). The rule that survives every rename: one control,
     // one destination, and it may never say "Build".
-    expect(header).toMatch(/user \? "🎮 Make something" : "Start building"/);
+    // The emoji that used to sit in front of "Make something" is a drawn icon
+    // now, so this matches the words rather than the decoration.
+    expect(header).toMatch(/Make something/);
+    expect(header).toMatch(/"Start building"/);
     expect(header).not.toMatch(/label: "Build"/);
   });
 

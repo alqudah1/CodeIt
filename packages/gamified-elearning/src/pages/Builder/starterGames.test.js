@@ -1,3 +1,4 @@
+import { ICON_NAMES } from '../../components/Icon/Icon';
 import { HOME_PICKS, STARTER_GAMES, STARTER_IDS, starterGameById } from './starterGames';
 import { readProject, questionsFor, isEnoughToProve } from './proveIt';
 import { changeIdeasFor } from './changeIdeas';
@@ -39,7 +40,10 @@ describe('what a child is offered', () => {
       expect(game.label).toBeTruthy();
       expect(game.label).not.toMatch(/game|template|starter|project|demo|example/i);
       expect(game.blurb).toBeTruthy();
-      expect(game.emoji).toBeTruthy();
+      // Was expect(game.emoji).toBeTruthy(). The cards are drawn icons now,
+      // not device emoji, so what has to be true is that the name resolves to
+      // something the icon set can actually draw.
+      expect(ICON_NAMES).toContain(game.icon);
     });
   });
 

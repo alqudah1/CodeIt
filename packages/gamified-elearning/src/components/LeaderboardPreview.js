@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import Icon from './Icon/Icon';
 import { useNavigate } from 'react-router-dom';
 import { ENDPOINTS } from '../config/api';
 import { useAuth } from '../context/AuthContext';
 import './LeaderboardPreview.css';
 
-const MEDALS = ['🥇', '🥈', '🥉'];
+const MEDALS = ['medal1', 'medal2', 'medal3'];
 
 const AVATAR_COLOURS = [
   '#ff6b6b', '#ff9f43', '#ffd32a', '#1dd1a1',
@@ -52,7 +53,7 @@ const LeaderboardPreview = () => {
     <section className="lb-prev" aria-label="Leaderboard preview">
       <header className="lb-prev-header">
         <div className="lb-prev-title-group">
-          <span className="lb-prev-icon" aria-hidden="true">🏆</span>
+          <span className="lb-prev-icon"><Icon name="trophy" size={22} /></span>
           <div>
             <h2 className="lb-prev-h2">Top Coders</h2>
             <p className="lb-prev-tagline">Ranked by total XP</p>
@@ -69,7 +70,7 @@ const LeaderboardPreview = () => {
       {/* Not logged in */}
       {!isLoggedIn && (
         <div className="lb-prev-state lb-prev-state--login">
-          <span>🔒</span>
+          <Icon name="lock" size={18} />
           <span>
             <button className="lb-prev-login-link" onClick={() => navigate('/login')}>
               Login
@@ -90,14 +91,14 @@ const LeaderboardPreview = () => {
       {/* Error */}
       {isLoggedIn && !loading && errorMsg === 'unavailable' && (
         <div className="lb-prev-state lb-prev-state--warn">
-          😕 Leaderboard unavailable right now.
+          Leaderboard unavailable right now.
         </div>
       )}
 
       {/* Empty */}
       {isLoggedIn && !loading && !errorMsg && rows.length === 0 && (
         <div className="lb-prev-state">
-          🌱 No scores yet. Be the first on the board!
+          No scores yet. Be the first on the board!
         </div>
       )}
 

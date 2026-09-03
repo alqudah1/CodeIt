@@ -8,6 +8,7 @@ import { useSEO } from "../../hooks/useSEO";
 import { trackEvent } from "../../utils/trackEvent";
 import HomePilotSignup from "./HomePilotSignup";
 import { HOME_PICKS } from "../Builder/starterGames";
+import Icon from "../../components/Icon/Icon";
 import { STARTER_PROJECTS } from "../Builder/starterProjects";
 import { TOTAL_LESSONS } from "../Lessons/lessonRegistry";
 import { CURRENCY_SYMBOL } from "../../config/pricing";
@@ -285,7 +286,7 @@ export default function Home() {
                         to={`/builder?start=${game.id}`}
                         onClick={() => trackEvent("landing_cta_click", "starter")}
                       >
-                        <span className="pick__emoji" aria-hidden="true">{game.emoji}</span>
+                        <span className="pick__emoji"><Icon name={game.icon} size={40} strokeWidth={1.5} /></span>
                         <span className="pick__label">{game.label}</span>
                         <span className="pick__blurb">{game.blurb}</span>
                       </Link>

@@ -4,6 +4,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { useCharacter } from "../../context/CharacterContext";
 import CharacterAvatar from "../../components/CharacterAvatar/CharacterAvatar";
 import BrandLogo from "../../components/BrandLogo/BrandLogo";
+import Icon from "../../components/Icon/Icon";
 import { DEFAULT_BILLING_STATE, fetchBillingStatus, isPlusMember } from "../../utils/billing";
 import { trackEvent } from "../../utils/trackEvent";
 import "./Header.css";
@@ -210,7 +211,7 @@ export default function Header() {
             )}
 
             <Link to="/builder" className="site-header__cta">
-              {user ? "🎮 Make something" : "Start building"}
+              {user ? <><Icon name="game" size={18} /> Make something</> : "Start building"}
             </Link>
 
             {user ? (

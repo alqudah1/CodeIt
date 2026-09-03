@@ -3148,7 +3148,7 @@ export default function Builder() {
                       }
                     >
                       <span className={`bldr-shelf__marquee bldr-shelf__marquee--${shelf.items.indexOf(item) % 4}`} aria-hidden="true">
-                        <span className="bldr-shelf__emoji">{item.emoji}</span>
+                        <span className="bldr-shelf__emoji"><Icon name={item.icon} size={58} strokeWidth={1.4} /></span>
                       </span>
                       <span className="bldr-shelf__meta">
                         <span className="bldr-shelf__label">{item.label}</span>
@@ -3221,7 +3221,7 @@ export default function Builder() {
                 aria-pressed={guideLevel === option.id}
                 onClick={() => changeGuideLevel(option.id)}
               >
-                <span aria-hidden="true">{option.icon}</span>{option.label}
+                <Icon name={option.icon} size={18} />{option.label}
               </button>
             ))}
           </div>
@@ -3964,7 +3964,7 @@ export default function Builder() {
                   aria-current={workspaceTab === tab.id ? 'page' : undefined}
                   title={tab.hint || tab.blurb}
                 >
-                  <span className="bldr-tab__icon" aria-hidden="true">{tab.icon}</span>
+                  <span className="bldr-tab__icon"><Icon name={tab.icon} size={18} /></span>
                   <span className="bldr-tab__label">{tab.label}</span>
                   {tab.attention && workspaceTab !== tab.id && (
                     <span className="bldr-tab__dot" aria-hidden="true" />

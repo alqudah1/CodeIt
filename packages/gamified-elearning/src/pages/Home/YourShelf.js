@@ -18,14 +18,15 @@
 
 import { Link } from 'react-router-dom';
 import { whenMade } from '../../utils/projectShelf';
+import Icon from '../../components/Icon/Icon';
 import './YourShelf.css';
 
 const TYPE_ICON = {
-  game: '🎮',
-  quiz: '🧠',
-  website: '🌐',
-  story: '📖',
-  tool: '🛠️',
+  game: 'game',
+  quiz: 'quiz',
+  website: 'site',
+  story: 'book',
+  tool: 'tool',
 };
 
 export default function YourShelf({ projects = [], onOpen, now = Date.now() }) {
@@ -76,7 +77,7 @@ export default function YourShelf({ projects = [], onOpen, now = Date.now() }) {
                 to={`/builder?shelf=${encodeURIComponent(project.id)}`}
                 onClick={() => onOpen?.(project)}
               >
-                <span aria-hidden="true">{TYPE_ICON[project.projectType] || '🎮'}</span>
+                <Icon name={TYPE_ICON[project.projectType] || 'game'} size={22} />
                 <span className="shelf__chip-name">{project.title}</span>
                 <span className="shelf__chip-when">{whenMade(project.updatedAt, now)}</span>
               </Link>

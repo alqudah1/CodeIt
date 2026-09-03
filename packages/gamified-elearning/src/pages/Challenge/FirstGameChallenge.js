@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
+import Icon from '../../components/Icon/Icon';
 import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
 import { trackEvent } from '../../utils/trackEvent';
@@ -10,7 +11,7 @@ export const GAME_STARTERS = [
   {
     id: 'reaction',
     number: '01',
-    icon: '⚡',
+    icon: 'bolt',
     title: 'Reaction Rush',
     description: 'Tap the target as quickly as you can across five rounds.',
     prompt: 'a colorful reaction speed game for kids with five rounds, a glowing target that appears after a random delay, reaction time for each round, a best-time score, and a play-again button',
@@ -18,7 +19,7 @@ export const GAME_STARTERS = [
   {
     id: 'football',
     number: '02',
-    icon: '⚽',
+    icon: 'ball',
     title: 'Penalty Hero',
     description: 'Choose a corner, beat the goalkeeper, and track your score.',
     prompt: 'a football penalty shootout game for kids with left center and right shot buttons, an animated goalkeeper, five attempts, a live score, win feedback, and a restart button',
@@ -26,7 +27,7 @@ export const GAME_STARTERS = [
   {
     id: 'pet-catch',
     number: '03',
-    icon: '🐾',
+    icon: 'paw',
     title: 'Pet Catch',
     description: 'Catch friendly pets before the timer reaches zero.',
     prompt: 'a cheerful pet-catching game for kids where cute animal emoji appear in random places, each catch adds a point, a 30-second timer counts down, the game gets faster, and a result screen has a play-again button',
@@ -71,7 +72,7 @@ export default function FirstGameChallenge() {
             <div className="fgc-demo" aria-label="Example reaction game scorecard">
               <div className="fgc-demo__top"><span>REACTION RUSH</span><strong>ROUND 3 / 5</strong></div>
               <div className="fgc-demo__screen">
-                <span className="fgc-demo__target">⚡</span>
+                <span className="fgc-demo__target"><Icon name="bolt" size={26} /></span>
                 <p>Tap when it glows!</p>
               </div>
               <div className="fgc-demo__score">
@@ -100,7 +101,7 @@ export default function FirstGameChallenge() {
             <div className="fgc-choice-grid">
               {GAME_STARTERS.map((game) => (
                 <article key={game.id} className="fgc-choice">
-                  <div className="fgc-choice__top"><span>{game.number}</span><i aria-hidden="true">{game.icon}</i></div>
+                  <div className="fgc-choice__top"><span>{game.number}</span><Icon name={game.icon} size={22} /></div>
                   <h3>{game.title}</h3>
                   <p>{game.description}</p>
                   <Link
