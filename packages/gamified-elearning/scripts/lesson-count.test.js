@@ -62,6 +62,20 @@ const CLAIM = new RegExp(
  */
 const NOT_A_TOTAL = /\b(of|in|per|out|worth|first|last|more|other|extra|further|remaining)\b/i;
 
+// The same words, looked for on the LEFT of the number.
+//
+// This guard was red on main and nobody noticed, because the phrase it tripped
+// on is correct English and correct fact: "Puzzles cover the first ten
+// lessons". NOT_A_TOTAL only ever looked at the words between the number and
+// "lessons" and the word after it, so "first" sitting in front of the number
+// was invisible, and the guard read a true sentence as a claim that the course
+// has ten lessons in it.
+//
+// A guard that cries wolf on true copy gets muted, and this one had been
+// failing every CI run for long enough that a red tick on main stopped meaning
+// anything. That is more expensive than the bug it was written to catch.
+const NOT_A_TOTAL_BEFORE = /\b(of|in|per|out|worth|first|last|more|other|extra|further|remaining|through|beyond|after|before|across)\s+$/i;
+
 /**
  * A gap that proves the number is not quantifying "lessons".
  *
@@ -94,6 +108,9 @@ test('every lesson count in rendered copy matches the lesson files', () => {
       // the size of the course, and asserting on them would make the guard
       // unusable in ordinary prose.
       if (NOT_A_TOTAL.test(match[2]) || NOT_A_TOTAL.test(match[3] || '')) continue;
+      // "the first ten lessons" is a range inside the course, not its size.
+      const before = text.slice(Math.max(0, match.index - 20), match.index);
+      if (NOT_A_TOTAL_BEFORE.test(before)) continue;
       if (NOT_A_QUANTITY.test(match[2])) continue;
 
       // Only counts that could plausibly be the size of the course.
@@ -121,4 +138,34 @@ test('every lesson count in rendered copy matches the lesson files', () => {
   // A scan that matches nothing passes, and passing for that reason is worse
   // than failing, because it reads as coverage.
   assert.ok(checked > 0, 'no lesson-count claim was found; this test is not doing anything');
+});
+
+// The exclusions above are where a guard like this quietly stops working, in
+// both directions: too loose and it fails on true copy until somebody mutes it,
+// too tight and it passes while a page advertises half the course. Both have
+// already happened here.
+test('the scan still catches a stale total, and still ignores a range', () => {
+  const claims = (line) => {
+    const found = [];
+    for (const match of line.matchAll(CLAIM)) {
+      if (NOT_A_TOTAL.test(match[2]) || NOT_A_TOTAL.test(match[3] || '')) continue;
+      const before = line.slice(Math.max(0, match.index - 20), match.index);
+      if (NOT_A_TOTAL_BEFORE.test(before)) continue;
+      if (NOT_A_QUANTITY.test(match[2])) continue;
+      const claimed = claimedCount(match[1]);
+      if (claimed && claimed >= 10) found.push(claimed);
+    }
+    return found;
+  };
+
+  // The failure this file exists for: a number left behind by a growing course.
+  assert.deepEqual(claims('16 Interactive Lessons'), [16]);
+  assert.deepEqual(claims('Sixteen sequenced lessons take a beginner'), [16]);
+  assert.deepEqual(claims('31 beginner Python lessons, each with an explanation'), [31]);
+
+  // Ranges inside the course, which are not claims about its size.
+  assert.deepEqual(claims('Puzzles cover the first ten lessons, and completing one'), []);
+  assert.deepEqual(claims('In the first ten lessons, passing the quiz also unlocks a puzzle'), []);
+  assert.deepEqual(claims('through the first ten lessons in 3 to 4 weeks'), []);
+  assert.deepEqual(claims('one of 31 lessons'), []);
 });

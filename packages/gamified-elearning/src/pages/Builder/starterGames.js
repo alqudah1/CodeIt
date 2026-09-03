@@ -116,15 +116,20 @@ let fallSpeed  = 3;
 let starSize   = 18;
 let starColour = '#FFD84D';
 let basketWide = 90;
+let startLives = 3;
 
 // You, in the game: if CodeIt handed us your avatar, you are the catcher.
 // (In Scratch: this is like choosing your own sprite as the player.)
+// This block sits BELOW the settings on purpose. The Controls panel reads the
+// author's marked block as consecutive declarations and stops at the first
+// blank line, so when the avatar code was inserted between basketWide and
+// startLives on 31 August, the panel silently dropped to four knobs and a
+// child could no longer change how many lives they start with.
 let playerImg = null;
 if (window.CODEIT_PLAYER_SPRITE) {
   playerImg = new Image();
   playerImg.src = window.CODEIT_PLAYER_SPRITE;
 }
-let startLives = 3;
 
 const canvas = document.getElementById('screen');
 const pen = canvas.getContext('2d');

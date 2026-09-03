@@ -322,7 +322,14 @@ export default function Explore() {
             >
               🎲 Surprise me
             </button>
-            <Link to="/builder" className="exp-hero__cta">Make one</Link>
+            {/* "Make one" used to sit here, going to /builder, four positions
+                from the header key that already says Start building or Make
+                something and goes to the same place. Two controls, one
+                destination, on a page a child came to BROWSE: the screen-share
+                check counted eleven controls competing for the first tap
+                against a budget of ten, and this was the one that was not
+                about browsing at all. Same mistake the header made with
+                Studio, same fix. */}
           </div>
         </div>
       </div>
