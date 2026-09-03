@@ -10,6 +10,7 @@ import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
 import { trackEvent } from '../../utils/trackEvent';
 import { conceptsIn } from '../Builder/codeConcepts';
+import { reportFailure } from '../../utils/humanError';
 import './Profile.css';
 
 const XP_PER_LEVEL = 100;
@@ -178,7 +179,7 @@ export default function Profile() {
         if (params.get('familyVerified') === '1') setFamilyMessage('Adult email confirmed. You can now create a private learner profile.');
         if (params.get('familyVerified') === '0') setFamilyMessage('That confirmation link is invalid or expired. Send a new one below.');
       }).catch(error => {
-        setFamilyMessage(error.message);
+        setFamilyMessage(reportFailure('Family status', error, 'We could not load your family controls just now.'));
       }).finally(() => {
         setFamilyLoading(false);
       });
@@ -214,7 +215,7 @@ export default function Profile() {
             : 'Confirmation email sent. Updates begin after the parent confirms.'
       );
     } catch (error) {
-      setParentStatus(error.message);
+      setParentStatus(reportFailure('Parent email', error, 'That did not send. Please try again.'));
     } finally {
       setSavingParent(false);
     }
@@ -235,7 +236,7 @@ export default function Profile() {
         ? 'This adult email is already confirmed.'
         : 'Confirmation email sent. Open it within 48 hours, then return here.');
     } catch (error) {
-      setFamilyMessage(error.message);
+      setFamilyMessage(reportFailure('Family controls', error, 'That did not go through. Please try again.'));
     } finally {
       setFamilySaving(false);
     }
@@ -276,7 +277,7 @@ export default function Profile() {
       });
       setFamilyMessage(`Private learner profile “${data.child.username}” created. Use “Switch to learner” below to open their first project.`);
     } catch (error) {
-      setFamilyMessage(error.message);
+      setFamilyMessage(reportFailure('Family controls', error, 'That did not go through. Please try again.'));
     } finally {
       setFamilySaving(false);
     }
@@ -296,7 +297,7 @@ export default function Profile() {
       setFamilyStatus(data.status);
       setFamilyMessage(`${child.username}'s profile and connected data were deleted.`);
     } catch (error) {
-      setFamilyMessage(error.message);
+      setFamilyMessage(reportFailure('Family controls', error, 'That did not go through. Please try again.'));
     } finally {
       setFamilySaving(false);
     }
@@ -321,7 +322,7 @@ export default function Profile() {
       setNewChildPassword('');
       setFamilyMessage(`${child.username}'s password was updated.`);
     } catch (error) {
-      setFamilyMessage(error.message);
+      setFamilyMessage(reportFailure('Family controls', error, 'That did not go through. Please try again.'));
     } finally {
       setFamilySaving(false);
     }
@@ -347,7 +348,7 @@ export default function Profile() {
         ? `Progress emails are on for ${child.username}.`
         : `Progress emails are paused for ${child.username}.`);
     } catch (error) {
-      setFamilyMessage(error.message);
+      setFamilyMessage(reportFailure('Family controls', error, 'That did not go through. Please try again.'));
     } finally {
       setFamilySaving(false);
     }

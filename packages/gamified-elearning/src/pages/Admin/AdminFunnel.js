@@ -2,6 +2,7 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { API_BASE_URL, ENDPOINTS } from '../../config/api';
 import AdminLayout from './AdminLayout';
+import { reportFailure } from '../../utils/humanError';
 import './AdminLayout.css';
 import './AdminFunnel.css';
 
@@ -135,7 +136,7 @@ export default function AdminFunnel() {
         }
       })
       .catch((err) => {
-        if (!cancelled) setError(err.message);
+        if (!cancelled) setError(reportFailure('Funnel report', err, 'The report did not load.'));
       });
 
     return () => { cancelled = true; };

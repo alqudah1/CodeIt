@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef, useContext } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
+import { reportFailure } from '../../utils/humanError';
 import Header from '../Header/Header';
 import { trackEvent } from '../../utils/trackEvent';
 import { journeyHeaders } from '../../utils/journey';
@@ -87,7 +88,7 @@ export default function PublicProject() {
           fetch(`${API_BASE_URL}/api/builder/pub/${publicId}/view`, { method: 'POST' }).catch(() => {});
         }
       } catch (err) {
-        if (!cancelled) setError(err.message);
+        if (!cancelled) setError(reportFailure('Public project load', err, 'We could not open this project just now.'));
       } finally {
         if (!cancelled) setLoading(false);
       }

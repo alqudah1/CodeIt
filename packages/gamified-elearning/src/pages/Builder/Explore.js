@@ -9,6 +9,7 @@ import {
 import Header from '../Header/Header';
 import { AuthContext } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
+import { reportFailure } from '../../utils/humanError';
 import Icon from '../../components/Icon/Icon';
 import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
@@ -221,8 +222,7 @@ export default function Explore() {
       // A person cannot act on a parser message, and it makes a working
       // product look broken beyond repair. The real error still goes to the
       // console for whoever is debugging.
-      console.error('Explore feed failed:', e);
-      setError('We could not load the projects just now.');
+      setError(reportFailure('Explore feed', e, 'We could not load the projects just now.'));
     } finally {
       setLoading(false);
     }

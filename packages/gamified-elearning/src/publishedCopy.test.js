@@ -115,14 +115,24 @@ describe('published copy', () => {
   });
 
   test('the exceptions are the ones written down here, and no others', () => {
-    // If this count moves, someone added an exception. That should be a
-    // decision, not a diff nobody read.
-    expect(allowed.sort()).toEqual([
-      'data/guidePages.js:1494',
-      'data/guidePages.js:1598',
-      'pages/Admin/AdminFunnel.js:338',
-      'utils/projectName.js:30',
-    ]);
+    // Compared by file and count, not by file:line. The first version pinned
+    // exact line numbers and went red because an unrelated import was added
+    // four lines above one of them. A guard that fails on a change it does not
+    // care about teaches people to edit the guard, which is how a guard stops
+    // meaning anything.
+    const byFile = {};
+    for (const entry of allowed) {
+      const file = entry.split(':')[0];
+      byFile[file] = (byFile[file] || 0) + 1;
+    }
+    expect(byFile).toEqual({
+      // Google's published wording for CS First, quoted twice.
+      'data/guidePages.js': 2,
+      // The empty-cell mark in the internal funnel table.
+      'pages/Admin/AdminFunnel.js': 1,
+      // A regex that has to match the dashes children type.
+      'utils/projectName.js': 1,
+    });
   });
 
   test('contains no em-dashes', () => {

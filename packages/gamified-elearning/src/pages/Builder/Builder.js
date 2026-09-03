@@ -7,6 +7,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { useSEO } from '../../hooks/useSEO';
 import { trackEvent } from '../../utils/trackEvent';
+import { reportFailure } from '../../utils/humanError';
 import { journeyHeaders } from '../../utils/journey';
 import {
   clearGuestProjectDraft,
@@ -1915,7 +1916,7 @@ export default function Builder() {
       setAiRefineText('');
       trackPersonalizationOnce();
     } catch (err) {
-      setPatchError(err.message);
+      setPatchError(reportFailure('Element patch', err, 'That change did not go through. Try describing it a different way.'));
     } finally {
       setPatchLoading(false);
     }
@@ -2191,7 +2192,7 @@ export default function Builder() {
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
       setExplanation(data.explanation);
     } catch (err) {
-      setExplainError(err.message);
+      setExplainError(reportFailure('Explain project', err, 'We could not explain this one just now. Your project is fine.'));
     } finally {
       setExplaining(false);
     }
@@ -2288,7 +2289,7 @@ export default function Builder() {
       setTimeout(() => setSaveStatus(null), 2500);
     } catch (err) {
       setSaveStatus('error');
-      setSaveError(err.message);
+      setSaveError(reportFailure('Save project', err, 'Your project did not save. Nothing is lost, try again.'));
       setTimeout(() => setSaveStatus(null), 3000);
     } finally {
       saveInFlightRef.current = false;

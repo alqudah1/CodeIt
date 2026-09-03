@@ -327,21 +327,18 @@ export default function Home() {
                   </form>
                 </details>
 
-                <small className="pick__note">No account needed. Nothing to download.</small>
+                {/* "No account needed" also appears in the facts row below,
+                    and saying it twice on one screen is how a claim starts to
+                    sound like a slogan. This keeps the half the row does not
+                    carry. */}
+                <small className="pick__note">Nothing to download.</small>
 
-                {/* The pitch, under the three cards rather than in front of
-                    them. It explains what the cards are; a caption belongs
-                    below its picture. In front, it was 90px a child had to
-                    read past before reaching anything they could tap. */}
-                {/* Nine words, all decodable by a six-year-old, because
-                    Mustafa's question is the right one: can the kid do this
-                    alone? Every clause on this screen is a wall for a child
-                    reading by themselves. */}
-                {!shelf.length && (
-                  <p className="studio-hero__lead">
-                    Play real games. Open them up. Make them yours.
-                  </p>
-                )}
+                {/* "Play real games. Open them up. Make them yours." used to
+                    sit here. It is a good sentence and it was the THIRD time
+                    this screen said the same thing: the headline says "Make a
+                    real game. Then see the code inside it", the line above the
+                    cards says "Tap a game. It starts now!", and then this.
+                    A confident product says it once and shows the rest. */}
               </div>
               <Evidence />
 
@@ -364,10 +361,17 @@ export default function Home() {
                   {user ? "View my progress" : "See how it works"}
                 </Link>
               </div>
-              <ul className="studio-hero__audience" aria-label="Who CodeIt helps">
-                <li>Students create</li>
-                <li>CodeIt teaches</li>
-                <li>Families see progress</li>
+              {/* Three pills reading "Students create", "CodeIt teaches",
+                  "Families see progress" sat here. Nobody can check any of
+                  them, they are true of every product in this category, and
+                  they were the last thing above the fold: the space where a
+                  visitor decides whether this is a real company. Facts in the
+                  same space instead, all three verifiable in a minute and each
+                  one wired to the data rather than typed. */}
+              <ul className="studio-hero__audience" aria-label="What is here">
+                <li>{TOTAL_LESSONS} lessons</li>
+                <li>{STARTER_PROJECTS.length} projects that open instantly</li>
+                <li>No account needed</li>
               </ul>
             </div>
 
