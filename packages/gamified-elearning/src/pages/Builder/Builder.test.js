@@ -42,6 +42,20 @@ jest.mock('../../utils/trackEvent', () => ({
  * panels are sorted into Play / Change / The code / Keep. Reaching a tool now
  * means tapping its page first, exactly as a child does.
  */
+// ── Why some of these carry their own timeout ────────────────────────────────
+//
+// Jest's default is 5000ms per test, and the flows below are not unit tests:
+// each one builds a project, waits out the quality check, opens two or three
+// studio pages and saves. On this machine they take about a second. On a
+// GitHub runner they took longer than five, and the suite went red on main
+// with nothing wrong with the product.
+//
+// A flaky red is more expensive than a slow test: it teaches everyone that red
+// means nothing, which is exactly how the white-screened curriculum survived a
+// day. The number is generous on purpose. If one of these ever really hangs,
+// twenty seconds still fails it.
+const SLOW_FLOW_MS = 20000;
+
 function openStudioPage(name) {
   // Scoped to the tab bar. "Save" is a page and also the button on the phone's
   // bottom bar, and a test that grabs whichever one it finds first is a test
@@ -221,7 +235,7 @@ describe('studio opening', () => {
     });
     expect(trackEvent).toHaveBeenCalledWith('activation_account_gate', 'save', null);
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
-  });
+  }, SLOW_FLOW_MS);
 
   test('keeps the guest save action available in the mobile project controls', async () => {
     render(<Builder />);
@@ -235,7 +249,7 @@ describe('studio opening', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/register?from=builder&action=save', {
       state: { from: '/builder', resumeBuilderAction: 'save' },
     });
-  });
+  }, SLOW_FLOW_MS);
 
   test('keeps a guest project private until it is saved to an account', async () => {
     render(<Builder />);
@@ -245,7 +259,7 @@ describe('studio opening', () => {
     openStudioPage('Save');
     expect(screen.getByRole('button', { name: 'Share' })).toBeDisabled();
     expect(screen.getByRole('button', { name: /Keep my project/i })).toBeEnabled();
-  });
+  }, SLOW_FLOW_MS);
 
   test('makes keeping the project primary while personalization stays optional', async () => {
     render(<Builder />);
@@ -303,7 +317,7 @@ describe('studio opening', () => {
         'X-CodeIt-Journey': expect.stringMatching(/^[0-9a-f-]{36}$/i),
       }));
     });
-  });
+  }, SLOW_FLOW_MS);
 
   test('turns an AI limit into a clear wait time with useful non-AI choices', async () => {
     render(<Builder />);
@@ -354,7 +368,7 @@ describe('studio opening', () => {
       code: expect.stringContaining('My game'),
       projectType: 'game',
     })));
-  });
+  }, SLOW_FLOW_MS);
 
   test('recovers a fresh guest project on a later visit and offers account backup', async () => {
     saveGuestProjectDraft(localStorage, {
@@ -425,7 +439,7 @@ describe('studio opening', () => {
     expect(screen.getByRole('button', { name: 'Send it to someone' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Done' }));
     expect(screen.queryByText(/is on the internet now/i)).not.toBeInTheDocument();
-  });
+  }, SLOW_FLOW_MS);
 
   // ── "Too much text and talking" ────────────────────────────────────────
   //
@@ -479,7 +493,7 @@ describe('studio opening', () => {
     expect(trackEvent).toHaveBeenCalledWith('activation_next_step', 'learn', 'managed-token');
     openStudioPage('The code');
     expect(await screen.findByText('This project uses variables and click events.')).toBeInTheDocument();
-  });
+  }, SLOW_FLOW_MS);
 
   test('automatically completes a fresh guest save after account setup', async () => {
     sessionStorage.setItem('codeit_builder_draft', JSON.stringify({
@@ -513,7 +527,7 @@ describe('studio opening', () => {
       })
     );
     expect(mockNavigate).toHaveBeenCalledWith('/builder', { replace: true, state: null });
-  });
+  }, SLOW_FLOW_MS);
 
   test('automatically saves and publishes a fresh guest project after account setup', async () => {
     sessionStorage.setItem('codeit_builder_draft', JSON.stringify({
@@ -546,7 +560,7 @@ describe('studio opening', () => {
         headers: expect.objectContaining({ Authorization: 'Bearer creator-token' }),
       })
     );
-  });
+  }, SLOW_FLOW_MS);
 
   test('lets a returning eligible creator publish directly from My projects', async () => {
     const savedProject = {
@@ -734,7 +748,7 @@ describe('studio opening', () => {
 
     fireEvent.click(screen.getAllByRole('button', { name: /Play my changes/i })[0]);
     expect(screen.getAllByRole('button', { name: /Keep my project/i })[0]).toBeEnabled();
-  });
+  }, SLOW_FLOW_MS);
 
   test('remembers instant choices when the panel is reopened', async () => {
     render(<Builder />);
@@ -751,7 +765,7 @@ describe('studio opening', () => {
 
     expect(await screen.findByRole('button', { name: 'Letter style: Bubbly' }))
       .toHaveAttribute('aria-pressed', 'true');
-  });
+  }, SLOW_FLOW_MS);
 
   test('renames the project from the panel and saves the name the student chose', async () => {
     render(
@@ -780,7 +794,7 @@ describe('studio opening', () => {
       expect(save).toBeDefined();
       expect(JSON.parse(save[1].body).title).toBe('Star Catcher');
     });
-  });
+  }, SLOW_FLOW_MS);
 
   test('shows an early learner fewer, picture-led choices and no advanced controls', async () => {
     render(
@@ -800,7 +814,7 @@ describe('studio opening', () => {
     expect(screen.queryByRole('button', { name: /^Letter style: / })).not.toBeInTheDocument();
     // No typing route is offered as the way forward at this age.
     expect(screen.queryByRole('button', { name: /describe a change in words/i })).not.toBeInTheDocument();
-  });
+  }, SLOW_FLOW_MS);
   test('shows a creator how many people played their published project', async () => {
     global.fetch.mockImplementation((url) => {
       const target = String(url);

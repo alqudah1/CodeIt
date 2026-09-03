@@ -73,13 +73,18 @@ describe('every lesson page renders', () => {
   // and a lesson whose own data is malformed is exactly as blank to a child.
   const ids = Array.from({ length: 31 }, (_, i) => i + 1);
 
+  // Each of these mounts a whole lesson page. That is well under a second here
+  // and was close to Jest's 5000ms default on a loaded CI runner, which is how
+  // a suite goes red for a reason that has nothing to do with the product.
+  const MOUNT_MS = 20000;
+
   test.each(ids)('lesson %i paints its first step', (id) => {
     const { container, unmount } = renderLesson(id);
     // Something was drawn: a crash leaves an empty container behind.
     expect(container.querySelector('.sl-lesson')).not.toBeNull();
     expect(container.textContent.trim().length).toBeGreaterThan(80);
     unmount();
-  });
+  }, MOUNT_MS);
 
   test('lesson 1 shows the title and the first step, not an empty shell', () => {
     const lessonData = getLessonData('1');
@@ -89,5 +94,5 @@ describe('every lesson page renders', () => {
     if (firstStep?.title) {
       expect(screen.getAllByText(new RegExp(firstStep.title.slice(0, 24), 'i')).length).toBeGreaterThan(0);
     }
-  });
+  }, MOUNT_MS);
 });
