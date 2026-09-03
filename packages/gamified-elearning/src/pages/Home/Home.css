@@ -1320,30 +1320,53 @@
   white-space: pre;
 }
 
+/* 0.78rem is 12.5px and the readable check has a 13px floor, which exists
+   because a browser sweep found 289 pieces of text below it. A line number is
+   small by nature; small is not the same as unreadable. */
 .studio-inside__line {
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--ink-soft, rgba(53, 34, 14, 0.55));
+  /* axe: ink at 55% on a light inset fails the 4.5:1 contrast threshold. A
+     label small enough to be secondary still has to be readable. */
+  color: rgba(53, 34, 14, 0.78);
 }
 
+/* A link is a thing a finger has to hit. The first version of this was 17
+   pixels tall and the device sweep caught it on a 320px phone, which is the
+   screen a school Chromebook or an old handset actually has. */
 .studio-inside__lesson {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;  /* a fingertip, which is what the device sweep measures */
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(123, 92, 214, 0.10);
+  border: 1.5px solid rgba(123, 92, 214, 0.30);
   font-size: 0.85rem;
   font-weight: 800;
   color: #5B3FB0;
   text-decoration: none;
-  border-bottom: 2px solid rgba(123, 92, 214, 0.35);
+}
+
+.studio-inside__lesson:hover {
+  background: rgba(123, 92, 214, 0.18);
 }
 
 .studio-inside__open {
-  display: inline-block;
-  padding: 0.65rem 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;   /* 43px missed the 44px fingertip floor by one pixel */
+  padding: 0.65rem 1.3rem;
   border-radius: 999px;
   background: var(--arc-orange, #F87824);
   border: 2.5px solid var(--ink, #35220E);
   box-shadow: var(--pop-rest, 0 4px 0 #35220E);
-  color: #fff;
+  /* White on this orange is about 3:1 and axe calls it serious. Ink on orange
+     is about 7:1, and it is what the PLAY buttons on the game cards already
+     do, so the page gains a contrast ratio and loses an inconsistency. */
+  color: var(--ink, #35220E);
   font-weight: 800;
   text-decoration: none;
 }

@@ -6186,6 +6186,28 @@ details.bldr-device-sizes .bldr-device-sizes__options {
 .pixel-guide__show:active, .pixel-guide__read:active { transform: translateY(2px); box-shadow: 0 0 0 var(--ink); }
 
 /* Early learners get a bigger voice; the guide level survives the redesign. */
+/* ── The guide is guidance, not a control ────────────────────────────────────
+   The bubble carried the same 2.5px ink border and hard shadow as the game
+   cards it is telling a child to tap, so on the studio's first screen the
+   loudest object was the instructions. It is an inset for the two older levels
+   now, and stays a full card for "Big help", where a five-year-old needs the
+   thing that talks to them to be the most solid thing on the page. See the
+   surface scale in styles/arcade.css. */
+.pixel-guide__bubble--guided,
+.pixel-guide__bubble--independent {
+  background: rgba(53, 34, 14, 0.045);
+  border: 1.5px solid rgba(53, 34, 14, 0.10);
+  box-shadow: none;
+}
+
+/* The step label was an orange that passed on white and fails on the inset
+   behind it. Changing a background changes every contrast ratio on top of it,
+   and axe caught this one within the hour it was introduced. */
+.pixel-guide__bubble--guided .pixel-guide__step,
+.pixel-guide__bubble--independent .pixel-guide__step {
+  color: #9A3E06;
+}
+
 .pixel-guide__bubble--early { max-width: 300px; }
 .pixel-guide__bubble--early .pixel-guide__title { font-size: 1.15rem; }
 .pixel-guide__bubble--early .pixel-guide__detail { font-size: 1rem; }

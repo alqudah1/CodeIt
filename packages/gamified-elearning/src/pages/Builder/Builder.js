@@ -3012,10 +3012,14 @@ export default function Builder() {
             Describe it. Build it.<br />
             <span className="bldr-hero__title-accent">Make it yours.</span>
           </h1>
-          <p className="bldr-hero__sub">
-            Start with a game, quiz, or website. Get a working first version, then play with it,
-            change the code, and learn how it works.
-          </p>
+          {/* This paragraph said "Start with a game, quiz, or website. Get a
+              working first version, then play with it, change the code, and
+              learn how it works", directly under a headline that says
+              "Describe it. Build it. Make it yours." and directly above a coach
+              card that says "Tap a game to open it. It opens straight away",
+              and above a line that said "Tap one. It opens straight away". Four
+              ways of saying the same sentence before a child can touch
+              anything. The headline keeps it. */}
         </section>
         )}
 
@@ -3124,9 +3128,9 @@ export default function Builder() {
             screen is just a big yellow box. */}
         {(!hasResult || showStartOver) && !loading && (
         <section className="bldr-shelves" aria-label="Projects you can open right now">
-          <p className="bldr-shelves__lead">
-            Tap one. It opens straight away, and then you can change anything in it.
-          </p>
+          {/* "Tap one. It opens straight away, and then you can change
+              anything in it." lived here, which is what the coach card two
+              inches above already says, in the same words. */}
           {SHELVES.map((shelf, shelfIdx) => (
             <div className="bldr-shelf" key={shelf.kind}>
               <div className="bldr-shelf__head">
