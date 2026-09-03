@@ -207,58 +207,96 @@ const BLOG_POSTS = [
 
   {
     slug: 'best-coding-games-for-kids',
-    title: 'Best Coding Games for Kids: Learn Python by Playing',
+    title: 'Best Coding Games for Kids: Six Compared, Honestly',
     description:
-      'The best coding games for kids that teach real Python skills. Discover puzzle-based Python games on CodeIt and what makes them great for beginners.',
+      'Six coding games for kids compared: Scratch, Blockly Games, CodeAI, Tynker, CodeIt and CodeCombat. Ages, prices and what each one is weakest at, checked on each product\'s own site.',
     date: '2026-03-27',
-    readTime: '5 min read',
+    updated: '2026-09-03',
+    readTime: '8 min read',
     category: 'Games & Puzzles',
     excerpt:
-      'The best coding games for kids don\'t just entertain. They teach real skills. Here\'s what makes a great coding game and where to find them.',
+      'Six coding games, one section each: what it is, who it fits, what it costs, and where it is weakest. Every price and age read from the product\'s own site on 3 September 2026.',
     sections: [
       {
-        heading: 'What Makes a Coding Game Worth Playing?',
+        heading: 'How to judge a coding game',
         body: [
-          'Not all coding games are equal. Some are just logic puzzles with a coding theme. Others teach real programming concepts that carry over to actual code. Here\'s how to tell the difference:',
-          '• Does the game require writing real code, or just moving blocks?\n• Does each level teach something new, or repeat the same skill endlessly?\n• Is there a clear connection between the game\'s challenge and a programming concept?\n• Does completing the game leave you able to do something new?',
-          'The best coding games for kids check all four. CodeIt\'s puzzles are built around real Python. Kids type actual code to solve each challenge.',
+          'Not all coding games are equal. Some are logic puzzles with a coding theme. Others teach programming that carries over to real code. Four questions separate them:',
+          '• Does the game require writing real code, or just moving blocks?\n• Does each level teach something new, or repeat the same skill?\n• Is there a clear connection between the challenge and a programming concept?\n• Does finishing it leave the child able to do something they could not do before?',
+          'A game can be excellent and still answer no to the first one. Blocks are the right answer for a child who cannot type fluently yet. What matters is knowing which question a product is answering, and that is what the six sections below are for.',
         ],
       },
       {
-        heading: 'The CodeIt Python Puzzle Collection',
+        heading: 'Scratch',
         body: [
-          'CodeIt\'s coding puzzles are Python games built around the lessons in the beginner curriculum:',
-          '• Talking Robot Adventure: Use print() to guide a story. Covers Lesson 1\n• Apple Game Challenge: Use variables to track a score. Covers Lesson 2\n• Loop Game Challenge: Use for loops to repeat actions. Covers loops\n• Condition Game Master: Use if/else to control decisions. Covers Lesson 4\n• Math Game Quest: Use expressions to solve maths challenges. Covers arithmetic',
-          'Each puzzle runs in a full Python environment built into the browser. No app downloads, no installs. Just code.',
+          'Free, from the Scratch Foundation, block-based, and the place most children in the world start. Scratch was developed at the MIT Media Lab in 2007 and transferred to the Scratch Foundation, an independent nonprofit, in 2019.',
+          'Their own wording: "Scratch is free for everyone." The foundation also states that "200 million kids create on Scratch for free".',
+          'Best for: a first experience, roughly ages 8 and up, and younger with an adult beside them. Sharing a project is one click and the community is enormous.',
+          'Weakest at: the step after it. Block code does not become Python or JavaScript, so at some point a child who wants to keep going has to start again with typing, and Scratch does nothing to prepare them for that.',
         ],
       },
       {
-        heading: 'Why Text-Based Coding Games Beat Drag-and-Drop',
+        heading: 'Blockly Games',
         body: [
-          'Drag-and-drop platforms like Scratch are a great starting point for very young children. But they have a ceiling. Block-based code doesn\'t translate to real programming languages.',
-          'Text-based coding games, like CodeIt\'s puzzles, teach skills that carry over directly. When a kid learns to write a for loop in Python to beat a puzzle, that same skill applies to every Python programme they ever write.',
-          'The transition from blocks to text is the single biggest barrier for most young coders. Starting with text from day one removes that barrier entirely.',
+          'Free and open source, published by Google under the Apache 2.0 licence. Its own description is "Games for tomorrow\'s programmers."',
+          'A short series of block-based puzzles that ends by showing the JavaScript behind the blocks, which is the one thing most block products never do.',
+          'Best for: a few focused hours, and specifically the moment a child is ready to see that the blocks were code all along.',
+          'Weakest at: staying power. It is a finite set of levels with no accounts, no saving and no community. A determined child finishes it in a weekend and there is nothing after it.',
         ],
       },
       {
-        heading: 'How to Use Coding Games Most Effectively',
+        heading: 'CodeAI, formerly Code.org',
         body: [
-          'A few approaches that help kids get the most out of coding games:',
-          '• Complete the lesson before attempting the puzzle. The game is designed to test what the lesson taught\n• Don\'t look up answers. The struggle is where the learning happens\n• When stuck, re-read the matching lesson rather than skipping the puzzle\n• Play the same puzzle twice. Once to pass it, once to understand every line of code',
-          'The goal isn\'t to finish the game. The goal is to understand how the code works. Finishing is just evidence that you got there.',
+          'Free, K to 12, and the largest structured curriculum of its kind. Code.org rebranded to CodeAI, and the Hour of Code is now the Hour of AI.',
+          'Their own wording: "Student courses, tools and activities on CodeAI are free, because access to digital fluency shouldn\'t depend on where a student lives."',
+          'Best for: a school or a parent who wants a sequenced course rather than a sandbox, and for the one-hour activities that get a reluctant child started.',
+          'Weakest at: the emphasis has moved toward AI literacy, so a family who came specifically for programming should look at what a course actually contains before committing to it.',
         ],
       },
       {
-        heading: 'Where Coding Games Fit in the Learning Journey',
+        heading: 'Tynker',
         body: [
-          'On CodeIt a lesson is followed by a quiz. The first ten lessons also have a puzzle after the quiz; lessons eleven onward do not have puzzles yet. The lesson introduces the concept, the quiz checks understanding, and the puzzle makes the concept real. Every lesson ends with the studio, where you build something that uses what you just learned.',
-          'This structure means kids never encounter a puzzle they haven\'t been prepared for. The challenge is not "do you know this?" but "can you apply what you just learned?"',
-          'The full journey of lessons, quizzes, puzzles and boss challenges is mapped out in the Journey Map. Each completed step unlocks the next.',
+          'Paid, with a free tier, and the largest library here: block coding, Minecraft and Roblox modding, and typed languages later. Tynker says kids can start "as early as 5-6 years old" and that it is "for ages 5 to 18."',
+          'Prices read from tynker.com/pricing on 3 September 2026, with a 40% discount showing at the time: $18 a month billed quarterly at $54, $15 a month billed yearly at $180, or $468 once for lifetime access. All plans covered up to three children and carried a 30-day money-back guarantee.',
+          'Best for: a child who is already deep in Minecraft or Roblox. The modding integrations are the real reason to pay, and nothing free replaces them.',
+          'Weakest at: value if your child does not use those integrations. The same block-coding foundation is free elsewhere, and a discounted price on a page is not the same as a stable price.',
+        ],
+      },
+      {
+        heading: 'CodeIt',
+        body: [
+          'This is us, so weigh it accordingly. Free plan with no card, and CodeIt Plus at CA$12 a month.',
+          'Typed Python from the first lesson: 31 beginner lessons, each with a quiz, and 30 coding puzzles tied to specific lessons. Separately, a studio where a child describes a game or website, gets a working first version, and then opens the code and changes it.',
+          'Best for: a child who has outgrown blocks and wants to type, and for one who wants to build a thing and share a link to it rather than work through a course.',
+          'Weakest at: everything a large product has and a small one does not. There is no school rostering, no teacher dashboard, no offline mode, no Minecraft or Roblox integration, and the structured lesson sequence is Python only. If your child is five and cannot read fluently, start with Scratch and come back.',
+        ],
+      },
+      {
+        heading: 'CodeCombat',
+        body: [
+          'A role-playing game where the character moves only when the child types code. Their own description: "Learn Python, JavaScript, and HTML as you solve puzzles."',
+          'There is a free set of levels and a paid subscription for the rest. We are not printing a price for it: the pricing page renders in the browser rather than in the page source, so we could not read the number from the seller\'s own page, and a price we cannot see is not a price we will state.',
+          'Best for: roughly 9 and up, and especially a child who likes games more than lessons and will type to make something move.',
+          'Weakest at: teaching the why. Progress can come from copying the pattern the level wants, and a child can clear levels without being able to explain the code they typed.',
+        ],
+      },
+      {
+        heading: 'The comparison, in one table',
+        body: [
+          'Ages, prices and features below were read from each product\'s own site on 3 September 2026. Prices change, discounts appear and vanish, and terms are updated: check before paying.',
+          '• Scratch. Ages 8+ (younger with help). Free. Blocks. Free tier: it is entirely free.\n• Blockly Games. Ages 8+. Free and open source, Apache 2.0. Blocks, with the JavaScript shown. Free tier: entirely free.\n• CodeAI (Code.org). K to 12. Free. Blocks and typed code by course. Free tier: entirely free.\n• Tynker. Ages 5 to 18. $15 a month billed yearly at $180, $18 a month billed quarterly at $54, or $468 once. Blocks, then typed. Free tier: yes.\n• CodeIt. Ages 5 to 18, managed profiles under 13. Free plan, CA$12 a month for Plus. Typed Python, plus the studio. Free tier: yes.\n• CodeCombat. Roughly 9+. Free levels, paid subscription, price not published in the page source. Typed Python, JavaScript and HTML. Free tier: yes.',
+        ],
+      },
+      {
+        heading: 'Which one to pick',
+        body: [
+          'If your child is seven and has never coded, use Scratch. It is free, it is the best on-ramp that exists, and there is no reason to pay anyone anything at that age. Come back to this list when they start asking why the blocks are not real code.',
+          'If your child lives in Minecraft or Roblox, Tynker is the one worth paying for, because the modding integrations are the part nothing free replaces.',
+          'If your child has outgrown blocks and wants to type, the honest shortlist is CodeCombat if they want a game, and CodeIt if they want to build a thing and understand it. Try the free tier of both before paying for either.',
         ],
       },
     ],
     cta: {
-      text: 'Play the Coding Puzzles',
+      text: 'Try the free Python puzzles',
       link: '/games',
     },
     relatedLinks: [
@@ -267,9 +305,9 @@ const BLOG_POSTS = [
       { text: 'Python coding journey for kids', link: '/journey' },
       { text: 'Learn Python for kids', link: '/learn-python-for-kids' },
       { text: 'Coding for kids. Beginner guide', link: '/coding-for-kids' },
-          { text: 'Make a small browser game you can read', link: '/guide/first-browser-game' },
+      { text: 'Make a small browser game you can read', link: '/guide/first-browser-game' },
       { text: 'Tynker alternatives, and when Tynker still wins', link: '/guide/tynker-alternative' },
-],
+    ],
   },
 
   {

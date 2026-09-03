@@ -40,7 +40,9 @@
 const COMPETITOR_PRICES = {
   Tynker: {
     source: 'https://www.tynker.com/pricing/',
-    checked: '2026-08-31',
+    // Read again on 3 September 2026 for the coding-games comparison. Same
+    // five amounts, same 40% discount showing, same three-child limit.
+    checked: '2026-09-03',
     note: 'Family plans, up to three children, 30-day money-back guarantee. A 40% discount was applied on the page at the time of checking.',
     prices: [18, 54, 15, 180, 468],
   },
