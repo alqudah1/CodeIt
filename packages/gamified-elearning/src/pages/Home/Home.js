@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { API_BASE_URL } from "../../config/api";
@@ -8,6 +8,7 @@ import { useSEO } from "../../hooks/useSEO";
 import { trackEvent } from "../../utils/trackEvent";
 import HomePilotSignup from "./HomePilotSignup";
 import { HOME_PICKS } from "../Builder/starterGames";
+import { conceptsIn } from "../Builder/codeConcepts";
 import Icon from "../../components/Icon/Icon";
 import { STARTER_PROJECTS } from "../Builder/starterProjects";
 import { TOTAL_LESSONS } from "../Lessons/lessonRegistry";
@@ -191,6 +192,15 @@ export default function Home() {
   // returning child should see their own work before they see anything we have
   // to say about ourselves.
   const [shelf, setShelf] = useState([]);
+
+  // The first game on the shelf, read for real. Three concepts is what fits on
+  // a phone without the section becoming a wall; the reader returns them in the
+  // order they appear in CONCEPTS, which runs simple to less simple.
+  const firstGame = HOME_PICKS[0];
+  const insideFirstGame = useMemo(
+    () => (firstGame ? conceptsIn(firstGame.html || firstGame.code).slice(0, 3) : []),
+    [firstGame]
+  );
   useEffect(() => {
     try {
       migrateLegacyDraft(window.localStorage);
@@ -384,6 +394,45 @@ export default function Home() {
             <p><strong>See how it works.</strong> Every colour, score and speed on the screen is a line you can find and change.</p>
             <p><strong>Show someone.</strong> Save it, share a link, and your grown-up can see what you understood.</p>
           </section>
+
+          {/* ── The claim, demonstrated rather than asserted ─────────────────
+              Three lines above this section say "every colour, score and speed
+              on the screen is a line you can find and change". A stranger has
+              no reason to believe that, and until now the page offered nothing
+              to check it against: a picture of a project, and a sentence.
+
+              These rows are read out of the real starter file at render time by
+              the same reader the studio uses, so the line numbers are the line
+              numbers, and the snippets are what is in the file. Nothing here
+              can drift into a claim: if the game changes, this changes with it,
+              and homeCodeProof.test.js fails if a line stops matching. */}
+          {insideFirstGame.length > 0 && (
+            <section className="studio-inside" aria-labelledby="studio-inside-title">
+              <div className="studio-inside__heading">
+                <p className="studio-kicker">Nothing is hidden</p>
+                <h2 id="studio-inside-title">Open “{firstGame.label}” and this is what is inside it.</h2>
+                <p>Real lines from the file the game runs on, and the lesson each one belongs to.</p>
+              </div>
+              <ul className="studio-inside__rows">
+                {insideFirstGame.map((concept) => (
+                  <li key={concept.id}>
+                    <code className="studio-inside__code">{concept.snippet}</code>
+                    <span className="studio-inside__line">line {concept.line}</span>
+                    <Link
+                      className="studio-inside__lesson"
+                      to={`/lesson/${concept.lessonId}`}
+                      onClick={() => trackEvent("landing_cta_click", "hero-lessons")}
+                    >
+                      {concept.label}, lesson {concept.lessonId}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <Link className="studio-inside__open" to={`/builder?start=${firstGame.id}`}>
+                Open it and change a line
+              </Link>
+            </section>
+          )}
 
           {/* ── What is true, rather than what sounds impressive ──────────────
               This block used to carry five rounded usage numbers and the words

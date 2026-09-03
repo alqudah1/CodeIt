@@ -4,8 +4,8 @@
   "description": "Build editable websites, games, and quizzes, then learn the code behind them.",
   "icons": [
     {
-      "src": "brand/codeit-logo-trimmed.png",
-      "type": "image/png",
+      "src": "brand/favicon.svg",
+      "type": "image/svg+xml",
       "sizes": "any",
       "purpose": "any"
     },
@@ -26,7 +26,10 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "theme_color": "#FF7A4D",
-  "background_color": "#FFF9F2",
-  "categories": ["education", "kids"]
+  "theme_color": "#F87824",
+  "background_color": "#FFF4E5",
+  "categories": [
+    "education",
+    "kids"
+  ]
 }

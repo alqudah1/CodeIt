@@ -1,9 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title">
-  <title id="title">CodeIt</title>
-  <path fill="#FF7959" d="M8 21c4-7 12-10 19-8 7-6 20-2 22 6 8 1 12 8 10 15-1 7-8 11-15 11-5 7-17 8-24 3-8 1-15-5-15-13 0-5 2-10 6-12-2 0-3-1-3-2Z"/>
-  <circle cx="21" cy="13" r="3.5" fill="#FF7959"/>
-  <circle cx="49" cy="15" r="2.25" fill="#FF7959"/>
-  <circle cx="52" cy="49" r="2.75" fill="#FF7959"/>
-  <path d="m28 24-7 8 7 8M37 24l7 8-7 8" fill="none" stroke="#FFD447" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="m35 22-5 20" fill="none" stroke="#FFF9F2" stroke-width="3.5" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="codeit-mark-title">
+  <title id="codeit-mark-title">CodeIt</title>
+  <!-- The small mark.
+       The favicon used to be the full wordmark PNG, 984 by 654, with "you code"
+       set inside it. At 32 pixels that is a smudge, and the tab icon is the one
+       piece of brand a person sees every single visit.
+       Drawn in the same language as the interface icons: ink outline, arcade
+       fills, round joins, no gradients. Two brackets and a slash, which is what
+       code looks like to somebody who cannot read it yet. -->
+  <path d="M8 21c4-7 12-10 19-8 7-6 20-2 22 6 8 1 12 8 10 15-1 7-8 11-15 11-5 7-17 8-24 3-8 1-15-5-15-13 0-5 2-10 6-12-2 0-3-1-3-2Z"
+        fill="#F87824" stroke="#35220E" stroke-width="3" stroke-linejoin="round"/>
+  <path d="m27 25-7 8 7 8M37 25l7 8-7 8" fill="none" stroke="#FED340" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m34 23-4 20" fill="none" stroke="#FFFDF7" stroke-width="4" stroke-linecap="round"/>
 </svg>

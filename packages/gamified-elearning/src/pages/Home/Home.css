@@ -1266,3 +1266,89 @@
   .hp-actions { flex-direction: column; align-items: stretch; }
   .hp-btn     { text-align: center; }
 }
+
+/* ── What is inside the first game ───────────────────────────────────────────
+   Real lines from the real file. The code is the loudest thing in the section
+   because the section exists to show that the code is there. */
+.studio-inside {
+  margin: 2.5rem auto;
+  max-width: 760px;
+  padding: 1.75rem;
+  background: var(--paper, #FFFDF7);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 20px;
+  box-shadow: var(--pop-card, 6px 6px 0 rgba(53, 34, 14, 0.14));
+}
+
+.studio-inside__heading h2 {
+  margin: 0.35rem 0 0.5rem;
+  font-family: var(--font-display, 'Baloo 2', sans-serif);
+  font-size: clamp(1.35rem, 3.4vw, 1.9rem);
+  line-height: 1.15;
+}
+
+.studio-inside__heading p {
+  margin: 0;
+  color: var(--ink-mute, rgba(53, 34, 14, 0.74));
+  font-size: 0.98rem;
+}
+
+.studio-inside__rows {
+  list-style: none;
+  margin: 1.25rem 0 1.1rem;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.studio-inside__rows li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  background: rgba(53, 34, 14, 0.045);
+}
+
+.studio-inside__code {
+  flex: 1 1 260px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-size: 0.92rem;
+  color: var(--ink, #35220E);
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.studio-inside__line {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft, rgba(53, 34, 14, 0.55));
+}
+
+.studio-inside__lesson {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #5B3FB0;
+  text-decoration: none;
+  border-bottom: 2px solid rgba(123, 92, 214, 0.35);
+}
+
+.studio-inside__open {
+  display: inline-block;
+  padding: 0.65rem 1.2rem;
+  border-radius: 999px;
+  background: var(--arc-orange, #F87824);
+  border: 2.5px solid var(--ink, #35220E);
+  box-shadow: var(--pop-rest, 0 4px 0 #35220E);
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+@media (max-width: 600px) {
+  .studio-inside { padding: 1.25rem; border-radius: 16px; }
+  .studio-inside__code { font-size: 0.85rem; }
+}
