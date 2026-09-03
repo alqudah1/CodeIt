@@ -271,6 +271,8 @@ export default function PythonGamesForKids() {
               <Link to="/coding-for-kids" className="seo-related__link">Coding for Kids</Link>
               <Link to="/blog/best-coding-games-for-kids" className="seo-related__link">Blog: Best Coding Games</Link>
               <Link to="/blog/python-coding-games" className="seo-related__link">Blog: Python Coding Games</Link>
+              <Link to="/guide/first-browser-game" className="seo-related__link">Guide: Build a browser game</Link>
+              <Link to="/guide/best-coding-platforms-for-kids" className="seo-related__link">Guide: Coding platforms compared</Link>
               <Link to="/blog" className="seo-related__link">All Blog Posts</Link>
             </div>
           </nav>

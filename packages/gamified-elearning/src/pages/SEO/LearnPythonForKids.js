@@ -282,6 +282,8 @@ export default function LearnPythonForKids() {
               <Link to="/python-games-for-kids" className="seo-related__link">Python Games for Kids</Link>
               <Link to="/blog/learn-python-for-kids" className="seo-related__link">Blog: Learn Python for Kids</Link>
               <Link to="/blog" className="seo-related__link">All Blog Posts</Link>
+              <Link to="/guide/after-scratch" className="seo-related__link">Guide: What to use after Scratch</Link>
+              <Link to="/guide/coding-for-kids-by-age" className="seo-related__link">Guide: Coding for kids, by age</Link>
             </div>
           </nav>
 

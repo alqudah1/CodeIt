@@ -176,6 +176,8 @@ export default function AIWebsiteBuilderForKids() {
               <Link to="/learn-python-for-kids" className="seo-related__link">Learn Python for Kids</Link>
               <Link to="/explore" className="seo-related__link">Project Gallery</Link>
               <Link to="/pricing" className="seo-related__link">Pricing</Link>
+              <Link to="/guide/ai-builder-you-can-edit" className="seo-related__link">Guide: AI builders you can edit</Link>
+              <Link to="/guide/what-did-my-kid-learn" className="seo-related__link">Guide: What did my kid actually learn?</Link>
             </div>
           </nav>
         </div>

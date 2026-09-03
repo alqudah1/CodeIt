@@ -192,26 +192,27 @@ export const PUZZLE_CONFIGS = {
     // What the puzzle teaches is the SHAPE of a banner: a divider, something of
     // your own, the same divider. That is what is checked now, and the title is
     // theirs.
+    // Each line is diagnosed separately rather than as one sentence about the
+    // whole banner: "the first and last lines are the divider" does not tell a
+    // child which of the two they got wrong, and a child who can see the answer
+    // on their own screen does not need to be told to look at both.
     validator: (output) => {
       const lines = cleanLines(output);
       if (!lines.length) return NO_OUTPUT;
+      const DIVIDER = '----------';
       if (lines.length !== 3) {
-        return {
-          pass: false,
-          message: `A banner is 3 printed lines and this printed ${lines.length}. A divider, your title, then the same divider again.`,
-        };
+        return { pass: false, message: `A banner is 3 lines and ${lines.length} printed. Divider, your title, divider.` };
       }
-      const [top, title, bottom] = lines;
-      if (top !== '----------' || bottom !== '----------') {
-        return {
-          pass: false,
-          message: 'The first and last lines are the divider: print("----------") above and below your title.',
-        };
+      if (lines[0] !== DIVIDER) {
+        return { pass: false, message: `Line 1 shows "${lines[0]}" but the banner starts with the divider "${DIVIDER}".` };
       }
-      if (!title || title === '----------') {
-        return { pass: false, message: 'The middle line is your title. Print anything you like between the two dividers.' };
+      if (lines[2] !== DIVIDER) {
+        return { pass: false, message: `Line 3 shows "${lines[2]}" but the banner ends with the same divider "${DIVIDER}".` };
       }
-      return { pass: true, message: `Banner printed, and "${title}" is yours.` };
+      if (lines[1] === DIVIDER) {
+        return { pass: false, message: 'All three lines are the divider. Line 2 should be a title of your own.' };
+      }
+      return { pass: true, message: `Banner printed, and "${lines[1]}" is yours.` };
     },
   },
 
@@ -802,8 +803,10 @@ export const PUZZLE_CONFIGS = {
       'Then: print("Sum:", add(3, 4))',
     ],
     hintCode: `def add(a, b):\n    return a + b\n\nresult = add(3, 4)\nprint("Sum:", result)`,
-    starterCode: `# Define a function called add that takes a and b\n# and returns a + b\n\n# Then call it with two numbers and print the result\n`,
-    validator: requires([[/\bdef\s+add\s*\(/, 'No function called add yet. Start with def add(a, b):'], [/\breturn\b/, 'add() needs to return a + b, not print it. Add a return line inside the function.']], exact(['Sum: 7'], 'Print the word Sum:, then what add(3, 4) gives back.', 'Function written, called, and printed. Boss cleared!')),
+    // The starter comment named no numbers either, so a child following the
+    // file rather than the story still landed outside the exact check.
+    starterCode: `# Define a function called add that takes a and b\n# and returns a + b\n\n# Then call it with 3 and 4, and print:  print("Sum:", result)\n`,
+    validator: requires([[/\bdef\s+add\s*\(/, 'No function called add yet. Start with def add(a, b):'], [/\breturn\b/, 'add() needs to return a + b, not print it. Add a return line inside the function.']], exact(['Sum: 7'], 'Call add(3, 4) and print what comes back, labelled Sum:.', 'Function written, called, and printed. Boss cleared!')),
   },
 
   // ──── LESSON 10: Combining Concepts ──────────────────────────────────────

@@ -291,6 +291,8 @@ export default function CodingForKids() {
             <Link to="/python-games-for-kids">Coding games</Link>
             <Link to="/playground">Python playground</Link>
             <Link to="/pricing">Pricing</Link>
+            <Link to="/guide/coding-for-kids-by-age">Guide: coding by age</Link>
+            <Link to="/guide/free-coding-for-kids">Guide: what is actually free</Link>
           </div>
         </nav>
       </main>

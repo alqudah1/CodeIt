@@ -99,9 +99,13 @@ function routes() {
   }
 
   // Guides and blog posts, by their own slugs.
+  // /guide/<slug>, not /blog/<slug>. This script had the wrong prefix and
+  // every guide check passed anyway, because /blog/<a-guide-slug> renders the
+  // blog's "Post not found" page and a not-found page is a page with words on
+  // it. Fourteen links shipped in round 77 pointing at that page.
   const guides = loadModule('data/guidePages.js');
   const guideList = guides.GUIDE_PAGES || guides.guidePages || guides.default || [];
-  for (const g of guideList) if (g && g.slug) add(`/blog/${g.slug}`, `guide ${g.slug}`);
+  for (const g of guideList) if (g && g.slug) add(`/guide/${g.slug}`, `guide ${g.slug}`);
 
   const blog = loadModule('data/blogPosts.js');
   const posts = blog.BLOG_POSTS || blog.blogPosts || blog.default || [];
@@ -163,7 +167,18 @@ async function inspect(page, url, device) {
     // the crash from a checker that only looks for a blank page.
     const boundary = document.querySelector('[data-page-error]');
     const text = (document.body && document.body.innerText ? document.body.innerText : '').trim();
+    // The app's own "this does not exist" copy. A route that is supposed to
+    // exist and renders this is broken, however many words are on it.
+    //
+    // Matched against the FIRST 300 characters only, and only for phrases that
+    // are a page's whole answer. Lesson 26 teaches variable scope and its story
+    // line is "Python said it does not exist", which the first version of this
+    // check called a broken page: a checker that fails on a working lesson is
+    // one nobody reads twice.
+    const opening = text.slice(0, 300);
+    const missing = /(post not found|page not found|article not found|lesson not found|we couldn't find that page)/i.test(opening);
     return {
+      missing,
       overlay: Boolean(overlay),
       boundary: Boolean(boundary),
       words: text ? text.split(/\s+/).length : 0,
@@ -171,10 +186,13 @@ async function inspect(page, url, device) {
       innerWidth: window.innerWidth,
       sample: text.slice(0, 60).replace(/\s+/g, ' '),
     };
-  }).catch(() => ({ overlay: false, boundary: false, words: 0, scrollWidth: 0, innerWidth: 0, sample: '' }));
+  }).catch(() => ({ overlay: false, boundary: false, missing: false, words: 0, scrollWidth: 0, innerWidth: 0, sample: '' }));
   page.off('pageerror', onError);
 
-  const broken = errors.length > 0 || seen.overlay || seen.boundary || seen.words < 5;
+  // The 404 route is the one place this copy is the correct answer.
+  const expectedToExist = !/does-not-exist/.test(url);
+  const broken = errors.length > 0 || seen.overlay || seen.boundary || seen.words < 5
+    || (expectedToExist && seen.missing);
   // 2px of tolerance: a sub-pixel layout rounds up on some engines and a false
   // "wide" every run is how people learn to ignore the output.
   const wide = device.mobile && seen.scrollWidth > seen.innerWidth + 2;
@@ -211,6 +229,7 @@ async function main() {
       if (result.broken) {
         const why = result.errors[0]
           || (result.boundary ? 'the page crashed and the error boundary caught it' : '')
+          || (result.missing ? 'the page says the thing does not exist' : '')
           || (result.overlay ? 'build error overlay' : `only ${result.words} words`);
         brokenList.push(`${device.name} ${route.label}: ${why}`);
         console.log(`BROKEN  ${device.name.padEnd(7)} ${route.label}`);
