@@ -42,6 +42,7 @@ import {
   stripPreviewScripts,
 } from './previewStorage';
 import CodePanel from './CodePanel';
+import Icon from '../../components/Icon/Icon';
 import { SHELVES, starterProjectById } from './starterProjects';
 import {
   BrowserSticker,
@@ -654,19 +655,19 @@ const EDIT_STEPS = [
 
 const EASY_EDIT_IDEAS = {
   game: [
-    { icon: '🎨', label: 'Change the colours', instruction: 'Change the game to bright rainbow colours.' },
+    { icon: 'palette', label: 'Change the colours', instruction: 'Change the game to bright rainbow colours.' },
     { icon: '⭐', label: 'Add a power-up', instruction: 'Add a fun star power-up that helps the player.' },
-    { icon: '🏆', label: 'Add a win screen', instruction: 'Add a colorful celebration screen when the player wins.' },
+    { icon: 'trophy', label: 'Add a win screen', instruction: 'Add a colorful celebration screen when the player wins.' },
   ],
   website: [
-    { icon: '🎨', label: 'Change the colours', instruction: 'Change the website to bright rainbow colours.' },
-    { icon: '🖼️', label: 'Add a picture spot', instruction: 'Add a big friendly picture section near the top.' },
-    { icon: '✨', label: 'Make buttons move', instruction: 'Add a fun bounce animation when buttons are pressed.' },
+    { icon: 'palette', label: 'Change the colours', instruction: 'Change the website to bright rainbow colours.' },
+    { icon: 'image', label: 'Add a picture spot', instruction: 'Add a big friendly picture section near the top.' },
+    { icon: 'sparkle', label: 'Make buttons move', instruction: 'Add a fun bounce animation when buttons are pressed.' },
   ],
   default: [
-    { icon: '🎨', label: 'Change the colours', instruction: 'Change the project to bright rainbow colours.' },
-    { icon: '🔤', label: 'Make words bigger', instruction: 'Make the important words bigger and easier to read.' },
-    { icon: '✨', label: 'Add movement', instruction: 'Add a fun gentle animation to the main button.' },
+    { icon: 'palette', label: 'Change the colours', instruction: 'Change the project to bright rainbow colours.' },
+    { icon: 'text', label: 'Make words bigger', instruction: 'Make the important words bigger and easier to read.' },
+    { icon: 'sparkle', label: 'Add movement', instruction: 'Add a fun gentle animation to the main button.' },
   ],
 };
 
@@ -2828,7 +2829,7 @@ export default function Builder() {
   const mineThemes = guideLevel === 'early' ? FIRST_CHANGE_THEMES : PRESET_PALETTES;
   const coachStage = !code
     ? prompt.trim()
-      ? { number: 2, icon: '🟠', title: 'Press “Build my project”', detail: 'The big orange button makes your idea.', target: 'build' }
+      ? { number: 2, icon: 'play', title: 'Press “Build my project”', detail: 'The big orange button makes your idea.', target: 'build' }
       // Step 1 used to read "Press Game, Website, or Quiz", which points at the
       // buttons that send an idea to the model and then show a blank screen for
       // ten to twenty seconds. That is the slowest path in the product, and it
@@ -2838,20 +2839,20 @@ export default function Builder() {
       // something of their own inside a second and has a real project to change,
       // which is the whole loop — and they can type their own idea straight
       // after, having seen what "a project" even means here.
-      : { number: 1, icon: '👇', title: 'Tap a game to open it', detail: 'It opens straight away. Or type your own idea below.', target: 'pick' }
+      : { number: 1, icon: 'hand', title: 'Tap a game to open it', detail: 'It opens straight away. Or type your own idea below.', target: 'pick' }
     : !hasPlayedOnce
-      ? { number: 2, icon: '▶️', title: 'Press Play', detail: 'Try every button. See what works.', target: 'play' }
+      ? { number: 2, icon: 'play', title: 'Press Play', detail: 'Try every button. See what works.', target: 'play' }
       : !isPersonalized
-        ? { number: 3, icon: '🎨', title: 'Change one thing', detail: 'Pick new colours or add a fun idea.', target: 'change' }
+        ? { number: 3, icon: 'palette', title: 'Change one thing', detail: 'Pick new colours or add a fun idea.', target: 'change' }
         : !hasTestedLatest
-          ? { number: 4, icon: '🧪', title: 'Play it again', detail: 'Make sure your new change works.', target: 'play' }
+          ? { number: 4, icon: 'flask', title: 'Play it again', detail: 'Make sure your new change works.', target: 'play' }
           : !isSaved
-            ? { number: 5, icon: '💾', title: 'Save your project', detail: 'Keep your work so it is here next time.', target: 'save' }
+            ? { number: 5, icon: 'save', title: 'Save your project', detail: 'Keep your work so it is here next time.', target: 'save' }
             : user?.managedProfile
-              ? { number: 6, icon: '🙋', title: 'Show your grown-up or teacher', detail: 'Your project is ready for a safe review.', target: 'learn' }
+              ? { number: 6, icon: 'wave', title: 'Show your grown-up or teacher', detail: 'Your project is ready for a safe review.', target: 'learn' }
               : !isPublished
-                ? { number: 6, icon: '🌟', title: 'Publish when you are proud', detail: 'Your project is tested, saved, and ready to share.', target: 'publish' }
-                : { number: 7, icon: '🎉', title: 'Invite someone to play', detail: 'Share your finished project and ask what they think.', target: 'share' };
+                ? { number: 6, icon: 'star', title: 'Publish when you are proud', detail: 'Your project is tested, saved, and ready to share.', target: 'publish' }
+                : { number: 7, icon: 'party', title: 'Invite someone to play', detail: 'Share your finished project and ask what they think.', target: 'share' };
   // ── A guide who says the step, then goes quiet ─────────────────────────────
   //
   // A screenshot caught Pixel's bubble sitting squarely on top of a quiz's
@@ -3062,16 +3063,16 @@ export default function Builder() {
           {coachOpen && (
             <div className={`pixel-guide__bubble pixel-guide__bubble--${guideLevel}`} role="status" aria-live="polite">
               <span className="pixel-guide__step">Pixel · Step {coachStage.number}</span>
-              <strong className="pixel-guide__title">{coachStage.icon} {coachStage.title}</strong>
+              <strong className="pixel-guide__title"><Icon name={coachStage.icon} size={20} /> {coachStage.title}</strong>
               <p className="pixel-guide__detail">{coachStage.detail}</p>
               <div className="pixel-guide__actions">
-                <button type="button" className="pixel-guide__show" onClick={showCoachTarget}>👆 Show me</button>
+                <button type="button" className="pixel-guide__show" onClick={showCoachTarget}><Icon name="hand" size={18} /> Show me</button>
                 <button
                   type="button"
                   className="pixel-guide__read"
                   onClick={() => readCoach(`${coachStage.title}. ${coachStage.detail}`)}
                 >
-                  🔊 Read to me
+                  <Icon name="speaker" size={18} /> Read to me
                 </button>
                 {guideLevel === 'early' && (
                   <button
@@ -3086,7 +3087,7 @@ export default function Builder() {
                     }}
                     aria-label={pixelQuiet ? 'Let Pixel read steps out loud' : 'Stop Pixel reading out loud'}
                   >
-                    {pixelQuiet ? '🔇' : '🔊'}
+                    <Icon name={pixelQuiet ? 'mute' : 'speaker'} size={18} />
                   </button>
                 )}
               </div>
@@ -3736,7 +3737,7 @@ export default function Builder() {
                       down to one and this stays at one. */}
                   {behind ? (
                     <p className="bldr-change-hint bldr-change-hint--behind">
-                      <span aria-hidden="true">🔍</span>
+                      <Icon name="search" size={18} />
                       <span>{behind.sentence}</span>
                       <Link
                         to={`/lesson/${behind.lessonId}`}
@@ -3806,7 +3807,7 @@ export default function Builder() {
                       data-codeit-coach="current"
                       disabled={editing}
                     >
-                      🎨 Change my project
+                      <Icon name="palette" size={18} /> Change my project
                     </button>
                   ) : !hasTestedLatest ? (
                     <button className="bldr-activation-card__primary" onClick={handleTogglePlay} data-codeit-coach="current">▶ Play my changes</button>
@@ -3817,7 +3818,7 @@ export default function Builder() {
                       data-codeit-coach="current"
                       disabled={saveStatus === 'saving' || editing}
                     >
-                      {saveStatus === 'saving' ? 'Saving…' : user ? '💾 Save my project' : '💾 Keep my project'}
+                      <><Icon name="save" size={18} /> {saveStatus === 'saving' ? 'Saving…' : user ? 'Save my project' : 'Keep my project'}</>
                     </button>
                   )}
                   {hasPlayedOnce && !isPersonalized && guideLevel !== 'early' && (
@@ -3827,7 +3828,7 @@ export default function Builder() {
                       onClick={() => { setShowEditPanel(true); setTimeout(() => editRef.current?.focus(), 0); }}
                       disabled={editing}
                     >
-                      💬 Or describe a change in words
+                      <Icon name="chat" size={18} /> Or describe a change in words
                     </button>
                   )}
                   {hasPlayedOnce && !isPersonalized && (
@@ -4008,7 +4009,7 @@ export default function Builder() {
                 {studioPanel === 'mine' && (
                   <div className="bldr-studio-panel__body bldr-mine" data-guide-level={guideLevel}>
                     <p className="bldr-mine__intro">
-                      <span className="bldr-mine__intro-icon" aria-hidden="true">✨</span>
+                      <Icon name="sparkle" size={22} className="bldr-mine__intro-icon" />
                       {guideLevel === 'early'
                         ? 'Tap a picture to change your project. It changes right away!'
                         : 'Every change here happens straight away. No waiting, no internet needed.'}
@@ -4016,7 +4017,7 @@ export default function Builder() {
 
                     {instantControls.includes('theme') && (
                       <fieldset className="bldr-mine__group">
-                        <legend className="bldr-mine__legend"><span aria-hidden="true">🎨</span> Colours</legend>
+                        <legend className="bldr-mine__legend"><Icon name="palette" size={20} /> Colours</legend>
                         <div className="bldr-mine__options bldr-mine__options--theme">
                           {mineThemes.map(theme => (
                             <button
@@ -4043,7 +4044,7 @@ export default function Builder() {
 
                     {instantControls.includes('textSize') && (
                       <fieldset className="bldr-mine__group">
-                        <legend className="bldr-mine__legend"><span aria-hidden="true">🔤</span> Text size</legend>
+                        <legend className="bldr-mine__legend"><Icon name="text" size={20} /> Text size</legend>
                         <div className="bldr-mine__options">
                           {optionsForGuideLevel(TEXT_SIZES, guideLevel).map(option => (
                             <button
@@ -4069,7 +4070,7 @@ export default function Builder() {
 
                     {instantControls.includes('font') && (
                       <fieldset className="bldr-mine__group">
-                        <legend className="bldr-mine__legend"><span aria-hidden="true">✏️</span> Letter style</legend>
+                        <legend className="bldr-mine__legend"><Icon name="pen" size={20} /> Letter style</legend>
                         <div className="bldr-mine__options">
                           {optionsForGuideLevel(FONTS, guideLevel).map(option => (
                             <button
@@ -4095,7 +4096,7 @@ export default function Builder() {
 
                     {instantControls.includes('background') && (
                       <fieldset className="bldr-mine__group">
-                        <legend className="bldr-mine__legend"><span aria-hidden="true">🖼️</span> Background</legend>
+                        <legend className="bldr-mine__legend"><Icon name="image" size={20} /> Background</legend>
                         <div className="bldr-mine__options">
                           {optionsForGuideLevel(BACKGROUNDS, guideLevel).map(option => (
                             <button
@@ -4155,7 +4156,7 @@ export default function Builder() {
 
                     {instantControls.includes('title') && (
                       <fieldset className="bldr-mine__group">
-                        <legend className="bldr-mine__legend"><span aria-hidden="true">🏷️</span> Project name</legend>
+                        <legend className="bldr-mine__legend"><Icon name="tag" size={20} /> Project name</legend>
                         <div className="bldr-mine__rename">
                           <label className="bldr-mine__rename-label" htmlFor="bldr-title-input">
                             {guideLevel === 'early' ? 'What is your project called?' : 'Give your project its own name'}
@@ -4634,7 +4635,7 @@ export default function Builder() {
                   and not long enough to be read by a seven-year-old. */}
               {publishRefusal && (
                 <p className="bldr-publish-note" role="status">
-                  <span aria-hidden="true">🔒</span>
+                  <Icon name="lock" size={18} />
                   <span>
                     {publishRefusal.message}
                     {publishRefusal.code === 'PLAN_UPGRADE_REQUIRED' && (
@@ -4652,7 +4653,14 @@ export default function Builder() {
                 onClick={() => { setShowEditPanel(p => !p); setEditError(''); if (editModeOn) toggleEditMode(); }}
                 disabled={editing}
               >
-                {showEditPanel ? 'Close changes' : 'Change my project'}
+                {/* This said "Change my project" too, which is the exact
+                    label on the activation card's primary button four screens
+                    up. One name, two different panels: that one opens the
+                    colour and font controls, this one opens the box where you
+                    ask for a change in words. The emoji in front of the other
+                    one was all that told them apart, and emoji are on their
+                    way out of this interface. */}
+                {showEditPanel ? 'Close changes' : 'Ask for a change'}
               </button>}
 
               {onTab('change') && <button
@@ -4753,7 +4761,7 @@ export default function Builder() {
 
                 {editError === 'AI_LIMIT' && (
                   <div className="bldr-edit-panel__pause" role="status">
-                    <span className="bldr-edit-panel__pause-icon" aria-hidden="true">🪄</span>
+                    <Icon name="wand" size={22} className="bldr-edit-panel__pause-icon" />
                     <div>
                       <p className="bldr-edit-panel__pause-title">Your project is safe!</p>
                       <p>Pixel needs a break. Try it again in <strong>{friendlyWait(editRetrySeconds)}</strong>.</p>
@@ -4761,7 +4769,7 @@ export default function Builder() {
                     </div>
                     <div className="bldr-edit-panel__pause-actions">
                       <button type="button" onClick={() => { setIsPlayMode(true); setHasPlayedOnce(true); setHasTestedLatest(true); setShowEditPanel(false); }}>▶ Play my project</button>
-                      <button type="button" onClick={() => { openStudioTool('colors'); setShowEditPanel(false); }}>🎨 Change colours</button>
+                      <button type="button" onClick={() => { openStudioTool('colors'); setShowEditPanel(false); }}><Icon name="palette" size={18} /> Change colours</button>
                     </div>
                   </div>
                 )}
@@ -4984,7 +4992,7 @@ export default function Builder() {
                     onClick={() => elementAction('DELETE', 'Deleted it')}
                     title="Remove it. You can undo this"
                   >
-                    <span aria-hidden="true">🗑</span> Delete
+                    <Icon name="trash" size={16} /> Delete
                   </button>
                 </div>
 

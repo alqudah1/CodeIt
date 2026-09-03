@@ -213,7 +213,15 @@ export default function Explore() {
       if (!res.ok) throw new Error('Could not load explore feed.');
       setData(await res.json());
     } catch (e) {
-      setError(e.message);
+      // Never the exception's own words. When the API answered with HTML
+      // instead of JSON, this page printed
+      //   Unexpected token '<', "<!doctype "... is not valid JSON
+      // in the middle of the screen, to a parent, in place of the projects.
+      // A person cannot act on a parser message, and it makes a working
+      // product look broken beyond repair. The real error still goes to the
+      // console for whoever is debugging.
+      console.error('Explore feed failed:', e);
+      setError('We could not load the projects just now.');
     } finally {
       setLoading(false);
     }

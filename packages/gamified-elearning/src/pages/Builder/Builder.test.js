@@ -303,7 +303,7 @@ describe('studio opening', () => {
     await screen.findByRole('button', { name: /Play everything/i });
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
     openStudioPage('Change');
-    fireEvent.click(screen.getByRole('button', { name: 'Change my project' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Ask for a change' }));
 
     expect(screen.getByRole('group', { name: 'How to change your project' })).toHaveTextContent('Pick an idea');
     fireEvent.click(screen.getByRole('button', { name: /Change the colours/i }));
@@ -340,7 +340,7 @@ describe('studio opening', () => {
     });
 
     openStudioPage('Change');
-    fireEvent.click(screen.getByRole('button', { name: 'Change my project' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Ask for a change' }));
     fireEvent.click(screen.getByRole('button', { name: /Add a power-up/i }));
     fireEvent.click(screen.getByRole('button', { name: 'Make my change' }));
 

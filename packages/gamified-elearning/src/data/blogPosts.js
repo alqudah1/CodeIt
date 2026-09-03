@@ -3,6 +3,15 @@
    Add new posts here; both BlogIndex and BlogPost consume this file.
 ───────────────────────────────────────────────────────────── */
 
+// ── Why the guides are linked from here ─────────────────────────────────────
+//
+// Sixteen guides existed and exactly one page linked to them: /guide. Nothing
+// Google has already indexed pointed at any of them, so they sat outside the
+// site as far as a crawler is concerned, and a reader who landed on a post had
+// no way to find the guide that answers their next question.
+//
+// These seven posts are the pages that already rank. Two guide links each,
+// chosen to match what the post is about rather than to spread links evenly.
 const BLOG_POSTS = [
   {
     slug: 'learn-python-for-kids',
@@ -59,7 +68,9 @@ const BLOG_POSTS = [
       { text: 'Free coding for kids. Interactive Python lessons', link: '/lessons' },
       { text: 'Python games for kids. Coding puzzles', link: '/python-games-for-kids' },
       { text: 'Coding for kids. Beginner guide', link: '/coding-for-kids' },
-    ],
+          { text: 'What is actually free in 2026', link: '/blog/free-coding-for-kids' },
+      { text: 'Which tool suits which age', link: '/blog/coding-for-kids-by-age' },
+],
   },
 
   {
@@ -116,7 +127,9 @@ const BLOG_POSTS = [
       { text: 'Start the Python coding journey for kids', link: '/journey' },
       { text: 'Coding for kids. Learn Python free', link: '/coding-for-kids' },
       { text: 'Learn Python: Lesson 3. Loops', link: '/lesson/3' },
-    ],
+          { text: 'Make a small browser game you can read', link: '/blog/first-browser-game' },
+      { text: 'The coding platforms compared', link: '/blog/best-coding-platforms-for-kids' },
+],
   },
 
   {
@@ -182,7 +195,9 @@ const BLOG_POSTS = [
       { text: 'Coding for kids. Free interactive Python lessons', link: '/lessons' },
       { text: 'Python coding puzzles for beginners', link: '/games' },
       { text: 'Learn Python for Kids. Guide', link: '/learn-python-for-kids' },
-    ],
+          { text: 'Which tool suits which age', link: '/blog/coding-for-kids-by-age' },
+      { text: 'What comes after Scratch', link: '/blog/after-scratch' },
+],
   },
 
   {
@@ -247,7 +262,9 @@ const BLOG_POSTS = [
       { text: 'Python coding journey for kids', link: '/journey' },
       { text: 'Learn Python for kids', link: '/learn-python-for-kids' },
       { text: 'Coding for kids. Beginner guide', link: '/coding-for-kids' },
-    ],
+          { text: 'Make a small browser game you can read', link: '/blog/first-browser-game' },
+      { text: 'Tynker alternatives, and when Tynker still wins', link: '/blog/tynker-alternative' },
+],
   },
 
   {
@@ -325,7 +342,9 @@ const BLOG_POSTS = [
       { text: 'Start the Python coding journey', link: '/journey' },
       { text: 'Python coding puzzles', link: '/games' },
       { text: 'Is Python good for kids?', link: '/blog/is-python-good-for-kids' },
-    ],
+          { text: 'Did my kid learn anything, or did AI do it?', link: '/blog/what-did-my-kid-learn' },
+      { text: 'Publishing a first website free', link: '/blog/publish-first-project' },
+],
   },
 
   {
@@ -398,7 +417,9 @@ const BLOG_POSTS = [
       { text: 'Python basics for beginners', link: '/blog/python-basics-for-beginners' },
       { text: 'Python games for kids', link: '/python-games-for-kids' },
       { text: 'Start the Python journey', link: '/journey' },
-    ],
+          { text: 'What comes after Scratch', link: '/blog/after-scratch' },
+      { text: 'Your kid used AI to write their code. Now what?', link: '/blog/ai-built-it-now-edit-it' },
+],
   },
 
   {
@@ -481,7 +502,9 @@ const BLOG_POSTS = [
       { text: 'Python games for kids', link: '/python-games-for-kids' },
       { text: 'Is Python good for kids?', link: '/blog/is-python-good-for-kids' },
       { text: 'Start the Python journey free', link: '/journey' },
-    ],
+          { text: 'What is actually free in 2026', link: '/blog/free-coding-for-kids' },
+      { text: 'The coding platforms compared', link: '/blog/best-coding-platforms-for-kids' },
+],
   },
 ];
 

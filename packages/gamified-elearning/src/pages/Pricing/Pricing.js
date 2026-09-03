@@ -54,8 +54,12 @@ const FAQ = [
   ['Can we use CodeIt for free?', 'Yes. The lessons, playground, coding games, and core project tools will keep a useful free option.'],
   ['Is the family pilot free?', 'Yes. Requesting a pilot spot and using the current pilot are free. No card, trial, or subscription starts automatically.'],
   ['What happens after I request a spot?', 'We email you the setup steps straight away, so you can try the family experience today.'],
-  ['Why is the paid plan not unlimited?', 'Every AI-built project costs us real money to make. A set number each month keeps the price the same every month for you, and keeps CodeIt running.'],
-  ['Who is the family plan for?', 'Parents or guardians who want more project creation, a view of learning progress, and room for two young learners.'],
+  // These two answers contradicted the card six centimetres above them: the
+  // card says CodeIt Plus is unlimited AI builds and up to four children, and
+  // the FAQ said the paid plan is capped and holds two. The free plan is the
+  // one with a monthly number on it.
+  ['Why does the free plan have a limit?', 'Every AI-built project costs us real money to make. Ten a month keeps the free plan genuinely free rather than something that quietly disappears, and CodeIt Plus removes the limit.'],
+  ['Who is the family plan for?', 'Parents or guardians who want unlimited project creation, a view of learning progress, and room for up to four young learners on one adult account.'],
 ];
 
 export default function Pricing() {
@@ -320,7 +324,7 @@ export default function Pricing() {
             <p className="pricing-card__eyebrow">For parents and guardians</p>
             <h2>Founding Family Pilot</h2>
             <div className="pricing-price"><strong>Free pilot</strong><span>free while it lasts, then {PRICE_PER_INTERVAL} if you stay</span></div>
-            <p className="pricing-card__summary">More project creation, two learner profiles, and a clearer view of progress.</p>
+            <p className="pricing-card__summary">More project creation, room for more than one learner, and a clearer view of progress.</p>
             <ul>{FOUNDING_FEATURES.map((feature) => <li key={feature}>{feature}</li>)}</ul>
             <div className="pricing-next" aria-label="What happens after requesting a family pilot spot">
               <strong>What happens next</strong>

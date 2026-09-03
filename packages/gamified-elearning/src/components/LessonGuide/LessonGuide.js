@@ -3,6 +3,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { effectiveGuideLevel } from '../../utils/guideLevel';
 import CharacterAvatar from '../CharacterAvatar/CharacterAvatar';
+import Icon from '../Icon/Icon';
 import './LessonGuide.css';
 
 // One hint per (stepType, state) combination
@@ -70,8 +71,24 @@ const LessonGuide = ({ stepType, isCurrentDone, isLastStep }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hint]);
 
+  // ── Why the bubble hides itself on a phone ───────────────────────────────
+  //
+  // A screenshot of lesson 1 at 390 by 844: the words "Read through this step.
+  // Press Got It when you are ready." printed straight across the two print()
+  // lines the step is teaching. The guide was covering the code.
+  //
+  // On a narrow screen the guide is now the avatar alone, and tapping it opens
+  // the bubble. Nothing is lost: the hint is one tap away and still announced
+  // to a screen reader. On a wide screen there is room beside the content and
+  // the bubble stays open, as it always was.
+  const [openOnPhone, setOpenOnPhone] = useState(false);
+
   return (
-    <div className="lg-wrap" aria-live="polite" aria-label={`Guide says: ${hint}`}>
+    <div
+      className={`lg-wrap${openOnPhone ? ' lg-wrap--open' : ''}`}
+      aria-live="polite"
+      aria-label={`Guide says: ${hint}`}
+    >
       <div className="lg-bubble">
         <span className="lg-bubble__name">{name}</span>
         <p className="lg-bubble__text">{hint}</p>
@@ -92,7 +109,7 @@ const LessonGuide = ({ stepType, isCurrentDone, isLastStep }) => {
                 else readHint(hint);
               }}
             >
-              {quiet ? '🔇' : '🔊'}
+              <Icon name={quiet ? 'mute' : 'speaker'} size={18} />
             </button>
           ) : (
             <button
@@ -101,13 +118,21 @@ const LessonGuide = ({ stepType, isCurrentDone, isLastStep }) => {
               onClick={() => readHint(hint)}
               aria-label="Read this step to me"
             >
-              🔊 Read to me
+              <Icon name="speaker" size={18} /> Read to me
             </button>
           )}
         </div>
         <span className="lg-bubble__arrow" aria-hidden="true" />
       </div>
-      <CharacterAvatar character={character} size={80} className="lg-avatar" />
+      <button
+        type="button"
+        className="lg-avatar-btn"
+        onClick={() => setOpenOnPhone(open => !open)}
+        aria-expanded={openOnPhone}
+        aria-label={openOnPhone ? 'Hide the guide' : 'What should I do now?'}
+      >
+        <CharacterAvatar character={character} size={80} className="lg-avatar" />
+      </button>
     </div>
   );
 };

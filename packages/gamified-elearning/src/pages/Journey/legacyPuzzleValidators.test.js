@@ -246,3 +246,58 @@ describe('the open-ended three', () => {
     expect(PUZZLE_CONFIGS[key].validator(output, code).pass).toBe(true);
   });
 });
+
+// ── Two boss puzzles that rejected children who were right ───────────────────
+//
+// Reported live, 3 September 2026.
+//
+// Lesson 1 boss told a child to add "your title", its own hint said to type
+// print("My Title"), and the check demanded the literal string "My Mission". A
+// child who copied the puzzle's hint was told they were wrong, and so was every
+// child who did what the goal asked and used a title of their own.
+//
+// Lesson 9 boss said "call it with two numbers" and demanded exactly "Sum: 7",
+// so print(add(5, 5)) failed, and print(add(3, 4)) failed too because the label
+// was never mentioned anywhere.
+//
+// The two are fixed in opposite directions on purpose. A puzzle may check an
+// exact line, or it may leave the answer open. It may not do one and say the
+// other.
+describe('the two boss puzzles that rejected correct work', () => {
+  const banner = PUZZLE_CONFIGS['1-boss'].validator;
+  const fn = PUZZLE_CONFIGS['9-boss'].validator;
+
+  test('lesson 1 boss accepts the title the hint tells a child to type', () => {
+    expect(banner('----------\nMy Title\n----------', '').pass).toBe(true);
+  });
+
+  test('lesson 1 boss accepts a title of the child\'s own', () => {
+    expect(banner('----------\nSAMS SPACE MISSION\n----------', '').pass).toBe(true);
+    expect(banner('----------\nMy Mission\n----------', '').pass).toBe(true);
+  });
+
+  test('lesson 1 boss still needs both dividers and a title between them', () => {
+    expect(banner('----------\n----------', '').pass).toBe(false);
+    expect(banner('My Title', '').pass).toBe(false);
+    expect(banner('==========\nMy Title\n==========', '').pass).toBe(false);
+    expect(banner('----------\n----------\n----------', '').pass).toBe(false);
+    expect(banner('----------\nMy Title\n----------\nextra', '').pass).toBe(false);
+  });
+
+  test('lesson 9 boss now names the numbers and the label it checks for', () => {
+    const config = PUZZLE_CONFIGS['9-boss'];
+    expect(config.story).toMatch(/3 and 4/);
+    expect(config.goals.join(' ')).toMatch(/Sum: 7/);
+    expect(config.hints.join(' ')).toMatch(/print\("Sum:", add\(3, 4\)\)/);
+  });
+
+  test('lesson 9 boss passes the answer its own hints produce', () => {
+    const code = 'def add(a, b):\n    return a + b\n\nprint("Sum:", add(3, 4))';
+    expect(fn('Sum: 7', code).pass).toBe(true);
+  });
+
+  test('lesson 9 boss still requires a function that returns', () => {
+    expect(fn('Sum: 7', 'print("Sum:", 3 + 4)').pass).toBe(false);
+    expect(fn('Sum: 7', 'def add(a, b):\n    print(a + b)').pass).toBe(false);
+  });
+});

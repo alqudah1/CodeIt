@@ -98,6 +98,15 @@
   pointer-events: auto;
 }
 
+.lg-avatar-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+  line-height: 0;
+}
+
 @media (max-width: 600px) {
   .lg-wrap {
     bottom: 14px;
@@ -110,4 +119,10 @@
   .lg-bubble__text {
     font-size: 0.8125rem;
   }
+
+  /* The bubble printed itself across the code block on lesson 1 at 390px.
+     On a phone the guide is the avatar until it is asked. */
+  .lg-wrap .lg-bubble { display: none; }
+  .lg-wrap--open .lg-bubble { display: block; max-width: min(78vw, 260px); }
+  .lg-avatar { width: 56px; height: 56px; }
 }

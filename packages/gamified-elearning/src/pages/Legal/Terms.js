@@ -81,7 +81,13 @@ export default function Terms() {
             <section id="plans">
               <h2>Free and paid plans</h2>
               <p>Every lesson, quiz and puzzle is free. So is the playground, editing your own project by hand, and saving your work privately. A classroom should never meet a paywall in the middle of a lesson, and none of that is behind one.</p>
-              <p>The free plan includes {FREE_MONTHLY_AI_BUILDS} AI project builds each month and does not include publishing a project to a public link. <strong>CodeIt Plus</strong> costs {PRICE_PER_INTERVAL} and adds unlimited AI builds and edits, publishing to a public CodeIt link, play counts on published projects, and up to four learner profiles under one adult account.</p>
+              {/* This paragraph sold publishing as a paid feature. It is free,
+                  PLANS.free.canPublish has been true the whole time, the
+                  pricing page says so, and entitlements.js carries a comment
+                  about this exact contradiction being fixed once already. Terms
+                  are the document a person quotes back at you; they do not get
+                  to be the optimistic version. */}
+              <p>The free plan includes {FREE_MONTHLY_AI_BUILDS} AI project builds each month, and publishing a project to a public CodeIt link is free too. <strong>CodeIt Plus</strong> costs {PRICE_PER_INTERVAL} and adds unlimited AI builds and edits, play counts on published projects, and up to four learner profiles under one adult account.</p>
               <p>Requesting a family pilot spot is free and never starts a subscription. Nothing is charged unless an adult goes through checkout and confirms.</p>
             </section>
 
@@ -90,7 +96,7 @@ export default function Terms() {
               <p>CodeIt Plus is a subscription. It costs {PRICE} per {INTERVAL}, charged when you subscribe and again on the same day each month until you cancel. Prices are in Canadian dollars. Any sales tax that applies is shown at checkout before you confirm.</p>
               <p>Only an adult account can subscribe. CodeIt does not sell to children: a managed learner profile, or an account whose date of birth indicates the holder is under 18, cannot start a subscription.</p>
               <p>Payment is processed by Stripe. Card details go to Stripe and never reach CodeIt. We store only Stripe's identifiers for your subscription, never a card number. Access to paid features is granted by Stripe's confirmation that a payment succeeded, not by anything your browser sends us.</p>
-              <p>If a renewal payment fails, Stripe retries it. Your family keeps access to CodeIt Plus during those retries so that work your child already published does not disappear while you sort out a card. If payment never succeeds, the subscription ends and the account returns to the free plan. Saved projects are not deleted when a plan ends, and a project your child already published stays reachable at its link. We do not take a child's shared work offline because a card expired. What ends is the ability to publish new projects and the higher AI build allowance.</p>
+              <p>If a renewal payment fails, Stripe retries it. Your family keeps access to CodeIt Plus during those retries so that work your child already published does not disappear while you sort out a card. If payment never succeeds, the subscription ends and the account returns to the free plan. Saved projects are not deleted when a plan ends, and a project your child already published stays reachable at its link. We do not take a child's shared work offline because a card expired. What ends is the higher AI build allowance, play counts, and the extra learner profiles. Publishing is free and stays available.</p>
               <p>If the price changes, existing subscribers will be told before it applies to them, with enough notice to cancel first.</p>
             </section>
 

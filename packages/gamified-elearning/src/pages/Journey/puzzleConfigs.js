@@ -184,7 +184,35 @@ export const PUZZLE_CONFIGS = {
     ],
     hintCode: `print("----------")\nprint("My Mission")\nprint("----------")`,
     starterCode: `# A banner has 3 lines: divider, title, divider\nprint("----------")\n# Add your title here:\n\n# Add the closing divider here:\n`,
-    validator: exact(['----------', 'My Mission', '----------'], 'Three print() lines: the dashes, the title, the dashes again.', 'Banner printed!'),
+    // The puzzle says "add your title" and its own hint says print("My Title"),
+    // and this used to demand the exact string "My Mission". A child who typed
+    // what the hint told them to type was marked wrong. So was every child who
+    // wrote their own title, which is what the goal actually asks for.
+    //
+    // What the puzzle teaches is the SHAPE of a banner: a divider, something of
+    // your own, the same divider. That is what is checked now, and the title is
+    // theirs.
+    validator: (output) => {
+      const lines = cleanLines(output);
+      if (!lines.length) return NO_OUTPUT;
+      if (lines.length !== 3) {
+        return {
+          pass: false,
+          message: `A banner is 3 printed lines and this printed ${lines.length}. A divider, your title, then the same divider again.`,
+        };
+      }
+      const [top, title, bottom] = lines;
+      if (top !== '----------' || bottom !== '----------') {
+        return {
+          pass: false,
+          message: 'The first and last lines are the divider: print("----------") above and below your title.',
+        };
+      }
+      if (!title || title === '----------') {
+        return { pass: false, message: 'The middle line is your title. Print anything you like between the two dividers.' };
+      }
+      return { pass: true, message: `Banner printed, and "${title}" is yours.` };
+    },
   },
 
   // ──── LESSON 2: Variables ─────────────────────────────────────────────────
@@ -758,19 +786,24 @@ export const PUZZLE_CONFIGS = {
   '9-boss': {
     id: 903,
     title: 'Function Boss',
-    story: 'Write a function that adds two numbers and returns the result. Call it and print the answer.',
+    // The story said "call it with two numbers" and the check demanded exactly
+    // "Sum: 7", so print(add(5, 5)) failed, and so did print(add(3, 4)): the
+    // label was required and never mentioned. A puzzle may check an exact line
+    // or it may leave the choice open. It may not do one and say the other.
+    // This one checks exactly, so it now says exactly what to print.
+    story: 'Write a function that adds two numbers and returns the result. Call it with 3 and 4, and print "Sum:" followed by the answer.',
     goals: [
       'Define add(a, b) that returns a + b',
-      'Call add() with two numbers and print the result',
+      'Call add(3, 4) and print it like this: Sum: 7',
     ],
     hints: [
       'Start with: def add(a, b):',
       'Inside, write: return a + b',
-      'Then: print(add(3, 4))',
+      'Then: print("Sum:", add(3, 4))',
     ],
     hintCode: `def add(a, b):\n    return a + b\n\nresult = add(3, 4)\nprint("Sum:", result)`,
     starterCode: `# Define a function called add that takes a and b\n# and returns a + b\n\n# Then call it with two numbers and print the result\n`,
-    validator: requires([[/\bdef\s+add\s*\(/, 'No function called add yet. Start with def add(a, b):'], [/\breturn\b/, 'add() needs to return a + b, not print it. Add a return line inside the function.']], exact(['Sum: 7'], 'Call add() with two numbers and print what comes back.', 'Function written, called, and printed. Boss cleared!')),
+    validator: requires([[/\bdef\s+add\s*\(/, 'No function called add yet. Start with def add(a, b):'], [/\breturn\b/, 'add() needs to return a + b, not print it. Add a return line inside the function.']], exact(['Sum: 7'], 'Print the word Sum:, then what add(3, 4) gives back.', 'Function written, called, and printed. Boss cleared!')),
   },
 
   // ──── LESSON 10: Combining Concepts ──────────────────────────────────────

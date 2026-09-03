@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const db = require('./db');
 const { ready: progressReady } = require('./progressNotifications');
+const { planForSubscription } = require('./entitlements');
 const {
   FAMILY_NOTICE_VERSION,
   validManagedPassword,
@@ -191,6 +192,40 @@ async function verifyAdultEmail(rawToken) {
   return result.affectedRows > 0;
 }
 
+/**
+ * How many managed learners this adult already has.
+ *
+ * Number() around the value on purpose. Postgres returns COUNT(*) as a STRING
+ * through node-postgres, so a bare `rows[0].child_count >= 4` compares a string
+ * with a number, and the obvious version of this guard enforces nothing in
+ * production while passing on a MySQL dev box.
+ */
+async function countManagedChildren(adultUserId) {
+  const [rows] = await db.query(
+    'SELECT COUNT(*) AS child_count FROM parent_child_links WHERE adult_user_id = ?',
+    [adultUserId]
+  );
+  const row = rows[0] || {};
+  const raw = row.child_count ?? row.count ?? row['COUNT(*)'] ?? 0;
+  const count = Number(raw);
+  return Number.isFinite(count) ? count : 0;
+}
+
+/**
+ * The plan this adult is on, or null when billing cannot be read. Null means
+ * "do not enforce".
+ */
+async function currentPlan(adultUserId) {
+  try {
+    const billingStore = require('./billingStore');
+    const subscription = await billingStore.getSubscriptionByUserId(adultUserId);
+    return planForSubscription(subscription);
+  } catch (error) {
+    console.error('Child-profile allowance check skipped:', error.message);
+    return null;
+  }
+}
+
 async function createManagedChild(adultUserId, input) {
   await ready;
   await progressReady;
@@ -206,6 +241,32 @@ async function createManagedChild(adultUserId, input) {
   if (!verification.length) {
     throw Object.assign(new Error('Confirm the adult account email first.'), { statusCode: 403 });
   }
+
+  // ── How many learners this account may hold ──────────────────────────────
+  //
+  // PLANS carries maxChildProfiles and nothing had ever read it. A free account
+  // could add learner profiles without end, which is the paid plan's headline
+  // feature given away, and a family could cross a line the pricing page draws
+  // without ever being told there was one.
+  //
+  // Two things this deliberately does NOT do: it does not remove or lock any
+  // profile that already exists, and it does not fail closed when billing is
+  // unreadable. A family already over the number keeps every child they have
+  // and simply cannot add another. Standing between a parent and their own
+  // children because Stripe is slow would be the worse mistake.
+  const plan = await currentPlan(adultUserId);
+  const existing = await countManagedChildren(adultUserId);
+  if (plan && existing >= plan.maxChildProfiles) {
+    throw Object.assign(
+      new Error(
+        plan.maxChildProfiles === 1
+          ? 'This account holds one learner profile. CodeIt Plus holds up to four.'
+          : `This plan holds up to ${plan.maxChildProfiles} learner profiles.`
+      ),
+      { statusCode: 403, code: 'CHILD_LIMIT_REACHED' }
+    );
+  }
+
 
   const data = parsed.value;
   let connection;
@@ -442,6 +503,7 @@ async function getChildEvidence(adultUserId, childUserId) {
 
 module.exports = {
   getChildEvidence,
+  countManagedChildren,
   createManagedChild,
   deleteManagedChild,
   getFamilyStatus,
