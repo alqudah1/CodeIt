@@ -43,6 +43,27 @@ const COMPANY = {
   // same thing. Swap it here when that mailbox is ready; nothing else changes.
   contactEmail: 'mustafa@lynq.build',
 
+  // ── The founder note on the home page ────────────────────────────────────
+  //
+  // There is no person anywhere on codeitlearn.com. Nobody built it, nobody is
+  // named, nobody answers. That absence is most of what makes a site read as
+  // generated, more than any sentence on it does.
+  //
+  // The block that fixes it is written and waiting in Home.js, and it renders
+  // NOTHING until this string is filled in. It is deliberately empty rather
+  // than holding a plausible sentence, because the one thing worse than no
+  // founder on the page is a founder saying something he did not say.
+  //
+  // Mustafa: one true sentence, first person, why you built it. For example
+  // the shape, not the content: "I built CodeIt because <the real reason>."
+  // Fill it here and it appears, signed, above the footer, with the address
+  // above as a mailbox a person actually answers.
+  founderNote: '',
+
+  // Optional. A path under public/ to a photograph of the founder. The block
+  // works without it; a face works better than no face.
+  founderPhoto: '',
+
   // Not yet available. Leave empty rather than guessing — a fabricated
   // founding date is exactly what a reader checks when deciding if a site is
   // real, and the company is not registered yet.

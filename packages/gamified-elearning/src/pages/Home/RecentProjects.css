@@ -1,0 +1,67 @@
+.recent {
+  margin: 2.5rem auto;
+  max-width: 900px;
+  padding: 0 1rem;
+}
+
+.recent__head h2 {
+  margin: 0.35rem 0 1rem;
+  font-family: var(--font-display, 'Baloo 2', sans-serif);
+  font-size: clamp(1.35rem, 3.4vw, 1.9rem);
+  line-height: 1.15;
+}
+
+.recent__row {
+  list-style: none;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.recent__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  height: 100%;
+  min-height: 116px;
+  padding: 1rem;
+  background: var(--paper, #FFFDF7);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 18px;
+  box-shadow: var(--pop-card, 6px 6px 0 rgba(53, 34, 14, 0.14));
+  color: var(--ink, #35220E);
+  text-decoration: none;
+}
+
+.recent__card:hover {
+  transform: translateY(-2px);
+}
+
+.recent__title {
+  font-family: var(--font-display, 'Baloo 2', sans-serif);
+  font-size: 1.05rem;
+  line-height: 1.2;
+  /* A child's own title, however long they made it. */
+  overflow-wrap: anywhere;
+}
+
+.recent__by {
+  font-size: 0.85rem;
+  color: rgba(53, 34, 14, 0.78);
+}
+
+.recent__more {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0.65rem 1.3rem;
+  border-radius: 999px;
+  background: var(--arc-sun, #FED340);
+  border: 2.5px solid var(--ink, #35220E);
+  box-shadow: var(--pop-rest, 0 4px 0 #35220E);
+  color: var(--ink, #35220E);
+  font-weight: 800;
+  text-decoration: none;
+}

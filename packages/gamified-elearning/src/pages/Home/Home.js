@@ -14,6 +14,8 @@ import { STARTER_PROJECTS } from "../Builder/starterProjects";
 import { TOTAL_LESSONS } from "../Lessons/lessonRegistry";
 import { CURRENCY_SYMBOL } from "../../config/pricing";
 import YourShelf from "./YourShelf";
+import RecentProjects from "./RecentProjects";
+import FounderNote from "./FounderNote";
 import Evidence from "./Evidence";
 import { listProjects, migrateLegacyDraft } from "../../utils/projectShelf";
 import "./Home.css";
@@ -399,6 +401,11 @@ export default function Home() {
             <p><strong>Show someone.</strong> Save it, share a link, and your grown-up can see what you understood.</p>
           </section>
 
+          {/* Real projects, by real children, near the top. /explore is the
+              most convincing thing CodeIt has and the home page linked it once,
+              as a text link, next to the footer. */}
+          <RecentProjects />
+
           {/* ── The claim, demonstrated rather than asserted ─────────────────
               Three lines above this section say "every colour, score and speed
               on the screen is a line you can find and change". A stranger has
@@ -521,20 +528,13 @@ export default function Home() {
                 See full pilot details <span aria-hidden="true">→</span>
               </Link>
             </div>
-            <article className="studio-family__email" aria-label="Example parent progress email">
-              <div className="studio-family__email-bar">
-                <BrandLogo className="studio-family__email-logo" alt="" />
-                <span>CodeIt progress update</span>
-              </div>
-              <p className="studio-family__email-label">Website published</p>
-              <h3>Sam published “My Space Quiz”</h3>
-              <p>Sam built an interactive quiz, learned how variables store the score, and published the project.</p>
-              <div className="studio-family__email-result">
-                <span>Project</span>
-                <strong>My Space Quiz</strong>
-                <small>Ready to view and share</small>
-              </div>
-            </article>
+            {/* A mock progress email about a child called Sam who published a
+                project called "My Space Quiz" stood here. Neither exists. It
+                was the only thing on the page that looked like evidence, and it
+                was invented, which is the worst combination available.
+
+                Real published projects now have their own section further up.
+                An empty space is better than a fabricated child. */}
           </section>
 
           <section id="how-it-works" className="studio-loop" aria-labelledby="studio-loop-title">
@@ -550,7 +550,9 @@ export default function Home() {
               </div>
             </div>
             <div className="studio-loop__copy">
-              <p className="studio-kicker">The build → learn → improve loop</p>
+              {/* Was "The build → learn → improve loop". An arrow inside a
+                  heading is a diagram someone could not be bothered to draw. */}
+              <p className="studio-kicker">How a project actually gets made</p>
               <h2 id="studio-loop-title">A first version gives you momentum. The learning makes it yours.</h2>
               <ol>
                 <li><span>1</span><div><strong>Describe</strong><p>Explain what you want to create in everyday language.</p></div></li>
@@ -577,8 +579,12 @@ export default function Home() {
           <section className="studio-final" aria-labelledby="studio-final-title">
             <div>
               <p className="studio-kicker">The CodeIt promise</p>
+              {/* "Build it. Learn how it works. Make it yours. Share what you
+                  created." sat under this headline, which is the same sentence
+                  in different words, and the footer carried a third version of
+                  it. Three of the same sentence on one page does not sound
+                  confident; it sounds like a page trying to convince itself. */}
               <h2 id="studio-final-title">Start with an idea. Leave with something real.</h2>
-              <p>Build it. Learn how it works. Make it yours. Share what you created.</p>
             </div>
             <Link
               to="/builder"
@@ -589,13 +595,13 @@ export default function Home() {
               {user ? "Keep building" : "Start building for free"} <span aria-hidden="true">→</span>
             </Link>
           </section>
+          <FounderNote />
         </main>
 
         <footer className="studio-footer">
           <div className="studio-footer__top">
             <div className="studio-footer__brand">
               <BrandLogo className="studio-footer__logo" />
-              <p>Build something. Learn the code. Make it yours.</p>
             </div>
             <div>
               <strong>Build</strong>
