@@ -11,6 +11,12 @@ import './LiveFrame.css';
 //
 // It is deliberately not interactive: a reminder, not the place you play.
 // The link around it opens the project where it gets the whole screen.
+//
+// Not loading="lazy". Seen live on 4 September 2026 in Chrome: with lazy
+// frames, one game started at once, one arrived ten seconds later, and three
+// were still dark after half a minute, in the viewport the whole time.
+// Chrome schedules lazy iframes on its own terms; a shelf whose point is
+// "three games actually moving" cannot leave that to it.
 
 export const BASE_WIDTH = 390;
 
@@ -51,7 +57,6 @@ export default function LiveFrame({ code, title, className = '' }) {
         tabIndex={-1}
         srcDoc={code}
         sandbox="allow-scripts"
-        loading="lazy"
         scrolling="no"
         style={{ width: BASE_WIDTH, height: frameHeight, transform: `scale(${scale})` }}
       />

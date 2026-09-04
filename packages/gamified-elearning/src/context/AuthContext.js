@@ -3,6 +3,8 @@ import { trackEvent } from "../utils/trackEvent";
 import { API_BASE_URL } from "../config/api";
 import { syncUnderstandingToAccount } from "../utils/understanding";
 
+import { isTokenExpired } from "../utils/tokenExpiry";
+
 export const AuthContext = createContext();
 
 function localDateKey() {
@@ -33,7 +35,13 @@ export const AuthProvider = ({ children }) => {
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("token");
 
-    if (storedUser && storedToken) {
+    if (storedUser && storedToken && isTokenExpired(storedToken)) {
+      // The token behind this session has died. Showing "Welcome back" over
+      // it means every save fails in silence; a plain signed-out page is the
+      // honest state, and the shelf and drafts in this browser survive.
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+    } else if (storedUser && storedToken) {
       try {
         setUser(JSON.parse(storedUser));
         setToken(storedToken);
@@ -74,6 +82,15 @@ export const AuthProvider = ({ children }) => {
     setUser(user);
     setToken(token);
   };
+
+  // Any request the server refuses as an invalid session signs the browser
+  // out, wherever it happened, so the page never claims a session it lost.
+  useEffect(() => {
+    const onInvalid = () => logout();
+    window.addEventListener("codeit:session-invalid", onInvalid);
+    return () => window.removeEventListener("codeit:session-invalid", onInvalid);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const logout = () => {
     localStorage.removeItem("user");

@@ -59,6 +59,7 @@ import {
 } from '../../components/ArcadeArt/ArcadeArt';
 import { changeInvitation } from './whatCanIChange';
 import { displayTitle } from '../../utils/displayTitle';
+import { isSessionError } from '../../utils/tokenExpiry';
 import { lookInside } from './lookInside';
 import { closestStarter } from './closestStarter';
 
@@ -2347,6 +2348,16 @@ export default function Builder() {
         body:    JSON.stringify({ title, prompt: builtPrompt, generated_code: code, project_type: projectType }),
       });
       const data = await res.json();
+      if (!res.ok && isSessionError(res.status, data.error)) {
+        // The session died since the page loaded. Keep everything, sign the
+        // browser out, and send them through the gate with the draft intact,
+        // exactly as a guest who pressed Save.
+        saveInFlightRef.current = false;
+        setSaveStatus(null);
+        window.dispatchEvent(new Event('codeit:session-invalid'));
+        continueAfterAuth('save');
+        return;
+      }
       if (!res.ok) throw new Error(data.error || 'Could not save project.');
       // Older API versions returned only { success: true } for updates.
       const projectRecord = data.project || {
