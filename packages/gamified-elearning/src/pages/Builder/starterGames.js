@@ -523,7 +523,10 @@ window.addEventListener('resize', fitScreen);
 fitScreen();
 
 let score = 0;
-let best = Number(localStorage.getItem('best') || 0);
+// The best score is remembered if the browser lets us. In a sandboxed
+// preview it does not, and that must not stop the game.
+let best = 0;
+try { best = Number(localStorage.getItem('best') || 0); } catch (e) { best = 0; }
 let rocks = [];
 let backgroundStars = [];
 let shipX = 0, shipY = 0;
@@ -559,7 +562,7 @@ function crash() {
   playing = false;
   if (score > best) {
     best = score;
-    localStorage.setItem('best', String(best));
+    try { localStorage.setItem('best', String(best)); } catch (e) {}
     document.getElementById('bestLabel').textContent = best;
   }
   document.getElementById('finalScore').textContent = score;
@@ -1349,7 +1352,8 @@ fitScreen();
 
 let score = 0;
 let lives = startLives;
-let best = Number(localStorage.getItem('bestJump') || 0);
+let best = 0;
+try { best = Number(localStorage.getItem('bestJump') || 0); } catch (e) { best = 0; }
 let groundY = 0;
 let runnerY = 0;
 let fallSpeed = 0;
@@ -1403,7 +1407,7 @@ function endGame() {
   playing = false;
   if (score > best) {
     best = score;
-    localStorage.setItem('bestJump', best);
+    try { localStorage.setItem('bestJump', best); } catch (e) {}
   }
   document.getElementById('finalScore').textContent = score;
   var finalNoun = document.getElementById('finalNoun');

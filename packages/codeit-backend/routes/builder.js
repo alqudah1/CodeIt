@@ -1669,91 +1669,78 @@ ${designConfig.category === 'game' ? '• Game must be startable, playable, scor
 
     const maxTok = 8192;
 
-    let message;
-    let attempt1Timedout = false;
-    try {
-      message = await Promise.race([
-        createTrackedMessage('build_initial', {
-          model:      modelForBuild(designConfig.type, planId, 0).model,
-          max_tokens: maxTok,
-          system:     cached(systemPrompt),
-          messages:   [{ role: 'user', content: userMsg }],
-        }),
-        new Promise(function(_, reject) {
-          setTimeout(function() { reject(new Error('BUILD_TIMEOUT')); }, 75000);
-        }),
-      ]);
-    } catch (raceErr) {
-      if (raceErr.message === 'BUILD_TIMEOUT') {
-        attempt1Timedout = true;
-      } else {
-        throw raceErr;
+    // ── Two attempts before any failure is shown ──────────────────────────
+    //
+    // Rounds 66 and 67: a child described something, waited, and got a
+    // generic starter plus homework ("press Build again yourself"). Now the
+    // first attempt runs on the routed model as before, and on a timeout, a
+    // thrown error, or unusable output the route retries ONCE on the next
+    // tier up, saying nothing. The browser's progress indicator keeps
+    // running because this is still one request. Only if that also fails
+    // does the starter go out, and it goes out with `retry`, which tells the
+    // button what a third try would do differently.
+    //
+    // Budget: the browser gives up at 150 s. 70 + 65 leaves room for the
+    // response to travel.
+    const FIRST_TIMEOUT_MS = 70000;
+    const SECOND_TIMEOUT_MS = 65000;
+
+    // A retry pressed from the fallback card starts one tier up already,
+    // which is the thing the button promised.
+    const startAttempt = req.body?.escalate === true ? 1 : 0;
+
+    const attemptOnce = async (label, model, messages, timeoutMs) => {
+      let timer;
+      try {
+        return await Promise.race([
+          createTrackedMessage(label, {
+            model,
+            max_tokens: maxTok,
+            system:     cached(systemPrompt),
+            messages,
+          }),
+          new Promise(function(_, reject) {
+            timer = setTimeout(function() { reject(new Error('BUILD_TIMEOUT')); }, timeoutMs);
+          }),
+        ]);
+      } finally {
+        clearTimeout(timer);
       }
-    }
+    };
 
-    if (attempt1Timedout) {
-      fallbackReason = 'timeout';
-      console.log('Builder: attempt1 timeout, using fallback for type:', designConfig.type);
-      const fbHtml = getRichFallback(designConfig, prompt.trim());
-      const fbTitle = derivePromptTitle(prompt.trim());
-      return res.json({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready — AI polish can be added next', isFallback: true, conceptsUsed: [] });
-    }
-
-    let rawText = message.content[0].text;
-
-    // Diagnostic logging — raw AI response stats
-    const rawLen = rawText.length;
-    const rawHasHtml = /<\/html>/i.test(rawText);
-    const rawHasBody = /<\/body>/i.test(rawText);
-    const rawHasScript = /<\/script>/i.test(rawText);
-    console.log(`Builder diag [${designConfig.type}]: rawLen=${rawLen} </html>=${rawHasHtml} </body>=${rawHasBody} </script>=${rawHasScript}`);
-    if (!rawHasHtml) {
-      console.log('Builder diag first500:', rawText.slice(0, 500));
-      console.log('Builder diag last500:', rawText.slice(-500));
-    }
-
-    let parsed  = parseBuilderResponse(rawText);
-
-    // Inject pre-loaded website CSS (AI was told not to copy it)
-    if (designConfig.category === 'website' && parsed.html) {
-      parsed.html = injectWebsiteCSS(parsed.html);
-    }
-
-    // Check for missing script section BEFORE repair (repair adds </script> which hides truncation)
-    const missingScript = !/<\/script>/i.test(parsed.html);
-    const wasTruncated = !/<\/html>/i.test(parsed.html);
-
-    // Try to repair truncated output before quality check
-    if (parsed.html && !/<\/html>/i.test(parsed.html)) {
-      const repaired = repairHtml(parsed.html);
-      if (validateHtml(repaired)) {
-        parsed.html = repaired;
-        console.log('Builder: truncated HTML repaired on first pass');
+    // Reads one response the way the child's browser will: does it parse,
+    // does it run, does it do the thing. Returns the parsed project and, when
+    // it is unusable, the reasons in the model's own terms.
+    const judge = (rawText) => {
+      const parsed = parseBuilderResponse(rawText);
+      if (designConfig.category === 'website' && parsed.html) {
+        parsed.html = injectWebsiteCSS(parsed.html);
       }
-    }
-
-    // Quality check — retry once with correction prompt if validation fails
-    // A project whose JavaScript will not parse is not a project. This is the
-    // only check here that asks whether the thing runs rather than whether it
-    // contains the right words, and it is the one that catches what children
-    // actually hit: "some games don't work".
-    const brokenCode = syntaxErrorIn(parsed.html);
-    if (brokenCode) {
-      console.log(`Builder: generated project will not parse — ${brokenCode.detail || brokenCode.message}`);
-    }
-
-    const isValid = !missingScript
-      && !wasTruncated
-      && !brokenCode
-      && validateHtml(parsed.html)
-      && validateInteractivity(parsed.html, designConfig.type);
-    const qualityCheck = designEngine.validateOutput(parsed.html);
-
-    if (!isValid || !qualityCheck.valid) {
-      const failReasons = [
-        // First, because it is the only one that means the project cannot start
-        // at all, and because naming the parser's own words gives the model
-        // something precise to fix rather than a category to guess at.
+      // Check for a missing script BEFORE repair (repair adds </script>, which hides truncation)
+      const missingScript = !/<\/script>/i.test(parsed.html);
+      const wasTruncated = !/<\/html>/i.test(parsed.html);
+      if (parsed.html && wasTruncated) {
+        const repaired = repairHtml(parsed.html);
+        if (validateHtml(repaired)) {
+          parsed.html = repaired;
+          console.log('Builder: truncated HTML repaired');
+        }
+      }
+      // A project whose JavaScript will not parse is not a project. This is
+      // the only check here that asks whether the thing runs rather than
+      // whether it contains the right words.
+      const brokenCode = syntaxErrorIn(parsed.html);
+      if (brokenCode) {
+        console.log(`Builder: generated project will not parse — ${brokenCode.detail || brokenCode.message}`);
+      }
+      const qualityCheck = designEngine.validateOutput(parsed.html);
+      const ok = !missingScript
+        && !wasTruncated
+        && !brokenCode
+        && validateHtml(parsed.html)
+        && validateInteractivity(parsed.html, designConfig.type)
+        && qualityCheck.valid;
+      const failReasons = ok ? [] : [
         brokenCode
           ? `JAVASCRIPT DOES NOT PARSE — script ${brokenCode.script} of ${brokenCode.of}: ${brokenCode.message}`
           : '',
@@ -1766,18 +1753,20 @@ ${designConfig.category === 'game' ? '• Game must be startable, playable, scor
         designConfig.category === 'game' && !/screen|showScreen/i.test(parsed.html) ? 'GAME MISSING SCREEN SYSTEM' : '',
         ...(qualityCheck.issues || []),
       ].filter(Boolean);
+      return { parsed, ok, failReasons, wasTruncated, missingScript };
+    };
 
-      const compactConstraint = (wasTruncated || missingScript)
+    const correctionMessage = (verdict) => {
+      const compactConstraint = (verdict.wasTruncated || verdict.missingScript)
         ? `\n\nCRITICAL: Your output was truncated. This retry MUST be under 12KB total.
 - Include ONLY the essential playable/usable experience and its controls
 - Skip extra sections, testimonials, galleries, long descriptions
 - Keep all text SHORT (2–4 words per label)
 - Output MUST end with </body></html>` : '';
-
-      const retryMsg = `QUALITY CHECK FAILED — ${failReasons.join(' | ')}
+      return `QUALITY CHECK FAILED — ${verdict.failReasons.join(' | ')}
 
 Your previous output is NOT functional. You MUST fix these issues:
-${failReasons.map(r => `• ${r}`).join('\n')}
+${verdict.failReasons.map(r => `• ${r}`).join('\n')}
 
 ${designConfig.category === 'game' ? `GAME MUST HAVE:
 - 3 screens: start-screen (visible first), game-screen, result-screen
@@ -1797,72 +1786,73 @@ designConfig.category === 'website' ? `WEBSITE MUST HAVE:
 - Enter key works as submit`}
 ${compactConstraint}
 Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> format.`;
+    };
 
-      let retryResponse;
-      let retryTimedout = false;
+    // ── Attempt 1 ─────────────────────────────────────────────────────────
+    const firstRoute = modelForBuild(designConfig.type, planId, startAttempt);
+    let firstRaw = null;
+    let firstVerdict = null;
+    let firstFailure = null; // 'timeout' | 'error' | 'invalid-output'
+    try {
+      const message = await attemptOnce('build_initial', firstRoute.model, [{ role: 'user', content: userMsg }], FIRST_TIMEOUT_MS);
+      firstRaw = message.content[0].text;
+      const rawHasHtml = /<\/html>/i.test(firstRaw);
+      console.log(`Builder diag [${designConfig.type}]: rawLen=${firstRaw.length} </html>=${rawHasHtml} </body>=${/<\/body>/i.test(firstRaw)} </script>=${/<\/script>/i.test(firstRaw)}`);
+      if (!rawHasHtml) {
+        console.log('Builder diag first500:', firstRaw.slice(0, 500));
+        console.log('Builder diag last500:', firstRaw.slice(-500));
+      }
+      firstVerdict = judge(firstRaw);
+      if (!firstVerdict.ok) firstFailure = 'invalid-output';
+    } catch (raceErr) {
+      firstFailure = raceErr.message === 'BUILD_TIMEOUT' ? 'timeout' : 'error';
+      console.log(`Builder: attempt 1 ${firstFailure} on ${firstRoute.model} for type: ${designConfig.type}${firstFailure === 'error' ? ` (${raceErr.message})` : ''}`);
+    }
+
+    let parsed = firstVerdict?.ok ? firstVerdict.parsed : null;
+
+    // ── Attempt 2, silently, one tier up ──────────────────────────────────
+    if (!parsed) {
+      const secondRoute = modelForBuild(designConfig.type, planId, startAttempt + 1);
+      // With a first draft in hand the retry is a correction, which is
+      // cheaper and better than starting over. Without one (timeout, error)
+      // it is a fresh build on the stronger model.
+      const messages = firstRaw && firstVerdict
+        ? [
+          { role: 'user',      content: userMsg },
+          { role: 'assistant', content: firstRaw },
+          { role: 'user',      content: correctionMessage(firstVerdict) },
+        ]
+        : [{ role: 'user', content: userMsg }];
+      console.log(`Builder: retrying on ${secondRoute.model}${secondRoute.escalated ? ' (escalated)' : ''} after ${firstFailure}`);
       try {
-        retryResponse = await Promise.race([
-          createTrackedMessage('build_retry', {
-            model:      modelForBuild(designConfig.type, planId, 1).model,
-            max_tokens: maxTok,
-            system:     cached(systemPrompt),
-            messages: [
-              { role: 'user',      content: userMsg },
-              { role: 'assistant', content: rawText },
-              { role: 'user',      content: retryMsg },
-            ],
-          }),
-          new Promise(function(_, reject) {
-            setTimeout(function() { reject(new Error('BUILD_TIMEOUT')); }, 60000);
-          }),
-        ]);
-      } catch (raceErr2) {
-        if (raceErr2.message === 'BUILD_TIMEOUT') {
-          retryTimedout = true;
+        const retryResponse = await attemptOnce('build_retry', secondRoute.model, messages, SECOND_TIMEOUT_MS);
+        const verdict = judge(retryResponse.content[0].text);
+        if (verdict.ok) {
+          parsed = verdict.parsed;
         } else {
-          throw raceErr2;
+          fallbackReason = 'invalid-output';
+          console.log(`Builder: retry still unusable — ${verdict.failReasons[0] || 'unknown'}`);
         }
+      } catch (raceErr2) {
+        fallbackReason = raceErr2.message === 'BUILD_TIMEOUT' ? 'retry-timeout' : 'error';
+        console.log(`Builder: retry ${fallbackReason} on ${secondRoute.model} for type: ${designConfig.type}`);
       }
 
-      if (retryTimedout) {
-        fallbackReason = 'retry-timeout';
-        console.log('Builder: retry timeout, using rich fallback for type:', designConfig.type);
+      if (!parsed) {
+        // Both tries failed. Tell the button what a third one would do
+        // differently: a tier up from where THIS request started, if the
+        // plan allows one, and more time either way.
+        const nextRoute = modelForBuild(designConfig.type, planId, startAttempt + 1);
+        const retry = {
+          escalates: nextRoute.model !== firstRoute.model,
+          moreTime: true,
+        };
+        console.log('Builder: two attempts failed, using rich fallback for type:', designConfig.type);
         const fbHtml = getRichFallback(designConfig, prompt.trim());
         const fbTitle = derivePromptTitle(prompt.trim());
-        return res.json({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready — AI polish can be added next', isFallback: true, conceptsUsed: [] });
+        return res.json({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready — AI polish can be added next', isFallback: true, retry, conceptsUsed: [] });
       }
-
-      rawText = retryResponse.content[0].text;
-      parsed  = parseBuilderResponse(rawText);
-
-      // Inject CSS and attempt repair on retry output too
-      if (designConfig.category === 'website' && parsed.html) {
-        parsed.html = injectWebsiteCSS(parsed.html);
-      }
-      if (parsed.html && !/<\/html>/i.test(parsed.html)) {
-        const repaired = repairHtml(parsed.html);
-        if (validateHtml(repaired)) {
-          parsed.html = repaired;
-          console.log('Builder: truncated HTML repaired on retry pass');
-        }
-      }
-    }
-
-    // The retry gets the same question as the first pass. Without this, a
-    // project that failed to parse, was sent back to be fixed, and came back
-    // still not parsing would be handed to the child anyway — which is the
-    // original bug with one extra step in front of it.
-    const stillBroken = syntaxErrorIn(parsed.html);
-    if (stillBroken) {
-      console.log(`Builder: retry still will not parse — ${stillBroken.message}`);
-    }
-
-    if (stillBroken || !validateHtml(parsed.html) || !validateInteractivity(parsed.html, designConfig.type)) {
-      fallbackReason = 'invalid-output';
-      console.log('Builder: validation failed after retry, using rich fallback for type:', designConfig.type);
-      const fbHtml = getRichFallback(designConfig, prompt.trim());
-      const fbTitle = derivePromptTitle(prompt.trim());
-      return res.json({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready — AI polish can be added next', isFallback: true, conceptsUsed: [] });
     }
 
     // The first pass already follows the full visual system and is validated.

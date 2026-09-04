@@ -154,12 +154,12 @@ h1, h2, h3, .studio-hero h1, .lm-title, .exp-hero__title, .pricing-hero h1,
    ═══════════════════════════════════════════════════════════════════════════ */
 .site-header__cta, .site-header__login,
 .studio-button, .glass-btn,
-.pick__card, .shelf__hero, .shelf__chip,
+.pick__card, .shelf__chip,
 .bldr-build-btn, .bldr-action-btn, .bldr-chip,
 .bldr-shelf__card, .bldr-studio-bar__btn, .bldr-mine__option,
 .bldr-activation-card__primary, .bldr-change-hint__go,
 .bldr-tab,
-.lm-card, .lm-back-btn, .lm-continue-btn,
+.lm-back-btn,
 .exp-btn, .exp-tab, .exp-hero__cta, .exp-card,
 .pricing-button, .qz-opt, .qz-btn-back,
 .sl-gate-card__btn, .sl-completion-card__btn, .sl-strip__back,
@@ -174,12 +174,12 @@ h1, h2, h3, .studio-hero h1, .lm-title, .exp-hero__title, .pricing-hero h1,
 
 .site-header__cta:hover, .site-header__login:hover,
 .studio-button:hover, .glass-btn:hover,
-.pick__card:hover, .shelf__hero:hover, .shelf__chip:hover,
+.pick__card:hover, .shelf__chip:hover,
 .bldr-build-btn:hover:not(:disabled), .bldr-action-btn:hover:not(:disabled),
 .bldr-chip:hover, .bldr-shelf__card:hover, .bldr-studio-bar__btn:hover:not(:disabled),
 .bldr-mine__option:hover, .bldr-activation-card__primary:hover,
 .bldr-change-hint__go:hover, .bldr-tab:hover,
-.lm-card--unlocked:hover, .lm-card--completed:hover, .lm-back-btn:hover, .lm-continue-btn:hover,
+.lm-back-btn:hover,
 .exp-btn:hover, .exp-tab:hover, .exp-hero__cta:hover, .exp-card:hover,
 .pricing-button:hover, .qz-opt:hover:not(:disabled), .qz-btn-back:hover,
 .sl-gate-card__btn:hover, .sl-completion-card__btn:hover, .sl-strip__back:hover,
@@ -191,12 +191,12 @@ h1, h2, h3, .studio-hero h1, .lm-title, .exp-hero__title, .pricing-hero h1,
 
 .site-header__cta:active, .site-header__login:active,
 .studio-button:active, .glass-btn:active,
-.pick__card:active, .shelf__hero:active, .shelf__chip:active,
+.pick__card:active, .shelf__chip:active,
 .bldr-build-btn:active, .bldr-action-btn:active,
 .bldr-chip:active, .bldr-shelf__card:active, .bldr-studio-bar__btn:active,
 .bldr-mine__option:active, .bldr-activation-card__primary:active,
 .bldr-change-hint__go:active, .bldr-tab:active,
-.lm-card:active, .lm-back-btn:active, .lm-continue-btn:active,
+.lm-back-btn:active,
 .exp-btn:active, .exp-tab:active, .exp-hero__cta:active, .exp-card:active,
 .pricing-button:active, .qz-opt:active, .qz-btn-back:active,
 .sl-gate-card__btn:active, .sl-completion-card__btn:active, .sl-strip__back:active,
@@ -211,7 +211,7 @@ h1, h2, h3, .studio-hero h1, .lm-title, .exp-hero__title, .pricing-hero h1,
 .site-header__cta:focus-visible, .studio-button:focus-visible,
 .pick__card:focus-visible, .bldr-build-btn:focus-visible,
 .bldr-action-btn:focus-visible, .bldr-shelf__card:focus-visible,
-.lm-card:focus-visible, .exp-btn:focus-visible, .pricing-button:focus-visible,
+.exp-btn:focus-visible, .pricing-button:focus-visible,
 .qz-opt:focus-visible, .bldr-tab:focus-visible, .glass-btn:focus-visible {
   outline: 3px solid var(--arc-violet);
   outline-offset: 3px;
@@ -344,48 +344,9 @@ h1, h2, h3, .studio-hero h1, .lm-title, .exp-hero__title, .pricing-hero h1,
 .bldr-project-checklist li.is-done button span { background: var(--arc-mint); color: #fff; }
 .bldr-project-checklist li.is-current button span { background: var(--arc-sun); }
 
-/* ── Lessons: the map becomes a trail of quest cards. Ink number dice; the
-   next lesson glows sun-yellow; locked ones are honest cardboard with a
-   dashed edge — closed, not broken. ── */
+/* ── Lessons: the map's own stylesheet (LessonMap.css) carries the paper
+   arcade look for its nodes and trail; only the page ground is set here. ── */
 .lm-page { background: transparent; }
-.lm-card {
-  background: var(--paper);
-  border-radius: 18px;
-  border: 2.5px solid var(--ink);
-  box-shadow: var(--pop-rest);
-}
-.lm-card--locked {
-  border: 2.5px dashed var(--ink-line);
-  box-shadow: none;
-  background: rgba(255, 253, 250, 0.6);
-  opacity: 1;
-}
-.lm-card--locked .lm-card-title, .lm-card--locked .lm-card-desc { color: var(--ink-soft); }
-.lm-card--next { border-color: var(--ink); background: #FFF9EA; }
-.lm-card--next .lm-emoji { background: var(--arc-sun); }
-.lm-card--completed .lm-emoji { background: var(--arc-mint); }
-.lm-emoji {
-  border: 2px solid var(--ink);
-  border-radius: 12px;
-  background: var(--paper);
-  box-shadow: 2px 2px 0 rgba(53, 34, 14, 0.18);
-}
-.lm-card-title { font-family: var(--font-display); font-weight: 800; color: var(--ink); }
-.lm-lesson-num { font-family: var(--font-display); color: var(--ink-soft); }
-.lm-xp {
-  font-family: var(--font-display);
-  font-weight: 800;
-  background: var(--arc-sun);
-  border: 2px solid var(--ink);
-  border-radius: 999px;
-  padding: 0.1rem 0.6rem;
-  color: var(--ink);
-}
-.lm-badge--locked { background: transparent; border: 1.5px dashed var(--ink-line); color: var(--ink-soft); }
-.lm-badge--completed { background: var(--arc-mint); color: var(--ink); border: 1.5px solid var(--ink); }
-.lm-stat-chip { border: 2px solid var(--ink); background: var(--paper); font-family: var(--font-display); box-shadow: var(--pop-down); }
-.lm-connector { background: var(--ink-line); }
-.lm-connector--done { background: var(--arc-mint); }
 
 /* ── Explore: project cards look like game boxes — chunky, outlined, with the
    thumbnail as cover art. ── */
@@ -459,25 +420,21 @@ body {
   background-attachment: fixed, fixed, scroll;
 }
 
-/* Section titles get a hand-drawn sun squiggle underneath — a sticker pen
-   stroke, not a rule line. Applied to the titles children actually scan. */
+/* Section titles get a sun-yellow wavy underline. This used to be a
+   positioned ::after with an SVG stroke stretched to the box, and the box was
+   not the word: on "Lessons", "Games" and "Quizzes" the squiggle sat offset
+   from its word at a different width, which reads as a rendering fault.
+   text-decoration is anchored to the glyphs by the browser itself, so it is
+   exactly as wide as the text, wherever the text wraps. */
 .bldr-shelf__title,
 .exp-hero__title,
 .lm-title {
-  position: relative;
-  display: inline-block;
-}
-.bldr-shelf__title::after,
-.exp-hero__title::after,
-.lm-title::after {
-  content: '';
-  position: absolute;
-  left: 2px;
-  right: 2px;
-  bottom: -7px;
-  height: 7px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M2 7 Q 12 2 24 6 T 46 6 T 68 6 T 90 6 T 118 5' fill='none' stroke='%23FED340' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat;
-  background-size: 100% 100%;
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--arc-sun);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+  text-decoration-skip-ink: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -487,7 +444,7 @@ body {
     from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  .bldr-shelf__row > li, .exp-card, .lm-card {
+  .bldr-shelf__row > li, .exp-card {
     animation: arcadeDealIn 0.45s ease-out backwards;
   }
   .bldr-shelf__row > li:nth-child(1), .exp-card:nth-child(1) { animation-delay: 0.03s; }
@@ -496,7 +453,6 @@ body {
   .bldr-shelf__row > li:nth-child(4), .exp-card:nth-child(4) { animation-delay: 0.21s; }
   .bldr-shelf__row > li:nth-child(5), .exp-card:nth-child(5) { animation-delay: 0.27s; }
   .bldr-shelf__row > li:nth-child(n+6), .exp-card:nth-child(n+6) { animation-delay: 0.33s; }
-  .lm-card { animation-duration: 0.4s; }
 
   /* Each game's face bobs gently on its marquee, like it is waiting to be
      picked. Slow and small: alive, not busy. */

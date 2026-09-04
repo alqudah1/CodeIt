@@ -1691,7 +1691,7 @@
   padding: clamp(1.2rem, 2.4vw, 1.6rem) 0 0;
 }
 .studio-home--member .studio-welcome { display: inline-flex; align-items: center; gap: 8px; color: var(--ink, #35220E); }
-.studio-home--member .studio-make { padding-top: clamp(1.5rem, 4vw, 3rem); }
+
 @media (max-width: 780px) {
   .studio-member { width: min(100% - 32px, 1120px); }
 }

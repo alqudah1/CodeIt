@@ -30,13 +30,24 @@ describe('a starter is never dressed up as the child s project', () => {
     expect(CODE).toMatch(/setAiTitle\(data\.isFallback \? '' : \(data\.title \|\| ''\)\)/);
   });
 
-  test('the interface says plainly that the idea was not built', () => {
-    expect(CODE).toMatch(/I could not build your idea just now/);
+  test('the interface says plainly that the idea was not built, and that it was tried twice', () => {
+    expect(CODE).toMatch(/I tried your idea twice and could not build it/);
   });
 
-  test('there is a way back to the real idea, not just an apology', () => {
-    expect(CODE).toMatch(/Try my idea again/);
-    expect(CODE).toMatch(/setPrompt\(builtPrompt\); callBuilder\(builtPrompt\)/);
+  test('the retry button says what it will do differently, and does it', () => {
+    // Rounds 66 and 67: not "press Build again yourself". The server has
+    // already tried twice; a third go starts on the next model up and gets
+    // more time, and the button says so.
+    expect(CODE).toMatch(/Try again on the bigger model/);
+    expect(CODE).toMatch(/Try again with more time/);
+    expect(CODE).toMatch(/setPrompt\(builtPrompt\); callBuilder\(builtPrompt, \{ escalate: true \}\)/);
+    expect(CODE).toMatch(/escalate \? \{ prompt: text, escalate: true \} : \{ prompt: text \}/);
+  });
+
+  test('the browser waits long enough for both server attempts', () => {
+    const m = CODE.match(/buildController\.abort\(\), (\d+)\)/);
+    expect(m).not.toBeNull();
+    expect(Number(m[1])).toBeGreaterThanOrEqual(150000);
   });
 
   test('the starter state resets, so one bad build does not label the next one', () => {

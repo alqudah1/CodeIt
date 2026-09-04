@@ -136,7 +136,12 @@ describe('studio opening', () => {
     expect(screen.getByRole('heading', { name: 'Describe it. Build it. Make it yours.' })).toBeInTheDocument();
     expect(screen.getByText('Studio')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Build my project' })).toBeDisabled();
-    expect(screen.getByRole('region', { name: 'About the studio' })).toHaveTextContent('Private until published');
+    // The marketing card ("A guided place to build...", four pills) is gone
+    // (rounds 66 and 67). Three starters run live in its place.
+    expect(screen.queryByRole('region', { name: 'About the studio' })).not.toBeInTheDocument();
+    expect(screen.queryByText(/A guided place to build/)).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /These three are running now/ })).toBeInTheDocument();
+    expect(document.querySelectorAll('.bldr-live__frame iframe')).toHaveLength(3);
     expect(screen.queryByText(/AI Builder/i)).not.toBeInTheDocument();
   });
 

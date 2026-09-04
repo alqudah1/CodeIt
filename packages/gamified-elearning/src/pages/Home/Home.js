@@ -13,6 +13,7 @@ import Icon from "../../components/Icon/Icon";
 import { CURRENCY_SYMBOL } from "../../config/pricing";
 import { AGE_RANGE } from "../../config/company";
 import YourShelf from "./YourShelf";
+import MemberHome from "./MemberHome";
 import RecentProjects from "./RecentProjects";
 import FounderNote from "./FounderNote";
 import Evidence from "./Evidence";
@@ -21,8 +22,6 @@ import AvatarInGame from "./AvatarInGame";
 import { listProjects, migrateLegacyDraft } from "../../utils/projectShelf";
 import "./Home.css";
 import "./HomeStudio.css";
-import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
-import { useCharacterDisplay } from '../../context/CharacterContext';
 
 // A three-panel mock of a project called "Mission Control Quiz" used to cycle
 // here, beside a picture of a laptop. It was a drawing of the product, and the
@@ -41,7 +40,6 @@ const HOME_VIEW_SESSION_KEY = "codeit_homepage_view_recorded";
 
 export default function Home() {
   const { user, token } = useAuth();
-  const { character } = useCharacterDisplay();
   const navigate = useNavigate();
   const ideaInputRef = useRef(null);
   const [heroIdea, setHeroIdea] = useState("");
@@ -119,75 +117,9 @@ export default function Home() {
   // ── A session is not a visitor ────────────────────────────────────────────
   // "Welcome back, David" above a sales headline was a state bug: a signed-in
   // learner being shown marketing written for their parent. If there is a
-  // session, the top of the page is their work.
+  // session, the page is their shelf (MemberHome), not the pitch.
   if (user) {
-    return (
-      <>
-        <Header />
-        <div className="studio-home studio-home--member">
-          <main>
-            <section className="studio-member" aria-labelledby="studio-title">
-              <p className="studio-welcome">
-                <span className="studio-welcome__face" aria-hidden="true">
-                  <CharacterAvatar character={character} compact size={44} />
-                </span>
-                Welcome back, {user.name || "Builder"}.
-              </p>
-              <h1 id="studio-title" className="studio-hero__title--compact">
-                {latestProject ? "Pick up where you left off." : "What do you want to make today?"}
-              </h1>
-              <YourShelf
-                projects={shelf}
-                onOpen={() => trackEvent("landing_cta_click", "shelf")}
-              />
-              <div className="studio-hero__actions">
-                {latestProject ? (
-                  <Link
-                    to={`/builder?project=${encodeURIComponent(latestProject.id)}`}
-                    className="studio-button studio-button--primary"
-                    onClick={() => trackEvent("landing_cta_click", "member-resume-project", token)}
-                  >
-                    Continue {latestProject.title} <span aria-hidden="true">→</span>
-                  </Link>
-                ) : (
-                  <Link to="/builder" className="studio-button studio-button--primary">
-                    Make something <span aria-hidden="true">→</span>
-                  </Link>
-                )}
-                <Link to="/lessons" className="studio-hero__textlink">Next lesson</Link>
-                <Link to="/MainPage" className="studio-hero__textlink" data-cta="member-progress">My progress</Link>
-              </div>
-              <Evidence />
-            </section>
-
-            <section className="studio-make" aria-labelledby="studio-make-title">
-              <div className="studio-section-heading">
-                <h2 id="studio-make-title">Start something new</h2>
-              </div>
-              <div className="pick">
-                <ul className="pick__row" aria-label="Games you can open now">
-                  {HOME_PICKS.map((game) => (
-                    <li key={game.id}>
-                      <Link
-                        className="pick__card"
-                        to={`/builder?start=${game.id}`}
-                        onClick={() => trackEvent("landing_cta_click", "starter")}
-                      >
-                        <span className="pick__emoji"><Icon name={game.icon} size={40} strokeWidth={1.5} /></span>
-                        <span className="pick__label">{game.label}</span>
-                        <span className="pick__blurb">{game.blurb}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-                <Link to="/explore" className="studio-hero__textlink">See what other students made</Link>
-              </div>
-            </section>
-            <RecentProjects />
-          </main>
-        </div>
-      </>
-    );
+    return <MemberHome user={user} token={token} shelf={shelf} latestProject={latestProject} />;
   }
 
   return (
@@ -338,11 +270,7 @@ export default function Home() {
             </div>
             <div className="pick">
               <p className="pick__ask" id="pick-ask">
-                {shelf.length
-                  ? "Or start something new"
-                  : user
-                    ? "What do you want to make next?"
-                    : "Tap a game. It starts now!"}
+                {shelf.length ? "Or start something new" : "Tap a game. It starts now!"}
               </p>
               <ul className="pick__row" aria-labelledby="pick-ask">
                 {HOME_PICKS.map((game) => (

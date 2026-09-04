@@ -1,0 +1,171 @@
+/* ── Signed in: a shelf, not a landing page ─────────────────────────────────
+   Their stuff big and running first, the avatar at size with the level beside
+   it, and nothing to read before there is something to tap. */
+
+.member { padding-bottom: 32px; }
+
+.member__top { padding-top: clamp(0.9rem, 2vw, 1.4rem); }
+
+.studio-home--member .member__hello {
+  margin: 0 0 12px;
+  font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif;
+  font-size: clamp(1.15rem, 1rem + 0.8vw, 1.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0;
+  color: var(--ink, #35220E);
+}
+
+.member__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+/* The avatar at size, and the one place the XP system is seen. */
+.member__you {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px 10px 6px;
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 22px;
+  background: var(--paper, #FFFDF7);
+  box-shadow: 0 6px 0 var(--ink, #35220E);
+  text-decoration: none;
+  color: var(--ink, #35220E);
+}
+
+.member__you:hover,
+.member__you:focus-visible { background: var(--ground, #FFF4E5); }
+
+.member__face { display: block; line-height: 0; }
+.member__face svg { width: 116px; height: 126px; }
+
+.member__stats { display: grid; gap: 5px; min-width: 0; }
+
+.member__name {
+  font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1.3rem;
+  line-height: 1.05;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.member__level { font-weight: 800; font-size: 0.95rem; color: var(--arc-orange, #F87824); }
+
+.member__bar {
+  display: block;
+  width: 100%;
+  height: 12px;
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 99px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.member__bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--arc-sun, #FED340);
+  transition: width .4s ease;
+}
+
+.member__next { font-size: 0.84rem; line-height: 1.35; color: #6f5a48; }
+
+/* The shelf is the biggest thing on the page. */
+.member__row .shelf { margin: 0; }
+
+.studio-home--member .member__actions { margin-top: 14px; }
+
+/* "Start something new" sits on its cards. */
+.studio-home .studio-make.member__make,
+.studio-home--member .member__make {
+  width: min(1120px, calc(100% - 48px));
+  max-width: none;
+  margin: 0 auto;
+  padding: 1.25rem 0 0;
+  gap: 0;
+}
+
+.studio-home--member .member__make-title {
+  margin: 0 0 10px;
+  font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif;
+  font-size: clamp(1.25rem, 1rem + 1.2vw, 1.7rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0;
+  color: var(--ink, #35220E);
+}
+
+/* Three cards, three columns, at every width: on a phone they are the size
+   of app icons, which is the size a thumb wants. No sideways scroll. */
+.studio-home--member .member__picks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  overflow: visible;
+}
+
+.member__pick {
+  display: grid;
+  gap: 6px;
+  text-decoration: none;
+  color: var(--ink, #35220E);
+  min-width: 0;
+}
+
+.member__pick-frame {
+  aspect-ratio: 4 / 3;
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 14px;
+}
+
+.member__pick:hover .member__pick-frame,
+.member__pick:focus-visible .member__pick-frame {
+  outline: 3px solid var(--arc-orange, #F87824);
+  outline-offset: 2px;
+}
+
+.member__pick-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.member__pick-label svg { flex: none; }
+
+@media (max-width: 780px) {
+  .studio-home--member .member__make { width: min(100% - 32px, 1120px); }
+  .member__pick-label { font-size: 0.82rem; }
+}
+
+@media (min-width: 900px) {
+  .member__row {
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 18px;
+  }
+  .member__you {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    text-align: center;
+    padding: 18px 16px;
+    align-self: stretch;
+  }
+  .member__face svg { width: 150px; height: 163px; }
+  .member__stats { width: 100%; justify-items: center; text-align: center; }
+  .member__you { align-content: center; }
+  .member__pick-frame { aspect-ratio: 16 / 10; }
+  .studio-home--member .member__picks { gap: 16px; }
+}

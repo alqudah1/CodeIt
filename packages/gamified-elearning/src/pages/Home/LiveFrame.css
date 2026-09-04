@@ -1,0 +1,19 @@
+/* A running document, scaled to the box it is given. */
+
+.liveframe {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  background: #101828;
+}
+
+.liveframe__doc {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  transform-origin: top left;
+  /* A reminder, not the place you play. The link around it opens the project. */
+  pointer-events: none;
+}

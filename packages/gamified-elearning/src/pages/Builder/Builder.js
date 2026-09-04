@@ -47,6 +47,8 @@ import {
 import CodePanel from './CodePanel';
 import Icon from '../../components/Icon/Icon';
 import { SHELVES, starterProjectById } from './starterProjects';
+import { HOME_PICKS } from './starterGames';
+import LiveFrame from '../Home/LiveFrame';
 import {
   BrowserSticker,
   CabinetSticker,
@@ -268,6 +270,9 @@ const EFFECT_UPGRADES = [
 ];
 
 // ── Creator missions (per-type pools, 3 picked randomly after build) ──────────
+// Switched off in rounds 66 and 67. Flip this only once every project type
+// has five hand-written, checkable rungs in challenges.js.
+export const MISSIONS_ENABLED = false;
 const MISSION_POOLS = {
 
   // ── Generic game fallback ──
@@ -857,6 +862,9 @@ export default function Builder() {
   // their own words. They know instantly that it did not listen, and no amount
   // of routing them to the studio survives that.
   const [isStarter, setIsStarter] = useState(false);
+  // What the server says a third try would do differently, when both of its
+  // own attempts failed: { escalates, moreTime }. The retry button reads it.
+  const [starterRetry, setStarterRetry] = useState(null);
 
   // ── The link a child can send with no account ────────────────────────────
   //
@@ -1972,7 +1980,7 @@ export default function Builder() {
   }
 
   // ── Fresh build ────────────────────────────────────────────────────────────
-  const callBuilder = async (text) => {
+  const callBuilder = async (text, { escalate = false } = {}) => {
     // ── Look at the thing you were given ───────────────────────────────────
     //
     // The prompt box sits below the twenty starter cards, so a child who typed
@@ -2021,7 +2029,10 @@ export default function Builder() {
     setShowEditPanel(false);
     setEditError('');
     const buildController = new AbortController();
-    const buildTimeout = setTimeout(() => buildController.abort(), 120000);
+    // The server tries twice before it gives up (70 s, then 65 s on the next
+    // model up), and the progress indicator runs through both, because from
+    // here it is one request. 150 s leaves room for the answer to travel.
+    const buildTimeout = setTimeout(() => buildController.abort(), 150000);
     try {
       const res  = await fetch(`${API_BASE_URL}/api/builder`, {
         method:  'POST',
@@ -2031,7 +2042,7 @@ export default function Builder() {
           ...journeyHeaders(),
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body:    JSON.stringify({ prompt: text }),
+        body:    JSON.stringify(escalate ? { prompt: text, escalate: true } : { prompt: text }),
       });
       clearTimeout(buildTimeout);
       const responseType = res.headers.get('content-type') || '';
@@ -2059,6 +2070,7 @@ export default function Builder() {
       setCode(html);
       setBuiltPrompt(text);
       setIsStarter(Boolean(data.isFallback));
+      setStarterRetry(data.isFallback && data.retry ? data.retry : null);
       // The first build finished is the single best moment this product has,
       // and it passed quietly. A chest, with fixed contents, that waits in the
       // corner until the child wants it. A canned starter is not a build.
@@ -2076,11 +2088,17 @@ export default function Builder() {
       const builtType = data.type || 'website';
       // Let the learner press Play themselves so the guide can teach the action.
       setIsPlayMode(false);
-      // Creator missions — show static pool immediately, then upgrade with AI-generated ones
-      setMissions(getMissions(builtType));
-      fetchAiMissions(html, builtType, data.title || '', token).then(aiMissions => {
-        if (aiMissions) setMissions(aiMissions);
-      });
+      // Upgrade missions are OFF (rounds 66 and 67). They were model-written
+      // specifications ("increase spawn rate by 100ms every 10 seconds") in
+      // circles that cut the text mid-word. The hand-written, checkable,
+      // one-at-a-time version is the ladder in challenges.js. Until a project
+      // type has five rungs of its own, empty space is better than this.
+      if (MISSIONS_ENABLED) {
+        setMissions(getMissions(builtType));
+        fetchAiMissions(html, builtType, data.title || '', token).then(aiMissions => {
+          if (aiMissions) setMissions(aiMissions);
+        });
+      }
       // Companion and the celebration overlay: both are for someone who needs
       // to be told that something good happened. An independent learner can
       // see that for themselves, and being congratulated by a cartoon is the
@@ -3242,7 +3260,7 @@ export default function Builder() {
                       <span className="bldr-shelf__meta">
                         <span className="bldr-shelf__label">{item.label}</span>
                         <span className="bldr-shelf__blurb">{item.blurb}</span>
-                        <span className="bldr-shelf__play" aria-hidden="true">▶ PLAY</span>
+                        <span className="bldr-shelf__play" aria-hidden="true"><Icon name="play" size={11} strokeWidth={3} /> PLAY</span>
                       </span>
                     </button>
                   </li>
@@ -3565,17 +3583,18 @@ export default function Builder() {
               </div>
               {isStarter && (
                 <div className="bldr-starter-notice" role="status">
-                  <strong>I could not build your idea just now.</strong>
+                  <strong>I tried your idea twice and could not build it.</strong>
                   <p>
-                    This is a starter you can change instead. Your words are still in the box, so
-                    you can press Build again and it will try properly.
+                    {starterRetry?.escalates
+                      ? 'This is a starter you can change instead. Or try again: the next go starts on the bigger model and gets more time.'
+                      : 'This is a starter you can change instead. Or try again: the next go gets more time, and a shorter idea often helps.'}
                   </p>
                   <button
                     type="button"
                     className="bldr-starter-notice__retry"
-                    onClick={() => { if (builtPrompt) { setPrompt(builtPrompt); callBuilder(builtPrompt); } }}
+                    onClick={() => { if (builtPrompt) { setPrompt(builtPrompt); callBuilder(builtPrompt, { escalate: true }); } }}
                   >
-                    Try my idea again
+                    {starterRetry?.escalates ? 'Try again on the bigger model' : 'Try again with more time'}
                   </button>
                 </div>
               )}
@@ -4314,7 +4333,7 @@ export default function Builder() {
                           className="bldr-mine__notice-btn"
                           onClick={() => { setStudioPanel(null); handleTogglePlay(); }}
                         >
-                          ▶ Play my changes
+                          <Icon name="play" size={12} /> Play my changes
                         </button>
                       </p>
                     )}
@@ -4537,7 +4556,7 @@ export default function Builder() {
             )}
 
             {/* ── Creator Missions ─────────────────────────────── */}
-            {onTab('play') && missions.length > 0 && (
+            {MISSIONS_ENABLED && onTab('play') && missions.length > 0 && (
               <div className="bldr-missions">
                 <span className="bldr-missions__label">Upgrade missions</span>
                 <div className="bldr-missions__row">
@@ -5517,9 +5536,10 @@ export default function Builder() {
                       <div className="bldr-project-card__date">Updated {timeAgo(project.updated_at || project.created_at)}</div>
                       {project.is_public && project.public_id && (
                         <div className="bldr-project-card__plays">
+                          <Icon name="play" size={11} />{' '}
                           {Number(project.view_count) > 0
-                            ? `▶ ${project.view_count} ${Number(project.view_count) === 1 ? 'play' : 'plays'}`
-                            : '▶ No plays yet. Share your link'}
+                            ? `${project.view_count} ${Number(project.view_count) === 1 ? 'play' : 'plays'}`
+                            : 'No plays yet. Share your link'}
                           {Number(project.remix_count) > 0 && (
                             <span> · ⤴ {project.remix_count} remixed</span>
                           )}
@@ -5631,26 +5651,33 @@ export default function Builder() {
           </div>
         )}
 
-        {/* XP gain popup */}
-        {xpPopup && (
-          <div key={xpPopup.id} className="bldr-xp-popup" role="status">
-            {xpPopup.amount > 0 ? `+${xpPopup.amount} XP${xpPopup.reason ? `. ${xpPopup.reason}` : ''}` : xpPopup.reason}
-          </div>
-        )}
-
-        {/* ── AI Companion bubble ───────────────────────────────── */}
-        {companionVisible && companionTip && !studioPanel && (
-          <div className="bldr-companion">
-            <div className="bldr-companion__bubble">
-              <p className="bldr-companion__text">{companionTip}</p>
-              <button
-                className="bldr-companion__close"
-                onClick={() => setCompanionVisible(false)}
-                aria-label="Dismiss tip"
-              >×</button>
+        {/* ── Notices: one stack, one corner ────────────────────────────
+            The XP pop and the companion tip were two fixed elements pinned
+            to the same bottom-right corner, and on a phone one sat on top of
+            the other ("Save this before editing more." covering the word
+            "Click"). The stacking rule: transient notices live in this one
+            column at the top right, newest at the bottom, each below the
+            last; they never cover the play bar or Pixel, whose corners are
+            theirs (Pixel bottom right, the chest bottom left). */}
+        <div className="bldr-toasts" aria-live="polite">
+          {xpPopup && (
+            <div key={xpPopup.id} className="bldr-xp-popup" role="status">
+              {xpPopup.amount > 0 ? `+${xpPopup.amount} XP${xpPopup.reason ? `. ${xpPopup.reason}` : ''}` : xpPopup.reason}
             </div>
-          </div>
-        )}
+          )}
+          {companionVisible && companionTip && !studioPanel && (
+            <div className="bldr-companion">
+              <div className="bldr-companion__bubble">
+                <p className="bldr-companion__text">{companionTip}</p>
+                <button
+                  className="bldr-companion__close"
+                  onClick={() => setCompanionVisible(false)}
+                  aria-label="Dismiss tip"
+                >×</button>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* ── Wow moment overlay ────────────────────────────────── */}
         {showWow && (
@@ -5687,26 +5714,26 @@ export default function Builder() {
           </div>
         )}
 
-        {/* ════════════════════════════════════════
-            PARENT / TRUST STRIP
-        ════════════════════════════════════════ */}
-        {!code && (
-        <section className="bldr-trust" aria-label="About the studio">
-          <div className="bldr-trust__inner">
-            <h2 className="bldr-trust__title">
-              A guided place to build, change, and understand code
-            </h2>
-            <p className="bldr-trust__body">
-              Start with an idea and get a working first version. Then keep shaping it: change the
-              words, colours, layout, and interactions; open the code; save versions; and share only
-              when you are ready. Every project runs in an isolated preview.
-            </p>
-            <div className="bldr-trust__pills">
-              {['Beginner-friendly', 'Editable code', 'Private until published', 'Save versions'].map(pill => (
-                <span key={pill} className="bldr-trust__pill">{pill}</span>
-              ))}
-            </div>
-          </div>
+        {/* ── Three starters, running ────────────────────────────────────
+            A pale marketing card sat here ("A guided place to build, change,
+            and understand code", four feature pills), shown to a signed-in
+            child who was already in the studio. Rounds 66 and 67: delete
+            it, and put the live starter previews there instead. A child in
+            the studio does not need to be told what the studio is; a game
+            actually moving tells them what they can have. */}
+        {!code && !loading && (
+        <section className="bldr-live" aria-labelledby="bldr-live-title">
+          <h2 className="bldr-live-title" id="bldr-live-title">These three are running now. Pick one and it is yours.</h2>
+          <ul className="bldr-live__row">
+            {HOME_PICKS.map(game => (
+              <li key={game.id}>
+                <button type="button" className="bldr-live__card" onClick={() => openStarter(starterProjectById(game.id))}>
+                  <LiveFrame className="bldr-live__frame" code={game.code} title={`${game.label}, running`} />
+                  <span className="bldr-live__label"><Icon name="play" size={12} /> {game.label}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
         </section>
         )}
 

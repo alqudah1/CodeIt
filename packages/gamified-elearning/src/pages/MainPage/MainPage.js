@@ -340,7 +340,7 @@ const MainPage = () => {
                       <Icon name={({ game: 'game', quiz: 'quiz', shop: 'shop', website: 'site', tool: 'tool', story: 'book' })[m.project_type] || 'sparkle'} size={22} />
                     </span>
                     <span className="mp-machine__name">{m.title}</span>
-                    <span className="mp-machine__play">▶ PLAY</span>
+                    <span className="mp-machine__play"><Icon name="play" size={11} strokeWidth={3} /> PLAY</span>
                   </Link>
                 </li>
               ))}

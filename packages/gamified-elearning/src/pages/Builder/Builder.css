@@ -1869,57 +1869,65 @@
 .bldr-project-card__btn:active { transform: translateY(0); }
 
 /* ════════════════════════════════════════════════════════════
-   PARENT / TRUST STRIP
+   THREE STARTERS, RUNNING (replaced the parent/trust strip)
 ════════════════════════════════════════════════════════════ */
-.bldr-trust {
+.bldr-live {
   width: 100%;
-  max-width: 760px;
-  background: rgba(255,122,0,0.04);
-  border: 1.5px solid rgba(255,122,0,0.12);
-  border-radius: 20px;
-  padding: 2rem 1.75rem;
+  max-width: var(--bldr-max, 860px);
 }
-
-.bldr-trust__inner {
+.bldr-live-title {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1rem + 1vw, 1.5rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--ink);
+  text-align: left;
+}
+.bldr-live__row {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.bldr-live__card {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+.bldr-live__frame {
+  aspect-ratio: 4 / 3;
+  border: 2.5px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: var(--pop-rest);
+}
+.bldr-live__card:hover .bldr-live__frame,
+.bldr-live__card:focus-visible .bldr-live__frame {
+  outline: 3px solid var(--arc-orange);
+  outline-offset: 2px;
+}
+.bldr-live__label {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  text-align: center;
+  gap: 5px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  min-width: 0;
 }
-
-.bldr-trust__title {
-  font-size: clamp(1.05rem, 2.5vw, 1.25rem);
-  font-weight: 900;
-  color: #38291F;
-  margin: 0;
-  letter-spacing: -0.02em;
-}
-
-.bldr-trust__body {
-  font-size: 0.94rem;
-  color: rgba(56, 41, 31,0.65);
-  margin: 0;
-  line-height: 1.75;
-  max-width: 560px;
-}
-
-.bldr-trust__pills {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.45rem;
-  margin-top: 0.25rem;
-}
-
-.bldr-trust__pill {
-  padding: 0.3rem 0.9rem;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  border-radius: 999px;
-  background: rgba(255,122,0,0.07);
-  border: 1.5px solid rgba(255,122,0,0.18);
-  color: #C85A00;
+@media (min-width: 700px) {
+  .bldr-live__row { gap: 16px; }
+  .bldr-live__frame { aspect-ratio: 16 / 10; }
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -3432,10 +3440,21 @@
 
 /* ── XP gain popup ───────────────────────────────────────────── */
 
-.bldr-xp-popup {
+.bldr-toasts {
   position: fixed;
-  bottom: 90px;
-  right: 22px;
+  top: 72px;
+  right: 12px;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: min(320px, calc(100vw - 24px));
+  pointer-events: none;
+}
+
+.bldr-xp-popup {
+  position: static;
   background: linear-gradient(135deg, #FF7A00 0%, #F59E0B 100%);
   color: #fff;
   font-family: 'Nunito', 'Trebuchet MS', sans-serif;
@@ -3977,10 +3996,7 @@
 ════════════════════════════════════════════════════════════ */
 
 .bldr-companion {
-  position: fixed;
-  bottom: 28px;
-  right: 24px;
-  z-index: 250;
+  position: static;
   pointer-events: none;
   animation: bldr-companion-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 1.2s both;
 }
@@ -4047,15 +4063,9 @@
   color: #4F392C;
 }
 
-/* On mobile, push above sticky bar */
 @media (max-width: 700px) {
-  .bldr-companion {
-    bottom: 88px;
-    right: 12px;
-  }
-
   .bldr-companion__bubble {
-    max-width: 200px;
+    max-width: 220px;
   }
 }
 
@@ -5535,19 +5545,22 @@
 }
 
 .bldr-shelf__row {
-  display: flex;
+  /* Rounds 66 and 67: this was a sideways scroller, and on a phone the
+     fourth card sat cut in half at the right edge, which reads as a
+     rendering fault rather than an invitation. A grid that wraps shows
+     every card whole at every width. */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-auto-rows: 1fr;
   gap: 10px;
   list-style: none;
   margin: 0;
-  padding: 0 2px 6px;
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  -webkit-overflow-scrolling: touch;
+  padding: 0 0 6px;
+  overflow: visible;
 }
 
 .bldr-shelf__row > li {
-  flex: 0 0 auto;
-  scroll-snap-align: start;
+  min-width: 0;
 }
 
 .bldr-shelf__card {
@@ -5588,9 +5601,7 @@
   opacity: .72;
 }
 
-@media (max-width: 520px) {
-  .bldr-shelf__card { width: 158px; min-height: 112px; }
-}
+
 
 /* ── Why publishing did not happen ───────────────────────────────────────────
    A rule, not a failure. It stays on screen rather than vanishing after three
@@ -6038,8 +6049,11 @@ details.bldr-device-sizes .bldr-device-sizes__options {
 }
 .bldr-mobile-play-bar__btn:active { transform: translateY(3px); box-shadow: var(--pop-down); }
 .bldr-mobile-play-bar__btn--play { background: var(--arc-orange); color: var(--ink); }
-.bldr-mobile-play-bar__btn--edit { background: var(--arc-sky); color: var(--ink); }
-.bldr-mobile-play-bar__btn--save { background: var(--arc-mint); color: var(--ink); }
+/* Rounds 66 and 67: Play orange, Edit blue and Save green were three primary
+   buttons in three colours. One main action. The other two are paper keycaps
+   that do not compete with it or with the site's single accent. */
+.bldr-mobile-play-bar__btn--edit,
+.bldr-mobile-play-bar__btn--save { background: var(--paper); color: var(--ink); }
 
 /* "Make something else" and the recovered-draft card join the language. */
 .bldr-startover {
@@ -6686,7 +6700,7 @@ details.bldr-device-sizes .bldr-device-sizes__options {
   padding: 0;
   gap: 0;
   overflow: hidden;
-  width: 190px;
+  width: 100%;
   min-height: 0;
   border: 2.5px solid var(--ink);
   border-radius: 16px;
@@ -6726,6 +6740,9 @@ details.bldr-device-sizes .bldr-device-sizes__options {
   padding: 10px 12px 12px;
 }
 .bldr-shelf__play {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   align-self: flex-start;
   margin-top: 5px;
   padding: 2px 10px;
@@ -6740,7 +6757,7 @@ details.bldr-device-sizes .bldr-device-sizes__options {
   letter-spacing: 0.06em;
 }
 @media (max-width: 640px) {
-  .bldr-shelf__card { width: 165px; }
+  .bldr-shelf__row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bldr-shelf__marquee { height: 64px; }
 }
 

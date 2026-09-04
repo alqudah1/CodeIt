@@ -1,17 +1,85 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ENDPOINTS } from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../Header/Header';
+import Icon from '../../components/Icon/Icon';
 import { lessonSummaries } from './lessonRegistry';
 import './LessonMap.css';
 import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
 import { useCharacterDisplay } from '../../context/CharacterContext';
 
+// ── A map, not a list ────────────────────────────────────────────────────────
+//
+// Rounds 66 and 67: the lesson list was a vertical stack of equal-width cards
+// joined by a thin straight line, which is a syllabus. What makes it a map:
+//
+//   - Nodes, not cards. A circle per lesson with its number, big enough to
+//     tap, on a path that bends left and right instead of running straight
+//     down.
+//   - The avatar stands on the path at the current lesson and moves forward
+//     when one is finished.
+//   - Titles only on the current and next node. The rest are numbers.
+//   - A different marker every fifth lesson, for the boss puzzle.
+//   - The XP badges stay. They are the one game element already working.
+//   - One Unlock button, on the node the child is looking at.
+//
+// Every stop is still a real <a href="/lesson/N">: thirty-one pages are in the
+// sitemap and this is the page that vouches for them (lessonLinks.test.js).
+
 const FALLBACK_LESSONS = lessonSummaries();
-const LESSON_META = Object.fromEntries(
-  FALLBACK_LESSONS.map(lesson => [lesson.id, { shortDesc: lesson.summary }])
-);
+
+// Where each stop sits across the path, as a percentage of the width. A slow
+// wave, so the path bends left and right and the eye follows it down.
+export const ROW_HEIGHT = 108;
+export function stopX(index) {
+  return 50 + 30 * Math.sin(index * (Math.PI / 2.6) + Math.PI / 5);
+}
+export function isBoss(id) {
+  return id % 5 === 0;
+}
+
+const NODE = 64;
+const BOSS_NODE = 78;
+const LABEL_GAP = 12;
+
+/**
+ * Where the label beside a titled stop goes, in pixels relative to the stop's
+ * link (whose left edge is the node's left edge). It sits on the side with
+ * more room and is clamped inside the path, so no width can push it off the
+ * screen. Returns null until the path has been measured.
+ */
+export function labelBox(xPct, pathWidth, boss) {
+  if (!pathWidth) return null;
+  const node = boss ? BOSS_NODE : NODE;
+  const cx = (xPct / 100) * pathWidth;
+  const roomRight = pathWidth - (cx + node / 2 + LABEL_GAP);
+  const roomLeft = cx - node / 2 - LABEL_GAP;
+  // As wide as it can be on the roomier side, never over the node itself.
+  const width = Math.round(Math.min(240, pathWidth * 0.55, Math.max(120, roomLeft, roomRight)));
+  const side = roomRight >= width || roomRight >= roomLeft ? 'right' : 'left';
+  let left = side === 'right' ? cx + node / 2 + LABEL_GAP : cx - node / 2 - LABEL_GAP - width;
+  left = Math.max(0, Math.min(left, pathWidth - width));
+  const cardLeft = cx - node / 2;
+  return { side, style: { left: Math.round(left - cardLeft), right: 'auto', width: Math.round(width) } };
+}
+
+// The trail, as one smooth path through every stop, in the SVG's own units
+// (100 wide, one ROW_HEIGHT per stop). Drawn twice: the whole path faintly,
+// and the walked part solid.
+export function trailPath(count, upTo = count) {
+  const n = Math.max(0, Math.min(count, upTo));
+  if (n === 0) return '';
+  const pts = Array.from({ length: n }, (_, i) => [stopX(i), i * ROW_HEIGHT + ROW_HEIGHT / 2]);
+  let d = `M ${pts[0][0].toFixed(2)} ${pts[0][1]}`;
+  for (let i = 1; i < pts.length; i += 1) {
+    const [x0, y0] = pts[i - 1];
+    const [x1, y1] = pts[i];
+    const cy = (y0 + y1) / 2;
+    d += ` C ${x0.toFixed(2)} ${cy} ${x1.toFixed(2)} ${cy} ${x1.toFixed(2)} ${y1}`;
+  }
+  return d;
+}
 
 const LessonMap = () => {
   const navigate = useNavigate();
@@ -21,7 +89,28 @@ const LessonMap = () => {
   const [completedIds, setCompletedIds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState('');
-  const nextRef = useRef(null);
+  const hereRef = useRef(null);
+  const scrolledRef = useRef(false);
+  const pathRef = useRef(null);
+  const [pathWidth, setPathWidth] = useState(0);
+
+  // The label beside the current and next stop is placed in pixels, from the
+  // measured width of the path, so it can never hang off the edge of a
+  // phone: the first version put it on whichever side the stop leaned away
+  // from, and at 390px "Lesson 3" was cut off at the left edge.
+  useEffect(() => {
+    const el = pathRef.current;
+    if (!el) return undefined;
+    const measure = () => setPathWidth(el.getBoundingClientRect().width);
+    measure();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', measure);
+      return () => window.removeEventListener('resize', measure);
+    }
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!token) {
@@ -61,6 +150,15 @@ const LessonMap = () => {
   };
 
   const nextLesson = lessons.find((l) => isAvailable(l.id) && !isCompleted(l.id));
+  const hereIndex = nextLesson ? lessons.indexOf(nextLesson) : lessons.length - 1;
+
+  // The child arrives standing on their lesson, not at the top of a path
+  // they have already walked. Once, after progress has loaded.
+  useEffect(() => {
+    if (loading || scrolledRef.current || !hereRef.current || hereIndex < 3) return;
+    scrolledRef.current = true;
+    hereRef.current.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+  }, [loading, hereIndex]);
 
   const showToast = (msg) => {
     setToast(msg);
@@ -76,11 +174,9 @@ const LessonMap = () => {
     navigate(`/lesson/${lesson.id}`);
   };
 
-  const scrollToNext = () => {
-    if (nextRef.current) {
-      nextRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  };
+  const trail = useMemo(() => trailPath(lessons.length), [lessons.length]);
+  const walked = useMemo(() => trailPath(lessons.length, hereIndex + 1), [lessons.length, hereIndex]);
+  const height = lessons.length * ROW_HEIGHT;
 
   return (
     <div className="lm-page">
@@ -89,10 +185,6 @@ const LessonMap = () => {
       {toast && <div className="lm-toast" role="alert">{toast}</div>}
 
       <div className="lm-container">
-        {/* ── Page header ───────────────────────────────── */}
-        {/* Back, title and how-far-through on as few rows as they fit on.
-            Stacked, on a 390px phone, they were 186px — three separate rows of
-            page furniture above the lessons themselves. */}
         <div className="lm-header">
           <div className="lm-header__top">
             <button className="lm-back-btn" onClick={() => navigate('/MainPage')}>
@@ -100,104 +192,90 @@ const LessonMap = () => {
             </button>
             <h1 className="lm-title">Lessons</h1>
           </div>
-          {/* "Complete each lesson to unlock the next. Earn XP and level up
-              your Python skills!" — every card below carries a padlock, an XP
-              figure and a number. The sentence explained the picture to
-              someone already looking at it, and cost 130px above the map. */}
-
           <div className="lm-stats-row">
             <span className="lm-stat-chip">
               {loading ? '…' : `${completedIds.length} / ${lessons.length} done`}
             </span>
-            {!loading && nextLesson && (
-              <button className="lm-continue-btn" onClick={scrollToNext}>
-                {completedIds.length === 0 ? 'Unlock Lesson 1' : `Advance to Lesson ${nextLesson.id}`}
-              </button>
-            )}
           </div>
         </div>
 
-        {/* ── Lesson path ───────────────────────────────── */}
-        <div className="lm-path" aria-label="Lesson progression map">
-          {lessons.map((lesson, idx) => {
-            const status = getStatus(lesson.id);
-            const meta = LESSON_META[lesson.id] || { emoji: '📖', shortDesc: '' };
-            const isNext = nextLesson && nextLesson.id === lesson.id;
+        {/* ── The path ─────────────────────────────────────────────────── */}
+        <div className="lm-path" aria-label="Lesson progression map" style={{ height }} ref={pathRef}>
+          <svg
+            className="lm-trail"
+            viewBox={`0 0 100 ${height}`}
+            preserveAspectRatio="none"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path className="lm-trail__all" d={trail} vectorEffect="non-scaling-stroke" />
+            {hereIndex > 0 && <path className="lm-trail__done" d={walked} vectorEffect="non-scaling-stroke" />}
+          </svg>
 
-            return (
-              <div key={lesson.id} className="lm-node-wrap">
-                {/* Connector line between nodes */}
-                {idx > 0 && (
-                  <div
-                    className={`lm-connector${isCompleted(lesson.id - 1) ? ' lm-connector--done' : ''}`}
-                    aria-hidden="true"
-                  />
-                )}
+          <ol className="lm-stops">
+            {lessons.map((lesson, idx) => {
+              const status = getStatus(lesson.id);
+              const isHere = nextLesson && nextLesson.id === lesson.id;
+              const isAfter = idx === hereIndex + 1;
+              const titled = isHere || isAfter;
+              const boss = isBoss(lesson.id);
+              const x = stopX(idx);
+              const placed = titled ? labelBox(x, pathWidth, boss) : null;
+              const side = placed ? placed.side : (x > 50 ? 'left' : 'right');
 
-                {/* ── Lesson card ────────────────────────────────────────────
-                    A real anchor, not a div that calls navigate().
-
-                    Thirty-one lesson pages are generated at build time and all
-                    thirty-one are in the sitemap, so they are discoverable. But
-                    nothing on this site linked to a single one of them: the
-                    cards were divs with an onClick, which no crawler follows and
-                    no middle-click opens in a new tab. A page a sitemap declares
-                    and nothing links to is a page nothing vouches for.
-
-                    Locked lessons still get an href. The lesson page renders
-                    perfectly well on its own, and a child who taps one gets the
-                    same toast as before because the click is intercepted here —
-                    the href is for the crawler and for the middle click, not a
-                    way around the gate. */}
-                <Link
-                  to={`/lesson/${lesson.id}`}
-                  ref={isNext ? nextRef : null}
-                  className={`lm-card lm-card--${status}${isNext ? ' lm-card--next' : ''}`}
-                  onClick={(e) => { e.preventDefault(); handleLessonClick(lesson); }}
-                  tabIndex={status === 'locked' ? -1 : 0}
-                  aria-label={`Lesson ${lesson.id}: ${lesson.title}. ${status}`}
+              return (
+                <li
+                  key={lesson.id}
+                  className={`lm-stop lm-stop--${status}${isHere ? ' lm-stop--here' : ''}${boss ? ' lm-stop--boss' : ''}${titled ? ` lm-stop--titled lm-stop--${side}` : ''}`}
+                  style={{ top: idx * ROW_HEIGHT, left: `${x}%` }}
                 >
-                    {/* Number bubble — and on the lesson you are up to, YOU are
-                      standing on it. This is the journey map's one good idea,
-                      moved into the page that actually holds all 31 lessons. */}
-                  <div className={`lm-emoji lm-emoji--${status}`} aria-hidden="true">
-                    {lesson.id}
-                  </div>
-                  {isNext && (
-                    <span className="lm-you" aria-hidden="true">
-                      <span className="lm-you__ring">
-                        <CharacterAvatar character={character} compact size={52} />
-                      </span>
-                      <span className="lm-you__flag">YOU</span>
+                  {/* A real anchor. Locked lessons keep an href for the
+                      crawler and the middle click; the click is intercepted
+                      here so the gate holds. */}
+                  <Link
+                    to={`/lesson/${lesson.id}`}
+                    ref={isHere ? hereRef : null}
+                    className={`lm-card lm-card--${status}${isHere ? ' lm-card--next' : ''}`}
+                    onClick={(e) => { e.preventDefault(); handleLessonClick(lesson); }}
+                    tabIndex={status === 'locked' ? -1 : 0}
+                    aria-label={`Lesson ${lesson.id}: ${lesson.title}. ${status}${boss ? '. Boss puzzle' : ''}`}
+                  >
+                    <span className={`lm-node lm-node--${status}${boss ? ' lm-node--boss' : ''}`} aria-hidden="true">
+                      {isHere ? (
+                        <span className="lm-you">
+                          <CharacterAvatar character={character} compact size={boss ? 62 : 54} />
+                        </span>
+                      ) : status === 'completed' && !boss ? (
+                        <Icon name="check" size={26} strokeWidth={3} />
+                      ) : boss ? (
+                        <Icon name="star" size={30} />
+                      ) : (
+                        lesson.id
+                      )}
                     </span>
-                  )}
+                    {isHere && <span className="lm-you__flag" aria-hidden="true">YOU</span>}
+                    <span className={`lm-xp lm-xp--${status}`}>{lesson.xp} XP</span>
 
-                  {/* Content */}
-                  <div className="lm-card-body">
-                    <div className="lm-card-toprow">
-                      <span className="lm-lesson-num">Lesson {lesson.id}</span>
-                      <span className={`lm-badge lm-badge--${status}`}>
-                        {status === 'completed' ? 'Complete'
-                          : status === 'available' ? 'Unlock'
-                          : 'Locked'}
+                    {titled && (
+                      <span className="lm-label" style={placed ? placed.style : undefined}>
+                        <span className="lm-label__num">{boss ? `Boss puzzle · Lesson ${lesson.id}` : `Lesson ${lesson.id}`}</span>
+                        <span className="lm-label__title">{lesson.title}</span>
+                        {isHere ? (
+                          <span className={`lm-badge lm-badge--${status}`}>
+                            {status === 'completed' ? 'Play again' : 'Unlock'}
+                          </span>
+                        ) : (
+                          <span className="lm-label__next">Next</span>
+                        )}
                       </span>
-                    </div>
-                    <h3 className="lm-card-title">{lesson.title}</h3>
-                    <p className="lm-card-desc">{meta.shortDesc}</p>
-                    <span className="lm-xp">{lesson.xp} XP</span>
-                  </div>
-
-                  {/* Arrow indicator */}
-                  {status !== 'locked' && (
-                    <span className="lm-arrow" aria-hidden="true">›</span>
-                  )}
-                </Link>
-              </div>
-            );
-          })}
+                    )}
+                  </Link>
+                </li>
+              );
+            })}
+          </ol>
         </div>
 
-        {/* ── All done banner ───────────────────────────── */}
         {!loading && completedIds.length === lessons.length && lessons.length > 0 && (
           <div className="lm-all-done">
             All {lessons.length} lessons complete. Every XP point earned. Every skill unlocked.

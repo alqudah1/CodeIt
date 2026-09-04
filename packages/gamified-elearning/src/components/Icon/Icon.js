@@ -176,6 +176,9 @@ const paths = {
       <path d="M9 9l6 6M15 9l-6 6" fill="none" />
     </>
   ),
+  check: (
+    <path d="M5.5 12.5l4 4 9-9.5" fill="none" />
+  ),
 
   // What a project is
   game: (

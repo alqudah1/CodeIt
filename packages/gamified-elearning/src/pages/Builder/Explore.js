@@ -135,7 +135,7 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
           </div>
         ) : (
           <div className="exp-card__stats">
-            {(project.plays || 0) > 0 && <StatBadge icon="▶" count={project.plays} />}
+            {(project.plays || 0) > 0 && <StatBadge icon={<Icon name="play" size={12} />} count={project.plays} />}
             {!project.isShowcase && (project.likes || 0) > 0 && <StatBadge icon="♥" count={project.likes} />}
             {(project.remixes || 0) > 0 && <StatBadge icon="⤴" count={project.remixes} />}
           </div>

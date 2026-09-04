@@ -24,7 +24,7 @@ const TABS = [
   {
     id: 'play',
     label: 'Play',
-    icon: '▶',
+    icon: 'play',
     // What the tab is for, in a child's words. Shown under the tab bar so a
     // seven-year-old knows what they are looking at.
     blurb: 'Try your project and see what it does.',

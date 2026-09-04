@@ -47,8 +47,19 @@ const SIZES = [
           row: i,
           heights: [...new Set([...row.querySelectorAll('.bldr-shelf__card')]
             .map(c => Math.round(c.getBoundingClientRect().height)))],
-          playOffsets: [...new Set([...row.querySelectorAll('.bldr-shelf__play')]
-            .map(p => Math.round(p.getBoundingClientRect().bottom - top)))],
+          // The shelf wraps into a grid (rounds 66 and 67: no card cut at the
+          // edge), so PLAY lines are compared within each visual row: every
+          // button on a row sits on the same line as its neighbours.
+          playOffsets: [...new Set([...row.querySelectorAll('.bldr-shelf__card')]
+            .map(c => {
+              const play = c.querySelector('.bldr-shelf__play');
+              const r = c.getBoundingClientRect();
+              return play ? `${Math.round(r.top - top)}:${Math.round(play.getBoundingClientRect().bottom - r.top)}` : null;
+            })
+            .filter(Boolean))]
+            // one entry per visual row is the goal; more than one PLAY line
+            // on the same row is the failure
+            .reduce((acc, key) => { const [row, off] = key.split(':'); acc[row] = acc[row] || []; if (!acc[row].includes(off)) acc[row].push(off); return acc; }, {}),
         });
       });
       return out;
@@ -62,11 +73,14 @@ const SIZES = [
       if (r.heights.length > 1) {
         console.error(`FAIL  ${name}: shelf ${r.row} has cabinets of ${r.heights.join(', ')} px.`);
         failed += 1;
-      } else if (r.playOffsets.length > 1) {
-        console.error(`FAIL  ${name}: shelf ${r.row} PLAY buttons sit at ${r.playOffsets.join(', ')} px.`);
-        failed += 1;
       } else {
-        console.log(`ok    ${name}: shelf ${r.row}, ${r.heights[0]} px, one PLAY line.`);
+        const uneven = Object.entries(r.playOffsets).filter(([, offs]) => offs.length > 1);
+        if (uneven.length) {
+          console.error(`FAIL  ${name}: shelf ${r.row} PLAY buttons on one row sit at ${uneven.map(([row, offs]) => `${row}: ${offs.join('/')}`).join('; ')} px.`);
+          failed += 1;
+        } else {
+          console.log(`ok    ${name}: shelf ${r.row}, ${r.heights[0]} px, one PLAY line per row.`);
+        }
       }
     }
     await ctx.close();

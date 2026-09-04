@@ -98,12 +98,15 @@ test('the models are named, not left as a placeholder', () => {
 // rather than trusting that it was wired.
 test('the build route uses the router, not a hardcoded model', () => {
   const route = fs.readFileSync(path.join(__dirname, 'routes/builder.js'), 'utf8');
-  assert.match(route, /model:\s*modelForBuild\(designConfig\.type, planId, 0\)\.model/);
+  assert.match(route, /const firstRoute = modelForBuild\(designConfig\.type, planId, startAttempt\);/);
+  assert.match(route, /attemptOnce\('build_initial', firstRoute\.model/);
 });
 
 test('the retry escalates instead of running the same model on the same problem', () => {
   const route = fs.readFileSync(path.join(__dirname, 'routes/builder.js'), 'utf8');
-  assert.match(route, /createTrackedMessage\('build_retry'[\s\S]{0,120}modelForBuild\(designConfig\.type, planId, 1\)\.model/);
+  assert.match(route, /const secondRoute = modelForBuild\(designConfig\.type, planId, startAttempt \+ 1\);/);
+  assert.match(route, /attemptOnce\('build_retry', secondRoute\.model/);
+  // builderRetry.test.js runs the route against a fake client and proves it.
 });
 
 test('the plan defaults to free, so a billing fault spends less', () => {
@@ -118,11 +121,13 @@ test('the plan defaults to free, so a billing fault spends less', () => {
 
 test('no build call site still names a model directly', () => {
   const route = fs.readFileSync(path.join(__dirname, 'routes/builder.js'), 'utf8');
-  const buildSites = [...route.matchAll(/createTrackedMessage\('build_(initial|retry)'[\s\S]{0,140}?model:\s*([^\n,]+)/g)];
+  const buildSites = [...route.matchAll(/attemptOnce\('build_(initial|retry)',\s*([^,]+),/g)];
   assert.equal(buildSites.length, 2, 'expected exactly two build call sites');
   for (const site of buildSites) {
-    assert.match(site[2], /modelForBuild\(/, `build_${site[1]} still hardcodes a model`);
+    assert.match(site[2], /^(firstRoute|secondRoute)\.model$/, `build_${site[1]} still hardcodes a model`);
   }
+  // And the one place a model string is passed to the SDK for a build takes it as a parameter.
+  assert.match(route, /const attemptOnce = async \(label, model, messages, timeoutMs\)/);
 });
 
 // ── A page whose value is its words is not a cheap page ──────────────────────
