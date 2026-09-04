@@ -85,7 +85,7 @@ const notes = [];
   await page.locator('.bldr-tab', { hasText: 'Save' }).first().tap();
   await page.waitForTimeout(900);
   const verdict = await page.evaluate(() => ({
-    done: document.querySelectorAll('.bldr-project-checklist li.is-done').length,
+    done: document.querySelectorAll('.bldr-steps li.is-done, .bldr-project-checklist li.is-done').length,
     typed: window.__typed,
     pixelSays: document.querySelector('.pixel-guide__title')?.textContent || '',
   }));

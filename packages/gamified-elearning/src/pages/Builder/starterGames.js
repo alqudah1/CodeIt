@@ -106,7 +106,7 @@ ${SHARED_STYLE}
 
 <div class="over" id="gameOver">
   <h2>Game over!</h2>
-  <p>You caught <b id="finalScore">0</b> stars</p>
+  <p>You caught <b id="finalScore">0</b> <span id="finalNoun">stars</span></p>
   <button onclick="startGame()">Play again</button>
 </div>
 
@@ -196,6 +196,8 @@ function loseALife() {
   if (lives <= 0) {
     playing = false;
     document.getElementById('finalScore').textContent = score;
+  var finalNoun = document.getElementById('finalNoun');
+  if (finalNoun) finalNoun.textContent = score === 1 ? finalNoun.textContent.replace(/s$/, '') : finalNoun.textContent.replace(/([^s])$/, '$1s');
     document.getElementById('gameOver').style.display = 'flex';
   }
 }
@@ -372,6 +374,8 @@ function judgeShot() {
 
   if (shotsLeft <= 0) {
     document.getElementById('finalScore').textContent = score;
+  var finalNoun = document.getElementById('finalNoun');
+  if (finalNoun) finalNoun.textContent = score === 1 ? finalNoun.textContent.replace(/s$/, '') : finalNoun.textContent.replace(/([^s])$/, '$1s');
     document.getElementById('endTitle').textContent = score >= 3 ? 'You win!' : 'Full time!';
     setTimeout(() => { document.getElementById('gameOver').style.display = 'flex'; }, 700);
   }
@@ -559,6 +563,8 @@ function crash() {
     document.getElementById('bestLabel').textContent = best;
   }
   document.getElementById('finalScore').textContent = score;
+  var finalNoun = document.getElementById('finalNoun');
+  if (finalNoun) finalNoun.textContent = score === 1 ? finalNoun.textContent.replace(/s$/, '') : finalNoun.textContent.replace(/([^s])$/, '$1s');
   document.getElementById('gameOver').style.display = 'flex';
 }
 
@@ -689,7 +695,7 @@ ${SHARED_STYLE}
 
 <div class="over" id="gameOver">
   <h2>Time!</h2>
-  <p>You popped <b id="finalScore">0</b> balloons</p>
+  <p>You popped <b id="finalScore">0</b> <span id="finalNoun">balloons</span></p>
   <button onclick="startGame()">Play again</button>
 </div>
 
@@ -776,6 +782,8 @@ function endGame() {
   playing = false;
   clearInterval(clock);
   document.getElementById('finalScore').textContent = score;
+  var finalNoun = document.getElementById('finalNoun');
+  if (finalNoun) finalNoun.textContent = score === 1 ? finalNoun.textContent.replace(/s$/, '') : finalNoun.textContent.replace(/([^s])$/, '$1s');
   document.getElementById('gameOver').style.display = 'flex';
 }
 
@@ -894,7 +902,7 @@ ${SHARED_STYLE}
 
 <div class="over" id="gameOver">
   <h2>Bumped!</h2>
-  <p>You ate <b id="finalScore">0</b> apples</p>
+  <p>You ate <b id="finalScore">0</b> <span id="finalNoun">apples</span></p>
   <button onclick="startGame()">Play again</button>
 </div>
 
@@ -978,6 +986,8 @@ function drawMouse(x, y) {
 function endGame() {
   playing = false;
   document.getElementById('finalScore').textContent = score;
+  var finalNoun = document.getElementById('finalNoun');
+  if (finalNoun) finalNoun.textContent = score === 1 ? finalNoun.textContent.replace(/s$/, '') : finalNoun.textContent.replace(/([^s])$/, '$1s');
   document.getElementById('gameOver').style.display = 'flex';
 }
 
@@ -1111,7 +1121,7 @@ ${SHARED_STYLE}
 
 <div class="over" id="gameOver">
   <h2 id="endTitle">Out of balls!</h2>
-  <p>You smashed <b id="finalScore">0</b> bricks</p>
+  <p>You smashed <b id="finalScore">0</b> <span id="finalNoun">bricks</span></p>
   <button onclick="startGame()">Play again</button>
 </div>
 
@@ -1183,6 +1193,8 @@ function endGame(title) {
   playing = false;
   document.getElementById('endTitle').textContent = title;
   document.getElementById('finalScore').textContent = score;
+  var finalNoun = document.getElementById('finalNoun');
+  if (finalNoun) finalNoun.textContent = score === 1 ? finalNoun.textContent.replace(/s$/, '') : finalNoun.textContent.replace(/([^s])$/, '$1s');
   document.getElementById('gameOver').style.display = 'flex';
 }
 
@@ -1311,7 +1323,7 @@ ${SHARED_STYLE}
 
 <div class="over" id="gameOver">
   <h2>You fell in!</h2>
-  <p>You cleared <b id="finalScore">0</b> gaps</p>
+  <p>You cleared <b id="finalScore">0</b> <span id="finalNoun">gaps</span></p>
   <button onclick="startGame()">Play again</button>
 </div>
 
@@ -1394,6 +1406,8 @@ function endGame() {
     localStorage.setItem('bestJump', best);
   }
   document.getElementById('finalScore').textContent = score;
+  var finalNoun = document.getElementById('finalNoun');
+  if (finalNoun) finalNoun.textContent = score === 1 ? finalNoun.textContent.replace(/s$/, '') : finalNoun.textContent.replace(/([^s])$/, '$1s');
   document.getElementById('gameOver').style.display = 'flex';
 }
 
@@ -1567,7 +1581,7 @@ ${SHARED_STYLE}
 
 <div class="over" id="gameOver">
   <h2 id="endTitle">You made it!</h2>
-  <p>You collected <b id="finalScore">0</b> coins</p>
+  <p>You collected <b id="finalScore">0</b> <span id="finalNoun">coins</span></p>
   <button onclick="startGame()">Play again</button>
 </div>
 
@@ -1636,6 +1650,8 @@ function endGame(title) {
   playing = false;
   document.getElementById('endTitle').textContent = title;
   document.getElementById('finalScore').textContent = score;
+  var finalNoun = document.getElementById('finalNoun');
+  if (finalNoun) finalNoun.textContent = score === 1 ? finalNoun.textContent.replace(/s$/, '') : finalNoun.textContent.replace(/([^s])$/, '$1s');
   document.getElementById('gameOver').style.display = 'flex';
 }
 
@@ -1777,7 +1793,7 @@ ${SHARED_STYLE}
 
 <div class="over" id="gameOver">
   <h2 id="endTitle">Time!</h2>
-  <p>You bonked <b id="finalScore">0</b> moles</p>
+  <p>You bonked <b id="finalScore">0</b> <span id="finalNoun">moles</span></p>
   <button onclick="startGame()">Play again</button>
 </div>
 
@@ -1879,6 +1895,8 @@ function endGame() {
   clearInterval(clockTimer);
   for (let i = 0; i < holes.length; i++) holes[i].classList.remove('up', 'bonked');
   document.getElementById('finalScore').textContent = score;
+  var finalNoun = document.getElementById('finalNoun');
+  if (finalNoun) finalNoun.textContent = score === 1 ? finalNoun.textContent.replace(/s$/, '') : finalNoun.textContent.replace(/([^s])$/, '$1s');
   gameOver.style.display = 'flex';
 }
 
@@ -1950,7 +1968,7 @@ ${SHARED_STYLE}
 
 <div class="over" id="gameOver">
   <h2 id="endTitle">Wrong one</h2>
-  <p>You got <b id="finalScore">0</b> rounds right</p>
+  <p>You got <b id="finalScore">0</b> <span id="finalNoun">rounds</span> right</p>
   <button onclick="startGame()">Play again</button>
 </div>
 
@@ -2077,6 +2095,8 @@ function endGame() {
   saysLabel.textContent = 'Wrong one';
   saysLabel.style.color = '';
   document.getElementById('finalScore').textContent = score;
+  var finalNoun = document.getElementById('finalNoun');
+  if (finalNoun) finalNoun.textContent = score === 1 ? finalNoun.textContent.replace(/s$/, '') : finalNoun.textContent.replace(/([^s])$/, '$1s');
   gameOver.style.display = 'flex';
 }
 
@@ -2131,7 +2151,7 @@ ${SHARED_STYLE}
 
 <div class="over" id="gameOver">
   <h2>Time's up!</h2>
-  <p>You caught the mouse <b id="finalScore">0</b> times</p>
+  <p>You caught the mouse <b id="finalScore">0</b> <span id="finalNoun">times</span></p>
   <button onclick="startGame()">Play again</button>
 </div>
 
@@ -2247,6 +2267,8 @@ function endGame() {
   playing = false;
   clearInterval(countdown);
   document.getElementById('finalScore').textContent = score;
+  var finalNoun = document.getElementById('finalNoun');
+  if (finalNoun) finalNoun.textContent = score === 1 ? finalNoun.textContent.replace(/s$/, '') : finalNoun.textContent.replace(/([^s])$/, '$1s');
   document.getElementById('gameOver').style.display = 'flex';
 }
 

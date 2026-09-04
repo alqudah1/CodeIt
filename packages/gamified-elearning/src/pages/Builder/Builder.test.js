@@ -274,7 +274,7 @@ describe('studio opening', () => {
 
     expect(projectPreview.compareDocumentPosition(firstStep) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.queryByRole('button', { name: /Keep my project/i })).not.toBeInTheDocument();
-    expect(screen.getByRole('list', { name: 'Project quality steps' })).toHaveTextContent('Play everything');
+    expect(screen.getByRole('list', { name: 'Project steps' })).toHaveTextContent('Play everything');
 
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
     fireEvent.click(screen.getByRole('button', { name: 'Apply Candy theme' }));
@@ -738,7 +738,7 @@ describe('studio opening', () => {
     const editCallsBefore = global.fetch.mock.calls.filter(([url]) => String(url).includes('/edit')).length;
 
     openStudioPage('Change');
-    fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /Show me where/i })[0]);
     fireEvent.click(await screen.findByRole('button', { name: 'Text size: Big' }));
 
     // The change is real and immediate, and it never leaves the browser.
@@ -757,7 +757,7 @@ describe('studio opening', () => {
     await screen.findByRole('button', { name: /Play everything/i });
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
     openStudioPage('Change');
-    fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /Show me where/i })[0]);
 
     fireEvent.click(await screen.findByRole('button', { name: 'Letter style: Bubbly' }));
     fireEvent.click(screen.getAllByRole('button', { name: '\u00d7' })[0]);
@@ -778,7 +778,7 @@ describe('studio opening', () => {
     await screen.findByRole('button', { name: /Play everything/i });
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
     openStudioPage('Change');
-    fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /Show me where/i })[0]);
 
     fireEvent.change(await screen.findByLabelText(/Give your project its own name/i), {
       target: { value: 'Star Catcher' },
@@ -807,7 +807,7 @@ describe('studio opening', () => {
     await screen.findByRole('button', { name: /Play everything/i });
     fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
     openStudioPage('Change');
-    fireEvent.click(screen.getAllByRole('button', { name: /Change my project/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /Show me where/i })[0]);
 
     expect(await screen.findByText(/Tap a picture to change your project/i)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^Corners: / })).not.toBeInTheDocument();

@@ -6942,3 +6942,156 @@ details.bldr-device-sizes .bldr-device-sizes__options {
 .bldr-palette-row.is-locked { opacity: 0.55; cursor: not-allowed; }
 .bldr-palette-row.is-locked .bldr-palette-swatch { filter: grayscale(0.7); }
 .bldr-palette-lock { display: block; font-size: 12px; font-weight: 600; opacity: 0.9; }
+
+/* ── Orientation above, one action inside ───────────────────────────────────
+   The four steps are a thin strip, not a card. The card under it is one card:
+   the state, one suggestion, one button, and a way to see the rest. Single
+   column at every width, which is also the fix for the iPad collapse: the old
+   card was `1fr auto`, and at ~1024px the auto column took the width. */
+.bldr-steps {
+  list-style: none;
+  margin: 0 0 10px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font-family: var(--font-display, inherit);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink, #35220E);
+}
+.bldr-steps li { counter-increment: step; display: flex; align-items: center; gap: 6px; opacity: 0.55; }
+.bldr-steps li.is-current { opacity: 1; }
+.bldr-steps li.is-done { opacity: 0.75; }
+.bldr-steps li::before {
+  content: counter(step);
+  display: inline-grid;
+  place-items: center;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--ink, #35220E);
+  font-size: 12px;
+}
+.bldr-steps li.is-done::before { content: '✓'; background: var(--arc-mint, #27AE7E); color: #fff; border-color: transparent; }
+.bldr-steps li.is-current::before { background: var(--arc-sun, #FED340); }
+.bldr-steps li > button {
+  min-height: 44px;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.bldr-steps { counter-reset: step; }
+
+.bldr-next {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 0 0 1rem;
+  padding: 16px 18px;
+  background: var(--paper, #FFFDF7);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 18px;
+  box-shadow: var(--pop-card, 6px 6px 0 var(--ink, #35220E));
+}
+.bldr-next__title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+  line-height: 1.2;
+  color: var(--ink, #35220E);
+}
+.bldr-next .ladder { margin: 0; box-shadow: none; }
+.bldr-next__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.bldr-next__actions .bldr-activation-card__primary { display: inline-flex; align-items: center; gap: 8px; }
+.bldr-next__more {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-family: var(--font-display, inherit);
+  font-weight: 800;
+  color: var(--ink, #35220E);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.bldr-next__palettes { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.bldr-next__palettes-label { font-family: var(--font-display, inherit); font-weight: 800; font-size: 14px; color: var(--ink, #35220E); }
+.bldr-next__rest { display: grid; gap: 10px; padding-top: 4px; border-top: 1px solid rgba(53, 34, 14, 0.15); }
+.bldr-next__rest .bldr-ideas__list { margin: 0; }
+
+/* ── Pixel stays clear of the work ───────────────────────────────────────────
+   Fixed to the bottom right, the bubble and the character covered whatever
+   happened to be under them: at 834px the coach card sat on the Save tab and
+   the change panel, and the character sat on the ideas. The rule is now about
+   room, not screens: below the width where the side toolbar exists (1180px),
+   there is no spare corner, so Pixel stands in the page, above the project,
+   the way he already does before a project exists. On a wide screen he keeps
+   the corner and the page keeps room for him at the bottom. */
+@media (max-width: 1279px) {
+  .pixel-guide:not(.pixel-guide--inline) {
+    position: static;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto 0.75rem;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .pixel-guide:not(.pixel-guide--inline) .pixel-guide__bubble {
+    max-width: 420px;
+    transform-origin: left center;
+    border-radius: 18px 18px 18px 4px;
+  }
+  .pixel-guide:not(.pixel-guide--inline) .pixel-guide__pal { width: 56px; height: 56px; flex: none; }
+}
+@media (max-width: 640px) {
+  .pixel-guide:not(.pixel-guide--inline) { gap: 8px; padding: 0 0.75rem; }
+  .pixel-guide:not(.pixel-guide--inline) .pixel-guide__bubble { max-width: none; flex: 1; }
+}
+/* From 1280px up Pixel keeps the corner, and the page keeps a column on the
+   right for him so he never stands on the work. */
+@media (min-width: 1280px) {
+  .bldr-page.bldr-studio-mode { padding-right: 300px; padding-bottom: 120px; }
+}
+
+/* ── One callout per strip ───────────────────────────────────────────────────
+   On an iPad the "Learn the code behind it" door wrapped under the marquee's
+   title and sat on the "Ready for your first change" pill: two callouts
+   stacked on one strip, neither winning. Below the laptop width the door gets
+   its own full row at the foot of the marquee, under everything else, and is
+   quieter: the pill states where the project is, the door is the way in. */
+@media (max-width: 1023px) {
+  .bldr-success-banner { flex-wrap: wrap; }
+  .bldr-success-banner__behind {
+    flex: 1 1 100%;
+    order: 10;
+    min-height: 48px;
+    margin-top: 6px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    box-shadow: none;
+  }
+  .bldr-success-banner__behind small { max-width: none; text-align: left; }
+}
+@media (max-width: 640px) {
+  .bldr-success-banner__behind { flex-direction: column; gap: 2px; }
+  .bldr-success-banner__behind span { white-space: nowrap; }
+  .bldr-success-banner__behind small { text-align: center; }
+}
+
+/* The side toolbar is fixed at the left from 1180px; the page keeps a column
+   for it too, so it never stands on the card's first word. */
+@media (min-width: 1180px) {
+  .bldr-page.bldr-studio-mode { padding-left: 150px; }
+}

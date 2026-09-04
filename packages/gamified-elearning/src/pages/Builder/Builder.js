@@ -843,6 +843,7 @@ export default function Builder() {
   //                   short, not more choices.
   //   mid-thought     something is in the box. Leave them completely alone.
   const [stuck, setStuck] = useState(null); // 'never' | 'abandoned' | null
+  const [moreChanges, setMoreChanges] = useState(false);
   const typedEverRef = useRef(false);
   const emptiedRef = useRef(0);
   const wasEmptyRef = useRef(true);
@@ -3796,46 +3797,39 @@ export default function Builder() {
               </aside>
             )}
 
-            {/* Show the finished result before asking the student to change, save, or share it. */}
+            {/* ── Orientation above, one action inside ───────────────────────
+                The old card was two panels in one box: a four-step checklist
+                on the left and an action column on the right, eight things to
+                press at the moment a child had just watched their game end and
+                was asking "what now". On an iPad the right column took the
+                width and the heading wrapped one word per line.
+
+                The checklist is orientation, not action. It is a thin strip
+                above the card now, with the current step marked. The card is
+                one card: the state, one suggestion named from the child's own
+                game (the ladder), one button, and a way to see the rest. */}
             {!isSaved && (
-              <section className="bldr-activation-card bldr-activation-card--journey" aria-labelledby="bldr-next-step-title">
-                {/* ── One voice, not four ─────────────────────────────────────
-                    This card used to open with a kicker ("Your first version is
-                    ready. It is not finished yet"), a heading ("Play it. Change
-                    it. Test it. Then save it."), and a paragraph ("A strong
-                    project needs your ideas...") — and then the four-step
-                    checklist that says the same thing again, in order, knowing
-                    which step you are on.
+              <>
+                <ol className="bldr-steps" aria-label="Project steps">
+                  <li className={hasPlayedOnce ? 'is-done' : 'is-current'}><button type="button" onClick={() => setWorkspaceTab('play')}>Play everything</button></li>
+                  <li className={isPersonalized ? 'is-done' : hasPlayedOnce ? 'is-current' : ''}><button type="button" onClick={() => setWorkspaceTab('change')}>Change one thing</button></li>
+                  <li className={isPersonalized && hasTestedLatest ? 'is-done' : isPersonalized ? 'is-current' : ''}><button type="button" onClick={() => setWorkspaceTab('play')}>Play it again</button></li>
+                  <li className={isPersonalized && hasTestedLatest ? 'is-current' : ''}><button type="button" onClick={() => setWorkspaceTab('keep')}>Save your work</button></li>
+                </ol>
 
-                    Four ways of saying one sentence, stacked, above a child who
-                    reads none of them. The checklist is the only one that earns
-                    its place: it is ordered, it knows what has been done, and
-                    each step is a link to the page where that step happens.
-                    The other three are gone.
-
-                    The heading stays as one short line because the section is
-                    labelled by it and a screen reader needs the label. */}
-                <div className="bldr-activation-card__copy">
-                  <h3 id="bldr-next-step-title" className="bldr-activation-card__title">
-                    {isSaved ? 'Your project is saved' : 'Four things, then it is yours'}
+                <section className="bldr-next" aria-labelledby="bldr-next-step-title">
+                  <h3 id="bldr-next-step-title" className="bldr-next__title">
+                    {!hasPlayedOnce
+                      ? 'Play it first.'
+                      : !isPersonalized
+                        ? 'You played it. Now make it yours.'
+                        : !hasTestedLatest
+                          ? 'You changed it. Play it again.'
+                          : 'It is yours. Save it.'}
                   </h3>
-                  {/* One line, and it changes hands exactly once.
 
-                      Before they have touched anything it points at something
-                      real in their own project and asks them to change it.
-                      Afterwards — and only afterwards, because this is the first
-                      moment the studio can say it without lying — the same slot
-                      shows them what is behind the thing they just changed, and
-                      the lesson that teaches it.
-
-                      That is the answer to "why is the AI writing the code",
-                      given in the first five minutes rather than in a paragraph
-                      on the home page: you changed it, here is what it is made
-                      of, here is where yours is, here is how to learn it.
-
-                      The slot, not a new panel. B cut six instruction systems
-                      down to one and this stays at one. */}
-                  {behind ? (
+                  {/* What is behind the thing they changed, once they have. */}
+                  {behind && (
                     <p className="bldr-change-hint bldr-change-hint--behind">
                       <Icon name="search" size={18} />
                       <span>{behind.sentence}</span>
@@ -3847,18 +3841,20 @@ export default function Builder() {
                         {behind.lessonLabel}
                       </Link>
                       {behind.rest && (
-                        <button
-                          type="button"
-                          className="bldr-change-hint__rest"
-                          onClick={() => setWorkspaceTab('learn')}
-                        >
+                        <button type="button" className="bldr-change-hint__rest" onClick={() => setWorkspaceTab('learn')}>
                           {behind.rest}
                         </button>
                       )}
                     </p>
-                  ) : changeHint ? (
+                  )}
+
+                  {/* Before anything is changed, one line points at something
+                      real in their own project and invites them to change it.
+                      The browser checks (first-five-minutes, complaints #6)
+                      hold this to the file: the quoted thing must exist. */}
+                  {!behind && changeHint && (!ladderOffer || !hasPlayedOnce) && (
                     <p className="bldr-change-hint">
-                      <span aria-hidden="true">👆</span>
+                      <Icon name="hand" size={18} />
                       <span>{changeHint}</span>
                       <button
                         type="button"
@@ -3868,91 +3864,118 @@ export default function Builder() {
                         {editModeOn ? 'Tap it now' : 'Let me try'}
                       </button>
                     </p>
-                  ) : null}
+                  )}
 
-                  <ol className="bldr-project-checklist" aria-label="Project quality steps">
-                    {/* The four steps and the four pages were two versions of
-                        the same journey sitting on top of each other. Now a step
-                        is the way to its page: tap "Change one thing" and you
-                        land on Change, where the ideas are. */}
-                    <li className={hasPlayedOnce ? 'is-done' : 'is-current'}>
-                      <button type="button" onClick={() => setWorkspaceTab('play')}>
-                        <span>{hasPlayedOnce ? '✓' : '1'}</span>Play everything
-                      </button>
-                    </li>
-                    <li className={isPersonalized ? 'is-done' : hasPlayedOnce ? 'is-current' : ''}>
-                      <button type="button" onClick={() => setWorkspaceTab('change')}>
-                        <span>{isPersonalized ? '✓' : '2'}</span>Change one thing
-                      </button>
-                    </li>
-                    <li className={isPersonalized && hasTestedLatest ? 'is-done' : isPersonalized ? 'is-current' : ''}>
-                      <button type="button" onClick={() => setWorkspaceTab('play')}>
-                        <span>{isPersonalized && hasTestedLatest ? '✓' : '3'}</span>Play it again
-                      </button>
-                    </li>
-                    <li className={isPersonalized && hasTestedLatest ? 'is-current' : ''}>
-                      <button type="button" onClick={() => setWorkspaceTab('keep')}>
-                        <span>4</span>Save your work
-                      </button>
-                    </li>
-                  </ol>
-                </div>
-                <div className="bldr-activation-card__actions">
-                  {!hasPlayedOnce ? (
-                    <button className="bldr-activation-card__primary" onClick={handleTogglePlay} data-codeit-coach="current">▶ Play it now</button>
-                  ) : !isPersonalized ? (
-                    <button
-                      className="bldr-activation-card__primary"
-                      onClick={openInstantPanel}
-                      data-codeit-coach="current"
-                      disabled={editing}
-                    >
-                      <Icon name="palette" size={18} /> Change my project
-                    </button>
-                  ) : !hasTestedLatest ? (
-                    <button className="bldr-activation-card__primary" onClick={handleTogglePlay} data-codeit-coach="current">▶ Play my changes</button>
-                  ) : (
-                    <button
-                      className="bldr-activation-card__primary"
-                      onClick={handleSaveProject}
-                      data-codeit-coach="current"
-                      disabled={saveStatus === 'saving' || editing}
-                    >
-                      <><Icon name="save" size={18} /> {saveStatus === 'saving' ? 'Saving…' : user ? 'Save my project' : 'Keep my project'}</>
-                    </button>
-                  )}
-                  {hasPlayedOnce && !isPersonalized && guideLevel !== 'early' && (
-                    <button
-                      className="bldr-activation-card__secondary"
-                      type="button"
-                      onClick={() => { setShowEditPanel(true); setTimeout(() => editRef.current?.focus(), 0); }}
-                      disabled={editing}
-                    >
-                      <Icon name="chat" size={18} /> Or describe a change in words
-                    </button>
-                  )}
-                  {hasPlayedOnce && !isPersonalized && (
-                    <div className="bldr-activation-themes" role="group" aria-label="Quick color choices">
-                      <span className="bldr-activation-themes__label">Or pick colours now</span>
-                      {FIRST_CHANGE_THEMES.map(theme => (
-                        <button
-                          key={theme.name}
-                          className="bldr-activation-theme"
-                          type="button"
-                          aria-label={`Apply ${theme.name} theme`}
-                          onClick={() => handleApplyColors(theme.vars)}
-                          disabled={editing}
-                        >
-                          <span className="bldr-activation-theme__swatches" aria-hidden="true">
-                            {theme.swatches.map(color => <span key={color} style={{ background: color }} />)}
-                          </span>
-                          <span>{theme.name}</span>
-                        </button>
-                      ))}
+                  {!hasPlayedOnce && (
+                    <div className="bldr-next__actions">
+                      <button className="bldr-activation-card__primary" onClick={handleTogglePlay} data-codeit-coach="current"><Icon name="play" size={18} /> Play it now</button>
                     </div>
                   )}
-                </div>
-              </section>
+
+                  {hasPlayedOnce && !isPersonalized && (
+                    <>
+                      {/* One suggestion, named in their own game. */}
+                      <ChallengeCard
+                        code={code}
+                        projectKey={shelfIdRef.current || previewKeyRef.current || projectType}
+                        onOffer={setLadderOffer}
+                      />
+                      <div className="bldr-next__actions">
+                        <button
+                          className="bldr-activation-card__primary"
+                          onClick={openInstantPanel}
+                          data-codeit-coach="current"
+                          disabled={editing}
+                        >
+                          <Icon name="hand" size={18} /> Show me where
+                        </button>
+                        <button
+                          type="button"
+                          className="bldr-next__more"
+                          aria-expanded={moreChanges}
+                          onClick={() => setMoreChanges(v => !v)}
+                        >
+                          {moreChanges ? 'Fewer options' : 'Change something else'}
+                        </button>
+                      </div>
+
+                      {/* Palettes: one row, no shouting label. The cheapest
+                          win, and a child who does one does another. */}
+                      <div className="bldr-next__palettes" role="group" aria-label="Colours">
+                        <span className="bldr-next__palettes-label">Colours:</span>
+                        {FIRST_CHANGE_THEMES.map(theme => (
+                          <button
+                            key={theme.name}
+                            className="bldr-activation-theme"
+                            type="button"
+                            aria-label={`Apply ${theme.name} theme`}
+                            onClick={() => handleApplyColors(theme.vars)}
+                            disabled={editing}
+                          >
+                            <span className="bldr-activation-theme__swatches" aria-hidden="true">
+                              {theme.swatches.map(color => <span key={color} style={{ background: color }} />)}
+                            </span>
+                            <span>{theme.name}</span>
+                          </button>
+                        ))}
+                      </div>
+
+                      {moreChanges && (
+                        <div className="bldr-next__rest">
+                          {ideasForThisProject.length > 0 && (
+                            <ul className="bldr-ideas__list">
+                              {ideasForThisProject.slice(0, 3).map(idea => (
+                                <li key={idea.id}>
+                                  <button
+                                    type="button"
+                                    className="bldr-idea"
+                                    onClick={() => { setWorkspaceTab('change'); handleModifier(idea.prompt); }}
+                                  >
+                                    <span className="bldr-idea__label">{idea.label}</span>
+                                    <span className="bldr-idea__why">{idea.why}</span>
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                          <div className="bldr-next__actions">
+                            <button
+                              className="bldr-activation-card__secondary"
+                              type="button"
+                              onClick={() => { setShowEditPanel(true); setTimeout(() => editRef.current?.focus(), 0); }}
+                              disabled={editing}
+                            >
+                              <Icon name="chat" size={18} /> Describe a change in words
+                            </button>
+                            <button className="bldr-activation-card__secondary" type="button" onClick={() => setWorkspaceTab('change')}>
+                              <Icon name="palette" size={18} /> Open the Change tab
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {isPersonalized && !hasTestedLatest && (
+                    <div className="bldr-next__actions">
+                      <button className="bldr-activation-card__primary" onClick={handleTogglePlay} data-codeit-coach="current"><Icon name="play" size={18} /> Play my changes</button>
+                    </div>
+                  )}
+
+                  {isPersonalized && hasTestedLatest && (
+                    <div className="bldr-next__actions">
+                      <button
+                        className="bldr-activation-card__primary"
+                        onClick={handleSaveProject}
+                        data-codeit-coach="current"
+                        disabled={saveStatus === 'saving' || editing}
+                      >
+                        <Icon name="save" size={18} /> {saveStatus === 'saving' ? 'Saving…' : user ? 'Save my project' : 'Keep my project'}
+                      </button>
+                    </div>
+                  )}
+                </section>
+              </>
             )}
 
             {onTab('keep') && isSaved && !isPublished && (
@@ -4542,32 +4565,6 @@ export default function Builder() {
                 would not go. Three ideas, beside the finished project, every
                 time. Not a tab, not a timer, not a pop-up: just there. Tapping
                 one moves to Change and sends the exact words. */}
-            {/* The improvement ladder (message 59), one rung, checked
-                against the file rather than a "done" button. */}
-            {onTab('play') && code && !editing && (
-              <ChallengeCard code={code} projectKey={shelfIdRef.current || previewKeyRef.current || projectType} onOffer={setLadderOffer} />
-            )}
-
-            {onTab('play') && code && !editing && ideasForThisProject.length > 0 && (
-              <div className="bldr-ideas bldr-ideas--play" data-testid="play-ideas">
-                <p className="bldr-ideas__label">Or change something else. Ideas from your own game:</p>
-                <ul className="bldr-ideas__list">
-                  {ideasForThisProject.slice(0, 3).map(idea => (
-                    <li key={idea.id}>
-                      <button
-                        type="button"
-                        className="bldr-idea"
-                        onClick={() => { setWorkspaceTab('change'); handleModifier(idea.prompt); }}
-                      >
-                        <span className="bldr-idea__label">{idea.label}</span>
-                        <span className="bldr-idea__why">{idea.why}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
             {/* The answer to "what does it mean by the change it". real
                  things in this child's own project, each with the words to
                  send, so nothing has to be invented. */}
