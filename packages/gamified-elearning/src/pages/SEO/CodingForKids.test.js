@@ -44,8 +44,9 @@ describe('parent acquisition page', () => {
     expect(screen.getByRole('link', { name: 'Join the free parent pilot' })).toHaveAttribute('href', '#parent-pilot');
     expect(screen.getByText('Saved projects stay private until Publish.')).toBeInTheDocument();
     expect(screen.getByText('Private parent-managed profiles begin at age 5.')).toBeInTheDocument();
-    expect(screen.getByText(/Ages 5 to 12 start through a free parent or guardian account/i)).toBeInTheDocument();
-    expect(screen.queryByText(/ages 8 to 14/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Under 13, start through a free parent or guardian account/i)).toBeInTheDocument();
+    // The marketing range, stated once, in the owner's three sentences.
+    expect(screen.getByText(/^Built for ages 8 to 14\./)).toBeInTheDocument();
     expect(screen.queryByText(/everything is free/i)).not.toBeInTheDocument();
   });
 

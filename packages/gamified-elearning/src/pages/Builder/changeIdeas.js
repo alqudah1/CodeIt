@@ -29,8 +29,10 @@ const FRIENDLY = [
   { match: /speed|velocity/i, noun: 'speed' },
   { match: /time|timer|seconds|countdown/i, noun: 'timer' },
   { match: /level|stage|round/i, noun: 'level' },
-  { match: /coin|gem|star|gold/i, noun: 'coins' },
+  // Size before coins: `starSize` is a size, and "start the coins at 36"
+  // named a number that is not coins.
   { match: /size|width|height|radius/i, noun: 'size' },
+  { match: /coin|gem|star|gold/i, noun: 'coins' },
 ];
 
 function friendlyName(variable) {

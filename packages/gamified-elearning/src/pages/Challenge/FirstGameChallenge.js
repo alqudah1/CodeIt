@@ -57,7 +57,7 @@ export default function FirstGameChallenge() {
         <section className="fgc-hero">
           <div className="fgc-wrap fgc-hero__grid">
             <div className="fgc-hero__copy">
-              <p className="fgc-kicker">Free first-game challenge · Ages 5 to 18</p>
+              <p className="fgc-kicker">Free first-game challenge · Built for ages 8 to 14</p>
               <h1>Build your first game. Make it yours.</h1>
               <p className="fgc-hero__lead">
                 Pick one idea, get a playable first version, change one thing, and save what you made.

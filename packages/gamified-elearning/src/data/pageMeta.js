@@ -29,7 +29,7 @@ const PAGE_META = {
   // and so does this.
   '/': {
     title: 'Python for Kids, Free: Lessons and a Browser Playground | CodeIt',
-    description: 'Free Python for ages 5 to 18. Open lesson 1 or the browser playground without an account: your child types the code and Python answers. No AI in the lessons or the playground.',
+    description: 'Free Python, built for ages 8 to 14. Open lesson 1 or the browser playground without an account: your child types the code and Python answers. No AI in the lessons or the playground.',
   },
   '/MainPage': {
     title: 'Your progress | CodeIt. Python Learning Progress',
@@ -41,7 +41,7 @@ const PAGE_META = {
     // this and where, and said nothing but the brand name. page-meta.test.js
     // now refuses a title that is the brand plus one word.
     title: 'About CodeIt: A Toronto Coding Studio for Ages 5\u201318',
-    description: 'CodeIt is a browser-based coding studio for ages 5–18, built in Toronto. Learners describe a website, game or quiz, change it by moving things and picking colours, then see the code behind it.',
+    description: 'CodeIt is a browser-based coding studio built for ages 8 to 14, in Toronto. Learners describe a website, game or quiz, change it by moving things and picking colours, then see the code behind it.',
   },
   '/ai-website-builder-for-kids': {
     title: 'AI Website Builder for Kids: Build & Learn the Code | CodeIt',
@@ -61,7 +61,7 @@ const PAGE_META = {
   },
   '/coding-for-kids': {
     title: 'Coding for Kids: Projects, Python & Parent Guide | CodeIt',
-    description: 'A project-first coding platform for ages 5–18, with private parent-managed profiles for ages 5–12. Build websites, games and quizzes, then learn the code.',
+    description: 'A project-first coding platform built for ages 8 to 14, with private parent-managed profiles for children under 13. Build websites, games and quizzes, then learn the code.',
   },
   '/creator-brief': {
     title: 'CodeIt Creator Brief',
@@ -77,7 +77,7 @@ const PAGE_META = {
   },
   '/first-game-challenge': {
     title: 'Build Your First Game Free | 10-Minute Coding Challenge | CodeIt',
-    description: 'Choose a game idea, build a playable first version, change it, save it, and earn XP. A free coding challenge for young creators ages 5–18.',
+    description: 'Choose a game idea, build a playable first version, change it, save it, and earn XP. A free coding challenge for young creators, built for ages 8 to 14.',
   },
   '/forgot-password': {
     title: 'Reset Password | CodeIt',

@@ -17,7 +17,7 @@ export default function About() {
         <h1>About CodeIt</h1>
         <div className="guide-body">
           <p>
-            CodeIt is a browser-based coding studio for learners aged 5 to 18. A learner describes
+            CodeIt is a browser-based coding studio built for ages 8 to 14. Younger children can use it alongside an adult, and older beginners are welcome. A learner describes
             a website, game or quiz; CodeIt builds a working first version; and then the learner
             opens it up and changes it. The project stays editable rather than becoming a finished
             result you can only look at.

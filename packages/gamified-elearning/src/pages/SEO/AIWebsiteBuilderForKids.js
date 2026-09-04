@@ -49,7 +49,7 @@ export default function AIWebsiteBuilderForKids() {
           <Link to="/" className="seo-back">&larr; Back to Home</Link>
 
           <header className="seo-hero">
-            <span className="seo-eyebrow">Creative coding for ages 5 to 18</span>
+            <span className="seo-eyebrow">Creative coding, built for ages 8 to 14</span>
             <h1 className="seo-h1">An AI website builder for kids that teaches the code.</h1>
             <p className="seo-hero-desc">
               CodeIt helps a young creator turn an idea into a website, game, or quiz, then change

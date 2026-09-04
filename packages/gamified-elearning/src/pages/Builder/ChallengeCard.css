@@ -1,0 +1,53 @@
+/* One rung of the improvement ladder, on the Play page beside the game. */
+.ladder {
+  margin: 0 0 1rem;
+  padding: 14px 16px;
+  background: var(--paper, #FFFDF7);
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 14px;
+  color: var(--ink, #35220E);
+  display: grid;
+  gap: 8px;
+}
+.ladder--done { background: var(--arc-sun, #FED340); }
+.ladder__kicker {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--arc-orange-text, #B25200);
+}
+.ladder--done .ladder__kicker { color: var(--ink, #35220E); }
+.ladder__prompt {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.ladder__sentence, .ladder__hint {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.ladder__actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ladder__hint-btn, .ladder__skip, .ladder__next, .ladder__lesson {
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 2px solid var(--ink, #35220E);
+  background: var(--paper, #FFFDF7);
+  color: var(--ink, #35220E);
+  font: inherit;
+  font-family: var(--font-display, inherit);
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.ladder__lesson, .ladder__next { background: var(--arc-orange, #F87824); }
+.ladder__skip { border-color: transparent; background: transparent; text-decoration: underline; text-underline-offset: 3px; }

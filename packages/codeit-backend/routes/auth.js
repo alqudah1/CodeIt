@@ -31,7 +31,9 @@ router.post('/signup', async (req, res) => {
       return res.status(403).json({
         code: 'PARENT_ACCOUNT_REQUIRED',
         field: 'dob',
-        error: 'Learners under 13 need a parent or guardian to create and manage their access. You can still try CodeIt without an account.',
+        // Generic on purpose. The number is the rule; printing it in the
+        // refusal tells a child which year to type next time.
+        error: 'Thanks. To set up an account for you, we need a parent or guardian. You can still try CodeIt without an account.',
       });
     }
   } else {

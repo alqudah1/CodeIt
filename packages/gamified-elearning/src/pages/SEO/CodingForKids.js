@@ -8,6 +8,7 @@ import FAQS from '../../data/faqs';
 import { trackEvent } from '../../utils/trackEvent';
 import HomePilotSignup from '../Home/HomePilotSignup';
 import RecentProjects from '../Home/RecentProjects';
+import { AGE_RANGE } from '../../config/company';
 import './CodingForKids.css';
 
 // One source of truth, shared with /faq and the static-SEO build script.
@@ -80,8 +81,9 @@ export default function CodingForKids() {
                   Join the free parent pilot
                 </a>
               </div>
+              <p className="parents-hero__ages">{AGE_RANGE.statement}</p>
               <p className="parents-hero__note">
-                Ages 5 to 12 start through a free parent or guardian account.{' '}
+                Under 13, start through a free parent or guardian account.{' '}
                 <Link
                   to="/register?for=family"
                   onClick={() => void trackEvent('parent_cta_click', 'create-family-account')}

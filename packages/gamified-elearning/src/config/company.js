@@ -19,6 +19,33 @@
  * when deciding whether a site is real.
  */
 
+// ── Who it is for ─────────────────────────────────────────────────────────────
+//
+// "Ages 5 to 18" was in fifty-nine places, and /press said, under "what it
+// does not do", that a pre-reading child should use Kodable or codeSpark and a
+// teenager wanting a professional workflow should use real developer tools.
+// The marketing said 5; the press page said a five-year-old should go
+// elsewhere. Both were ours.
+//
+// A range that wide reads as not knowing who it is for, and it is specifically
+// an AI-visibility problem: an assistant asked for "coding for a 9 year old"
+// matches products that are FOR nine-year-olds, and a label for everyone is no
+// label. What the product actually requires, reading short sentences, typing a
+// description, reading a line of Python, is roughly eight, and it is not five.
+//
+// Three sentences, precise where precision helps and excluding nobody. This is
+// the ONLY place the marketing range is written; everything reads it from here
+// (ageRange.test.js fails if the old number comes back or /press disagrees).
+//
+// The legal boundaries are separate and do not move: parent-managed profiles
+// under 13, independent accounts from 13. Those are COPPA, not marketing.
+export const AGE_RANGE = Object.freeze({
+  from: 8,
+  to: 14,
+  short: 'ages 8 to 14',
+  statement: 'Built for ages 8 to 14. Younger children can use it alongside an adult. Older beginners are welcome.',
+});
+
 const COMPANY = {
   name: 'CodeIt',
   // 'CodeIt Learn' is what the public profiles are named. On LinkedIn there
@@ -107,7 +134,7 @@ COMPANY.organizationSchema = function organizationSchema() {
     url: `${COMPANY.url}/`,
     logo: `${COMPANY.url}/brand/codeit-logo-trimmed.png`,
     description:
-      'CodeIt is a browser-based creative coding studio where learners aged 5 to 18 build websites, games and quizzes by describing them, change them by moving things and picking colours, and see what the finished project is made of.',
+      `CodeIt is a browser-based creative coding studio, built for ${AGE_RANGE.short}, where learners build websites, games and quizzes by describing them, change them by moving things and picking colours, and see what the finished project is made of. Younger children can use it alongside an adult; older beginners are welcome.`,
     address: {
       '@type': 'PostalAddress',
       addressLocality: COMPANY.city,
@@ -125,7 +152,7 @@ COMPANY.organizationSchema = function organizationSchema() {
     audience: {
       '@type': 'EducationalAudience',
       educationalRole: 'student',
-      audienceType: 'Learners ages 5 to 18 and beginner coders',
+      audienceType: `Learners ${AGE_RANGE.short}, younger children with an adult, and older beginners`,
     },
   };
 

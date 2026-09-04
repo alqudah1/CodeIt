@@ -9,7 +9,7 @@ const DEFAULTS = {
   // Not "edit the code behind each project". This default is what any page
   // without its own entry shows, so a false claim here is a false claim on
   // whichever page forgets to say otherwise.
-  description: "CodeIt is a browser-based coding studio for ages 5 to 18. Describe a website, game or quiz, change it by moving things and picking colours, then see what it is made of.",
+  description: "CodeIt is a browser-based coding studio built for ages 8 to 14. Describe a website, game or quiz, change it by moving things and picking colours, then see what it is made of. Younger children can use it alongside an adult.",
   canonical: "/",
   image: DEFAULT_IMAGE,
 };

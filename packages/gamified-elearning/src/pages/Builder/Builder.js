@@ -35,6 +35,7 @@ import {
 } from './instantStyle';
 import './Builder.css';
 import { changeIdeasFor } from './changeIdeas';
+import ChallengeCard from './ChallengeCard';
 import {
   injectPreviewStorage,
   isStorageMessage,
@@ -823,6 +824,23 @@ export default function Builder() {
 
   // ── Build state ────────────────────────────────────────────────────────────
   const [prompt, setPrompt]             = useState('');
+
+  // ── Two stuck moments, and one that must be left alone ──────────────────
+  //
+  // A timer cannot tell a child composing an idea from a child who has given
+  // up: to a clock they look identical, and interrupting the first breaks the
+  // thought at the moment it was arriving. So three states, help in two.
+  //
+  //   never started   nothing typed, nothing tapped, a few seconds passed.
+  //                   They do not know what to type. Point at the games.
+  //   abandoned       typed, deleted back to empty, and again. They have an
+  //                   idea they cannot phrase; they need permission to keep it
+  //                   short, not more choices.
+  //   mid-thought     something is in the box. Leave them completely alone.
+  const [stuck, setStuck] = useState(null); // 'never' | 'abandoned' | null
+  const typedEverRef = useRef(false);
+  const emptiedRef = useRef(0);
+  const wasEmptyRef = useRef(true);
   const [builtPrompt, setBuiltPrompt]   = useState('');
   const [code, setCode]                 = useState('');
   const [builtSummary, setBuiltSummary] = useState('');
@@ -1075,9 +1093,20 @@ export default function Builder() {
     catch { return new Set(); }
   });
 
+  // ── Tier one: inline, no dismiss, fades on its own ─────────────────────────
+  //
+  // Something should answer every action a child takes, and none of it should
+  // be scheduled. This is the smallest tier: a few words near where the action
+  // happened, gone in under three seconds.
+  //
+  // It used to say "+10 XP" for tuning a slider, "+15 XP" for a colour and
+  // "+20 XP" for an effect, and the server paid none of that. Ten fake XP for
+  // a click is exactly the thing our parent guide says other products do. The
+  // words stay, because the acknowledgement is the point; the number appears
+  // only when the server really banked it (saving, publishing).
   function popXp(amount, reason) {
     const id = Date.now();
-    setXpPopup({ amount, reason: reason || null, id });
+    setXpPopup({ amount: Number(amount) > 0 ? Number(amount) : 0, reason: reason || null, id });
     setTimeout(() => setXpPopup(v => v?.id === id ? null : v), 2600);
   }
 
@@ -1178,7 +1207,7 @@ export default function Builder() {
     const nextCode = bakeInstantStyle(code, buildInstantCss(merged));
     if (nextCode === code) return;
     commitInstantChange(nextCode, versionLabel, noticeText);
-    popXp(10, 'Made it yours');
+    popXp(0, 'Made it yours');
   }
 
   /**
@@ -1216,7 +1245,7 @@ export default function Builder() {
     setAiTitle(nextTitle);
     if (nextCode === code) return;
     commitInstantChange(nextCode, `Renamed: ${nextTitle.slice(0, 40)}`, `Your project is now called "${nextTitle}".`);
-    popXp(10, 'Named it');
+    popXp(0, 'Named it');
   }
 
 
@@ -1249,7 +1278,7 @@ export default function Builder() {
       `${setting.label}: ${value}`,
       `${setting.label} is now ${value}. Your game restarted so you can see it.`
     );
-    popXp(10, 'Tuned it');
+    popXp(0, 'Tuned it');
   }
 
   function resetSetting(setting) {
@@ -1272,7 +1301,7 @@ export default function Builder() {
         `Preserve all existing gameplay, scoring, and visual style exactly. ` +
         `The new feature must integrate seamlessly with the current code.`
       );
-      setTimeout(() => popXp(10, 'Mission Complete!'), 350);
+      setTimeout(() => popXp(0, 'Upgrade done'), 350);
     } finally {
       setMissionActive(null);
     }
@@ -1713,15 +1742,23 @@ export default function Builder() {
   // The wait matters. Marking code good the moment it is handed to the frame
   // would happily save a version that throws on its first line.
   const SETTLE_MS = 1200;
+  // Whether the version BEFORE this one threw. If it did and this one settles
+  // clean, the child fixed something, and nothing else in the studio tells
+  // them they did something hard.
+  const hadErrorsRef = useRef(false);
   useEffect(() => {
     if (!code) return undefined;
-    setRunErrors([]);
+    setRunErrors(prev => { hadErrorsRef.current = prev.length > 0; return []; });
     clearTimeout(settleTimer.current);
     settleTimer.current = setTimeout(() => {
       setSafety(prev => rememberWorking(prev, codeRef.current));
+      if (hadErrorsRef.current) {
+        hadErrorsRef.current = false;
+        popXp(0, 'You just debugged that.');
+      }
     }, SETTLE_MS);
     return () => clearTimeout(settleTimer.current);
-  }, [code]);
+  }, [code]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /** Put the project back to the last version that actually ran. */
   const restoreLastWorking = () => {
@@ -1811,7 +1848,7 @@ export default function Builder() {
         setIsSaved(false);
         setSaveStatus(null);
         trackPersonalizationOnce();
-        popXp(10, 'Moved it');
+        popXp(0, 'Moved it');
       }
       if (d.type === 'CODEIT_READY' && editModeOnRef.current) {
         sendBridgeCmd('ENABLE');
@@ -1846,6 +1883,9 @@ export default function Builder() {
         if (!playedReportedRef.current) {
           playedReportedRef.current = true;
           void trackEvent('project_played', null, tokenRef.current);
+          // The first run of their own program is a real moment, and it used
+          // to pass in silence.
+          popXp(0, 'That is your game, running.');
         }
         setHasPlayedOnce(true);
         setHasTestedLatest(true);
@@ -2130,6 +2170,26 @@ export default function Builder() {
       callBuilder(updated);
     }
   };
+
+  useEffect(() => {
+    const empty = !prompt.trim();
+    if (!empty) typedEverRef.current = true;
+    if (!empty && wasEmptyRef.current) wasEmptyRef.current = false;
+    else if (empty && !wasEmptyRef.current && typedEverRef.current) {
+      wasEmptyRef.current = true;
+      emptiedRef.current += 1;
+      if (emptiedRef.current >= 2) setStuck('abandoned');
+    }
+    if (!empty && stuck) setStuck(null);
+  }, [prompt, stuck]);
+
+  useEffect(() => {
+    if (code || loading) return undefined;
+    const timer = setTimeout(() => {
+      if (!typedEverRef.current && !prompt.trim() && !code) setStuck('never');
+    }, 8000);
+    return () => clearTimeout(timer);
+  }, [code, loading, prompt]);
 
   const handleBuild = () => {
     if (!prompt.trim()) return;
@@ -2826,7 +2886,16 @@ export default function Builder() {
 
   // Concrete things to change in THIS project, for the child who asked what
   // "change one thing" means.
-  const ideasForThisProject = code ? changeIdeasFor(code) : [];
+  const allIdeas = code ? changeIdeasFor(code) : [];
+  // The rung on offer, if any, so the ideas strip does not repeat it. The
+  // "change a number" rung and the "number-<name>" idea are the same change.
+  const [ladderOffer, setLadderOffer] = useState(null);
+  const ideasForThisProject = ladderOffer
+    ? allIdeas.filter(idea => !(
+        (ladderOffer.id === 'change-a-number' && (idea.id === `number-${ladderOffer.variable}` || idea.id === 'speed'))
+        || (ladderOffer.id === 'rename-the-title' && idea.id === 'title')
+      ))
+    : allIdeas;
   const mineThemes = guideLevel === 'early' ? FIRST_CHANGE_THEMES : PRESET_PALETTES;
   const coachStage = !code
     ? prompt.trim()
@@ -3251,6 +3320,12 @@ export default function Builder() {
             />
             <div className="bldr-textarea-hint">Ctrl+Enter to build</div>
           </div>
+          {stuck === 'never' && !code && (
+            <p className="bldr-stuck" data-testid="stuck-never">Not sure? Tap one of the games above and change it after.</p>
+          )}
+          {stuck === 'abandoned' && (
+            <p className="bldr-stuck" data-testid="stuck-abandoned">Keep it short. “A game where a cat catches falling stars” is enough.</p>
+          )}
           {code && !loading && (
             <div className="bldr-quickstarts">
               <span className="bldr-quickstarts__label">Try another idea:</span>
@@ -4040,7 +4115,7 @@ export default function Builder() {
                               onClick={() => {
                                 handleApplyColors(theme.vars);
                                 setInstantNotice(`${theme.name} colours applied. Play it again to test your change.`);
-                                popXp(10, 'Made it yours');
+                                popXp(0, 'Made it yours');
                               }}
                             >
                               <span className="bldr-mine__swatches" aria-hidden="true">
@@ -4236,7 +4311,7 @@ export default function Builder() {
                       disabled={editing}
                       onClick={() => {
                         handleApplyColors({ '--bg': customBg, '--primary': customPrimary, '--accent': customAccent, '--text': customText });
-                        popXp(15, 'Color Theme');
+                        popXp(0, 'Colour changed');
                         setStudioPanel(null);
                       }}
                     >
@@ -4255,7 +4330,7 @@ export default function Builder() {
                           setCustomAccent(palette.vars['--accent'] || customAccent);
                           setCustomText(palette.vars['--text'] || customText);
                           handleApplyColors(palette.vars);
-                          popXp(15, 'Color Theme');
+                          popXp(0, 'Colour changed');
                           setStudioPanel(null);
                         }}
                       >
@@ -4280,7 +4355,7 @@ export default function Builder() {
                         disabled={editing}
                         onClick={() => {
                           applyEdit(opt + '. Keep all layout, colors, and functionality unchanged.');
-                          popXp(10, 'Text Upgraded');
+                          popXp(0, 'Text changed');
                           setStudioPanel(null);
                         }}
                       >
@@ -4300,7 +4375,7 @@ export default function Builder() {
                         disabled={editing}
                         onClick={() => {
                           applyEdit(fx + '. Keep all existing functionality and content unchanged.');
-                          popXp(20, 'Effect Added');
+                          popXp(0, 'Effect added');
                           setStudioPanel(null);
                         }}
                       >
@@ -4436,6 +4511,40 @@ export default function Builder() {
                     </button>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* ── The second stuck moment ──────────────────────────────────
+                The build finishes, the game works, and the child has no idea
+                what to change. changeIdeasFor(code) reads their own file and
+                names three real things in it, and it used to run only behind
+                the Change tab, where a child who did not know what to do
+                would not go. Three ideas, beside the finished project, every
+                time. Not a tab, not a timer, not a pop-up: just there. Tapping
+                one moves to Change and sends the exact words. */}
+            {/* The improvement ladder (message 59), one rung, checked
+                against the file rather than a "done" button. */}
+            {onTab('play') && code && !editing && (
+              <ChallengeCard code={code} projectKey={shelfIdRef.current || previewKeyRef.current || projectType} onOffer={setLadderOffer} />
+            )}
+
+            {onTab('play') && code && !editing && ideasForThisProject.length > 0 && (
+              <div className="bldr-ideas bldr-ideas--play" data-testid="play-ideas">
+                <p className="bldr-ideas__label">Or change something else. Ideas from your own game:</p>
+                <ul className="bldr-ideas__list">
+                  {ideasForThisProject.slice(0, 3).map(idea => (
+                    <li key={idea.id}>
+                      <button
+                        type="button"
+                        className="bldr-idea"
+                        onClick={() => { setWorkspaceTab('change'); handleModifier(idea.prompt); }}
+                      >
+                        <span className="bldr-idea__label">{idea.label}</span>
+                        <span className="bldr-idea__why">{idea.why}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
 
@@ -5507,8 +5616,8 @@ export default function Builder() {
 
         {/* XP gain popup */}
         {xpPopup && (
-          <div key={xpPopup.id} className="bldr-xp-popup">
-            +{xpPopup.amount} XP{xpPopup.reason ? `. ${xpPopup.reason}` : ''}
+          <div key={xpPopup.id} className="bldr-xp-popup" role="status">
+            {xpPopup.amount > 0 ? `+${xpPopup.amount} XP${xpPopup.reason ? `. ${xpPopup.reason}` : ''}` : xpPopup.reason}
           </div>
         )}
 

@@ -53,6 +53,10 @@ const CLIENT_EVENTS = new Set([
   "upgrade_click",
   "learn_the_code_behind",
   "page_crash",
+  // The improvement ladder: which rung got done, skipped, or led to a lesson.
+  "ladder_done",
+  "ladder_skip",
+  "ladder_lesson",
 ]);
 
 export async function trackEvent(eventName, meta = null, explicitToken = null) {

@@ -29,13 +29,13 @@ export default function pressFacts({
   return {
     eyebrow: "Press and facts",
     h1: "Everything you need to write about CodeIt.",
-    intro: `CodeIt is a browser-based coding studio for ages 5 to 18, built in ${locationLine} by ${founderName}. This page exists so that anyone writing about the product can check a fact without asking, and so that what gets written is accurate.`,
+    intro: `CodeIt is a browser-based coding studio built for ages 8 to 14, in ${locationLine} by ${founderName}. This page exists so that anyone writing about the product can check a fact without asking, and so that what gets written is accurate.`,
     detail: "If something here is unclear or you need a detail that is not on this page, email and ask. A correction is cheaper than a wrong sentence.",
     sections: [
     {
       heading: "The paragraph to quote",
       paragraphs: [
-        `CodeIt is a browser-based coding studio for ages 5 to 18, built in ${locationLine}. A learner describes a website, game or quiz and gets a working version they can play, changes it by moving things and picking colours or asking in plain language, then opens a separate view showing what the project is made of and the lesson behind each idea in it. Alongside the studio are ${lessonCount} beginner Python lessons and a Python playground.`,
+        `CodeIt is a browser-based coding studio built for ages 8 to 14, in ${locationLine}. Younger children can use it alongside an adult and older beginners are welcome. A learner describes a website, game or quiz and gets a working version they can play, changes it by moving things and picking colours or asking in plain language, then opens a separate view showing what the project is made of and the lesson behind each idea in it. Alongside the studio are ${lessonCount} beginner Python lessons and a Python playground.`,
         "Use that as written, or cut it. It is accurate as of the date at the bottom of this page.",
       ],
     },

@@ -11,6 +11,7 @@ import { HOME_PICKS } from "../Builder/starterGames";
 import { conceptsIn } from "../Builder/codeConcepts";
 import Icon from "../../components/Icon/Icon";
 import { CURRENCY_SYMBOL } from "../../config/pricing";
+import { AGE_RANGE } from "../../config/company";
 import YourShelf from "./YourShelf";
 import RecentProjects from "./RecentProjects";
 import FounderNote from "./FounderNote";
@@ -122,7 +123,12 @@ export default function Home() {
         <main>
           <section className="studio-hero" aria-labelledby="studio-title">
             <div className="studio-hero__copy">
-              <p className="studio-kicker">Coding for ages 5 to 18</p>
+              {/* "Coding for ages 5 to 18" sat here. A number in the hero is a
+                  label, and this one was wrong: /press says a pre-reading child
+                  should use a different product. The range now lives once,
+                  lower down, in plain words, and in the schema and meta where
+                  machines read it. */}
+              <p className="studio-kicker">Coding for kids, in the browser</p>
               {/* A returning kid gets their OWN face here, not just their name.
                   The same avatar they built in the lab and play as in their
                   games — so the hero is unmistakably theirs. */}
@@ -389,9 +395,10 @@ export default function Home() {
               keeps the two numbers that mean something. */}
           <section className="studio-cost" aria-labelledby="studio-cost-title">
             <div className="studio-cost__copy">
-              <p className="studio-kicker">What it costs</p>
+              <p className="studio-kicker">What it costs, and who it is for</p>
               <h2 id="studio-cost-title">Beginner Python, from <code>print()</code> to functions. Free, no account.</h2>
               <p>Nothing on this page asks for a card, an email, or a download. Open a lesson and it starts.</p>
+              <p className="studio-cost__ages">{AGE_RANGE.statement}</p>
             </div>
             <dl className="studio-cost__facts">
               <div>

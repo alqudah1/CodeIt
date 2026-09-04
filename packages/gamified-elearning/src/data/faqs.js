@@ -12,7 +12,7 @@
 const FAQS = [
   {
     q: 'What age is CodeIt for?',
-    a: 'Parents and legal guardians can create private managed profiles for learners ages 5–12 after confirming the adult account email. Independent student accounts are for ages 13–18.',
+    a: 'CodeIt is built for ages 8 to 14. Younger children can use it alongside an adult, and older beginners are welcome. Accounts work like this: under 13, a parent or legal guardian creates a private managed profile after confirming the adult account email; from 13, a learner can open their own account.',
   },
   {
     q: 'Do I need to know how to code to help?',

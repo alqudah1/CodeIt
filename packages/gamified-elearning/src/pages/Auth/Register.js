@@ -22,6 +22,36 @@ function BrandMark() {
 // ── Register — multi-step child-friendly signup ───────────────────────────────
 // Steps: 'choose' → 'student' | 'educator' → 'parent-optional' (student only)
 
+// ── A neutral age screen ─────────────────────────────────────────────────────
+//
+// The form used to print the rule it was enforcing: "Ages 13 and up" on the
+// account-type card, "Learner accounts are for ages 13 and up" beside the
+// birthday field, and an error that said exactly which birthdays would have
+// worked. A ten-year-old read the answer, changed the year, and continued.
+// A gate that announces its threshold is a form with the answer printed on it.
+//
+// Three things instead. The birthday is asked with no cutoff anywhere on the
+// screen. A child under the line is thanked and handed to a parent, without
+// being told what the line was. And the first birthday entered in this session
+// is the one that counts: come back and type a different one, and the first
+// is kept.
+const AGE_SCREEN_KEY = 'codeit_age_screen';
+const MIN_INDEPENDENT_AGE = 13; // COPPA. Not a marketing number; do not move.
+
+function ageFrom(dob) {
+  const born = new Date(dob);
+  if (Number.isNaN(born.getTime())) return null;
+  return Math.floor((Date.now() - born.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+}
+
+function rememberedDob() {
+  try { return sessionStorage.getItem(AGE_SCREEN_KEY) || ''; } catch { return ''; }
+}
+
+function rememberDob(dob) {
+  try { if (!rememberedDob()) sessionStorage.setItem(AGE_SCREEN_KEY, dob); } catch { /* private mode */ }
+}
+
 export default function Register() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search || '');
@@ -30,6 +60,8 @@ export default function Register() {
   const [error, setError] = useState(null);
   const [showPw, setShowPw] = useState(false);
   const [pendingToken, setPendingToken] = useState(null);
+  const [needsParent, setNeedsParent] = useState(false);
+  const firstDob = rememberedDob();
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -96,11 +128,19 @@ export default function Register() {
 
   // ── Student submit ──────────────────────────────────────────────────────────
   const onStudentSubmit = async (data) => {
+    // The first birthday entered this session is the one that counts.
+    const dob = firstDob || data.dob;
+    rememberDob(dob);
+    const age = ageFrom(dob);
+    if (age === null || age < MIN_INDEPENDENT_AGE) {
+      setNeedsParent(true);
+      return;
+    }
     try {
       setError(null);
       const res = await axios.post(
         `${API_BASE_URL}/api/signup`,
-        { accountType: 'student', username: data.username.trim(), password: data.password, dob: data.dob },
+        { accountType: 'student', username: data.username.trim(), password: data.password, dob },
         { headers: { 'Content-Type': 'application/json', ...journeyHeaders() } }
       );
       login({ user: res.data.user, token: res.data.token });
@@ -186,14 +226,14 @@ export default function Register() {
                   ? `${builderActionWord === 'publish' ? 'Publish' : 'Save'} with a learner account`
                   : 'I am learning to code'}
               </span>
-              <span className="auth-path-card__desc">Ages 13 and up. Use a username, no email needed</span>
+              <span className="auth-path-card__desc">Use a username, no email needed</span>
             </button>
 
             <button className="auth-path-card auth-path-card--educator" onClick={() => setStep('educator')}>
               <span className="auth-path-card__title">
                 {hasBuilderDraft ? 'Continue with a Parent or Educator' : 'I am a Parent or Educator'}
               </span>
-              <span className="auth-path-card__desc">Set up and manage a private profile for a child aged 5 to 12</span>
+              <span className="auth-path-card__desc">Set up and manage a private profile for your child</span>
             </button>
 
             <button className="auth-path-card auth-path-card--guest" onClick={() => navigate('/builder')}>
@@ -207,7 +247,7 @@ export default function Register() {
           </div>
 
           <div className="auth-educator-note">
-            Ages 5 to 12: ask a parent or legal guardian to create a private managed profile.
+            Younger learners: ask a parent or legal guardian to create a private managed profile.
           </div>
 
           <div className="auth-footer">
@@ -239,6 +279,20 @@ export default function Register() {
             </p>
           </header>
 
+          {needsParent ? (
+            <div className="auth-form auth-needs-parent" role="status">
+              <p className="auth-needs-parent__lead">Thanks. To set up an account for you, we need a parent or guardian.</p>
+              <p className="auth-needs-parent__sub">They can make you a private profile in about a minute, and your projects will be waiting.</p>
+              <button
+                type="button"
+                className="auth-button"
+                onClick={() => { setNeedsParent(false); setStep('educator'); }}
+              >
+                Ask a parent to set this up
+              </button>
+              <Link to="/builder" className="auth-needs-parent__try">Or keep building without an account</Link>
+            </div>
+          ) : (
           <form className="auth-form" onSubmit={submitS(onStudentSubmit)}>
             <div className="auth-field">
               <label className="auth-label" htmlFor="reg-s-username">Username</label>
@@ -290,26 +344,21 @@ export default function Register() {
                 type="date"
                 className="auth-input"
                 id="reg-s-dob"
+                defaultValue={firstDob || undefined}
+                readOnly={Boolean(firstDob)}
                 {...regS('dob', {
                   required: 'Birthday is required',
                   validate: {
                     notFuture: (v) =>
                       new Date(v) <= new Date() || 'Birthday cannot be in the future',
-                    ageRange: (v) => {
-                      const age = Math.floor(
-                        (new Date() - new Date(v)) / (365.25 * 24 * 60 * 60 * 1000)
-                      );
-                      // Only the lower bound is a rule. The upper one used to
-                      // turn a 23-year-old away from a site that teaches people
-                      // to code.
-                      return age >= 13 || 'Learners under 13 need a parent or guardian to set up their access.';
-                    },
+                    // No age rule here. The rule exists (onStudentSubmit and the
+                    // server both apply it); it is just not printed on the form.
                   },
                 })}
               />
               {errS.dob && <span className="error">{errS.dob.message}</span>}
-              {!errS.dob && (
-                <span className="auth-hint">Learner accounts are for ages 13 and up. A parent or guardian can create a private profile for ages 5 to 12.</span>
+              {!errS.dob && firstDob && (
+                <span className="auth-hint">Entered earlier this session.</span>
               )}
             </div>
 
@@ -320,6 +369,7 @@ export default function Register() {
                 : 'Create account and build'}
             </button>
           </form>
+          )}
 
           <div className="auth-footer">
             Already have an account? <Link to={loginPath} state={authLinkState}>Sign in</Link>

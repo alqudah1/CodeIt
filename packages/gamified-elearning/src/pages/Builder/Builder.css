@@ -6927,3 +6927,13 @@ details.bldr-device-sizes .bldr-device-sizes__options {
   line-height: 1.45;
   color: #6B5540;
 }
+
+/* One line, under the box, no overlay. A modal over an empty text box tells a
+   child they are doing it wrong. */
+.bldr-stuck {
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink, #35220E);
+  font-weight: 700;
+}

@@ -139,6 +139,12 @@ const EVENT_META = Object.freeze({
   // that produces a number nobody can defend.
   studio_view: new Set(),
   lesson_start: new Set(),
+
+  // The improvement ladder (4 September 2026). Meta is the rung id, so the
+  // report can say which challenge gets done and which gets skipped.
+  ladder_done: new Set(['change-a-number', 'rename-the-title', 'add-a-rule', 'repeat-it', 'keep-a-list']),
+  ladder_skip: new Set(['change-a-number', 'rename-the-title', 'add-a-rule', 'repeat-it', 'keep-a-list']),
+  ladder_lesson: new Set(['change-a-number', 'rename-the-title', 'add-a-rule', 'repeat-it', 'keep-a-list']),
 });
 
 const CLIENT_REPORTED_EVENTS = new Set([
@@ -154,6 +160,8 @@ const CLIENT_REPORTED_EVENTS = new Set([
   'billing_portal_open', 'billing_checkout_start',
   // Added 2 September 2026: the two missing denominators.
   'studio_view', 'lesson_start',
+  // Added 4 September 2026: the improvement ladder.
+  'ladder_done', 'ladder_skip', 'ladder_lesson',
   // Added 2 September 2026: the shorter path to subscribing. ai_limit_reached,
   // checkout_start and checkout_complete are deliberately absent: they are
   // recorded by the server, and a browser must not be able to claim any of

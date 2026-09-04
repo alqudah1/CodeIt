@@ -605,3 +605,9 @@
 
 /* The Sign-in link was brand orange at small size: 3.3:1. */
 .auth-footer a, .auth-hint a { color: var(--arc-orange-text); font-weight: 800; }
+
+/* The neutral age screen's answer: a next step, not a rejection. */
+.auth-needs-parent { display: grid; gap: 12px; }
+.auth-needs-parent__lead { margin: 0; font-size: 18px; font-weight: 800; line-height: 1.4; }
+.auth-needs-parent__sub { margin: 0; font-size: 15px; line-height: 1.5; }
+.auth-needs-parent__try { font-size: 15px; text-align: center; }
