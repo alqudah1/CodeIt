@@ -10,7 +10,7 @@ const EVENT_META = Object.freeze({
   // the hero. All three lead to something that runs real Python with no
   // account and no AI, which is the claim the page now leads with, and these
   // are how we find out whether leading with it works.
-  landing_cta_click: new Set(['hero-build', 'hero-idea', 'hero-lessons', 'hero-lesson-one', 'hero-playground', 'try-python', 'try-python-playground', 'final-build', 'member-resume-project', 'public-project-build', 'shelf', 'starter']),
+  landing_cta_click: new Set(['hero-build', 'hero-idea', 'hero-lessons', 'hero-lesson-one', 'hero-playground', 'try-python', 'try-python-playground', 'avatar-demo', 'avatar-demo-lab', 'final-build', 'member-resume-project', 'public-project-build', 'shelf', 'starter']),
   learning_start: new Set(['lesson-one', 'playground']),
   parent_guide_view: new Set(),
   parent_cta_click: new Set(['create-family-account', 'try-project', 'join-pilot', 'view-pricing', 'pilot-email', 'builder-trial-return', 'evidence-pilot']),

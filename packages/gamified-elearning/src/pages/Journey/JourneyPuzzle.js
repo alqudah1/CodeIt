@@ -60,7 +60,7 @@ const NEXT_STEP = {
 const JourneyPuzzle = () => {
   const { lessonId, slot } = useParams();
   const { user, token } = useContext(AuthContext);
-  const { character } = useCharacter();
+  const { character, awardXP } = useCharacter();
   const { xp: prePuzzleXp } = usePlayerProgress(token);
   const navigate = useNavigate();
 
@@ -151,6 +151,7 @@ const JourneyPuzzle = () => {
           const data = await res.json().catch(() => ({}));
           if (!data.alreadyCompleted && data.xpEarned > 0) {
             setCompletionXp(data.xpEarned);
+            awardXP(data.xpEarned);
           }
         } catch (_) {}
       }

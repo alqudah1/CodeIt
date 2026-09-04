@@ -47,7 +47,7 @@ const SCREENS = [
   // page. The home page now leads with the part that has no AI in it: the two
   // doors into lesson 1 and the playground, and a live Python editor beside
   // them. That is what a new visitor came for, so that is what is measured.
-  { name: 'home (new)',       url: '/',         want: '.studio-hero__actions, .tryp', came: 'Python they can run', union: true },
+  { name: 'home (new)',       url: '/',         want: '.studio-hero__actions, .avdemo', came: 'the two doors and the avatar demo', union: true },
   // Both, unioned: a returning child's shelf and the three starters under it
   // are one thing — places to go and make or play something. Counting the
   // starters as competition for the shelf would call the page's second-best

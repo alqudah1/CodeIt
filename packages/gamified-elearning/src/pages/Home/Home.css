@@ -1434,10 +1434,18 @@
      sections and more room around each; nothing drawn standing in for a
      thing that exists. Warm stays: the cream and the rounded type are right. */
 
-.studio-home .studio-hero__visual,
-.studio-home .studio-hero__visual:has(.tryp) {
+.studio-home .studio-hero__visual {
   padding-bottom: 0;
 }
+
+/* The Python editor, one section down from the hero. */
+.studio-home main > .studio-python {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  padding-top: clamp(2rem, 5vw, 4rem);
+  padding-bottom: clamp(2rem, 5vw, 4rem);
+}
+.studio-python .tryp { max-width: 820px; margin: 0 auto; }
 
 /* Room between sections is what "considered" is made of. */
 .studio-home main > section {

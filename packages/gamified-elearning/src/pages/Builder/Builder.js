@@ -3605,7 +3605,13 @@ export default function Builder() {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                       body: JSON.stringify({ projectKey: projectId, projectTitle: projectName, questionIds }),
-                    }).catch(() => { /* the local record still exists */ });
+                    })
+                      .then((res) => (res.ok ? res.json() : null))
+                      // The server pays for what was NEW in this record, and
+                      // only that. It is the largest single award in the
+                      // product, on purpose: see xpTotals.js on the backend.
+                      .then((data) => { if (data?.xpEarned > 0) awardXP(data.xpEarned); })
+                      .catch(() => { /* the local record still exists */ });
                   }
                   void trackEvent('project_explained', String(skills.length), token);
                 }}

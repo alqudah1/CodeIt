@@ -743,3 +743,28 @@
   box-shadow: var(--pop-rest, 3px 3px 0 rgba(53, 34, 14, 0.22));
   font-weight: 800;
 }
+
+/* The avatar's job, said out loud under the title. */
+.al-hero__job {
+  margin: 10px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.al-hero__play {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 12px;
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  font-family: var(--font-display, inherit);
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: var(--pop-rest, 3px 3px 0 var(--ink, #35220E));
+}

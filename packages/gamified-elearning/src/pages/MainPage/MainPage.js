@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { useCharacter } from '../../context/CharacterContext';
-import { API_BASE_URL, ENDPOINTS } from '../../config/api';
+import { API_BASE_URL } from '../../config/api';
 import { world1 } from '../../data/journey/world1';
 import Header from '../Header/Header';
 import Icon from '../../components/Icon/Icon';
@@ -36,14 +36,13 @@ const ALL_IDS = Array.from({ length: TOTAL_LESSONS }, (_, i) => i + 1);
 const LESSON_TITLES = [null, ...lessonSummaries().map(l => l.title)];
 
 // Achievement definitions — all derived from live progress data
-const buildAchievements = (lessons, quizzes, puzzles, streak) => [
+const buildAchievements = (lessons, quizzes, puzzles) => [
   { id: 'first_steps',    icon: '1L',  label: 'First Steps',    desc: 'Completed lesson 1',       unlocked: lessons  >= 1  },
   { id: 'halfway',        icon: '5L',  label: 'Halfway There',  desc: '5 lessons completed',      unlocked: lessons  >= 5  },
   { id: 'lesson_master',  icon: 'ALL', label: 'Lesson Master',  desc: `All ${TOTAL_LESSONS} lessons done`, unlocked: lessons  >= TOTAL_LESSONS },
   { id: 'quiz_starter',   icon: '1Q',  label: 'Quiz Starter',   desc: 'Completed first quiz',     unlocked: quizzes  >= 1  },
   { id: 'quiz_champ',     icon: '5Q',  label: 'Quiz Champion',  desc: '5 quizzes completed',      unlocked: quizzes  >= 5  },
   { id: 'puzzle_pioneer', icon: '1P',  label: 'Puzzle Pioneer', desc: 'Solved first puzzle',      unlocked: puzzles  >= 1  },
-  { id: 'streak_3',       icon: '3d',  label: '3-Day Streak',   desc: '3 days in a row',          unlocked: streak   >= 3  },
 ];
 
 const MainPage = () => {
@@ -61,7 +60,6 @@ const MainPage = () => {
   const [completedQuizzesArr, setCompletedQuizzesArr] = useState([]);
   const [completedPuzzlesArr, setCompletedPuzzlesArr] = useState([]);
   const [xp,     setXp]     = useState(null);
-  const [streak, setStreak] = useState(null);
   const [progressLoading, setProgressLoading] = useState(true);
 
   // Her machines: the projects this kid has actually made, shown as arcade
@@ -84,10 +82,7 @@ const MainPage = () => {
 
     const fetchProgress = async () => {
       try {
-        const [journeyRes, profileRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/api/journey/progress`, { headers, cache: 'no-store' }),
-          fetch(ENDPOINTS.profile.get, { headers }),
-        ]);
+        const journeyRes = await fetch(`${API_BASE_URL}/api/journey/progress`, { headers, cache: 'no-store' });
 
         if (journeyRes.ok) {
           const data = await journeyRes.json();
@@ -96,12 +91,6 @@ const MainPage = () => {
             setCompletedQuizzesArr(data.completedMiniQuizzes  || []);
             setCompletedPuzzlesArr(data.completedPuzzles      || []);
             setXp(data.xp ?? 0);
-          }
-        }
-        if (profileRes.ok) {
-          const pData = await profileRes.json();
-          if (pData.success && pData.stats) {
-            setStreak(pData.stats.currentStreak ?? 0);
           }
         }
       } catch (_) {
@@ -194,8 +183,8 @@ const MainPage = () => {
   }, [progressLoading, completedPuzzlesArr]);
 
   const achievements = useMemo(
-    () => buildAchievements(completedLessons, completedQuizzes, completedPuzzles, streak ?? 0),
-    [completedLessons, completedQuizzes, completedPuzzles, streak]
+    () => buildAchievements(completedLessons, completedQuizzes, completedPuzzles),
+    [completedLessons, completedQuizzes, completedPuzzles]
   );
 
   const levelInfo = useMemo(() => getXpProgress(xp), [xp]);
@@ -408,7 +397,7 @@ const MainPage = () => {
         )}
 
         {/* ══════════════════════════════════════════════════════
-            STATS ROW. Level + Streak side by side
+            STATS ROW. Level
         ══════════════════════════════════════════════════════ */}
         {!progressLoading && (
           <div className="cp-stats-row">
@@ -456,25 +445,12 @@ const MainPage = () => {
               </div>
             </section>
 
-            <section className={`mp-streak-card${(streak ?? 0) === 0 ? ' mp-streak-card--cold' : (streak ?? 0) >= 3 ? ' mp-streak-card--hot' : ''}`}>
-              <div className="mp-streak-card__number">{streak ?? 0}</div>
-              <div className="mp-streak-card__body">
-                <span className="mp-streak-card__label">
-                  {(streak ?? 0) === 1 ? '1-day streak' : `${streak ?? 0}-day streak`}
-                </span>
-                <p className="mp-streak-card__message">
-                  {(streak ?? 0) === 0 ? 'Start your streak today!' : 'Keep your streak alive!'}
-                </p>
-              </div>
-              <div className="mp-streak-card__dots" aria-hidden="true">
-                {[1, 2, 3, 4, 5, 6, 7].map(d => (
-                  <span
-                    key={d}
-                    className={`mp-streak-card__dot${d <= (streak ?? 0) ? ' mp-streak-card__dot--active' : ''}`}
-                  />
-                ))}
-              </div>
-            </section>
+            {/* A streak card stood here: "Start your streak today!" at zero,
+                "Keep your streak alive!" above it, seven dots. That is an
+                engagement mechanic for a product that has nothing else, and
+                it is what parents mean when they say an app is manipulative.
+                It also never worked: the endpoint it read from did not exist,
+                so every child was told to start a streak today, every day. */}
 
           </div>
         )}

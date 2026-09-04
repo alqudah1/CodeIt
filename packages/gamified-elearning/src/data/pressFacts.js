@@ -45,6 +45,7 @@ export default function pressFacts({
         "The comprehension questions are generated from the learner's own file. The correct answer is the value that learner actually wrote, and the wrong options are other real values from the same project, so the question cannot be answered by recalling a lesson or looking anything up. Only first attempts count.",
         "What a parent reads is a sentence describing something that happened, such as \"worked out how many times a loop repeats\", rather than a score or a percentage. That is a deliberate limit: a percentage invites comparison between children and says nothing about what one child can do.",
         "Every other product in this category reports progress, meaning lessons completed, time spent, badges earned. Those answer a different question from the one parents are now asking, which is whether the child understood code an assistant produced.",
+        "The avatar a child builds in the Avatar Lab is the player in the games that child builds. It is the same drawing, handed to every game the studio opens, so changing the outfit changes the character in the game. Scratch has sprites and Tynker has characters; neither takes the character the child made and puts it inside the game the child made. XP comes mostly from those first-attempt answers about the child's own code, and levels unlock things to wear.",
       ],
     },
     {

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useMemo, useState, useEffect, useRef, useCallback } from "react";
 import { ENDPOINTS } from "../config/api";
+import { getLevel, getLevelTitle, getNewlyUnlockedItems } from "../data/unlocks";
 
 // ── Character defaults ────────────────────────────────────────────────────────
 const DEFAULT_CHARACTER = {
@@ -103,17 +104,42 @@ export function CharacterProvider({ children }) {
 
     const [stats, setStats] = useState(null);
   const [pendingXP, setPendingXP] = useState(null);
+  // ── The one reward pop-up that is honest ──────────────────────────────────
+  // Set when XP crosses a level threshold in data/unlocks.js, wherever that
+  // happens: a lesson step, a quiz, a puzzle, a project, or explaining a line
+  // of your own code. It says what unlocked and offers the Avatar Lab, because
+  // something genuinely changed. Nothing else in the product pops up to
+  // reward anyone: no streaks, no daily logins, no "you have not been here".
+  const [levelUp, setLevelUp] = useState(null);
 
   const awardXP = useCallback((amount) => {
-    setPendingXP({ amount, id: Date.now() });
-    setStats(prev => prev ? { ...prev, totalXP: (prev.totalXP || 0) + amount } : prev);
+    const gained = Number(amount) || 0;
+    if (gained <= 0) return;
+    setPendingXP({ amount: gained, id: Date.now() });
+    setStats(prev => {
+      if (!prev) return prev;
+      const before = prev.totalXP || 0;
+      const after = before + gained;
+      const fromLevel = getLevel(before);
+      const toLevel = getLevel(after);
+      if (toLevel > fromLevel) {
+        setLevelUp({
+          level: toLevel,
+          title: getLevelTitle(toLevel),
+          items: getNewlyUnlockedItems(fromLevel, toLevel),
+          id: Date.now(),
+        });
+      }
+      return { ...prev, totalXP: after };
+    });
   }, []);
 
   const clearPendingXP = useCallback(() => setPendingXP(null), []);
+  const dismissLevelUp = useCallback(() => setLevelUp(null), []);
 
   const api = useMemo(
-    () => ({ character, characterLoaded, updateCharacter, resetCharacter, stats, pendingXP, awardXP, clearPendingXP }),
-    [character, characterLoaded, updateCharacter, resetCharacter, stats, pendingXP, awardXP, clearPendingXP]
+    () => ({ character, characterLoaded, updateCharacter, resetCharacter, stats, pendingXP, awardXP, clearPendingXP, levelUp, dismissLevelUp }),
+    [character, characterLoaded, updateCharacter, resetCharacter, stats, pendingXP, awardXP, clearPendingXP, levelUp, dismissLevelUp]
   );
 
   return (

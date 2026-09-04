@@ -1,6 +1,7 @@
 const express = require('express');
 const pool = require('../db');
 const router = express.Router();
+const { totalXpFor } = require('../xpTotals');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
 
@@ -29,15 +30,10 @@ const authenticateToken = (req, res, next) => {
 router.get('/progress', authenticateToken, async (req, res) => {
   const userId = req.user.user_id;
   try {
-    // Total XP — recalculate from source tables (same as leaderboard)
-    const [[xpRow]] = await pool.query(`
-      SELECT
-        COALESCE((SELECT SUM(xp_earned) FROM Student_Quiz_Attempt   WHERE student_id = ?), 0) +
-        COALESCE((SELECT SUM(xp_earned) FROM Student_Lesson_Progress WHERE user_id    = ?), 0) +
-        COALESCE((SELECT SUM(xp_earned) FROM Student_Puzzle_Progress WHERE user_id    = ?), 0) +
-        COALESCE((SELECT SUM(xp_earned) FROM ai_project_xp_awards    WHERE user_id    = ?), 0)
-        AS total_xp
-    `, [userId, userId, userId, userId]);
+    // Total XP: the one definition, shared with the leaderboard, the header
+    // and the profile. This used to be its own four-table sum that left out
+    // lesson steps, so the map and the ranking disagreed about the same child.
+    const totalXp = await totalXpFor(pool, userId);
 
     // Completed lessons
     const [lessonRows] = await pool.query(
@@ -65,7 +61,7 @@ router.get('/progress', authenticateToken, async (req, res) => {
 
     res.json({
       success: true,
-      xp:                   Number(xpRow.total_xp) || 0,
+      xp:                   totalXp,
       completedLessons:     lessonRows.map(r => r.lesson_id),
       completedMiniQuizzes,
       completedBigQuizzes,

@@ -12,6 +12,7 @@ import PageErrorBoundary from './components/PageErrorBoundary/PageErrorBoundary'
 import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { CharacterProvider } from './context/CharacterContext';
+import LevelUp from './components/LevelUp/LevelUp';
 import RequireAdmin from './pages/Admin/RequireAdmin';
 import AcquisitionTracker from './components/AcquisitionTracker/AcquisitionTracker';
 import ActivityTracker from './components/ActivityTracker/ActivityTracker';
@@ -125,6 +126,7 @@ const App = () => (
         <Router>
           <AcquisitionTracker />
           <ActivityTracker />
+          <LevelUp />
           {/* One throw in one page component used to unmount the entire app:
               all 31 lessons went white on 1 September and stayed that way for
               a day. Inside Router, so the boundary's own links work; outside

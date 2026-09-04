@@ -1,0 +1,76 @@
+.levelup {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(53, 34, 14, 0.45);
+}
+
+.levelup__card {
+  width: min(100%, 420px);
+  padding: 24px;
+  background: var(--paper, #FFFDF7);
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 20px;
+  box-shadow: var(--pop-card, 6px 6px 0 var(--ink, #35220E));
+  color: var(--ink, #35220E);
+}
+
+.levelup__eyebrow {
+  margin: 0 0 4px;
+  font-family: var(--font-display, inherit);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--arc-orange-text, #B25200);
+}
+
+.levelup__card h2 {
+  margin: 0 0 10px;
+  font-family: var(--font-display, inherit);
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.levelup__unlocked {
+  margin: 0 0 18px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.levelup__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.levelup__go,
+.levelup__later {
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 2px solid var(--ink, #35220E);
+  font: inherit;
+  font-family: var(--font-display, inherit);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.levelup__go {
+  background: var(--arc-sun, #FED340);
+  color: var(--ink, #35220E);
+  box-shadow: var(--pop-rest, 3px 3px 0 var(--ink, #35220E));
+}
+
+.levelup__later {
+  background: var(--paper, #FFFDF7);
+  color: var(--ink, #35220E);
+}
+
+.levelup__go:focus-visible,
+.levelup__later:focus-visible {
+  outline: 3px solid var(--arc-orange, #F87824);
+  outline-offset: 2px;
+}

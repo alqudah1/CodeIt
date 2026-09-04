@@ -44,7 +44,7 @@ export default function Quiz() {
   const quizId = useMemo(() => (routeId ? String(routeId) : "1"), [routeId]);
 
   const { user, token, loading: authLoading } = useAuth();
-  const { character } = useCharacter();
+  const { character, awardXP } = useCharacter();
   const { xp: preQuizXp } = usePlayerProgress(token);
 
   // Gate: lesson N must be complete before quiz N
@@ -238,6 +238,7 @@ export default function Quiz() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setResults(res.data);
+        if (res.data?.xpEarned > 0) awardXP(res.data.xpEarned);
       } catch (err) {
         const msg = err?.response?.data?.error || err?.message || "Submit failed";
         setSubmitErr(msg);

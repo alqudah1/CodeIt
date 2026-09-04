@@ -1,0 +1,183 @@
+/* The avatar-in-your-game demo on the home page. Same furniture as the rest
+   of the marketing page: paper, ink lines, one accent. The colour lives in the
+   swatches and in the game, which is to say inside the product. */
+.avdemo {
+  background: var(--paper, #FFFDF7);
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 18px;
+  box-shadow: var(--pop-card, 6px 6px 0 var(--ink, #35220E));
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.avdemo__head h2 {
+  font-family: var(--font-display, inherit);
+  font-size: clamp(20px, 2.4vw, 26px);
+  line-height: 1.2;
+  margin: 0 0 6px;
+  color: var(--ink, #35220E);
+}
+
+.avdemo__head p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink, #35220E);
+}
+
+.avdemo__body {
+  display: grid;
+  gap: 14px;
+}
+
+.avdemo__body.is-playing {
+  grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+}
+
+.avdemo__maker {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+/* At rest, the preview sits beside the three rows so the whole thing fits
+   above the fold on a laptop. Once the game is open, the maker narrows into a
+   single column beside it. */
+.avdemo__body:not(.is-playing) .avdemo__maker {
+  grid-template-columns: 170px minmax(0, 1fr);
+  grid-template-areas:
+    "preview skin"
+    "preview hair"
+    "preview outfit"
+    "go go";
+  align-items: center;
+}
+.avdemo__body:not(.is-playing) .avdemo__preview { grid-area: preview; align-self: stretch; }
+.avdemo__body:not(.is-playing) .avdemo__row[aria-label="Skin"] { grid-area: skin; }
+.avdemo__body:not(.is-playing) .avdemo__row[aria-label="Hair"] { grid-area: hair; }
+.avdemo__body:not(.is-playing) .avdemo__row[aria-label="Outfit"] { grid-area: outfit; }
+.avdemo__body:not(.is-playing) .avdemo__go { grid-area: go; }
+
+@media (max-width: 480px) {
+  .avdemo__body:not(.is-playing) .avdemo__maker {
+    grid-template-columns: 1fr;
+    grid-template-areas: "preview" "skin" "hair" "outfit" "go";
+  }
+}
+
+.avdemo__preview {
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  background: var(--ground, #FFF4E5);
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 14px;
+}
+
+.avdemo__row {
+  display: grid;
+  gap: 4px;
+}
+
+.avdemo__row-label {
+  font-family: var(--font-display, inherit);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink, #35220E);
+}
+
+.avdemo__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* 44px is a fingertip. Six of them fit across a phone. */
+.avdemo__swatch {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--ink, #35220E);
+  background: var(--swatch);
+  cursor: pointer;
+  padding: 0;
+}
+
+.avdemo__swatch.is-on {
+  box-shadow: 0 0 0 3px var(--paper, #FFFDF7), 0 0 0 5px var(--ink, #35220E);
+}
+
+.avdemo__swatch:focus-visible {
+  outline: 3px solid var(--arc-orange, #F87824);
+  outline-offset: 2px;
+}
+
+.avdemo__go {
+  min-height: 48px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 2px solid var(--ink, #35220E);
+  background: var(--arc-orange, #F87824);
+  color: var(--ink, #35220E);
+  font: inherit;
+  font-family: var(--font-display, inherit);
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--pop-rest, 3px 3px 0 var(--ink, #35220E));
+}
+
+.avdemo__stage {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.avdemo__frame {
+  width: 100%;
+  height: 360px;
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 14px;
+  background: #1b1440;
+  display: block;
+}
+
+.avdemo__loading,
+.avdemo__hint {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink, #35220E);
+}
+
+.avdemo__loading {
+  display: grid;
+  place-items: center;
+  height: 360px;
+  border: 2px dashed var(--ink, #35220E);
+  border-radius: 14px;
+}
+
+.avdemo__more {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.avdemo__more a {
+  color: var(--ink, #35220E);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 800;
+}
+
+@media (max-width: 720px) {
+  .avdemo__body.is-playing {
+    grid-template-columns: 1fr;
+  }
+  .avdemo__frame,
+  .avdemo__loading {
+    height: 300px;
+  }
+}

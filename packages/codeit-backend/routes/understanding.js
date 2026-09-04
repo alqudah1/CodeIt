@@ -24,6 +24,7 @@ const {
   normaliseAttempt,
   summarise,
 } = require('../understandingRecords');
+const { UNDERSTANDING_XP } = require('../xpTotals');
 
 const router = express.Router();
 
@@ -59,6 +60,9 @@ async function saveRecord(userId, { projectKey, projectTitle, skills }) {
   );
   const already = existing.length ? parseSkills(existing[0].skills) : [];
   const merged = [...new Set([...already, ...skills])].filter(s => KNOWN_SENTENCES.has(s));
+  // Only what is NEW in this row earns anything: the same game explained
+  // twice is not twice the evidence, and it is not twice the XP either.
+  const gained = merged.length - already.filter(s => KNOWN_SENTENCES.has(s)).length;
   if (existing.length) {
     await pool.query(
       'UPDATE understanding_records SET skills = ?, project_title = ?, updated_at = NOW() WHERE id = ?',
@@ -70,7 +74,16 @@ async function saveRecord(userId, { projectKey, projectTitle, skills }) {
       [userId, projectKey, projectTitle, JSON.stringify(merged)]
     );
   }
-  return merged;
+  // The total everyone reads is computed from the rows (xpTotals.js), so this
+  // column is a cache kept in step the way every other award keeps it. If it
+  // fails, the record is still the record and the total is still right.
+  if (gained > 0) {
+    await pool.query(
+      'UPDATE Students SET total_xp = total_xp + ? WHERE user_id = ?',
+      [gained * UNDERSTANDING_XP, userId]
+    ).catch(error => console.error('Understanding XP cache update failed:', error.message));
+  }
+  return { merged, xpEarned: Math.max(0, gained) * UNDERSTANDING_XP };
 }
 
 async function listRecords(userId) {
@@ -96,8 +109,8 @@ router.post('/', requireAuth, async (req, res) => {
   const attempt = normaliseAttempt(req.body);
   if (!attempt) return res.status(400).json({ error: 'Nothing demonstrated, nothing recorded.' });
   try {
-    const skills = await saveRecord(req.user.user_id, attempt);
-    return res.json({ success: true, skills });
+    const { merged: skills, xpEarned } = await saveRecord(req.user.user_id, attempt);
+    return res.json({ success: true, skills, xpEarned });
   } catch (err) {
     console.error('Record understanding error:', err.message);
     return res.status(500).json({ error: 'Could not save the record.' });

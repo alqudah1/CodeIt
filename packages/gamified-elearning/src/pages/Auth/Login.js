@@ -114,7 +114,7 @@ export default function Login() {
             {hasBuilderDraft
               ? 'Your work is safe in this browser. Sign in and we’ll bring you straight back.'
               : role === 'student'
-              ? 'Pick up where you left off and keep your streak alive.'
+              ? 'Pick up where you left off. Your projects and your avatar are waiting.'
               : 'Access your account, projects, and available learning tools.'}
           </p>
         </header>

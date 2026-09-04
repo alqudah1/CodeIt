@@ -213,7 +213,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   // guarded by a ref so a re-render does not.
   const lessonStartSentRef = useRef(null);
   const { user, token } = useContext(AuthContext) || {};
-  const { character } = useCharacter();
+  const { character, awardXP } = useCharacter();
   const { xp, level, xpToNext } = usePlayerProgress(token);
   const firstName  = (user?.name || 'Coder').split(' ')[0];
 
@@ -358,7 +358,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
         .then(result => {
           // Only celebrate XP the server says it actually banked. Re-doing a
           // step you already finished is fine, it just does not pay twice.
-          if (result?.xpEarned > 0) setXpToast({ amount: result.xpEarned, label: TYPE_LABEL[step.type] });
+          if (result?.xpEarned > 0) { setXpToast({ amount: result.xpEarned, label: TYPE_LABEL[step.type] }); awardXP(result.xpEarned); }
         })
         .catch(err => console.error(`Exercise ${id}:${idx} completion error:`, err));
     }
@@ -471,6 +471,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
       try {
         const result = await trackStaticLessonCompletion(id);
         xpEarned = result?.alreadyCompleted ? 0 : (result?.xpEarned ?? 0);
+        if (xpEarned > 0) awardXP(xpEarned);
       } catch (err) {
         console.error(`Lesson ${id} completion error:`, err);
         // Show completion screen anyway — don't strand the student on a network blip

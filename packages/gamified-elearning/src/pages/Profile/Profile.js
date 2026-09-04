@@ -11,20 +11,14 @@ import { journeyHeaders } from '../../utils/journey';
 import { trackEvent } from '../../utils/trackEvent';
 import { conceptsIn } from '../Builder/codeConcepts';
 import { reportFailure } from '../../utils/humanError';
+import { getXpProgress, getLevelTitle } from '../../data/unlocks';
 import './Profile.css';
 
-const XP_PER_LEVEL = 100;
-
-const LEVEL_TITLES = [
-  '',
-  'Beginner Builder',
-  'Code Explorer',
-  'Creative Coder',
-  'Project Apprentice',
-  'Project Wizard',
-  'Master Creator',
-  'Legend',
-];
+// Levels come from data/unlocks.js, and only from there. This file used to
+// keep its own: a flat hundred XP per level and a private list of titles,
+// while the unlock system counted 0, 200, 500, 900 and called level 3 "Coder".
+// At 500 XP this page said Level 6 and the Avatar Lab refused the level-4
+// outfit. A child was told two different numbers by the same product.
 
 // ── The medal case ──────────────────────────────────────────────────────────
 //
@@ -50,10 +44,6 @@ function medalsFrom(records) {
     }
   }
   return won;
-}
-
-function getLevelTitle(level) {
-  return LEVEL_TITLES[Math.min(level, LEVEL_TITLES.length - 1)] || 'Master Creator';
 }
 
 export default function Profile() {
@@ -102,12 +92,15 @@ export default function Profile() {
 
   const shownXP = useCountUp(totalXP);
   const earnedMedals = medalsFrom(trophies);
-  const level      = Math.floor(totalXP / XP_PER_LEVEL) + 1;
-  const xpInLevel  = totalXP % XP_PER_LEVEL;
-  const xpProgress = (xpInLevel / XP_PER_LEVEL) * 100;
-  const nextLevel  = level + 1;
-  const title      = getLevelTitle(level);
-  const nextTitle  = getLevelTitle(nextLevel);
+  const progress   = getXpProgress(totalXP);
+  const level      = progress.level;
+  const xpInLevel  = progress.progress;
+  const xpNeeded   = progress.needed;
+  const xpProgress = progress.pct;
+  const xpToNext   = progress.xpToNext;
+  const nextLevel  = progress.hasNext ? level + 1 : level;
+  const title      = progress.title;
+  const nextTitle  = progress.hasNext ? getLevelTitle(nextLevel) : title;
 
   useEffect(() => {
     if (!user || !token || String(user.role).toLowerCase() === 'student') return;
@@ -453,11 +446,11 @@ export default function Profile() {
             </div>
             <div className="profile-xp-meta">
               <p className="profile-xp-total">{shownXP} XP total</p>
-              <p className="profile-xp-next">{XP_PER_LEVEL - xpInLevel} XP to Level {nextLevel}</p>
+              <p className="profile-xp-next">{progress.hasNext ? `${xpToNext} XP to Level ${nextLevel}` : 'Top level reached'}</p>
             </div>
           </div>
 
-          <div className="profile-bar-wrap" role="progressbar" aria-valuenow={xpInLevel} aria-valuemin={0} aria-valuemax={XP_PER_LEVEL}>
+          <div className="profile-bar-wrap" role="progressbar" aria-valuenow={xpInLevel} aria-valuemin={0} aria-valuemax={xpNeeded}>
             <div className="profile-bar-fill" style={{ width: `${xpProgress}%` }} />
           </div>
 
@@ -475,13 +468,13 @@ export default function Profile() {
             <span className="profile-stat__num">{Number(projectCount) || 0}</span>
             <span className="profile-stat__lbl">Projects built</span>
           </div>
+          {/* "Day streak" and "Best streak" tiles stood here. A streak is a
+              record of showing up, which is the thing our own parent guide
+              says is worth nothing, and the number was never real: it read a
+              field no endpoint sent. What a child understood is the stat. */}
           <div className="profile-stat">
-            <span className="profile-stat__num">{stats?.currentStreak ?? 0}</span>
-            <span className="profile-stat__lbl">Day streak</span>
-          </div>
-          <div className="profile-stat">
-            <span className="profile-stat__num">{stats?.longestStreak ?? 0}</span>
-            <span className="profile-stat__lbl">Best streak</span>
+            <span className="profile-stat__num">{Number(trophies?.length) || 0}</span>
+            <span className="profile-stat__lbl">Projects explained</span>
           </div>
           <div className="profile-stat">
             <span className="profile-stat__num">{shownXP}</span>
@@ -937,7 +930,9 @@ export default function Profile() {
             <p className="profile-next__label">Next level</p>
             <p className="profile-next__title">{nextTitle}</p>
             <p className="profile-next__hint">
-              Earn {XP_PER_LEVEL - xpInLevel} more XP. Build a project, edit it, or save it.
+              {progress.hasNext
+                ? `Earn ${xpToNext} more XP. Explaining a line of your own code is the fastest way.`
+                : 'You have reached the top level.'}
             </p>
           </div>
         </div>
@@ -946,10 +941,17 @@ export default function Profile() {
         <div className="profile-earn">
           <h2 className="profile-earn__title">How to earn XP</h2>
           <div className="profile-earn__grid">
+            {/* These are the real amounts the server pays (xpTotals.js on
+                the backend). The list used to say +20 for building, +15 for
+                saving and +10 for improving, none of which was true, and all
+                of which would have made us the product our own parent guide
+                criticises: paying for attendance. The biggest number is for
+                the one thing that shows understanding. */}
             {[
-              { action: 'Build a project',   xp: '+20 XP' },
-              { action: 'Save a project',    xp: '+15 XP' },
-              { action: 'Improve a project', xp: '+10 XP' },
+              { action: 'Explain a line of your own code, first try', xp: '+50 XP' },
+              { action: 'Publish a project', xp: '+25 XP' },
+              { action: 'Make a project',    xp: '+25 XP' },
+              { action: 'Finish a lesson step', xp: '+5 to +20 XP' },
             ].map(({ action, xp }) => (
               <div key={action} className="profile-earn__item">
                 <span className="profile-earn__action">{action}</span>

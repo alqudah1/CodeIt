@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
 import { useCharacter } from '../../context/CharacterContext';
 import { useAuth } from '../../context/AuthContext';
@@ -157,8 +157,17 @@ const AvatarLab = () => {
             </button>
           </div>
           <h1 className="al-hero__title">Your Coding Avatar</h1>
+          {/* The avatar has a job, and this page never said so. The character
+              built here is the player in the games this child builds: the
+              catcher in the star game, the runner in the runner. Same drawing,
+              handed to every game the studio opens. Nobody else does this, and
+              it was a secret. */}
           <p className="al-hero__sub">
-            Make it yours. Pick your look, name your character, and level up through lessons to unlock new outfits and styles.
+            This is you in your own games. Change the outfit here and the player in every game you build changes with it.
+          </p>
+          <p className="al-hero__job">
+            <Link to="/builder?start=catch-stars" className="al-hero__play">Play as me in a game</Link>
+            <span> Levels come from explaining your own code, and each one unlocks something to wear.</span>
           </p>
         </div>
 

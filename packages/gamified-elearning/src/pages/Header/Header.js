@@ -7,6 +7,7 @@ import BrandLogo from "../../components/BrandLogo/BrandLogo";
 import Icon from "../../components/Icon/Icon";
 import { DEFAULT_BILLING_STATE, fetchBillingStatus, isPlusMember } from "../../utils/billing";
 import { trackEvent } from "../../utils/trackEvent";
+import { getXpProgress } from "../../data/unlocks";
 import "./Header.css";
 
 // Nine controls used to sit in this header — logo, six nav links, the primary
@@ -70,7 +71,8 @@ const MEMBER_ACCOUNT_NAV = [
   { to: "/pricing", label: "Plan", adultsOnly: true },
 ];
 
-const XP_PER_LEVEL = 100;
+// The level is data/unlocks.js's level. This file kept its own flat hundred
+// per level, which disagreed with the unlock system at every threshold.
 
 export default function Header() {
   const { user, token, logout } = useContext(AuthContext);
@@ -102,7 +104,8 @@ export default function Header() {
   const accountLinks = (user ? MEMBER_ACCOUNT_NAV : [])
     .filter(link => !link.adultsOnly || !user?.managedProfile)
     .filter(link => !(showGetPlus && link.to === "/pricing"));
-  const level = stats?.totalXP >= 0 ? Math.floor(stats.totalXP / XP_PER_LEVEL) + 1 : null;
+  const progress = stats?.totalXP >= 0 ? getXpProgress(stats.totalXP) : null;
+  const level = progress ? progress.level : null;
 
   useEffect(() => {
     setMenuOpen(false);
@@ -264,7 +267,7 @@ export default function Header() {
                           <span className="site-header__dropdown-xp-total">{stats.totalXP} XP</span>
                         </div>
                         <div className="site-header__dropdown-xp-bar">
-                          <div className="site-header__dropdown-xp-fill" style={{ width: `${((stats.totalXP % XP_PER_LEVEL) / XP_PER_LEVEL) * 100}%` }} />
+                          <div className="site-header__dropdown-xp-fill" style={{ width: `${progress ? progress.pct : 0}%` }} />
                         </div>
                       </div>
                     )}

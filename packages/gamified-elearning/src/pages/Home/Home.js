@@ -16,6 +16,7 @@ import RecentProjects from "./RecentProjects";
 import FounderNote from "./FounderNote";
 import Evidence from "./Evidence";
 import TryPython from "./TryPython";
+import AvatarInGame from "./AvatarInGame";
 import { listProjects, migrateLegacyDraft } from "../../utils/projectShelf";
 import "./Home.css";
 import "./HomeStudio.css";
@@ -237,8 +238,13 @@ export default function Home() {
                 picture of the product. This is the product: a real editor, real
                 Python, running in the visitor's own browser. A picture of a
                 thing is what you show when you cannot show the thing. */}
+            {/* The hero shows the most distinctive thing in the product: the
+                character a child builds is the player in the game that child
+                builds. It was working since 31 August and nothing on the site
+                said so. The live Python editor, which was here, is the next
+                thing down the page: still above the studio, still no AI. */}
             <div className="studio-hero__visual">
-              {!shelf.length && <TryPython />}
+              {!shelf.length && <AvatarInGame />}
               {/* Pixel used to stand here, bottom right, overlapping the code.
                   The child never sees this page; they land in the studio or a
                   lesson. This page is read by the adult deciding whether to let
@@ -247,6 +253,16 @@ export default function Home() {
                   where a nine-year-old is meant to feel invited. */}
             </div>
           </section>
+
+          {/* ── Type Python here ─────────────────────────────────────────────
+              Real CodeMirror, real Pyodide, no account and no AI. It led the
+              hero until the avatar demo took that spot; it is still the first
+              thing after the hero and still before the studio. */}
+          {!shelf.length && (
+            <section className="studio-python" aria-label="Try Python in this page">
+              <TryPython />
+            </section>
+          )}
 
           {/* ── Second, not first ────────────────────────────────────────────
               These three cards and the idea box are the AI studio, and they led

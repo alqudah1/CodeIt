@@ -4,6 +4,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
 const { publicLeaderboardRows } = require('../leaderboardIdentity');
+const { UNDERSTANDING_XP_JOIN } = require('../xpTotals');
 
 // How much content exists is a question for the database, not a constant.
 // These were hardcoded at 10 while the site shipped 16 lessons, so every
@@ -102,7 +103,8 @@ router.get('/leaderboard', authenticateToken, async (req, res) => {
           COALESCE(l.lesson_xp, 0) +
           COALESCE(s.step_xp, 0) +
           COALESCE(p.puzzle_xp, 0) +
-          COALESCE(b.project_xp, 0)
+          COALESCE(b.project_xp, 0) +
+          COALESCE(ux.understanding_xp, 0)
         ) AS xp_points
       FROM Users u
       LEFT JOIN (
@@ -142,13 +144,15 @@ router.get('/leaderboard', authenticateToken, async (req, res) => {
         FROM ai_project_xp_awards
         GROUP BY user_id
       ) b ON b.user_id = u.user_id
+      ${UNDERSTANDING_XP_JOIN}
       WHERE u.role = 'student'
         AND (
           COALESCE(q.quiz_xp, 0) +
           COALESCE(l.lesson_xp, 0) +
           COALESCE(s.step_xp, 0) +
           COALESCE(p.puzzle_xp, 0) +
-          COALESCE(b.project_xp, 0)
+          COALESCE(b.project_xp, 0) +
+          COALESCE(ux.understanding_xp, 0)
         ) > 0
       ORDER BY xp_points DESC
     `);
