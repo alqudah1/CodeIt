@@ -577,9 +577,8 @@
 
 /* ── Locked swatch ────────────────────────────────────────── */
 .al-swatch.is-locked {
-  opacity: 0.45;
+  opacity: 0.6;
   cursor: not-allowed;
-  filter: grayscale(0.7);
 }
 
 .al-swatch.is-locked:hover {
@@ -588,7 +587,7 @@
 }
 
 .al-swatch.is-locked .al-swatch__dot {
-  filter: grayscale(1);
+  filter: saturate(0.45);
 }
 
 /* ── Locked outfit card ───────────────────────────────────── */

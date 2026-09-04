@@ -36,6 +36,7 @@ import {
 import './Builder.css';
 import { changeIdeasFor } from './changeIdeas';
 import ChallengeCard from './ChallengeCard';
+import { awardChest, recordChangedBuild, hasPalette, whoAmI } from '../../utils/chests';
 import {
   injectPreviewStorage,
   isStorageMessage,
@@ -239,6 +240,10 @@ const PRESET_PALETTES = [
     vars: { '--primary': '#EC4899', '--accent': '#A855F7', '--success': '#10B981', '--bg': '#FFF0F6', '--card': '#FFFFFF', '--border': '#F9A8D4', '--text': '#38291F', '--muted': '#785B49' } },
   { name: 'Galaxy', swatches: ['#8B5CF6', '#06B6D4', '#F87824'],
     vars: { '--primary': '#8B5CF6', '--accent': '#06B6D4', '--success': '#10B981', '--bg': '#F8F2FF', '--card': '#FFFFFF', '--border': '#DDC9F7', '--text': '#3D302B', '--muted': '#725F55' } },
+  // Opened by a chest: the third project the child CHANGED. Shown greyed with
+  // what opens it until then, so it is a goal with a route to it. Never sold.
+  { name: 'Sunset', swatches: ['#FF6B35', '#F7C948', '#7B2CBF'], unlock: 'sunset', unlockHint: 'Opens when you have changed three projects',
+    vars: { '--primary': '#FF6B35', '--accent': '#7B2CBF', '--success': '#2A9D8F', '--bg': '#FFF3E0', '--card': '#FFFFFF', '--border': '#FFD1A6', '--text': '#3D1F00', '--muted': '#8A5A2B' } },
 ];
 
 const FIRST_CHANGE_THEMES = PRESET_PALETTES.filter(({ name }) => (
@@ -1112,6 +1117,9 @@ export default function Builder() {
 
   function trackPersonalizationOnce() {
     setHasPersonalized(true);
+    // A build the child changed, not one they generated. The third one earns
+    // a chest; three untouched builds is three prompts typed and earns nothing.
+    recordChangedBuild(shelfIdRef.current || previewKeyRef.current);
     setHasTestedLatest(false);
     playedReportedRef.current = false;
     setIsStarter(false);
@@ -2050,6 +2058,10 @@ export default function Builder() {
       setCode(html);
       setBuiltPrompt(text);
       setIsStarter(Boolean(data.isFallback));
+      // The first build finished is the single best moment this product has,
+      // and it passed quietly. A chest, with fixed contents, that waits in the
+      // corner until the child wants it. A canned starter is not a build.
+      if (!data.isFallback) awardChest('first-build');
       setBuiltSummary(data.isFallback ? '' : (data.summary || ''));
       // A starter must not wear the child's title. "Game where a cat jumps"
       // printed above a star-clicking game is the sentence that teaches a
@@ -2504,6 +2516,7 @@ export default function Builder() {
       )));
       if (savedProjectId === project.id) {
         setIsPublished(true);
+        awardChest('first-publish');
         setPublicId(data.public_id);
         // Same moment, same fuss: most children publish through this card,
         // not the footer button, and the celebration belongs to the moment,
@@ -2759,6 +2772,7 @@ export default function Builder() {
         popXp(earnedXp, earnedXp >= 50 ? 'Saved and published' : 'Project published');
       }
       setIsPublished(true);
+      awardChest('first-publish');
       setPublicId(data.public_id);
       setJustPublished(true);
       sessionStorage.removeItem('codeit_builder_draft');
@@ -4321,8 +4335,9 @@ export default function Builder() {
                     {PRESET_PALETTES.map(palette => (
                       <button
                         key={palette.name}
-                        className="bldr-palette-row"
-                        disabled={editing}
+                        className={`bldr-palette-row${palette.unlock && !hasPalette(localStorage, whoAmI(), palette.unlock) ? ' is-locked' : ''}`}
+                        disabled={editing || (palette.unlock && !hasPalette(localStorage, whoAmI(), palette.unlock))}
+                        title={palette.unlock && !hasPalette(localStorage, whoAmI(), palette.unlock) ? palette.unlockHint : undefined}
                         onClick={() => {
                           applyColorsInstant(palette.vars);
                           setCustomBg(palette.vars['--bg'] || customBg);
@@ -4339,7 +4354,12 @@ export default function Builder() {
                             <span key={c} className="bldr-palette-swatch" style={{ background: c }} />
                           ))}
                         </div>
-                        <span className="bldr-palette-name">{palette.name}</span>
+                        <span className="bldr-palette-name">
+                          {palette.name}
+                          {palette.unlock && !hasPalette(localStorage, whoAmI(), palette.unlock) && (
+                            <span className="bldr-palette-lock"> {palette.unlockHint}</span>
+                          )}
+                        </span>
                       </button>
                     ))}
                   </div>

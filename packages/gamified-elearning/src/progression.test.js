@@ -72,13 +72,19 @@ describe('the rewards say what we value', () => {
     expect(offenders).toEqual([]);
   });
 
-  test('the level-up is the one reward pop-up, mounted once, and it opens the Avatar Lab', () => {
+  test('the chest is the one reward pop-up, mounted once, and it never opens itself', () => {
     const app = read(path.join(SRC, 'App.js'));
-    expect((app.match(/<LevelUp \/>/g) || []).length).toBe(1);
-    const levelUp = read(path.join(SRC, 'components/LevelUp/LevelUp.js'));
-    expect(levelUp).toMatch(/navigate\('\/character'\)/);
-    // It waits for the child, rather than vanishing on a timer.
-    expect(levelUp).not.toMatch(/setTimeout/);
+    expect((app.match(/<ChestTray \/>/g) || []).length).toBe(1);
+    expect(app).not.toMatch(/<LevelUp/);
+    const tray = read(path.join(SRC, 'components/Chest/ChestTray.js'));
+    // It waits in the corner until tapped, and the button after it goes to
+    // where the reward lives.
+    expect(tray).toMatch(/A chest is waiting/);
+    expect(tray).toMatch(/navigate\('\/character'\)/);
+    // Crossing a level earns a chest wherever XP arrives.
+    const ctx = read(path.join(SRC, 'context/CharacterContext.js'));
+    expect(ctx).toMatch(/levelChestsBetween\(before, after\)/);
+    expect(ctx).toMatch(/awardChest\(chest\)/);
   });
 
   test('every place XP arrives tells the context, so a level-up can fire anywhere', () => {

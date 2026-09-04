@@ -12,6 +12,7 @@ import { getJourneyNext } from '../../pages/Journey/journeyNext';
 import { useProgress } from '../../context/ProgressContext';
 import { AuthContext } from '../../context/AuthContext';
 import { useCharacter } from '../../context/CharacterContext';
+import { awardChest } from '../../utils/chests';
 import { useSEO } from '../../hooks/useSEO';
 import { API_BASE_URL } from '../../config/api';
 import { getNextUnlock, getNextUnlockLabel } from '../../data/unlocks';
@@ -490,6 +491,9 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
       ? getJourneyNext(nodeId)
       : afterLesson;
     setCompletionData({ xpEarned, quizId: id, nextRoute, fromJourney, quizExists });
+    // Lesson 1 finished is the moment we most want repeated. A chest, fixed
+    // contents, waiting in the corner; it does not interrupt the page.
+    if (Number(id) === 1) awardChest('lesson-1');
   };
 
   // Can the current step be proceeded past?

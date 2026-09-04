@@ -6937,3 +6937,8 @@ details.bldr-device-sizes .bldr-device-sizes__options {
   color: var(--ink, #35220E);
   font-weight: 700;
 }
+
+/* A palette a chest opens. Greyed, with what opens it, so it is a goal. */
+.bldr-palette-row.is-locked { opacity: 0.55; cursor: not-allowed; }
+.bldr-palette-row.is-locked .bldr-palette-swatch { filter: grayscale(0.7); }
+.bldr-palette-lock { display: block; font-size: 12px; font-weight: 600; opacity: 0.9; }

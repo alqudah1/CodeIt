@@ -348,15 +348,19 @@ const AvatarLab = () => {
                       key={o.value}
                       type="button"
                       className={`al-swatch${character.hairColor === o.value ? ' is-active' : ''}${locked ? ' is-locked' : ''}${isNext ? ' is-next-unlock' : ''}`}
-                      style={{ '--sw': locked ? '#888' : o.swatch }}
+                      style={{ '--sw': o.swatch }}
                       onClick={() => setIfUnlocked('hairColor', o.value)}
-                      title={locked ? `Unlocks at Level ${unlockAt('hairColor', o.value)}` : o.label}
+                      title={locked ? `${o.label}: unlocks at Level ${unlockAt('hairColor', o.value)}` : o.label}
                       aria-pressed={!locked && character.hairColor === o.value}
                       aria-disabled={locked}
                     >
                       <span className="al-swatch__dot" />
+                      {/* A locked colour used to be a grey circle labelled
+                          "Lv.2". A child cannot want a grey circle. The real
+                          colour, dimmed, with its name and its level, is a
+                          goal with a route to it. */}
                       <span className="al-swatch__name">
-                        {locked ? `Lv.${unlockAt('hairColor', o.value)}` : o.label}
+                        {locked ? `${o.label} · Lv.${unlockAt('hairColor', o.value)}` : o.label}
                       </span>
                     </button>
                   );

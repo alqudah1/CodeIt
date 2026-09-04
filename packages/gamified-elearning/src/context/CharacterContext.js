@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useMemo, useState, useEffect, useRef, useCallback } from "react";
 import { ENDPOINTS } from "../config/api";
-import { getLevel, getLevelTitle, getNewlyUnlockedItems } from "../data/unlocks";
+import { awardChest, levelChestsBetween } from "../utils/chests";
 
 // ── Character defaults ────────────────────────────────────────────────────────
 const DEFAULT_CHARACTER = {
@@ -104,14 +104,12 @@ export function CharacterProvider({ children }) {
 
     const [stats, setStats] = useState(null);
   const [pendingXP, setPendingXP] = useState(null);
-  // ── The one reward pop-up that is honest ──────────────────────────────────
-  // Set when XP crosses a level threshold in data/unlocks.js, wherever that
-  // happens: a lesson step, a quiz, a puzzle, a project, or explaining a line
-  // of your own code. It says what unlocked and offers the Avatar Lab, because
-  // something genuinely changed. Nothing else in the product pops up to
-  // reward anyone: no streaks, no daily logins, no "you have not been here".
-  const [levelUp, setLevelUp] = useState(null);
-
+  // ── A level crossed earns a chest ─────────────────────────────────────────
+  // Wherever XP arrives (a lesson step, a quiz, a puzzle, a project, an
+  // explanation), any level threshold crossed earns a chest with fixed
+  // contents: the avatar item that level unlocks. The chest waits in the
+  // corner until the child opens it; it never interrupts work. Same
+  // milestone, same reward, every child. See utils/chests.js.
   const awardXP = useCallback((amount) => {
     const gained = Number(amount) || 0;
     if (gained <= 0) return;
@@ -120,26 +118,16 @@ export function CharacterProvider({ children }) {
       if (!prev) return prev;
       const before = prev.totalXP || 0;
       const after = before + gained;
-      const fromLevel = getLevel(before);
-      const toLevel = getLevel(after);
-      if (toLevel > fromLevel) {
-        setLevelUp({
-          level: toLevel,
-          title: getLevelTitle(toLevel),
-          items: getNewlyUnlockedItems(fromLevel, toLevel),
-          id: Date.now(),
-        });
-      }
+      for (const chest of levelChestsBetween(before, after)) awardChest(chest);
       return { ...prev, totalXP: after };
     });
   }, []);
 
   const clearPendingXP = useCallback(() => setPendingXP(null), []);
-  const dismissLevelUp = useCallback(() => setLevelUp(null), []);
 
   const api = useMemo(
-    () => ({ character, characterLoaded, updateCharacter, resetCharacter, stats, pendingXP, awardXP, clearPendingXP, levelUp, dismissLevelUp }),
-    [character, characterLoaded, updateCharacter, resetCharacter, stats, pendingXP, awardXP, clearPendingXP, levelUp, dismissLevelUp]
+    () => ({ character, characterLoaded, updateCharacter, resetCharacter, stats, pendingXP, awardXP, clearPendingXP }),
+    [character, characterLoaded, updateCharacter, resetCharacter, stats, pendingXP, awardXP, clearPendingXP]
   );
 
   return (

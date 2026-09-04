@@ -12,6 +12,7 @@ import { trackEvent } from '../../utils/trackEvent';
 import { conceptsIn } from '../Builder/codeConcepts';
 import { reportFailure } from '../../utils/humanError';
 import { getXpProgress, getLevelTitle } from '../../data/unlocks';
+import { openedRewards, whoAmI } from '../../utils/chests';
 import './Profile.css';
 
 // Levels come from data/unlocks.js, and only from there. This file used to
@@ -92,6 +93,8 @@ export default function Profile() {
 
   const shownXP = useCountUp(totalXP);
   const earnedMedals = medalsFrom(trophies);
+  // Badges and titles from opened chests. Fixed contents, kept in this browser.
+  const chestBadges = openedRewards(localStorage, whoAmI()).filter((r) => r.kind === 'badge' || r.kind === 'title');
   const progress   = getXpProgress(totalXP);
   const level      = progress.level;
   const xpInLevel  = progress.progress;
@@ -936,6 +939,18 @@ export default function Profile() {
             </p>
           </div>
         </div>
+
+        {/* ── Chests opened ── */}
+        {chestBadges.length > 0 && (
+          <div className="profile-chests" data-testid="profile-chests">
+            <h2 className="profile-earn__title">From your chests</h2>
+            <ul className="profile-chests__list">
+              {chestBadges.map((r) => (
+                <li key={`${r.kind}-${r.id || r.value}`} className="profile-chest-badge">{r.label}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* ── How to earn XP ── */}
         <div className="profile-earn">

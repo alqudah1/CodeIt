@@ -1021,3 +1021,13 @@
     to   { transform: none; opacity: 1; }
   }
 }
+
+/* Badges and titles from opened chests. */
+.profile-chests { margin: 0 0 1.25rem; }
+.profile-chests__list { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.profile-chest-badge {
+  display: inline-flex; align-items: center; min-height: 36px; padding: 6px 12px;
+  border: 2px solid var(--ink, #35220E); border-radius: 999px;
+  background: var(--arc-sun, #FED340); color: var(--ink, #35220E);
+  font-family: var(--font-display, inherit); font-weight: 800; font-size: 14px;
+}
