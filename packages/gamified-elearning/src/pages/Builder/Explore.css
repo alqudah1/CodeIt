@@ -589,3 +589,103 @@
 }
 .exp-hero__cta--surprise:hover { transform: translateY(-2px) rotate(-1.5deg); }
 .exp-hero__cta--surprise:active { transform: translateY(2px); box-shadow: none; }
+
+/* ── Message 68: the cards, read on a phone ─────────────────────────────────
+   The title once, below the art. The banner holds the type word, the art
+   and the heart, and nothing that can overflow it. */
+.exp-card__thumb {
+  height: 132px;
+  overflow: hidden;
+  justify-content: center;
+  padding: 0;
+}
+.exp-card__thumb-title { display: none; }
+
+/* One word, one line, top left. It never meets the heart. */
+.exp-card__type-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  max-width: calc(100% - 64px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 10px;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  backdrop-filter: none;
+}
+
+/* The heart in the card's own language: a paper keycap, not a dark disc. */
+.exp-card__thumb-wrap .exp-card__heart {
+  top: 8px;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: 0 2px 0 var(--ink);
+  color: var(--ink);
+  font-size: 1.05rem;
+  backdrop-filter: none;
+}
+.exp-card__heart:hover { transform: translateY(-1px); color: #d6453d; }
+.exp-card__heart--liked { color: #d6453d; background: #ffe3e0; }
+
+/* The title, once. Whole words, two lines at most, no slicing. */
+.exp-card__title {
+  font-size: 1rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+/* Play leads; Remix is the quiet second key. */
+.exp-card__actions .exp-btn--play {
+  flex: 1.4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.exp-card__actions .exp-btn--remix {
+  flex: 1;
+  box-shadow: 0 1px 0 var(--ink);
+  font-weight: 600;
+  opacity: 0.92;
+}
+
+/* The heading fits the screen it is on. */
+.exp-hero { padding: 12px 16px 10px; }
+.exp-hero__inner { width: 100%; max-width: 760px; }
+.exp-hero__title {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+/* The filter pills fit one row at every width. The row used to scroll
+   sideways and cut "Most Remixed" mid-word at the screen edge with no sign
+   there was more; the labels are one word each now, and the pills share the
+   width. */
+.exp-tabs {
+  flex-wrap: nowrap;
+  justify-content: center;
+  overflow: visible;
+  padding: 10px 12px 4px;
+  gap: 6px;
+}
+.exp-tab { flex: 0 1 auto; min-width: 0; padding: 8px 14px; white-space: nowrap; font-size: 0.875rem; }
+@media (max-width: 420px) {
+  .exp-tab { flex: 1 1 0; padding: 8px 6px; font-size: 0.8125rem; }
+}
+
+/* Stats: the play icon, not an emoji, sits on the text's baseline. */
+.exp-stat { display: inline-flex; align-items: center; gap: 4px; }
+.exp-stat__icon { display: inline-flex; align-items: center; }
+
+@media (max-width: 480px) {
+  .exp-content { padding: 14px 12px 28px; }
+}

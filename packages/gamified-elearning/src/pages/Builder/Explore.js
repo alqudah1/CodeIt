@@ -13,6 +13,7 @@ import { reportFailure } from '../../utils/humanError';
 import Icon from '../../components/Icon/Icon';
 import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
+import { displayTitle } from '../../utils/displayTitle';
 import './Explore.css';
 
 // ── helpers ──────────────────────────────────────────────────────
@@ -27,12 +28,24 @@ const TYPE_LABEL = {
   blog: 'Blog', landing: 'Landing', tool: 'Tool',
 };
 
-function typeCategory(t = '') {
-  const tl = t.toLowerCase();
-  if (['quiz'].includes(tl)) return 'quiz';
-  if (['website','portfolio','restaurant','shop','sports','blog','landing'].includes(tl)) return 'web';
-  if (['tool'].includes(tl)) return 'tool';
+// Message 68: every card showed a game controller. The model names types
+// freely ("interactive-website", "clicker-game"), and an exact-match list
+// sent everything it did not recognise to "game". Classify by the words in
+// the type instead, so a website is a website whatever it is called.
+export function typeCategory(t = '') {
+  const tl = String(t).toLowerCase();
+  if (/quiz|trivia/.test(tl)) return 'quiz';
+  if (/web|site|portfolio|restaurant|shop|store|sports|blog|landing|page|menu/.test(tl)) return 'web';
+  if (/tool|calculator|timer|flashcard|drawing|converter|counter|tracker|planner/.test(tl)) return 'tool';
   return 'game';
+}
+
+// One word. "INTERACTIVE-WEBSITE" wrapped onto two lines inside a pill
+// sized for one and ran under the heart.
+export function typeWord(t = '') {
+  const tl = String(t).toLowerCase().trim();
+  if (TYPE_LABEL[tl]) return TYPE_LABEL[tl];
+  return { quiz: 'Quiz', web: 'Website', tool: 'Tool', game: 'Game' }[typeCategory(tl)];
 }
 
 // One hand-drawn sticker per kind of project, instead of the same muddy
@@ -75,6 +88,7 @@ function StatBadge({ icon, count }) {
 function ProjectCard({ project, onLike, onRemix, remixingId }) {
   const navigate = useNavigate();
   const cat = typeCategory(project.projectType);
+  const name = displayTitle(project.title);
 
   return (
     <article className={`exp-card exp-card--${cat}`}>
@@ -91,43 +105,43 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
           role="button"
           tabIndex={0}
           onKeyDown={e => e.key === 'Enter' && navigate(`/project/${project.publicId}`)}
-          aria-label={`Play ${project.title}`}
+          aria-label={`Play ${name}`}
         >
-          <span className="exp-card__type-badge">
-            {TYPE_LABEL[project.projectType] || project.projectType || 'Project'}
-          </span>
+          <span className="exp-card__type-badge">{typeWord(project.projectType)}</span>
           <span className="exp-card__thumb-burst" aria-hidden="true" />
           {(() => {
             // A shop gets the storefront even though it lives in the web
-            // category — it is the drawing a child would pick for it.
+            // category: it is the drawing a child would pick for it.
             const raw = String(project.projectType || '').toLowerCase();
-            const Art = ['shop', 'restaurant'].includes(raw)
+            const Art = /shop|store|restaurant/.test(raw)
               ? ShopSticker
               : (CATEGORY_ART[cat] || ControllerSticker);
-            return <Art size={62} tilt={titleTilt(project.title)} />;
+            return <Art size={62} tilt={titleTilt(name)} />;
           })()}
-          <span className="exp-card__thumb-title">{project.title}</span>
         </div>
         {!project.isShowcase && (
           <button
             className={`exp-card__heart${project.liked ? ' exp-card__heart--liked' : ''}`}
             onClick={() => onLike(project)}
             aria-label={project.liked ? 'Unlike' : 'Like'}
+            aria-pressed={Boolean(project.liked)}
           >
             {project.liked ? '♥' : '♡'}
           </button>
         )}
       </div>
 
-      {/* Meta */}
+      {/* Meta. The title once, below the art (message 68): it used to be
+          printed on the banner as well, clipped through the letters, and
+          again here at a different length. */}
       <div className="exp-card__meta">
-        <p className="exp-card__title">{project.title}</p>
+        <p className="exp-card__title" title={project.title}>{name}</p>
         <div className="exp-card__creator">
           <CreatorBubble name={project.creatorName} creator={project.creator} />
           <span className="exp-card__creator-name">{project.creatorName}</span>
         </div>
         {/* A row of zeros reads as an abandoned site. A brand-new project is
-            not abandoned, it is new — so say that, and show numbers only once
+            not abandoned, it is new, so say that, and show numbers only once
             there are numbers. */}
         {(project.plays || 0) + (project.likes || 0) + (project.remixes || 0) === 0 ? (
           <div className="exp-card__stats">
@@ -137,18 +151,20 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
           <div className="exp-card__stats">
             {(project.plays || 0) > 0 && <StatBadge icon={<Icon name="play" size={12} />} count={project.plays} />}
             {!project.isShowcase && (project.likes || 0) > 0 && <StatBadge icon="♥" count={project.likes} />}
-            {(project.remixes || 0) > 0 && <StatBadge icon="⤴" count={project.remixes} />}
+            {(project.remixes || 0) > 0 && <StatBadge icon={<Icon name="wand" size={12} />} count={project.remixes} />}
           </div>
         )}
       </div>
 
       {/* Actions */}
       <div className="exp-card__actions">
+        {/* Play leads: it is what most children want. Remix is the one that
+            matters to us, so it stays, as the quiet second key. */}
         <Link
           to={`/project/${project.publicId}`}
           className="exp-btn exp-btn--play"
         >
-          Play
+          <Icon name="play" size={13} strokeWidth={3} /> Play
         </Link>
         <button
           className="exp-btn exp-btn--remix"
@@ -290,8 +306,10 @@ export default function Explore() {
   const TABS = [
     { id: 'trending',    label: 'Trending' },
     { id: 'newest',      label: 'New' },
-    { id: 'mostPlayed',  label: 'Most Played' },
-    { id: 'mostRemixed', label: 'Most Remixed' },
+    // One word each, so all four fit one row on a 390px phone with nothing
+    // cut at the edge (message 68).
+    { id: 'mostPlayed',  label: 'Played' },
+    { id: 'mostRemixed', label: 'Remixed' },
   ];
 
   const EMPTY_MSGS = {
@@ -311,7 +329,10 @@ export default function Explore() {
           front of the only thing on the page anyone came for. */}
       <div className="exp-hero">
         <div className="exp-hero__inner">
-          <h1 className="exp-hero__title">Explore projects other learners made</h1>
+          {/* Message 68: this said "Explore projects other learners made"
+              on a page where every card was by CodeIt. A promise the content
+              contradicts. The heading now says what the page is. */}
+          <h1 className="exp-hero__title">Explore projects to play and remix</h1>
           <div className="exp-hero__keys">
             {/* Interactive, not just a shelf: this opens one of the projects
                 on screen at random. Kids press it repeatedly, which is the

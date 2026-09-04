@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { API_BASE_URL } from '../../config/api';
 import { trackEvent } from '../../utils/trackEvent';
 import Icon from '../../components/Icon/Icon';
+import { displayTitle } from '../../utils/displayTitle';
 import './RecentProjects.css';
 
 // ── The most convincing thing on the site, on the page people land on ────────
@@ -68,7 +69,7 @@ export default function RecentProjects() {
                   <Icon name={TYPE_ICON[project.projectType || project.project_type] || 'game'} size={30} strokeWidth={1.5} />
                 </span>
                 {/* The child's own title, exactly as they typed it. */}
-                <strong className="recent__title">{project.title}</strong>
+                <strong className="recent__title" title={project.title}>{displayTitle(project.title)}</strong>
                 <span className="recent__by">Made by {initial}</span>
               </Link>
             </li>

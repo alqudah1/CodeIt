@@ -884,7 +884,7 @@ const SECTIONS_BY_ROUTE = {
       ],
     },
     {
-      heading: 'Projects published by other learners',
+      heading: 'Published projects, playable and remixable',
       paragraphs: [
         'Published CodeIt projects are playable in the browser. A learner can open one for inspiration and remix a copy into their own version without changing the original.',
         'Only eligible independent accounts can publish. Managed profiles for ages 5–12 cannot publish projects publicly.',
@@ -1388,7 +1388,7 @@ function staticContent(page) {
     ['/python-games-for-kids', 'Python games for kids'],
     ['/journey', 'The learning journey'],
     ['/first-game-challenge', 'First game challenge'],
-    ['/explore', 'Projects other learners built'],
+    ['/explore', 'Projects to play and remix'],
     ['/pricing', 'Free access and family pilot'],
     ['/blog', 'Coding guides'],
     ['/guide', 'Straight answers about learning to code'],

@@ -58,6 +58,7 @@ import {
   ShopSticker,
 } from '../../components/ArcadeArt/ArcadeArt';
 import { changeInvitation } from './whatCanIChange';
+import { displayTitle } from '../../utils/displayTitle';
 import { lookInside } from './lookInside';
 import { closestStarter } from './closestStarter';
 
@@ -987,6 +988,14 @@ export default function Builder() {
   const [savedProjectId, setSavedProjectId]     = useState(null);
   // One paper burst on a kid's first-ever save (juice pass, once per browser).
   const [paperBurst, setPaperBurst] = useState(false);
+  // Name on save (message 68). The first save asks the child what their
+  // project is called: a short field, prefilled with a two or three word
+  // suggestion, that they can change. Naming your own thing is worth doing
+  // for ownership alone, and it is what fixes every Explore card at once.
+  const [naming, setNaming] = useState(null); // { value } while the card is open
+  const namingRef = useRef(null);
+  // A child who already named it from the Change tab is not asked twice.
+  const namedByChildRef = useRef(false);
   const [activeVersionId, setActiveVersionId]   = useState(null);
 
   const promptRef  = useRef(null);
@@ -1260,6 +1269,7 @@ export default function Builder() {
     if (!code || !nextTitle) return;
     const nextCode = setProjectHeading(code, nextTitle);
     setAiTitle(nextTitle);
+    namedByChildRef.current = true;
     if (nextCode === code) return;
     commitInstantChange(nextCode, `Renamed: ${nextTitle.slice(0, 40)}`, `Your project is now called "${nextTitle}".`);
     popXp(0, 'Named it');
@@ -2002,6 +2012,7 @@ export default function Builder() {
     setHasTestedLatest(false);
     playedReportedRef.current = false;
     setIsStarter(false);
+    namedByChildRef.current = false;
     // Reopened for a learner who wants the guidance, not for one who has said
     // they want to explore on their own. A 23-year-old told us there is too
     // much text and talking, and this was a mascot reappearing after every
@@ -2304,19 +2315,27 @@ export default function Builder() {
   };
 
   // ── Save project ───────────────────────────────────────────────────────────
-  const handleSaveProject = async () => {
+  const handleSaveProject = async ({ name, skipNaming = false } = {}) => {
     if (!code) return;
     if (!isPersonalized || !hasTestedLatest) return;
     if (!user || !token) {
       continueAfterAuth('save');
       return;
     }
+    // The first save of a project asks for its name. Later saves keep it.
+    if (!savedProjectId && !name && !skipNaming && !namedByChildRef.current) {
+      setNaming({ value: displayTitle(projectName || 'My project') });
+      setTimeout(() => namingRef.current?.select?.(), 0);
+      return;
+    }
     if (saveInFlightRef.current) return;
     saveInFlightRef.current = true;
     setSaveStatus('saving');
     setSaveError('');
-    // Prefer the name the student chose over one derived from their prompt.
-    const title = projectName || 'My Project';
+    // The name the child chose, then the one they were shown, then a name
+    // derived from their prompt. Never a sentence.
+    const title = (name && name.trim()) || displayTitle(projectName || 'My project');
+    if (name && name.trim()) setAiTitle(name.trim());
     try {
       const isUpdating = Boolean(savedProjectId);
       const projectUrl = isUpdating
@@ -2814,7 +2833,7 @@ export default function Builder() {
     const action = resumeAction;
     setResumeAction(null);
     if (action === 'publish') handlePublish();
-    else handleSaveProject();
+    else handleSaveProject({ skipNaming: true });
   }, [resumeAction, user, token, code]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCopyPublicLink = async () => {
@@ -5678,6 +5697,39 @@ export default function Builder() {
             </div>
           )}
         </div>
+
+        {/* ── Name it (message 68) ─────────────────────────────────────── */}
+        {naming && (
+          <div className="bldr-name" role="dialog" aria-modal="true" aria-labelledby="bldr-name-title">
+            <form
+              className="bldr-name__card"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const chosen = (naming.value || '').trim().slice(0, 60);
+                setNaming(null);
+                handleSaveProject({ name: chosen || displayTitle(projectName || 'My project') });
+              }}
+            >
+              <p className="bldr-name__kicker">Almost saved</p>
+              <h2 id="bldr-name-title">What is it called?</h2>
+              <label className="bldr-name__label" htmlFor="bldr-name-input">Give it a name. Short is good.</label>
+              <input
+                id="bldr-name-input"
+                ref={namingRef}
+                className="bldr-name__input"
+                type="text"
+                maxLength={60}
+                value={naming.value}
+                onChange={(e) => setNaming({ value: e.target.value })}
+                autoComplete="off"
+              />
+              <div className="bldr-name__actions">
+                <button type="submit" className="bldr-name__save">Save it</button>
+                <button type="button" className="bldr-name__cancel" onClick={() => setNaming(null)}>Not yet</button>
+              </div>
+            </form>
+          </div>
+        )}
 
         {/* ── Wow moment overlay ────────────────────────────────── */}
         {showWow && (

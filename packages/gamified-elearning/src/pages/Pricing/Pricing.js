@@ -23,7 +23,7 @@ const FREE_FEATURES = [
   'Beginner Python lessons and coding games',
   'The browser-based Python playground',
   'Build, edit, save, and publish projects',
-  'Explore projects made by other learners',
+  'Explore, play and remix published projects',
 ];
 
 const FOUNDING_FEATURES = [

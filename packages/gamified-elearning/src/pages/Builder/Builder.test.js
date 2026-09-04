@@ -422,8 +422,20 @@ describe('studio opening', () => {
     expect(mockAwardXP).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: /Save my project/i }));
 
+    // Message 68: the first save asks for a name. The field is prefilled
+    // with a short suggestion (not a sentence), and the child can change it.
+    const nameField = await screen.findByLabelText(/Give it a name/i);
+    expect(nameField.value.split(' ').length).toBeLessThanOrEqual(4);
+    expect(nameField.value.length).toBeLessThanOrEqual(28);
+    fireEvent.change(nameField, { target: { value: 'Sunny Bakery' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save it' }));
+
     openStudioPage('Save');
     await screen.findByRole('heading', { name: 'Now your project is ready to publish.' });
+    const save = global.fetch.mock.calls.find(
+      ([url, options]) => String(url).endsWith('/api/builder/projects') && options?.method === 'POST'
+    );
+    expect(JSON.parse(save[1].body).title).toBe('Sunny Bakery');
     expect(mockAwardXP).toHaveBeenCalledWith(25);
     fireEvent.click(screen.getByRole('button', { name: 'Publish and get a link' }));
 
@@ -490,6 +502,8 @@ describe('studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: /Build a Quiz/i }));
     await finishProjectQualityCheck();
     fireEvent.click(screen.getByRole('button', { name: /Save my project/i }));
+    // The suggested name is fine; Save it keeps it.
+    fireEvent.click(await screen.findByRole('button', { name: 'Save it' }));
 
     openStudioPage('Save');
     await screen.findByRole('heading', { name: 'Great work. Show your grown-up or teacher.' });
