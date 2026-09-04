@@ -1375,3 +1375,48 @@
   .studio-inside { padding: 1.25rem; border-radius: 16px; }
   .studio-inside__code { font-size: 0.85rem; }
 }
+
+/* ── The claim, stated ───────────────────────────────────────────────────────
+   The one sentence that answers the objection a sceptical parent arrives with.
+   Told to the reader rather than acted on, so it sits on the inset surface. */
+.studio-hero__nolie {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  background: var(--paper, #FFFDF7);
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 14px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink, #35220E);
+  max-width: 46ch;
+}
+
+.studio-hero__nolie strong {
+  font-family: var(--font-display, inherit);
+}
+
+/* ── The studio, second ──────────────────────────────────────────────────────
+   Same furniture the section it replaced at the top of the page had; only its
+   position on the page changed. */
+.studio-make {
+  display: grid;
+  gap: 18px;
+  padding: 44px 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+@media (min-width: 900px) {
+  .studio-make {
+    padding: 56px 32px;
+  }
+}
+
+/* On a phone the whole hero above the editor has to fit in about a third of
+   the screen, or the thing a parent came to check starts below the fold. */
+@media (max-width: 620px) {
+  .studio-hero__nolie {
+    font-size: 15px;
+    line-height: 1.45;
+  }
+}

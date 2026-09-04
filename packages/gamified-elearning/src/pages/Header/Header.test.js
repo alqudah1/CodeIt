@@ -62,7 +62,7 @@ describe('header navigation', () => {
     expect(screen.queryByRole('link', { name: 'Plan' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Pricing' })).not.toBeInTheDocument();
     // The rest of the learning nav is untouched.
-    expect(screen.getByRole('link', { name: 'Learn' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Lessons' })).toBeInTheDocument();
   });
 });
 

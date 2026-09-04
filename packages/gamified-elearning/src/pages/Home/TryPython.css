@@ -1,0 +1,101 @@
+/* The live editor on the home page. Paper Arcade furniture, same as the rest of
+   the page: ink border, hard shadow, no gradients. */
+.tryp {
+  background: var(--paper, #FFFDF7);
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 18px;
+  box-shadow: var(--pop-card, 6px 6px 0 var(--ink, #35220E));
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.tryp__head h2 {
+  font-family: var(--font-display, inherit);
+  font-size: clamp(20px, 2.4vw, 26px);
+  line-height: 1.2;
+  margin: 0 0 6px;
+  color: var(--ink, #35220E);
+}
+
+.tryp__head p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink, #35220E);
+}
+
+.tryp__panel {
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* The resting state: the code is really on the screen, readable, before
+   anything is downloaded. */
+.tryp__still-button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--ground, #FFF4E5);
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 14px;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: var(--ink, #35220E);
+}
+
+.tryp__still-label {
+  display: block;
+  padding: 8px 14px;
+  border-bottom: 2px solid var(--ink, #35220E);
+  font-family: var(--font-display, inherit);
+  font-size: 15px;
+}
+
+.tryp__still {
+  margin: 0;
+  padding: 14px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  color: var(--ink, #35220E);
+}
+
+.tryp__still-run {
+  display: block;
+  margin: 0;
+  padding: 12px 14px;
+  min-height: 44px;
+  border-top: 2px solid var(--ink, #35220E);
+  background: var(--arc-sun, #FED340);
+  font-family: var(--font-display, inherit);
+  font-size: 16px;
+}
+
+.tryp__more {
+  margin: 0;
+  font-size: 15px;
+}
+
+.tryp__more a {
+  color: var(--ink, #35220E);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Pixel is positioned against the bottom of the hero's visual column, which was
+   sized for the tall mock panel that used to fill it. The live editor is
+   shorter, so without this the mascot and its speech bubble sit on top of the
+   Run key and the playground link. Room is made for it instead of moving it:
+   a child looking for the orange character should still find it here. */
+.studio-hero__visual:has(.tryp) {
+  padding-bottom: 10rem;
+}
+
+@media (max-width: 900px) {
+  .studio-hero__visual:has(.tryp) {
+    padding-bottom: 8rem;
+  }
+}

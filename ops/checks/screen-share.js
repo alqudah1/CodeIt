@@ -43,7 +43,11 @@ const SIZES = [
 ];
 
 const SCREENS = [
-  { name: 'home (new)',       url: '/',         want: '.pick__row',     came: 'something to start' },
+  // Was '.pick__row', the three AI-studio starters, back when they led the
+  // page. The home page now leads with the part that has no AI in it: the two
+  // doors into lesson 1 and the playground, and a live Python editor beside
+  // them. That is what a new visitor came for, so that is what is measured.
+  { name: 'home (new)',       url: '/',         want: '.studio-hero__actions, .tryp', came: 'Python they can run', union: true },
   // Both, unioned: a returning child's shelf and the three starters under it
   // are one thing — places to go and make or play something. Counting the
   // starters as competition for the shelf would call the page's second-best
@@ -172,9 +176,11 @@ async function measure(page, wantSelector, union) {
 // failure and exits 0 is not a check, and this one did exactly that. Anything
 // not on this list turns the run red. If an allowance stops being needed the
 // run says so, so the list cannot quietly rot.
-const ALLOWED = [
-  { size: 'laptop', screen: 'home (new)', because: 'the age line above the headline; his call, not ours' },
-];
+// Empty, and it should stay that way. The one entry that used to be here
+// covered the home page on a laptop, where the age line above the headline
+// pushed the point of the page too far down. The page now opens on a live
+// Python editor and clears the bar on its own.
+const ALLOWED = [];
 
 (async () => {
   const browser = await launch();

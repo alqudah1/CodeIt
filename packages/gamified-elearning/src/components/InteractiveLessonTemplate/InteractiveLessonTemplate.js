@@ -687,9 +687,11 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
       <div className="sl-fixed-header">
         <Header />
         <div className="sl-lesson-strip">
-          <button className="sl-strip__back" onClick={() => navigate('/lessons')} aria-label="Back to lessons">
-            &#8592; Lessons
-          </button>
+          {/* A "← Lessons" key used to sit here, forty pixels below a header
+              link that said Lessons and went to the same place. Two controls,
+              one destination, which is the rule this codebase already keeps
+              everywhere else; it survived only because Lessons was not always
+              in the bar. It is now, on every page, signed in or out. */}
           <div className="sl-strip__center">
             <span className="sl-strip__title">Lesson {id} &middot; {title}</span>
             <div

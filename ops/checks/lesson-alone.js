@@ -133,11 +133,18 @@ async function tapThroughLessonOne() {
   const run = page.locator('.sl-editor-wrap:not(.sl-editor-wrap--hidden) .cr-btn--run').first();
   let pyReady = false;
   try {
+    // Two ways this settles, and only one of them means Python is here. The
+    // button now offers "Run" whether or not the runtime arrived, because a
+    // Run pressed before Python has downloaded starts the download instead of
+    // being silently ignored — so a readable Run key is no longer proof. The
+    // banner is: it appears only when the CDN could not be reached, which in
+    // this container is the normal case and is not a bug in the page.
     await page.waitForFunction(() => {
       const btn = document.querySelector('.sl-editor-wrap:not(.sl-editor-wrap--hidden) .cr-btn--run');
-      return btn && /Run/.test(btn.textContent) && !btn.disabled;
+      const failed = document.querySelector('.cr-starting--failed');
+      return failed || (btn && /Run/.test(btn.textContent) && !btn.disabled && window.pyodide);
     }, { timeout: 25000 });
-    pyReady = true;
+    pyReady = Boolean(await page.evaluate(() => Boolean(window.pyodide)));
   } catch { pyReady = false; }
 
   if (!pyReady) {
@@ -151,7 +158,7 @@ async function tapThroughLessonOne() {
       await runBtn.tap();
       await page.waitForFunction(() => {
         const btn = document.querySelector('.sl-editor-wrap:not(.sl-editor-wrap--hidden) .cr-btn--run');
-        return btn && !/Running/.test(btn.textContent);
+        return btn && !/Running|Starting/.test(btn.textContent);
       }, { timeout: 30000 }).catch(() => {});
       await page.waitForTimeout(900);
       const submit = page.locator('.sl-submit-btn').first();

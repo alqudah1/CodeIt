@@ -21,9 +21,15 @@
  */
 
 const PAGE_META = {
+  // Search Console, 28 days to 3 September 2026: "python for kids free" sits at
+  // position 13.4, the best non-brand rank anywhere on this site, and "python
+  // playground" and "python for kids online" are the next two. Google had
+  // already decided we are a Python learning site while this tag argued we were
+  // a website builder. The page now leads with the lessons and the playground,
+  // and so does this.
   '/': {
-    title: 'Coding for Kids: Build Websites & Learn the Code | CodeIt',
-    description: 'CodeIt is a browser-based coding platform for ages 5–18. Describe a website, game or quiz, play what comes back, change it by moving things and picking colours, then see what it is made of.',
+    title: 'Python for Kids, Free: Lessons and a Browser Playground | CodeIt',
+    description: 'Free Python for ages 5 to 18. Open lesson 1 or the browser playground without an account: your child types the code and Python answers. No AI in the lessons or the playground.',
   },
   '/MainPage': {
     title: 'Your progress | CodeIt. Python Learning Progress',

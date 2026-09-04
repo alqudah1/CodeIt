@@ -20,10 +20,23 @@ import "./Header.css";
 // learns from that that the words are decoration.
 //
 // Playground went second, to the footer and the pages that already link it in
-// a sentence. It is a tool you go to on purpose, not a place to start.
+// a sentence, on the reasoning that it is a tool you go to on purpose.
+//
+// That was wrong, and production said so. The playground and lesson 1 are the
+// two strongest things this site owns: both open with no account, both run
+// real Python, and neither has any AI in it. They are the exact answer to the
+// one objection a sceptical parent arrives with — "the computer will do it for
+// them" — and a parent could reach neither from the top of any page. Google
+// agrees about what we are: "python for kids free" is our best non-brand rank
+// on the whole site at position 13, while the homepage argued we were an AI
+// website builder.
+//
+// So Playground is back in the bar, and "Learn" became "Lessons". A parent
+// scanning a nav knows what a lesson is; "Learn" could mean anything.
 const PUBLIC_NAV = [
   { to: "/explore", label: "Explore" },
-  { to: "/lessons", label: "Learn" },
+  { to: "/lessons", label: "Lessons" },
+  { to: "/playground", label: "Playground" },
   { to: "/pricing", label: "Pricing" },
   { to: "/coding-for-kids", label: "For parents" },
 ];
@@ -44,7 +57,7 @@ const PUBLIC_NAV = [
 // other kids' games, you LEARN lessons, and the big key MAKEs your own.
 const MEMBER_NAV = [
   { to: "/explore", label: "Play" },
-  { to: "/lessons", label: "Learn" },
+  { to: "/lessons", label: "Lessons" },
 ];
 
 // Reached from the account menu rather than the top bar. Nothing here became

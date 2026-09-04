@@ -145,3 +145,42 @@
   background: rgba(255, 159, 28, 0.4);
   border-radius: 3px;
 }
+
+/* ── Starting Python ─────────────────────────────────────────────────────────
+   Ten megabytes arrive before the first line of a child's code can run. The
+   wait is unavoidable; being unable to tell whether the button heard you is
+   not. */
+.cr-spinner {
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: -2px;
+  animation: cr-spin 0.7s linear infinite;
+}
+
+@keyframes cr-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cr-spinner { animation-duration: 2.4s; }
+}
+
+.cr-starting {
+  margin: 0;
+  padding: 10px 14px;
+  font-family: var(--font-body, inherit);
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink, #35220E);
+  background: var(--arc-sun, #FED340);
+  border-bottom: 2px solid var(--ink, #35220E);
+}
+
+.cr-starting--failed {
+  background: var(--paper, #FFFDF7);
+}

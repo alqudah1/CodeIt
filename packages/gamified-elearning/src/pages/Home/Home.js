@@ -17,44 +17,18 @@ import YourShelf from "./YourShelf";
 import RecentProjects from "./RecentProjects";
 import FounderNote from "./FounderNote";
 import Evidence from "./Evidence";
+import TryPython from "./TryPython";
 import { listProjects, migrateLegacyDraft } from "../../utils/projectShelf";
 import "./Home.css";
 import "./HomeStudio.css";
 import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
 import { useCharacterDisplay } from '../../context/CharacterContext';
 
-const PROJECT_IDEAS = [
-  {
-    id: "space-quiz",
-    label: "Space quiz",
-    eyebrow: "Space challenge",
-    title: "Mission Control Quiz",
-    accent: "#6c5ce7",
-    detail: "Question 2 of 5 · Which planet has the most moons?",
-    concept: "Variables keep track of the score",
-    code: "let score = 2;",
-  },
-  {
-    id: "portfolio",
-    label: "My first site",
-    eyebrow: "Creative portfolio",
-    title: "Maya Makes Things",
-    accent: "#ff7a00",
-    detail: "Art, experiments & tiny inventions",
-    concept: "HTML gives every idea a place",
-    code: "<section class=\"gallery\">",
-  },
-  {
-    id: "reaction-game",
-    label: "Reaction game",
-    eyebrow: "Quick reaction game",
-    title: "Lightning Tap",
-    accent: "#00a896",
-    detail: "Best time: 0.42 seconds",
-    concept: "Events make the game respond",
-    code: "button.onclick = playAgain;",
-  },
-];
+// A three-panel mock of a project called "Mission Control Quiz" used to cycle
+// here, beside a picture of a laptop. It was a drawing of the product, and the
+// hero column it filled now holds the product itself: a real editor running
+// real Python in the visitor's own browser. You draw a picture of the thing
+// when you cannot show the thing.
 
 const STARTING_POINTS = [
   {
@@ -87,70 +61,6 @@ const POPULAR_LESSONS = [
   [6, "Repeating ideas with loops"],
 ];
 const HOME_VIEW_SESSION_KEY = "codeit_homepage_view_recorded";
-
-function StudioPreview() {
-  // These three used to be buttons. Beside them, four hundred pixels away, sat
-  // three other buttons with emoji and short names that start a real project —
-  // and a child arriving on this page saw six similar-looking things to tap,
-  // three of which only changed a picture. That is the "where do I go, what do
-  // I do" complaint in one screenshot.
-  //
-  // The panel is a picture of the product. It now shows itself, cycling through
-  // the three examples on its own, and nothing in it invites a tap. Anyone who
-  // prefers no motion gets the first example and no cycle.
-  const [index, setIndex] = useState(0);
-  const active = PROJECT_IDEAS[index % PROJECT_IDEAS.length];
-
-  useEffect(() => {
-    const stillPlease = window.matchMedia
-      && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (stillPlease) return undefined;
-    const timer = setInterval(() => setIndex((n) => n + 1), 3800);
-    return () => clearInterval(timer);
-  }, []);
-
-  return (
-    <section className="studio-preview" aria-label="An example of a project made with CodeIt">
-      <div className="studio-preview__toolbar">
-        <span className="studio-preview__brand-mark"><BrandLogo className="studio-preview__logo" alt="" /></span>
-        <span>My CodeIt project</span>
-        <span className="studio-preview__status">Preview + code</span>
-      </div>
-
-      <div className="studio-preview__idea-list" aria-hidden="true">
-        {PROJECT_IDEAS.map((idea) => (
-          <span key={idea.id} className={idea.id === active.id ? "is-active" : ""}>
-            {idea.label}
-          </span>
-        ))}
-      </div>
-
-      <div className="studio-preview__body">
-        <div
-          className="studio-preview__canvas"
-          style={{ "--project-accent": active.accent }}
-          aria-live="polite"
-        >
-          <span className="studio-preview__made-with">Your project</span>
-          <div className="studio-preview__project-card" key={active.id}>
-            <span className="studio-preview__project-kicker">{active.eyebrow}</span>
-            <p className="studio-preview__project-title">{active.title}</p>
-            <p>{active.detail}</p>
-            <div className="studio-preview__project-shapes" aria-hidden="true"><i /><i /><i /></div>
-          </div>
-        </div>
-
-        <div className="studio-preview__learn" aria-live="polite">
-          <div>
-            <span>Behind your project</span>
-            <strong>{active.concept}</strong>
-          </div>
-          <code>{active.code}</code>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 export default function Home() {
   const { user, token } = useAuth();
@@ -261,89 +171,41 @@ export default function Home() {
                   Welcome back. Your work is right here.
                 </h1>
               ) : (
+                /* "Make a real game. Then see the code inside it." led this
+                   page for months, and the first section under it was the AI
+                   studio: describe an idea and we make it. That is precisely
+                   the sentence a parent worried the computer does the work for
+                   their child is scanning for a reason to leave.
+                   The two strongest things this site owns answer that worry
+                   directly: lesson 1 and the playground both open with no
+                   account and neither has any AI in it. They lead now. */
                 <h1 id="studio-title">
-                  Make a real game.
-                  <span>Then see the code inside it.</span>
+                  Your child types the Python.
+                  <span>The computer does not do it for them.</span>
                 </h1>
               )}
-              {/* ── Pick one. No typing. ──────────────────────────────────
-                  This used to be an empty text box, and an empty text box is
-                  where a nine-year-old stops. Being asked to describe what you
-                  want is a writing task standing in front of a making task , 
-                  and the children who most need this are the ones least likely
-                  to get past it.
-
-                  So: three games you can see, one tap, running immediately.
-                  Typing is still here for the older ones who arrive with an
-                  idea already in their head; it is just no longer the toll gate
-                  everyone has to pay first. */}
               <YourShelf
                 projects={shelf}
                 onOpen={() => trackEvent("landing_cta_click", "shelf")}
               />
 
-              <div className="pick">
-                <p className="pick__ask" id="pick-ask">
-                  {shelf.length
-                    ? "Or start something new"
-                    : user
-                      ? "What do you want to make next?"
-                      : "Tap a game. It starts now!"}
-                </p>
-                <ul className="pick__row" aria-labelledby="pick-ask">
-                  {HOME_PICKS.map((game) => (
-                    <li key={game.id}>
-                      <Link
-                        className="pick__card"
-                        to={`/builder?start=${game.id}`}
-                        onClick={() => trackEvent("landing_cta_click", "starter")}
-                      >
-                        <span className="pick__emoji"><Icon name={game.icon} size={40} strokeWidth={1.5} /></span>
-                        <span className="pick__label">{game.label}</span>
-                        <span className="pick__blurb">{game.blurb}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+              {/* ── The sentence the page never said out loud ────────────────
+                  It has been true since the day the lessons shipped and it is
+                  the whole differentiator, and a visitor had no way of knowing
+                  it. Stated plainly, above the fold, with both doors beside
+                  it. */}
+              <p className="studio-hero__nolie">
+                <strong>No AI in the lessons or the playground.</strong>{" "}
+                Your child types the code, and Python answers.
+              </p>
 
-                <details className="pick__own">
-                  <summary>Or type your own idea</summary>
-                  <form className="studio-hero__idea" onSubmit={startHeroIdea}>
-                    <label htmlFor="studio-hero-idea" className="pick__own-label">
-                      What do you want to build?
-                    </label>
-                    <div className="studio-hero__idea-row">
-                      <input
-                        ref={ideaInputRef}
-                        id="studio-hero-idea"
-                        value={heroIdea}
-                        onChange={(event) => setHeroIdea(event.target.value)}
-                        placeholder="A space quiz, a football game…"
-                        maxLength={240}
-                        autoComplete="off"
-                      />
-                      <button type="submit">
-                        Build it <span aria-hidden="true">→</span>
-                      </button>
-                    </div>
-                  </form>
-                </details>
-
-                {/* "No account needed" also appears in the facts row below,
-                    and saying it twice on one screen is how a claim starts to
-                    sound like a slogan. This keeps the half the row does not
-                    carry. */}
-                <small className="pick__note">Nothing to download.</small>
-
-                {/* "Play real games. Open them up. Make them yours." used to
-                    sit here. It is a good sentence and it was the THIRD time
-                    this screen said the same thing: the headline says "Make a
-                    real game. Then see the code inside it", the line above the
-                    cards says "Tap a game. It starts now!", and then this.
-                    A confident product says it once and shows the rest. */}
-              </div>
               <Evidence />
 
+              {/* Two doors, both of which open on a real thing with no
+                  account: lesson 1 is a written lesson with a Python editor in
+                  it, and the playground is eleven templates and a Run button.
+                  "See how it works" used to sit here, which is an invitation to
+                  read further down a page rather than to use the product. */}
               <div className="studio-hero__actions">
                 {latestProject && (
                   <Link
@@ -355,13 +217,30 @@ export default function Home() {
                   </Link>
                 )}
                 <Link
-                  to={user ? "/MainPage" : "#how-it-works"}
-                  className="studio-button studio-button--quiet"
-                  data-cta={user ? "member-progress" : "hero-lessons"}
-                  onClick={() => { if (!user) trackEvent("landing_cta_click", "hero-lessons"); }}
+                  to="/lesson/1"
+                  className={`studio-button ${latestProject ? "studio-button--quiet" : "studio-button--primary"}`}
+                  data-cta="hero-lesson-one"
+                  onClick={() => trackEvent("landing_cta_click", "hero-lesson-one")}
                 >
-                  {user ? "View my progress" : "See how it works"}
+                  Open Lesson 1 free <span aria-hidden="true">→</span>
                 </Link>
+                <Link
+                  to="/playground"
+                  className="studio-button studio-button--quiet"
+                  data-cta="hero-playground"
+                  onClick={() => trackEvent("landing_cta_click", "hero-playground")}
+                >
+                  Try the Python playground
+                </Link>
+                {user && (
+                  <Link
+                    to="/MainPage"
+                    className="studio-button studio-button--quiet"
+                    data-cta="member-progress"
+                  >
+                    View my progress
+                  </Link>
+                )}
               </div>
               {/* Three pills reading "Students create", "CodeIt teaches",
                   "Families see progress" sat here. Nobody can check any of
@@ -383,8 +262,12 @@ export default function Home() {
                 buttons look exactly like the three buttons that start a real
                 project — six near-identical taps, three of which only change a
                 drawing. */}
+            {/* The mock project panel that used to fill this column was a
+                picture of the product. This is the product: a real editor, real
+                Python, running in the visitor's own browser. A picture of a
+                thing is what you show when you cannot show the thing. */}
             <div className="studio-hero__visual">
-              {!shelf.length && <StudioPreview />}
+              {!shelf.length && <TryPython />}
               <figure className="studio-pixel">
                 <img
                   src="/brand/pixel-mascot-hero.png"
@@ -392,6 +275,78 @@ export default function Home() {
                 />
                 <figcaption><strong>Hi, I’m Pixel.</strong> What should we build?</figcaption>
               </figure>
+            </div>
+          </section>
+
+          {/* ── Second, not first ────────────────────────────────────────────
+              These three cards and the idea box are the AI studio, and they led
+              this page. They are genuinely good and they are not the reason a
+              parent should trust us, so they come after the part a parent can
+              check. Everything in this section is optional; nothing above it
+              touches the AI. */}
+          <section className="studio-make" aria-labelledby="studio-make-title">
+            <div className="studio-section-heading">
+              <p className="studio-kicker">And when they want to make something</p>
+              <h2 id="studio-make-title">The studio writes a first version, then hands it over.</h2>
+              <p>This is where the AI lives, and it is optional. Separate from the lessons, and no account needed for it either.</p>
+            </div>
+            <div className="pick">
+              <p className="pick__ask" id="pick-ask">
+                {shelf.length
+                  ? "Or start something new"
+                  : user
+                    ? "What do you want to make next?"
+                    : "Tap a game. It starts now!"}
+              </p>
+              <ul className="pick__row" aria-labelledby="pick-ask">
+                {HOME_PICKS.map((game) => (
+                  <li key={game.id}>
+                    <Link
+                      className="pick__card"
+                      to={`/builder?start=${game.id}`}
+                      onClick={() => trackEvent("landing_cta_click", "starter")}
+                    >
+                      <span className="pick__emoji"><Icon name={game.icon} size={40} strokeWidth={1.5} /></span>
+                      <span className="pick__label">{game.label}</span>
+                      <span className="pick__blurb">{game.blurb}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              <details className="pick__own">
+                <summary>Or type your own idea</summary>
+                <form className="studio-hero__idea" onSubmit={startHeroIdea}>
+                  <label htmlFor="studio-hero-idea" className="pick__own-label">
+                    What do you want to build?
+                  </label>
+                  <div className="studio-hero__idea-row">
+                    <input
+                      ref={ideaInputRef}
+                      id="studio-hero-idea"
+                      value={heroIdea}
+                      onChange={(event) => setHeroIdea(event.target.value)}
+                      placeholder="A space quiz, a football game…"
+                      maxLength={240}
+                      autoComplete="off"
+                    />
+                    <button type="submit">
+                      Build it <span aria-hidden="true">→</span>
+                    </button>
+                  </div>
+                </form>
+              </details>
+
+              {/* "No account needed" also appears in the facts row below,
+                  and saying it twice on one screen is how a claim starts to
+                  sound like a slogan. This keeps the half the row does not
+                  carry. */}
+              <small className="pick__note">Nothing to download.</small>
+
+              {/* "Play real games. Open them up. Make them yours." used to
+                  sit here, saying for a third time on one screen what the
+                  heading and the line above the cards already say. A
+                  confident product says it once and shows the rest. */}
             </div>
           </section>
 
