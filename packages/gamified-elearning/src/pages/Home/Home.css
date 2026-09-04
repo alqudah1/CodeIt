@@ -1420,3 +1420,153 @@
     line-height: 1.45;
   }
 }
+
+/* ── Marketing pages wear adult clothes ─────────────────────────────────────
+   The child never sees this page. They land in the studio or a lesson. This
+   page is read by the adult deciding whether to let them, and it had been
+   dressed like the product: a mascot, tilted sticker tiles in six colours,
+   headings at poster size, and one blank screen in the middle. Inside the
+   studio that is right. Here it read as a toy somebody made in a weekend.
+
+   The rules this block enforces, all on the home page only:
+     one accent (the orange), one supporting colour for code, everything
+     else ink on cream; one line per page at display size, the h1; fewer
+     sections and more room around each; nothing drawn standing in for a
+     thing that exists. Warm stays: the cream and the rounded type are right. */
+
+.studio-home .studio-hero__visual,
+.studio-home .studio-hero__visual:has(.tryp) {
+  padding-bottom: 0;
+}
+
+/* Room between sections is what "considered" is made of. */
+.studio-home main > section {
+  padding-top: clamp(4rem, 9vw, 7.5rem);
+  padding-bottom: clamp(4rem, 9vw, 7.5rem);
+}
+.studio-home main > .studio-hero {
+  padding-top: clamp(1.2rem, 2.4vw, 1.6rem);
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+.studio-home main > .studio-final {
+  padding-top: clamp(3rem, 6vw, 5rem);
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+/* One sentence per page at display size. The rest are headings, not posters. */
+.studio-home .studio-section-heading h2,
+.studio-home .studio-family__copy h2,
+.studio-home .studio-final h2,
+.studio-home .studio-inside__heading h2,
+.studio-home .studio-cost h2 {
+  font-size: clamp(1.45rem, 2.3vw, 1.95rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.studio-home .studio-section-heading p {
+  font-size: 1.05rem;
+  max-width: 58ch;
+}
+
+/* The starter tiles: same three cards, no longer three different toys. Cream
+   tiles, ink lines, and nothing tilted. */
+.studio-home .pick__emoji,
+.studio-home .pick__row > li:nth-child(2) .pick__emoji,
+.studio-home .pick__row > li:nth-child(3) .pick__emoji {
+  background: var(--ground, #FFF4E5);
+  transform: none;
+  box-shadow: none;
+  animation: none;
+}
+.studio-home .pick__card:hover .pick__emoji { transform: none; }
+
+/* The lesson pills beside real code lines were violet. Ink now; the code
+   itself carries the one supporting colour. */
+.studio-home .studio-inside__lesson {
+  background: var(--paper, #FFFDF7);
+  border: 1.5px solid var(--ink, #35220E);
+  color: var(--ink, #35220E);
+}
+.studio-home .studio-inside__lesson:hover {
+  background: var(--ground, #FFF4E5);
+}
+.studio-home .studio-inside__code {
+  color: var(--arc-mint-text, #1A6B4E);
+}
+
+/* Green ticks and a violet button were the fifth and sixth colours. */
+.studio-home .studio-family__copy li::before { color: var(--ink, #35220E); }
+.studio-home .studio-button--dark,
+.studio-home .studio-final .studio-button--dark {
+  background: var(--ink, #35220E);
+  color: var(--paper, #FFFDF7);
+  box-shadow: none;
+}
+.studio-home .studio-button--dark:hover { background: #221507; color: var(--paper, #FFFDF7); }
+
+/* The parents section was a two-column grid whose right column held a mock
+   email about an invented child. The email went; the empty column stayed and
+   left the copy squeezed into the left half of the page. One column, a reading
+   width, on the same left edge as every other section. */
+.studio-home .studio-family {
+  grid-template-columns: 1fr;
+}
+.studio-home .studio-family__copy { max-width: 720px; }
+.studio-home .studio-make {
+  width: min(1120px, calc(100% - 48px));
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* This one is a bordered card, so the room around it is margin, not padding:
+   the section rule above would otherwise put the room inside the border. */
+.studio-home main > .studio-inside {
+  padding: 1.75rem;
+  margin: clamp(3rem, 7vw, 6rem) auto;
+}
+
+/* What it costs: two claims, side by side with the sentence they support. */
+.studio-cost {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+  border-top: 1px solid var(--studio-line, rgba(61, 48, 43, 0.14));
+}
+.studio-cost h2 code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  color: var(--arc-mint-text, #1A6B4E);
+}
+.studio-cost__copy p { margin: 0; max-width: 48ch; color: var(--ink, #35220E); }
+.studio-cost__facts {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.studio-cost__facts > div {
+  padding: 1.25rem 1.4rem;
+  background: var(--paper, #FFFDF7);
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 16px;
+}
+.studio-cost__facts dt { font-size: 0.9rem; color: var(--ink, #35220E); margin-bottom: 0.35rem; }
+.studio-cost__facts dd {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  color: var(--arc-orange-text, #C85A00);
+  line-height: 1;
+}
+
+@media (max-width: 900px) {
+  .studio-cost { grid-template-columns: 1fr; }
+}
+@media (max-width: 780px) {
+  .studio-cost { width: min(100% - 32px, 1120px); }
+}

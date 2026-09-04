@@ -84,18 +84,3 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-
-/* Pixel is positioned against the bottom of the hero's visual column, which was
-   sized for the tall mock panel that used to fill it. The live editor is
-   shorter, so without this the mascot and its speech bubble sit on top of the
-   Run key and the playground link. Room is made for it instead of moving it:
-   a child looking for the orange character should still find it here. */
-.studio-hero__visual:has(.tryp) {
-  padding-bottom: 10rem;
-}
-
-@media (max-width: 900px) {
-  .studio-hero__visual:has(.tryp) {
-    padding-bottom: 8rem;
-  }
-}

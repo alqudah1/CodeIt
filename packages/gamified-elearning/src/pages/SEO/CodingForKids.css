@@ -685,3 +685,33 @@
 @media (prefers-reduced-motion: reduce) {
   .parents-button { transition: none; }
 }
+
+/* The hero's second column held a drawn quiz. It is gone, so the hero is one
+   column at a reading width, and the real projects strip that follows uses
+   the home page's own styling. */
+.parents-hero__grid { grid-template-columns: 1fr; }
+.parents-hero__copy, .parents-hero__grid > div:first-child { max-width: 720px; }
+.parents-page .recent { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: clamp(3rem, 6vw, 5rem) 0; }
+
+/* One line per page at display size: the h1. Every h2 on this page ran at
+   poster size, which is how a page stops having a hierarchy. */
+.parents-page .parents-section h2,
+.parents-page .parents-adult__card h2,
+.parents-page .parents-pilot h2 {
+  font-size: clamp(1.45rem, 2.3vw, 1.95rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.parents-page .parents-hero h1 {
+  font-size: clamp(2.25rem, 4vw, 3.4rem);
+}
+
+/* Stickers off the marketing page: the two soft blobs behind the hero, the
+   ring in its corner, and the mint card. Cream, ink, and the one orange. */
+.parents-page .parents-hero { background: var(--parents-cream); }
+.parents-page .parents-hero::after { display: none; }
+.parents-page .parents-adult__card--mint {
+  background: var(--parents-cream, #fff8f0);
+  border: 1.5px solid rgba(67, 44, 35, 0.18);
+}
+.parents-page .parents-pilot { background: #f7dfc2; }

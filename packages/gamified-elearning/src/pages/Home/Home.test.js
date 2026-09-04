@@ -60,25 +60,21 @@ describe('Home', () => {
     expect(trackEvent).toHaveBeenCalledTimes(1);
   });
 
-  test('every number on the home page is one a visitor can check', () => {
-    // This replaced five rounded usage totals and the words "verified in July
-    // 2026". a hard-coded date with nothing behind it, on the page whose whole
-    // job is being believed. Every figure here is a fact about the product that
-    // a stranger can confirm in a minute without an account, and each is read
-    // from the thing it describes rather than typed in.
+  test('the home page keeps the two claims and drops the two counts', () => {
+    // "31 lessons" and "21 projects" used to sit beside CA$0 and None. A
+    // number invites a comparison, and this is one we lose every time we
+    // invite it: Tynker publishes thousands of activities and Code.org has a
+    // curriculum a school district signs off on. The counts belong on
+    // /lessons and /press, where somebody has asked. CA$0 and None are not
+    // counts, they are claims, and no competitor can match either.
     render(<Home />);
 
-    expect(screen.getByRole('heading', { name: 'You can check every number here yourself.' })).toBeInTheDocument();
-    // Scoped to the block itself: "3" also appears in the numbered how-it-works
-    // list, and a test that passes on the wrong element is not a test.
-    const figures = document.querySelectorAll('.studio-traction__metrics dd');
-    const values = [...figures].map(el => el.textContent);
-    expect(values).toContain(String(TOTAL_LESSONS));
-    // Counts every starter, not just the games: there are quizzes and shop
-    // pages on the shelves too, and a number that only counted the games
-    // would understate the page while claiming to be checkable.
-    expect(values).toContain(String(STARTER_PROJECTS.length));
-    expect(values).toContain('CA$0');
+    const values = [...document.querySelectorAll('.studio-cost__facts dd')].map(el => el.textContent);
+    expect(values).toEqual(['CA$0', 'None']);
+    expect(values).not.toContain(String(TOTAL_LESSONS));
+    expect(values).not.toContain(String(STARTER_PROJECTS.length));
+    expect(document.body.textContent).not.toMatch(new RegExp(`\\b${TOTAL_LESSONS} lessons`));
+    expect(screen.getByRole('heading', { name: /Beginner Python, from print\(\) to functions/ })).toBeInTheDocument();
   });
 
   test('the home page claims no usage figures at all', () => {

@@ -7,6 +7,7 @@ import { useFAQSchema } from '../../hooks/useFAQSchema';
 import FAQS from '../../data/faqs';
 import { trackEvent } from '../../utils/trackEvent';
 import HomePilotSignup from '../Home/HomePilotSignup';
+import RecentProjects from '../Home/RecentProjects';
 import './CodingForKids.css';
 
 // One source of truth, shared with /faq and the static-SEO build script.
@@ -91,26 +92,17 @@ export default function CodingForKids() {
               </p>
             </div>
 
-            <div className="parents-project" aria-hidden="true">
-              <div className="parents-project__bar">
-                <span className="parents-project__dots" aria-hidden="true"><i /><i /><i /></span>
-                <span>My space quiz</span>
-              </div>
-              <div className="parents-project__canvas">
-                <span className="parents-project__tag">QUESTION 3 OF 5</span>
-                <p className="parents-project__question">Which planet has the shortest day?</p>
-                <div className="parents-project__answers" aria-hidden="true">
-                  <span>Earth</span><span className="is-selected">Jupiter</span><span>Mars</span>
-                </div>
-              </div>
-              <div className="parents-project__edit">
-                <span>Next change</span>
-                <p>Add a streak counter and make the correct answer glow.</p>
-                <strong>Make it mine →</strong>
-              </div>
-            </div>
+            {/* A drawn browser window called "My space quiz", with an invented
+                question and an invented next change, stood here beside the
+                headline. Nothing signals a small operation faster than an
+                illustration standing in for a product that exists. Real
+                published projects appear below the hero instead, and when
+                there are none there is nothing, which is still more honest
+                than a drawing. */}
           </div>
         </section>
+
+        <RecentProjects />
 
         <section className="parents-trust" aria-label="CodeIt trust commitments">
           <div className="parents-wrap parents-trust__grid">

@@ -10,8 +10,6 @@ import HomePilotSignup from "./HomePilotSignup";
 import { HOME_PICKS } from "../Builder/starterGames";
 import { conceptsIn } from "../Builder/codeConcepts";
 import Icon from "../../components/Icon/Icon";
-import { STARTER_PROJECTS } from "../Builder/starterProjects";
-import { TOTAL_LESSONS } from "../Lessons/lessonRegistry";
 import { CURRENCY_SYMBOL } from "../../config/pricing";
 import YourShelf from "./YourShelf";
 import RecentProjects from "./RecentProjects";
@@ -30,29 +28,6 @@ import { useCharacterDisplay } from '../../context/CharacterContext';
 // real Python in the visitor's own browser. You draw a picture of the thing
 // when you cannot show the thing.
 
-const STARTING_POINTS = [
-  {
-    number: "01",
-    title: "Describe the idea",
-    copy: "A student starts with a website, game, quiz, or school project they genuinely want to make.",
-    link: "/builder",
-    linkLabel: "Open the studio",
-  },
-  {
-    number: "02",
-    title: "Build and experiment",
-    copy: "CodeIt creates a working first version. The student plays with it, edits it, and sees every change.",
-    link: "/playground",
-    linkLabel: "Explore the playground",
-  },
-  {
-    number: "03",
-    title: "Learn, own, and share it",
-    copy: "Short lessons explain the code, then the student saves or publishes a project they understand.",
-    link: "/lessons",
-    linkLabel: "See the learning path",
-  },
-];
 
 const POPULAR_LESSONS = [
   [1, "Your first Python program"],
@@ -242,18 +217,14 @@ export default function Home() {
                   </Link>
                 )}
               </div>
-              {/* Three pills reading "Students create", "CodeIt teaches",
-                  "Families see progress" sat here. Nobody can check any of
-                  them, they are true of every product in this category, and
-                  they were the last thing above the fold: the space where a
-                  visitor decides whether this is a real company. Facts in the
-                  same space instead, all three verifiable in a minute and each
-                  one wired to the data rather than typed. */}
-              <ul className="studio-hero__audience" aria-label="What is here">
-                <li>{TOTAL_LESSONS} lessons</li>
-                <li>{STARTER_PROJECTS.length} projects that open instantly</li>
-                <li>No account needed</li>
-              </ul>
+              {/* A row of pills reading "31 lessons · 21 projects · No account
+                  needed" sat here. A number invites a comparison, and this is
+                  a comparison we lose every time we invite it: Tynker publishes
+                  thousands of activities and Code.org has a curriculum a school
+                  district signs off on. "31" beside those reads as small, and
+                  the parent reading it has no idea whether 31 is a lot. The
+                  counts still live on /lessons and /press, where somebody has
+                  asked. */}
             </div>
 
             {/* A returning child does not need the pitch panel. The headline
@@ -268,13 +239,12 @@ export default function Home() {
                 thing is what you show when you cannot show the thing. */}
             <div className="studio-hero__visual">
               {!shelf.length && <TryPython />}
-              <figure className="studio-pixel">
-                <img
-                  src="/brand/pixel-mascot-hero.png"
-                  alt="Pixel, CodeIt's friendly orange build buddy, creating a project on a laptop"
-                />
-                <figcaption><strong>Hi, I’m Pixel.</strong> What should we build?</figcaption>
-              </figure>
+              {/* Pixel used to stand here, bottom right, overlapping the code.
+                  The child never sees this page; they land in the studio or a
+                  lesson. This page is read by the adult deciding whether to let
+                  them, and on that page a mascot is the product's clothes on
+                  the wrong body. Pixel stays in the studio and the lessons,
+                  where a nine-year-old is meant to feel invited. */}
             </div>
           </section>
 
@@ -350,11 +320,6 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="studio-proof" aria-label="What makes CodeIt different">
-            <p><strong>Make something real.</strong> You start with a game that already works, not an empty page.</p>
-            <p><strong>See how it works.</strong> Every colour, score and speed on the screen is a line you can find and change.</p>
-            <p><strong>Show someone.</strong> Save it, share a link, and your grown-up can see what you understood.</p>
-          </section>
 
           {/* Real projects, by real children, near the top. /explore is the
               most convincing thing CodeIt has and the home page linked it once,
@@ -400,27 +365,19 @@ export default function Home() {
             </section>
           )}
 
-          {/* ── What is true, rather than what sounds impressive ──────────────
-              This block used to carry five rounded usage numbers and the words
-              "verified in July 2026": a hard-coded date with nothing behind it,
-              on a page whose whole job is being believed. Every number here is
-              instead a fact about the product that a visitor can check in the
-              next sixty seconds without an account. */}
-          <section className="studio-traction" aria-labelledby="studio-traction-title">
-            <div className="studio-traction__heading">
-              <p className="studio-kicker">Free, and no account needed</p>
-              <h2 id="studio-traction-title">You can check every number here yourself.</h2>
-              <p>Nothing below asks for a card, an email, or a download. Open a game and it plays.</p>
+          {/* ── Two claims, not four counts ───────────────────────────────
+              This block carried "31 lessons" and "21 projects" beside CA$0 and
+              None. The counts invite comparisons we lose. The other two are
+              not counts, they are claims, and no competitor can match either.
+              So the block says what the lessons are instead of how many, and
+              keeps the two numbers that mean something. */}
+          <section className="studio-cost" aria-labelledby="studio-cost-title">
+            <div className="studio-cost__copy">
+              <p className="studio-kicker">What it costs</p>
+              <h2 id="studio-cost-title">Beginner Python, from <code>print()</code> to functions. Free, no account.</h2>
+              <p>Nothing on this page asks for a card, an email, or a download. Open a lesson and it starts.</p>
             </div>
-            <dl className="studio-traction__metrics">
-              <div>
-                <dt>Beginner Python lessons</dt>
-                <dd>{TOTAL_LESSONS}</dd>
-              </div>
-              <div>
-                <dt>Games, quizzes and shops you can open and change</dt>
-                <dd>{STARTER_PROJECTS.length}</dd>
-              </div>
+            <dl className="studio-cost__facts">
               <div>
                 <dt>Cost to start</dt>
                 <dd>{CURRENCY_SYMBOL}0</dd>
@@ -432,24 +389,14 @@ export default function Home() {
             </dl>
           </section>
 
-          <section className="studio-start" aria-labelledby="studio-start-title">
-            <div className="studio-section-heading">
-              <p className="studio-kicker">What a student actually does</p>
-              <h2 id="studio-start-title">From “I have an idea” to “I built this.”</h2>
-              <p>Starting is the hard part, so CodeIt writes a first version that already works. The lessons turn it into something you understand and can change yourself.</p>
-            </div>
-            <div className="studio-start__grid">
-              {STARTING_POINTS.map((item) => (
-                <article className="studio-start-card" key={item.number}>
-                  <span className="studio-start-card__number">{item.number}</span>
-                  <h3>{item.title}</h3>
-                  <p>{item.copy}</p>
-                  <Link to={item.link}>{item.linkLabel} <span aria-hidden="true">→</span></Link>
-                </article>
-              ))}
-            </div>
-          </section>
 
+          {/* Three sections used to sit between here and the footer: a
+              three-step "describe, build, learn" strip, a drawn browser window
+              with an invented project.js in it, and four generic articles
+              headed "What CodeIt delivers". Every one of them said the same
+              thing as the sections above, at a larger size. Fewer sections and
+              more room around each is what "expensive" is made of; more
+              content is what "poster" is made of. */}
           <section id="family-pilot" className="studio-family" aria-labelledby="studio-family-title">
             <div className="studio-family__copy">
               <p className="studio-kicker">Progress parents can actually see</p>
@@ -492,44 +439,7 @@ export default function Home() {
                 An empty space is better than a fabricated child. */}
           </section>
 
-          <section id="how-it-works" className="studio-loop" aria-labelledby="studio-loop-title">
-            <div className="studio-loop__visual" aria-hidden="true">
-              <div className="studio-loop__window">
-                <div className="studio-loop__window-head"><i /><i /><i /><span>project.js</span></div>
-                <pre><code><b>function</b> celebrate(score) {`{`}{"\n"}  <em>if</em> (score &gt; 3) {`{`}{"\n"}    showConfetti();{"\n"}  {`}`}{"\n"}{`}`}</code></pre>
-              </div>
-              <div className="studio-loop__lesson-card">
-                <span>Concept unlocked</span>
-                <strong>If statements</strong>
-                <small>Use a condition to make your project react.</small>
-              </div>
-            </div>
-            <div className="studio-loop__copy">
-              {/* Was "The build → learn → improve loop". An arrow inside a
-                  heading is a diagram someone could not be bothered to draw. */}
-              <p className="studio-kicker">How a project actually gets made</p>
-              <h2 id="studio-loop-title">A first version gives you momentum. The learning makes it yours.</h2>
-              <ol>
-                <li><span>1</span><div><strong>Describe</strong><p>Explain what you want to create in everyday language.</p></div></li>
-                <li><span>2</span><div><strong>Build and play</strong><p>Use the working result immediately and notice what you want to change.</p></div></li>
-                <li><span>3</span><div><strong>Open the code</strong><p>Learn the concept behind the behaviour, then edit and test it yourself.</p></div></li>
-              </ol>
-              <Link to="/builder" className="studio-text-link">See the studio in action <span aria-hidden="true">→</span></Link>
-            </div>
-          </section>
 
-          <section className="studio-trust" aria-labelledby="studio-trust-title">
-            <div>
-              <p className="studio-kicker">What CodeIt delivers</p>
-              <h2 id="studio-trust-title">One place for the complete beginner journey.</h2>
-            </div>
-            <div className="studio-trust__points">
-              <article><strong>AI studio</strong><p>Students quickly create a first version, then keep control of what changes next.</p></article>
-              <article><strong>Lessons and hands-on exercises</strong><p>Python concepts are explained through code students can run and test immediately.</p></article>
-              <article><strong>Projects that belong to the student</strong><p>Save versions, return later, improve the work, and publish when it is ready.</p></article>
-              <article><strong>Parent-approved progress updates</strong><p>Confirmed parents can receive plain-language emails about completed learning and creative work.</p></article>
-            </div>
-          </section>
 
           <section className="studio-final" aria-labelledby="studio-final-title">
             <div>
