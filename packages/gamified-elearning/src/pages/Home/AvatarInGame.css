@@ -47,6 +47,7 @@
 .avdemo__body:not(.is-playing) .avdemo__maker {
   grid-template-columns: 170px minmax(0, 1fr);
   grid-template-areas:
+    "preview style"
     "preview skin"
     "preview hair"
     "preview outfit"
@@ -54,6 +55,7 @@
   align-items: center;
 }
 .avdemo__body:not(.is-playing) .avdemo__preview { grid-area: preview; align-self: stretch; }
+.avdemo__body:not(.is-playing) .avdemo__row[aria-label="Style"] { grid-area: style; }
 .avdemo__body:not(.is-playing) .avdemo__row[aria-label="Skin"] { grid-area: skin; }
 .avdemo__body:not(.is-playing) .avdemo__row[aria-label="Hair"] { grid-area: hair; }
 .avdemo__body:not(.is-playing) .avdemo__row[aria-label="Outfit"] { grid-area: outfit; }
@@ -62,7 +64,7 @@
 @media (max-width: 480px) {
   .avdemo__body:not(.is-playing) .avdemo__maker {
     grid-template-columns: 1fr;
-    grid-template-areas: "preview" "skin" "hair" "outfit" "go";
+    grid-template-areas: "preview" "style" "skin" "hair" "outfit" "go";
   }
 }
 
@@ -181,3 +183,18 @@
     height: 300px;
   }
 }
+
+/* Hair silhouettes: the avatar itself, small, in each style. */
+.avdemo__style {
+  width: 44px;
+  height: 44px;
+  padding: 2px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: var(--ground, #FFF4E5);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.avdemo__style.is-on { border-color: var(--ink, #35220E); background: var(--paper, #FFFDF7); }
+.avdemo__style:focus-visible { outline: 3px solid var(--arc-orange, #F87824); outline-offset: 2px; }

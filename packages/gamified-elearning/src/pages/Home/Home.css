@@ -1578,3 +1578,120 @@
 @media (max-width: 780px) {
   .studio-cost { width: min(100% - 32px, 1120px); }
 }
+
+/* ── One border per screen ───────────────────────────────────────────────────
+   Reviewed on a real phone: every element was a white card with a heavy dark
+   border and a hard offset shadow. The claim box, the three buttons, the
+   avatar card, the code card, the three game cards. When everything is a
+   card, nothing is important and the eye has nowhere to go. That is the
+   whole "looks cheap" feeling, and it is one CSS decision.
+
+   Exactly one element per screen keeps a border and a shadow: the avatar demo
+   in the hero, the Python editor in its section, the "nothing is hidden" card,
+   the pilot form. Everything else sits directly on the cream with space around
+   it. Space is the separator, not outlines. */
+
+/* Hero: the primary button and the demo card keep their lines; the second
+   action is a text link. */
+.studio-hero__textlink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 4px;
+  color: var(--ink, #35220E);
+  font-family: var(--font-display, inherit);
+  font-weight: 800;
+  font-size: 16px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+.studio-home .studio-hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; }
+
+/* Inside the demo card, the preview and the button lose their own boxes. */
+.studio-home .avdemo__preview { border: 0; background: var(--ground, #FFF4E5); }
+.studio-home .avdemo__go { box-shadow: none; }
+
+/* Inside the editor card, the resting code panel is a tint, not a box. */
+.studio-home .tryp__still-button { border: 0; background: var(--ground, #FFF4E5); }
+.studio-home .tryp__still-label { border-bottom: 0; padding-bottom: 0; }
+.studio-home .tryp__still-run { border-top: 0; border-radius: 0 0 14px 14px; }
+
+/* The three starter tiles: no border, no shadow, a tint on the cream. */
+.studio-home .pick__card,
+.studio-home .pick__card:hover,
+.studio-home .pick__card:active {
+  border: 0;
+  box-shadow: none;
+  background: var(--ground, #FFF4E5);
+  transform: none;
+}
+.studio-home .pick__emoji { border: 0; background: var(--paper, #FFFDF7); }
+.studio-home .pick__own > summary,
+.studio-home .pick__own {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  padding-left: 0;
+}
+/* "Or type your own idea" did not match the width of the cards above it. */
+.studio-home .pick__own { width: 100%; }
+.studio-home .pick__own > summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink, #35220E);
+  font-family: var(--font-display, inherit);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+/* The "nothing is hidden" card keeps its border; the rows and pills inside do
+   not get their own. */
+.studio-home .studio-inside__rows > li { border: 0; }
+.studio-home .studio-inside__lesson { border: 0; background: transparent; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
+.studio-home .studio-inside__open { box-shadow: none; }
+
+/* CA$0 and None: numbers on the cream, not two more boxes. */
+.studio-home .studio-cost__facts > div { border: 0; background: transparent; padding: 0; }
+
+/* The parents section: the pilot form is the one box; the learner-profile
+   note loses its own. */
+.studio-home .studio-family__setup { border: 0; background: transparent; padding: 0; box-shadow: none; }
+
+/* ── Section rhythm ──────────────────────────────────────────────────────────
+   Close to a full blank screen sat between the editor and the studio, and
+   another before the students. Consistent, and smaller on a phone. */
+.studio-home main > section {
+  padding-top: clamp(2.5rem, 6vw, 5rem);
+  padding-bottom: clamp(2.5rem, 6vw, 5rem);
+}
+.studio-home main > .studio-python { padding-top: 0; }
+.studio-home main > .studio-inside { margin: clamp(2rem, 5vw, 4rem) auto; }
+.studio-home .studio-make { gap: 12px; }
+.studio-home .studio-section-heading h2 { margin-bottom: 6px; }
+
+/* The kicker and the heading in the students strip were colliding. */
+.studio-home .recent__head .studio-kicker { display: block; margin: 0 0 6px; line-height: 1.3; }
+.studio-home .recent__head h2 { margin: 0 0 14px; }
+
+@media (max-width: 620px) {
+  .studio-home main > .studio-hero { padding-bottom: 1.5rem; }
+  .studio-home .studio-hero__copy { padding-bottom: 0; }
+  .studio-home .avdemo { padding: 14px; }
+  .studio-home .studio-hero h1 { margin-bottom: 14px; }
+}
+
+/* ── Signed in: their work, not the pitch ──────────────────────────────────── */
+.studio-member {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(1.2rem, 2.4vw, 1.6rem) 0 0;
+}
+.studio-home--member .studio-welcome { display: inline-flex; align-items: center; gap: 8px; color: var(--ink, #35220E); }
+.studio-home--member .studio-make { padding-top: clamp(1.5rem, 4vw, 3rem); }
+@media (max-width: 780px) {
+  .studio-member { width: min(100% - 32px, 1120px); }
+}

@@ -66,6 +66,9 @@
 }
 
 .cr-btn--run {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: #ff7624;
   border-color: #ff7624;
   color: #fff;

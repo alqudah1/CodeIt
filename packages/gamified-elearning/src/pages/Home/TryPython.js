@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { trackEvent } from '../../utils/trackEvent';
+import Icon from '../../components/Icon/Icon';
 import './TryPython.css';
 
 // ── The one thing on this page nobody has to take on trust ───────────────────
@@ -68,7 +69,7 @@ export default function TryPython() {
           >
             <span className="tryp__still-label">Python</span>
             <pre className="tryp__still"><code>{HELLO}</code></pre>
-            <span className="tryp__still-run">▶ Run this</span>
+            <span className="tryp__still-run"><Icon name="play" size={16} /> Run this</span>
           </button>
         )}
       </div>

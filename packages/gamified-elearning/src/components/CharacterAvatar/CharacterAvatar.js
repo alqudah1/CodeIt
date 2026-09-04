@@ -1,4 +1,33 @@
+import React from 'react';
 import './CharacterAvatar.css';
+
+// ── The character ────────────────────────────────────────────────────────────
+//
+// This drawing is the most distinctive asset in the product. It is the player
+// inside the child's game and it travels with every project they share, and
+// for a long time it was a flat blue rectangle with a circle on top: a
+// placeholder that never got replaced. "Make a character and it becomes the
+// player in your game" is a promise the picture has to keep.
+//
+// What changed, and why:
+//
+//   a body, not a rectangle   neck, shoulders, a waist, hands. Two body shapes.
+//   hair with a silhouette    five styles that read as five different people
+//                             from across a room, not five colours of one hat.
+//   outfits with a detail     a visor ring, a strap and pocket, hoodie strings,
+//                             an apron and beret: one thing each, big enough
+//                             to survive shrinking.
+//   accessories with character
+//   it reads at 32px          that is its size in a game. So: ink outlines on
+//                             every shape, no gradients, no drop-shadow filter,
+//                             nothing thinner than four units on a 240 canvas.
+//
+// Same parameters as before (skinTone, hairStyle, hairColor, outfit, accent,
+// expression, gender), same palettes, same compact prop, so the lab, the
+// header, the sprite and the home page all keep working. There is no
+// background: the character sits on whatever it is placed on.
+
+const INK = '#2b1b18';
 
 const skinPalette = {
   sunset: '#f6c7a3',
@@ -31,182 +60,201 @@ const accentPalette = {
   none: 'transparent',
 };
 
-const baseGeometry = {
+// ── Body ─────────────────────────────────────────────────────────────────────
+// Two silhouettes. Shoulders, a neck, a waist, and hands. The head sits at
+// (120, 92) with radius 52 in both.
+const bodies = {
   female: {
-    torso: 'M80 150 Q120 120 160 150 L172 240 L68 240 Z',
-    overlay: 'M90 170 L150 170 L154 240 L86 240 Z',
-    leftArm: 'M70 160 Q45 170 55 210 L75 208',
-    rightArm: 'M170 160 Q195 170 185 210 L165 208',
+    neck: 'M106 136 L134 136 L134 154 L106 154 Z',
+    torso: 'M86 156 C96 148 144 148 154 156 C168 162 176 176 176 196 L172 240 L68 240 L64 196 C64 176 72 162 86 156 Z',
+    leftArm: 'M70 172 C50 182 44 206 52 226',
+    rightArm: 'M170 172 C190 182 196 206 188 226',
+    leftHand: { cx: 52, cy: 230 },
+    rightHand: { cx: 188, cy: 230 },
   },
   male: {
-    torso: 'M72 148 Q120 108 168 148 L182 240 L58 240 Z',
-    overlay: 'M82 168 L158 168 L166 240 L74 240 Z',
-    leftArm: 'M68 158 Q38 172 50 212 L74 208',
-    rightArm: 'M172 158 Q202 172 190 212 L166 208',
+    neck: 'M104 136 L136 136 L136 154 L104 154 Z',
+    torso: 'M80 156 C92 146 148 146 160 156 C178 162 186 178 186 198 L180 240 L60 240 L54 198 C54 178 62 162 80 156 Z',
+    leftArm: 'M62 172 C42 184 36 208 44 228',
+    rightArm: 'M178 172 C198 184 204 208 196 228',
+    leftHand: { cx: 44, cy: 232 },
+    rightHand: { cx: 196, cy: 232 },
   },
+};
+
+// ── Outfit details: one recognisable thing each ───────────────────────────────
+const outfitDetails = {
+  astronaut: (p) => (
+    <>
+      {/* collar ring and a chest badge */}
+      <path d="M92 158 C104 170 136 170 148 158" fill="none" stroke={p.accent} strokeWidth="8" strokeLinecap="round" />
+      <circle cx="120" cy="196" r="12" fill={p.accent} stroke={INK} strokeWidth="4" />
+      <circle cx="120" cy="196" r="4" fill={p.secondary} />
+    </>
+  ),
+  explorer: (p) => (
+    <>
+      {/* a strap across the chest and a pocket */}
+      <path d="M92 160 L150 236" stroke={p.secondary} strokeWidth="12" strokeLinecap="round" />
+      <path d="M92 160 L150 236" stroke={p.accent} strokeWidth="4" strokeLinecap="round" strokeDasharray="1 14" />
+      <rect x="74" y="200" width="30" height="24" rx="4" fill={p.accent} stroke={INK} strokeWidth="4" />
+    </>
+  ),
+  hacker: (p) => (
+    <>
+      {/* hoodie: a hood behind the neck and two strings */}
+      <path d="M86 156 C96 132 144 132 154 156" fill={p.secondary} stroke={INK} strokeWidth="5" />
+      <path d="M108 160 L104 200" stroke={p.accent} strokeWidth="5" strokeLinecap="round" />
+      <path d="M132 160 L136 200" stroke={p.accent} strokeWidth="5" strokeLinecap="round" />
+      <path d="M92 236 L148 236" stroke={p.secondary} strokeWidth="8" strokeLinecap="round" />
+    </>
+  ),
+  artist: (p) => (
+    <>
+      {/* an apron with paint spots */}
+      <path d="M96 172 L144 172 L150 240 L90 240 Z" fill={p.accent} stroke={INK} strokeWidth="4" />
+      <circle cx="108" cy="204" r="6" fill="#ff6d8f" />
+      <circle cx="128" cy="216" r="6" fill="#2b7de9" />
+      <circle cx="120" cy="190" r="5" fill="#f6c06b" />
+    </>
+  ),
+};
+
+// ── Hair: five silhouettes, each drawn as a back layer (behind the head) and
+// a front layer (over the forehead), so the shape reads from a distance.
+const hairShapes = {
+  wave: (c) => ({
+    back: <path d="M62 96 C58 40 182 40 178 96 L184 150 C170 140 156 138 148 142 L142 104 L98 104 L92 142 C84 138 70 140 56 150 Z" fill={c} stroke={INK} strokeWidth="5" strokeLinejoin="round" />,
+    front: <path d="M66 92 C74 44 166 44 174 92 C160 78 140 70 120 74 C100 70 80 78 66 92 Z" fill={c} stroke={INK} strokeWidth="5" strokeLinejoin="round" />,
+  }),
+  crown: (c) => ({
+    back: null,
+    front: (
+      <path
+        d="M64 96 L72 58 L88 78 L102 44 L120 70 L138 44 L152 78 L168 58 L176 96 C160 82 140 76 120 78 C100 76 80 82 64 96 Z"
+        fill={c} stroke={INK} strokeWidth="5" strokeLinejoin="round"
+      />
+    ),
+  }),
+  bun: (c) => ({
+    back: <circle cx="120" cy="40" r="24" fill={c} stroke={INK} strokeWidth="5" />,
+    front: <path d="M66 94 C70 52 170 52 174 94 C166 80 150 72 132 76 L120 66 L108 76 C90 72 74 80 66 94 Z" fill={c} stroke={INK} strokeWidth="5" strokeLinejoin="round" />,
+  }),
+  curls: (c) => ({
+    back: (
+      <path
+        d="M56 98 C46 78 60 60 76 62 C78 44 100 38 112 48 C122 34 146 36 152 50 C170 44 186 62 178 80 C190 92 184 112 170 114 L170 136 C160 150 148 152 140 146 L100 146 C92 152 80 150 70 136 L70 114 C56 114 48 104 56 98 Z"
+        fill={c} stroke={INK} strokeWidth="5" strokeLinejoin="round"
+      />
+    ),
+    front: (
+      <path
+        d="M66 96 C62 76 76 62 90 70 C94 54 114 50 122 62 C132 50 152 56 152 72 C168 66 180 82 174 96 C160 82 142 76 120 78 C98 76 80 82 66 96 Z"
+        fill={c} stroke={INK} strokeWidth="5" strokeLinejoin="round"
+      />
+    ),
+  }),
+  pixie: (c) => ({
+    back: null,
+    front: (
+      <path
+        d="M64 100 C62 58 120 40 160 54 C178 62 184 84 176 100 C168 88 150 80 130 82 L118 92 L100 84 C84 84 72 92 64 100 Z"
+        fill={c} stroke={INK} strokeWidth="5" strokeLinejoin="round"
+      />
+    ),
+  }),
 };
 
 const expressions = {
   smile: {
-    mouth: 'M95 120 C 110 140, 130 140, 145 120',
-    leftEye: { type: 'circle', props: { cx: 100, cy: 95, r: 6 } },
-    rightEye: { type: 'circle', props: { cx: 140, cy: 95, r: 6 } },
+    mouth: 'M100 118 C110 132 130 132 140 118',
+    eyes: [{ type: 'dot', cx: 102, cy: 94 }, { type: 'dot', cx: 138, cy: 94 }],
   },
   laugh: {
-    mouth: 'M95 125 C 110 150, 130 150, 145 125',
-    leftEye: { type: 'path', props: { d: 'M90 92 Q100 85 110 92', strokeWidth: 6 } },
-    rightEye: { type: 'path', props: { d: 'M130 92 Q140 85 150 92', strokeWidth: 6 } },
+    mouth: 'M98 116 C106 138 134 138 142 116 Z',
+    eyes: [{ type: 'arc', d: 'M92 94 Q102 84 112 94' }, { type: 'arc', d: 'M128 94 Q138 84 148 94' }],
   },
   wink: {
-    mouth: 'M95 123 C 110 140, 130 140, 145 123',
-    leftEye: { type: 'circle', props: { cx: 100, cy: 95, r: 6 } },
-    rightEye: { type: 'path', props: { d: 'M133 95 H147', strokeWidth: 5, strokeLinecap: 'round' } },
+    mouth: 'M100 118 C110 130 130 130 140 118',
+    eyes: [{ type: 'dot', cx: 102, cy: 94 }, { type: 'line', d: 'M130 94 L148 94' }],
   },
 };
 
-const hairShapes = {
-  wave: (color) => (
-    <path
-      d="M58 74 C70 20, 170 20, 182 74 L182 110 C165 95, 145 75, 120 75 C95 75, 75 95, 58 110 Z"
-      fill={color}
-    />
-  ),
-  crown: (color) => (
-    <>
-      <path d="M60 70 C70 40, 170 40, 180 70 L180 120 L60 120 Z" fill={color} />
-      <path
-        d="M70 65 C95 35, 145 35, 170 65"
-        stroke={color}
-        strokeWidth="12"
-        strokeLinecap="round"
-        fill="none"
-      />
-    </>
-  ),
-  bun: (color) => (
-    <>
-      <circle cx="120" cy="45" r="28" fill={color} />
-      <path d="M62 80 Q120 20 178 80 L178 120 L62 120 Z" fill={color} />
-    </>
-  ),
-  curls: (color) => (
-    <>
-      <path
-        d="M55 95 Q70 40, 120 58 Q170 40, 185 95 Q165 120, 120 115 Q75 120, 55 95 Z"
-        fill={color}
-      />
-      <path
-        d="M55 105 C75 140, 165 140, 185 105"
-        stroke={color}
-        strokeWidth="16"
-        strokeLinecap="round"
-        fill="none"
-      />
-    </>
-  ),
-  pixie: (color) => (
-    <path
-      d="M58 90 C70 60, 170 55, 182 90 L182 110 C160 102, 140 100, 120 105 C100 100, 80 102, 58 110 Z"
-      fill={color}
-    />
-  ),
-};
-
+// ── Accessories with character ────────────────────────────────────────────────
 const accentLayers = {
   headphones: (color) => (
     <>
-      <path d="M70 90 C70 40, 170 40, 170 90" stroke={color} strokeWidth="12" fill="none" />
-      <rect x="66" y="88" width="18" height="42" rx="9" fill={color} />
-      <rect x="156" y="88" width="18" height="42" rx="9" fill={color} />
+      <path d="M70 92 C70 36 170 36 170 92" stroke={INK} strokeWidth="13" fill="none" strokeLinecap="round" />
+      <path d="M70 92 C70 36 170 36 170 92" stroke={color} strokeWidth="7" fill="none" strokeLinecap="round" />
+      <rect x="58" y="84" width="24" height="42" rx="10" fill={color} stroke={INK} strokeWidth="5" />
+      <rect x="158" y="84" width="24" height="42" rx="10" fill={color} stroke={INK} strokeWidth="5" />
     </>
   ),
   glasses: (color) => (
     <>
-      <rect x="80" y="82" width="40" height="26" rx="10" stroke={color} strokeWidth="4" fill="none" />
-      <rect x="120" y="82" width="40" height="26" rx="10" stroke={color} strokeWidth="4" fill="none" />
-      <line x1="120" y1="95" x2="140" y2="95" stroke={color} strokeWidth="5" strokeLinecap="round" />
+      <rect x="78" y="80" width="38" height="28" rx="10" fill="#ffffff" fillOpacity="0.35" stroke={color} strokeWidth="6" />
+      <rect x="124" y="80" width="38" height="28" rx="10" fill="#ffffff" fillOpacity="0.35" stroke={color} strokeWidth="6" />
+      <path d="M116 92 L124 92" stroke={color} strokeWidth="6" strokeLinecap="round" />
+      <path d="M78 90 L66 86" stroke={color} strokeWidth="6" strokeLinecap="round" />
+      <path d="M162 90 L174 86" stroke={color} strokeWidth="6" strokeLinecap="round" />
     </>
   ),
   cape: (color) => (
-    <path
-      d="M60 160 Q40 220, 80 250 L160 250 Q200 220, 180 160 Z"
-      fill={color}
-      opacity="0.8"
-    />
+    <path d="M78 154 C40 176 24 216 34 252 L206 252 C216 216 200 176 162 154 Z" fill={color} stroke={INK} strokeWidth="5" strokeLinejoin="round" />
   ),
   none: () => null,
 };
 
-const getExpressionLayer = (expressionKey, strokeColor) => {
-  const expression = expressions[expressionKey] || expressions.smile;
+function Face({ expression }) {
+  const e = expressions[expression] || expressions.smile;
   return (
     <>
-      {expression.leftEye.type === 'circle' ? (
-        <circle {...expression.leftEye.props} fill={strokeColor} />
-      ) : (
-        <path
-          {...expression.leftEye.props}
-          fill="none"
-          stroke={strokeColor}
-          strokeLinecap="round"
-        />
-      )}
-      {expression.rightEye.type === 'circle' ? (
-        <circle {...expression.rightEye.props} fill={strokeColor} />
-      ) : (
-        <path
-          {...expression.rightEye.props}
-          fill="none"
-          stroke={strokeColor}
-          strokeLinecap="round"
-        />
-      )}
-      <path
-        d={expression.mouth}
-        fill="none"
-        stroke={strokeColor}
-        strokeWidth="6"
-        strokeLinecap="round"
-      />
+      {e.eyes.map((eye, i) => {
+        if (eye.type === 'dot') return <circle key={i} cx={eye.cx} cy={eye.cy} r="6" fill={INK} />;
+        return <path key={i} d={eye.d} fill="none" stroke={INK} strokeWidth="6" strokeLinecap="round" />;
+      })}
+      {expression === 'laugh'
+        ? <path d={e.mouth} fill={INK} />
+        : <path d={e.mouth} fill="none" stroke={INK} strokeWidth="6" strokeLinecap="round" />}
+      {/* cheeks */}
+      <circle cx="88" cy="112" r="7" fill="#ff8f8f" opacity="0.55" />
+      <circle cx="152" cy="112" r="7" fill="#ff8f8f" opacity="0.55" />
     </>
   );
-};
+}
 
-const svgContent = (palette, accentColor, geometry, skin, hair, hairShape, accentLayer, accent, expression) => (
-  <>
-    <defs>
-      <linearGradient id="avatar-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor={palette.accent} stopOpacity="0.9" />
-        <stop offset="100%" stopColor="#ffffff" stopOpacity="0.7" />
-      </linearGradient>
-      <filter id="shadow-blur" x="-20%" y="-20%" width="140%" height="140%">
-        <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
-        <feOffset in="blur" dx="0" dy="4" result="offsetBlur" />
-        <feMerge>
-          <feMergeNode in="offsetBlur" />
-          <feMergeNode in="SourceGraphic" />
-        </feMerge>
-      </filter>
-    </defs>
+function Figure({ palette, accentColor, body, skin, hair, hairStyle, accent, expression, outfit }) {
+  const style = hairShapes[hairStyle] || hairShapes.wave;
+  const layers = style(hair);
+  const detail = outfitDetails[outfit] || outfitDetails.astronaut;
+  return (
+    <>
+      {accent === 'cape' && accentLayers.cape(accentColor)}
+      {layers.back}
 
-    <rect x="10" y="10" width="220" height="240" rx="40" fill="url(#avatar-bg)" />
+      {/* arms and hands */}
+      <path d={body.leftArm} fill="none" stroke={INK} strokeWidth="22" strokeLinecap="round" />
+      <path d={body.leftArm} fill="none" stroke={palette.primary} strokeWidth="14" strokeLinecap="round" />
+      <path d={body.rightArm} fill="none" stroke={INK} strokeWidth="22" strokeLinecap="round" />
+      <path d={body.rightArm} fill="none" stroke={palette.primary} strokeWidth="14" strokeLinecap="round" />
+      <circle cx={body.leftHand.cx} cy={body.leftHand.cy} r="11" fill={skin} stroke={INK} strokeWidth="5" />
+      <circle cx={body.rightHand.cx} cy={body.rightHand.cy} r="11" fill={skin} stroke={INK} strokeWidth="5" />
 
-    {accent === 'cape' && accentLayer(accentColor)}
+      {/* neck and torso */}
+      <path d={body.neck} fill={skin} stroke={INK} strokeWidth="5" strokeLinejoin="round" />
+      <path d={body.torso} fill={palette.primary} stroke={INK} strokeWidth="5" strokeLinejoin="round" />
+      {detail(palette)}
 
-    <path d={geometry.torso} fill={palette.primary} filter="url(#shadow-blur)" />
-    <path d={geometry.overlay} fill={palette.secondary} opacity="0.7" />
-
-    <path d={geometry.leftArm} fill={skin} stroke={palette.primary} strokeWidth="10" strokeLinecap="round" />
-    <path d={geometry.rightArm} fill={skin} stroke={palette.primary} strokeWidth="10" strokeLinecap="round" />
-
-    <circle cx="120" cy="90" r="55" fill={skin} />
-    {hairShape(hair)}
-    {getExpressionLayer(expression, '#2b1b18')}
-    {accent !== 'cape' && accentLayer(accentColor)}
-
-    <circle cx="170" cy="50" r="12" fill="#ffffff" opacity="0.4" />
-  </>
-);
+      {/* head, ears, face */}
+      <circle cx="66" cy="98" r="10" fill={skin} stroke={INK} strokeWidth="5" />
+      <circle cx="174" cy="98" r="10" fill={skin} stroke={INK} strokeWidth="5" />
+      <circle cx="120" cy="92" r="52" fill={skin} stroke={INK} strokeWidth="5" />
+      <Face expression={expression} />
+      {layers.front}
+      {accent !== 'cape' && (accentLayers[accent] || accentLayers.none)(accentColor)}
+    </>
+  );
+}
 
 const CharacterAvatar = ({ character, size = 240, className, compact = false }) => {
   const {
@@ -223,15 +271,28 @@ const CharacterAvatar = ({ character, size = 240, className, compact = false }) 
   const skin = skinPalette[skinTone] || skinPalette.sunset;
   const hair = hairPalette[hairColor] || hairPalette.mocha;
   const accentColor = accentPalette[accent] || accentPalette.none;
-  const geometry = baseGeometry[gender] || baseGeometry.female;
+  const body = bodies[gender] || bodies.female;
 
-  const hairShape = hairShapes[hairStyle] || hairShapes.wave;
-  const accentLayer = accentLayers[accent] || accentLayers.none;
+  const figure = (
+    <Figure
+      palette={palette}
+      accentColor={accentColor}
+      body={body}
+      skin={skin}
+      hair={hair}
+      hairStyle={hairStyle}
+      accent={accent}
+      expression={expression}
+      outfit={outfit}
+    />
+  );
 
   if (compact) {
+    // Head and shoulders, square. This is the sprite in a game and the face in
+    // the header, so it is cropped to the part that reads at 32px.
     return (
       <svg
-        viewBox="40 5 160 160"
+        viewBox="34 14 172 172"
         width={size}
         height={size}
         className={className}
@@ -239,7 +300,7 @@ const CharacterAvatar = ({ character, size = 240, className, compact = false }) 
         aria-label="Customized CodeIt character"
         style={{ display: 'block' }}
       >
-        {svgContent(palette, accentColor, geometry, skin, hair, hairShape, accentLayer, accent, expression)}
+        {figure}
       </svg>
     );
   }
@@ -251,7 +312,7 @@ const CharacterAvatar = ({ character, size = 240, className, compact = false }) 
   return (
     <div className={classes} style={{ width: size, height }}>
       <svg viewBox="0 0 240 260" role="img" aria-label="Customized CodeIt character">
-        {svgContent(palette, accentColor, geometry, skin, hair, hairShape, accentLayer, accent, expression)}
+        {figure}
       </svg>
     </div>
   );

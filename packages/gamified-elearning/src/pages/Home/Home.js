@@ -116,6 +116,80 @@ export default function Home() {
     canonical: "/",
   });
 
+  // ── A session is not a visitor ────────────────────────────────────────────
+  // "Welcome back, David" above a sales headline was a state bug: a signed-in
+  // learner being shown marketing written for their parent. If there is a
+  // session, the top of the page is their work.
+  if (user) {
+    return (
+      <>
+        <Header />
+        <div className="studio-home studio-home--member">
+          <main>
+            <section className="studio-member" aria-labelledby="studio-title">
+              <p className="studio-welcome">
+                <span className="studio-welcome__face" aria-hidden="true">
+                  <CharacterAvatar character={character} compact size={44} />
+                </span>
+                Welcome back, {user.name || "Builder"}.
+              </p>
+              <h1 id="studio-title" className="studio-hero__title--compact">
+                {latestProject ? "Pick up where you left off." : "What do you want to make today?"}
+              </h1>
+              <YourShelf
+                projects={shelf}
+                onOpen={() => trackEvent("landing_cta_click", "shelf")}
+              />
+              <div className="studio-hero__actions">
+                {latestProject ? (
+                  <Link
+                    to={`/builder?project=${encodeURIComponent(latestProject.id)}`}
+                    className="studio-button studio-button--primary"
+                    onClick={() => trackEvent("landing_cta_click", "member-resume-project", token)}
+                  >
+                    Continue {latestProject.title} <span aria-hidden="true">→</span>
+                  </Link>
+                ) : (
+                  <Link to="/builder" className="studio-button studio-button--primary">
+                    Make something <span aria-hidden="true">→</span>
+                  </Link>
+                )}
+                <Link to="/lessons" className="studio-hero__textlink">Next lesson</Link>
+                <Link to="/MainPage" className="studio-hero__textlink" data-cta="member-progress">My progress</Link>
+              </div>
+              <Evidence />
+            </section>
+
+            <section className="studio-make" aria-labelledby="studio-make-title">
+              <div className="studio-section-heading">
+                <h2 id="studio-make-title">Start something new</h2>
+              </div>
+              <div className="pick">
+                <ul className="pick__row" aria-label="Games you can open now">
+                  {HOME_PICKS.map((game) => (
+                    <li key={game.id}>
+                      <Link
+                        className="pick__card"
+                        to={`/builder?start=${game.id}`}
+                        onClick={() => trackEvent("landing_cta_click", "starter")}
+                      >
+                        <span className="pick__emoji"><Icon name={game.icon} size={40} strokeWidth={1.5} /></span>
+                        <span className="pick__label">{game.label}</span>
+                        <span className="pick__blurb">{game.blurb}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/explore" className="studio-hero__textlink">See what other students made</Link>
+              </div>
+            </section>
+            <RecentProjects />
+          </main>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <Header />
@@ -129,17 +203,6 @@ export default function Home() {
                   lower down, in plain words, and in the schema and meta where
                   machines read it. */}
               <p className="studio-kicker">Coding for kids, in the browser</p>
-              {/* A returning kid gets their OWN face here, not just their name.
-                  The same avatar they built in the lab and play as in their
-                  games — so the hero is unmistakably theirs. */}
-              {user && (
-                <p className="studio-welcome">
-                  <span className="studio-welcome__face" aria-hidden="true">
-                    <CharacterAvatar character={character} compact size={44} />
-                  </span>
-                  Welcome back, {user.name || "Builder"}.
-                </p>
-              )}
               {/* A returning child does not need the pitch. They have already
                   bought it. They made something. On a phone this headline is
                   350px tall, which pushed their own work off the first screen,
@@ -171,15 +234,11 @@ export default function Home() {
                 onOpen={() => trackEvent("landing_cta_click", "shelf")}
               />
 
-              {/* ── The sentence the page never said out loud ────────────────
-                  It has been true since the day the lessons shipped and it is
-                  the whole differentiator, and a visitor had no way of knowing
-                  it. Stated plainly, above the fold, with both doors beside
-                  it. */}
-              <p className="studio-hero__nolie">
-                <strong>No AI in the lessons or the playground.</strong>{" "}
-                Your child types the code, and Python answers.
-              </p>
+              {/* A boxed sentence, "No AI in the lessons or the playground.
+                  Your child types the code, and Python answers", sat here. It
+                  was the headline again with a border drawn around it: the
+                  same idea three times, stacked, before a single button. One
+                  claim. The headline is it. */}
 
               <Evidence />
 
@@ -188,6 +247,8 @@ export default function Home() {
                   it, and the playground is eleven templates and a Run button.
                   "See how it works" used to sit here, which is an invitation to
                   read further down a page rather than to use the product. */}
+              {/* One orange primary, one plain text link. Three identical
+                  stacked blocks told a parent nothing about which to press. */}
               <div className="studio-hero__actions">
                 {latestProject && (
                   <Link
@@ -198,31 +259,24 @@ export default function Home() {
                     Continue {latestProject.title} <span aria-hidden="true">→</span>
                   </Link>
                 )}
-                <Link
-                  to="/lesson/1"
-                  className={`studio-button ${latestProject ? "studio-button--quiet" : "studio-button--primary"}`}
-                  data-cta="hero-lesson-one"
-                  onClick={() => trackEvent("landing_cta_click", "hero-lesson-one")}
-                >
-                  Open Lesson 1 free <span aria-hidden="true">→</span>
-                </Link>
+                {!latestProject && (
+                  <Link
+                    to="/lesson/1"
+                    className="studio-button studio-button--primary"
+                    data-cta="hero-lesson-one"
+                    onClick={() => trackEvent("landing_cta_click", "hero-lesson-one")}
+                  >
+                    Open Lesson 1 free <span aria-hidden="true">→</span>
+                  </Link>
+                )}
                 <Link
                   to="/playground"
-                  className="studio-button studio-button--quiet"
+                  className="studio-hero__textlink"
                   data-cta="hero-playground"
                   onClick={() => trackEvent("landing_cta_click", "hero-playground")}
                 >
-                  Try the Python playground
+                  Try the playground
                 </Link>
-                {user && (
-                  <Link
-                    to="/MainPage"
-                    className="studio-button studio-button--quiet"
-                    data-cta="member-progress"
-                  >
-                    View my progress
-                  </Link>
-                )}
               </div>
               {/* A row of pills reading "31 lessons · 21 projects · No account
                   needed" sat here. A number invites a comparison, and this is
@@ -280,7 +334,7 @@ export default function Home() {
             <div className="studio-section-heading">
               <p className="studio-kicker">And when they want to make something</p>
               <h2 id="studio-make-title">The studio writes a first version, then hands it over.</h2>
-              <p>This is where the AI lives, and it is optional. Separate from the lessons, and no account needed for it either.</p>
+              <p>The AI lives here, and it is optional.</p>
             </div>
             <div className="pick">
               <p className="pick__ask" id="pick-ask">
@@ -329,11 +383,7 @@ export default function Home() {
                 </form>
               </details>
 
-              {/* "No account needed" also appears in the facts row below,
-                  and saying it twice on one screen is how a claim starts to
-                  sound like a slogan. This keeps the half the row does not
-                  carry. */}
-              <small className="pick__note">Nothing to download.</small>
+
 
               {/* "Play real games. Open them up. Make them yours." used to
                   sit here, saying for a third time on one screen what the

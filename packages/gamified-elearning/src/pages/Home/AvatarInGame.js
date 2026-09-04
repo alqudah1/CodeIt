@@ -35,6 +35,15 @@ export const HAIR = [
   { value: 'ocean',    label: 'Blue',   swatch: '#2b7de9' },
   { value: 'lavender', label: 'Purple', swatch: '#8660c1' },
 ];
+// Silhouettes, not only colours. Without this every avatar came out identical
+// apart from colour.
+export const STYLE = [
+  { value: 'wave',  label: 'Wave' },
+  { value: 'crown', label: 'Spiky' },
+  { value: 'bun',   label: 'Bun' },
+  { value: 'curls', label: 'Curls' },
+  { value: 'pixie', label: 'Short' },
+];
 export const OUTFIT = [
   { value: 'astronaut', label: 'Astronaut', swatch: '#4051db' },
   { value: 'explorer',  label: 'Explorer',  swatch: '#f28b50' },
@@ -46,6 +55,30 @@ const START = {
   gender: 'female', skinTone: 'sunset', hairStyle: 'wave', hairColor: 'mocha',
   outfit: 'astronaut', accent: 'headphones', expression: 'smile', nickname: '',
 };
+
+function Styles({ label, options, value, onPick, character }) {
+  return (
+    <div className="avdemo__row" role="radiogroup" aria-label={label}>
+      <span className="avdemo__row-label">{label}</span>
+      <div className="avdemo__swatches">
+        {options.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            role="radio"
+            aria-checked={value === option.value}
+            aria-label={option.label}
+            title={option.label}
+            className={`avdemo__style${value === option.value ? ' is-on' : ''}`}
+            onClick={() => onPick(option.value)}
+          >
+            <CharacterAvatar character={{ ...character, hairStyle: option.value, accent: 'none' }} compact size={36} />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function Swatches({ label, options, value, onPick }) {
   return (
@@ -98,7 +131,7 @@ export default function AvatarInGame() {
     <section className="avdemo" aria-labelledby="avdemo-title">
       <div className="avdemo__head">
         <h2 id="avdemo-title">Make a character. It becomes the player in the game.</h2>
-        <p>Three picks, one button. The character you build here is the one catching the stars.</p>
+        <p>Pick a look, press the button. The character you build here is the one catching the stars.</p>
       </div>
 
       <div className={`avdemo__body${playing ? ' is-playing' : ''}`}>
@@ -107,6 +140,7 @@ export default function AvatarInGame() {
             <CharacterAvatar character={character} size={150} />
           </div>
           <Swatches label="Skin" options={SKIN} value={character.skinTone} onPick={(v) => pick({ skinTone: v })} />
+          <Styles label="Style" options={STYLE} value={character.hairStyle} onPick={(v) => pick({ hairStyle: v })} character={character} />
           <Swatches label="Hair" options={HAIR} value={character.hairColor} onPick={(v) => pick({ hairColor: v })} />
           <Swatches label="Outfit" options={OUTFIT} value={character.outfit} onPick={(v) => pick({ outfit: v })} />
           <button

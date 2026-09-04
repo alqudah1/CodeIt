@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { getPyodideRuntime } from '../utils/pyodideLoader';
+import Icon from './Icon/Icon';
 import './CodeRunnerPython.css';
 
 // Starter code per lesson id
@@ -192,7 +193,7 @@ const CodeRunnerPython = ({
             title={pyReady ? 'Run your Python code (Ctrl+Enter)' : 'Python starts the first time you press Run'}
           >
             {starting && <span className="cr-spinner" aria-hidden="true" />}
-            {starting ? 'Starting Python…' : running ? 'Running…' : '▶ Run'}
+            {starting ? 'Starting Python…' : running ? 'Running…' : <><Icon name="play" size={14} /> Run</>}
           </button>
         </div>
       </div>

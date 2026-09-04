@@ -64,7 +64,9 @@
 }
 
 .tryp__still-run {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin: 0;
   padding: 12px 14px;
   min-height: 44px;
