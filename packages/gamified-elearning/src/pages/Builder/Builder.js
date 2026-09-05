@@ -49,6 +49,10 @@ import Icon from '../../components/Icon/Icon';
 import { SHELVES, starterProjectById } from './starterProjects';
 import { HOME_PICKS } from './starterGames';
 import LiveFrame from '../Home/LiveFrame';
+import YourShelf from '../Home/YourShelf';
+import { LevelCard } from '../Home/MemberHome';
+import LiveCardArt from '../../components/LiveCardArt/LiveCardArt';
+import '../Home/MemberHome.css';
 import {
   BrowserSticker,
   CabinetSticker,
@@ -789,11 +793,18 @@ export default function Builder() {
   });
 
   const { user, token } = useContext(AuthContext);
-  const { awardXP, character } = useCharacter();
+  const { awardXP, character, stats } = useCharacter();
   const navigate        = useNavigate();
   const location        = useLocation();
   const isNewAccountWelcome = Boolean(user)
     && new URLSearchParams(location.search || '').get('welcome') === '1';
+  const [welcomeToast, setWelcomeToast] = useState(isNewAccountWelcome);
+  useEffect(() => {
+    if (!isNewAccountWelcome) return undefined;
+    setWelcomeToast(true);
+    const t = setTimeout(() => setWelcomeToast(false), 7000);
+    return () => clearTimeout(t);
+  }, [isNewAccountWelcome]);
 
   // A parent who clicked "Start building free" on the pricing page lands here,
   // in their child's tool — which is the honest demo, but the trail back to
@@ -3135,33 +3146,61 @@ export default function Builder() {
         )}
 
         {/* ════════════════════════════════════════
-            HERO
+            THE FIRST SCREEN
         ════════════════════════════════════════ */}
-        {(!hasResult || showStartOver) && !loading && (
+        {/* Rounds 68 to 71: a child who had just made an account landed on a
+            "STUDIO" pill, a slogan, a green panel, a Pixel card and a section
+            sentence, sixty words of instruction at the highest-energy moment
+            they will ever have with this product, before a game they could
+            tap. The signed-in home already solved this. Same components:
+            their name and avatar with the level, then three games running,
+            "Pick one and it is yours". A visitor with no account still gets
+            the slogan, because they have no other context. */}
+        {(!hasResult || showStartOver) && !loading && !user && (
         <section className="bldr-hero">
           <div className="bldr-hero__badge">Studio</div>
           <h1 className="bldr-hero__title">
             Describe it. Build it.<br />
             <span className="bldr-hero__title-accent">Make it yours.</span>
           </h1>
-          {/* This paragraph said "Start with a game, quiz, or website. Get a
-              working first version, then play with it, change the code, and
-              learn how it works", directly under a headline that says
-              "Describe it. Build it. Make it yours." and directly above a coach
-              card that says "Tap a game to open it. It opens straight away",
-              and above a line that said "Tap one. It opens straight away". Four
-              ways of saying the same sentence before a child can touch
-              anything. The headline keeps it. */}
         </section>
         )}
-
-        {isNewAccountWelcome && !code && (
-          <aside className="bldr-account-ready" role="status">
-            <strong>Your account is ready.</strong>
-            <span>Choose a starter below or describe your own idea. Your first saved project will stay in this account.</span>
-          </aside>
+        {(!hasResult || showStartOver) && !loading && user && (
+        <section className="bldr-arrive studio-home--member" aria-labelledby="bldr-arrive-title">
+          {/* "Your account is ready" is a success message, so it is a toast
+              that fades, not a permanent green panel. In the flow, above the
+              name, so it covers nothing; it fades and folds away. */}
+          {welcomeToast && (
+            <aside className="bldr-account-ready" role="status">
+              <strong>Your account is ready.</strong>
+              <span>Your first saved project will stay in this account.</span>
+            </aside>
+          )}
+          <h1 id="bldr-arrive-title" className="member__hello">
+            {isNewAccountWelcome ? 'Welcome' : 'Welcome back'}, {user.name || 'Builder'}.
+          </h1>
+          <div className="member__row">
+            <LevelCard name={user.name || 'Builder'} character={character} totalXP={stats?.totalXP} />
+            <YourShelf
+              projects={[]}
+              starters={HOME_PICKS}
+              prepare={(html) => injectPlayerSprite(html, playerSpriteUri)}
+              signedIn
+              onPick={(game) => openStarter(starterProjectById(game.id))}
+            />
+          </div>
+          <button
+            type="button"
+            className="studio-hero__textlink bldr-arrive__own"
+            onClick={() => {
+              promptRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+              setTimeout(() => promptRef.current?.focus(), 300);
+            }}
+          >
+            Or type your own idea
+          </button>
+        </section>
         )}
-
 
         {/* ── Pixel, in person ──────────────────────────────────────────────
             The guidance brain — coachStage, seven state-aware steps — always
@@ -3195,8 +3234,48 @@ export default function Builder() {
             Once a project exists the floating position is right, because then
             the thing on screen is the child's own project and Pixel should be
             beside it rather than pushing it down. */}
-        {!isPlayMode && !editModeOn && !studioPanel && (
-        <aside className={`pixel-guide${coachOpen ? '' : ' pixel-guide--resting'}${!code ? ' pixel-guide--inline' : ''}`}>
+        {/* Rounds 68 to 71: before a project exists, Pixel is one line
+            beside the games, not a bordered card with a heading, a paragraph
+            and three buttons. The games on the same screen are the
+            instruction. An early learner keeps the switch that stops the
+            reading aloud, which is the one audio control that matters. */}
+        {!isPlayMode && !editModeOn && !studioPanel && !code && (
+        <aside className={`pixel-guide pixel-guide--line${coachOpen ? '' : ' pixel-guide--resting'}`}>
+          <button
+            type="button"
+            className="pixel-guide__pal"
+            onClick={() => { clearTimeout(coachRestTimer.current); setCoachOpen(open => !open); }}
+            aria-label={coachOpen ? 'Put Pixel to rest' : 'Ask Pixel what to do next'}
+          >
+            <img src="/brand/pixel-guide.png" alt="" />
+          </button>
+          {coachOpen && (
+            <div className={`pixel-guide__line pixel-guide__bubble--${guideLevel}`} role="status" aria-live="polite">
+              <strong className="pixel-guide__title">{coachStage.title}</strong>
+              {/* An early learner is read to automatically, so the one
+                  audio control here is the switch that stops it. */}
+              {guideLevel === 'early' && (
+                <button
+                  type="button"
+                  className="pixel-guide__quiet"
+                  aria-pressed={pixelQuiet}
+                  onClick={() => {
+                    const next = !pixelQuiet;
+                    setPixelQuiet(next);
+                    try { localStorage.setItem('codeit_pixel_quiet', next ? '1' : '0'); } catch (_) {}
+                    if (next && window.speechSynthesis) window.speechSynthesis.cancel();
+                  }}
+                  aria-label={pixelQuiet ? 'Let Pixel read steps out loud' : 'Stop Pixel reading out loud'}
+                >
+                  <Icon name={pixelQuiet ? 'mute' : 'speaker'} size={18} />
+                </button>
+              )}
+            </div>
+          )}
+        </aside>
+        )}
+        {!isPlayMode && !editModeOn && !studioPanel && code && (
+        <aside className={`pixel-guide${coachOpen ? '' : ' pixel-guide--resting'}`}>
           {coachOpen && (
             <div className={`pixel-guide__bubble pixel-guide__bubble--${guideLevel}`} role="status" aria-live="polite">
               <span className="pixel-guide__step">Pixel · Step {coachStage.number}</span>
@@ -3267,10 +3346,7 @@ export default function Builder() {
             <div className="bldr-shelf" key={shelf.kind}>
               <div className="bldr-shelf__head">
                 {(() => { const Art = SHELF_STICKERS[shelf.kind]; return Art ? <Art size={40} /> : null; })()}
-                <div>
-                  <h3 className="bldr-shelf__title">{shelf.title}</h3>
-                  <p className="bldr-shelf__line">{shelf.line}</p>
-                </div>
+                <h3 className="bldr-shelf__title">{shelf.title}</h3>
               </div>
               <ul className="bldr-shelf__row">
                 {shelf.items.map(item => (
@@ -3285,7 +3361,11 @@ export default function Builder() {
                       }
                     >
                       <span className={`bldr-shelf__marquee bldr-shelf__marquee--${shelf.items.indexOf(item) % 4}`} aria-hidden="true">
-                        <span className="bldr-shelf__emoji"><Icon name={item.icon} size={58} strokeWidth={1.4} /></span>
+                        <LiveCardArt
+                          code={item.code}
+                          title={`${item.label}, running`}
+                          placeholder={<span className="bldr-shelf__emoji"><Icon name={item.icon} size={58} strokeWidth={1.4} /></span>}
+                        />
                       </span>
                       <span className="bldr-shelf__meta">
                         <span className="bldr-shelf__label">{item.label}</span>
@@ -5784,7 +5864,7 @@ export default function Builder() {
             it, and put the live starter previews there instead. A child in
             the studio does not need to be told what the studio is; a game
             actually moving tells them what they can have. */}
-        {!code && !loading && (
+        {!code && !loading && !user && (
         <section className="bldr-live" aria-labelledby="bldr-live-title">
           <h2 className="bldr-live-title" id="bldr-live-title">These three are running now. Pick one and it is yours.</h2>
           <ul className="bldr-live__row">

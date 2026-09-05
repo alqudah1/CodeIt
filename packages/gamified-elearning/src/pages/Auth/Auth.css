@@ -611,3 +611,60 @@
 .auth-needs-parent__lead { margin: 0; font-size: 18px; font-weight: 800; line-height: 1.4; }
 .auth-needs-parent__sub { margin: 0; font-size: 15px; line-height: 1.5; }
 .auth-needs-parent__try { font-size: 15px; text-align: center; }
+
+/* ── Rounds 68 to 71: the signup form on a phone ─────────────────────────────
+   The birthday field ran past the card, the password field was Safari-yellow,
+   the logo sat under the status bar, and three fields wore three treatments. */
+
+/* iOS Safari sizes a date input from its own picker and ignores width:100%
+   on its own. min-width: 0 is the line everyone misses. */
+.auth-input--date,
+.auth-form input[type="date"] {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+  text-align: left;
+  display: block;
+  min-height: 3rem;
+  line-height: 1.3;
+  font: inherit;
+  font-size: 0.97rem;
+  color: var(--ink, #3D302B);
+  background: rgba(255,255,255,0.9);
+}
+.auth-input--date::-webkit-date-and-time-value { text-align: left; }
+
+/* Safari's autofill highlight is yellow; nothing else on the site is. */
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #fff inset;
+  -webkit-text-fill-color: var(--ink, #3D302B);
+  caret-color: var(--ink, #3D302B);
+}
+
+/* Three fields, one treatment. */
+.auth-form .auth-input { min-height: 3rem; padding: 0.7rem 1rem; font-size: 0.97rem; border-width: 2px; }
+
+/* Real side margins, no sideways overflow, and room under the status bar. */
+.auth-page {
+  overflow-x: hidden;
+  padding-top: max(2rem, calc(1rem + env(safe-area-inset-top, 0px)));
+  padding-left: max(1rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+}
+.auth-card { width: min(460px, 100%); max-width: 100%; min-width: 0; }
+.auth-card > * { min-width: 0; }
+
+/* The project they were making, running at the top of the card. */
+.auth-draft {
+  margin: -0.4rem 0 0;
+}
+.auth-draft__frame {
+  aspect-ratio: 16 / 9;
+  border: 2px solid var(--ink, #35220E);
+  border-radius: 14px;
+}

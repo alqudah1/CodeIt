@@ -38,8 +38,13 @@ const TYPE_ICON = {
   tool: 'tool',
 };
 
-function StarterShelf({ starters, onOpen, prepare }) {
+function StarterShelf({ starters, onOpen, onPick, prepare }) {
   const [first, ...others] = starters;
+  // In the studio the shelf opens the game in place rather than navigating.
+  const pick = (game) => (event) => {
+    onOpen?.(game);
+    if (onPick) { event.preventDefault(); onPick(game); }
+  };
   return (
     <section className="shelf shelf--starters" aria-labelledby="shelf-title">
       <h2 className="shelf__title" id="shelf-title">Pick one and it is yours</h2>
@@ -47,7 +52,7 @@ function StarterShelf({ starters, onOpen, prepare }) {
       <Link
         className="shelf__hero"
         to={`/builder?start=${encodeURIComponent(first.id)}`}
-        onClick={() => onOpen?.(first)}
+        onClick={pick(first)}
       >
         <LiveFrame className="shelf__frame" code={prepare(first.code)} title={`${first.label}, running`} />
         <span className="shelf__meta">
@@ -64,7 +69,7 @@ function StarterShelf({ starters, onOpen, prepare }) {
               <Link
                 className="shelf__small"
                 to={`/builder?start=${encodeURIComponent(game.id)}`}
-                onClick={() => onOpen?.(game)}
+                onClick={pick(game)}
               >
                 <LiveFrame className="shelf__frame shelf__frame--small" code={prepare(game.code)} title={`${game.label}, running`} />
                 <span className="shelf__small-name">{game.label}</span>
@@ -77,9 +82,9 @@ function StarterShelf({ starters, onOpen, prepare }) {
   );
 }
 
-export default function YourShelf({ projects = [], starters = [], onOpen, now = Date.now(), prepare = (code) => code, signedIn = false }) {
+export default function YourShelf({ projects = [], starters = [], onOpen, onPick, now = Date.now(), prepare = (code) => code, signedIn = false }) {
   if (!projects.length) {
-    if (starters.length) return <StarterShelf starters={starters} onOpen={onOpen} prepare={prepare} />;
+    if (starters.length) return <StarterShelf starters={starters} onOpen={onOpen} onPick={onPick} prepare={prepare} />;
     return null;
   }
 

@@ -41,7 +41,7 @@ describe('Explore card statistics', () => {
       ok: true,
       json: async () => ({
         trending: [
-          project({ title: 'Brand New Maze' }),
+          project({ title: 'Brand New Maze', createdAt: new Date().toISOString() }),
           project({ title: 'Played Snake', plays: 12, likes: 3, remixes: 1 }),
         ],
         newest: [], mostPlayed: [], mostRemixed: [],

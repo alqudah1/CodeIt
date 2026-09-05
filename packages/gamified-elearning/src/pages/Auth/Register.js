@@ -8,7 +8,25 @@ import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
 import BrandLogo from '../../components/BrandLogo/BrandLogo';
 import { resolveAuthDestination } from '../../utils/authDestination';
+import LiveFrame from '../Home/LiveFrame';
 import './Auth.css';
+
+// ── The project they were making, at the top of the form ────────────────────
+//
+// Rounds 68 to 71: a child arriving here has, in most cases, just built
+// something and is being asked for a username before they can keep it. So
+// the form shows it, running, and the heading says what the form is: the
+// last step of something they were already doing.
+function readBuilderDraft() {
+  try {
+    const raw = sessionStorage.getItem('codeit_builder_draft');
+    if (!raw) return null;
+    const draft = JSON.parse(raw);
+    return typeof draft?.code === 'string' && draft.code.length > 80 ? draft : null;
+  } catch {
+    return null;
+  }
+}
 
 // ── Sub-component: Brand mark ─────────────────────────────────────────────────
 function BrandMark() {
@@ -62,6 +80,7 @@ export default function Register() {
   const [pendingToken, setPendingToken] = useState(null);
   const [needsParent, setNeedsParent] = useState(false);
   const firstDob = rememberedDob();
+  const [draft] = useState(readBuilderDraft);
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -269,14 +288,20 @@ export default function Register() {
           <BrandMark />
           <button type="button" className="auth-back" onClick={goBack}>Back</button>
 
+          {hasBuilderDraft && draft && (
+            <div className="auth-draft" aria-hidden="true">
+              <LiveFrame className="auth-draft__frame" code={draft.code} title="Your project, running" />
+            </div>
+          )}
           <header className="auth-header">
             <span className="auth-pill">Student</span>
-            <h1>{hasBuilderDraft ? `Create an account to ${builderActionWord}` : 'Create your account'}</h1>
-            <p>
-              {hasBuilderDraft
-                ? 'Your project will be waiting when this short setup is finished.'
-                : 'Pick a username, then turn your first idea into a project.'}
-            </p>
+            <h1>
+              {hasBuilderDraft && draft
+                ? 'Your project is ready. Give yourself a name and it is saved.'
+                : hasBuilderDraft
+                  ? `Create an account to ${builderActionWord}`
+                  : 'Pick a name. Everything you make is saved to it.'}
+            </h1>
           </header>
 
           {needsParent ? (
@@ -342,10 +367,13 @@ export default function Register() {
               <label className="auth-label" htmlFor="reg-s-dob">Birthday</label>
               <input
                 type="date"
-                className="auth-input"
+                className="auth-input auth-input--date"
                 id="reg-s-dob"
                 defaultValue={firstDob || undefined}
                 readOnly={Boolean(firstDob)}
+                required
+                autoComplete="off"
+                max={new Date().toISOString().slice(0, 10)}
                 {...regS('dob', {
                   required: 'Birthday is required',
                   validate: {

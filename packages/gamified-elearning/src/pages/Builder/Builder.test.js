@@ -205,12 +205,12 @@ describe('studio opening', () => {
     );
 
     expect(screen.getByRole('button', { name: /Big help/i })).toHaveAttribute('aria-pressed', 'true');
-    // The coach text box became Pixel's speech bubble; the rule it carried
-    // survives the costume change: an early learner gets the bigger voice,
-    // with Show me and Read to me.
+    // Before a project exists Pixel is one line beside the games (rounds 68
+    // to 71): the bigger voice for an early learner, and the one audio
+    // control that matters, the switch that stops the reading aloud.
     expect(screen.getByRole('status')).toHaveClass('pixel-guide__bubble--early');
-    expect(screen.getByRole('button', { name: /Show me/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Read to me/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Stop Pixel reading out loud/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Show me/i })).toBeNull();
 
     fireEvent.click(screen.getByRole('button', { name: /Explore myself/i }));
     expect(screen.getByRole('button', { name: /Explore myself/i })).toHaveAttribute('aria-pressed', 'true');

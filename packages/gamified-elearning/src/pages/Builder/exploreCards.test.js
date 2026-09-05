@@ -67,10 +67,30 @@ test('the heading promises what the page holds', async () => {
   expect(screen.queryByText(/other learners/)).toBeNull();
 });
 
-test('Play leads, and its icon is the site play icon rather than an emoji', async () => {
+test('the Play icon is the site play icon rather than an emoji', async () => {
   show([project()]);
   const play = await screen.findByRole('link', { name: /Play/ });
   expect(play.querySelector('svg')).not.toBeNull();
   expect(play.textContent).not.toMatch(/▶/);
   expect(document.querySelector('.exp-stat__icon svg')).not.toBeNull();
+});
+
+test('"Just made" means the last few days, not every card', async () => {
+  const { isJustMade } = require('./Explore');
+  const now = Date.parse('2026-09-05T12:00:00Z');
+  expect(isJustMade('2026-09-04T12:00:00Z', now)).toBe(true);
+  expect(isJustMade('2026-08-20T12:00:00Z', now)).toBe(false);
+  expect(isJustMade(undefined, now)).toBe(false);
+  show([project({ plays: 0, createdAt: '2026-01-01T00:00:00Z' })]);
+  await screen.findByText('Colorful one-page website');
+  expect(screen.queryByText('Just made')).toBeNull();
+});
+
+test('the card art rests on the sticker and only runs the project while on screen', async () => {
+  show([project()]);
+  await screen.findByText('Colorful one-page website');
+  // In a renderer with no IntersectionObserver nothing is on screen, so the
+  // sticker stays and no frame is mounted: the resting state is the icon.
+  expect(document.querySelector('.exp-card__live .livecard__rest .arcade-sticker, .exp-card__live .livecard__rest svg')).not.toBeNull();
+  expect(document.querySelector('.exp-card__live iframe')).toBeNull();
 });

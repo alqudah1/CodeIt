@@ -7182,3 +7182,110 @@ details.bldr-device-sizes .bldr-device-sizes__options {
 .bldr-name__save { flex: 1; background: var(--arc-orange); }
 .bldr-name__cancel { background: var(--paper); }
 .bldr-name__save:active, .bldr-name__cancel:active { transform: translateY(2px); box-shadow: var(--pop-down); }
+
+/* ── The first screen, signed in (rounds 68 to 71) ──────────────────────────
+   The home page's own components: name, avatar with level, three games
+   running. Nothing to read before there is something to tap. */
+.bldr-arrive {
+  width: 100%;
+  max-width: var(--bldr-max, 860px);
+  margin: 0 auto 0.5rem;
+}
+.bldr-arrive .member__row { margin-top: 0; }
+.bldr-arrive__own {
+  display: inline-block;
+  margin-top: 12px;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.bldr-arrive__own:hover { color: var(--arc-orange); }
+
+/* Pixel as one line beside the games, before a project exists. */
+.pixel-guide--line {
+  position: static;
+  width: 100%;
+  max-width: var(--bldr-max, 860px);
+  margin: 0 auto 0.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.pixel-guide--line .pixel-guide__pal { width: 48px; height: 48px; flex: none; }
+.pixel-guide__line {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  min-width: 0;
+}
+.pixel-guide__line .pixel-guide__title {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--ink);
+}
+.pixel-guide__line.pixel-guide__bubble--early .pixel-guide__title { font-size: 1.15rem; }
+.pixel-guide--line .pixel-guide__read {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: var(--pop-down);
+  font: inherit;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* The account-ready toast: in the flow above the name, so it covers
+   nothing, and it fades and folds away by itself. */
+.bldr-arrive .bldr-account-ready {
+  position: static;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  align-items: baseline;
+  width: auto;
+  max-width: none;
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  background: var(--arc-mint);
+  box-shadow: 0 3px 0 var(--ink);
+  color: var(--ink);
+  font-size: 0.9rem;
+  text-align: left;
+  overflow: hidden;
+  animation: bldr-toast-fold 7s ease both;
+}
+@keyframes bldr-toast-fold {
+  0% { opacity: 0; transform: translateY(-6px); }
+  6%, 78% { opacity: 1; transform: translateY(0); max-height: 120px; margin-bottom: 12px; padding-top: 10px; padding-bottom: 10px; }
+  92% { opacity: 0; }
+  100% { opacity: 0; max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; border-width: 0; }
+}
+
+/* The starter cabinets: the marquee is tall enough for the game to read,
+   and the shelf head is the word alone. */
+.bldr-shelf__marquee { height: 112px; position: relative; overflow: hidden; }
+.bldr-shelf__marquee .livecard__rest { position: absolute; }
+.bldr-shelf__head { align-items: center; }
+@media (max-width: 640px) {
+  .bldr-shelf__marquee { height: 96px; }
+}

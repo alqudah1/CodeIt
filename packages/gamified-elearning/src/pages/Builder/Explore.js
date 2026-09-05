@@ -14,6 +14,7 @@ import Icon from '../../components/Icon/Icon';
 import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
 import { displayTitle } from '../../utils/displayTitle';
+import LiveCardArt from '../../components/LiveCardArt/LiveCardArt';
 import './Explore.css';
 
 // ── helpers ──────────────────────────────────────────────────────
@@ -58,6 +59,29 @@ const CATEGORY_ART = {
   web: BrowserSticker,
   tool: ShopSticker,
 };
+
+// The feed carries no code, so a card that is about to run fetches its
+// project once (the public read; the view count is a separate ping that only
+// the project page sends). Cached for the page's life.
+const codeCache = new Map();
+export function loadProjectCode(publicId) {
+  if (!publicId) return Promise.resolve('');
+  if (!codeCache.has(publicId)) {
+    codeCache.set(publicId, fetch(`${API_BASE_URL}/api/builder/pub/${encodeURIComponent(publicId)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d?.project?.generated_code || '')
+      .catch(() => ''));
+  }
+  return codeCache.get(publicId);
+}
+
+// "Just made" means made in the last few days. On a page where everything
+// wore it, it said nothing.
+export const JUST_MADE_DAYS = 3;
+export function isJustMade(createdAt, now = Date.now()) {
+  const at = Date.parse(createdAt || '');
+  return Number.isFinite(at) && now - at < JUST_MADE_DAYS * 86_400_000;
+}
 
 function titleTilt(title = '') {
   let h = 0;
@@ -108,16 +132,26 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
           aria-label={`Play ${name}`}
         >
           <span className="exp-card__type-badge">{typeWord(project.projectType)}</span>
-          <span className="exp-card__thumb-burst" aria-hidden="true" />
-          {(() => {
-            // A shop gets the storefront even though it lives in the web
-            // category: it is the drawing a child would pick for it.
-            const raw = String(project.projectType || '').toLowerCase();
-            const Art = /shop|store|restaurant/.test(raw)
-              ? ShopSticker
-              : (CATEGORY_ART[cat] || ControllerSticker);
-            return <Art size={62} tilt={titleTilt(name)} />;
-          })()}
+          {/* The art is the project itself, running, while the card is on
+              screen (LiveCardArt keeps it to a few at once). The sticker is
+              what it rests on and what it shows while loading. */}
+          <LiveCardArt
+            className="exp-card__live"
+            loadCode={() => loadProjectCode(project.publicId)}
+            title={`${name}, running`}
+            placeholder={(
+              <>
+                <span className="exp-card__thumb-burst" aria-hidden="true" />
+                {(() => {
+                  const raw = String(project.projectType || '').toLowerCase();
+                  const Art = /shop|store|restaurant/.test(raw)
+                    ? ShopSticker
+                    : (CATEGORY_ART[cat] || ControllerSticker);
+                  return <Art size={62} tilt={titleTilt(name)} />;
+                })()}
+              </>
+            )}
+          />
         </div>
         {!project.isShowcase && (
           <button
@@ -145,7 +179,9 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
             there are numbers. */}
         {(project.plays || 0) + (project.likes || 0) + (project.remixes || 0) === 0 ? (
           <div className="exp-card__stats">
-            <span className="exp-stat exp-stat--new"><Icon name="sparkle" size={15} /> Just made</span>
+            {isJustMade(project.createdAt) && (
+              <span className="exp-stat exp-stat--new"><Icon name="sparkle" size={15} /> Just made</span>
+            )}
           </div>
         ) : (
           <div className="exp-card__stats">
@@ -158,8 +194,8 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
 
       {/* Actions */}
       <div className="exp-card__actions">
-        {/* Play leads: it is what most children want. Remix is the one that
-            matters to us, so it stays, as the quiet second key. */}
+        {/* Remix leads (rounds 68 to 71): a remix creates a project, and a
+            project gets published and shared. Play stays, as the quiet key. */}
         <Link
           to={`/project/${project.publicId}`}
           className="exp-btn exp-btn--play"

@@ -1,0 +1,25 @@
+/* The icon rests underneath; the running game covers it while on screen. */
+.livecard {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.livecard__rest {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.livecard__frame {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  background: transparent;
+  animation: livecard-in 0.35s ease both;
+}
+@keyframes livecard-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .livecard__frame { display: none; }
+}

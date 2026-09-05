@@ -11,6 +11,7 @@ import { trackEvent } from '../../utils/trackEvent';
 import YourShelf from './YourShelf';
 import LiveFrame from './LiveFrame';
 import RecentProjects from './RecentProjects';
+import useAvatarSprite from '../../hooks/useAvatarSprite';
 import './MemberHome.css';
 
 // ── A shelf, not a landing page ──────────────────────────────────────────────
@@ -31,7 +32,7 @@ import './MemberHome.css';
 // A child should land on it and tap something within one second without
 // reading a word.
 
-function LevelCard({ name, character, totalXP }) {
+export function LevelCard({ name, character, totalXP }) {
   const xp = getXpProgress(totalXP || 0);
   const next = getNextUnlock(xp.level);
   const nextLabel = getNextUnlockLabel(next);
@@ -61,23 +62,7 @@ export default function MemberHome({ user, token, shelf, latestProject }) {
   const name = user?.name || 'Builder';
 
   // The child's avatar is the player in the starters, on the home page too.
-  // The sprite module pulls in react-dom/server, so it is loaded after the
-  // page is up rather than before.
-  const [sprite, setSprite] = useState('');
-  const [inject, setInject] = useState(null);
-  useEffect(() => {
-    let live = true;
-    import('../../utils/avatarSprite').then(({ avatarSpriteDataUri, injectPlayerSprite }) => {
-      if (!live) return;
-      setSprite(avatarSpriteDataUri(character));
-      setInject(() => injectPlayerSprite);
-    }).catch(() => {});
-    return () => { live = false; };
-  }, [character]);
-  const prepare = useMemo(
-    () => (inject && sprite ? (code) => inject(code, sprite) : (code) => code),
-    [inject, sprite]
-  );
+  const prepare = useAvatarSprite(character);
 
   // The browser shelf is written for guests; a signed-in child's projects
   // live on their account, and the list the page already has carries no

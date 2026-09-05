@@ -642,19 +642,24 @@
   overflow-wrap: anywhere;
 }
 
-/* Play leads; Remix is the quiet second key. */
+/* Remix leads; Play is the quiet key. */
 .exp-card__actions .exp-btn--play {
-  flex: 1.4;
+  flex: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 1px 0 var(--ink);
+  font-weight: 700;
 }
 .exp-card__actions .exp-btn--remix {
-  flex: 1;
-  box-shadow: 0 1px 0 var(--ink);
-  font-weight: 600;
-  opacity: 0.92;
+  flex: 1.4;
+  background: var(--arc-orange);
+  color: var(--ink);
+  box-shadow: var(--pop-rest);
+  font-weight: 800;
 }
 
 /* The heading fits the screen it is on. */
@@ -689,3 +694,8 @@
 @media (max-width: 480px) {
   .exp-content { padding: 14px 12px 28px; }
 }
+
+/* The card art is the project running while the card is on screen. */
+.exp-card__live { position: absolute; inset: 0; z-index: 1; }
+.exp-card__live .livecard__frame { border-bottom: 2.5px solid var(--ink); }
+.exp-card__thumb > .exp-card__type-badge { z-index: 2; }
