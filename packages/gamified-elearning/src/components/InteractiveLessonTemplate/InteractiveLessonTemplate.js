@@ -990,9 +990,14 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
         {lessonPrompt && (
           <div className="sl-builder-link">
             <span className="sl-builder-link__label">Want to see this in action?</span>
+            {/* A real href, for middle-click and open-in-new-tab, but
+                nofollow (message 75): thirty-one of these, each a different
+                /builder?prompt=... with no content of its own, were filling
+                Google's crawl queue with duplicates of one page. */}
             <a
               href={`/builder?prompt=${encodeURIComponent(lessonPrompt)}&from=lesson-${id}`}
               className="sl-builder-link__btn"
+              rel="nofollow"
             >
               Open this in the studio
             </a>

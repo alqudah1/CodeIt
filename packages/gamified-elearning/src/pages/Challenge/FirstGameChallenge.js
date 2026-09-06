@@ -107,6 +107,7 @@ export default function FirstGameChallenge() {
                   <Link
                     to={builderLink(game.prompt)}
                     className="fgc-choice__link"
+                    rel="nofollow"
                     onClick={() => void trackEvent('challenge_start', game.id)}
                   >
                     Build {game.title} <span>→</span>
