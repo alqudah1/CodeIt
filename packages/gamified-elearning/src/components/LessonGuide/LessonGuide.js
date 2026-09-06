@@ -4,6 +4,7 @@ import { useCharacter } from '../../context/CharacterContext';
 import { effectiveGuideLevel } from '../../utils/guideLevel';
 import CharacterAvatar from '../CharacterAvatar/CharacterAvatar';
 import Icon from '../Icon/Icon';
+import { VOICE_EVENT, setVoiceState, speak, stopSpeaking, voiceState } from '../../utils/voice';
 import './LessonGuide.css';
 
 // One hint per (stepType, state) combination
@@ -36,16 +37,6 @@ const getHint = (stepType, isCurrentDone, isLastStep) => {
   }
 };
 
-// Same voice as Pixel in the studio, so the site sounds like one guide.
-function readHint(text) {
-  if (!text || !window.speechSynthesis || typeof window.SpeechSynthesisUtterance !== 'function') return;
-  window.speechSynthesis.cancel();
-  const message = new window.SpeechSynthesisUtterance(text);
-  message.rate = 0.82;
-  message.pitch = 1.08;
-  window.speechSynthesis.speak(message);
-}
-
 const LessonGuide = ({ stepType, isCurrentDone, isLastStep }) => {
   const { user } = useContext(AuthContext) || {};
   const { character } = useCharacter() || {};
@@ -56,20 +47,36 @@ const LessonGuide = ({ stepType, isCurrentDone, isLastStep }) => {
   // is belt and braces, not a known fault.
   const name = character?.nickname || 'Guide';
   const guideLevel = effectiveGuideLevel(user);
-  const [quiet, setQuiet] = useState(() => {
-    try { return localStorage.getItem('codeit_pixel_quiet') === '1'; } catch (_) { return false; }
-  });
-
-  // A "Big help" learner cannot yet read the hint — so the guide reads it to
-  // them, every time it changes, unless a grown-up muted the voice. The mute
-  // key is shared with Pixel in the studio: quiet in one place is quiet
-  // everywhere.
+  // Three-way (message 72): never asked (default, silent), asked (every
+  // hint is read, mute visible), muted (silent). Shared with Pixel in the
+  // studio: one choice, everywhere.
+  const [voice, setVoice] = useState(() => voiceState());
   useEffect(() => {
-    if (guideLevel !== 'early') return;
-    if (localStorage.getItem('codeit_pixel_quiet') === '1') return;
-    readHint(hint);
+    const sync = () => setVoice(voiceState());
+    window.addEventListener(VOICE_EVENT, sync);
+    window.addEventListener('storage', sync);
+    return () => { window.removeEventListener(VOICE_EVENT, sync); window.removeEventListener('storage', sync); };
+  }, []);
+
+  // A "Big help" learner who asked once is read every hint from then on.
+  // Nobody is read to before they have asked: the first impression the
+  // product makes is not a phone talking on its own.
+  useEffect(() => {
+    if (guideLevel !== 'early' || voice !== 'asked') return;
+    void speak(hint);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hint]);
+  }, [hint, voice]);
+
+  const askForVoice = () => {
+    // For a "Big help" learner the state change is what reads (the effect
+    // above), so it is not read twice. Everyone else hears this one line.
+    if (guideLevel === 'early' && voice !== 'asked') { setVoiceState('asked'); return; }
+    void speak(hint);
+  };
+  const mute = () => {
+    setVoiceState('muted');
+    stopSpeaking();
+  };
 
   // ── Why the bubble hides itself on a phone ───────────────────────────────
   //
@@ -93,29 +100,23 @@ const LessonGuide = ({ stepType, isCurrentDone, isLastStep }) => {
         <span className="lg-bubble__name">{name}</span>
         <p className="lg-bubble__text">{hint}</p>
         <div className="lg-bubble__actions">
-          {/* "Big help" learners get every hint read automatically, so their
-              button is the mute switch. Everyone else gets a replay button. */}
-          {guideLevel === 'early' ? (
+          {/* Silent until asked. Once a "Big help" learner has asked, every
+              hint is read and the mute is always visible. */}
+          {guideLevel === 'early' && voice === 'asked' ? (
             <button
               type="button"
               className="lg-bubble__quiet"
-              aria-pressed={quiet}
-              aria-label={quiet ? 'Voice is off. Turn it on' : 'Voice is on. Turn it off'}
-              onClick={() => {
-                const next = !quiet;
-                setQuiet(next);
-                try { localStorage.setItem('codeit_pixel_quiet', next ? '1' : '0'); } catch (_) {}
-                if (next && window.speechSynthesis) window.speechSynthesis.cancel();
-                else readHint(hint);
-              }}
+              aria-pressed={false}
+              aria-label="Voice is on. Turn it off"
+              onClick={mute}
             >
-              <Icon name={quiet ? 'mute' : 'speaker'} size={18} />
+              <Icon name="speaker" size={18} />
             </button>
           ) : (
             <button
               type="button"
               className="lg-bubble__read"
-              onClick={() => readHint(hint)}
+              onClick={askForVoice}
               aria-label="Read this step to me"
             >
               <Icon name="speaker" size={18} /> Read to me

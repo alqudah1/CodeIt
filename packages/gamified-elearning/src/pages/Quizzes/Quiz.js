@@ -10,6 +10,7 @@ import { getJourneyNext } from "../Journey/journeyNext";
 import { getGameById } from "../Games/gameCatalog";
 import { usePlayerProgress } from "../../hooks/usePlayerProgress";
 import { getXpProgress, getNextUnlock, getNextUnlockLabel } from "../../data/unlocks";
+import { setVoiceState, shouldAutoRead, speak } from "../../utils/voice";
 import { effectiveGuideLevel } from "../../utils/guideLevel";
 import DeadEnd from "../../components/DeadEnd/DeadEnd";
 import useCountUp from "../../hooks/useCountUp";
@@ -20,15 +21,9 @@ import "./Quiz.css";
 // Shuffle an array without mutating it
 const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
-// Same voice as Pixel and the lesson guide, so the site sounds like one guide.
-function readAloud(text) {
-  if (!text || !window.speechSynthesis || typeof window.SpeechSynthesisUtterance !== "function") return;
-  window.speechSynthesis.cancel();
-  const message = new window.SpeechSynthesisUtterance(text);
-  message.rate = 0.82;
-  message.pitch = 1.08;
-  window.speechSynthesis.speak(message);
-}
+// Same voice as Pixel and the lesson guide, so the site sounds like one guide
+// (utils/voice.js: a chosen voice, and never a word before the child asks).
+const readAloud = (text) => { void speak(text); };
 
 // Apply random question order + random option order to a question list
 const applyShuffles = (list) =>
@@ -180,10 +175,11 @@ export default function Quiz() {
   // A "Big help" learner cannot yet read the question - so it is read to them,
   // every time it changes, honouring the same mute key Pixel and the lesson
   // guide use: quiet in one place is quiet everywhere.
+  // Only once they have asked (message 72): a phone does not start talking
+  // on its own.
   const guideLevel = effectiveGuideLevel(user);
   useEffect(() => {
-    if (guideLevel !== "early" || !spokenQuestion) return;
-    try { if (localStorage.getItem("codeit_pixel_quiet") === "1") return; } catch { return; }
+    if (guideLevel !== "early" || !spokenQuestion || !shouldAutoRead()) return;
     readAloud(spokenQuestion);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spokenQuestion]);
@@ -510,7 +506,7 @@ export default function Quiz() {
           <button
             type="button"
             className="qz-read-btn"
-            onClick={() => readAloud(spokenQuestion)}
+            onClick={() => { if (guideLevel === "early") setVoiceState("asked"); readAloud(spokenQuestion); }}
             aria-label="Read this question and its answers to me"
           >
             <Icon name="speaker" size={18} /> Read to me

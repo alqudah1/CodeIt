@@ -64,6 +64,7 @@ import {
 import { changeInvitation } from './whatCanIChange';
 import { displayTitle } from '../../utils/displayTitle';
 import { isSessionError } from '../../utils/tokenExpiry';
+import { VOICE_EVENT, setVoiceState, speak, stopSpeaking, voiceState } from '../../utils/voice';
 import { lookInside } from './lookInside';
 import { closestStarter } from './closestStarter';
 
@@ -937,9 +938,14 @@ export default function Builder() {
   // frozen, because a person can change the level while the page is open.
   const quietStudio = (guideLevelOverride || learnerGuideLevel(user)) === 'independent';
   const coachRestTimer = useRef(null);
-  const [pixelQuiet, setPixelQuiet] = useState(() => {
-    try { return localStorage.getItem('codeit_pixel_quiet') === '1'; } catch (_) { return false; }
-  });
+  // Three-way (message 72): never asked, asked, muted. Shared with the
+  // lesson guide and the quiz.
+  const [voiceMode, setVoiceMode] = useState(() => voiceState());
+  useEffect(() => {
+    const sync = () => setVoiceMode(voiceState());
+    window.addEventListener(VOICE_EVENT, sync);
+    return () => window.removeEventListener(VOICE_EVENT, sync);
+  }, []);
 
   // ── AI memory ──────────────────────────────────────────────────────────────
   const [promptHistory, setPromptHistory] = useState([]);
@@ -1185,14 +1191,10 @@ export default function Builder() {
     target?.focus?.({ preventScroll: true });
   }
 
-  function readCoach(text) {
-    if (!text || !window.speechSynthesis || typeof window.SpeechSynthesisUtterance !== 'function') return;
-    window.speechSynthesis.cancel();
-    const message = new window.SpeechSynthesisUtterance(text);
-    message.rate = 0.82;
-    message.pitch = 1.08;
-    window.speechSynthesis.speak(message);
-  }
+  // One voice for the site (utils/voice.js): a chosen voice at rate 1 and
+  // pitch 1, recorded lines where they exist, and never a word before the
+  // child has asked once.
+  function readCoach(text) { void speak(text); }
 
   function applyColorsInstant(vars) {
     sendBridgeCmd('SET_ROOT_VARS', { vars });
@@ -3016,22 +3018,22 @@ export default function Builder() {
     // ── Pixel speaks first for children who cannot read yet ─────────────────
     //
     // Mustafa's bar: can the kid do it alone? For a five-year-old the bubble
-    // text is a wall however short it is — the words have to arrive as SOUND.
+    // text is a wall however short it is; the words have to arrive as SOUND.
     // So on the big-help level, Pixel reads each new step out loud himself,
-    // once, the moment it changes. The 🔇 button below remembers "quiet
-    // please" on this device, because a classroom of thirty auto-reading
-    // tablets is its own disaster; a muted Pixel still shows the 🔊 button
-    // for reading any step by hand.
-    if (level === 'early' && localStorage.getItem('codeit_pixel_quiet') !== '1') {
+    // once, the moment it changes. But never before the child has asked once
+    // (message 72): a phone that starts talking on its own is startling on a
+    // bus and silently refused by browsers that want a gesture. The switch
+    // below remembers "quiet please" on this device.
+    if (level === 'early' && voiceMode === 'asked') {
       readCoach(`${coachStage.title}. ${coachStage.detail}`);
     }
     if (level === 'early') return undefined;
     clearTimeout(coachRestTimer.current);
     coachRestTimer.current = setTimeout(() => setCoachOpen(false), 9000);
     return () => clearTimeout(coachRestTimer.current);
-    // Re-fires only when the step itself moves on.
+    // Re-fires when the step moves on, and when the child asks for the voice.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [coachStageNumber]);
+  }, [coachStageNumber, voiceMode]);
 
   // ── What actually goes into the preview frame ──────────────────────────────
   //
@@ -3252,24 +3254,29 @@ export default function Builder() {
           {coachOpen && (
             <div className={`pixel-guide__line pixel-guide__bubble--${guideLevel}`} role="status" aria-live="polite">
               <strong className="pixel-guide__title">{coachStage.title}</strong>
-              {/* An early learner is read to automatically, so the one
-                  audio control here is the switch that stops it. */}
-              {guideLevel === 'early' && (
+              {/* Silent until asked. Once an early learner has asked, every
+                  step is read and the one control is the switch that stops
+                  it; before that, or muted, the button asks. */}
+              {guideLevel === 'early' && (voiceMode === 'asked' ? (
                 <button
                   type="button"
                   className="pixel-guide__quiet"
-                  aria-pressed={pixelQuiet}
-                  onClick={() => {
-                    const next = !pixelQuiet;
-                    setPixelQuiet(next);
-                    try { localStorage.setItem('codeit_pixel_quiet', next ? '1' : '0'); } catch (_) {}
-                    if (next && window.speechSynthesis) window.speechSynthesis.cancel();
-                  }}
-                  aria-label={pixelQuiet ? 'Let Pixel read steps out loud' : 'Stop Pixel reading out loud'}
+                  aria-pressed={false}
+                  onClick={() => { setVoiceState('muted'); stopSpeaking(); }}
+                  aria-label="Stop Pixel reading out loud"
                 >
-                  <Icon name={pixelQuiet ? 'mute' : 'speaker'} size={18} />
+                  <Icon name="speaker" size={18} />
                 </button>
-              )}
+              ) : (
+                <button
+                  type="button"
+                  className="pixel-guide__read"
+                  onClick={() => setVoiceState('asked')}
+                  aria-label="Let Pixel read steps out loud"
+                >
+                  <Icon name="speaker" size={18} /> Read to me
+                </button>
+              ))}
             </div>
           )}
         </aside>
@@ -3286,24 +3293,25 @@ export default function Builder() {
                 <button
                   type="button"
                   className="pixel-guide__read"
-                  onClick={() => readCoach(`${coachStage.title}. ${coachStage.detail}`)}
+                  onClick={() => {
+                    // A "Big help" learner asking once is read every step
+                    // from then on; the state change does the reading.
+                    if (guideLevel === 'early' && voiceMode !== 'asked') { setVoiceState('asked'); return; }
+                    readCoach(`${coachStage.title}. ${coachStage.detail}`);
+                  }}
+                  aria-label={guideLevel === 'early' && voiceMode !== 'asked' ? 'Let Pixel read steps out loud' : 'Read this step to me'}
                 >
                   <Icon name="speaker" size={18} /> Read to me
                 </button>
-                {guideLevel === 'early' && (
+                {guideLevel === 'early' && voiceMode === 'asked' && (
                   <button
                     type="button"
                     className="pixel-guide__quiet"
-                    aria-pressed={pixelQuiet}
-                    onClick={() => {
-                      const next = !pixelQuiet;
-                      setPixelQuiet(next);
-                      try { localStorage.setItem('codeit_pixel_quiet', next ? '1' : '0'); } catch (_) {}
-                      if (next && window.speechSynthesis) window.speechSynthesis.cancel();
-                    }}
-                    aria-label={pixelQuiet ? 'Let Pixel read steps out loud' : 'Stop Pixel reading out loud'}
+                    aria-pressed={false}
+                    onClick={() => { setVoiceState('muted'); stopSpeaking(); }}
+                    aria-label="Stop Pixel reading out loud"
                   >
-                    <Icon name={pixelQuiet ? 'mute' : 'speaker'} size={18} />
+                    <Icon name="speaker" size={18} />
                   </button>
                 )}
               </div>
