@@ -76,9 +76,9 @@ test('the avatar stands on the current stop, and only there', () => {
   expect(document.querySelector('.lm-stop--here .lm-node .lm-you')).not.toBeNull();
 });
 
-test('one Unlock button, on the stop the child is looking at', () => {
+test('one Start button, on the stop the child is looking at', () => {
   renderMap();
-  const unlocks = [...document.querySelectorAll('.lm-badge')].filter((el) => /Unlock/.test(el.textContent));
+  const unlocks = [...document.querySelectorAll('.lm-badge')].filter((el) => /Start/.test(el.textContent));
   expect(unlocks).toHaveLength(1);
   expect(unlocks[0].closest('.lm-stop--here')).not.toBeNull();
   expect(document.querySelector('.lm-continue-btn')).toBeNull();

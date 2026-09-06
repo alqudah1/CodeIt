@@ -14,7 +14,6 @@ import { AuthContext } from '../../context/AuthContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { awardChest } from '../../utils/chests';
 import { useSEO } from '../../hooks/useSEO';
-import { API_BASE_URL } from '../../config/api';
 import { getNextUnlock, getNextUnlockLabel } from '../../data/unlocks';
 import { usePlayerProgress } from '../../hooks/usePlayerProgress';
 import { TOTAL_LESSONS, builderPromptFor, getLessonEntry, seoFor } from '../../pages/Lessons/lessonRegistry';
@@ -254,15 +253,22 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
     saveStepState(lessonId, { stepIdx, stepsDone, picks });
   }, [lessonId, stepIdx, stepsDone, picks]);
 
-  // ── Gate: lesson N requires lesson N-1 complete (logged-in users only) ──
-  const [gateStatus, setGateStatus] = useState(lessonId === 1 ? 'open' : 'checking');
+  // ── No gate (message 74) ──────────────────────────────────────────────
+  //
+  // Lesson N used to require lesson N-1 complete, for signed-in learners.
+  // "Learn the code behind it" links a child's own project to the lessons
+  // its concepts come from, and for a brand-new child every one of those
+  // links but one landed on "Lesson N is locked": the feature that exists to
+  // prove they can learn what their project is made of told them, nine
+  // times out of nine, that they were not allowed to. Every lesson opens.
+  // The map still marks the ones ahead of the child and asks; it never
+  // refuses.
   useEffect(() => {
-    if (gateStatus !== 'open') return;          // a locked lesson was not started
     if (lessonStartSentRef.current === lessonId) return;
     lessonStartSentRef.current = lessonId;
     void trackEvent('lesson_start', null, token);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lessonId, gateStatus]);
+  }, [lessonId]);
 
 
   // ── Completion screen ──────────────────────────────────────────────────
@@ -287,26 +293,6 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
     window.addEventListener('resize', resize);
     return () => window.removeEventListener('resize', resize);
   }, []);
-
-  // ── Gate: enforce lesson N requires lesson N-1 complete ─────
-  // Only runs for logged-in users on lessons 2+.
-  // Unauthenticated visitors may freely preview any lesson.
-  useEffect(() => {
-    if (lessonId <= 1) { setGateStatus('open'); return; }
-    if (!user || !token) { setGateStatus('open'); return; }
-    let cancelled = false;
-    fetch(`${API_BASE_URL}/api/lessons/progress`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (cancelled) return;
-        const completed = (data?.completedLessons || []).map(Number);
-        setGateStatus(completed.includes(lessonId - 1) ? 'open' : 'locked');
-      })
-      .catch(() => { if (!cancelled) setGateStatus('open'); }); // fail open on network error
-    return () => { cancelled = true; };
-  }, [lessonId, user, token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const triggerConfetti = (durationMs = 1200) => {
     const canvas = confettiRef.current;
@@ -544,40 +530,6 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
     else handleCodeNext();
   };
 
-  // ── Gate screen — locked lesson ──────────────────────────────
-  if (gateStatus === 'locked') {
-    return (
-      <div className="sl-lesson">
-        <div className="sl-fixed-header"><Header /></div>
-        <div className="sl-gate-screen">
-          <div className="sl-gate-card">
-            <div className="sl-gate-card__icon">
-              <span aria-hidden="true">L</span>
-            </div>
-            <h2 className="sl-gate-card__title">Lesson {id} is locked</h2>
-            <p className="sl-gate-card__body">
-              You need to complete <strong>Lesson {id - 1}</strong> before you can start this one.
-              Each lesson builds on the one before it.
-            </p>
-            <div className="sl-gate-card__actions">
-              <button
-                className="sl-gate-card__btn sl-gate-card__btn--primary"
-                onClick={() => navigate(`/lesson/${id - 1}`)}
-              >
-                Go to Lesson {id - 1}
-              </button>
-              <button
-                className="sl-gate-card__btn sl-gate-card__btn--ghost"
-                onClick={() => navigate('/lessons')}
-              >
-                View All Lessons
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   // ── Completion screen ─────────────────────────────────────────
   if (completionData) {

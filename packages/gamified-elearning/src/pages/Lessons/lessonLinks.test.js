@@ -49,14 +49,14 @@ test('every lesson on the map is a real link', () => {
   expect(hrefs).toContain(`/lesson/${TOTAL_LESSONS}`);
 });
 
-test('the locked ones are linked too', () => {
-  // A visitor with no account has every lesson but the first locked, and those
-  // are exactly the fifteen that were reported as invisible. If only unlocked
-  // lessons carried an href, a crawler arriving logged out would find one link.
+test('the ones ahead of the child are linked too', () => {
+  // A visitor with no account is up to lesson 1, so thirty stops are ahead
+  // of them. If only the reachable lesson carried an href, a crawler arriving
+  // logged out would find one link.
   renderMap();
-  const locked = [...document.querySelectorAll('.lm-card--locked')];
-  expect(locked.length).toBeGreaterThan(10);
-  for (const card of locked) {
+  const ahead = [...document.querySelectorAll('.lm-card--ahead')];
+  expect(ahead.length).toBeGreaterThan(10);
+  for (const card of ahead) {
     expect(card.tagName).toBe('A');
     expect(card.getAttribute('href')).toMatch(/^\/lesson\/\d+$/);
   }
@@ -69,11 +69,18 @@ test('the links are in lesson order, so the chain reads forwards', () => {
   expect(ids).toEqual([...ids].sort((a, b) => a - b));
 });
 
-test('an href is not a way past the gate', () => {
-  // The href is for the crawler and the middle click. Tapping a locked lesson
-  // must still be refused, and must say why rather than doing nothing.
+test('a stop ahead of the child asks, and never refuses (message 74)', () => {
+  // Every lesson opens. Tapping one ahead of where the child is offers a
+  // choice, with starting as the default, and nothing on the screen says
+  // "locked".
   renderMap();
-  const locked = document.querySelector('.lm-card--locked');
-  fireEvent.click(locked);
-  expect(screen.getByText(/Complete Lesson \d+ to unlock this one/)).toBeInTheDocument();
+  const ahead = document.querySelector('.lm-card--ahead');
+  fireEvent.click(ahead);
+  const dialog = screen.getByRole('dialog');
+  expect(dialog).toHaveTextContent(/You are up to Lesson 1/);
+  const start = screen.getByRole('button', { name: /^Start Lesson \d+$/ });
+  expect(document.activeElement).toBe(start);
+  expect(screen.getByRole('button', { name: 'Go to Lesson 1 first' })).toBeInTheDocument();
+  expect(document.body.textContent).not.toMatch(/locked/i);
+  expect(document.querySelector('.lm-card--locked')).toBeNull();
 });

@@ -88,7 +88,6 @@ const LessonMap = () => {
   const [lessons, setLessons] = useState(FALLBACK_LESSONS);
   const [completedIds, setCompletedIds] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [toast, setToast] = useState('');
   const hereRef = useRef(null);
   const scrolledRef = useRef(false);
   const pathRef = useRef(null);
@@ -143,10 +142,12 @@ const LessonMap = () => {
   const isCompleted = (id) => completedIds.includes(id);
   const isAvailable = (id) => id === 1 || isCompleted(id - 1);
 
+  // Every lesson opens (message 74). A stop whose lesson before it is not
+  // finished is "ahead": marked, and asked about on tap, never refused.
   const getStatus = (id) => {
     if (isCompleted(id)) return 'completed';
     if (isAvailable(id)) return 'available';
-    return 'locked';
+    return 'ahead';
   };
 
   const nextLesson = lessons.find((l) => isAvailable(l.id) && !isCompleted(l.id));
@@ -160,15 +161,21 @@ const LessonMap = () => {
     hereRef.current.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
   }, [loading, hereIndex]);
 
-  const showToast = (msg) => {
-    setToast(msg);
-    setTimeout(() => setToast(''), 3000);
-  };
+  // Tapping a stop ahead of the child asks: start it, or go to where they
+  // are first. Their own choice, with starting as the default.
+  const [asking, setAsking] = useState(null); // the lesson tapped
+  const startRef = useRef(null);
+  useEffect(() => { if (asking) startRef.current?.focus(); }, [asking]);
+  useEffect(() => {
+    if (!asking) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setAsking(null); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [asking]);
 
   const handleLessonClick = (lesson) => {
-    const status = getStatus(lesson.id);
-    if (status === 'locked') {
-      showToast(`Complete Lesson ${lesson.id - 1} to unlock this one.`);
+    if (getStatus(lesson.id) === 'ahead') {
+      setAsking(lesson);
       return;
     }
     navigate(`/lesson/${lesson.id}`);
@@ -182,7 +189,30 @@ const LessonMap = () => {
     <div className="lm-page">
       <Header />
 
-      {toast && <div className="lm-toast" role="alert">{toast}</div>}
+      {asking && (
+        <div className="lm-ask" role="dialog" aria-modal="true" aria-labelledby="lm-ask-title">
+          <div className="lm-ask__card">
+            <p className="lm-ask__kicker">Lesson {asking.id}</p>
+            <h2 id="lm-ask-title">{asking.title}</h2>
+            <p className="lm-ask__body">
+              {nextLesson
+                ? `You are up to Lesson ${nextLesson.id}. You can start this one now, or go to Lesson ${nextLesson.id} first.`
+                : 'You can start this one now.'}
+            </p>
+            <div className="lm-ask__actions">
+              <button type="button" className="lm-ask__start" ref={startRef} onClick={() => navigate(`/lesson/${asking.id}`)}>
+                Start Lesson {asking.id}
+              </button>
+              {nextLesson && nextLesson.id !== asking.id && (
+                <button type="button" className="lm-ask__first" onClick={() => navigate(`/lesson/${nextLesson.id}`)}>
+                  Go to Lesson {nextLesson.id} first
+                </button>
+              )}
+              <button type="button" className="lm-ask__close" onClick={() => setAsking(null)}>Not now</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="lm-container">
         <div className="lm-header">
@@ -229,16 +259,15 @@ const LessonMap = () => {
                   className={`lm-stop lm-stop--${status}${isHere ? ' lm-stop--here' : ''}${boss ? ' lm-stop--boss' : ''}${titled ? ` lm-stop--titled lm-stop--${side}` : ''}`}
                   style={{ top: idx * ROW_HEIGHT, left: `${x}%` }}
                 >
-                  {/* A real anchor. Locked lessons keep an href for the
-                      crawler and the middle click; the click is intercepted
-                      here so the gate holds. */}
+                  {/* A real anchor, so the crawler and a middle click get
+                      the page. The click is intercepted so a stop ahead of
+                      the child can ask first. */}
                   <Link
                     to={`/lesson/${lesson.id}`}
                     ref={isHere ? hereRef : null}
                     className={`lm-card lm-card--${status}${isHere ? ' lm-card--next' : ''}`}
                     onClick={(e) => { e.preventDefault(); handleLessonClick(lesson); }}
-                    tabIndex={status === 'locked' ? -1 : 0}
-                    aria-label={`Lesson ${lesson.id}: ${lesson.title}. ${status}${boss ? '. Boss puzzle' : ''}`}
+                    aria-label={`Lesson ${lesson.id}: ${lesson.title}. ${status === 'ahead' ? 'ahead of you' : status}${boss ? '. Boss puzzle' : ''}`}
                   >
                     <span className={`lm-node lm-node--${status}${boss ? ' lm-node--boss' : ''}`} aria-hidden="true">
                       {isHere ? (
@@ -262,7 +291,7 @@ const LessonMap = () => {
                         <span className="lm-label__title">{lesson.title}</span>
                         {isHere ? (
                           <span className={`lm-badge lm-badge--${status}`}>
-                            {status === 'completed' ? 'Play again' : 'Unlock'}
+                            {status === 'completed' ? 'Play again' : 'Start'}
                           </span>
                         ) : (
                           <span className="lm-label__next">Next</span>

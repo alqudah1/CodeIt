@@ -96,3 +96,26 @@ describe('every lesson page renders', () => {
     }
   }, MOUNT_MS);
 });
+
+// ── Every lesson opens (message 74) ──────────────────────────────────────────
+//
+// "Learn the code behind it" links a child's project to the lessons its
+// concepts come from. For a brand-new signed-in child, lesson N used to check
+// the server for lesson N-1 and show "Lesson N is locked". Nine links out of
+// nine landed on a wall. There is no gate now: a signed-in child with no
+// progress at all sees lesson 2's first step, not a lock, and the server is
+// not even asked.
+describe('every lesson opens for a signed-in child with no progress', () => {
+  test('lesson 2 shows its first step, never "locked"', async () => {
+    const calls = [];
+    global.fetch = jest.fn((url) => { calls.push(String(url)); return Promise.resolve({ ok: true, json: async () => ({ completedLessons: [] }) }); });
+    const lessonData = getLessonData('2');
+    const { container } = renderLesson(2);
+    await new Promise((r) => setTimeout(r, 30));
+    expect(container.textContent).not.toMatch(/is locked/i);
+    expect(container.querySelector('.sl-gate-card')).toBeNull();
+    expect(screen.getAllByText(new RegExp(lessonData.title, 'i')).length).toBeGreaterThan(0);
+    expect(calls.some((u) => /\/api\/lessons\/progress/.test(u))).toBe(false);
+    delete global.fetch;
+  }, 20000);
+});

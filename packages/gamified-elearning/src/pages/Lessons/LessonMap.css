@@ -174,7 +174,7 @@
 }
 .lm-stop--boss .lm-card { padding-top: 15px; }
 
-.lm-card--locked { cursor: default; }
+.lm-card--ahead .lm-node { cursor: pointer; }
 
 .lm-node {
   display: flex;
@@ -195,7 +195,7 @@
   overflow: hidden;
 }
 
-.lm-card:not(.lm-card--locked):hover .lm-node,
+.lm-card:hover .lm-node,
 .lm-card:focus-visible .lm-node {
   transform: translateY(-2px);
   box-shadow: 0 6px 0 var(--ink, #35220E);
@@ -210,7 +210,7 @@
   background: var(--arc-sun, #FED340);
 }
 
-.lm-node--locked {
+.lm-node--ahead {
   background: #efe3d3;
   border-style: dashed;
   border-color: #a08b76;
@@ -227,9 +227,9 @@
   background: var(--arc-violet, #B39DDB);
 }
 .lm-node--boss > * { transform: rotate(-45deg); }
-.lm-node--boss.lm-node--locked { background: #e6dcef; }
+.lm-node--boss.lm-node--ahead { background: #e6dcef; }
 .lm-node--boss.lm-node--completed { background: var(--arc-mint, #5FD3A2); }
-.lm-card:not(.lm-card--locked):hover .lm-node--boss,
+.lm-card:hover .lm-node--boss,
 .lm-card:focus-visible .lm-node--boss { transform: rotate(45deg) translate(-1px, -1px); }
 
 /* The child, standing on their stop. The avatar fills the node, so there is
@@ -278,7 +278,7 @@
   color: var(--ink, #35220E);
   white-space: nowrap;
 }
-.lm-xp--locked { background: var(--paper, #FFFDF7); border-color: #a08b76; color: #7a6653; }
+.lm-xp--ahead { background: var(--paper, #FFFDF7); border-color: #a08b76; color: #7a6653; }
 .lm-xp--completed { background: var(--arc-mint, #5FD3A2); }
 
 /* Titles only on the current and next stop, beside the node on whichever
@@ -364,3 +364,61 @@
 @media (prefers-reduced-motion: reduce) {
   .lm-stop--here .lm-node { animation: none; }
 }
+
+/* ── The ask (message 74) ─────────────────────────────────
+   A stop ahead of the child asks. It never refuses. */
+.lm-ask {
+  position: fixed;
+  inset: 0;
+  z-index: 1150;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(53, 34, 14, 0.45);
+}
+.lm-ask__card {
+  width: min(400px, 100%);
+  padding: 20px 20px 18px;
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 20px;
+  background: var(--paper, #FFFDF7);
+  box-shadow: 0 8px 0 var(--ink, #35220E);
+  display: grid;
+  gap: 8px;
+  text-align: left;
+}
+.lm-ask__kicker {
+  margin: 0;
+  font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--arc-orange, #F87824);
+}
+.lm-ask__card h2 {
+  margin: 0;
+  font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif;
+  font-size: 1.4rem;
+  line-height: 1.15;
+  color: var(--ink, #35220E);
+}
+.lm-ask__body { margin: 0; font-size: 0.95rem; line-height: 1.45; color: #6f5a48; }
+.lm-ask__actions { display: grid; gap: 8px; margin-top: 6px; }
+.lm-ask__start,
+.lm-ask__first,
+.lm-ask__close {
+  padding: 11px 16px;
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 999px;
+  font: inherit;
+  font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif;
+  font-weight: 800;
+  cursor: pointer;
+  color: var(--ink, #35220E);
+  box-shadow: var(--pop-rest, 0 4px 0 #35220E);
+}
+.lm-ask__start { background: var(--arc-orange, #F87824); }
+.lm-ask__first { background: var(--paper, #FFFDF7); }
+.lm-ask__close { background: none; border-color: transparent; box-shadow: none; font-weight: 700; color: #6f5a48; }
+.lm-ask__start:focus-visible, .lm-ask__first:focus-visible { outline: 3px solid var(--arc-violet, #B39DDB); outline-offset: 3px; }
