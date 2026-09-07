@@ -117,13 +117,20 @@ async function walk(page, { start, name }) {
   const lessonUrl = BASE + after.lesson;
   await page.goto(lessonUrl, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(2400);
+  // A locked-lesson screen is not a lesson. For months this line accepted
+  // `.sl-gate-card` as "on a lesson", so the check that exists to verify the
+  // concept-to-lesson link counted a locked door as a door. Now the gate is
+  // its own failure, and only a readable step card counts.
   const lesson = await page.evaluate(() => ({
-    onALesson: !!document.querySelector('.sl-card, .sl-gate-card'),
+    onALesson: !!document.querySelector('.sl-card'),
+    gated: !!document.querySelector('.sl-gate-card'),
     where: window.location.pathname,
-    heading: document.querySelector('.sl-card__title, .sl-gate-card__title')?.textContent?.trim() || null,
+    heading: document.querySelector('.sl-card__title')?.textContent?.trim() || null,
   }));
 
-  if (!lesson.onALesson || lesson.where !== after.lesson) {
+  if (lesson.gated) {
+    problems.push(`${name}: "${after.lessonWords}" led to ${lesson.where}, which is a locked gate, not a lesson`);
+  } else if (!lesson.onALesson || lesson.where !== after.lesson) {
     problems.push(`${name}: "${after.lessonWords}" led to ${lesson.where}, not a lesson`);
   } else {
     notes.push(`${name}: changed it → "${after.banner}" → ${after.text.slice(0, 88)}… → ${after.lessonWords} → ${lesson.where}`);
