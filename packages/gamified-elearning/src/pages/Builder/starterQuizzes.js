@@ -150,6 +150,7 @@ ${QUIZ_STYLE}
 <script>
 // ── Change these and watch what happens ──
 let passMark    = ${passMark};
+let quizColour  = '${accent}';
 let rightColour = '#1B9E5F';
 let wrongColour = '#D8443C';
 let showAnswer  = true;
@@ -170,6 +171,12 @@ const scoreLabel = document.getElementById('scoreLabel');
 const barFill = document.getElementById('barFill');
 const playing = document.getElementById('playing');
 const endScreen = document.getElementById('endScreen');
+
+// The quiz's colour, from the settings: the title, the progress bar and the
+// button at the end all wear it, so changing that one line changes the page.
+document.getElementById('quizTitle').style.color = quizColour;
+barFill.style.background = quizColour;
+document.querySelector('.go').style.background = quizColour;
 
 // Build the answer buttons for whichever question we are on.
 function showQuestion() {
@@ -373,6 +380,7 @@ let howManyQuestions = 10;
 let biggestNumber    = 12;
 let useTimesTables   = true;
 let passMark         = 7;
+let quizColour       = '#C2410C';
 
 let atQuestion = 0;
 let score = 0;
@@ -387,6 +395,12 @@ const scoreLabel = document.getElementById('scoreLabel');
 const barFill = document.getElementById('barFill');
 const playing = document.getElementById('playing');
 const endScreen = document.getElementById('endScreen');
+
+// The quiz's colour, from the settings: the title, the progress bar and the
+// button at the end all wear it, so changing that one line changes the page.
+document.getElementById('quizTitle').style.color = quizColour;
+barFill.style.background = quizColour;
+document.querySelector('.go').style.background = quizColour;
 
 // A whole number from 1 up to biggest, including biggest.
 function pickNumber(biggest) {
@@ -545,6 +559,7 @@ ${QUIZ_STYLE}
 let titleText    = 'Which creature are you?';
 let resultPrefix = 'You are a ';
 let againLabel   = 'Take it again';
+let quizColour   = '#A21CAF';
 let barColour    = '#A21CAF';
 
 let creatures = [
@@ -606,7 +621,9 @@ const endScreen = document.getElementById('endScreen');
 const againButton = document.getElementById('againButton');
 
 document.getElementById('quizTitle').textContent = '🔮 ' + titleText;
+document.getElementById('quizTitle').style.color = quizColour;
 againButton.textContent = againLabel;
+againButton.style.background = quizColour;
 barFill.style.background = barColour;
 
 function showQuestion() {

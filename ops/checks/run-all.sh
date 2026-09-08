@@ -102,6 +102,7 @@ run device-sweep.js
 run screen-share.js
 run complaints-check.js
 run first-five-minutes.js
+run colours-change.js
 run cold-start.js
 run kid-alone.js
 run lesson-alone.js

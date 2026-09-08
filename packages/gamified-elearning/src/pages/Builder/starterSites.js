@@ -146,6 +146,7 @@ ${pointRows}
 <script>
 // ── Change these and watch what happens ──
 let shopName    = '${brand.replace(/'/g, "\\'")}';
+let shopColour  = '${accent}';
 let currency    = '${currency}';
 let discount    = 0;      // try 10 for ten percent off everything
 let freeOver    = 20;     // spend this much and delivery is free
@@ -162,6 +163,11 @@ const basketButton = document.getElementById('basketButton');
 const sayLabel = document.getElementById('sayLabel');
 
 document.getElementById('brandLabel').textContent = shopName;
+
+// The shop's colour, from the settings: the headline, the basket and every
+// buy button wear it, so changing that one line recolours the shop.
+document.getElementById('headline').style.color = shopColour;
+document.querySelectorAll('.basket, .item button').forEach(function (el) { el.style.background = shopColour; });
 
 // Take the discount off a price, and round it back to pennies.
 function priceAfterDiscount(price) {

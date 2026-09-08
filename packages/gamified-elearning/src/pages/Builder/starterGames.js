@@ -156,6 +156,7 @@ let playing = false;
 // Three or four seconds, and the first thing this product ever did was beat
 // them at something they had not started playing.
 let started = false;
+let waitSpin = 0;
 
 function startGame() {
   score = 0;
@@ -207,6 +208,16 @@ function draw() {
   pen.clearRect(0, 0, width, height);
 
   if (started && Math.random() < 0.05) addStar();
+
+  // Before the first move, three stars hover near the top, waiting. So the
+  // child sees what they are about to catch, in the colour they chose, and
+  // nothing falls until they say so.
+  if (!started) {
+    waitSpin = waitSpin + 0.02;
+    for (let i = 0; i < 3; i++) {
+      drawStar(width * (0.25 + 0.25 * i), 70 + Math.sin(waitSpin + i) * 6, starSize, waitSpin + i);
+    }
+  }
 
   const basketY = height - 60;
   for (let i = stars.length - 1; i >= 0; i--) {
@@ -1981,6 +1992,7 @@ ${SHARED_STYLE}
 let flashFor    = 480;
 let gapBetween  = 220;
 let startLength = 1;
+let firstPad    = '#EF4444';
 let winColour   = '#3DDC97';
 let padCount    = 4;
 
@@ -2005,6 +2017,9 @@ function readPads() {
     found[i].classList.remove('lit');
     pads.push(found[i]);
   }
+  // The first pad wears the colour from the settings, so changing that one
+  // line changes something you can see before the first round is over.
+  if (pads[0]) pads[0].style.background = firstPad;
   padCount = pads.length;
 }
 

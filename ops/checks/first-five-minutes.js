@@ -18,6 +18,7 @@
 //
 // Serve a production build on 4599 first (npx serve -s build -l 4599).
 const { launch } = require('./browser');
+const { arrived, describe, measure } = require('./measure');
 
 const BASE = process.env.CHECK_BASE || 'http://localhost:4599';
 const problems = [];
@@ -70,10 +71,30 @@ async function walk(page, { start, name }) {
   await mine.click();
   await page.waitForTimeout(900);
 
-  const swatch = page.locator('.bldr-mine__options--theme .bldr-mine__option').first();
-  if (!(await swatch.count())) { problems.push(`${name}: the colours panel opened with nothing in it`); return; }
+  // Candy, by name: the first swatch is CodeIt orange, which the maze already
+  // wears, and a palette a project already wears changes nothing. Read the
+  // project's pixels before and after, because for months this check clicked
+  // a swatch and only asserted that a panel appeared. The palette repainted
+  // nothing on any starter and fourteen checks stayed green.
+  const swatch = page.locator('.bldr-mine__option[aria-label="Apply Candy colours"]').first();
+  if (!(await swatch.count())) { problems.push(`${name}: the colours panel has no Candy swatch`); return; }
+  const frameBefore = await (await page.$('.bldr-iframe'))?.contentFrame();
+  const pink = frameBefore ? await measure(frameBefore, '#EC4899') : null;
   await swatch.click();
-  await page.waitForTimeout(1800);
+  await page.waitForTimeout(2600);
+  let frameAfter = await (await page.$('.bldr-iframe'))?.contentFrame();
+  let painted = frameAfter ? await measure(frameAfter, '#EC4899') : null;
+  if (pink && painted && !arrived(pink, painted)) {
+    // Scrolled off the top of the phone, a frame may not have drawn yet.
+    await (await page.$('.bldr-iframe'))?.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(1800);
+    frameAfter = await (await page.$('.bldr-iframe'))?.contentFrame();
+    painted = frameAfter ? await measure(frameAfter, '#EC4899') : null;
+  }
+  if (!pink || !painted || !arrived(pink, painted)) {
+    problems.push(`${name}: tapped Candy and nothing on screen turned pink (${pink && painted ? describe(pink, painted) : 'no preview frame'})`);
+    return;
+  }
 
   // ── 3. What the screen says now ────────────────────────────────────────────
   const after = await page.evaluate(() => {
@@ -133,7 +154,7 @@ async function walk(page, { start, name }) {
   } else if (!lesson.onALesson || lesson.where !== after.lesson) {
     problems.push(`${name}: "${after.lessonWords}" led to ${lesson.where}, not a lesson`);
   } else {
-    notes.push(`${name}: changed it → "${after.banner}" → ${after.text.slice(0, 88)}… → ${after.lessonWords} → ${lesson.where}`);
+    notes.push(`${name}: changed it (${describe(pink, painted)} in pink) → "${after.banner}" → ${after.text.slice(0, 72)}… → ${after.lessonWords} → ${lesson.where}`);
   }
 }
 
