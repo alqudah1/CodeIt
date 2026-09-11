@@ -134,7 +134,7 @@ export default function Home() {
                   should use a different product. The range now lives once,
                   lower down, in plain words, and in the schema and meta where
                   machines read it. */}
-              <p className="studio-kicker">Coding for kids, in the browser</p>
+              <p className="studio-kicker">Coding for {AGE_RANGE.short}, in the browser</p>
               {/* A returning child does not need the pitch. They have already
                   bought it. They made something. On a phone this headline is
                   350px tall, which pushed their own work off the first screen,
@@ -157,8 +157,8 @@ export default function Home() {
                    directly: lesson 1 and the playground both open with no
                    account and neither has any AI in it. They lead now. */
                 <h1 id="studio-title">
-                  Your child types the Python.
-                  <span>The computer does not do it for them.</span>
+                  Write your first Python program.
+                  <span>Run it. Make the message yours.</span>
                 </h1>
               )}
               <YourShelf
@@ -198,7 +198,7 @@ export default function Home() {
                     data-cta="hero-lesson-one"
                     onClick={() => trackEvent("landing_cta_click", "hero-lesson-one")}
                   >
-                    Open Lesson 1 free <span aria-hidden="true">→</span>
+                    Start your first Python lesson <span aria-hidden="true">→</span>
                   </Link>
                 )}
                 <Link
@@ -207,7 +207,7 @@ export default function Home() {
                   data-cta="hero-playground"
                   onClick={() => trackEvent("landing_cta_click", "hero-playground")}
                 >
-                  Try the playground
+                  Explore Python templates
                 </Link>
               </div>
               {/* A row of pills reading "31 lessons · 21 projects · No account
@@ -230,13 +230,9 @@ export default function Home() {
                 picture of the product. This is the product: a real editor, real
                 Python, running in the visitor's own browser. A picture of a
                 thing is what you show when you cannot show the thing. */}
-            {/* The hero shows the most distinctive thing in the product: the
-                character a child builds is the player in the game that child
-                builds. It was working since 31 August and nothing on the site
-                said so. The live Python editor, which was here, is the next
-                thing down the page: still above the studio, still no AI. */}
+            {/* Keep the live demonstration aligned with the Python introduction. */}
             <div className="studio-hero__visual">
-              {!shelf.length && <AvatarInGame />}
+              {!shelf.length && <TryPython />}
               {/* Pixel used to stand here, bottom right, overlapping the code.
                   The child never sees this page; they land in the studio or a
                   lesson. This page is read by the adult deciding whether to let
@@ -246,16 +242,6 @@ export default function Home() {
             </div>
           </section>
 
-          {/* ── Type Python here ─────────────────────────────────────────────
-              Real CodeMirror, real Pyodide, no account and no AI. It led the
-              hero until the avatar demo took that spot; it is still the first
-              thing after the hero and still before the studio. */}
-          {!shelf.length && (
-            <section className="studio-python" aria-label="Try Python in this page">
-              <TryPython />
-            </section>
-          )}
-
           {/* ── Second, not first ────────────────────────────────────────────
               These three cards and the idea box are the AI studio, and they led
               this page. They are genuinely good and they are not the reason a
@@ -264,10 +250,11 @@ export default function Home() {
               touches the AI. */}
           <section className="studio-make" aria-labelledby="studio-make-title">
             <div className="studio-section-heading">
-              <p className="studio-kicker">And when they want to make something</p>
-              <h2 id="studio-make-title">The studio writes a first version, then hands it over.</h2>
-              <p>The AI lives here, and it is optional.</p>
+              <p className="studio-kicker">A different activity: JavaScript games</p>
+              <h2 id="studio-make-title">Play a game. Change how it works.</h2>
+              <p>These browser games use HTML, CSS and JavaScript. The step-by-step lessons teach Python. Start with a ready-made game, or use the optional AI builder for your own idea.</p>
             </div>
+            {!shelf.length && <AvatarInGame />}
             <div className="pick">
               <p className="pick__ask" id="pick-ask">
                 {shelf.length ? "Or start something new" : "Tap a game. It starts now!"}
@@ -342,7 +329,7 @@ export default function Home() {
               <div className="studio-inside__heading">
                 <p className="studio-kicker">Nothing is hidden</p>
                 <h2 id="studio-inside-title">Open “{firstGame.label}” and this is what is inside it.</h2>
-                <p>Real lines from the file the game runs on, and the lesson each one belongs to.</p>
+                <p>This game uses JavaScript. The linked Python lessons explore the same ideas with different syntax.</p>
               </div>
               <ul className="studio-inside__rows">
                 {insideFirstGame.map((concept) => (
@@ -354,7 +341,7 @@ export default function Home() {
                       to={`/lesson/${concept.lessonId}`}
                       onClick={() => trackEvent("landing_cta_click", "hero-lessons")}
                     >
-                      {concept.label}, lesson {concept.lessonId}
+                      {concept.label} in Python, lesson {concept.lessonId}
                     </Link>
                   </li>
                 ))}

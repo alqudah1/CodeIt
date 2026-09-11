@@ -20,6 +20,7 @@ import { TOTAL_LESSONS, builderPromptFor, getLessonEntry, seoFor } from '../../p
 import { hasQuiz, loadQuizIds } from '../../utils/quizAvailability';
 import { effectiveGuideLevel } from '../../utils/guideLevel';
 import { PredictOutput, FillBlank, OrderSteps } from './LessonInteractions';
+import { firstUseStep, firstPracticeIndex } from './firstUse';
 import {
   blankCount,
   checkCodeStep,
@@ -237,7 +238,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   // before jumping to where the student actually was.
   const restored = useRef(loadStepState(lessonId)).current;
 
-  const [stepIdx,     setStepIdx]     = useState(restored?.stepIdx || 0);
+  const [stepIdx,     setStepIdx]     = useState(() => firstUseStep(lessonData, location.search, restored?.stepIdx || 0));
   const [stepsDone,      setStepsDone]      = useState(restored?.stepsDone || {}); // { [idx]: true }
   const [stepHintCounts, setStepHintCounts] = useState({});  // { [idx]: number revealed }
   const [lastOutputs,    setLastOutputs]    = useState({});  // { [idx]: string }. output from last Run
@@ -329,7 +330,10 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const currentStep   = steps[stepIdx];
   const isLastStep    = stepIdx === totalSteps - 1;
   const isCurrentDone = !!stepsDone[stepIdx];
-  const anyCodeDone          = steps.some((s, i) => s.type !== 'concept' && stepsDone[i]);
+  const practiceIndex = firstPracticeIndex(lessonData);
+  const anyCodeDone = practiceIndex >= 0
+    ? !!stepsDone[practiceIndex]
+    : steps.some((s, i) => s.type !== 'concept' && stepsDone[i]);
   const stepsCompletedCount  = Object.values(stepsDone).filter(Boolean).length;
   const progressPct          = totalSteps > 0 ? Math.round((stepsCompletedCount / totalSteps) * 100) : 0;
 
@@ -358,7 +362,11 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   // ── Code output handler — fires on every Run ───────────────
   // Stores the latest output so Submit can validate it.
   // Example steps (observational) auto-pass on any non-empty output.
-  const handleCodeOutput = (idx, step, output, code) => {
+  const handleCodeOutput = (idx, step, output, code, result) => {
+    if (result?.success === false) {
+      setLastOutputs(prev => ({ ...prev, [idx]: '' }));
+      return;
+    }
     setLastOutputs(prev => ({ ...prev, [idx]: output }));
     setLastCode(prev => ({ ...prev, [idx]: code || '' }));
     setFeedback(prev => ({ ...prev, [idx]: null })); // clear stale feedback on re-run
@@ -450,6 +458,11 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   };
 
   const goToQuiz = async () => {
+    // An activity link may skip the introduction, but never the core practice.
+    if (practiceIndex >= 0 && !stepsDone[practiceIndex]) {
+      setStepIdx(practiceIndex);
+      return;
+    }
     // Await lesson completion so the DB is updated before the quiz gate check runs
     let xpEarned = 0;
     if (!hasMarkedComplete.current) {
@@ -850,7 +863,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                       <CodeRunnerPython
                         starterCode={step.code}
                         title={step.title}
-                        onOutput={(out, ranCode) => handleCodeOutput(i, step, out, ranCode)}
+                        onOutput={(out, ranCode, result) => handleCodeOutput(i, step, out, ranCode, result)}
                       />
                     </div>
                   );
@@ -977,7 +990,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
           <Link className="sl-around__all" to="/lessons">All {TOTAL_LESSONS} lessons</Link>
         </nav>
 
-        {/* ── Finish early: visible once at least one code step is done ── */}
+        {/* ── Finish early: only once the lesson's own practice step is done ── */}
         {anyCodeDone && !isLastStep && (
           <div className="sl-skip-row">
             <button className="sl-skip-btn" onClick={goToQuiz}>
@@ -989,7 +1002,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
         {/* ── Use this in AI Builder ─────────────────────────── */}
         {lessonPrompt && (
           <div className="sl-builder-link">
-            <span className="sl-builder-link__label">Want to see this in action?</span>
+            <span className="sl-builder-link__label">Try this idea in a JavaScript project (a different language):</span>
             {/* A real href, for middle-click and open-in-new-tab, but
                 nofollow (message 75): thirty-one of these, each a different
                 /builder?prompt=... with no content of its own, were filling

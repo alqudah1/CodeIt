@@ -51,13 +51,15 @@ describe('the home page leads with the part that has no AI in it', () => {
     // three times, stacked, before a single button, and then offered three
     // identical full-width blocks. One claim, in the headline. One primary.
     // One plain link under it.
+    // First-use review (11 September): the headline is the first thing a
+    // family will do, in Python, and the primary button says the same.
     render(<Home />);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Your child types the Python/);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Write your first Python program/);
     expect(screen.queryByText(/No AI in the lessons or the playground/)).not.toBeInTheDocument();
-    const lesson = screen.getByRole('link', { name: /Open Lesson 1 free/ });
+    const lesson = screen.getByRole('link', { name: /Start your first Python lesson/ });
     expect(lesson).toHaveAttribute('href', '/lesson/1');
     expect(lesson.className).toMatch(/studio-button--primary/);
-    const playground = screen.getByRole('link', { name: 'Try the playground' });
+    const playground = screen.getByRole('link', { name: 'Explore Python templates' });
     expect(playground).toHaveAttribute('href', '/playground');
     expect(playground.className).toBe('studio-hero__textlink');
     expect(screen.queryByRole('link', { name: /View my progress/ })).not.toBeInTheDocument();
@@ -68,18 +70,22 @@ describe('the home page leads with the part that has no AI in it', () => {
     global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: async () => ({ projects: [] }) }));
     render(<Home />);
     expect(screen.getByText(/Welcome back, David/)).toBeInTheDocument();
-    expect(screen.queryByText(/Your child types the Python/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Write your first Python program/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Make a character\. It becomes the player/)).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'My progress' })).toHaveAttribute('href', '/MainPage');
     expect(screen.getByRole('link', { name: 'Next lesson' })).toHaveAttribute('href', '/lessons');
   });
 
   test('the studio is not the first thing on the page', () => {
+    // The live Python editor is the hero's demonstration; the JavaScript games
+    // and the avatar demo come after it, under their own honest heading.
     const source = read('Home.js');
-    const hero = source.indexOf('<AvatarInGame />');
-    const studio = source.indexOf('And when they want to make something');
+    const hero = source.indexOf('<TryPython />');
+    const studio = source.indexOf('A different activity: JavaScript games');
+    const avatar = source.indexOf('<AvatarInGame />');
     expect(hero).toBeGreaterThan(-1);
     expect(studio).toBeGreaterThan(hero);
+    expect(avatar).toBeGreaterThan(studio);
   });
 
   test('a visitor can run Python without leaving the page', () => {

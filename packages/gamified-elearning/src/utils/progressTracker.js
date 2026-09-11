@@ -1,6 +1,7 @@
 // Progress tracking utilities for the frontend
 import axios from 'axios';
 import { ENDPOINTS } from '../config/api';
+import { journeyHeaders } from './journey';
 
 const API_BASE_URL = '';
 
@@ -23,6 +24,12 @@ apiClient.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  // The same session journey and campaign code every other request carries
+  // (first-use review, 11 September): without them a lesson completion could
+  // never be joined to the visit that brought the family here, so the
+  // campaign report could count visits and signups but never a finished
+  // lesson. Session-scoped, no learner data.
+  Object.assign(config.headers, journeyHeaders());
   return config;
 });
 

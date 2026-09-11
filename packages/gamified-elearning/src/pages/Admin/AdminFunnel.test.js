@@ -102,6 +102,7 @@ describe('admin acquisition funnel', () => {
               pilot_requests: 3,
               saved_projects: 1,
               published_projects: 1,
+              completed_lessons: 2,
             },
           ],
           student_age_audit: {},
@@ -189,7 +190,7 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('Remixed', { selector: 'th' })).toBeInTheDocument();
     expect(screen.getByRole('row', { name: /Instagram 8 4 2 3 2 1 1 1 2 50% 38%/i })).toBeInTheDocument();
     expect(screen.getByText('Which creator campaigns convert')).toBeInTheDocument();
-    expect(screen.getByRole('row', { name: /creator-01 Instagram 8 4 2 3 1 1 38%/i })).toBeInTheDocument();
+    expect(screen.getByRole('row', { name: /creator-01 Instagram 8 4 2 3 1 1 2 38%/i })).toBeInTheDocument();
     expect(screen.getByText(/campaign code identifies the promotion, not the visitor/i)).toBeInTheDocument();
     expect(screen.getByText('Started family account setup').parentElement).toHaveTextContent('4');
     expect(screen.getByText('Tried a project').parentElement).toHaveTextContent('4');

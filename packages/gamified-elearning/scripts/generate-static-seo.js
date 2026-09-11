@@ -268,7 +268,7 @@ const BLOG_POSTS = [
 const BASE_PAGES = [
   {
     route: '/ai-website-builder-for-kids',
-    eyebrow: 'Creative coding for ages 5–18',
+    eyebrow: 'Creative coding for ages 8–14',
     h1: 'An AI website builder for kids that teaches the code.',
     intro: 'CodeIt helps a young creator turn an idea into a website, game, or quiz, then change the design, inspect the real code, and understand how the project works.',
     detail: 'The first version stays editable. Learners can change the content, colors, layout, and behavior, compare the preview with the HTML, CSS, and JavaScript, save their work, and keep improving it.',
@@ -708,7 +708,7 @@ const IDENTITY_PAGES = [
     route: '/about',
     eyebrow: 'About',
     h1: 'About CodeIt',
-    intro: `CodeIt is a browser-based coding studio for learners aged 5 to 18, built in ${COMPANY.locationLine()}${COMPANY.founderName ? ` by ${COMPANY.founderName}` : ''}. A learner describes a website, game or quiz; CodeIt builds a working first version; and then the learner opens it up and changes it.`,
+    intro: `CodeIt is a browser-based coding studio for learners aged 8 to 14, built in ${COMPANY.locationLine()}${COMPANY.founderName ? ` by ${COMPANY.founderName}` : ''}. A learner describes a website, game or quiz; CodeIt builds a working first version; and then the learner opens it up and changes it.`,
     detail: 'The project stays editable rather than becoming a finished result you can only look at.',
     type: 'AboutPage',
     sections: [
@@ -979,17 +979,17 @@ const SECTIONS_BY_ROUTE = {
 // other route uses build/index.html as its shell.
 const HOME_PAGE = {
   route: '/',
-  eyebrow: 'Creative coding for ages 5–18',
+  eyebrow: 'Creative coding for ages 8–14',
   // Kept in step with the real page. The app's headline changed when the front
   // door became three tappable games, and a crawlable copy that claims a
   // different headline from the page a person sees is the one kind of drift
   // worth avoiding at any SEO cost. "Website" is retained because it is what
   // the page has been indexed under.
-  h1: 'Make a real game or website. Then see the code inside it.',
+  h1: 'Write your first Python program. Run it. Make the message yours.',
   intro:
-    'CodeIt helps kids and beginner coders create websites, games, and quizzes, inspect the code behind them, and keep improving every project. Learners are then asked questions generated from their own code, so understanding is shown rather than assumed.',
+    'Start with a free Python lesson: run a program and change its message. Separately, the studio lets learners play and customize browser games made with HTML, CSS and JavaScript, with optional AI project building.',
   detail:
-    'Students ages 5–18 can build, edit, save, and learn from real browser projects. Parents can create private managed learner profiles for children ages 5–12 and receive progress updates.',
+    'Students ages 8–14 can build, edit, save, and learn from real browser projects. Parents can create private managed learner profiles for children ages 5–12 and receive progress updates.',
   type: 'SoftwareApplication',
   faqs: FAQS,
   sections: [
@@ -1017,7 +1017,7 @@ const HOME_PAGE = {
     {
       heading: 'Who it is for',
       paragraphs: [
-        'Learners ages 5–18. Parents and legal guardians create private managed profiles for ages 5–12 after confirming the adult account email. Independent student accounts begin at 13. Managed profiles for ages 5–12 cannot publish projects publicly.',
+        'Built for ages 8–14. Younger children can use it alongside an adult. Older beginners are welcome. Parents and legal guardians create private managed profiles for ages 5–12 after confirming the adult account email. Independent student accounts begin at 13. Managed profiles for ages 5–12 cannot publish projects publicly.',
         'CodeIt suits a beginner who has outgrown block-based tools such as Scratch and wants to work with real HTML, CSS, and JavaScript. It is not a schools product: there is no rostering, LMS integration, or teacher dashboard.',
       ],
     },

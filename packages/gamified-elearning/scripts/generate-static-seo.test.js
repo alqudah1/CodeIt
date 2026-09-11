@@ -79,7 +79,7 @@ test('public search documents use one accurate age range', () => {
   );
 
   for (const document of [template, llms, codingForKids]) {
-    assert.match(document, /ages 5–18/);
+    assert.match(document, /ages 8–14/);
     assert.doesNotMatch(document, /ages 8[–-](?:12|17|18)/);
   }
 });
@@ -107,7 +107,7 @@ test('homepage search copy leads with creating and learning, not AI', () => {
 test('homepage fallback explains the family offer and links to commercial pages', () => {
   const template = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
 
-  assert.match(template, /Students ages 5–18 can build, edit, save/);
+  assert.match(template, /Students ages 8–14 can build, edit, save/);
   assert.match(template, /managed learner profiles for children ages 5–12/);
   assert.match(template, /No card or paid subscription starts automatically/);
   for (const route of ['/coding-for-kids', '/ai-website-builder-for-kids', '/pricing', '/blog']) {
@@ -225,7 +225,7 @@ test('every generated route carries substantive crawlable body text', () => {
 test('homepage states what the product is, who it is for, and what it costs', () => {
   const text = bodyText(renderRouteDocument(TEMPLATE, HOME_PAGE));
   assert.ok(text.length >= 2000, `homepage body text is only ${text.length} characters`);
-  assert.match(text, /ages 5.18/i);
+  assert.match(text, /ages 8.14/i);
   assert.match(text, /HTML, CSS, and JavaScript/i);
   assert.ok(text.includes(PRICING.PRICE_PER_INTERVAL), 'homepage does not state the price');
 });

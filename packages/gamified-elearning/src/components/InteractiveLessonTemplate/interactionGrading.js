@@ -69,6 +69,9 @@ function checkOrder(step, arranged) {
 function checkCodeStep(step, { code = '', output = '' } = {}) {
   const trimmedOutput = String(output).trim();
   if (!trimmedOutput) return { passed: false, reason: 'no-output' };
+  if (step?.expectedDifferentOutput != null && trimmedOutput === String(step.expectedDifferentOutput).trim()) {
+    return { passed: false, reason: 'unchanged-output' };
+  }
 
   if (step?.expectedOutput instanceof RegExp && !step.expectedOutput.test(trimmedOutput)) {
     return { passed: false, reason: 'wrong-output' };
@@ -92,6 +95,7 @@ function checkCodeStep(step, { code = '', output = '' } = {}) {
 /** What to say when a code step fails, in words a child can act on. */
 function codeFeedback(result, step) {
   if (!result || result.passed) return '';
+  if (result.reason === 'unchanged-output') return 'Change the words inside the quotes, then press Run again before submitting.';
   if (result.reason === 'no-output') return 'Nothing was printed yet. Press Run to see what your code does.';
   if (result.reason === 'missing-concept') {
     const missing = (result.missing || []).join(', ');

@@ -1438,14 +1438,6 @@
   padding-bottom: 0;
 }
 
-/* The Python editor, one section down from the hero. */
-.studio-home main > .studio-python {
-  width: min(1120px, calc(100% - 48px));
-  margin: 0 auto;
-  padding-top: clamp(2rem, 5vw, 4rem);
-  padding-bottom: clamp(2rem, 5vw, 4rem);
-}
-.studio-python .tryp { max-width: 820px; margin: 0 auto; }
 
 /* Room between sections is what "considered" is made of. */
 .studio-home main > section {
@@ -1668,7 +1660,11 @@
   padding-top: clamp(2.5rem, 6vw, 5rem);
   padding-bottom: clamp(2.5rem, 6vw, 5rem);
 }
-.studio-home main > .studio-python { padding-top: 0; }
+/* The Python editor is the hero's own demonstration now (first-use review,
+   11 September), so the section it used to have is gone and the games come
+   straight after the hero. Two section paddings met there and left a 160px
+   hole on a laptop; the hero's own bottom padding is the whole gap. */
+.studio-home main > .studio-hero + .studio-make { padding-top: 0; }
 .studio-home main > .studio-inside { margin: clamp(2rem, 5vw, 4rem) auto; }
 .studio-home .studio-make { gap: 12px; }
 .studio-home .studio-section-heading h2 { margin-bottom: 6px; }

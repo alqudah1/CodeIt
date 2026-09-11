@@ -43,6 +43,7 @@ const lesson1 = {
       code: 'print("Hello!")',
       // Open-ended: the child writes their own message, so the check is that
       // they still used print and that something was actually printed.
+      expectedDifferentOutput: 'Hello!',
       expectedKeywords: ['print('],
       wrongOutputHint: 'Keep the print( and the quote marks, then press Run.',
       hint: 'Click inside the editor, change the text inside the quotes to anything you like, then click Run!',

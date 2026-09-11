@@ -138,7 +138,8 @@ async function getFunnelReport(requestedDays = 30) {
                 SUM(signup_count) AS completed_signups,
                 SUM(pilot_count) AS pilot_requests,
                 SUM(save_count) AS saved_projects,
-                SUM(publish_count) AS published_projects
+                SUM(publish_count) AS published_projects,
+                SUM(lesson_count) AS completed_lessons
          FROM (
            SELECT journey_id,
                   MAX(CASE WHEN event_name = 'acquisition_visit' THEN campaign_code END) AS campaign_code,
@@ -147,7 +148,8 @@ async function getFunnelReport(requestedDays = 30) {
                   MAX(CASE WHEN event_name = 'signup_complete' THEN 1 ELSE 0 END) AS signup_count,
                   MAX(CASE WHEN event_name = 'pilot_join' THEN 1 ELSE 0 END) AS pilot_count,
                   MAX(CASE WHEN event_name = 'project_save' THEN 1 ELSE 0 END) AS save_count,
-                  MAX(CASE WHEN event_name = 'project_publish' THEN 1 ELSE 0 END) AS publish_count
+                  MAX(CASE WHEN event_name = 'project_publish' THEN 1 ELSE 0 END) AS publish_count,
+                  MAX(CASE WHEN event_name = 'lesson_complete' THEN 1 ELSE 0 END) AS lesson_count
            FROM analytics_events
            WHERE ${windowSql} AND journey_id IS NOT NULL
            GROUP BY journey_id

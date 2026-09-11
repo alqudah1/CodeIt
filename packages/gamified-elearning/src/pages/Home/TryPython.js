@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { trackEvent } from '../../utils/trackEvent';
 import Icon from '../../components/Icon/Icon';
 import './TryPython.css';
+import { PRESETS } from '../Playground/presets';
 
 // ── The one thing on this page nobody has to take on trust ───────────────────
 //
@@ -17,6 +18,12 @@ import './TryPython.css';
 // the code is on the screen and readable while the editor arrives; pressing Run
 // or focusing the panel is what starts the download.
 const CodeRunnerPython = lazy(() => import('../../components/CodeRunnerPython'));
+
+// The editor here shows the playground's own first template, so the link
+// under it counts the rest, from the playground's list, not from memory.
+// "Eleven more" was written when there were eleven in total.
+const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+const MORE_TEMPLATES = (() => { const n = Math.max(0, PRESETS.length - 1); const w = WORDS[n] || String(n); return w.charAt(0).toUpperCase() + w.slice(1); })();
 
 export const HELLO = 'print("Hello, World!")\nprint("Welcome to Python!")';
 
@@ -79,7 +86,7 @@ export default function TryPython() {
           to="/playground"
           onClick={() => trackEvent('landing_cta_click', 'try-python-playground')}
         >
-          Eleven more templates in the playground
+          {MORE_TEMPLATES} more templates in the playground
         </Link>
       </p>
     </section>

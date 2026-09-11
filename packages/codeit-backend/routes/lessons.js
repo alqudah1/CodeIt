@@ -1,5 +1,6 @@
 const express = require('express');
 const { recordEvent } = require('../analytics');
+const { normalizeJourneyId } = require('../analyticsEvents');
 const pool = require('../db');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
@@ -96,7 +97,13 @@ router.post('/:id/complete', authenticateToken, async (req, res) => {
       // "did this learner reach the studio after finishing a lesson" has no
       // answer even in principle. Fired only on a first completion, so a
       // repeat visit to a finished lesson does not inflate it.
-      void recordEvent('lesson_complete', { userId }).catch(() => {});
+      // With the session journey, so the campaign report can say which
+      // tagged visit ended in a finished lesson. Without it (before 11
+      // September) the event existed but joined to nothing.
+      void recordEvent('lesson_complete', {
+        userId,
+        journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')),
+      }).catch(() => {});
     }
 
     res.json({

@@ -149,12 +149,12 @@ const CodeRunnerPython = ({
       // The student's code goes with the output: a lesson step needs to check
       // that the idea it taught is actually in there, not just that something
       // printed. Second argument, so existing callers keep working unchanged.
-      if (onOutput) onOutput(result || '', code);
+      if (onOutput) onOutput(result || '', code, { success: true });
     } catch (err) {
       const raw = err.message || 'An error occurred';
       const msg = cleanPythonError(raw);
       if (mountedRef.current) setOutput(msg);
-      if (onOutput) onOutput(msg, code);
+      if (onOutput) onOutput(msg, code, { success: false });
     } finally {
       if (mountedRef.current) setRunning(false);
       if (outputRef.current) outputRef.current.scrollTop = outputRef.current.scrollHeight;

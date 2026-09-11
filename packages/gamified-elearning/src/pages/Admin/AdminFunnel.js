@@ -444,13 +444,14 @@ export default function AdminFunnel() {
                   <th>Pilot requests</th>
                   <th>Saved</th>
                   <th>Published</th>
+                  <th>Lessons finished</th>
                   <th>Visit → pilot</th>
                 </tr>
               </thead>
               <tbody>
                 {campaignFunnel.length === 0 && (
                   <tr>
-                    <td colSpan={9} className="adm-loading">
+                    <td colSpan={10} className="adm-loading">
                       No creator traffic yet. <a className="adm-inline-link" href="/creator-brief#campaign-links">Create and copy a tracked link →</a>
                     </td>
                   </tr>
@@ -465,6 +466,7 @@ export default function AdminFunnel() {
                     <td>{fmt(campaign.pilot_requests)}</td>
                     <td>{fmt(campaign.saved_projects)}</td>
                     <td>{fmt(campaign.published_projects)}</td>
+                    <td>{fmt(campaign.completed_lessons)}</td>
                     <td>{ratio(Number(campaign.pilot_requests), Number(campaign.visits))}</td>
                   </tr>
                 ))}

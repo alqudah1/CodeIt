@@ -49,11 +49,14 @@ describe('the avatar demo on the home page', () => {
 describe('the avatar has a job, and the site says so', () => {
   const read = (rel) => fs.readFileSync(path.join(__dirname, rel), 'utf8');
 
-  test('the home page hero shows it', () => {
+  test('the home page shows it, with the JavaScript games it belongs to', () => {
+    // It led the hero from 31 August. The first-use review (11 September)
+    // found that put a JavaScript game beside a Python headline, so it now
+    // opens the games section, after the live Python editor.
     const home = read('Home.js');
     expect(home).toMatch(/<AvatarInGame \/>/);
-    // In the hero column, not further down.
-    expect(home.indexOf('<AvatarInGame />')).toBeLessThan(home.indexOf('<TryPython />'));
+    expect(home.indexOf('<AvatarInGame />')).toBeGreaterThan(home.indexOf('<TryPython />'));
+    expect(home.indexOf('<AvatarInGame />')).toBeGreaterThan(home.indexOf('A different activity: JavaScript games'));
   });
 
   test('/character tells the child what the avatar is for', () => {
