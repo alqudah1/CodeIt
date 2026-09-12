@@ -145,6 +145,25 @@ const EVENT_META = Object.freeze({
   ladder_done: new Set(['change-a-number', 'rename-the-title', 'add-a-rule', 'repeat-it', 'keep-a-list']),
   ladder_skip: new Set(['change-a-number', 'rename-the-title', 'add-a-rule', 'repeat-it', 'keep-a-list']),
   ladder_lesson: new Set(['change-a-number', 'rename-the-title', 'add-a-rule', 'repeat-it', 'keep-a-list']),
+
+  // ── Did a family actually use it (12 September 2026) ─────────────────
+  //
+  // lesson_start is a page opened and stays labelled that way. These are the
+  // three questions it could not answer, each with a closed set of words:
+  //
+  //   activity_start: the first Python Run pressed (python-run), or the first
+  //   real interaction inside a game (game-play).
+  //   activity_complete: a successful first output on Lesson 1's example
+  //   (python-first-run); the changed message run and submitted
+  //   (python-change-message); a game changed and then played
+  //   (game-changed-tested). A game that was only changed does not count.
+  //   guest_lesson_complete: a lesson finished by a visitor with no account.
+  //   The server records lesson_complete for accounts; guests had nothing.
+  //
+  // Identity is the session journey. Nothing persistent, no seven-day claim.
+  activity_start: new Set(['python-run', 'game-play']),
+  activity_complete: new Set(['python-first-run', 'python-change-message', 'game-changed-tested']),
+  guest_lesson_complete: new Set(),
 });
 
 const CLIENT_REPORTED_EVENTS = new Set([
@@ -167,6 +186,7 @@ const CLIENT_REPORTED_EVENTS = new Set([
   // recorded by the server, and a browser must not be able to claim any of
   // them.
   'upgrade_prompt_shown', 'upgrade_click', 'learn_the_code_behind', 'page_crash',
+  'activity_start', 'activity_complete', 'guest_lesson_complete',
 ]);
 const JOURNEY_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const CAMPAIGN_PATTERN = /^[a-z0-9][a-z0-9-]{1,23}$/;

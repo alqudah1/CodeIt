@@ -190,6 +190,7 @@ export default function AdminFunnel() {
   const foundingLeads = data?.founding_leads || [];
   const sourceFunnel = data?.source_funnel || [];
   const campaignFunnel = data?.campaign_funnel || [];
+  const activityFunnel = data?.activity_funnel || [];
   const homepageFunnel = data?.homepage_funnel || {};
   const challengeFunnel = data?.challenge_funnel || {};
   const journeyMetric = (key) => uniqueJourneys[key] || 0;
@@ -430,6 +431,66 @@ export default function AdminFunnel() {
             </table>
           </div>
           <p className="funnel-parent-note">A random number connects actions only inside one browser session. It contains no prompt, project content, name, email, IP address, or cross-site tracking data.</p>
+
+          <div className="adm-section-head">Did families actually use it</div>
+          <p className="funnel-parent-note">
+            One row per campaign, and one for every visit. Every number is sessions, counted at most once per session per column:
+            a child who presses Run nine times is one engaged start.
+            <strong> Visits</strong> are sessions that arrived (one per session).
+            <strong> Engaged</strong> is the first Python Run pressed, or the first real tap, key or click inside a game; opening a lesson page is not a start.
+            <strong> Finished</strong> means Lesson 1's example printed; the changed message was run and submitted; a game was changed and then played (a change alone does not count); or a whole lesson was finished, with or without an account.
+            <strong> Signed in</strong> is how many of those sessions carried an account, so you can see how much of a row is guests.
+            Sessions end with the tab, so this cannot say whether the same child came back another day, and it does not try to.
+          </p>
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead>
+                <tr>
+                  <th>Campaign</th>
+                  <th>Visits</th>
+                  <th>Signed in</th>
+                  <th>Engaged: Python</th>
+                  <th>Engaged: game</th>
+                  <th>Engaged: any</th>
+                  <th>Finished: first run</th>
+                  <th>Finished: changed message</th>
+                  <th>Finished: changed game</th>
+                  <th>Finished: a lesson</th>
+                  <th>Visit → engaged</th>
+                  <th>Engaged → finished</th>
+                </tr>
+              </thead>
+              <tbody>
+                {activityFunnel.length === 0 && (
+                  <tr>
+                    <td colSpan={12} className="adm-loading">No visits in this window yet.</td>
+                  </tr>
+                )}
+                {activityFunnel.map((row) => {
+                  const finishedAny = Math.max(
+                    Number(row.done_first_run), Number(row.done_change_message), Number(row.done_game), Number(row.done_lesson)
+                  );
+                  return (
+                    <tr key={row.campaign_code || 'all'}>
+                      <td><strong>{row.campaign_code || 'All visits'}</strong></td>
+                      <td><strong>{fmt(row.visits)}</strong></td>
+                      <td>{fmt(row.signed_in)}</td>
+                      <td>{fmt(row.engaged_python)}</td>
+                      <td>{fmt(row.engaged_game)}</td>
+                      <td>{fmt(row.engaged_any)}</td>
+                      <td>{fmt(row.done_first_run)}</td>
+                      <td>{fmt(row.done_change_message)}</td>
+                      <td>{fmt(row.done_game)}</td>
+                      <td>{fmt(row.done_lesson)}</td>
+                      <td>{ratio(Number(row.engaged_any), Number(row.visits))}</td>
+                      <td>{ratio(finishedAny, Number(row.engaged_any))}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <p className="funnel-parent-note">"Engaged → finished" uses the largest single finished column, not their sum, because one session can finish more than one thing.</p>
 
           <div className="adm-section-head">Which creator campaigns convert</div>
           <div className="adm-table-wrap">

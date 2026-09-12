@@ -118,3 +118,43 @@ test('Python errors cannot complete the example or be submitted as a message', (
   fireEvent.click(screen.getByRole('button', { name: 'Run error Make It Your Own' }));
   expect(screen.getByRole('button', { name: 'Run your code first' })).toBeDisabled();
 });
+
+// ── Did a family actually use it (12 September 2026) ─────────────────────────
+//
+// The two Lesson 1 activities report a completion at the moment they are
+// really done, once, and a guest finishing the lesson is counted.
+describe('activity completions', () => {
+  const { trackEvent } = require('../../utils/trackEvent');
+  beforeEach(() => { sessionStorage.clear(); trackEvent.mockClear(); });
+
+  test('the example printing is the first-run completion; an error is not', () => {
+    mockSearch = '?activity=python-first-run';
+    mount();
+    fireEvent.click(screen.getByRole('button', { name: 'Run error Your First Python Program' }));
+    expect(trackEvent).not.toHaveBeenCalledWith('activity_complete', 'python-first-run', null);
+    fireEvent.click(screen.getByRole('button', { name: 'Run unchanged Your First Python Program' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Run unchanged Your First Python Program' }));
+    expect(trackEvent.mock.calls.filter((c) => c[0] === 'activity_complete')).toEqual([['activity_complete', 'python-first-run', null]]);
+  });
+
+  test('the changed message submitted is the second completion; the unchanged one is not', () => {
+    mockSearch = '?activity=python-change-message';
+    mount();
+    fireEvent.click(screen.getByRole('button', { name: 'Run unchanged Make It Your Own' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Submit Answer' }));
+    expect(trackEvent).not.toHaveBeenCalledWith('activity_complete', 'python-change-message', null);
+    fireEvent.click(screen.getByRole('button', { name: 'Run changed Make It Your Own' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Submit Answer' }));
+    expect(trackEvent).toHaveBeenCalledWith('activity_complete', 'python-change-message', null);
+  });
+
+  test('a guest who finishes the lesson is counted once, with nothing but the event name', async () => {
+    mockSearch = '?activity=python-change-message';
+    mount();
+    fireEvent.click(screen.getByRole('button', { name: 'Run changed Make It Your Own' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Submit Answer' }));
+    fireEvent.click(screen.getByRole('button', { name: /Finish lesson and go/ }));
+    expect(await screen.findByText(/Hello Python!.*finished/)).toBeInTheDocument();
+    expect(trackEvent.mock.calls.filter((c) => c[0] === 'guest_lesson_complete')).toEqual([['guest_lesson_complete', null, null]]);
+  });
+});

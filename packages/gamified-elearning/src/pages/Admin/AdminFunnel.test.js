@@ -92,6 +92,10 @@ describe('admin acquisition funnel', () => {
               remixed_projects: 2,
             },
           ],
+          activity_funnel: [
+            { campaign_code: 'creator-01', visits: 8, signed_in: 3, engaged_python: 5, engaged_game: 2, engaged_any: 6, done_first_run: 4, done_change_message: 3, done_game: 1, done_lesson: 3 },
+            { campaign_code: null, visits: 40, signed_in: 9, engaged_python: 12, engaged_game: 7, engaged_any: 17, done_first_run: 9, done_change_message: 6, done_game: 4, done_lesson: 6 },
+          ],
           campaign_funnel: [
             {
               campaign_code: 'creator-01',
@@ -210,5 +214,14 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('AI generation rate').parentElement).toHaveTextContent('80%');
     expect(screen.getByText('Cost / AI-built project').parentElement).toHaveTextContent('$0.010');
     expect(screen.getByText(/cost per working AI result is not understated/i)).toBeInTheDocument();
+  });
+// ── Did families actually use it (12 September 2026) ─────────────────────────
+  test('the activity table shows visits, engaged starts and completions per campaign, with definitions', async () => {
+    render(<AdminFunnel />);
+    expect(await screen.findByRole('row', { name: /creator-01 8 3 5 2 6 4 3 1 3 75% 67%/ })).toBeInTheDocument();
+    expect(screen.getByRole('row', { name: /All visits 40 9 12 7 17 9 6 4 6 43% 53%/ })).toBeInTheDocument();
+    expect(screen.getByText(/opening a lesson page is not a start/)).toBeInTheDocument();
+    expect(screen.getByText(/a change alone does not count/)).toBeInTheDocument();
+    expect(screen.getByText(/cannot say whether the same child came back another day/)).toBeInTheDocument();
   });
 });

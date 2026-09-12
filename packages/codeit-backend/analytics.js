@@ -88,10 +88,15 @@ async function getFunnelReport(requestedDays = 30) {
          GROUP BY event_name`
       ),
       pool.query(
+        // Grouped by the same expression the SELECT uses. MySQL accepted
+        // DATE(created_at) here; Postgres refused it, and because this runs
+        // inside one Promise.all the refusal took the entire funnel report
+        // down: /api/analytics/funnel answered 503 and the admin page showed
+        // nothing, for every metric, since the database moved.
         `SELECT DATE_FORMAT(created_at, '%Y-%m-%d') AS day, event_name, COUNT(*) AS event_count
          FROM analytics_events WHERE ${windowSql}
-         GROUP BY DATE(created_at), event_name
-         ORDER BY DATE(created_at) ASC`
+         GROUP BY 1, 2
+         ORDER BY 1 ASC`
       ),
       pool.query(
         `SELECT event_name, meta, COUNT(*) AS event_count,
@@ -287,6 +292,62 @@ async function getFunnelReport(requestedDays = 30) {
       console.error('AI build distribution failed:', err.message);
     }
 
+    // ── Did a family actually use it ────────────────────────────────────
+    //
+    // One row per campaign plus one for every visit, tagged or not. Every
+    // count is journeys (sessions), at most one per journey per column:
+    // a child who presses Run nine times is one engaged start. Rows are
+    // journeys with an acquisition_visit, which fires once per session, so
+    // "visits" is sessions that arrived, not page loads.
+    //
+    //   visits              journeys that arrived in the window
+    //   signed_in           journeys that carried an account on any event
+    //   engaged_python      first Python Run pressed (activity_start python-run)
+    //   engaged_game        first real interaction in a game (activity_start game-play)
+    //   engaged_any         either
+    //   done_first_run      Lesson 1 example printed (activity_complete python-first-run)
+    //   done_change_message the changed message run and submitted
+    //   done_game           a game changed, then played
+    //   done_lesson         a lesson finished: lesson_complete (accounts) or
+    //                       guest_lesson_complete (no account)
+    //
+    // Identity is the session journey; nothing here can say whether the same
+    // child came back another day, and no column pretends to.
+    let activityFunnel = [];
+    try {
+      const perJourney = `
+        SELECT journey_id,
+               MAX(CASE WHEN event_name = 'acquisition_visit' THEN 1 ELSE 0 END) AS visited,
+               MAX(CASE WHEN event_name = 'acquisition_visit' THEN campaign_code END) AS campaign_code,
+               MAX(CASE WHEN user_id IS NOT NULL THEN 1 ELSE 0 END) AS signed_in,
+               MAX(CASE WHEN event_name = 'activity_start' AND meta = 'python-run' THEN 1 ELSE 0 END) AS engaged_python,
+               MAX(CASE WHEN event_name = 'activity_start' AND meta = 'game-play' THEN 1 ELSE 0 END) AS engaged_game,
+               MAX(CASE WHEN event_name = 'activity_complete' AND meta = 'python-first-run' THEN 1 ELSE 0 END) AS done_first_run,
+               MAX(CASE WHEN event_name = 'activity_complete' AND meta = 'python-change-message' THEN 1 ELSE 0 END) AS done_change_message,
+               MAX(CASE WHEN event_name = 'activity_complete' AND meta = 'game-changed-tested' THEN 1 ELSE 0 END) AS done_game,
+               MAX(CASE WHEN event_name IN ('lesson_complete', 'guest_lesson_complete') THEN 1 ELSE 0 END) AS done_lesson
+        FROM analytics_events
+        WHERE ${windowSql} AND journey_id IS NOT NULL
+        GROUP BY journey_id`;
+      const sums = `
+        COUNT(*) AS visits,
+        SUM(signed_in) AS signed_in,
+        SUM(engaged_python) AS engaged_python,
+        SUM(engaged_game) AS engaged_game,
+        SUM(CASE WHEN engaged_python = 1 OR engaged_game = 1 THEN 1 ELSE 0 END) AS engaged_any,
+        SUM(done_first_run) AS done_first_run,
+        SUM(done_change_message) AS done_change_message,
+        SUM(done_game) AS done_game,
+        SUM(done_lesson) AS done_lesson`;
+      const [[byCampaign], [everyone]] = await Promise.all([
+        pool.query(`SELECT campaign_code, ${sums} FROM (${perJourney}) j WHERE visited = 1 AND campaign_code IS NOT NULL GROUP BY campaign_code ORDER BY visits DESC, campaign_code ASC`),
+        pool.query(`SELECT NULL AS campaign_code, ${sums} FROM (${perJourney}) j WHERE visited = 1`),
+      ]);
+      activityFunnel = [...byCampaign, ...everyone.map((row) => ({ ...row, campaign_code: null }))];
+    } catch (err) {
+      console.error('Activity funnel failed:', err.message);
+    }
+
     const foundingLeads = [...leadsByEmail.values()]
       .sort((a, b) => new Date(b.interested_at) - new Date(a.interested_at))
       .slice(0, 100);
@@ -298,6 +359,7 @@ async function getFunnelReport(requestedDays = 30) {
       breakdown,
       source_funnel: sourceFunnel,
       campaign_funnel: campaignFunnel,
+      activity_funnel: activityFunnel,
       homepage_funnel: homepageFunnelRows[0] || null,
       challenge_funnel: challengeFunnelRows[0] || null,
       activation_entry_tracking_since: ACTIVATION_ENTRY_TRACKING_SINCE,

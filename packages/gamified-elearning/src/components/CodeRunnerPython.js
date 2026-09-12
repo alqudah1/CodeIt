@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { getPyodideRuntime } from '../utils/pyodideLoader';
+import { trackActivityStart } from '../utils/activity';
 import Icon from './Icon/Icon';
 import './CodeRunnerPython.css';
 
@@ -127,6 +128,10 @@ const CodeRunnerPython = ({
 
   const runCode = useCallback(async () => {
     if (running || starting) return;
+    // The engaged start for Python: a Run pressed, on any surface that runs
+    // it (a lesson, the playground, the editor on the home page). Once per
+    // session; the result of the run is a separate question.
+    void trackActivityStart('python-run');
     // A Run pressed before Python has arrived is not ignored: it starts the
     // download and then runs. The old code returned silently here, which is the
     // other half of why the button looked dead.

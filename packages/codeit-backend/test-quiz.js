@@ -80,7 +80,10 @@ app.use(cors({
     return callback(new Error('Origin is not allowed by CORS'));
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-CodeIt-Journey'],
+  // X-CodeIt-Campaign travels with the journey on every analytics call. Same
+  // origin in production, so no preflight; but a cross-origin API would have
+  // dropped every campaign code at the preflight without a single error.
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-CodeIt-Journey', 'X-CodeIt-Campaign'],
   credentials: true,
 }));
 

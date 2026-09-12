@@ -7,6 +7,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { useSEO } from '../../hooks/useSEO';
 import { trackEvent } from '../../utils/trackEvent';
+import { trackActivityComplete, trackActivityStart } from '../../utils/activity';
 import { reportFailure } from '../../utils/humanError';
 import { journeyHeaders } from '../../utils/journey';
 import {
@@ -923,6 +924,11 @@ export default function Builder() {
   const playedReportedRef = useRef(false);
   const tokenRef = useRef(null);
   useEffect(() => { tokenRef.current = token; }, [token]);
+  // Whether this project has been changed, readable from the once-registered
+  // message listener. A game counts as finished only when it is played AFTER
+  // a change; playing the untouched starter is a start, not a finish.
+  const personalizedRef = useRef(false);
+  useEffect(() => { personalizedRef.current = hasPersonalized; }, [hasPersonalized]);
   const [guestDraftRecovered, setGuestDraftRecovered] = useState(false);
   const [guideLevelOverride, setGuideLevelOverride] = useState(storedGuideLevelOverride);
   const [coachOpen, setCoachOpen] = useState(() => learnerGuideLevel(user) !== 'independent');
@@ -1948,6 +1954,12 @@ export default function Builder() {
           // to pass in silence.
           popXp(0, 'That is your game, running.');
         }
+        // The engaged start for a game: a real tap, key or click inside it.
+        // Once per session, whichever project.
+        void trackActivityStart('game-play', tokenRef.current);
+        // The finish: the child changed the game and is now playing the
+        // changed version. Once per session, and never for a change alone.
+        if (personalizedRef.current) void trackActivityComplete('game-changed-tested', tokenRef.current);
         setHasPlayedOnce(true);
         setHasTestedLatest(true);
       }

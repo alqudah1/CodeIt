@@ -21,6 +21,7 @@ import { hasQuiz, loadQuizIds } from '../../utils/quizAvailability';
 import { effectiveGuideLevel } from '../../utils/guideLevel';
 import { PredictOutput, FillBlank, OrderSteps } from './LessonInteractions';
 import { firstUseStep, firstPracticeIndex } from './firstUse';
+import { trackActivityComplete, trackGuestLessonComplete } from '../../utils/activity';
 import {
   blankCount,
   checkCodeStep,
@@ -367,6 +368,12 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
       setLastOutputs(prev => ({ ...prev, [idx]: '' }));
       return;
     }
+    // The first activity a Reel can send a family to: Lesson 1's example ran
+    // and printed something. A Python error came back above and never
+    // reaches here.
+    if (Number(lessonId) === 1 && step?.id === 'example' && String(output || '').trim()) {
+      void trackActivityComplete('python-first-run', token);
+    }
     setLastOutputs(prev => ({ ...prev, [idx]: output }));
     setLastCode(prev => ({ ...prev, [idx]: code || '' }));
     setFeedback(prev => ({ ...prev, [idx]: null })); // clear stale feedback on re-run
@@ -401,6 +408,11 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
     const result = gradeStep(idx, step);
 
     if (result.passed) {
+      // The second activity: the message changed, run, and submitted. An
+      // unchanged "Hello!" fails the grade above and never reaches here.
+      if (Number(lessonId) === 1 && step?.id === 'tryit') {
+        void trackActivityComplete('python-change-message', token);
+      }
       setFeedback(prev => ({ ...prev, [idx]: null }));
       setFeedbackText(prev => ({ ...prev, [idx]: '' }));
       markStepDone(idx);
@@ -468,6 +480,10 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
     if (!hasMarkedComplete.current) {
       hasMarkedComplete.current = true;
       markLessonComplete(id);
+      // A guest finishing a lesson used to be invisible: the completion call
+      // below needs an account and fails quietly. The session journey is
+      // enough to count it, and nothing else about them is sent.
+      void trackGuestLessonComplete(id, token);
       try {
         const result = await trackStaticLessonCompletion(id);
         xpEarned = result?.alreadyCompleted ? 0 : (result?.xpEarned ?? 0);

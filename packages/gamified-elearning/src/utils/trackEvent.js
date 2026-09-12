@@ -57,6 +57,11 @@ const CLIENT_EVENTS = new Set([
   "ladder_done",
   "ladder_skip",
   "ladder_lesson",
+  // Did a family actually use it (12 September 2026): an engaged start, an
+  // activity finished, and a lesson finished by a guest. See utils/activity.js.
+  "activity_start",
+  "activity_complete",
+  "guest_lesson_complete",
 ]);
 
 export async function trackEvent(eventName, meta = null, explicitToken = null) {
