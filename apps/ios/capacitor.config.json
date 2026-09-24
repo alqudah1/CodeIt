@@ -1,0 +1,12 @@
+{
+  "appId": "com.codeitlearn.app",
+  "appName": "CodeIt",
+  "webDir": "../../packages/gamified-elearning/build",
+  "ios": {
+    "contentInset": "automatic",
+    "backgroundColor": "#FFF4E5"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

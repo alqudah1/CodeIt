@@ -62,6 +62,9 @@ const configuredOrigins = (process.env.CORS_ORIGINS || '')
 const allowedOrigins = new Set([
   'https://codeitlearn.com',
   'https://www.codeitlearn.com',
+  // The iOS app (apps/ios) serves the same site from inside a native shell
+  // at this origin and calls this API directly.
+  'capacitor://localhost',
   ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
   ...(process.env.VERCEL_PROJECT_PRODUCTION_URL ? [`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`] : []),
   ...(process.env.VERCEL_BRANCH_URL ? [`https://${process.env.VERCEL_BRANCH_URL}`] : []),

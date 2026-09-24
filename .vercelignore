@@ -6,3 +6,5 @@ node_modules
 **/.env
 **/.env.*
 !**/.env.example
+# The iOS shell: built on a Mac with Xcode, never by Vercel.
+apps
