@@ -73,7 +73,7 @@ test('the static generator knows about every content route the app renders', () 
   const NOT_CONTENT = new RegExp(
     '^/(MainPage|admin|login|register|forgot-password|reset-password|parent-review|' +
       'character|leaderboard|profile|quiz|project|creator-brief|investor-brief|' +
-      'journey/puzzle|game/)'
+      'journey/puzzle|game/|play$)'
   );
 
   const generated = new Set([HOME_PAGE, ...PAGES].map((page) => page.route || '/'));

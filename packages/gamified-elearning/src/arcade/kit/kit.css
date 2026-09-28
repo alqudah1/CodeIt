@@ -1,0 +1,24 @@
+/* The arcade kit: keys, sheets, chips. Tokens come from styles/arcade.css. */
+.ak-key {
+  position: relative; display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; box-sizing: border-box; border: 3px solid var(--ink); border-radius: 16px;
+  padding: 14px 16px; font-family: var(--font-display); font-weight: 800; font-size: 17px; line-height: 1.1;
+  color: #fff; background: var(--arc-orange); cursor: pointer; text-align: center;
+  box-shadow: 0 5px 0 var(--arc-orange-down), 0 5px 0 3px var(--ink);
+  transition: transform .09s ease, box-shadow .09s ease; -webkit-tap-highlight-color: transparent; user-select: none;
+}
+.ak-key:active { transform: translateY(5px) scaleX(1.02) scaleY(.96); box-shadow: 0 0 0 var(--arc-orange-down), 0 0 0 3px var(--ink); }
+.ak-key--mint { background: var(--arc-mint); color: var(--ink); box-shadow: 0 5px 0 var(--arc-mint-down), 0 5px 0 3px var(--ink); }
+.ak-key--mint:active { box-shadow: 0 0 0 var(--arc-mint-down), 0 0 0 3px var(--ink); }
+.ak-key--sun { background: var(--arc-sun); color: var(--ink); box-shadow: 0 5px 0 #E0A800, 0 5px 0 3px var(--ink); }
+.ak-key--sun:active { box-shadow: 0 0 0 #E0A800, 0 0 0 3px var(--ink); }
+.ak-key--quiet { background: var(--paper); color: var(--ink); box-shadow: 0 5px 0 rgba(53,34,14,.28), 0 5px 0 3px var(--ink); }
+.ak-key--quiet:active { box-shadow: 0 0 0 rgba(53,34,14,.28), 0 0 0 3px var(--ink); }
+.ak-key--coral { background: var(--arc-coral); color: #fff; box-shadow: 0 5px 0 #D94F4F, 0 5px 0 3px var(--ink); }
+.ak-key--coral:active { box-shadow: 0 0 0 #D94F4F, 0 0 0 3px var(--ink); }
+.ak-key:disabled { opacity: .45; cursor: default; }
+.ak-key:focus-visible { outline: 3px solid var(--arc-sky); outline-offset: 3px; }
+.ak-key--glow { animation: ak-glow 1.4s ease-in-out infinite; }
+@keyframes ak-glow { 50% { box-shadow: 0 5px 0 var(--arc-mint-down), 0 5px 0 3px var(--ink), 0 0 0 8px rgba(23,192,139,.25); } }
+.ak-key--small { padding: 9px 12px; font-size: 14px; border-radius: 12px; width: auto; }
+@media (prefers-reduced-motion: reduce) { .ak-key, .ak-key--glow { transition: none; animation: none; } }

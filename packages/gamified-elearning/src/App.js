@@ -20,6 +20,8 @@ import ActivityTracker from './components/ActivityTracker/ActivityTracker';
 // ── Lazy-loaded routes ────────────────────────────────────────────
 const MainPage       = lazy(() => import('./pages/MainPage/MainPage'));
 const LessonMap      = lazy(() => import('./pages/Lessons/LessonMap'));
+// The child's shell (28 September 2026): one living screen, no site header.
+const Arcade         = lazy(() => import('./arcade/Arcade'));
 
 const LessonRoute    = lazy(() => import('./pages/Lessons/LessonRoute'));
 
@@ -146,6 +148,7 @@ const App = () => (
               <Route path="/MainPage" element={<MainPage />} />
 
               {/* ── Lessons ── */}
+              <Route path="/play"       element={<Arcade />} />
               <Route path="/lessons"    element={<LessonMap />} />
               <Route path="/lesson/:lessonId" element={<LessonRoute />} />
 
