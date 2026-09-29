@@ -3,8 +3,8 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { AuthContext } from '../context/AuthContext';
 import { CharacterProvider } from '../context/CharacterContext';
 import Key from './kit/Key';
-import { layoutNodes, trailPath, statusFor, nextLesson, isBoss, worldHeight } from './worldLayout';
-import { TOTAL_LESSONS } from '../pages/Lessons/lessonRegistry';
+import { buildWorld, roadPath, statusFor, nextLesson, shortTitle, freeSide } from './worldLayout';
+import { TOTAL_LESSONS, lessonUnits } from '../pages/Lessons/lessonRegistry';
 
 // ── The child's shell, round one: the kit and the world ─────────────────────
 
@@ -52,30 +52,36 @@ describe('a key is a physical object', () => {
 });
 
 describe('the world is a place, not a list', () => {
-  test('every lesson stands on the path, bottom to top, winding', () => {
-    const nodes = layoutNodes(TOTAL_LESSONS);
-    expect(nodes).toHaveLength(31);
-    expect(nodes[0].y).toBeLessThan(nodes[30].y);
-    const xs = new Set(nodes.map((n) => Math.round(n.x / 20)));
-    expect(xs.size).toBeGreaterThan(4);
-    for (const n of nodes) { expect(n.x).toBeGreaterThan(40); expect(n.x).toBeLessThan(320); }
-    expect(worldHeight(31)).toBeGreaterThan(nodes[30].y);
+  const units = lessonUnits();
+  test('every lesson stands on one road, bottom to top, winding, with a chest after the first and a crown on the last', () => {
+    const { items, road, height } = buildWorld(units);
+    const lessons = items.filter((i) => i.kind === 'lesson');
+    expect(lessons).toHaveLength(TOTAL_LESSONS);
+    expect(lessons[0].y).toBeGreaterThan(lessons[lessons.length - 1].y);
+    expect(new Set(lessons.map((n) => n.x)).size).toBeGreaterThan(4);
+    for (const n of road) { expect(n.x).toBeGreaterThan(40); expect(n.x).toBeLessThan(350); expect(n.y).toBeGreaterThan(0); expect(n.y).toBeLessThan(height); }
+    expect(items.filter((i) => i.kind === 'chest')).toHaveLength(units.length);
+    expect(items.filter((i) => i.kind === 'trophy')).toHaveLength(units.length);
+    expect(lessons.filter((l) => l.boss).map((l) => l.id)).toEqual(units.map((u) => u.lessons[u.lessons.length - 1].id));
+    // the road is one continuous path through every item in order
+    const d = roadPath(road);
+    expect(d.startsWith(`M ${road[0].x} ${road[0].y}`)).toBe(true);
+    expect(d.endsWith(`${road[road.length - 1].x} ${road[road.length - 1].y}`)).toBe(true);
   });
-  test('the trail passes through every node in order', () => {
-    const nodes = layoutNodes(5);
-    const d = trailPath(nodes);
-    expect(d.startsWith(`M ${nodes[0].x} ${nodes[0].y}`)).toBe(true);
-    expect(d.endsWith(`${nodes[4].x} ${nodes[4].y}`)).toBe(true);
-    expect(trailPath(nodes, 1)).toBe('');
+  test('road signs are short; props stand on the side away from the road', () => {
+    expect(shortTitle('Making Decisions with If Statements')).toBe('Making Decisions with…');
+    expect(shortTitle('Capstone. Build a Real Game')).toBe('Capstone');
+    expect(shortTitle('Hello Python!')).toBe('Hello Python!');
+    const { road } = buildWorld(units);
+    for (const r of road) expect(Math.abs(freeSide(road, r.y) - r.x)).toBeGreaterThan(90);
   });
-  test('exactly one lit node: the first lesson not done', () => {
+  test('exactly one lit stone: the first lesson not done', () => {
     expect(nextLesson([])).toBe(1);
     expect(nextLesson([1, 2, 17])).toBe(3);
     expect(nextLesson([1, 2, 3])).toBe(4);
     const statuses = Array.from({ length: 31 }, (_, i) => statusFor(i + 1, [1, 2, 17]));
     expect(statuses.filter((s) => s === 'next')).toHaveLength(1);
     expect(statuses.filter((s) => s === 'done')).toHaveLength(3);
-    for (let id = 1; id <= 31; id += 1) expect(isBoss(id)).toBe(id % 5 === 0);
   });
 });
 
@@ -93,11 +99,37 @@ describe('the shell', () => {
     expect(document.querySelector('.site-header, header.header')).toBeNull();
     expect(document.querySelectorAll('.wnode')).toHaveLength(31);
     expect(document.querySelectorAll('.wnode--next')).toHaveLength(1);
-    expect(document.querySelector('.wnode--next .wnode__you')).not.toBeNull();
-    expect(document.querySelectorAll('.wnode--boss')).toHaveLength(6);
+    expect(document.querySelector('.wnode--next .wstart')).not.toBeNull();
+    expect(document.querySelector('.world__you')).not.toBeNull();
+    expect(document.querySelectorAll('.wnode--boss')).toHaveLength(lessonUnits().length);
+    expect(document.querySelectorAll('.wnode--ahead')).toHaveLength(30);
     expect(screen.getByRole('button', { name: /Start: Hello Python/ })).toBeInTheDocument();
+    expect(document.querySelector('.wnode--next .wstone').getAttribute('aria-label')).toMatch(/^Lesson 1: Hello Python!?, start$/);
     expect(document.querySelector('.mascot')).not.toBeNull();
-    expect(document.querySelector('.wchest')).not.toBeNull();
+    // prizes are on the road before they are earned: every chest locked, every trophy unlit, nothing grey
+    expect(document.querySelectorAll('.wchest--locked')).toHaveLength(lessonUnits().length);
+    expect(document.querySelectorAll('.wtrophy--won')).toHaveLength(0);
+    expect(document.querySelector('.wbanner')).not.toBeNull();
+    expect(document.querySelector('.wfox')).not.toBeNull();
+  });
+
+  test('a chest opens once its lesson is done, and stays open', async () => {
+    global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({ completedLessons: [1] }) }));
+    localStorage.removeItem('codeit_chests_opened');
+    render(
+      <AuthContext.Provider value={{ user: { id: 1 }, token: 't' }}>
+        <CharacterProvider><Arcade /></CharacterProvider>
+      </AuthContext.Provider>
+    );
+    await act(async () => { await new Promise((r) => setTimeout(r, 30)); });
+    expect(document.querySelectorAll('.wnode--done')).toHaveLength(1);
+    expect(document.querySelectorAll('.wchest--ready')).toHaveLength(1);
+    fireEvent.click(document.querySelector('.wchest--ready'));
+    expect(document.querySelectorAll('.wchest--open')).toHaveLength(1);
+    expect(document.querySelector('.world__toast').textContent).toMatch(/New sticker/);
+    expect(JSON.parse(localStorage.getItem('codeit_chests_opened'))).toEqual([1]);
+    expect(play).toHaveBeenCalledWith('chest');
+    delete global.fetch;
   });
 
   test('four tabs, always; Me goes to sign-in for a guest', async () => {
