@@ -15,6 +15,7 @@ const { initializeProjectRewards, awardProjectXp: persistProjectXp } = require('
 const { checkAiBuildAllowance, planForSubscription } = require('../entitlements');
 const { modelForBuild } = require('../modelRouting');
 const { projectName } = require('../projectName');
+const { looksLikeGame, recipeFromRules, validRecipe, RECIPE_PROMPT } = require('../recipeRules');
 const billingStore = require('../billingStore');
 const { assertCanPublish, isBillingConfigured } = require('./billing');
 
@@ -1883,6 +1884,51 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
       return res.status(502).json({ error: 'AI generation failed. Please try again.' });
     }
   }
+});
+
+// ── POST /api/builder/recipe ──────────────────────────────────────────────────
+//
+// The instant builder. A child's sentence comes in; a nine-line recipe goes
+// out in about two seconds, and the game engine in the page turns it into a
+// playable game at once. The model is asked for 200 tokens of JSON, not a
+// whole program, which is why this is fast and why it does not fail the way
+// the full build does. If the model is slow, down or wrong, the rules in
+// recipeRules.js answer instead, so this route never sends a child away with
+// nothing. Ideas that are not games (a website, a quiz, a tool) get
+// { game: false } and the studio takes the full build path as before.
+const RECIPE_TIMEOUT_MS = 8000;
+const recipeLimiter = createRequestLimiter({ anonymous: 30, authenticated: 90 });
+router.post('/recipe', optionalAuth, recipeLimiter, async (req, res) => {
+  const prompt = typeof req.body?.prompt === 'string' ? req.body.prompt.trim() : '';
+  if (!prompt) return res.status(400).json({ error: 'prompt is required' });
+  if (prompt.length > MAX_PROMPT_LENGTH) return res.status(400).json({ error: `Keep your idea under ${MAX_PROMPT_LENGTH} characters.` });
+  if (!looksLikeGame(prompt)) return res.json({ game: false });
+  const rules = recipeFromRules(prompt);
+  let recipe = null, source = 'rules';
+  if (process.env.ANTHROPIC_API_KEY) {
+    try {
+      const message = await Promise.race([
+        createTrackedMessage('recipe', {
+          model: 'claude-haiku-4-5-20251001', max_tokens: 220, system: RECIPE_PROMPT,
+          messages: [{ role: 'user', content: `Idea: ${prompt}\nA rules-only guess you may improve on: ${JSON.stringify(rules)}` }],
+        }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('RECIPE_TIMEOUT')), RECIPE_TIMEOUT_MS)),
+      ]);
+      const text = (message.content || []).map((c) => c.text || '').join('');
+      const json = text.match(/\{[\s\S]*\}/);
+      recipe = json ? validRecipe(JSON.parse(json[0])) : null;
+      if (recipe) source = 'model';
+    } catch (err) {
+      console.log(`Builder: recipe fell back to rules (${err.message})`);
+    }
+  }
+  if (!recipe) recipe = rules;
+  // Counted with the full builds, so the funnel sees every build a child got,
+  // and the meta says which path gave it to them.
+  const ctx = { userId: req.user?.user_id, journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')), meta: `recipe-${source}` };
+  void recordEvent('builder_start', ctx);
+  void recordEvent('generation_complete', ctx);
+  res.json({ game: true, recipe, source });
 });
 
 // ── POST /api/builder/edit ────────────────────────────────────────────────────

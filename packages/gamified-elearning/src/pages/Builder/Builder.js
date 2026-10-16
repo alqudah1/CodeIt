@@ -68,6 +68,7 @@ import { isSessionError } from '../../utils/tokenExpiry';
 import { VOICE_EVENT, setVoiceState, speak, stopSpeaking, voiceState } from '../../utils/voice';
 import { lookInside } from './lookInside';
 import { closestStarter } from './closestStarter';
+import { recipeGame, RECIPE_KINDS } from './recipeGame';
 
 import ProveItPanel from './ProveItPanel';
 import { hasUnderstood, recordUnderstanding } from '../../utils/understanding';
@@ -2085,6 +2086,50 @@ export default function Builder() {
     setWorkspaceTab(prev => tabAfter('built', prev));
     setShowEditPanel(false);
     setEditError('');
+    // ── The instant path ───────────────────────────────────────────────────
+    //
+    // A ship game typed by a child in a classroom on 15 October 2026 waited
+    // through two full builds and got a "could not build it" card. For a game
+    // idea the server now answers with a recipe in about two seconds, the
+    // engine in recipeGame.js turns it into a playable game here, and the
+    // full build is never waited for. If this call fails for any reason the
+    // code falls through to the full build exactly as before.
+    if (!escalate) {
+      try {
+        const quickController = new AbortController();
+        const quickTimeout = setTimeout(() => quickController.abort(), 12000);
+        const quick = await fetch(`${API_BASE_URL}/api/builder/recipe`, {
+          method: 'POST', signal: quickController.signal,
+          headers: { 'Content-Type': 'application/json', ...journeyHeaders(), ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+          body: JSON.stringify({ prompt: text }),
+        });
+        clearTimeout(quickTimeout);
+        const quickData = quick.ok ? await quick.json() : null;
+        if (quickData?.game && quickData.recipe && RECIPE_KINDS.includes(quickData.recipe.kind)) {
+          const html = recipeGame(quickData.recipe);
+          setCode(html);
+          setBuiltPrompt(text);
+          setIsStarter(false);
+          setStarterRetry(null);
+          awardChest('first-build');
+          setBuiltSummary(`Your ${quickData.recipe.kind} game. You are ${quickData.recipe.player}, watch out for ${quickData.recipe.enemy}. Change any line at the top of the code.`);
+          setAiTitle(quickData.recipe.title);
+          setProjectType('game');
+          setConceptsUsed(['variables', 'if-else', 'loops', 'functions']);
+          setPromptHistory([text]);
+          setBuildKey(k => k + 1);
+          setShowEditPanel(false);
+          setIsPlayMode(false);
+          setCompanionVisible(!quietStudio);
+          pushLocalVersion(`Build: ${text.slice(0, 50)}`, html, [text], quickData.recipe.title);
+          setLoading(false);
+          return;
+        }
+      } catch (quickErr) {
+        // fall through to the full build
+      }
+    }
+
     const buildController = new AbortController();
     // The server tries twice before it gives up (70 s, then 65 s on the next
     // model up), and the progress indicator runs through both, because from
