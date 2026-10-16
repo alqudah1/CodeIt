@@ -23,10 +23,18 @@
 
 name: browser
 
+# ── Why this no longer runs on every push (16 October 2026) ─────────────────
+#
+# This job has finished red on every push since at least run #93 and takes
+# about nineteen minutes each time: that is minutes off the Actions allowance
+# and an email saying "run failed" after every deploy, for a signal nobody was
+# reading. The unit tests and the production build in tests.yml still run on
+# every push and still gate what a visitor sees. This job runs when someone
+# asks for it, from the Actions tab (Run workflow), and goes back on push once
+# the checks under ops/checks are green again.
+
 on:
-  push:
-    branches: ['**']
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   browser:
