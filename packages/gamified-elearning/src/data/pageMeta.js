@@ -104,8 +104,13 @@ const PAGE_META = {
     description: 'See CodeIt creators climb the rankings by building projects, publishing their work, and completing coding challenges.',
   },
   '/learn-python-for-kids': {
-    title: 'Free Python for Kids Online | 31 Interactive Lessons | CodeIt',
-    description: 'Start learning Python for free with 31 interactive browser lessons, real code, quizzes, and projects. No download or signup is needed to open Lesson 1.',
+    // The title used to open with "Free". Search Console, 16 October 2026: the
+    // page sat at position 3.0 to 3.6 for every query containing "free" and at
+    // 30 to 44 for the same query without it, with zero clicks from any of
+    // them. Google had only ever been offered the cheap-intent reading. The
+    // head term leads now; "Free" stays, one word later.
+    title: 'Python for Kids: 31 Free Interactive Lessons Online | CodeIt',
+    description: 'Python coding for kids, free and in the browser. 31 interactive lessons with real code, quizzes and projects. No download or signup to open Lesson 1.',
   },
   '/lessons': {
     title: 'Beginner Coding Lessons for Kids | CodeIt',

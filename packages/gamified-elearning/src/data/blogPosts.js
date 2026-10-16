@@ -19,10 +19,17 @@
 // run did not catch it because a not-found page is a page with words on it.
 const BLOG_POSTS = [
   {
+    // Retargeted on 16 October 2026. This post and /learn-python-for-kids were
+    // both in the sitemap, both aimed at "learn python for kids", and shared
+    // the heading "Why Python Is the Best First Language for Kids" word for
+    // word. Google had to pick one and the signal split: the landing page sat
+    // at position 30.9 for that query. The landing page keeps the term. This
+    // post takes the age question instead, which Google lists under People
+    // Also Ask on that same result and nothing of ours answers.
     slug: 'learn-python-for-kids',
-    title: 'How to Learn Python for Kids: A Beginner\'s Guide',
+    title: 'What Age Should a Child Start Python? A Parent\'s Guide',
     description:
-      'A practical guide to learning Python for kids and teens, with clear age guidance, real examples, and a simple first path through CodeIt.',
+      'What age children are ready for Python, what to expect in the first month, and how to tell whether it is going well. Written for parents, not for coders.',
     date: '2026-03-11',
     readTime: '5 min read',
     category: 'Learning Guide',
@@ -30,12 +37,12 @@ const BLOG_POSTS = [
       'Python is one of the most popular programming languages in the world. And it\'s also the easiest one for kids to start with. Here\'s everything you need to know to get started.',
     sections: [
       {
-        heading: 'Why Python Is the Best First Language for Kids',
+        heading: 'Is your child ready for Python?',
         body: [
-          'Python reads almost like plain English. Instead of pages of curly braces and semicolons, a Python program to say hello looks like this:',
-          'print("Hello, World!")',
-          'That simplicity means kids can focus on learning how to think like a programmer. Breaking big problems into small steps. Rather than fighting with syntax.',
-          'Python is also used everywhere: at Google, NASA, YouTube, and in machine learning and data science. Learning Python today opens doors tomorrow.',
+          'There is no age at which Python switches on. The thing that matters is reading. Python is typed, so a child who still sounds words out will spend their attention on the spelling rather than on the idea. A child who reads comfortably can start, and that is usually somewhere around eight.',
+          'Two other signs are worth more than age. Can they follow a three-step instruction without it being repeated? And does a thing not working make them curious rather than upset? Code does not work most of the time. A child who finds that interesting will be fine.',
+          'If none of that is there yet, block-based tools like Scratch are genuinely better, not a lesser version. There is no advantage in starting Python early, and a bad first month costs more than a late start does.',
+          'Python itself is a kind first language once they are ready. It reads almost like plain English, so a program that says hello is one line: print("Hello, World!"). No curly braces, no semicolons, nothing to install. The child spends their effort on thinking, not on punctuation.',
         ],
       },
       {

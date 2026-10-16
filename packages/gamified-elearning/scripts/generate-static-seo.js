@@ -256,7 +256,7 @@ if (LESSONS.length !== lessonFileCount) {
 }
 
 const BLOG_POSTS = [
-  ['learn-python-for-kids', 'How Kids Can Start Learning Python', 'A practical guide to helping a child begin Python with short, interactive projects.'],
+  ['learn-python-for-kids', 'What Age Should a Child Start Python?', 'What age children are ready for Python, what to expect in the first month, and how to tell whether it is going well.'],
   ['python-coding-games', 'Python Coding Games for Beginners', 'Beginner-friendly Python game ideas that turn new programming concepts into playable projects.'],
   ['how-to-start-coding-for-beginners', 'How to Start Coding as a Beginner', 'A simple route from a first line of code to a complete beginner project.'],
   ['best-coding-games-for-kids', 'Best Coding Games for Kids', 'What to look for in a coding game and how play can reinforce real programming skills.'],
@@ -339,10 +339,14 @@ const BASE_PAGES = [
     type: 'LearningResource',
   },
   {
+    // This is the half Google reads. On 16 October 2026 the React page and this
+    // block had drifted apart: the component was edited and the crawler kept
+    // being served the old h1, because the static HTML is generated here and
+    // not from the component. Keep the two in step.
     route: '/learn-python-for-kids',
     eyebrow: 'Beginner Python, in the browser',
-    h1: 'Learn Python by making something work.',
-    intro: 'Write a line, run it, and see what changed. CodeIt gives beginners a clear path through real Python without downloads or a wall of theory first.',
+    h1: 'Python for kids: learn by making something work.',
+    intro: 'Python coding for kids, free and in the browser. Write a line, run it, and see what changed. CodeIt gives beginners a clear path through real Python without downloads or a wall of theory first.',
     detail: 'Parents can create private managed profiles for ages 5–12 after confirming the adult account email. Independent student accounts begin at 13, and the lessons also work for older beginners.',
     type: 'LearningResource',
   },
@@ -904,6 +908,22 @@ const SECTIONS_BY_ROUTE = {
         `${LESSON_COUNT} sequenced lessons take a beginner from a first print statement through variables, strings, if statements, loops, lists and reusable functions, then on to arithmetic, booleans, logical operators, type casting, string formatting and string methods.`,
         'From there the path continues into while loops, break and continue, importing modules, dictionaries, tuples and sets, slicing, list comprehensions, return values, scope, error handling with try and except, enumerate and zip, classes and objects, and recursion. It ends with a capstone: building a real game.',
         'Each lesson introduces one idea, gives a runnable example, and ends with a challenge that requires changing the code.',
+      ],
+    },
+    {
+      // Added 16 October 2026. Google's AI Overview for "python for kids
+      // online" named CodeIt first and wrote the entry out of this page:
+      // "31 interactive lessons with built-in code editors, short quizzes, and
+      // a story-driven robot adventure". Every clause traced to text already
+      // here, and none of it is anything Tynker or Code.org cannot also say.
+      // What no competitor has was missing because this page never stated it.
+      // Worded as on /press: a description of what the studio does, never a
+      // claim about a child.
+      heading: 'How a parent knows the child understood it',
+      paragraphs: [
+        'When an assistant can write the code, finishing a project proves nothing about whether a child understood a line of it. Lessons completed, minutes spent and badges earned answer a different question.',
+        "So CodeIt asks. The comprehension questions are generated from the learner's own file. The correct answer is the value that learner actually wrote, and the wrong options are other real values from the same project, so the question cannot be answered by recalling a lesson or looking anything up. Only first attempts count.",
+        'What a parent reads back is a sentence describing something that happened, such as "worked out how many times a loop repeats", rather than a score or a percentage. A percentage invites comparison between children and says nothing about what one child can do.',
       ],
     },
     {

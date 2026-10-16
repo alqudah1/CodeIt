@@ -46,7 +46,7 @@ export default function LearnPythonForKids() {
           <header className="seo-hero">
             <span className="seo-eyebrow">Beginner Python, in the browser</span>
             <h1 className="seo-h1">
-              Learn Python by making something work.
+              Python for kids: learn by making something work.
             </h1>
             <p className="seo-hero-desc">
               Write a line, run it, and see what changed. CodeIt gives beginners a clear path
@@ -74,8 +74,9 @@ export default function LearnPythonForKids() {
           <section className="seo-answer-box" aria-label="Quick answer">
             <span className="seo-answer-box__label">Quick Answer</span>
             <p className="seo-answer-box__answer">
-              CodeIt helps kids, teens, and other beginners learn Python through 31 interactive
-              lessons, each covering one concept at a time. No experience or downloads needed.
+              CodeIt teaches Python for kids through 31 interactive lessons, one concept at a
+              time, then asks each child questions about the code they wrote themselves. No
+              experience or downloads needed.
             </p>
             <p className="seo-answer-box__detail">
               Every lesson includes a live code editor built into the page, so kids write and run
@@ -89,8 +90,41 @@ export default function LearnPythonForKids() {
           {/* ── Body ──────────────────────────────────────── */}
           <div className="seo-body">
 
+            {/* ── The differentiator, stated plainly ──────────
+              *
+              * On 16 October 2026 Google's AI Overview for "python for kids
+              * online" named CodeIt first, and wrote our entry out of this
+              * page: "31 interactive lessons with built-in code editors, short
+              * quizzes, and a story-driven robot adventure". Every clause
+              * traces to text that was already here. It did not mention the one
+              * thing no competitor has, because this page never said it.
+              *
+              * So it is said here, in the register a summariser can lift whole,
+              * and worded the same way as /press. No claim about a child, only
+              * a description of what the studio does. */}
             <section className="seo-section">
-              <h2 className="seo-h2">Why Python Is the Best First Language for Kids</h2>
+              <h2 className="seo-h2">How you know your child understood it</h2>
+              <p className="seo-p">
+                When an assistant can write the code, finishing a project proves nothing about
+                whether a child understood a line of it. Lessons completed, minutes spent and
+                badges earned all answer a different question.
+              </p>
+              <p className="seo-p">
+                So CodeIt asks. The comprehension questions are generated from the learner's own
+                file. The correct answer is the value that learner actually wrote, and the wrong
+                options are other real values from the same project, so the question cannot be
+                answered by recalling a lesson or looking anything up. Only first attempts count.
+              </p>
+              <p className="seo-p">
+                What a parent reads back is a sentence describing something that happened, such as
+                "worked out how many times a loop repeats", rather than a score or a percentage.
+                That limit is deliberate. A percentage invites comparison between children and says
+                nothing about what one child can do.
+              </p>
+            </section>
+
+            <section className="seo-section">
+              <h2 className="seo-h2">Why Python suits kids better than most first languages</h2>
               <p className="seo-p">
                 Before a kid can build a game, a chatbot, or a calculator, they need a language that
                 doesn't get in the way. Python is that language. It reads almost like plain English,
@@ -115,7 +149,7 @@ export default function LearnPythonForKids() {
             </section>
 
             <section className="seo-section">
-              <h2 className="seo-h2">What Kids Learn in CodeIt's Python Lessons</h2>
+              <h2 className="seo-h2">What kids learn: all 31 Python lessons</h2>
               <p className="seo-p">
                 CodeIt teaches Python through 31 beginner lessons, each focused on one core concept.
                 By the end, kids have a solid foundation in real Python programming:
@@ -137,6 +171,21 @@ export default function LearnPythonForKids() {
                 <li><strong>Lesson 14:</strong> Type Casting. Converting between text and numbers</li>
                 <li><strong>Lesson 15:</strong> String Formatting. Building messages with f-strings</li>
                 <li><strong>Lesson 16:</strong> String Methods. Cleaning, searching, and changing text</li>
+                <li><strong>Lesson 17:</strong> While Loops. Repeating until something changes</li>
+                <li><strong>Lesson 18:</strong> Break and Continue. Stopping a loop or skipping a turn</li>
+                <li><strong>Lesson 19:</strong> Import and Random. Borrowing code other people wrote</li>
+                <li><strong>Lesson 20:</strong> Dictionaries. Storing things under labels instead of numbers</li>
+                <li><strong>Lesson 21:</strong> Looping Through a Dictionary. Visiting every label in turn</li>
+                <li><strong>Lesson 22:</strong> Tuples and Sets. Collections that cannot change, and ones with no repeats</li>
+                <li><strong>Lesson 23:</strong> Slicing. Taking a piece out of a list or a string</li>
+                <li><strong>Lesson 24:</strong> List Comprehensions. Building a whole list in one line</li>
+                <li><strong>Lesson 25:</strong> Functions That Return. Sending an answer back to the caller</li>
+                <li><strong>Lesson 26:</strong> Scope. Where a variable lives and where it does not</li>
+                <li><strong>Lesson 27:</strong> Try and Except. Handling the moment something goes wrong</li>
+                <li><strong>Lesson 28:</strong> Enumerate and Zip. Counting while you loop, and pairing two lists</li>
+                <li><strong>Lesson 29:</strong> Classes and Objects. Making your own kind of thing</li>
+                <li><strong>Lesson 30:</strong> Recursion. A function that calls itself</li>
+                <li><strong>Lesson 31:</strong> Capstone. Building a real game with everything so far</li>
               </ul>
               <p className="seo-p">
                 Each lesson has an interactive code editor built right into the page. No downloads,
@@ -147,7 +196,7 @@ export default function LearnPythonForKids() {
             </section>
 
             <section className="seo-section">
-              <h2 className="seo-h2">Step-by-Step Beginner Python Lessons</h2>
+              <h2 className="seo-h2">Learn Python for kids, one concept per lesson</h2>
               <p className="seo-p">
                 The biggest mistake in learning to code is trying to learn too much at once. CodeIt
                 solves this by introducing exactly one new concept per lesson, then reinforcing it
@@ -191,7 +240,7 @@ export default function LearnPythonForKids() {
             </section>
 
             <section className="seo-section">
-              <h2 className="seo-h2">Who Is This For?</h2>
+              <h2 className="seo-h2">Who Python coding for kids is for</h2>
               <p className="seo-p">
                 Parents and legal guardians can create private managed profiles for learners ages
                 5 to 12 after confirming the adult account email. Independent student accounts are
@@ -215,17 +264,18 @@ export default function LearnPythonForKids() {
             </section>
 
             <section className="seo-section">
-              <h2 className="seo-h2">How to Start Learning Python Today</h2>
+              <h2 className="seo-h2">Start Python for kids online today</h2>
               <p className="seo-p">
-                Open Lesson 1 and write your first line of Python. CodeIt currently includes 16
-                beginner lessons, quizzes, and five coding puzzles, with useful activities available
-                free while the family plan is still being tested.
+                Open Lesson 1 and write your first line of Python. There are 31 lessons, a quiz
+                after each one, and coding puzzles that use the concept you just learned. The
+                lessons and the playground are free and stay free. There is a paid family plan at
+                CA$12 a month, and you never need it to learn Python here.
               </p>
               <p className="seo-p">
                 Want to explore before signing up? Try the{' '}
                 <Link to="/playground">free Python playground</Link>. write and run Python in your
                 browser instantly, no account needed. Read our{' '}
-                <Link to="/blog/learn-python-for-kids">guide to learning Python for kids</Link>
+                <Link to="/blog/learn-python-for-kids">parent's guide to what age to start</Link>
                 {' '}for more tips, or check the <Link to="/blog">CodeIt blog</Link> for articles on
                 coding games and beginner Python guides.
               </p>
@@ -280,7 +330,7 @@ export default function LearnPythonForKids() {
               <Link to="/games" className="seo-related__link">Coding Puzzles</Link>
               <Link to="/coding-for-kids" className="seo-related__link">Coding for Kids</Link>
               <Link to="/python-games-for-kids" className="seo-related__link">Python Games for Kids</Link>
-              <Link to="/blog/learn-python-for-kids" className="seo-related__link">Blog: Learn Python for Kids</Link>
+              <Link to="/blog/learn-python-for-kids" className="seo-related__link">Blog: What age to start Python</Link>
               <Link to="/blog" className="seo-related__link">All Blog Posts</Link>
               <Link to="/guide/after-scratch" className="seo-related__link">Guide: What to use after Scratch</Link>
               <Link to="/guide/coding-for-kids-by-age" className="seo-related__link">Guide: Coding for kids, by age</Link>
