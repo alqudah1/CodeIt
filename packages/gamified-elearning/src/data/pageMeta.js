@@ -51,6 +51,10 @@ const PAGE_META = {
     title: 'Coding Guides for Kids, Parents & Beginners | CodeIt',
     description: 'Read practical guides about learning Python, choosing coding activities, and helping a beginner build confidence.',
   },
+  '/build': {
+    title: 'Build a Game From One Sentence | CodeIt',
+    description: 'Say the game you want to play, in your own words, and play it two seconds later. Or make it one choice at a time. No account needed to start.',
+  },
   '/builder': {
     title: 'AI Website Builder for Kids & Beginners | CodeIt',
     description: 'Describe a website, game, or quiz, build it in the browser, then see the HTML, CSS, and JavaScript behind it.',

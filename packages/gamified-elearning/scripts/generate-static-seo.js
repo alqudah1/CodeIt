@@ -275,6 +275,14 @@ const BASE_PAGES = [
     type: 'SoftwareApplication',
   },
   {
+    route: '/build',
+    eyebrow: 'Say a game, get a game',
+    h1: 'Say the game you want to play. Then play it.',
+    intro: 'Type a game idea in your own words, or make one choice at a time, and CodeIt turns it into a playable browser game in about two seconds. Change who you are, what comes at you and the twist with four taps, then publish it to your arcade.',
+    detail: 'No account is needed to build the first game. Every game is real JavaScript on a canvas, and the lines at the top of its code are the knobs a learner changes first.',
+    type: 'SoftwareApplication',
+  },
+  {
     route: '/builder',
     eyebrow: 'Project studio',
     h1: 'Build a website. Then learn how it works.',
@@ -803,6 +811,20 @@ const SECTIONS_BY_ROUTE = {
       ],
     },
   ],
+  '/build': [
+    {
+      heading: 'Two ways in',
+      paragraphs: [
+        'Say it: a sentence like "a ship that shoots asteroids and they get faster" becomes a shooter in space with a ship, rocks, and a twist. Make it: seven big choices, where, who, what you do, what comes at you, what you collect, a twist, and a name, with the game rebuilding on every tap.',
+      ],
+    },
+    {
+      heading: 'Then make it yours',
+      paragraphs: [
+        'Four knobs under the game change the hero, the enemy, the twist and the lives while it plays. See the code opens the same game in the studio, where the settings at the top of the file are the first lines a learner edits.',
+      ],
+    },
+  ],
   '/builder': [
     {
       heading: 'Start from an idea',
@@ -1293,6 +1315,7 @@ const GUIDES_BY_ROUTE = {
   '/coding-for-kids': ['after-scratch', 'best-coding-platforms-for-kids', 'what-did-my-kid-learn', 'coding-for-kids-by-age'],
   '/learn-python-for-kids': ['after-scratch'],
   '/lessons': ['after-scratch', 'free-coding-for-kids'],
+  '/build': ['first-browser-game', 'publish-first-project'],
   '/builder': ['ai-builder-you-can-edit', 'publish-first-project'],
   '/ai-website-builder-for-kids': ['ai-builder-you-can-edit', 'ai-built-it-now-edit-it'],
   '/games': ['first-browser-game'],
