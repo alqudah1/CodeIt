@@ -1,0 +1,117 @@
+/* ── The CodeIt design system ─────────────────────────────────────────────────
+ *
+ * One brand, kept (cream, ink, orange, sun, violet, mint, sky, coral; Baloo 2
+ * and Nunito), laid out with four rules: big type, flat colour blocks, one
+ * action per screen, and nothing a child cannot tap with a thumb.
+ *
+ * Every class is prefixed ci- so it never collides with the older pages. The
+ * tokens are --ci-* for the same reason; the older --clr-* and --arc-* tokens
+ * in index.css and arcade.css are untouched.
+ */
+
+:root {
+  --ci-cream: #FFF6ED;
+  --ci-paper: #FFFDFA;
+  --ci-ink: #35220E;
+  --ci-ink-soft: rgba(53, 34, 14, .6);
+  --ci-ink-line: rgba(53, 34, 14, .14);
+  --ci-quiet: rgba(53, 34, 14, .045);
+  --ci-orange: #FF7A00;
+  --ci-orange-down: #C45E00;
+  --ci-violet: #7C5CFF;
+  --ci-mint: #17C08B;
+  --ci-mint-down: #10AB7A;
+  --ci-sun: #FFC93C;
+  --ci-sky: #3EB7F8;
+  --ci-coral: #FF6B6B;
+  --ci-display: 'Baloo 2', 'Nunito', 'Trebuchet MS', sans-serif;
+  --ci-body: 'Nunito', 'Trebuchet MS', sans-serif;
+  --ci-r: 20px;
+  --ci-r-sm: 16px;
+  --ci-card: 0 1px 2px rgba(53, 34, 14, .05), 0 8px 24px rgba(53, 34, 14, .08);
+  --ci-card-lg: 0 2px 6px rgba(53, 34, 14, .06), 0 24px 60px rgba(53, 34, 14, .14);
+  --ci-pop: 0 3px 0 var(--ci-orange-down);
+  --ci-ease: cubic-bezier(.2, .8, .2, 1);
+  --ci-spring: cubic-bezier(.2, 1.4, .4, 1);
+}
+
+/* ── Type ── */
+.ci-ey { font-family: var(--ci-body); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ci-ink-soft); font-weight: 800; line-height: 1; }
+.ci-h1 { font-family: var(--ci-display); font-size: 32px; line-height: 1.05; margin: 6px 0 0; font-weight: 800; letter-spacing: -.01em; color: var(--ci-ink); }
+.ci-h2 { font-family: var(--ci-display); font-size: 19px; line-height: 1; margin: 28px 0 10px; font-weight: 800; color: var(--ci-ink); display: flex; justify-content: space-between; align-items: baseline; }
+.ci-sub { color: var(--ci-ink-soft); font-size: 15px; font-weight: 700; margin: 6px 0 0; }
+.ci-num { font-family: var(--ci-display); font-size: 30px; line-height: .9; font-weight: 800; letter-spacing: -.01em; }
+.ci-cap { font-size: 12px; font-weight: 700; opacity: .9; margin-top: 6px; line-height: 1.2; }
+
+/* ── Buttons: orange for the one action, ink for publish, paper for the second choice ── */
+.ci-btn { appearance: none; border: 0; font: 800 16px var(--ci-body); border-radius: 999px; height: 50px; padding: 0 24px; background: var(--ci-orange); color: #fff; box-shadow: var(--ci-pop); cursor: pointer; transition: transform .08s, box-shadow .08s, filter .15s; line-height: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; white-space: nowrap; }
+.ci-btn:hover { filter: brightness(1.05); }
+.ci-btn:active { transform: translateY(3px); box-shadow: 0 0 0 transparent; }
+.ci-btn:focus-visible { outline: 3px solid rgba(255, 122, 0, .55); outline-offset: 4px; }
+.ci-btn[disabled] { background: var(--ci-ink-line); color: var(--ci-ink-soft); box-shadow: none; pointer-events: none; }
+.ci-btn--ink { background: var(--ci-ink); color: var(--ci-sun); box-shadow: 0 3px 0 #150D04; }
+.ci-btn--paper { background: var(--ci-paper); color: var(--ci-ink); box-shadow: 0 3px 0 var(--ci-ink-line); border: 1px solid var(--ci-ink-line); }
+.ci-btn--mint { background: var(--ci-mint); color: #fff; box-shadow: 0 3px 0 var(--ci-mint-down); }
+.ci-btn--sm { height: 40px; font-size: 14px; padding: 0 18px; }
+.ci-btn--block { width: 100%; }
+
+/* ── Blocks: flat colour, one radius, a soft shadow, never a border ── */
+.ci-blk { border-radius: var(--ci-r); padding: 20px; position: relative; overflow: hidden; box-shadow: var(--ci-card); color: var(--ci-ink); background: var(--ci-paper); }
+.ci-blk--sun { background: var(--ci-sun); }
+.ci-blk--violet { background: var(--ci-violet); color: #fff; }
+.ci-blk--coral { background: var(--ci-coral); color: #fff; }
+.ci-blk--mint { background: var(--ci-mint); color: #fff; }
+.ci-blk--sky { background: var(--ci-sky); color: #fff; }
+.ci-blk--ink { background: var(--ci-ink); color: #fff; }
+.ci-blk--paper { background: var(--ci-paper); box-shadow: none; border: 1px solid var(--ci-ink-line); }
+.ci-blk--quiet { background: var(--ci-quiet); box-shadow: none; }
+
+/* ── Chips and the segmented switch ── */
+.ci-chip { flex: none; background: var(--ci-paper); border: 1px solid var(--ci-ink-line); border-radius: 999px; height: 36px; padding: 0 14px; font: 800 13px var(--ci-body); cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; color: var(--ci-ink); transition: transform .15s var(--ci-spring), background .15s; }
+.ci-chip:hover { background: var(--ci-quiet); }
+.ci-chip:active { transform: scale(.97); }
+.ci-seg { position: relative; display: grid; grid-template-columns: 1fr 1fr; background: var(--ci-quiet); border-radius: 999px; padding: 4px; height: 46px; }
+.ci-seg i { position: absolute; top: 4px; left: 4px; width: calc(50% - 4px); height: 38px; border-radius: 999px; background: var(--ci-paper); box-shadow: 0 1px 2px rgba(53, 34, 14, .08), 0 4px 12px rgba(53, 34, 14, .08); transition: transform .35s cubic-bezier(.2, .9, .3, 1.2); }
+.ci-seg.is-second i { transform: translateX(100%); }
+.ci-seg button { position: relative; appearance: none; border: 0; background: none; font: 800 14px var(--ci-body); color: var(--ci-ink-soft); cursor: pointer; border-radius: 999px; }
+.ci-seg button.is-on { color: var(--ci-ink); }
+
+/* ── Knobs: the four things a child changes without typing ── */
+.ci-knobs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+.ci-knob { position: relative; overflow: hidden; background: var(--ci-paper); border: 1px solid var(--ci-ink-line); border-radius: var(--ci-r-sm); padding: 12px 4px 10px; text-align: center; cursor: pointer; user-select: none; transition: transform .2s var(--ci-spring); --mx: 50%; --my: 50%; }
+.ci-knob::before { content: ""; position: absolute; inset: 0; background: radial-gradient(140px circle at var(--mx) var(--my), rgba(255, 122, 0, .16), transparent 60%); opacity: 0; transition: opacity .25s; pointer-events: none; }
+.ci-knob:hover::before { opacity: 1; }
+.ci-knob:active { transform: scale(.95); }
+.ci-knob img { height: 34px; display: block; margin: 0 auto 8px; transition: transform .3s var(--ci-spring); }
+.ci-knob:hover img { transform: translateY(-3px) rotate(-5deg); }
+.ci-knob b { display: block; font: 800 14px var(--ci-body); height: 34px; line-height: 34px; margin-bottom: 8px; color: var(--ci-ink); }
+.ci-knob small { display: block; font: 800 10px var(--ci-body); letter-spacing: .1em; text-transform: uppercase; color: var(--ci-ink-soft); }
+.ci-knob.is-flip img, .ci-knob.is-flip b { animation: ci-flip .35s var(--ci-spring); }
+@keyframes ci-flip { from { transform: rotateX(90deg); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ── The game frame ── */
+.ci-frame { position: relative; border-radius: var(--ci-r); overflow: hidden; background: var(--ci-ink); aspect-ratio: 4 / 3; box-shadow: var(--ci-card-lg); }
+.ci-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; background: var(--ci-ink); }
+@property --ci-a { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@keyframes ci-beam { to { --ci-a: 360deg; } }
+.ci-frame::before { content: ""; position: absolute; inset: 0; border-radius: var(--ci-r); padding: 2.5px; background: conic-gradient(from var(--ci-a), transparent 0 70%, var(--ci-sun) 85%, var(--ci-orange) 92%, transparent 100%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: ci-beam 3s linear infinite; pointer-events: none; z-index: 3; opacity: 0; transition: opacity .4s; }
+.ci-frame.is-lit::before { opacity: 1; }
+
+/* ── Motion ── */
+.ci-rise { animation: ci-rise .45s var(--ci-ease) both; }
+@keyframes ci-rise { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+.ci-popin { animation: ci-popin .5s var(--ci-spring) both; }
+@keyframes ci-popin { from { transform: scale(0) translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+.ci-shimmer { background: linear-gradient(90deg, var(--ci-ink) 40%, var(--ci-orange) 50%, var(--ci-ink) 60%); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: ci-shim 3.2s linear infinite; }
+@keyframes ci-shim { to { background-position: -150% 0; } }
+.ci-livedot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ci-mint); box-shadow: 0 0 0 0 rgba(23, 192, 139, .6); animation: ci-ping 1.6s infinite; vertical-align: middle; margin-right: 6px; }
+@keyframes ci-ping { to { box-shadow: 0 0 0 10px rgba(23, 192, 139, 0); } }
+
+/* ── Toast ── */
+.ci-toast { position: fixed; left: 50%; top: 14px; transform: translate(-50%, -30px); background: var(--ci-ink); color: #fff; border-radius: 999px; height: 40px; padding: 0 18px; font: 800 13px var(--ci-body); z-index: 1200; opacity: 0; transition: all .35s cubic-bezier(.3, 1.3, .4, 1); display: flex; align-items: center; white-space: nowrap; pointer-events: none; }
+.ci-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ci-rise, .ci-popin, .ci-shimmer, .ci-livedot, .ci-frame::before, .ci-knob.is-flip img, .ci-knob.is-flip b { animation: none !important; }
+  .ci-shimmer { color: var(--ci-ink); background: none; -webkit-text-fill-color: initial; }
+}

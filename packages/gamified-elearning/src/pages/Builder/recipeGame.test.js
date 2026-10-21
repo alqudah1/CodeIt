@@ -1,4 +1,4 @@
-import { recipeGame, recipeSettings, RECIPE_KINDS } from './recipeGame';
+import { recipeGame, recipeSettings, RECIPE_KINDS, RECIPE_TWISTS } from './recipeGame';
 
 // ── A recipe becomes a game in the shape the studio already understands ──────
 
@@ -8,7 +8,8 @@ test('the settings block is plain, readable and first: the first code a child ch
   const html = recipeGame(SHIP);
   const settings = recipeSettings(SHIP);
   expect(html).toContain('// ── Change these and watch what happens ──\n' + settings);
-  expect(settings.split('\n')).toHaveLength(9);
+  expect(settings.split('\n')).toHaveLength(10);
+  expect(settings).toContain("let twist      = 'none';");
   expect(settings).toContain("let gameKind   = 'shooter';");
   expect(settings).toContain("let playerLook = '🚀';");
   expect(settings).toContain('let speed      = 2;');
@@ -41,4 +42,19 @@ test('every kind of game and sky renders, and quotes in a title cannot break the
 
 test('the player can be the child\'s own avatar when the studio provides one', () => {
   expect(recipeGame(SHIP)).toContain('window.CODEIT_PLAYER_SPRITE');
+});
+
+test('a twist is one of three words and anything else becomes none', () => {
+  expect(RECIPE_TWISTS).toEqual(['none', 'faster', 'waves']);
+  expect(recipeSettings({ ...SHIP, twist: 'Waves' })).toContain("let twist      = 'waves';");
+  expect(recipeSettings({ ...SHIP, twist: 'banana' })).toContain("let twist      = 'none';");
+});
+
+test('the page draws our own sprites, and still understands an emoji in the settings', () => {
+  const html = recipeGame(SHIP);
+  expect(html).toContain('const SPRITES = {');
+  expect(html).toContain('"ship":"data:image/svg+xml');
+  expect(html).toContain('"🚀":"ship"');
+  expect(html).not.toContain('drawEmoji');
+  expect(html).toContain('devicePixelRatio');
 });

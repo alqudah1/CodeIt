@@ -226,7 +226,7 @@ export default function Header() {
               </Link>
             )}
 
-            <Link to="/builder" className="site-header__cta">
+            <Link to="/build" className="site-header__cta">
               {user ? <><Icon name="game" size={18} /> Make something</> : "Start building"}
             </Link>
 

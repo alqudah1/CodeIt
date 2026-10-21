@@ -440,7 +440,7 @@ export default function Home() {
               <h2 id="studio-final-title">Start with an idea. Leave with something real.</h2>
             </div>
             <Link
-              to="/builder"
+              to="/build"
               className="studio-button studio-button--dark"
               data-cta="final-build"
               onClick={() => trackEvent("landing_cta_click", "final-build")}
