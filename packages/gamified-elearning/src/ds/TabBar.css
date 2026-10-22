@@ -1,0 +1,6 @@
+.ci-tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 900; height: calc(64px + env(safe-area-inset-bottom)); background: var(--ci-paper); border-top: 1px solid var(--ci-ink-line); display: grid; grid-template-columns: repeat(4, 1fr); padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); }
+.ci-tab { display: grid; justify-items: center; align-content: center; gap: 3px; font: 800 10.5px var(--ci-body); letter-spacing: .02em; color: var(--ci-ink-soft); text-decoration: none; cursor: pointer; border-radius: 12px; }
+.ci-tab svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ci-tab.is-on { color: var(--ci-orange); }
+.ci-tab.is-on svg { fill: rgba(255, 122, 0, .18); animation: ci-popin .4s var(--ci-spring); }
+@media (min-width: 900px) { .ci-tabs { display: none; } }

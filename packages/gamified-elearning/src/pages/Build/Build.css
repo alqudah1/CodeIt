@@ -1,6 +1,6 @@
 /* ── Build page ─────────────────────────────────────────────────────────── */
 .bd { min-height: 100vh; background: var(--ci-cream); color: var(--ci-ink); font-family: var(--ci-body); font-weight: 700; }
-.bd__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 80px; display: grid; grid-template-columns: 1fr; gap: 24px; }
+.bd__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 110px; display: grid; grid-template-columns: 1fr; gap: 24px; }
 .bd__seg { margin-top: 14px; max-width: 420px; }
 .bd__keys { display: flex; gap: 6px; margin: 14px 0 0; font-size: 12px; color: var(--ci-ink-soft); align-items: center; flex-wrap: wrap; }
 .bd__keys b { display: inline-block; border: 1px solid var(--ci-ink-line); border-radius: 6px; padding: 1px 7px; background: var(--ci-paper); font-size: 11px; }
@@ -96,7 +96,9 @@
 .bd__moment p { font-size: 17px; opacity: .9; margin: 0 0 18px; }
 .bd__xp { display: inline-flex; align-items: baseline; gap: 6px; background: var(--ci-sun); color: var(--ci-ink); border-radius: 16px; padding: 10px 16px; margin-bottom: 18px; font-size: 13px; }
 .bd__xp b { font-family: var(--ci-display); font-size: 28px; line-height: 1; }
-.bd__acts { display: flex; gap: 12px; padding-bottom: 28px; flex-wrap: wrap; }
+.bd__acts { display: flex; gap: 12px; flex-wrap: wrap; }
+.bd__gohome { color: rgba(255, 255, 255, .8); margin: 10px 0 24px; }
+.bd__gohome:hover { color: #fff; }
 
 @media (min-width: 900px) {
   .bd__main { grid-template-columns: 440px 1fr; gap: 40px; align-items: start; padding-top: 32px; }

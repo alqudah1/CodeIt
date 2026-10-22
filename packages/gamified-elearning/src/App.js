@@ -47,6 +47,7 @@ const Leaderboard   = lazy(() => import('./pages/Leaderboard'));
 const Playground    = lazy(() => import('./pages/Playground/Playground'));
 const Builder       = lazy(() => import('./pages/Builder/Builder'));
 const Build         = lazy(() => import('./pages/Build/Build'));
+const KidHome       = lazy(() => import('./pages/Home/KidHome'));
 const PublicProject = lazy(() => import('./pages/Builder/PublicProject'));
 const EvidenceShare = lazy(() => import('./pages/Profile/EvidenceShare'));
 const Explore       = lazy(() => import('./pages/Builder/Explore'));
@@ -190,6 +191,7 @@ const App = () => (
               <Route path="/playground" element={<Playground />} />
 
               {/* ── AI Builder ── */}
+              <Route path="/home"              element={<KidHome />} />
               <Route path="/build"             element={<Build />} />
               <Route path="/builder"           element={<Builder />} />
               <Route path="/project/:publicId" element={<PublicProject />} />

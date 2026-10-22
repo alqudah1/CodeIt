@@ -1,0 +1,42 @@
+.kh { min-height: 100vh; background: var(--ci-cream); color: var(--ci-ink); font-family: var(--ci-body); font-weight: 700; }
+.kh__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 110px; display: grid; grid-template-columns: 1fr; gap: 8px; }
+.kh__quest { margin-top: 20px; min-height: 184px; padding-right: 128px; }
+.kh__quest.is-done { background: var(--ci-mint); color: #fff; }
+.kh__quest.is-done .kh__qey { color: rgba(255, 255, 255, .8); }
+.kh__qey { color: rgba(53, 34, 14, .6); }
+.kh__qtitle { font-family: var(--ci-display); font-size: 24px; line-height: 1.05; margin: 8px 0 16px; font-weight: 800; position: relative; z-index: 1; }
+.kh__quest .ci-btn { position: relative; z-index: 1; }
+.kh__pix { position: absolute; right: 6px; bottom: -4px; height: 112px; animation: kh-bob 2.4s ease-in-out infinite; transform-origin: 50% 100%; filter: drop-shadow(0 6px 0 rgba(53, 34, 14, .14)); pointer-events: none; }
+@keyframes kh-bob { 0%, 100% { transform: translateY(0) rotate(-1.5deg); } 50% { transform: translateY(-7px) rotate(1.5deg); } }
+.kh__row { display: flex; gap: 12px; margin-top: 12px; }
+.kh__row > * { flex: 1; min-width: 0; padding: 18px 20px 20px; }
+.kh__flame { position: absolute; right: 14px; top: 14px; width: 30px; height: 30px; transform-origin: 50% 100%; animation: kh-flick .5s ease-in-out infinite alternate; }
+@keyframes kh-flick { from { transform: scale(1) rotate(-3deg); } to { transform: scale(1.12) rotate(3deg); } }
+.kh__track { height: 6px; border-radius: 3px; background: rgba(0, 0, 0, .14); overflow: hidden; margin-top: 14px; }
+.kh__track i { display: block; height: 100%; background: #fff; border-radius: 3px; transition: width .8s cubic-bezier(.3, 1, .4, 1); }
+.kh__plays { font: 800 11px var(--ci-body); letter-spacing: .12em; text-transform: uppercase; color: var(--ci-ink-soft); }
+.kh__shelf { display: flex; gap: 12px; }
+.kh__tile { flex: 1; aspect-ratio: 1; border-radius: var(--ci-r); position: relative; overflow: hidden; box-shadow: var(--ci-card); text-decoration: none; color: #fff; display: block; transition: transform .2s var(--ci-spring); }
+.kh__tile:active { transform: scale(.97); }
+.kh__tile iframe { position: absolute; left: 0; top: 0; width: 200%; height: 200%; transform: scale(.5); transform-origin: 0 0; border: 0; pointer-events: none; }
+.kh__tile::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, .35)); pointer-events: none; }
+.kh__cap { position: absolute; left: 12px; right: 12px; bottom: 10px; z-index: 1; font: 800 12px var(--ci-body); line-height: 1.2; text-shadow: 0 1px 3px rgba(0, 0, 0, .35); }
+.kh__cap small { display: block; font-size: 10px; opacity: .85; }
+.kh__tile--new { background: var(--ci-paper); border: 1px dashed rgba(53, 34, 14, .25); box-shadow: none; display: grid; place-items: center; color: var(--ci-orange); font: 800 11px var(--ci-body); text-align: center; }
+.kh__tile--new::after { display: none; }
+.kh__tile--new span { display: block; font: 800 28px var(--ci-display); line-height: 1; }
+.kh__row-link { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--ci-r); background: var(--ci-paper); border: 1px solid var(--ci-ink-line); margin-top: 12px; text-decoration: none; color: var(--ci-ink); min-height: 72px; }
+.kh__row-link b { display: block; font-size: 15px; font-weight: 800; }
+.kh__row-link small { display: block; color: var(--ci-ink-soft); font-size: 13px; font-weight: 700; margin-top: 2px; line-height: 1.3; }
+.kh__ic { width: 44px; height: 44px; border-radius: 14px; background: rgba(124, 92, 255, .14); color: var(--ci-violet); display: grid; place-items: center; flex: none; }
+.kh__ic--sun { background: rgba(255, 201, 60, .4); color: var(--ci-ink); font-size: 20px; }
+.kh__chev { margin-left: auto; color: var(--ci-orange); font: 800 22px var(--ci-display); }
+@media (min-width: 900px) {
+  .kh__main { grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: start; padding: 32px 40px 60px; }
+  .kh__right { padding-top: 60px; }
+  .kh__quest { min-height: 220px; padding: 28px; padding-right: 200px; }
+  .kh__qtitle { font-size: 32px; }
+  .kh__pix { height: 170px; right: 16px; }
+  .ci-h1 { font-size: 40px; }
+}
+@media (prefers-reduced-motion: reduce) { .kh__pix, .kh__flame { animation: none !important; } }

@@ -20,6 +20,7 @@
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../Header/Header';
+import TabBar from '../../ds/TabBar';
 import { API_BASE_URL } from '../../config/api';
 import { AuthContext } from '../../context/AuthContext';
 import { useCharacterDisplay } from '../../context/CharacterContext';
@@ -475,11 +476,13 @@ export default function Build() {
                 {published.kept ? <button type="button" className="ci-btn" onClick={share}>Show a friend</button> : <button type="button" className="ci-btn" onClick={() => navigate('/register')}>Keep my game</button>}
                 <button type="button" className="ci-btn ci-btn--paper" onClick={() => { setPublished(null); shakeUp(); }}>Build another</button>
               </div>
+              <button type="button" className="bd__seecode bd__gohome" onClick={() => navigate('/home')}>Go home</button>
             </div>
           </div>
         </div>
       )}
       <div className={`ci-toast${toast ? ' is-on' : ''}`} role="status">{toast}</div>
+      <TabBar />
     </div>
   );
 }

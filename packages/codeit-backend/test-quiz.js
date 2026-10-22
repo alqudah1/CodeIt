@@ -26,6 +26,7 @@ const adminRoutes = require('./routes/admin');
 const familyRoutes = require('./routes/family');
 const understandingRoutes = require('./routes/understanding');
 const profileRoutes = require('./routes/profile');
+const todayRoutes = require('./routes/today');
 const unlistedRoutes = require('./routes/unlisted');
 const activityRoutes = require('./routes/activity');
 const billingRoutes = require('./routes/billing');
@@ -120,6 +121,7 @@ app.use('/api/family', familyRoutes);
 app.use('/api/activity', activityRoutes);
 app.use('/api/understanding', understandingRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/today', todayRoutes);
 app.use('/api/billing', billingRoutes);
 
 const PORT = Number(process.env.PORT || 8080);

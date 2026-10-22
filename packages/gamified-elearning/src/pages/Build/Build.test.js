@@ -9,7 +9,10 @@ import Build from './Build';
 // the recipe endpoint answers, refuses, or is not there at all.
 
 const mockNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({ useNavigate: () => mockNavigate, useLocation: () => ({ search: '' }) }), { virtual: true });
+jest.mock('react-router-dom', () => {
+  const React = require('react');
+  return { useNavigate: () => mockNavigate, useLocation: () => ({ search: '' }), NavLink: ({ children, to }) => React.createElement('a', { href: to }, children) };
+}, { virtual: true });
 jest.mock('../Header/Header', () => () => null);
 jest.mock('../../config/api', () => ({ API_BASE_URL: 'http://codeit.test' }));
 jest.mock('../../hooks/useSEO', () => ({ useSEO: jest.fn() }));
