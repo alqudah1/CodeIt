@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { API_BASE_URL } from "../../config/api";
 import Header from "../Header/Header";
 import BrandLogo from "../../components/BrandLogo/BrandLogo";
+import { looksLikeGame } from '../Build/recipeLocal';
 import { useSEO } from "../../hooks/useSEO";
 import { trackEvent } from "../../utils/trackEvent";
 import HomePilotSignup from "./HomePilotSignup";
@@ -107,7 +108,9 @@ export default function Home() {
       return;
     }
     trackEvent("landing_cta_click", "hero-idea");
-    navigate(`/builder?prompt=${encodeURIComponent(idea)}`);
+    // A game idea goes to the instant builder, where it is playing two seconds
+    // later. A website or a quiz still goes to the full studio.
+    navigate(`${looksLikeGame(idea) && /game|play|shoot|catch|dodge|jump|run|enemy|enemies|level/i.test(idea) ? '/build' : '/builder'}?prompt=${encodeURIComponent(idea)}`);
   };
 
   useSEO({

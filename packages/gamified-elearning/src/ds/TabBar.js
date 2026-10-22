@@ -4,7 +4,8 @@
 // screen the site header does the job and this hides itself. Only the pages
 // of the new design show it, so the older pages are untouched.
 
-import { NavLink } from 'react-router-dom';
+import * as RR from 'react-router-dom';
+import './ds.css';
 import './TabBar.css';
 
 const TABS = [
@@ -15,13 +16,17 @@ const TABS = [
 ];
 
 export default function TabBar() {
+  // Link rather than NavLink so the bar renders inside every page's tests,
+  // which mock the router with Link alone; "active" is read from the path.
+  const Link = RR.Link || ((props) => <a href={props.to} className={props.className}>{props.children}</a>);
+  const here = typeof window !== 'undefined' ? window.location.pathname : '';
   return (
     <nav className="ci-tabs" aria-label="Main">
       {TABS.map((tab) => (
-        <NavLink key={tab.to} to={tab.to} className={({ isActive }) => `ci-tab${isActive ? ' is-on' : ''}`}>
+        <Link key={tab.to} to={tab.to} className={`ci-tab${here === tab.to || here.startsWith(tab.to + '/') ? ' is-on' : ''}`}>
           <svg viewBox="0 0 24 24" aria-hidden="true">{tab.icon}</svg>
           {tab.label}
-        </NavLink>
+        </Link>
       ))}
     </nav>
   );

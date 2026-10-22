@@ -4,6 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { useCharacter } from '../../context/CharacterContext';
 import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
 import Header from '../Header/Header';
+import TabBar from '../../ds/TabBar';
 import { API_BASE_URL } from '../../config/api';
 import useCountUp from '../../hooks/useCountUp';
 import { useSEO } from '../../hooks/useSEO';
@@ -978,11 +979,12 @@ export default function Profile() {
 
         {/* ── CTAs ── */}
         <div className="profile-actions">
-          <Link to="/builder"   className="profile-cta profile-cta--primary">Build something</Link>
+          <Link to="/build"     className="profile-cta profile-cta--primary">Build something</Link>
           <Link to="/character" className="profile-cta profile-cta--secondary">Customise avatar</Link>
         </div>
 
       </div>
+      <TabBar />
     </>
   );
 }

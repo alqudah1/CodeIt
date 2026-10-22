@@ -7,6 +7,7 @@ import {
   ShopSticker,
 } from '../../components/ArcadeArt/ArcadeArt';
 import Header from '../Header/Header';
+import TabBar from '../../ds/TabBar';
 import { AuthContext } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
 import { reportFailure } from '../../utils/humanError';
@@ -449,6 +450,7 @@ export default function Explore() {
 
       {/* Toast */}
       {toast && <div className="exp-toast">{toast}</div>}
+      <TabBar />
     </div>
   );
 }

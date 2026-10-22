@@ -4,3 +4,4 @@
 .ci-tab.is-on { color: var(--ci-orange); }
 .ci-tab.is-on svg { fill: rgba(255, 122, 0, .18); animation: ci-popin .4s var(--ci-spring); }
 @media (min-width: 900px) { .ci-tabs { display: none; } }
+@media (max-width: 899px) { body:has(.ci-tabs) { padding-bottom: 84px; } }
