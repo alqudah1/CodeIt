@@ -14,6 +14,8 @@ import { conceptsIn } from '../Builder/codeConcepts';
 import { reportFailure } from '../../utils/humanError';
 import { getXpProgress, getLevelTitle } from '../../data/unlocks';
 import { openedRewards, whoAmI } from '../../utils/chests';
+import { MEDALS, medalsFrom } from './medals';
+import Me from './Me';
 import './Profile.css';
 
 // Levels come from data/unlocks.js, and only from there. This file used to
@@ -21,32 +23,6 @@ import './Profile.css';
 // while the unlock system counted 0, 200, 500, 900 and called level 3 "Coder".
 // At 500 XP this page said Level 6 and the Avatar Lab refused the level-4
 // outfit. A child was told two different numbers by the same product.
-
-// ── The medal case ──────────────────────────────────────────────────────────
-//
-// The five ideas the studio can actually ask a child to explain, mirroring
-// SKILL_FOR_QUESTION in the backend. Showing the un-won ones as empty slots is
-// what makes it a collection rather than a list — and it invents nothing: a
-// locked medal says "not yet", never that it was earned.
-const MEDALS = [
-  { id: 'loop-count',     icon: '\u{1F501}', name: 'Loop Reader',   match: /how many times a loop/i },
-  { id: 'increment',      icon: '\u{2795}',  name: 'Score Keeper',  match: /adds to the score/i },
-  { id: 'clicks',         icon: '\u{1F446}', name: 'Click Master',  match: /run when you click/i },
-  { id: 'starting-value', icon: '\u{1F4E6}', name: 'Value Finder',  match: /starting value/i },
-  { id: 'background',     icon: '\u{1F3A8}', name: 'Colour Tracer', match: /colour in the stylesheet/i },
-];
-
-/** Which medals this learner has actually won, and where. Records only. */
-function medalsFrom(records) {
-  const won = [];
-  for (const medal of MEDALS) {
-    for (const record of records || []) {
-      const hit = (record.skills || []).find(skill => medal.match.test(skill));
-      if (hit) { won.push({ ...medal, projectTitle: record.projectTitle }); break; }
-    }
-  }
-  return won;
-}
 
 export default function Profile() {
   useSEO({
@@ -423,6 +399,12 @@ export default function Profile() {
   };
 
   if (!user) return null;
+
+  // A child's profile is Me: numbers, powers, games, look. The page below,
+  // with parent updates and the medal case, is behind its Settings chip.
+  if (String(user.role).toLowerCase() === 'student' && !/[?&]settings=1/.test(window.location.search)) {
+    return <Me user={user} token={token} trophies={trophies} projectCount={projectCount} logout={logout} />;
+  }
 
   return (
     <>

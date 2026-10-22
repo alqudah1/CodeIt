@@ -31,6 +31,7 @@ jest.mock('../../context/AuthContext', () => {
   };
 });
 jest.mock('../../context/CharacterContext', () => ({
+  useCharacterDisplay: () => ({ character: {} }),
   useCharacter: () => ({
     character: {},
     stats: { totalXP: 20, currentStreak: 1, longestStreak: 2 },
@@ -55,6 +56,8 @@ describe('parent progress availability', () => {
     mockFamilyChildren = [];
     sessionStorage.clear();
     window.location.hash = '';
+    // A child's /profile is Me; these tests are about the page behind its Settings chip.
+    window.history.pushState({}, '', '/profile?settings=1');
     trackEvent.mockClear();
     global.fetch = jest.fn((url, options = {}) => {
       const requestUrl = String(url);
