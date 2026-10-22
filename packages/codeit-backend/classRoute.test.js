@@ -27,6 +27,13 @@ async function fakeQuery(sql, params = []) {
     const err = new Error('relation "classes" does not exist'); err.code = '42P01'; throw err;
   }
   let m;
+  if (/^SELECT c.id, c.code, c.name, c.created_at FROM class_members m JOIN classes c/.test(s)) {
+    return [state.members.filter((mm) => mm.user_id === params[0]).map((mm) => state.classes.find((c) => c.id === mm.class_id))];
+  }
+  if (/^SELECT p.id, p.user_id, p.title, p.public_id, p.project_type, p.view_count, p.like_count, p.created_at, u.name FROM ai_projects p JOIN class_members m/.test(s)) {
+    const ids = state.members.filter((mm) => mm.class_id === params[0]).map((mm) => mm.user_id);
+    return [state.projects.filter((p) => ids.includes(p.user_id) && p.is_public === 1 && p.public_id).sort((a, b) => b.view_count - a.view_count).map((p) => ({ ...p, like_count: 0, name: state.users.find((u) => u.user_id === p.user_id).name }))];
+  }
   if (/^SELECT id, code, name, owner_id, created_at FROM classes WHERE code = \?/.test(s)) {
     return [state.classes.filter((c) => c.code === params[0])];
   }
@@ -200,12 +207,28 @@ test('the board lists the room by first name with each child\'s newest game', as
   assert.equal((await call('GET', '/api/class/not-a-code')).status, 404);
 });
 
+test('a child sees the class they joined, and the class arcade ranks the room\'s published games', async () => {
+  const mayaToken = jwt.sign({ user_id: state.maya, role: 'student', name: 'Maya' }, JWT_SECRET);
+  const joined = await call('GET', '/api/class/joined', null, mayaToken);
+  assert.equal(joined.status, 200);
+  assert.deepEqual(joined.body.classes.map((c) => c.code), [state.code]);
+  state.projects.push({ id: 3, user_id: 55, title: 'Sam Runner', public_id: 'sampub', is_public: 1, project_type: 'game', view_count: 9, created_at: new Date() });
+  const arcade = await call('GET', `/api/class/${state.code}/arcade`, null, mayaToken);
+  assert.equal(arcade.status, 200);
+  assert.equal(arcade.body.me, state.maya);
+  assert.deepEqual(arcade.body.games.map((g) => [g.title, g.by, g.plays, g.thisWeek]), [['Sam Runner', 'Sam', 9, true], ['Old One', 'Maya', 3, false]]);
+  assert.ok(!arcade.body.games.some((g) => g.title === 'Ship Game'), 'an unpublished game is not in the arcade');
+  assert.equal((await call('GET', '/api/class/ZZZZ22/arcade')).status, 404);
+});
+
 test('before the tables exist every route says not set up instead of failing', async () => {
   state.ready = false;
   for (const [method, path, body, token] of [
     ['POST', '/api/class', { name: 'Year 5' }, teacherToken],
     ['GET', '/api/class/mine', null, teacherToken],
     ['GET', `/api/class/${state.code}`, null, null],
+    ['GET', `/api/class/${state.code}/arcade`, null, null],
+    ['GET', '/api/class/joined', null, teacherToken],
     ['POST', `/api/class/${state.code}/join`, { first_name: 'Maya' }, null],
   ]) {
     const res = await call(method, path, body, token);

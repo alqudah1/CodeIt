@@ -113,6 +113,58 @@ router.get('/mine', requireAuth, async (req, res) => {
   }
 });
 
+// ── GET /api/class/joined: the classes this account is a member of ─────────
+router.get('/joined', requireAuth, async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      `SELECT c.id, c.code, c.name, c.created_at FROM class_members m JOIN classes c ON c.id = m.class_id
+        WHERE m.user_id = ? ORDER BY m.joined_at DESC`,
+      [req.user.user_id]
+    );
+    return res.json({ ready: true, classes: rows.map(publicClass) });
+  } catch (err) {
+    if (notSetUp(err)) return notReady(res);
+    console.error('class/joined:', err.message);
+    return res.status(500).json({ error: 'Could not load your class.' });
+  }
+});
+
+// ── GET /api/class/:code/arcade: every published game in the room ──────────
+//
+// Ranked by plays, with which were made in the last seven days, so the
+// Arcade can show "this week" and "all time" from the same list. First
+// names and titles only, like the board.
+router.get('/:code/arcade', optionalAuth, async (req, res) => {
+  const code = normaliseCode(req.params.code);
+  if (!isCode(code)) return res.status(404).json({ error: 'That is not a class code.' });
+  try {
+    const klass = await findClass(code);
+    if (!klass) return res.status(404).json({ error: 'No class has that code. Check it on the board.' });
+    const [games] = await pool.query(
+      `SELECT p.id, p.user_id, p.title, p.public_id, p.project_type, p.view_count, p.like_count, p.created_at, u.name
+         FROM ai_projects p JOIN class_members m ON m.user_id = p.user_id JOIN Users u ON u.user_id = p.user_id
+        WHERE m.class_id = ? AND p.is_public = 1 AND p.public_id IS NOT NULL
+        ORDER BY p.view_count DESC, p.created_at DESC LIMIT 200`,
+      [klass.id]
+    );
+    const weekAgo = Date.now() - 7 * 86400000;
+    return res.json({
+      ready: true,
+      class: publicClass(klass),
+      me: req.user?.user_id || null,
+      games: games.map((g) => ({
+        id: g.id, userId: g.user_id, title: g.title, publicId: g.public_id, type: g.project_type,
+        plays: Number(g.view_count) || 0, likes: Number(g.like_count) || 0, by: g.name, createdAt: g.created_at,
+        thisWeek: new Date(g.created_at).getTime() >= weekAgo,
+      })),
+    });
+  } catch (err) {
+    if (notSetUp(err)) return notReady(res);
+    console.error('class/arcade:', err.message);
+    return res.status(500).json({ error: 'Could not load the arcade.' });
+  }
+});
+
 // ── GET /api/class/:code: the board ─────────────────────────────────────────
 //
 // First names, how many games each child has made, and their newest game if

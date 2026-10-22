@@ -1,0 +1,25 @@
+.ar { min-height: 100vh; background: var(--ci-cream); color: var(--ci-ink); font-family: var(--ci-body); font-weight: 700; }
+.ar__main { max-width: 760px; margin: 0 auto; padding: 24px 20px 110px; }
+.ar__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.ar__seg { max-width: 320px; margin-bottom: 14px; }
+.ar__you { padding: 16px 20px; margin-bottom: 14px; }
+.ar__you .ci-ey { color: rgba(255, 246, 237, .6); }
+.ar__rank { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+.ar__rank b { font: 800 24px var(--ci-display); color: var(--ci-sun); }
+.ar__rank span { color: rgba(255, 246, 237, .8); font-size: 14px; }
+.ar__rank a { color: var(--ci-sun); font-size: 14px; }
+.ar__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.ar__link { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; background: var(--ci-paper); border: 1px solid var(--ci-ink-line); text-decoration: none; color: var(--ci-ink); transition: transform .15s var(--ci-spring), background .15s; }
+.ar__link:hover { transform: translateX(3px); background: #fff; }
+.ar__link:active { transform: scale(.99); }
+.ar__row.is-mine .ar__link { background: rgba(255, 201, 60, .35); border-color: rgba(255, 201, 60, .9); }
+.ar__n { width: 24px; font: 800 14px var(--ci-display); color: var(--ci-ink-soft); text-align: center; flex: none; }
+.ar__row:nth-child(1) .ar__n { color: var(--ci-orange); font-size: 18px; }
+.ar__dot { width: 14px; height: 14px; border-radius: 50%; flex: none; }
+.ar__who { flex: 1; min-width: 0; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ar__who b { font-weight: 800; }
+.ar__plays { font: 800 18px var(--ci-display); line-height: 1; text-align: right; flex: none; }
+.ar__plays small { display: block; font: 700 10px var(--ci-body); color: var(--ci-ink-soft); letter-spacing: .08em; text-transform: uppercase; }
+.ar__join { display: block; margin-top: 16px; padding: 16px 18px; text-decoration: none; color: inherit; }
+.ar__join b { display: block; font: 800 18px var(--ci-display); }
+.ar__join small { font-size: 13px; }
