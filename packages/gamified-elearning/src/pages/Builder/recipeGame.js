@@ -51,6 +51,25 @@ export function recipeSettings(r) {
   ].join('\n');
 }
 
+/**
+ * The powers block: six more lines, each switched on by a power a child has
+ * learned on /powers. Every game carries them so a power page can change the
+ * child's own game; a game made before a power is learned simply has the
+ * off values.
+ */
+export const POWER_DEFAULTS = { waveSize: 1, pointsPer: 1, speedUpEvery: 0, soundOn: false, levelEvery: 0, bossAt: 0 };
+export function recipePowers(r = {}) {
+  const num = (k, max) => Math.max(0, Math.min(max, Math.round(Number(r[k]) || POWER_DEFAULTS[k])));
+  return [
+    `let waveSize     = ${Math.max(1, num('waveSize', 6))};   // Loops: how many bad things each wave`,
+    `let pointsPer    = ${Math.max(1, num('pointsPer', 10))};   // Score: points for every catch`,
+    `let speedUpEvery = ${num('speedUpEvery', 60)};   // Timers: seconds between speed ups, 0 is never`,
+    `let soundOn      = ${r.soundOn === true || r.soundOn === 'true'};   // Sound: a blip on every catch and hit`,
+    `let levelEvery   = ${num('levelEvery', 50)};   // Levels: points per level, 0 is no levels`,
+    `let bossAt       = ${num('bossAt', 200)};   // Boss: the score where the boss comes, 0 is never`,
+  ].join('\n');
+}
+
 export function recipeGame(r) {
   const [c1] = SKIES[r.sky] || SKIES.day;
   return `<!DOCTYPE html>
@@ -97,6 +116,9 @@ export function recipeGame(r) {
 // ── Change these and watch what happens ──
 ${recipeSettings(r)}
 
+// ── Powers: each line wakes up when you learn it ──
+${recipePowers(r)}
+
 // You, in the game: if CodeIt handed us your avatar, you are the player.
 let playerImg = null;
 if (window.CODEIT_PLAYER_SPRITE) {
@@ -125,6 +147,7 @@ let score = 0, lives = 3, playing = false;
 let playerX = 0, playerY = 0, jumpSpeed = 0, squash = 1;
 let things = [], shots = [], parts = [], pops = [], clouds = [], ticks = 0, spawnClock = 0, shake = 0, flash = 0;
 let pointerX = null;
+let level = 1, bossCame = false, audio = null;
 const keys = {};
 
 function fitScreen() {
@@ -145,7 +168,7 @@ function tipText() {
 
 function startGame() {
   score = 0; lives = startLives; playing = true;
-  things = []; shots = []; parts = []; pops = []; ticks = 0; spawnClock = 0; shake = 0; flash = 0; squash = 1;
+  things = []; shots = []; parts = []; pops = []; ticks = 0; spawnClock = 0; shake = 0; flash = 0; squash = 1; level = 1; bossCame = false;
   clouds = [0, 1, 2, 3].map(function(i) { return { x: i * (width / 3) + 40, y: 60 + (i % 2) * 70, s: 0.6 + (i % 3) * 0.25 }; });
   playerX = width / 2; playerY = height - 120; jumpSpeed = 0;
   document.getElementById('gameOver').style.display = 'none';
@@ -158,6 +181,8 @@ const HEART = '<svg viewBox="0 0 24 24"><path fill="#FF6B6B" d="M12 21s-8-5.3-8-
 function updateHud() {
   const s = document.getElementById('scoreLabel');
   if (s.textContent !== String(score)) { s.textContent = score; s.classList.remove('pop'); void s.offsetWidth; s.classList.add('pop'); }
+  const t = document.getElementById('titleLabel');
+  if (t) t.textContent = levelEvery > 0 ? gameTitle + ' · Level ' + level : gameTitle;
   const n = Math.max(0, lives);
   const l = document.getElementById('livesLabel');
   if (l.children.length !== n) { let h = ''; for (let i = 0; i < n; i += 1) h += HEART; l.innerHTML = h; }
@@ -209,7 +234,7 @@ function drawPlayer(x, y) {
 
 function addThing() {
   const bad = gameKind === 'catch' ? Math.random() < 0.25 : gameKind === 'runner' ? Math.random() < 0.7 : Math.random() < 0.8;
-  const burst = twist === 'waves' ? 3 : 1;
+  const burst = Math.max(twist === 'waves' ? 3 : 1, Math.min(6, waveSize | 0));
   for (let k = 0; k < burst; k += 1) {
     if (gameKind === 'runner') {
       things.push({ x: width + 40 + k * 90, y: bad ? height - 110 : height - 200 - Math.random() * 60, bad: bad, vy: 0, spin: 0 });
@@ -219,19 +244,53 @@ function addThing() {
   }
 }
 
-function currentSpeed() { return speed + (twist === 'faster' ? score / 8 : 0); }
+function currentSpeed() {
+  let s = speed + (twist === 'faster' ? score / 8 : 0);
+  if (speedUpEvery > 0) s += Math.floor(ticks / 60 / speedUpEvery) * 0.5;   // Timers: every N seconds, a little faster
+  if (levelEvery > 0) s += (level - 1) * 0.4;                                 // Levels: each level is a little faster
+  return s;
+}
+
+// ── Sound: a tiny blip, made from nothing, only when soundOn is true ──
+function blip(good) {
+  if (!soundOn) return;
+  try {
+    if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
+    const o = audio.createOscillator(), g = audio.createGain();
+    o.type = good ? 'triangle' : 'square';
+    o.frequency.setValueAtTime(good ? 660 : 160, audio.currentTime);
+    o.frequency.exponentialRampToValueAtTime(good ? 990 : 80, audio.currentTime + 0.12);
+    g.gain.setValueAtTime(0.08, audio.currentTime); g.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + 0.18);
+    o.connect(g); g.connect(audio.destination); o.start(); o.stop(audio.currentTime + 0.2);
+  } catch (e) { /* no sound is still a game */ }
+}
+
+// ── Score and Levels: every point goes through here ──
+function scorePoints() {
+  score += Math.max(1, pointsPer | 0);
+  if (levelEvery > 0) {
+    const next = Math.floor(score / levelEvery) + 1;
+    if (next > level) { level = next; flash = 0; pops.push({ x: width / 2, y: height / 2 + pops.filter(function(p) { return p.text; }).length * 56, l: 1.4, text: 'Level ' + level }); }
+  }
+  if (bossAt > 0 && !bossCame && score >= bossAt) {
+    bossCame = true;
+    things.push({ x: width / 2, y: -80, bad: true, boss: true, hp: 3, vy: 1.2 + currentSpeed() * 0.4, spin: 0 });
+    pops.push({ x: width / 2, y: height / 2 + pops.filter(function(p) { return p.text; }).length * 56, l: 1.4, text: 'Boss!' });
+  }
+  if (score >= winAt) endGame(true);
+}
 
 function hit(thing) {
   thing.gone = true;
   if (thing.bad) {
-    lives -= 1; shake = 10; flash = 6; squash = 0.7;
+    lives -= 1; shake = 10; flash = 6; squash = 0.7; blip(false);
     sparks(thing.x, thing.y, [CORAL], 10, false);
     if (lives <= 0) endGame(false);
   } else {
-    score += 1; squash = 1.25;
+    squash = 1.25; blip(true);
     pops.push({ x: thing.x, y: thing.y, l: 1 });
     sparks(thing.x, thing.y, [SUN, MINT, '#fff'], 12, true);
-    if (score >= winAt) endGame(true);
+    scorePoints();
   }
   updateHud();
 }
@@ -286,10 +345,11 @@ function draw() {
       if (gameKind === 'runner') thing.x -= 6 + currentSpeed() * 2; else thing.y += thing.vy;
     }
     thing.spin += 0.02;
-    drawSprite(thing.bad ? enemyImg : goodImg, thing.x, thing.y, 52, (gameKind === 'shooter' || gameKind === 'runner') ? 0 : thing.spin);
+    drawSprite(thing.bad ? enemyImg : goodImg, thing.x, thing.y, thing.boss ? 120 : 52, (gameKind === 'shooter' || gameKind === 'runner') ? 0 : thing.spin);
     if (playing && !thing.gone) {
+      const near = thing.boss ? 70 : 42;
       const dx = Math.abs(thing.x - playerX), dy = Math.abs(thing.y - playerY);
-      if (dx < 42 && dy < 42) hit(thing);
+      if (dx < near && dy < near) hit(thing);
       if (gameKind === 'shooter' && thing.bad && thing.y > height - 40) { thing.bad = true; hit(thing); }
     }
   }
@@ -299,9 +359,11 @@ function draw() {
     pen.fillStyle = 'rgba(255,201,60,.35)'; pen.beginPath(); pen.roundRect(shot.x - 3, shot.y, 6, 40, 3); pen.fill();
     pen.fillStyle = SUN; pen.beginPath(); pen.roundRect(shot.x - 4, shot.y - 14, 8, 26, 4); pen.fill();
     for (const thing of things) {
-      if (thing.bad && !thing.gone && Math.abs(thing.x - shot.x) < 32 && Math.abs(thing.y - shot.y) < 32) {
-        thing.gone = true; shot.gone = true; score += 1; pops.push({ x: thing.x, y: thing.y, l: 1 }); sparks(thing.x, thing.y, [SUN, '#FF7A00', '#fff'], 12, false); updateHud();
-        if (score >= winAt) endGame(true);
+      const reach = thing.boss ? 60 : 32;
+      if (thing.bad && !thing.gone && Math.abs(thing.x - shot.x) < reach && Math.abs(thing.y - shot.y) < reach) {
+        shot.gone = true; blip(true);
+        if (thing.boss && thing.hp > 1) { thing.hp -= 1; shake = 6; sparks(thing.x, thing.y, [SUN], 6, false); continue; }
+        thing.gone = true; pops.push({ x: thing.x, y: thing.y, l: 1 }); sparks(thing.x, thing.y, [SUN, '#FF7A00', '#fff'], thing.boss ? 30 : 12, false); scorePoints(); updateHud();
       }
     }
   }
@@ -315,7 +377,7 @@ function draw() {
   for (const p of parts) { p.x += p.vx; p.y += p.vy; p.vy += 0.35; p.l -= 0.04; pen.globalAlpha = Math.max(0, p.l); pen.fillStyle = p.c; pen.beginPath(); pen.arc(p.x, p.y, 5, 0, 7); pen.fill(); }
   pen.globalAlpha = 1;
   pops = pops.filter(function(p) { return p.l > 0; });
-  for (const p of pops) { p.y -= 1.6; p.l -= 0.03; pen.globalAlpha = Math.max(0, p.l); pen.fillStyle = '#fff'; pen.font = '800 26px "Baloo 2", Nunito, sans-serif'; pen.textAlign = 'center'; pen.fillText('+1', p.x, p.y - 30); }
+  for (const p of pops) { p.y -= 1.6; p.l -= 0.03; pen.globalAlpha = Math.max(0, Math.min(1, p.l)); pen.fillStyle = p.text ? SUN : '#fff'; pen.font = '800 ' + (p.text ? 44 : 26) + 'px "Baloo 2", Nunito, sans-serif'; pen.textAlign = 'center'; pen.fillText(p.text || ('+' + Math.max(1, pointsPer | 0)), p.x, p.y - 30); }
   pen.globalAlpha = 1;
   if (flash > 0) { flash -= 1; pen.fillStyle = 'rgba(255,107,107,' + (flash / 14) + ')'; pen.fillRect(-20, -20, width + 40, height + 40); }
 

@@ -23,6 +23,8 @@ import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
 import { listProjects as listShelf, migrateLegacyDraft } from '../../utils/projectShelf';
 import { LEVELS, levelFor, questFor, streakFrom } from './today';
+import { powerStates } from '../Powers/powers';
+import { readDone } from '../Powers/PowersMap';
 import '../../ds/ds.css';
 import './KidHome.css';
 
@@ -33,6 +35,7 @@ export default function KidHome() {
   const { user, token } = useContext(AuthContext);
   const [today, setToday] = useState(null);
   const [codes, setCodes] = useState({});
+  const [powersDone, setPowersDone] = useState(null);
   const shelf = useMemo(() => { try { migrateLegacyDraft(localStorage); return listShelf(localStorage); } catch { return []; } }, []);
 
   useEffect(() => {
@@ -65,6 +68,21 @@ export default function KidHome() {
     })();
     return () => { alive = false; };
   }, [user, token, today]);
+
+  // Which power is next: the server's list for a signed-in child, merged
+  // with what this browser remembers from before the account.
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/powers`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+        const data = res.ok ? await res.json() : null;
+        if (alive) setPowersDone(Array.from(new Set([...(data?.done || []), ...readDone(localStorage)])));
+      } catch { if (alive) setPowersDone(readDone(localStorage)); }
+    })();
+    return () => { alive = false; };
+  }, [token]);
+  const nextPower = powerStates(powersDone || readDone(localStorage)).find((p) => p.state === 'next');
 
   const quest = today?.quest || questFor();
   const guest = !user;
@@ -116,11 +134,11 @@ export default function KidHome() {
             <Link to="/build" className="kh__tile kh__tile--new" aria-label="Make a new game"><span>+</span>New game</Link>
           </div>
           {games.length === 0 && <p className="ci-sub">Nothing here yet. Today's build is the first one.</p>}
-          <Link to="/lessons" className="kh__row-link ci-rise" style={{ animationDelay: '.15s' }}>
+          <Link to={nextPower ? `/powers/${nextPower.slug}` : '/powers'} className="kh__row-link ci-rise" style={{ animationDelay: '.15s' }}>
             <span className="kh__ic" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14M4 19a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1M8 8h8M8 12h5" /></svg>
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z" /></svg>
             </span>
-            <span><b>Learn as you build</b><small>Lessons that change the lines at the top of your own game.</small></span>
+            <span><b>{nextPower ? `Next power: ${nextPower.name}` : 'Every power learned'}</b><small>{nextPower ? `${nextPower.does.charAt(0).toUpperCase()}${nextPower.does.slice(1)}, inside your own game. Three minutes.` : 'Twelve of twelve. Build with all of them.'}</small></span>
             <span className="kh__chev" aria-hidden="true">›</span>
           </Link>
           {guest && (

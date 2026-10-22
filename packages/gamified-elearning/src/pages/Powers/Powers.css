@@ -1,0 +1,65 @@
+.pw { min-height: 100vh; background: var(--ci-cream); color: var(--ci-ink); font-family: var(--ci-body); font-weight: 700; }
+.pw__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 110px; }
+.pw__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+.pw__count { font: 800 18px var(--ci-body); color: var(--ci-ink-soft); white-space: nowrap; padding-bottom: 8px; }
+.pw__count b { font: 800 40px var(--ci-display); color: var(--ci-ink); line-height: 1; margin-right: 4px; }
+.pw__sub { margin: 6px 0 18px; max-width: 640px; }
+.pw__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.pw__blk { position: relative; display: grid; align-content: start; gap: 2px; min-height: 104px; padding: 14px 16px; text-decoration: none; color: inherit; transition: transform .2s var(--ci-spring); }
+.pw__blk.is-later { color: var(--ci-ink-soft); box-shadow: none; border: 1px dashed rgba(53, 34, 14, .2); }
+.pw__blk.is-next { min-height: 128px; }
+a.pw__blk:hover { transform: translateY(-2px); }
+a.pw__blk:active { transform: scale(.98); }
+.pw__n { font: 800 12px var(--ci-body); letter-spacing: .12em; opacity: .7; }
+.pw__name { font: 800 22px var(--ci-display); line-height: 1.05; }
+.pw__does { font-size: 13px; opacity: .8; }
+.pw__go { position: absolute; right: 14px; bottom: 12px; background: var(--ci-ink); color: #fff; border-radius: 999px; padding: 6px 12px; font: 800 12px var(--ci-body); }
+.pw__tick { position: absolute; right: 14px; top: 12px; font: 800 18px var(--ci-display); }
+.pw__cta { margin-top: 18px; }
+
+/* The lesson */
+.pw__lesson { max-width: 1180px; margin: 0 auto; padding: 20px 20px 110px; display: grid; grid-template-columns: 1fr; gap: 18px; }
+.pw__top { display: flex; align-items: center; gap: 12px; }
+.pw__back { text-decoration: none; color: var(--ci-ink-soft); white-space: nowrap; }
+.pw__track { flex: 1; height: 6px; border-radius: 3px; background: rgba(53, 34, 14, .12); overflow: hidden; }
+.pw__track i { display: block; height: 100%; background: var(--ci-orange); border-radius: 3px; transition: width .6s cubic-bezier(.3, 1, .4, 1); }
+.pw__h1 { font-size: 30px; margin: 8px 0 4px; }
+.pw__intro { margin: 0 0 14px; }
+.pw__step { padding: 14px 18px; margin-bottom: 12px; }
+.pw__step.is-check { background: var(--ci-violet); color: #fff; }
+.pw__step.is-check .ci-ey { color: rgba(255, 255, 255, .75); }
+.pw__say { margin: 4px 0 0; font: 800 18px var(--ci-display); line-height: 1.2; }
+.pw__code { background: var(--ci-ink); color: #FFF6ED; border-radius: var(--ci-r); padding: 14px 16px; font: 600 13px/1.65 ui-monospace, Menlo, Consolas, monospace; overflow-x: auto; box-shadow: var(--ci-card); }
+.pw__line { white-space: pre; }
+.pw__line.is-cm { color: rgba(255, 246, 237, .45); }
+.pw__line.is-lit { background: rgba(255, 201, 60, .14); margin: 0 -16px; padding: 2px 16px; border-left: 3px solid var(--ci-sun); }
+.pw__val { font: inherit; font-weight: 800; color: var(--ci-ink); background: var(--ci-sun); border: 0; border-radius: 6px; padding: 1px 6px; outline: none; min-width: 2ch; box-shadow: 0 0 0 0 rgba(255, 201, 60, .5); animation: pw-glow 1.6s ease-in-out infinite; }
+.pw__val:focus { animation: none; box-shadow: 0 0 0 3px rgba(255, 122, 0, .45); }
+@keyframes pw-glow { 50% { box-shadow: 0 0 0 5px rgba(255, 201, 60, .35); } }
+.pw__editor { width: 100%; box-sizing: border-box; background: none; border: 0; color: inherit; font: inherit; resize: vertical; outline: none; white-space: pre; overflow-x: auto; }
+.pw__engine { margin-top: 12px; padding: 12px 16px 14px; }
+.pw__engine .ci-ey { color: rgba(255, 246, 237, .6); }
+.pw__engine pre { margin: 6px 0 0; font: 600 13px/1.6 ui-monospace, Menlo, Consolas, monospace; color: var(--ci-sun); white-space: pre-wrap; }
+.pw__gamehead { font: 800 13px var(--ci-body); color: var(--ci-ink-soft); margin-bottom: 8px; }
+.pw__frame { aspect-ratio: 4 / 3; }
+.pw__actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+.pw__hint { margin: 10px 0 0; font: 800 15px var(--ci-body); color: var(--ci-orange-down); }
+
+/* The unlock sheet */
+.pw__sheet { position: fixed; inset: 0; z-index: 950; background: rgba(53, 34, 14, .5); display: grid; place-items: center; padding: 20px; }
+.pw__sheetin { max-width: 520px; width: 100%; padding: 32px 30px 28px; color: #fff; }
+.pw__sheetin .ci-ey { color: rgba(255, 255, 255, .8); }
+.pw__sheetin h2 { font: 800 44px var(--ci-display); margin: 6px 0 10px; line-height: 1; }
+.pw__sheetin p { margin: 0 0 18px; font-size: 16px; }
+.pw__sheetbtns { display: flex; gap: 10px; flex-wrap: wrap; }
+.pw__sheetbtns .ci-btn--paper { color: var(--ci-ink); }
+
+@media (min-width: 900px) {
+  .pw__grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .pw__blk { min-height: 124px; padding: 18px 20px; }
+  .pw__name { font-size: 26px; }
+  .pw__lesson { grid-template-columns: 1.05fr .95fr; gap: 36px; align-items: start; padding: 28px 40px 60px; }
+  .pw__right { position: sticky; top: 90px; }
+  .pw__h1 { font-size: 38px; }
+}
+@media (prefers-reduced-motion: reduce) { .pw__val { animation: none; } }

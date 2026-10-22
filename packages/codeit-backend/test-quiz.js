@@ -28,6 +28,7 @@ const understandingRoutes = require('./routes/understanding');
 const profileRoutes = require('./routes/profile');
 const todayRoutes = require('./routes/today');
 const classRoutes = require('./routes/class');
+const powersRoutes = require('./routes/powers');
 const unlistedRoutes = require('./routes/unlisted');
 const activityRoutes = require('./routes/activity');
 const billingRoutes = require('./routes/billing');
@@ -124,6 +125,7 @@ app.use('/api/understanding', understandingRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/today', todayRoutes);
 app.use('/api/class', classRoutes);
+app.use('/api/powers', powersRoutes);
 app.use('/api/billing', billingRoutes);
 
 const PORT = Number(process.env.PORT || 8080);

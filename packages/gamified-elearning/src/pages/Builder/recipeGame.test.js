@@ -1,4 +1,4 @@
-import { recipeGame, recipeSettings, RECIPE_KINDS, RECIPE_TWISTS } from './recipeGame';
+import { recipeGame, recipePowers, recipeSettings, POWER_DEFAULTS, RECIPE_KINDS, RECIPE_TWISTS } from './recipeGame';
 
 // ── A recipe becomes a game in the shape the studio already understands ──────
 
@@ -57,4 +57,39 @@ test('the page draws our own sprites, and still understands an emoji in the sett
   expect(html).toContain('"🚀":"ship"');
   expect(html).not.toContain('drawEmoji');
   expect(html).toContain('devicePixelRatio');
+});
+
+// ── The powers block ─────────────────────────────────────────────────────────
+//
+// Six lines after the settings, one per power learned on /powers. A fresh
+// game has them all off, so nothing changes for a child who has not learned
+// them; a power page turns one on in the child's own game, and the engine
+// honours every one of them.
+test('every game carries the six power lines, off by default, and the engine reads each one', () => {
+  const html = recipeGame(SHIP);
+  const powers = recipePowers({});
+  expect(html).toContain('// ── Powers: each line wakes up when you learn it ──\n' + powers);
+  expect(powers.split('\n')).toHaveLength(6);
+  expect(powers).toContain('let waveSize     = 1;');
+  expect(powers).toContain('let pointsPer    = 1;');
+  expect(powers).toContain('let speedUpEvery = 0;');
+  expect(powers).toContain('let soundOn      = false;');
+  expect(powers).toContain('let levelEvery   = 0;');
+  expect(powers).toContain('let bossAt       = 0;');
+  for (const key of Object.keys(POWER_DEFAULTS)) expect(html).toMatch(new RegExp(`\\b${key}\\b[^\\n]*\\n[\\s\\S]*\\b${key}\\b`)); // declared, then used
+  expect(html).toContain('function blip(good)');
+  expect(html).toContain('function scorePoints()');
+  expect(html).toContain('boss: true, hp: 3');
+});
+
+test('power values are bounded and the on values come through', () => {
+  const on = recipePowers({ waveSize: 99, pointsPer: 3, speedUpEvery: 10, soundOn: 'true', levelEvery: 5, bossAt: 12 });
+  expect(on).toContain('let waveSize     = 6;');
+  expect(on).toContain('let pointsPer    = 3;');
+  expect(on).toContain('let speedUpEvery = 10;');
+  expect(on).toContain('let soundOn      = true;');
+  expect(on).toContain('let levelEvery   = 5;');
+  expect(on).toContain('let bossAt       = 12;');
+  expect(recipePowers({ waveSize: 0, pointsPer: -4 })).toContain('let waveSize     = 1;');
+  expect(recipePowers({ waveSize: 0, pointsPer: -4 })).toContain('let pointsPer    = 1;');
 });
