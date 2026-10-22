@@ -79,7 +79,7 @@ describe('public project sharing', () => {
     render(<PublicProject />);
 
     await screen.findByRole('heading', { name: 'Solar System Quiz' });
-    expect(screen.getByRole('link', { name: 'Build your own' })).toHaveAttribute('href', '/builder');
+    expect(screen.getByRole('link', { name: 'Build your own' })).toHaveAttribute('href', '/build');
     expect(screen.getByText(/creative playground for builders/i)).toBeInTheDocument();
   });
 

@@ -71,7 +71,7 @@ test('the static generator knows about every content route the app renders', () 
   // Scoped to content routes: account, admin and interactive pages are
   // deliberately absent from the sitemap and carry X-Robots-Tag noindex.
   const NOT_CONTENT = new RegExp(
-    '^/(MainPage|home|admin|login|register|forgot-password|reset-password|parent-review|' +
+    '^/(MainPage|home|join|teach|admin|login|register|forgot-password|reset-password|parent-review|' +
       'character|leaderboard|profile|quiz|project|creator-brief|investor-brief|' +
       'journey/puzzle|game/|play$)'
   );

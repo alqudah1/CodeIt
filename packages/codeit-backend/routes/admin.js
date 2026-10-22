@@ -479,7 +479,7 @@ router.get('/funnel/lessons', async (_req, res) => {
 // and seven lesson descriptions — and nothing else. Idempotent: safe to press
 // twice. Admin only, like everything on this router.
 router.post('/maintenance/apply-pending', async (_req, res) => {
-  const { CREATE_MONTHLY_DIGEST_LOG, CREATE_UNDERSTANDING_RECORDS, LESSON_DESCRIPTION_FIXES } = require('../maintenanceSql');
+  const { CREATE_CLASSES, CREATE_MONTHLY_DIGEST_LOG, CREATE_UNDERSTANDING_RECORDS, LESSON_DESCRIPTION_FIXES } = require('../maintenanceSql');
   try {
     // The first press in production taught us two things: the role in
     // DATABASE_URL may not be allowed to do DDL at all ("permission denied
@@ -493,6 +493,8 @@ router.post('/maintenance/apply-pending', async (_req, res) => {
     for (const [name, ddl] of [
       ['understanding_records', CREATE_UNDERSTANDING_RECORDS],
       ['monthly_digest_log', CREATE_MONTHLY_DIGEST_LOG],
+      // Both class tables come from one statement block; the probe is the first.
+      ['classes', CREATE_CLASSES],
     ]) {
       try {
         const [[probe]] = await pool.query(`SELECT to_regclass('public.${name}') AS reg`);

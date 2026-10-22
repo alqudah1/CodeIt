@@ -1474,6 +1474,7 @@ function staticContent(page) {
       <p>${paragraphHtml(page.detail)}</p>
       <nav aria-label="Continue on CodeIt">
         <a href="${escapeHtml(page.route)}">${escapeHtml(page.primaryLinkLabel || 'Open this page')}</a>
+        <a href="/build">Say a game, get a game</a>
         <a href="/builder">Build a project</a>
         <a href="/lessons">Browse lessons</a>
         ${relatedLinks}

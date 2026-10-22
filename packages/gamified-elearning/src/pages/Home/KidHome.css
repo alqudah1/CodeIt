@@ -29,6 +29,7 @@
 .kh__row-link b { display: block; font-size: 15px; font-weight: 800; }
 .kh__row-link small { display: block; color: var(--ci-ink-soft); font-size: 13px; font-weight: 700; margin-top: 2px; line-height: 1.3; }
 .kh__ic { width: 44px; height: 44px; border-radius: 14px; background: rgba(124, 92, 255, .14); color: var(--ci-violet); display: grid; place-items: center; flex: none; }
+.kh__ic--mint { background: rgba(23, 192, 139, .16); color: var(--ci-mint); }
 .kh__ic--sun { background: rgba(255, 201, 60, .4); color: var(--ci-ink); font-size: 20px; }
 .kh__chev { margin-left: auto; color: var(--ci-orange); font: 800 22px var(--ci-display); }
 @media (min-width: 900px) {

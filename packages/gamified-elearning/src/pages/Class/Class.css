@@ -1,0 +1,89 @@
+.cl { min-height: 100vh; background: var(--ci-cream); color: var(--ci-ink); font-family: var(--ci-body); font-weight: 700; }
+.cl__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 110px; }
+.cl__join { max-width: 520px; margin: 0 auto; padding: 32px 20px 110px; }
+.cl__card { padding: 28px 24px; }
+.cl__title { font-size: 30px; margin: 8px 0 18px; }
+.cl__gap { display: inline-block; width: 10px; }
+.cl__field { display: block; margin: 0 0 14px; }
+.cl__field span { display: block; font: 800 11px var(--ci-body); letter-spacing: .12em; text-transform: uppercase; color: var(--ci-ink-soft); margin-bottom: 6px; }
+.cl__code, .cl__name { width: 100%; box-sizing: border-box; border: 2px solid var(--ci-ink-line); border-radius: 16px; background: var(--ci-paper); color: var(--ci-ink); font: 800 18px var(--ci-body); padding: 14px 16px; outline: none; transition: border-color .15s, box-shadow .15s; }
+.cl__code { font: 800 34px var(--ci-display); letter-spacing: .14em; text-align: center; text-transform: uppercase; padding: 10px 16px; }
+.cl__code::placeholder { color: rgba(53, 34, 14, .22); letter-spacing: .14em; }
+.cl__code:focus, .cl__name:focus { border-color: var(--ci-orange); box-shadow: 0 0 0 4px rgba(255, 122, 0, .18); }
+.cl__as { margin: 0 0 14px; }
+.cl__link { appearance: none; border: 0; background: none; padding: 0; font: inherit; color: var(--ci-orange); cursor: pointer; text-decoration: underline; }
+.cl__err { margin: 0 0 12px; color: #C8362B; font-weight: 800; }
+.cl__fine { margin: 14px 0 0; font-size: 13px; color: var(--ci-ink-soft); line-height: 1.45; }
+.cl__fine a { color: var(--ci-orange); }
+.is-shake { animation: cl-shake .45s cubic-bezier(.36, .07, .19, .97) both; }
+@keyframes cl-shake { 10%, 90% { transform: translateX(-2px); } 20%, 80% { transform: translateX(4px); } 30%, 50%, 70% { transform: translateX(-6px); } 40%, 60% { transform: translateX(6px); } }
+
+/* /teach */
+.cl__new { margin: 16px 0 22px; padding: 20px 22px; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; }
+.cl__new .cl__field { margin: 0; }
+.cl__new .cl__err { grid-column: 1 / -1; margin: 0; }
+.cl__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.cl__item { display: grid; gap: 4px; padding: 18px 20px; text-decoration: none; color: inherit; transition: transform .2s var(--ci-spring); }
+.cl__item:hover { transform: translateY(-2px); }
+.cl__itemcode { font: 800 26px var(--ci-display); letter-spacing: .08em; color: var(--ci-orange); }
+.cl__itemname { font-size: 16px; font-weight: 800; }
+.cl__itemmeta { font-size: 13px; color: var(--ci-ink-soft); }
+
+/* The board */
+.cl__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.cl__bigcode { font: 800 clamp(44px, 9vw, 96px) var(--ci-display); line-height: 1; letter-spacing: .08em; color: var(--ci-ink); margin-top: 4px; }
+.cl__where { font: 800 15px var(--ci-body); color: var(--ci-ink-soft); margin-top: 6px; letter-spacing: .02em; }
+.cl__tools { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 6px; }
+.cl__tools .ci-chip { text-decoration: none; }
+.cl__tools .ci-chip.is-on { background: var(--ci-ink); color: #fff; border-color: var(--ci-ink); }
+.cl__count { font: 800 13px var(--ci-body); color: var(--ci-ink-soft); margin: 0 0 12px; }
+.cl__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.cl__tile { display: grid; align-content: start; gap: 4px; padding: 16px 16px 14px; min-height: 108px; text-align: left; font: inherit; border: 0; }
+.cl__tile.is-playable { cursor: pointer; transition: transform .2s var(--ci-spring); }
+.cl__tile.is-playable:hover { transform: translateY(-2px) scale(1.01); }
+.cl__tile.is-playable:active { transform: scale(.98); }
+.cl__tilename { font: 800 20px var(--ci-display); line-height: 1.1; }
+.cl__tilegames { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; opacity: .75; }
+.cl__tilenew { font-size: 14px; margin-top: 6px; line-height: 1.25; }
+.cl__tilenew small { display: block; font-size: 11px; opacity: .75; margin-top: 2px; }
+.cl__empty { grid-column: 1 / -1; }
+.cl__stage { margin: 0 0 18px; }
+.cl__stagebar { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.cl__stagebar span { color: var(--ci-ink-soft); }
+.cl__stagebar .ci-chip { margin-left: auto; }
+.cl__stage .ci-frame { aspect-ratio: auto; height: min(62vh, 56vw); }
+.cl__how { margin-top: 16px; padding: 22px 24px; max-width: 640px; }
+.cl__steps { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 10px; }
+.cl__steps li { display: flex; align-items: center; gap: 12px; font-size: 18px; }
+.cl__steps li b { width: 34px; height: 34px; border-radius: 50%; background: var(--ci-ink); color: #fff; display: grid; place-items: center; font: 800 16px var(--ci-display); flex: none; }
+.cl__steps strong { font-weight: 800; letter-spacing: .04em; }
+.cl__howfine { margin: 14px 0 0; font-size: 13px; color: rgba(53, 34, 14, .7); }
+.cl__stagewait { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; }
+
+/* Projector: the code and the tiles, nothing else, in letters the back row reads */
+body.cl-projector .site-header, body.cl-projector header, body.cl-projector .ci-tabs { display: none !important; }
+body.cl-projector { padding-bottom: 0 !important; }
+.cl__board.is-projector { min-height: 100vh; }
+.is-projector .cl__bigcode { font-size: clamp(80px, 14vw, 180px); }
+.is-projector .cl__where { font-size: clamp(18px, 2.4vw, 30px); }
+.is-projector .cl__grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+.is-projector .cl__tilename { font-size: 30px; }
+.is-projector .cl__tilenew { font-size: 17px; }
+.is-projector .cl__count { font-size: 18px; }
+.is-projector .cl__how { max-width: none; padding: 28px 32px; }
+.is-projector .cl__steps li { font-size: clamp(22px, 3vw, 36px); }
+.is-projector .cl__steps li b { width: 48px; height: 48px; font-size: 22px; }
+/* A game on the big screen: the code shrinks to a corner, the game takes the room */
+.is-projector.has-stage .cl__head { margin-bottom: 8px; align-items: center; }
+.is-projector.has-stage .cl__bigcode { font-size: 34px; display: inline; margin-right: 12px; }
+.is-projector.has-stage .cl__where { display: inline; font-size: 16px; }
+.is-projector.has-stage .ci-ey { display: none; }
+.is-projector.has-stage .cl__stage .ci-frame { height: calc(100vh - 150px); }
+.is-projector.has-stage .cl__count, .is-projector.has-stage .cl__grid { display: none; }
+
+@media (max-width: 640px) {
+  .cl__new { grid-template-columns: 1fr; }
+  .cl__card { padding: 22px 18px; }
+  .cl__title { font-size: 26px; }
+}
+@media (prefers-reduced-motion: reduce) { .is-shake { animation: none; } }

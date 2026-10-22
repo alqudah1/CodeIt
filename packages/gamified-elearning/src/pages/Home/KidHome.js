@@ -124,7 +124,16 @@ export default function KidHome() {
             <span className="kh__chev" aria-hidden="true">›</span>
           </Link>
           {guest && (
-            <Link to="/register" className="kh__row-link ci-rise" style={{ animationDelay: '.2s' }}>
+            <Link to="/join" className="kh__row-link ci-rise" style={{ animationDelay: '.2s' }}>
+              <span className="kh__ic kh__ic--mint" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="12" rx="2" /><path d="M8 21h8M12 17v4M7 10h4M7 13h7" /></svg>
+              </span>
+              <span><b>In a class? Join it</b><small>Type the code on the board and your first name.</small></span>
+              <span className="kh__chev" aria-hidden="true">›</span>
+            </Link>
+          )}
+          {guest && (
+            <Link to="/register" className="kh__row-link ci-rise" style={{ animationDelay: '.25s' }}>
               <span className="kh__ic kh__ic--sun" aria-hidden="true">★</span>
               <span><b>Keep your games for good</b><small>A free account keeps them on every device and lets you share them.</small></span>
               <span className="kh__chev" aria-hidden="true">›</span>

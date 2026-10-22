@@ -263,7 +263,7 @@ export default function PublicProject() {
             </p>
             <div className="pp-actions">
               <Link
-                to="/builder"
+                to="/build"
                 className="pp-cta-btn pp-cta-btn--build"
                 onClick={() => void trackEvent('landing_cta_click', 'public-project-build')}
               >
