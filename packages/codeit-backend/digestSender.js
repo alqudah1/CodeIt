@@ -12,6 +12,7 @@
 const pool = require('./db');
 const { composeMonthlyEmail, gatherMonth, hasAnythingToSay, periodOf } = require('./monthlyEvidence');
 const { createToken, hashToken, sendMail } = require('./progressNotifications');
+const weekly = require('./weeklyEvidence');
 
 async function eligibleLearners() {
   const [rows] = await pool.query(
@@ -96,4 +97,47 @@ async function previewMonthlyDigest(userId) {
   };
 }
 
-module.exports = { eligibleLearners, previewMonthlyDigest, sendMonthlyDigests };
+// ── The weekly email, same rules ────────────────────────────────────────────
+//
+// Same eligibility, same log (period 26W43), same token rotation. Dry run
+// counts what would go out without sending.
+async function sendWeeklyDigests({ dryRun = false } = {}) {
+  const period = weekly.weekPeriodOf();
+  const outcome = { period, eligible: 0, sent: 0, skippedAlreadySent: 0, skippedNothingToSay: 0, failed: 0, notConfigured: 0 };
+  for (const learner of await eligibleLearners()) {
+    outcome.eligible += 1;
+    if (await alreadySent(learner.userId, period)) { outcome.skippedAlreadySent += 1; continue; }
+    const week = await weekly.gatherWeek(learner.userId);
+    if (!weekly.hasAnythingToSay(week)) { outcome.skippedNothingToSay += 1; continue; }
+    if (dryRun) { outcome.sent += 1; continue; }
+    const unsubscribeToken = createToken();
+    await pool.query(
+      'UPDATE parent_notification_preferences SET unsubscribe_token_hash = ? WHERE user_id = ?',
+      [hashToken(unsubscribeToken), learner.userId]
+    );
+    const message = weekly.composeWeeklyEmail({ studentName: learner.studentName, week, unsubscribeToken });
+    const result = await sendMail({ to: learner.parentEmail, ...message });
+    if (result.sent) {
+      outcome.sent += 1;
+      await pool.query(
+        'INSERT INTO monthly_digest_log (user_id, period, status) VALUES (?, ?, ?) ON CONFLICT (user_id, period) DO NOTHING',
+        [learner.userId, period, 'sent']
+      );
+    } else if (result.status === 'not_configured') outcome.notConfigured += 1;
+    else outcome.failed += 1;
+  }
+  return outcome;
+}
+
+async function previewWeeklyDigest(userId) {
+  const [rows] = await pool.query('SELECT name, username FROM Users WHERE user_id = ?', [userId]);
+  if (!rows.length) return null;
+  const week = await weekly.gatherWeek(userId);
+  return {
+    hasContent: weekly.hasAnythingToSay(week),
+    week,
+    email: weekly.composeWeeklyEmail({ studentName: rows[0].name || rows[0].username, week, unsubscribeToken: 'preview-token-never-valid' }),
+  };
+}
+
+module.exports = { eligibleLearners, previewMonthlyDigest, previewWeeklyDigest, sendMonthlyDigests, sendWeeklyDigests };

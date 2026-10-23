@@ -51,6 +51,8 @@ const AdminDashboard = () => {
   const [maint, setMaint] = useState(null);
   const [digest, setDigest] = useState(null);
   const [digestPreview, setDigestPreview] = useState(null);
+  const [weekly, setWeekly] = useState(null);
+  const [weeklyPreview, setWeeklyPreview] = useState(null);
   const runMaintenance = async () => {
     setMaint('running');
     try {
@@ -220,6 +222,75 @@ const AdminDashboard = () => {
           {typeof digestPreview === 'string' && digestPreview !== 'loading' && (
             <div className="adm-error">{digestPreview}</div>
           )}
+
+          <div className="adm-section-head">The weekly family email</div>
+          <div className="adm-info">
+            The parent page, in the inbox: what was made this week (the newest game plays from a
+            link), what was learned in plain words, what is next. Same families as the monthly email,
+            one send per family per week, nothing for an empty week. Preview first.
+            {' '}
+            <button
+              type="button"
+              className="adm-maint-btn"
+              onClick={async () => {
+                const id = window.prompt('Learner user id to preview:');
+                if (!id) return;
+                setWeeklyPreview('loading');
+                try {
+                  const res = await fetch(`${API_BASE_URL}/api/admin/digest/weekly/preview/${Number(id)}`, { headers: { Authorization: `Bearer ${token}` } });
+                  const body = await res.json();
+                  setWeeklyPreview(body.success ? body : (body.error || 'Failed.'));
+                } catch { setWeeklyPreview('Failed: network error.'); }
+              }}
+            >
+              Preview one learner
+            </button>
+            {' '}
+            <button
+              type="button"
+              className="adm-maint-btn"
+              disabled={weekly === 'running'}
+              onClick={async () => {
+                setWeekly('running');
+                try {
+                  const res = await fetch(`${API_BASE_URL}/api/admin/digest/weekly/send?dry=1`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+                  const body = await res.json();
+                  setWeekly(body.success ? `Dry run: ${body.sent} of ${body.eligible} eligible would get an email (already sent this week: ${body.skippedAlreadySent}, quiet weeks: ${body.skippedNothingToSay}).` : (body.error || 'Failed.'));
+                } catch { setWeekly('Failed: network error.'); }
+              }}
+            >
+              Count this week
+            </button>
+            {' '}
+            <button
+              type="button"
+              className="adm-maint-btn"
+              disabled={weekly === 'running'}
+              onClick={async () => {
+                if (!window.confirm('Send this week\'s email to every confirmed family now?')) return;
+                setWeekly('running');
+                try {
+                  const res = await fetch(`${API_BASE_URL}/api/admin/digest/weekly/send`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+                  const body = await res.json();
+                  setWeekly(body.success
+                    ? `Sent ${body.sent} of ${body.eligible} eligible (already sent: ${body.skippedAlreadySent}, quiet weeks: ${body.skippedNothingToSay}, failed: ${body.failed}, no mail transport: ${body.notConfigured}).`
+                    : (body.error || 'Failed.'));
+                } catch { setWeekly('Failed: network error.'); }
+              }}
+            >
+              {weekly === 'running' ? 'Working…' : "Send this week's emails"}
+            </button>
+            {weekly && weekly !== 'running' && <span className="adm-maint-result"> {weekly}</span>}
+          </div>
+          {weeklyPreview && weeklyPreview !== 'loading' && typeof weeklyPreview === 'object' && (
+            <div className="adm-info">
+              <strong>Subject:</strong> {weeklyPreview.email?.subject}
+              {weeklyPreview.hasContent
+                ? <iframe title="Weekly email preview" className="adm-digest-frame" srcDoc={weeklyPreview.email?.html} />
+                : <p>A quiet week. This learner would receive no email.</p>}
+            </div>
+          )}
+          {typeof weeklyPreview === 'string' && weeklyPreview !== 'loading' && <div className="adm-error">{weeklyPreview}</div>}
 
           <div className="adm-section-head">Recent Signups</div>
           <div className="adm-table-wrap">

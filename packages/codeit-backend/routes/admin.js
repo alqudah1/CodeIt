@@ -556,6 +556,28 @@ router.get('/digest/preview/:userId', async (req, res) => {
   }
 });
 
+router.get('/digest/weekly/preview/:userId', async (req, res) => {
+  const { previewWeeklyDigest } = require('../digestSender');
+  try {
+    const preview = await previewWeeklyDigest(Number(req.params.userId));
+    if (!preview) return res.status(404).json({ error: 'No such learner.' });
+    res.json({ success: true, ...preview });
+  } catch (error) {
+    console.error('admin/digest/weekly/preview:', error.message);
+    res.status(500).json({ error: 'Could not build the preview.' });
+  }
+});
+
+router.post('/digest/weekly/send', async (req, res) => {
+  const { sendWeeklyDigests } = require('../digestSender');
+  try {
+    res.json({ success: true, ...(await sendWeeklyDigests({ dryRun: req.query.dry === '1' })) });
+  } catch (error) {
+    console.error('admin/digest/weekly/send:', error.message);
+    res.status(500).json({ error: 'Could not send the weekly emails.' });
+  }
+});
+
 router.post('/digest/send', async (req, res) => {
   const { sendMonthlyDigests } = require('../digestSender');
   try {
