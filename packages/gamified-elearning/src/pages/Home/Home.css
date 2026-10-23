@@ -1691,3 +1691,29 @@
 @media (max-width: 780px) {
   .studio-member { width: min(100% - 32px, 1120px); }
 }
+
+/* ── Say a game. Get a game. The builder, on the page, as a block ─────────── */
+.studio-home .say { margin: 0 0 28px; padding: 22px 22px 18px; color: #FFF6ED; }
+.studio-home .say__label { display: block; font: 800 11px var(--ci-body); letter-spacing: .12em; text-transform: uppercase; color: rgba(255, 246, 237, .65); margin: 0 0 8px; }
+.studio-home .say__row { display: flex; gap: 10px; align-items: stretch; }
+.studio-home .say__row input { flex: 1; min-width: 0; border: 0; border-radius: 16px; background: #FFF6ED; color: var(--ci-ink); font: 800 18px var(--ci-body); padding: 14px 18px; outline: none; box-shadow: 0 0 0 0 rgba(255, 201, 60, 0); transition: box-shadow .15s; }
+.studio-home .say__row input::placeholder { color: rgba(53, 34, 14, .4); font-weight: 700; }
+.studio-home .say__row input:focus { box-shadow: 0 0 0 4px rgba(255, 201, 60, .55); }
+.studio-home .say__row .ci-btn { flex: none; height: auto; padding: 0 22px; font-size: 18px; }
+.studio-home .say__chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.studio-home .say__chips .ci-chip { background: rgba(255, 246, 237, .1); border-color: rgba(255, 246, 237, .22); color: #FFF6ED; height: 34px; }
+.studio-home .say__chips .ci-chip:hover { background: rgba(255, 246, 237, .18); }
+.studio-home .say__fine { margin: 12px 0 0; font: 700 12px var(--ci-body); color: rgba(255, 246, 237, .6); }
+@media (max-width: 640px) {
+  .studio-home .say__row { flex-direction: column; }
+  .studio-home .say__row .ci-btn { height: 52px; }
+}
+
+/* ── Bold Blocks on the landing page: tokens over the older palette ───────── */
+.studio-home { background: var(--ci-cream); color: var(--ci-ink); }
+.studio-home h1, .studio-home h2 { font-family: var(--ci-display); }
+.studio-home .studio-kicker { color: var(--ci-orange-down); }
+.studio-home .studio-button--primary { background: var(--ci-orange); color: #fff; border: 0; border-radius: 999px; box-shadow: 0 1px 0 var(--ci-orange-down), 0 6px 0 rgba(53, 34, 14, .12); }
+.studio-home .studio-button--primary:hover { background: var(--ci-orange-down); }
+.studio-home .pick__card { border: 0; border-radius: var(--ci-r); background: var(--ci-paper); box-shadow: var(--ci-card); transition: transform .2s var(--ci-spring); }
+.studio-home .pick__card:hover { transform: translateY(-3px); }

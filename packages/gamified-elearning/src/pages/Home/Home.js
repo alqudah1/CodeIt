@@ -21,8 +21,16 @@ import Evidence from "./Evidence";
 import TryPython from "./TryPython";
 import AvatarInGame from "./AvatarInGame";
 import { listProjects, migrateLegacyDraft } from "../../utils/projectShelf";
+import "../../ds/ds.css";
 import "./Home.css";
 import "./HomeStudio.css";
+
+// Three sentences a child would say. Each one becomes a game on /build.
+const SAY_IDEAS = [
+  "a ship that shoots asteroids and they get faster",
+  "a bunny that catches carrots at night",
+  "a cat that dodges bombs in the ocean",
+];
 
 // A three-panel mock of a project called "Mission Control Quiz" used to cycle
 // here, beside a picture of a laptop. It was a drawing of the product, and the
@@ -254,13 +262,43 @@ export default function Home() {
           <section className="studio-make" aria-labelledby="studio-make-title">
             <div className="studio-section-heading">
               <p className="studio-kicker">A different activity: JavaScript games</p>
-              <h2 id="studio-make-title">Play a game. Change how it works.</h2>
-              <p>These browser games use HTML, CSS and JavaScript. The step-by-step lessons teach Python. Start with a ready-made game, or use the optional AI builder for your own idea.</p>
+              <h2 id="studio-make-title">Say a game. Get a game.</h2>
+              <p>Type a sentence and a browser game is playing about two seconds later, with its code open underneath. The step-by-step lessons teach Python; this is the optional builder.</p>
             </div>
+
+            {/* The builder, on the page. It used to sit folded under "Or type
+                your own idea", behind three starter cards: the thing the site
+                does best was the one thing a visitor had to go looking for. */}
+            <form className="say ci-blk ci-blk--ink" onSubmit={startHeroIdea}>
+              <label htmlFor="studio-hero-idea" className="say__label">
+                What do you want to build?
+              </label>
+              <div className="say__row">
+                <input
+                  ref={ideaInputRef}
+                  id="studio-hero-idea"
+                  value={heroIdea}
+                  onChange={(event) => setHeroIdea(event.target.value)}
+                  placeholder="a ship that shoots asteroids and they get faster"
+                  maxLength={240}
+                  autoComplete="off"
+                />
+                <button type="submit" className="ci-btn">
+                  Build it <span aria-hidden="true">→</span>
+                </button>
+              </div>
+              <div className="say__chips" aria-label="Try one of these">
+                {SAY_IDEAS.map((idea) => (
+                  <button type="button" key={idea} className="ci-chip" onClick={() => { setHeroIdea(idea); ideaInputRef.current?.focus(); }}>{idea}</button>
+                ))}
+              </div>
+              <p className="say__fine">No account to try it. Publishing asks for a first name and a class code or a parent.</p>
+            </form>
+
             {!shelf.length && <AvatarInGame />}
             <div className="pick">
               <p className="pick__ask" id="pick-ask">
-                {shelf.length ? "Or start something new" : "Tap a game. It starts now!"}
+                {shelf.length ? "Or start from a game" : "Or start from a game. It opens now."}
               </p>
               <ul className="pick__row" aria-labelledby="pick-ask">
                 {HOME_PICKS.map((game) => (
@@ -277,36 +315,6 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-
-              <details className="pick__own">
-                <summary>Or type your own idea</summary>
-                <form className="studio-hero__idea" onSubmit={startHeroIdea}>
-                  <label htmlFor="studio-hero-idea" className="pick__own-label">
-                    What do you want to build?
-                  </label>
-                  <div className="studio-hero__idea-row">
-                    <input
-                      ref={ideaInputRef}
-                      id="studio-hero-idea"
-                      value={heroIdea}
-                      onChange={(event) => setHeroIdea(event.target.value)}
-                      placeholder="A space quiz, a football game…"
-                      maxLength={240}
-                      autoComplete="off"
-                    />
-                    <button type="submit">
-                      Build it <span aria-hidden="true">→</span>
-                    </button>
-                  </div>
-                </form>
-              </details>
-
-
-
-              {/* "Play real games. Open them up. Make them yours." used to
-                  sit here, saying for a third time on one screen what the
-                  heading and the line above the cards already say. A
-                  confident product says it once and shows the rest. */}
             </div>
           </section>
 
