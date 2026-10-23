@@ -15,7 +15,7 @@ import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import { reportFailure } from '../../utils/humanError';
 import { POWERS } from '../Powers/powers';
-import { BOARD_SENTENCE } from './lessonPlans';
+import { BOARD_SENTENCE, PLANS } from './lessonPlans';
 import ExampleCards, { EXAMPLES } from '../../ds/Examples';
 import Header from '../Header/Header';
 import TabBar from '../../ds/TabBar';
@@ -61,13 +61,58 @@ function NotSetUp() {
 
 function SignIn() {
   return (
-    <div className="ci-blk ci-blk--paper cl__card">
-      <div className="ci-ey">Teach with CodeIt</div>
-      <h1 className="ci-h1 cl__title">Make a class. Read out the code. Watch the games appear.</h1>
-      <p className="ci-sub">Sign in with your own account to make a class. Children join with the code and a first name, nothing else.</p>
-      <Link className="ci-btn ci-btn--ink" to="/login" state={{ from: '/teach' }}>Sign in</Link>
-      <span className="cl__gap" />
-      <Link className="ci-btn ci-btn--paper" to="/register" state={{ from: '/teach' }}>Make an account</Link>
+    <div className="tl">
+      <section className="tl__hero">
+        <div className="ci-blk ci-blk--paper cl__card tl__intro ci-rise">
+          <div className="ci-ey">Teach with CodeIt</div>
+          <h1 className="ci-h1 cl__title">Make a class. Read out the code. Watch the games appear.</h1>
+          <p className="ci-sub">Sign in with your own account to make a class. Children join with the code and a first name, nothing else: no email, no password, no age screen.</p>
+          <div className="tl__btns">
+            <Link className="ci-btn ci-btn--ink" to="/login" state={{ from: '/teach' }}>Sign in</Link>
+            <Link className="ci-btn ci-btn--paper" to="/register" state={{ from: '/teach' }}>Make an account</Link>
+          </div>
+        </div>
+        <div className="ci-blk ci-blk--ink tl__board ci-rise" style={{ animationDelay: '.06s' }} aria-label="Example of the projector board">
+          <div className="tl__boardtop">
+            <span className="ex__tag tl__tag">Example</span>
+            <span className="tl__code">ROCKET 42</span>
+            <span className="tl__where">{SITE}/join</span>
+          </div>
+          <p className="tl__boardline">What the projector fills with, one tile a game, as children publish.</p>
+          <ExampleCards from={0} count={4} link={false} />
+        </div>
+      </section>
+
+      <section className="tl__steps">
+        {[
+          ['1', 'Make a class', 'Name it, and the code appears in letters the back row can read.'],
+          ['2', 'Children type the code', 'At codeitlearn.com/join, with a first name. They are building within the minute.'],
+          ['3', 'The projector fills', 'Each published game becomes a tile. Press one and it plays on the big screen.'],
+          ['4', 'Then a power', 'Twelve powers, one per lesson, each changing a line in the game they just made.'],
+        ].map(([n, head, text], i) => (
+          <div key={n} className="ci-blk ci-blk--paper tl__step ci-rise" style={{ animationDelay: `${0.04 * i}s` }}>
+            <b className="tl__n">{n}</b>
+            <strong>{head}</strong>
+            <span>{text}</span>
+          </div>
+        ))}
+      </section>
+
+      <section className="tl__plans">
+        <div className="tl__planshead">
+          <h2 className="ci-h2">Twelve lesson plans, ready to read aloud</h2>
+          <Link className="ci-chip" to="/teach/plans">All twelve</Link>
+        </div>
+        <div className="tl__planlist">
+          {PLANS.slice(0, 6).map((plan) => (
+            <Link key={plan.slug} to={`/teach/plans/${plan.slug}`} className="ci-blk ci-blk--paper tl__plan">
+              <span className="tl__plann">{plan.n}</span>
+              <b>{plan.title}</b>
+              <small>On the board: {plan.sentence}</small>
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

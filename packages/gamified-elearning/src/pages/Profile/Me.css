@@ -1,12 +1,13 @@
 .me { min-height: 100vh; background: var(--ci-cream); color: var(--ci-ink); font-family: var(--ci-body); font-weight: 700; }
-.me__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 110px; display: grid; grid-template-columns: 1fr; gap: 8px; }
+.me__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 110px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.me__left, .me__right { min-width: 0; }
 .me__hero { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
 .me__avatar { width: 104px; height: 104px; padding: 0; display: grid; place-items: center; flex: none; border-radius: 28px; transition: transform .2s var(--ci-spring); }
 .me__avatar:hover { transform: rotate(-3deg) scale(1.03); }
 .me__name { margin: 2px 0 4px; }
 .me__level { font: 800 14px var(--ci-body); color: var(--ci-ink-soft); }
 .me__settings { margin-left: auto; text-decoration: none; align-self: flex-start; }
-.me__nums { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.me__nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .me__nums > * { padding: 16px 16px 18px; min-height: 108px; }
 .me__track { height: 6px; border-radius: 3px; background: rgba(0, 0, 0, .14); overflow: hidden; margin-top: 12px; }
 .me__track i { display: block; height: 100%; background: #fff; border-radius: 3px; transition: width .8s cubic-bezier(.3, 1, .4, 1); }
@@ -40,13 +41,17 @@ a.me__power:hover { transform: translateY(-2px); }
 .me__chev { margin-left: auto; color: var(--ci-orange); font: 800 22px var(--ci-display); }
 .me__signout { appearance: none; border: 0; background: none; color: var(--ci-ink-soft); font: 800 13px var(--ci-body); cursor: pointer; margin-top: 16px; padding: 6px 0; text-decoration: underline; }
 @media (min-width: 900px) {
-  .me__main { grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: start; padding: 32px 40px 60px; }
+  .me__main { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 36px; align-items: start; padding: 32px 40px 60px; }
   .me__right { padding-top: 8px; }
   .me__avatar { width: 120px; height: 120px; }
   .ci-h1.me__name { font-size: 40px; }
 }
 @media (max-width: 520px) {
-  .me__nums { grid-template-columns: 1fr 1fr; }
+  .me__nums { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .me__nums > :last-child { grid-column: 1 / -1; min-height: 0; }
   .me__powers { grid-template-columns: repeat(3, 1fr); }
 }
+/* A folded phone's cover screen: the avatar shrinks and Settings may take its own line. */
+.me__hero { flex-wrap: wrap; }
+.me__hero > div { min-width: 0; }
+@media (max-width: 360px) { .me__avatar { width: 76px; height: 76px; border-radius: 22px; } }

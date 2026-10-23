@@ -90,3 +90,19 @@ test('no linked child, a signed-out visitor, and a child each get the right door
   mount({ user: { name: 'Maya', role: 'student' }, token: 'k' });
   expect(screen.getByText('This page is for grown-ups.')).toBeInTheDocument();
 });
+
+test('signed out, a parent sees an example week built from real parts, flagged, naming no child', () => {
+  mount({ user: null, token: null });
+  expect(screen.getByText('Example week')).toBeInTheDocument();
+  expect(screen.getByText(/Yours shows your own child/)).toBeInTheDocument();
+  const game = document.querySelector('.pa__frame iframe').getAttribute('srcdoc');
+  expect(game).toContain("let gameTitle  = 'Bunny Game';");
+  expect(game).toContain("let treasure   = 'carrot';");
+  expect(screen.getByText('Numbers: change how fast')).toBeInTheDocument();
+  expect(screen.getByText('Loops: make waves')).toBeInTheDocument();
+  expect(screen.getByText(/Next:/)).toHaveTextContent('Next: Words, name things.');
+  expect(screen.getByText('Nothing is sold to your child')).toBeInTheDocument();
+  expect(screen.getByText(/Plus is CA\$12\/month/)).toBeInTheDocument();
+  expect(document.body.textContent).not.toMatch(/Maya|Leo|Omar/);
+  expect(screen.getByRole('link', { name: 'Make an account' })).toHaveAttribute('href', '/register');
+});

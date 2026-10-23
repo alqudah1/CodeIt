@@ -2,15 +2,18 @@
 .ex__title { margin: 0 0 4px; }
 .ex__note { margin: 0 0 10px; font-size: 14px; }
 .ex__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.ex__card { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 150px; padding: 10px 12px 12px; border: 0; border-radius: var(--ci-r); overflow: hidden; color: #fff; text-decoration: none; text-align: left; font: inherit; cursor: pointer; box-shadow: var(--ci-card); animation: ci-rise .45s var(--ci-ease) both; transition: transform .2s var(--ci-spring); }
+.ex__card { position: relative; min-width: 0; display: flex; flex-direction: column; justify-content: flex-start; min-height: 150px; padding: 9px 10px 12px; border: 0; border-radius: var(--ci-r); overflow: hidden; color: #fff; text-decoration: none; text-align: left; font: inherit; cursor: pointer; box-shadow: var(--ci-card); animation: ci-rise .45s var(--ci-ease) both; transition: transform .2s var(--ci-spring); }
 div.ex__card { cursor: default; }
 .ex__card:hover { transform: translateY(-3px); }
 .ex__card:active { transform: scale(.98); }
 .ex__card::after, .ex__hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, .42)); pointer-events: none; }
-.ex__tag, .ex__verb { position: absolute; top: 9px; z-index: 2; font: 800 10px var(--ci-body); letter-spacing: .1em; text-transform: uppercase; border-radius: 999px; padding: 3px 8px; }
-.ex__tag { left: 10px; background: rgba(255, 255, 255, .9); color: var(--ci-ink); }
-.ex__verb { right: 10px; background: rgba(0, 0, 0, .25); color: #fff; }
-.ex__say { position: relative; z-index: 2; font: 800 14px/1.2 var(--ci-display); text-shadow: 0 1px 3px rgba(0, 0, 0, .35); }
+/* The two labels share a row that wraps on a narrow card instead of colliding. */
+.ex__top { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 4px; pointer-events: none; }
+.ex__tag, .ex__verb { font: 800 10px var(--ci-body); letter-spacing: .1em; text-transform: uppercase; border-radius: 999px; padding: 3px 8px; white-space: nowrap; }
+.ex__tag { background: rgba(255, 255, 255, .9); color: var(--ci-ink); }
+.ex__verb { background: rgba(0, 0, 0, .25); color: #fff; }
+/* In the flow, at the bottom: a long sentence makes the card taller, never overlaps the labels. */
+.ex__say { position: relative; z-index: 2; margin-top: auto; padding-top: 40px; font: 800 14px/1.2 var(--ci-display); text-shadow: 0 1px 3px rgba(0, 0, 0, .35); overflow-wrap: anywhere; }
 
 /* The little game: the bad thing falls, the treasure falls, the player bobs */
 .ex__stage { position: absolute; inset: 0; pointer-events: none; }
@@ -37,14 +40,13 @@ div.ex__card { cursor: default; }
 .ex__hero .ex__treasure { width: 46px !important; height: 46px !important; }
 .ex__hero .is-runner .ex__enemy { bottom: 30%; }
 .ex__hero .ex__shot { bottom: calc(30% + 80px); width: 7px; height: 26px; }
-.ex__hero .ex__tag, .ex__hero .ex__verb { top: 14px; font-size: 11px; padding: 4px 10px; }
-.ex__hero .ex__tag { left: 14px; }
-.ex__hero .ex__verb { right: 14px; }
+.ex__hero .ex__top { position: absolute; top: 14px; left: 14px; right: 14px; }
+.ex__hero .ex__tag, .ex__hero .ex__verb { font-size: 11px; padding: 4px 10px; }
 .ex__hero .ex__enemy, .ex__hero .ex__treasure { animation-name: ex-fall-big; }
 .ex__hero .is-runner .ex__enemy, .ex__hero .is-runner .ex__treasure { animation-name: ex-slide; }
 @keyframes ex-fall-big { from { transform: translateY(0) rotate(0); } to { transform: translateY(560px) rotate(200deg); } }
 .ex__herofoot { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 18px 20px 26px; display: grid; justify-items: start; gap: 8px; }
-.ex__herofoot .ex__say { font-size: clamp(18px, 2.2vw, 26px); animation: ci-rise .45s var(--ci-ease) both; }
+.ex__herofoot .ex__say { margin-top: 0; padding-top: 0; font-size: clamp(18px, 2.2vw, 26px); animation: ci-rise .45s var(--ci-ease) both; }
 .ex__herofoot small { font: 700 12px var(--ci-body); color: rgba(255, 255, 255, .8); }
 .ex__dots { position: absolute; right: 16px; bottom: 14px; z-index: 2; display: flex; gap: 4px; }
 .ex__dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, .4); transition: background .3s, transform .3s; }

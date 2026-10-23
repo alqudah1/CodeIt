@@ -61,8 +61,7 @@ export function ExampleCard({ ex, onPick, link = true, i = 0 }) {
   const props = { className: 'ex__card', style: { background: `linear-gradient(160deg, ${a}, ${b})`, animationDelay: `${i * 0.05}s` } };
   const inner = (
     <>
-      <span className="ex__tag">Example</span>
-      <span className="ex__verb">{VERB[ex.kind]}</span>
+      <span className="ex__top"><span className="ex__tag">Example</span><span className="ex__verb">{VERB[ex.kind]}</span></span>
       <Stage ex={ex} />
       <span className="ex__say">{ex.sentence}</span>
     </>
@@ -96,8 +95,7 @@ export function ExampleHero({ onPick, every = 4500 }) {
   const [a, b] = SKY[ex.sky] || SKY.day;
   return (
     <div className="ex__hero" style={{ background: `linear-gradient(160deg, ${a}, ${b})` }}>
-      <span className="ex__tag">Example</span>
-      <span className="ex__verb">{VERB[ex.kind]}</span>
+      <span className="ex__top"><span className="ex__tag">Example</span><span className="ex__verb">{VERB[ex.kind]}</span></span>
       <Stage key={ex.sentence} ex={ex} />
       <div className="ex__herofoot">
         <span className="ex__say" key={`s-${ex.sentence}`}>{ex.sentence}</span>

@@ -1,6 +1,9 @@
 /* ── Build page ─────────────────────────────────────────────────────────── */
 .bd { min-height: 100vh; background: var(--ci-cream); color: var(--ci-ink); font-family: var(--ci-body); font-weight: 700; }
-.bd__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 110px; display: grid; grid-template-columns: 1fr; gap: 24px; }
+.bd__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 110px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+/* A grid column grows to fit its widest content unless told not to; the
+   row of idea chips is meant to scroll inside itself, not widen the page. */
+.bd__left, .bd__right { min-width: 0; }
 .bd__seg { margin-top: 14px; max-width: 420px; }
 .bd__keys { display: flex; gap: 6px; margin: 14px 0 0; font-size: 12px; color: var(--ci-ink-soft); align-items: center; flex-wrap: wrap; }
 .bd__keys b { display: inline-block; border: 1px solid var(--ci-ink-line); border-radius: 6px; padding: 1px 7px; background: var(--ci-paper); font-size: 11px; }
@@ -27,7 +30,7 @@
 .bd__reels { display: flex; gap: 8px; margin-top: 12px; }
 .bd__reels span { flex: 1; background: var(--ci-ink); color: var(--ci-sun); border-radius: 12px; font: 800 12px/1.05 var(--ci-display); height: 44px; display: grid; place-items: center; text-align: center; padding: 0 4px; overflow: hidden; animation: bd-spin .9s var(--ci-ease) both; }
 @keyframes bd-spin { from { transform: translateY(-200%); } to { transform: none; } }
-.bd__tools { display: flex; gap: 8px; margin-top: 12px; }
+.bd__tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .bd__tool { flex: 1; appearance: none; background: var(--ci-paper); border: 1px solid var(--ci-ink-line); border-radius: 999px; height: 40px; padding: 0 10px; font: 800 13px var(--ci-body); color: var(--ci-ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; transition: transform .15s var(--ci-spring), background .15s; }
 .bd__tool:active { transform: scale(.97); background: var(--ci-quiet); }
 .bd__tool.is-rec { background: var(--ci-coral); color: #fff; border-color: var(--ci-coral); animation: ci-ping 1s infinite; }
@@ -103,7 +106,7 @@
 .bd__gohome:hover { color: #fff; }
 
 @media (min-width: 900px) {
-  .bd__main { grid-template-columns: 440px 1fr; gap: 40px; align-items: start; padding-top: 32px; }
+  .bd__main { grid-template-columns: 440px minmax(0, 1fr); gap: 40px; align-items: start; padding-top: 32px; }
   .bd__right { position: sticky; top: 92px; }
   .bd__frame { margin-top: 0; aspect-ratio: 16 / 10; }
   .bd__idea { font-size: 19px; height: 60px; }

@@ -108,6 +108,15 @@ test('a guest on /teach is asked to sign in and comes back here', () => {
   mount(<Teach />);
   expect(screen.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/login');
   expect(screen.getByText(/Make a class\. Read out the code\./)).toBeInTheDocument();
+  // What a class looks like, before signing in: an example board, the four
+  // steps, and the first six real lesson plans.
+  expect(screen.getByLabelText('Example of the projector board')).toHaveTextContent('ROCKET 42');
+  expect(document.querySelectorAll('.tl__board .ex__card')).toHaveLength(4);
+  expect(document.querySelectorAll('.tl__board a')).toHaveLength(0);
+  expect(document.querySelectorAll('.tl__step')).toHaveLength(4);
+  const plans = screen.getAllByRole('link').filter((a) => /^\/teach\/plans\//.test(a.getAttribute('href')));
+  expect(plans).toHaveLength(6);
+  expect(screen.getByRole('link', { name: 'All twelve' })).toHaveAttribute('href', '/teach/plans');
 });
 
 test('the board shows the code big, every child, and plays a published game on the stage', async () => {

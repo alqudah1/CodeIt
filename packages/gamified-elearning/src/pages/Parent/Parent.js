@@ -16,7 +16,11 @@ import { useSEO } from '../../hooks/useSEO';
 import { fetchBillingStatus, isPlusMember, openBillingPortal, startCheckout } from '../../utils/billing';
 import { reportFailure } from '../../utils/humanError';
 import Header from '../Header/Header';
+import { recipeGame } from '../Builder/recipeGame';
+import { localRecipe } from '../Build/recipeLocal';
+import { powerBySlug } from '../Powers/powers';
 import '../../ds/ds.css';
+import '../../ds/Examples.css';
 import './Parent.css';
 
 /** The headline, from the week's count and the child's name. */
@@ -88,11 +92,7 @@ export default function Parent() {
     try { await (plus ? openBillingPortal(token) : startCheckout(token)); } catch (err) { setNote(reportFailure('parent/billing', err, 'Could not open the billing page. Try the pricing page.')); } finally { setBusy(false); }
   };
 
-  if (!user || !token) {
-    return (
-      <div className="pa"><Header /><main className="pa__main"><div className="ci-blk ci-blk--paper pa__card"><div className="ci-ey">For parents</div><h1 className="ci-h1">What your child made this week, in one page.</h1><p className="ci-sub">Sign in with the adult account that your child's profile is linked to.</p><Link className="ci-btn ci-btn--ink" to="/login" state={{ from: '/parent' }}>Sign in</Link> <Link className="ci-btn ci-btn--paper" to="/register" state={{ from: '/parent' }}>Make an account</Link></div></main></div>
-    );
-  }
+  if (!user || !token) return <ParentWelcome />;
   if (isStudent) {
     return (
       <div className="pa"><Header /><main className="pa__main"><div className="ci-blk ci-blk--paper pa__card"><h1 className="ci-h1">This page is for grown-ups.</h1><p className="ci-sub">Your own week is on <Link to="/home">Home</Link> and <Link to="/profile">Me</Link>.</p></div></main></div>
@@ -177,6 +177,64 @@ export default function Parent() {
             </div>
           </>
         )}
+      </main>
+    </div>
+  );
+}
+
+// ── Signed out: what a week looks like ──────────────────────────────────────
+//
+// A parent deciding whether to sign in sees the page they would get, built
+// from real parts: a real game from the engine, real power names, the real
+// price. It is flagged as an example in two places, and it names no child.
+export const EXAMPLE_SENTENCE = 'a bunny that catches carrots at night';
+const EXAMPLE_POWERS = ['numbers', 'loops'].map((slug) => powerBySlug(slug));
+const EXAMPLE_NEXT = powerBySlug('words');
+
+function ParentWelcome() {
+  const exampleGame = useMemo(() => recipeGame(localRecipe(EXAMPLE_SENTENCE)), []);
+  return (
+    <div className="pa">
+      <Header />
+      <main className="pa__main">
+        <div className="ci-ey">For parents</div>
+        <h1 className="ci-h1 pa__h1">What your child made this week, in one page.</h1>
+        <div className="pa__grid">
+          <section className="pa__left">
+            <div className="ci-blk ci-blk--paper pa__made pa__example ci-rise">
+              <div className="pa__exhead"><span className="ex__tag pa__extag">Example week</span><span className="pa__exnote">Yours shows your own child&apos;s games, words and powers.</span></div>
+              <div className="ci-ey">Made</div>
+              <div className="ci-frame pa__frame is-lit"><iframe title="Example game" srcDoc={exampleGame} sandbox="allow-scripts" /></div>
+              <h2 className="pa__title">Bunny Game</h2>
+              <p className="pa__prompt">They typed: <q>{EXAMPLE_SENTENCE}</q></p>
+            </div>
+            <div className="ci-blk ci-blk--mint pa__learned ci-rise" style={{ animationDelay: '.05s' }}>
+              <div className="ci-ey">Learned, in plain words</div>
+              <ul>{EXAMPLE_POWERS.map((p) => <li key={p.slug}>{p.name}: {p.does}</li>)}</ul>
+              <p className="pa__next">Next: <b>{EXAMPLE_NEXT.name}</b>, {EXAMPLE_NEXT.does}.</p>
+            </div>
+          </section>
+          <aside className="pa__right">
+            <div className="ci-blk ci-blk--ink pa__price ci-rise" style={{ animationDelay: '.08s' }}>
+              <div className="ci-ey">See your child&apos;s week</div>
+              <div className="pa__big pa__big--sm">Sign in with the adult account</div>
+              <p>The one your child&apos;s profile is linked to. The same page comes to your inbox each week if you turn the email on.</p>
+              <div className="pa__btns">
+                <Link className="ci-btn ci-btn--paper" to="/login" state={{ from: '/parent' }}>Sign in</Link>
+                <Link className="ci-btn pa__btnline" to="/register" state={{ from: '/parent' }}>Make an account</Link>
+              </div>
+            </div>
+            <div className="pa__promises">
+              {[
+                ['Nothing is sold to your child', 'Not inside the app, not ever. Plans are for grown-ups, on a page children do not see.'],
+                ['Games, not minutes', 'You see what they made and the words they typed, not how long a screen was on.'],
+                ['Free stays free', `Lessons, the playground and saving never go behind a plan. Plus is ${PRICE_PER_INTERVAL} if you want more.`],
+              ].map(([head, text]) => (
+                <div key={head} className="pa__row pa__promise"><span><b>{head}</b><small>{text}</small></span></div>
+              ))}
+            </div>
+          </aside>
+        </div>
       </main>
     </div>
   );

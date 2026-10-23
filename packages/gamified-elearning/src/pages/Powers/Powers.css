@@ -18,7 +18,9 @@ a.pw__blk:active { transform: scale(.98); }
 .pw__cta { margin-top: 18px; }
 
 /* The lesson */
-.pw__lesson { max-width: 1180px; margin: 0 auto; padding: 20px 20px 110px; display: grid; grid-template-columns: 1fr; gap: 18px; }
+.pw__lesson { max-width: 1180px; margin: 0 auto; padding: 20px 20px 110px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+/* The code lines never wrap; they scroll inside their own box, never widen the page. */
+.pw__left, .pw__right { min-width: 0; }
 .pw__top { display: flex; align-items: center; gap: 12px; }
 .pw__back { text-decoration: none; color: var(--ci-ink-soft); white-space: nowrap; }
 .pw__track { flex: 1; height: 6px; border-radius: 3px; background: rgba(53, 34, 14, .12); overflow: hidden; }
@@ -58,7 +60,7 @@ a.pw__blk:active { transform: scale(.98); }
   .pw__grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
   .pw__blk { min-height: 124px; padding: 18px 20px; }
   .pw__name { font-size: 26px; }
-  .pw__lesson { grid-template-columns: 1.05fr .95fr; gap: 36px; align-items: start; padding: 28px 40px 60px; }
+  .pw__lesson { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 36px; align-items: start; padding: 28px 40px 60px; }
   .pw__right { position: sticky; top: 90px; }
   .pw__h1 { font-size: 38px; }
 }

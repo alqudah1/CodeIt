@@ -1,5 +1,6 @@
 .kh { min-height: 100vh; background: var(--ci-cream); color: var(--ci-ink); font-family: var(--ci-body); font-weight: 700; }
-.kh__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 110px; display: grid; grid-template-columns: 1fr; gap: 8px; }
+.kh__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 110px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.kh__left, .kh__right { min-width: 0; }
 .kh__quest { margin-top: 20px; min-height: 184px; padding-right: 128px; }
 .kh__quest.is-done { background: var(--ci-mint); color: #fff; }
 .kh__quest.is-done .kh__qey { color: rgba(255, 255, 255, .8); }
@@ -33,7 +34,7 @@
 .kh__ic--sun { background: rgba(255, 201, 60, .4); color: var(--ci-ink); font-size: 20px; }
 .kh__chev { margin-left: auto; color: var(--ci-orange); font: 800 22px var(--ci-display); }
 @media (min-width: 900px) {
-  .kh__main { grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: start; padding: 32px 40px 60px; }
+  .kh__main { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 36px; align-items: start; padding: 32px 40px 60px; }
   .kh__right { padding-top: 60px; }
   .kh__quest { min-height: 220px; padding: 28px; padding-right: 200px; }
   .kh__qtitle { font-size: 32px; }
