@@ -16,6 +16,7 @@ import {
   openBillingPortal,
   startCheckout,
 } from '../../utils/billing';
+import '../../ds/ds.css';
 import './Pricing.css';
 import COMPANY from '../../config/company';
 

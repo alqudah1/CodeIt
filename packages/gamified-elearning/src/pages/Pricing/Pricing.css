@@ -140,33 +140,58 @@
   color: rgba(26, 26, 26, 0.62);
 }
 
-/* ── The Paper Arcade, pricing chapter (see styles/arcade.css) ── */
-.pricing-hero h1, .pricing-card h2, .pricing-price strong {
-  font-family: var(--font-display);
-  color: var(--ink);
-}
-.pricing-price strong { color: var(--arc-orange-down); }
-.pricing-card { border: 2px solid var(--ink-line); box-shadow: var(--pop-card); background: var(--paper); }
-.pricing-card--founding, .pricing-card--plus { border: 2.5px solid var(--ink); }
-.pricing-button {
-  border: 2.5px solid var(--ink);
-  box-shadow: var(--pop-rest);
-  font-family: var(--font-display);
-  font-weight: 700;
-  transition: transform 0.09s ease, box-shadow 0.09s ease;
-}
-.pricing-button:hover { transform: translateY(-2px); box-shadow: var(--pop-lift); }
-.pricing-button:active { transform: translateY(3px); box-shadow: var(--pop-down); }
-.pricing-button--primary { background: var(--arc-orange); color: var(--ink); }
-.pricing-button--quiet { background: var(--paper); color: var(--ink); }
+/* ── Bold Blocks, pricing chapter: three blocks, one each ───────────────────
+   Free is paper, Plus is sun, the pilot is ink. Tokens from ds.css. */
+.pricing-page { background: var(--ci-cream); color: var(--ci-ink); font-family: var(--ci-body); }
+.pricing-hero h1, .pricing-card h2, .pricing-price strong, .pricing-principles h2, .pricing-faq h2 { font-family: var(--ci-display); color: inherit; }
+.pricing-hero h1 { font-size: clamp(2rem, 4.6vw, 3rem); letter-spacing: -.01em; }
+.pricing-status { border: 0; background: rgba(23, 192, 139, .16); color: #0F7A58; }
+.pricing-status span { background: var(--ci-mint); box-shadow: 0 0 0 0 rgba(23,192,139,.6); animation: ci-ping 1.6s infinite; }
+.pricing-plans { gap: 14px; }
+.pricing-card { border: 0; border-radius: var(--ci-r); background: var(--ci-paper); box-shadow: var(--ci-card); padding: 26px 26px 28px; }
+.pricing-card--plus { background: var(--ci-sun); color: var(--ci-ink); box-shadow: var(--ci-card-lg); }
+.pricing-card--founding { background: var(--ci-ink); color: #FFF6ED; border: 0; box-shadow: var(--ci-card-lg); }
+.pricing-card--founding:target { box-shadow: var(--ci-card-lg), 0 0 0 5px rgba(255, 122, 0, .3); }
+.pricing-card__flag { background: rgba(53, 34, 14, .12); color: inherit; }
+.pricing-card--founding .pricing-card__flag { background: var(--ci-sun); color: var(--ci-ink); }
+.pricing-card__eyebrow { color: inherit; opacity: .65; letter-spacing: .12em; }
+.pricing-card h2 { font-size: clamp(1.7rem, 3.4vw, 2.3rem); }
+.pricing-price { flex-wrap: wrap; }
+.pricing-price strong { color: inherit; font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1; white-space: nowrap; }
+.pricing-price span, .pricing-card__summary, .pricing-card li, .pricing-card small, .pricing-card__note { color: inherit; }
+.pricing-card__summary, .pricing-card li { opacity: .9; }
+.pricing-card li::before { color: inherit; opacity: .85; }
+.pricing-card--founding .pricing-next { background: rgba(255, 246, 237, .08); border-color: rgba(255, 246, 237, .18); }
+.pricing-card--founding .pricing-next strong, .pricing-card--founding .pricing-next li { color: #FFF6ED; }
+.pricing-card--founding .pricing-waitlist > label:first-child, .pricing-card--founding .pricing-waitlist__consent { color: #FFF6ED; }
+.pricing-card--founding .pricing-waitlist > input { background: #FFF6ED; color: var(--ci-ink); border: 0; }
+.pricing-button { border: 0; border-radius: 999px; min-height: 52px; font: 800 15px var(--ci-body); box-shadow: none; transition: transform .2s var(--ci-spring), background .15s; }
+.pricing-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: none; }
+.pricing-button:active { transform: scale(.98); box-shadow: none; }
+.pricing-button--primary { background: var(--ci-ink); color: var(--ci-sun); }
+.pricing-button--primary:hover:not(:disabled) { background: #22150a; }
+.pricing-card--founding .pricing-button--primary { background: var(--ci-orange); color: #fff; }
+.pricing-card--founding .pricing-button--primary:hover:not(:disabled) { background: var(--ci-orange-down); }
+.pricing-button--quiet { background: var(--ci-quiet); color: var(--ci-ink); border: 1px solid var(--ci-ink-line); }
+.pricing-button--email { background: rgba(255, 246, 237, .1); color: #FFF6ED; border: 1px solid rgba(255, 246, 237, .25); }
+.pricing-button--email:hover { background: rgba(255, 246, 237, .18); box-shadow: none; }
+.pricing-plan-state { background: rgba(53, 34, 14, .1); border: 0; color: inherit; }
+.pricing-thanks { border: 0; background: var(--ci-mint); color: #fff; }
+.pricing-thanks strong, .pricing-thanks p, .pricing-thanks a { color: #fff; }
+.pricing-principles article { border-top: 2px solid var(--ci-ink-line); }
+.pricing-principles article p, .pricing-faq details p, .pricing-evidence__intro p:not(.pricing-kicker) { color: var(--ci-ink-soft); }
+.pricing-faq > div, .pricing-faq details { border-color: var(--ci-ink-line); }
+.pricing-kicker, .pricing-hero__pilot-link { color: var(--ci-orange-down); }
+.pricing-hero__pilot-link { background: var(--ci-ink); color: var(--ci-sun); border-radius: 999px; box-shadow: none; }
+.pricing-hero__pilot-link:hover { background: #22150a; }
 
 /* ── The example monthly email — the promise, given a shape ── */
 .pricing-evidence { margin-top: 3.5rem; }
 .pricing-evidence__intro { max-width: 640px; margin: 0 auto 1.5rem; text-align: center; }
 .pricing-evidence__intro h2 {
   margin: 0 0 .8rem;
-  font-family: var(--font-display);
-  color: var(--ink);
+  font-family: var(--ci-display);
+  color: var(--ci-ink);
   font-size: clamp(1.45rem, 3.2vw, 2.1rem);
   line-height: 1.18;
 }
@@ -175,34 +200,33 @@
 .pricing-email {
   max-width: 640px;
   margin: 0 auto;
-  border: 2.5px solid var(--ink);
-  border-radius: 18px;
-  background: var(--paper);
-  box-shadow: var(--pop-card);
+  border: 0;
+  border-radius: var(--ci-r);
+  background: var(--ci-paper);
+  box-shadow: var(--ci-card);
   overflow: hidden;
 }
 .pricing-email__flag {
   padding: .55rem .9rem;
-  background: var(--arc-sun);
-  border-bottom: 2.5px solid var(--ink);
-  color: var(--ink);
+  background: var(--ci-sun);
+  color: var(--ci-ink);
   font-size: 0.8125rem;
   font-weight: 800;
   line-height: 1.4;
 }
 .pricing-email__subject {
   padding: .8rem .9rem;
-  border-bottom: 2px dashed var(--ink-line);
-  color: var(--ink);
+  border-bottom: 1px dashed var(--ci-ink-line);
+  color: var(--ci-ink);
   font-weight: 800;
 }
-.pricing-email__subject span { color: var(--ink-mute); font-weight: 700; margin-right: .35rem; }
+.pricing-email__subject span { color: var(--ci-ink-soft); font-weight: 700; margin-right: .35rem; }
 .pricing-email__body { padding: 1rem .9rem 1.2rem; color: #513b2e; line-height: 1.6; }
 .pricing-email__body p { margin: 0 0 .85rem; }
 .pricing-email__body pre {
   margin: 0 0 .85rem;
   padding: .8rem .9rem;
-  border: 2px solid var(--ink-line);
+  border: 0;
   border-radius: 12px;
   background: #35220E;
   color: #FFE9C9;
@@ -219,6 +243,5 @@
   line-height: 1.5;
 }
 
-.pricing-kicker { color: var(--arc-orange-text); }
 /* The 01 / 02 / 03 principle numerals were decorative grey at 3:1. */
-.pricing-principles article > span, .pricing-principle > span { color: var(--ink-mute); }
+.pricing-principles article > span, .pricing-principle > span { color: var(--ci-ink-soft); }
