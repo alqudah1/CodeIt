@@ -1,0 +1,10 @@
+.pg { min-height: 100vh; display: grid; place-items: start center; padding: 40px 20px 110px; background: var(--ci-cream); color: var(--ci-ink); font-family: var(--ci-body); font-weight: 700; }
+.pg__card { width: 100%; max-width: 480px; padding: 28px 26px; }
+.pg__title { font-size: 30px; margin: 8px 0 8px; }
+.pg__year { width: 100%; box-sizing: border-box; margin-top: 16px; border: 2px solid var(--ci-ink-line); border-radius: 16px; background: var(--ci-paper); color: var(--ci-ink); font: 800 34px var(--ci-display); letter-spacing: .12em; text-align: center; padding: 10px 16px; outline: none; }
+.pg__year:focus { border-color: var(--ci-orange); box-shadow: 0 0 0 4px rgba(255, 122, 0, .18); }
+.pg__no { margin: 12px 0 0; color: #C8362B; font-weight: 800; }
+.pg__btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.pg .is-shake { animation: pg-shake .45s cubic-bezier(.36, .07, .19, .97) both; }
+@keyframes pg-shake { 10%, 90% { transform: translateX(-2px); } 20%, 80% { transform: translateX(4px); } 30%, 50%, 70% { transform: translateX(-6px); } 40%, 60% { transform: translateX(6px); } }
+@media (prefers-reduced-motion: reduce) { .pg .is-shake { animation: none; } }

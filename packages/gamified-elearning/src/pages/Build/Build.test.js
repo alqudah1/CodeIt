@@ -11,7 +11,7 @@ import Build from './Build';
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   const React = require('react');
-  return { useNavigate: () => mockNavigate, useLocation: () => ({ search: '' }), NavLink: ({ children, to }) => React.createElement('a', { href: to }, children) };
+  return { Link: ({ children, to }) => React.createElement('a', { href: to }, children), useNavigate: () => mockNavigate, useLocation: () => ({ search: '' }), NavLink: ({ children, to }) => React.createElement('a', { href: to }, children) };
 }, { virtual: true });
 jest.mock('../Header/Header', () => () => null);
 jest.mock('../../config/api', () => ({ API_BASE_URL: 'http://codeit.test' }));
@@ -62,6 +62,7 @@ test('a website is not a game: no error, a sentence that keeps the child\'s word
   fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
   expect(await screen.findByText(/That sounds like a website, not a game/)).toBeInTheDocument();
   expect(screen.getByRole('button', { name: 'a dog that catches stars' })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'open the studio with your idea' })).toHaveAttribute('href', '/builder?prompt=a%20website%20about%20dogs');
   expect(global.fetch).not.toHaveBeenCalled();
   expect(document.body.textContent).not.toMatch(/error/i);
 });

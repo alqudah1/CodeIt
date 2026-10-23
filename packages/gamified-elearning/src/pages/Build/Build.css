@@ -19,6 +19,8 @@
 .bd__go { position: absolute; right: 10px; bottom: 10px; height: 38px; padding: 0 18px; font-size: 14px; }
 .bd__notgame { margin-top: 12px; background: rgba(255, 107, 107, .1); border: 1px solid rgba(255, 107, 107, .35); border-radius: var(--ci-r-sm); padding: 12px 14px; font-size: 14px; }
 .bd__notgame .ci-chip { border-color: var(--ci-coral); }
+.bd__notgame small { display: block; margin-top: 10px; color: var(--ci-ink-soft); }
+.bd__notgame small a { color: var(--ci-orange-down); }
 .bd__chips { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
 .bd__chips--scroll { flex-wrap: nowrap; overflow-x: auto; margin-left: -20px; margin-right: -20px; padding: 0 20px 4px; scrollbar-width: none; }
 .bd__chips--scroll::-webkit-scrollbar { display: none; }

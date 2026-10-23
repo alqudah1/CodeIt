@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import Profile from './Profile';
+import { isGrownUpYear } from './ParentGate';
 
 // ── Me ──────────────────────────────────────────────────────────────────────
 //
@@ -42,7 +43,7 @@ function serve(today, understanding = []) {
   });
 }
 
-beforeEach(() => { localStorage.clear(); mockLogout.mockClear(); window.history.pushState({}, '', '/profile'); });
+beforeEach(() => { localStorage.clear(); sessionStorage.clear(); mockLogout.mockClear(); window.history.pushState({}, '', '/profile'); });
 
 test('a child sees the numbers, the powers with the next lit, the medals, and the games', async () => {
   serve({ signedIn: true, streak: 4, level: { n: 4, title: 'Game Designer', xp: 420, next: 600, toNext: 180 }, games: [{ id: 7, title: 'Carrot Rain', plays: 7, publicId: 'p7' }, { id: 8, title: 'Star Dodge', plays: 0, publicId: null }], plays: 7 },
@@ -87,11 +88,32 @@ test('a fresh account shows zeros and the honest empty states, never a made-up n
 test('an adult still gets the family page, and a child gets it behind Settings', async () => {
   mockUser = { user_id: 9, name: 'Mr Q', role: 'Educator' };
   serve({});
-  render(<Profile />);
+  const adult = render(<Profile />);
   await waitFor(() => expect(document.querySelector('.profile-page')).not.toBeNull());
   expect(document.querySelector('.me')).toBeNull();
+  adult.unmount();
   mockUser = { user_id: 8, name: 'Maya Q', username: 'maya', role: 'Student' };
   window.history.pushState({}, '', '/profile?settings=1');
   const { container } = render(<Profile />);
+  // The gate first: a child's year is refused, a grown-up's opens the page for this tab.
+  expect(await screen.findByText('What year were you born?')).toBeInTheDocument();
+  const year = screen.getByLabelText('The year you were born');
+  fireEvent.change(year, { target: { value: String(new Date().getFullYear() - 9) } });
+  fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+  expect(screen.getByRole('alert')).toHaveTextContent('Not a grown-up year.');
+  expect(container.querySelector('.profile-page')).toBeNull();
+  fireEvent.change(year, { target: { value: '1985' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
   await waitFor(() => expect(container.querySelector('.profile-page')).not.toBeNull());
+  expect(sessionStorage.getItem('codeit.gate.v1')).toBe('1');
+});
+
+test('a grown-up year is 18 to 100 years ago, nothing else', () => {
+  const y = new Date().getFullYear();
+  expect(isGrownUpYear(String(y - 18))).toBe(true);
+  expect(isGrownUpYear(String(y - 45))).toBe(true);
+  expect(isGrownUpYear(String(y - 17))).toBe(false);
+  expect(isGrownUpYear(String(y - 101))).toBe(false);
+  expect(isGrownUpYear('abcd')).toBe(false);
+  expect(isGrownUpYear('')).toBe(false);
 });

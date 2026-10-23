@@ -58,6 +58,7 @@ describe('parent progress availability', () => {
     window.location.hash = '';
     // A child's /profile is Me; these tests are about the page behind its Settings chip.
     window.history.pushState({}, '', '/profile?settings=1');
+    sessionStorage.setItem('codeit.gate.v1', '1'); // a grown-up already answered the gate
     trackEvent.mockClear();
     global.fetch = jest.fn((url, options = {}) => {
       const requestUrl = String(url);

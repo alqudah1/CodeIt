@@ -18,7 +18,7 @@
 // the sentence with no network. A child never sees the word error.
 
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Header from '../Header/Header';
 import TabBar from '../../ds/TabBar';
 import { API_BASE_URL } from '../../config/api';
@@ -344,6 +344,7 @@ export default function Build() {
                 <div className="bd__notgame ci-rise" role="status">
                   <b>That sounds like a website, not a game.</b> Try a game you would play:
                   <div className="bd__chips">{notGame.tries.map((t) => <button key={t} type="button" className="ci-chip" onClick={() => { onIdea(t); build(t); }}>{t}</button>)}</div>
+                  <small>Or make it as a website: <Link to={`/builder?prompt=${encodeURIComponent(idea.trim())}`}>open the studio with your idea</Link>.</small>
                 </div>
               )}
               {reels && (

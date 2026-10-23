@@ -16,6 +16,7 @@ import { getXpProgress, getLevelTitle } from '../../data/unlocks';
 import { openedRewards, whoAmI } from '../../utils/chests';
 import { MEDALS, medalsFrom } from './medals';
 import Me from './Me';
+import ParentGate, { gateOpen } from './ParentGate';
 import './Profile.css';
 
 // Levels come from data/unlocks.js, and only from there. This file used to
@@ -34,6 +35,7 @@ export default function Profile() {
   const { character, stats }     = useCharacter();
   const navigate                 = useNavigate();
   const [projectCount, setProjectCount] = useState(null);
+  const [gatePassed, setGatePassed] = useState(false);
   // The trophy wall: sentences the server wrote when this kid explained code
   // in their own projects. Real records only — an empty wall stays empty.
   const [trophies, setTrophies] = useState([]);
@@ -404,6 +406,10 @@ export default function Profile() {
   // with parent updates and the medal case, is behind its Settings chip.
   if (String(user.role).toLowerCase() === 'student' && !/[?&]settings=1/.test(window.location.search)) {
     return <Me user={user} token={token} trophies={trophies} projectCount={projectCount} logout={logout} />;
+  }
+  // The settings page, for a child, is behind the parent gate for this tab.
+  if (String(user.role).toLowerCase() === 'student' && !gateOpen(sessionStorage) && !gatePassed) {
+    return <><Header /><ParentGate onPass={() => setGatePassed(true)} /><TabBar /></>;
   }
 
   return (
