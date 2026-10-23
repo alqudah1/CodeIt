@@ -77,7 +77,7 @@ describe('builder authentication return', () => {
     expect(screen.getByRole('heading', { name: 'Sign in to your account' })).toBeInTheDocument();
   });
 
-  test('a returning student with no requested action lands on progress', async () => {
+  test('a returning student with no requested action lands on Home', async () => {
     mockLocationState.from = '/';
     delete mockLocationState.resumeBuilderAction;
     axios.post.mockResolvedValueOnce({
@@ -89,7 +89,7 @@ describe('builder authentication return', () => {
     fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'test-password' } });
     fireEvent.click(screen.getByRole('button', { name: 'Sign In' }));
 
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/MainPage', {
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/home', {
       replace: true,
       state: null,
     }));

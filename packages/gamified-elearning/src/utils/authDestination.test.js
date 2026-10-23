@@ -2,7 +2,7 @@ import { defaultAuthDestination, resolveAuthDestination } from './authDestinatio
 
 describe('authentication destinations', () => {
   test('sends learners to progress, adults to family setup, and admins to admin', () => {
-    expect(defaultAuthDestination('Student')).toBe('/MainPage');
+    expect(defaultAuthDestination('Student')).toBe('/home');
     expect(defaultAuthDestination('Student', { newAccount: true })).toBe('/builder?welcome=1');
     expect(defaultAuthDestination('Educator', { newAccount: true })).toBe('/profile#family-controls');
     expect(defaultAuthDestination('Educator')).toBe('/profile');
@@ -15,7 +15,7 @@ describe('authentication destinations', () => {
   });
 
   test('rejects external and malformed return paths', () => {
-    expect(resolveAuthDestination('//example.com', 'Student')).toBe('/MainPage');
+    expect(resolveAuthDestination('//example.com', 'Student')).toBe('/home');
     expect(resolveAuthDestination('https://example.com', 'Educator')).toBe('/profile');
     expect(resolveAuthDestination(null, 'Educator', { newAccount: true })).toBe('/profile#family-controls');
   });

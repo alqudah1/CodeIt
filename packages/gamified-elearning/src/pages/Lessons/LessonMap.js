@@ -217,7 +217,7 @@ const LessonMap = () => {
       <div className="lm-container">
         <div className="lm-header">
           <div className="lm-header__top">
-            <button className="lm-back-btn" onClick={() => navigate('/MainPage')}>
+            <button className="lm-back-btn" onClick={() => navigate('/home')}>
               ← Back
             </button>
             <h1 className="lm-title">Lessons</h1>

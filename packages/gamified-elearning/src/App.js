@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
@@ -18,7 +18,6 @@ import AcquisitionTracker from './components/AcquisitionTracker/AcquisitionTrack
 import ActivityTracker from './components/ActivityTracker/ActivityTracker';
 
 // ── Lazy-loaded routes ────────────────────────────────────────────
-const MainPage       = lazy(() => import('./pages/MainPage/MainPage'));
 const LessonMap      = lazy(() => import('./pages/Lessons/LessonMap'));
 // The child's shell (28 September 2026): one living screen, no site header.
 const Arcade         = lazy(() => import('./arcade/Arcade'));
@@ -43,7 +42,6 @@ const JourneyPath   = lazy(() => import('./pages/Journey/JourneyPath'));
 const JourneyPuzzle = lazy(() => import('./pages/Journey/JourneyPuzzle'));
 
 const CharacterLab  = lazy(() => import('./pages/CharacterLab/CharacterLab'));
-const Leaderboard   = lazy(() => import('./pages/Leaderboard'));
 const Playground    = lazy(() => import('./pages/Playground/Playground'));
 const Builder       = lazy(() => import('./pages/Builder/Builder'));
 const Build         = lazy(() => import('./pages/Build/Build'));
@@ -153,7 +151,8 @@ const App = () => (
               <Route path="/parent-review" element={<ParentReview />} />
 
               {/* ── Dashboard ── */}
-              <Route path="/MainPage" element={<MainPage />} />
+              {/* The old progress page is Home now; the leaderboard is the Arcade. Old links keep working. */}
+              <Route path="/MainPage" element={<Navigate to="/home" replace />} />
 
               {/* ── Lessons ── */}
               <Route path="/play"       element={<Arcade />} />
@@ -191,7 +190,7 @@ const App = () => (
 
               {/* ── Character & Social ── */}
               <Route path="/character"   element={<CharacterLab />} />
-              <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/leaderboard" element={<Navigate to="/arcade" replace />} />
 
               {/* ── Playground ── */}
               <Route path="/playground" element={<Playground />} />

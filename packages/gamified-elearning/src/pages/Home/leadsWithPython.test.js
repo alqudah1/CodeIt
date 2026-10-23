@@ -72,7 +72,7 @@ describe('the home page leads with the part that has no AI in it', () => {
     expect(screen.getByText(/Welcome back, David/)).toBeInTheDocument();
     expect(screen.queryByText(/Write your first Python program/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Make a character\. It becomes the player/)).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'My progress' })).toHaveAttribute('href', '/MainPage');
+    expect(screen.getByRole('link', { name: 'My progress' })).toHaveAttribute('href', '/home');
     expect(screen.getByRole('link', { name: 'Next lesson' })).toHaveAttribute('href', '/lessons');
   });
 

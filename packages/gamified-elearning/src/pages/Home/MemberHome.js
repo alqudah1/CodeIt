@@ -137,7 +137,7 @@ export default function MemberHome({ user, token, shelf, latestProject }) {
                 </Link>
               )}
               <Link to="/lessons" className="studio-hero__textlink">Next lesson</Link>
-              <Link to="/MainPage" className="studio-hero__textlink" data-cta="member-progress">My progress</Link>
+              <Link to="/home" className="studio-hero__textlink" data-cta="member-progress">My progress</Link>
             </div>
           </section>
 

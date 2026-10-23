@@ -61,11 +61,22 @@ const MEMBER_NAV = [
   { to: "/lessons", label: "Lessons" },
 ];
 
+// A child's bar: Home, Arcade, Powers, and the Python lessons, which are a
+// different activity and stay where they were. Build is not here, because
+// the big key beside the avatar already goes there: one control, one
+// destination.
+const CHILD_NAV = [
+  { to: "/home", label: "Home" },
+  { to: "/arcade", label: "Arcade" },
+  { to: "/powers", label: "Powers" },
+  { to: "/lessons", label: "Lessons" },
+];
+
 // Reached from the account menu rather than the top bar. Nothing here became
 // unreachable; it became reachable from the place a person looks for it.
 const MEMBER_ACCOUNT_NAV = [
-  { to: "/MainPage", label: "My progress" },
-  { to: "/leaderboard", label: "Compete" },
+  { to: "/home", label: "My progress" },
+  { to: "/arcade", label: "Compete" },
   { to: "/character", label: "My avatar" },
   { to: "/playground", label: "Python playground" },
   { to: "/pricing", label: "Plan", adultsOnly: true },
@@ -87,7 +98,8 @@ export default function Header() {
   // CodeIt does not sell to children, so a managed child profile never sees
   // the plan link. The page itself refuses them too; this just avoids
   // dangling a price in front of a nine-year-old.
-  const navLinks = (user ? MEMBER_NAV : PUBLIC_NAV)
+  const isChild = Boolean(user) && String(user.role || "").toLowerCase() === "student";
+  const navLinks = (user ? (isChild ? CHILD_NAV : MEMBER_NAV) : PUBLIC_NAV)
     .filter(link => !link.adultsOnly || !user?.managedProfile);
 
   // The first family to pay said it took too many buttons, and they were

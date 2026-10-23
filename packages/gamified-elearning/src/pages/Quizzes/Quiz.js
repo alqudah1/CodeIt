@@ -460,12 +460,12 @@ export default function Quiz() {
                 >
                   Build {studioPrompt}
                 </button>
-                <button className="qz-btn-forward qz-btn-forward--quiet" onClick={() => navigate("/MainPage")}>
+                <button className="qz-btn-forward qz-btn-forward--quiet" onClick={() => navigate("/home")}>
                   Back to your progress
                 </button>
               </>
             ) : (
-              <button className="qz-btn-forward" onClick={() => navigate("/MainPage")}>
+              <button className="qz-btn-forward" onClick={() => navigate("/home")}>
                 Back to your progress
               </button>
             )}

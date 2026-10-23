@@ -79,7 +79,7 @@ const Leaderboard = () => {
 
         {/* ── Page header ─────────────────────────────────── */}
         <div className="lb-header">
-          <button className="lb-back-btn" onClick={() => navigate('/MainPage')}>
+          <button className="lb-back-btn" onClick={() => navigate('/home')}>
             ← Back to your progress
           </button>
           <h1 className="lb-title"><Icon name="trophy" size={28} /> Leaderboard</h1>
