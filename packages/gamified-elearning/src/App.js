@@ -204,6 +204,7 @@ const App = () => (
               <Route path="/teach/plans"       element={<Plans />} />
               <Route path="/teach/plans/:slug" element={<Plans />} />
               <Route path="/teach/:code"       element={<Teach />} />
+              <Route path="/teach/:code/:kid"  element={<Teach />} />
               <Route path="/arcade"            element={<ArcadeBoard />} />
               <Route path="/parent"            element={<ParentWeek />} />
               <Route path="/powers"            element={<PowersMap />} />

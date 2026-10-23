@@ -34,6 +34,16 @@ async function fakeQuery(sql, params = []) {
     const ids = state.members.filter((mm) => mm.class_id === params[0]).map((mm) => mm.user_id);
     return [state.projects.filter((p) => ids.includes(p.user_id) && p.is_public === 1 && p.public_id).sort((a, b) => b.view_count - a.view_count).map((p) => ({ ...p, like_count: 0, name: state.users.find((u) => u.user_id === p.user_id).name }))];
   }
+  if (/^SELECT m.user_id, u.name, m.joined_at FROM class_members m JOIN Users u/.test(s)) {
+    const mm = state.members.find((x) => x.class_id === params[0] && x.user_id === params[1]);
+    return [mm ? [{ user_id: mm.user_id, name: state.users.find((u) => u.user_id === mm.user_id).name, joined_at: mm.joined_at }] : []];
+  }
+  if (/^SELECT id, title, prompt, public_id, is_public, project_type, view_count, created_at FROM ai_projects WHERE user_id = \?/.test(s)) {
+    return [state.projects.filter((p) => p.user_id === params[0]).sort((a, b) => b.created_at - a.created_at)];
+  }
+  if (/^SELECT lesson_id FROM Student_Lesson_Progress/.test(s)) {
+    return [(state.progress || []).filter((r) => r.user_id === params[0] && r.lesson_id > params[1] && r.lesson_id <= params[2])];
+  }
   if (/^SELECT id, code, name, owner_id, created_at FROM classes WHERE code = \?/.test(s)) {
     return [state.classes.filter((c) => c.code === params[0])];
   }
@@ -221,6 +231,22 @@ test('a child sees the class they joined, and the class arcade ranks the room\'s
   assert.equal((await call('GET', '/api/class/ZZZZ22/arcade')).status, 404);
 });
 
+test('a teacher sees one child\'s sentences, games and powers; nobody else does', async () => {
+  state.projects.find((p) => p.title === 'Ship Game').prompt = 'a ship that shoots asteroids';
+  state.progress = [{ user_id: state.maya, lesson_id: 101 }, { user_id: state.maya, lesson_id: 108 }];
+  const page = await call('GET', `/api/class/${state.code}/student/${state.maya}`, null, teacherToken);
+  assert.equal(page.status, 200);
+  assert.equal(page.body.student.name, 'Maya');
+  assert.deepEqual(page.body.games.map((g) => [g.title, g.prompt, g.publicId]), [['Ship Game', 'a ship that shoots asteroids', null], ['Old One', '', 'oldpub']]);
+  assert.deepEqual(page.body.done, ['numbers', 'loops']);
+  assert.equal(page.body.powers.find((p) => p.state === 'next').slug, 'words');
+  const mayaToken = jwt.sign({ user_id: state.maya, role: 'student', name: 'Maya' }, JWT_SECRET);
+  assert.equal((await call('GET', `/api/class/${state.code}/student/${state.maya}`, null, mayaToken)).status, 403, 'a child cannot read the teacher view, even their own');
+  assert.equal((await call('GET', `/api/class/${state.code}/student/${state.maya}`)).status, 401);
+  assert.equal((await call('GET', `/api/class/${state.code}/student/9999`, null, teacherToken)).status, 404, 'a child outside the class');
+  assert.equal((await call('GET', `/api/class/${state.code}/student/abc`, null, teacherToken)).status, 404);
+});
+
 test('before the tables exist every route says not set up instead of failing', async () => {
   state.ready = false;
   for (const [method, path, body, token] of [
@@ -229,6 +255,7 @@ test('before the tables exist every route says not set up instead of failing', a
     ['GET', `/api/class/${state.code}`, null, null],
     ['GET', `/api/class/${state.code}/arcade`, null, null],
     ['GET', '/api/class/joined', null, teacherToken],
+    ['GET', `/api/class/${state.code}/student/${state.maya}`, null, teacherToken],
     ['POST', `/api/class/${state.code}/join`, { first_name: 'Maya' }, null],
   ]) {
     const res = await call(method, path, body, token);

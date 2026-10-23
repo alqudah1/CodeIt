@@ -129,11 +129,47 @@ test('the board shows the code big, every child, and plays a published game on t
   expect(screen.getByText('Joined')).toBeInTheDocument();
   expect(screen.getByText(/2 children in\. 2 games made\./)).toBeInTheDocument();
   expect(screen.getByText('stuck: Leo')).toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: /Maya/ }));
-  await waitFor(() => expect(document.querySelector('.cl__stage iframe')).not.toBeNull());
+  // At the teacher's desk a tile opens the child's work; on the projector it plays.
+  expect(screen.getByRole('link', { name: /Maya/ })).toHaveAttribute('href', '/teach/ROCKET42/1');
   fireEvent.click(screen.getByRole('button', { name: 'Projector' }));
   expect(document.body.classList.contains('cl-projector')).toBe(true);
   expect(screen.getByRole('button', { name: 'Leave projector' })).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: /Maya/ }));
+  await waitFor(() => expect(document.querySelector('.cl__stage iframe')).not.toBeNull());
+});
+
+test('a teacher opens one child: the sentences they typed, their games, their powers, what is next', async () => {
+  mockParams = { code: 'ROCKET42', kid: '1' };
+  global.fetch = jest.fn((url) => {
+    if (String(url).endsWith('/api/class/ROCKET42/student/1')) {
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ready: true, class: { code: 'ROCKET42', name: 'Year 5' }, student: { id: 1, name: 'Maya', joinedAt: new Date(Date.now() - 30 * 60000).toISOString() },
+        games: [{ id: 9, title: 'Ship Game', prompt: 'a ship that shoots asteroids', publicId: 'pub9', plays: 4, createdAt: new Date().toISOString() }, { id: 8, title: 'Catch', prompt: '', publicId: null, plays: 0, createdAt: new Date().toISOString() }],
+        done: ['numbers'], powers: [{ n: 1, slug: 'numbers', name: 'Numbers', does: 'change how fast', state: 'done' }, { n: 2, slug: 'words', name: 'Words', does: 'name things', state: 'next' }] }) });
+    }
+    return Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({}) });
+  });
+  mount(<Teach />, { user: { name: 'Mr Q' }, token: 't', login });
+  expect(await screen.findByText('Maya')).toBeInTheDocument();
+  expect(screen.getByText('What Maya typed')).toBeInTheDocument();
+  expect(screen.getByText('a ship that shoots asteroids')).toBeInTheDocument();
+  expect(screen.getByText('Started from a game, no sentence.')).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Play' })).toHaveAttribute('href', '/project/pub9');
+  expect(screen.getByText('Not published')).toBeInTheDocument();
+  expect(screen.getByText(/Next for Maya:/)).toHaveTextContent('Next for Maya: Words, name things.');
+  expect(screen.getByRole('link', { name: 'The lesson plan' })).toHaveAttribute('href', '/teach/plans/words');
+  expect(global.fetch.mock.calls[0][1].headers.Authorization).toBe('Bearer t');
+});
+
+test('a child with no game gets a sentence to say together, and a child cannot open the teacher view', async () => {
+  mockParams = { code: 'ROCKET42', kid: '2' };
+  global.fetch = jest.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ready: true, class: { code: 'ROCKET42', name: 'Year 5' }, student: { id: 2, name: 'Leo', joinedAt: new Date(Date.now() - 15 * 60000).toISOString() }, games: [], done: [], powers: [{ n: 1, slug: 'numbers', name: 'Numbers', does: 'change how fast', state: 'next' }] }) }));
+  const first = mount(<Teach />, { user: { name: 'Mr Q' }, token: 't', login });
+  expect(await screen.findByText('No game yet')).toBeInTheDocument();
+  expect(screen.getByText('a rocket that dodges comets and goes really fast')).toBeInTheDocument();
+  first.unmount();
+  global.fetch = jest.fn(() => Promise.resolve({ ok: false, status: 403, json: () => Promise.resolve({}) }));
+  mount(<Teach />, { user: { name: 'Maya', role: 'student' }, token: 'k', login });
+  expect(await screen.findByText("This is the teacher's page.")).toBeInTheDocument();
 });
 
 test('before the tables exist the board says so instead of breaking', async () => {

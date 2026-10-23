@@ -14,6 +14,8 @@ import { AuthContext } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import { reportFailure } from '../../utils/humanError';
+import { POWERS } from '../Powers/powers';
+import { BOARD_SENTENCE } from './lessonPlans';
 import Header from '../Header/Header';
 import TabBar from '../../ds/TabBar';
 import '../../ds/ds.css';
@@ -244,18 +246,24 @@ function Board({ code, token }) {
       <div className="cl__grid">
         {members.map((m, i) => {
           const playable = m.newest?.publicId;
-          const Tile = playable ? 'button' : 'div';
+          // The teacher, at their own desk, opens a child's work; on the
+          // projector a tile plays the game for the room. Sentences never
+          // go on the big screen.
+          const opens = board.owner && !projector;
+          const Tile = opens ? Link : playable ? 'button' : 'div';
+          const tileProps = opens
+            ? { to: `/teach/${code}/${m.id}` }
+            : { type: playable ? 'button' : undefined, onClick: playable ? () => setStage({ ...m.newest, name: m.name }) : undefined };
           return (
             <Tile
               key={m.id}
-              type={playable ? 'button' : undefined}
-              className={`cl__tile ci-blk ${m.games ? 'ci-blk--violet' : 'ci-blk--paper'}${fresh.has(m.id) ? ' ci-popin' : ''}${playable ? ' is-playable' : ''}`}
+              {...tileProps}
+              className={`cl__tile ci-blk ${m.games ? 'ci-blk--violet' : 'ci-blk--paper'}${fresh.has(m.id) ? ' ci-popin' : ''}${playable || opens ? ' is-playable' : ''}`}
               style={{ animationDelay: `${Math.min(i, 12) * 0.03}s` }}
-              onClick={playable ? () => setStage({ ...m.newest, name: m.name }) : undefined}
             >
               <span className="cl__tilename">{m.name}</span>
               <span className="cl__tilegames">{m.games === 0 ? 'Joined' : `${m.games} ${m.games === 1 ? 'game' : 'games'}`}</span>
-              {m.newest && <span className="cl__tilenew">{m.newest.title}<small>{ago(m.newest.createdAt)}{playable ? ' · play' : ''}</small></span>}
+              {m.newest && <span className="cl__tilenew">{m.newest.title}<small>{ago(m.newest.createdAt)}{opens ? ' · open' : playable ? ' · play' : ''}</small></span>}
             </Tile>
           );
         })}
@@ -275,8 +283,81 @@ function Board({ code, token }) {
   );
 }
 
+// ── /teach/:code/:kid: one child's work ────────────────────────────────────
+function Student({ code, kid, token }) {
+  const [data, setData] = useState(null);
+  const [status, setStatus] = useState('loading');
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/class/${encodeURIComponent(code)}/student/${encodeURIComponent(kid)}`, { headers: { Authorization: `Bearer ${token}` } });
+        const body = await res.json().catch(() => ({}));
+        if (!alive) return;
+        if (res.status === 503) { setStatus('notready'); return; }
+        if (res.status === 403) { setStatus('forbidden'); return; }
+        if (!res.ok) { setStatus('missing'); return; }
+        setData(body); setStatus('ok');
+      } catch { if (alive) setStatus('error'); }
+    })();
+    return () => { alive = false; };
+  }, [code, kid, token]);
+
+  if (status === 'notready') return <NotSetUp />;
+  if (status === 'forbidden') return <div className="ci-blk ci-blk--paper cl__card"><h1 className="ci-h1 cl__title">This is the teacher's page.</h1><p className="ci-sub">Only the adult who made the class sees a child's sentences.</p></div>;
+  if (status === 'missing') return <div className="ci-blk ci-blk--paper cl__card"><h1 className="ci-h1 cl__title">That child is not in this class.</h1><p className="ci-sub"><Link to={`/teach/${code}`}>Back to the board</Link></p></div>;
+  if (status !== 'ok') return <p className="ci-sub">{status === 'error' ? 'This page did not load. Try again in a moment.' : 'Loading.'}</p>;
+
+  const { student, games, powers, done } = data;
+  const plays = games.reduce((a, g) => a + g.plays, 0);
+  const next = powers.find((p) => p.state === 'next');
+  const quiet = games.length === 0;
+  return (
+    <div className="st">
+      <Link to={`/teach/${code}`} className="ci-ey cl__link-ey">{data.class.name} · {spaceCode(code)}</Link>
+      <h1 className="ci-h1 st__name">{student.name}</h1>
+      <p className="ci-sub st__joined">Joined {ago(student.joinedAt)}.</p>
+      <div className="cl__nums">
+        <div className="ci-blk ci-blk--violet"><div className="ci-num">{games.length}</div><div className="ci-cap">{games.length === 1 ? 'game' : 'games'}</div></div>
+        <div className="ci-blk ci-blk--ink"><div className="ci-num">{plays}</div><div className="ci-cap">{plays === 1 ? 'play' : 'plays'}</div></div>
+        <div className="ci-blk ci-blk--mint"><div className="ci-num">{done.length}</div><div className="ci-cap">of {POWERS.length} powers</div></div>
+      </div>
+
+      {quiet && (
+        <div className="ci-blk ci-blk--sun st__nudge ci-rise">
+          <div className="ci-ey">No game yet</div>
+          <p>Sit with {student.name} and say one together: <b>{BOARD_SENTENCE[next?.slug || 'numbers']}</b>. On Build, type it and press Build it.</p>
+        </div>
+      )}
+
+      {!quiet && (
+        <section className="st__sec">
+          <h2 className="ci-h2">What {student.name} typed</h2>
+          <ol className="st__said">
+            {games.map((g) => (
+              <li key={g.id} className="ci-blk ci-blk--paper">
+                {g.prompt ? <q>{g.prompt}</q> : <span className="st__noprompt">Started from a game, no sentence.</span>}
+                <span className="st__meta"><b>{g.title}</b> · {ago(g.createdAt)} · {g.plays} {g.plays === 1 ? 'play' : 'plays'}</span>
+                {g.publicId ? <Link className="ci-chip" to={`/project/${g.publicId}`}>Play</Link> : <span className="st__private">Not published</span>}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      <section className="st__sec">
+        <h2 className="ci-h2">Powers <small>{done.length} of {POWERS.length}</small></h2>
+        <div className="st__powers">
+          {powers.map((p) => <span key={p.slug} className={`st__power is-${p.state}`}><b>{p.n}</b>{p.name}</span>)}
+        </div>
+        {next && <p className="ci-sub st__next">Next for {student.name}: <b>{next.name}</b>, {next.does}. <Link to={`/teach/plans/${next.slug}`}>The lesson plan</Link>.</p>}
+      </section>
+    </div>
+  );
+}
+
 export default function Teach() {
-  const { code: rawCode } = useParams();
+  const { code: rawCode, kid } = useParams();
   const code = String(rawCode || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
   useSEO({ canonical: `https://codeitlearn.com/teach${code ? `/${code}` : ''}`, title: code ? `${spaceCode(code)} | CodeIt` : 'Teach | CodeIt', description: 'Make a class, read out the code, watch the games appear.', robots: 'noindex,nofollow' });
   const { user, token } = useContext(AuthContext);
@@ -284,7 +365,10 @@ export default function Teach() {
     <div className="cl">
       <Header />
       <main className="cl__main">
-        {!user || !token ? (code ? <Board code={code} token={null} /> : <SignIn />) : code ? <Board code={code} token={token} /> : <MyClasses token={token} />}
+        {!user || !token
+          ? (code && !kid ? <Board code={code} token={null} /> : <SignIn />)
+          : code && kid ? <Student code={code} kid={kid} token={token} />
+          : code ? <Board code={code} token={token} /> : <MyClasses token={token} />}
       </main>
       <TabBar />
     </div>

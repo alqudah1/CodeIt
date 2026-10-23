@@ -26,6 +26,7 @@ const { JWT_SECRET, JWT_EXPIRY } = require('../config');
 const pool = require('../db');
 const { recordUserActivity } = require('../userActivity');
 const { cleanClassName, cleanFirstName, isCode, makeCode, normaliseCode, studentUsername } = require('../classes');
+const { LESSON_BASE, POWERS, powerByLessonId, powerStates } = require('../powers');
 
 const router = express.Router();
 
@@ -162,6 +163,53 @@ router.get('/:code/arcade', optionalAuth, async (req, res) => {
     if (notSetUp(err)) return notReady(res);
     console.error('class/arcade:', err.message);
     return res.status(500).json({ error: 'Could not load the arcade.' });
+  }
+});
+
+// ── GET /api/class/:code/student/:id: one child's work, for their teacher ──
+//
+// The sentences the child typed, the games they made, the powers they have.
+// The sentences tell a teacher more than any score. Only the adult who made
+// the class sees this page; the board the room sees never shows a sentence.
+router.get('/:code/student/:id', requireAuth, async (req, res) => {
+  const code = normaliseCode(req.params.code);
+  const studentId = Number(req.params.id);
+  if (!isCode(code) || !Number.isInteger(studentId)) return res.status(404).json({ error: 'That is not a child in a class.' });
+  try {
+    const klass = await findClass(code);
+    if (!klass) return res.status(404).json({ error: 'No class has that code.' });
+    if (klass.owner_id !== req.user.user_id) return res.status(403).json({ error: 'Only the teacher who made this class can see a child\'s work.' });
+    const [rows] = await pool.query(
+      `SELECT m.user_id, u.name, m.joined_at FROM class_members m JOIN Users u ON u.user_id = m.user_id
+        WHERE m.class_id = ? AND m.user_id = ?`,
+      [klass.id, studentId]
+    );
+    const member = rows[0];
+    if (!member) return res.status(404).json({ error: 'That child is not in this class.' });
+    const [games] = await pool.query(
+      'SELECT id, title, prompt, public_id, is_public, project_type, view_count, created_at FROM ai_projects WHERE user_id = ? ORDER BY created_at DESC LIMIT 50',
+      [studentId]
+    );
+    const [powerRows] = await pool.query(
+      'SELECT lesson_id FROM Student_Lesson_Progress WHERE user_id = ? AND lesson_id > ? AND lesson_id <= ?',
+      [studentId, LESSON_BASE, LESSON_BASE + POWERS.length]
+    );
+    const done = powerRows.map((r) => powerByLessonId(r.lesson_id)).filter(Boolean).map((p) => p.slug);
+    return res.json({
+      ready: true,
+      class: publicClass(klass),
+      student: { id: member.user_id, name: member.name, joinedAt: member.joined_at },
+      games: games.map((g) => ({
+        id: g.id, title: g.title, prompt: g.prompt || '', type: g.project_type,
+        publicId: g.is_public ? g.public_id : null, plays: Number(g.view_count) || 0, createdAt: g.created_at,
+      })),
+      done,
+      powers: powerStates(done),
+    });
+  } catch (err) {
+    if (notSetUp(err)) return notReady(res);
+    console.error('class/student:', err.message);
+    return res.status(500).json({ error: 'Could not load this child\'s work.' });
   }
 });
 
