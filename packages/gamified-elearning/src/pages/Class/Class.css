@@ -112,7 +112,24 @@ body.cl-projector { padding-bottom: 0 !important; }
 .pl__list .cl__itemmeta { white-space: normal; }
 
 /* One child's work, for their teacher */
-.st { max-width: 860px; }
+.st { display: grid; grid-template-columns: 1fr; gap: 8px 36px; }
+.st__right { display: grid; gap: 14px; align-content: start; margin-top: 10px; }
+.st__right .ex { margin-top: 4px; }
+.st__gamehead { font: 800 13px var(--ci-body); color: var(--ci-ink-soft); margin-bottom: 8px; }
+.st__gamehead b { color: var(--ci-ink); }
+.st__frame { aspect-ratio: 4 / 3; }
+.st__try { padding: 16px 20px 18px; }
+.st__try .ci-ey { color: rgba(255, 246, 237, .6); }
+.st__trypower { font: 800 22px var(--ci-display); margin: 4px 0 6px; color: var(--ci-sun); }
+.st__try p { margin: 0; font-size: 15px; line-height: 1.45; color: rgba(255, 246, 237, .9); }
+.st__try q { font-weight: 800; color: #fff; }
+.st__trylinks { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.st__trylinks .ci-chip { text-decoration: none; background: rgba(255, 246, 237, .1); border-color: rgba(255, 246, 237, .25); color: #FFF6ED; }
+@media (min-width: 900px) {
+  .st { grid-template-columns: 1.05fr .95fr; align-items: start; }
+  .st__head { grid-column: 1 / -1; }
+  .st__right { position: sticky; top: 90px; margin-top: 0; }
+}
 .st__name { margin: 4px 0 2px; }
 .st__joined { margin: 0 0 14px; }
 .st__nudge { padding: 16px 20px; margin: 0 0 16px; }

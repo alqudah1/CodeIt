@@ -15,6 +15,7 @@ import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import Header from '../Header/Header';
 import TabBar from '../../ds/TabBar';
+import ExampleCards from '../../ds/Examples';
 import { levelFor } from '../Home/today';
 import { xpPercent } from '../Home/KidHome';
 import { POWERS, powerStates } from '../Powers/powers';
@@ -129,6 +130,7 @@ export default function Me({ user, token, trophies = [], projectCount = null, lo
             ))}
           </div>
           <Link to="/build" className="ci-btn ci-btn--ink me__build">Build a new one</Link>
+          {games.length < 3 && <ExampleCards from={8} count={4} title="Ideas to try next" note="Examples. Tap one to build it." />}
 
           <Link to="/character" className="me__row ci-rise">
             <span className="me__rowav"><CharacterAvatar character={character} size={40} /></span>

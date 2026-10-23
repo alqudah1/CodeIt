@@ -46,3 +46,12 @@ test('titles are short, capitalised and end with Game', () => {
   assert.equal(titleFor('a cat that catches pizza'), 'Cat Game');
   assert.equal(titleFor('x'), 'My Game');
 });
+
+test('the rules read what the child said, not a word inside another word', () => {
+  assert.equal(recipeFromRules('a dragon that dodges fireballs').kind, 'dodge', 'fireballs are dodged, not shot');
+  assert.equal(recipeFromRules('a runner that jumps over bombs and collects coins').kind, 'runner');
+  assert.equal(recipeFromRules('an alien that dodges rocks at night').sky, 'night', 'the place they named wins');
+  assert.equal(recipeFromRules('catch stars on the beach').sky, 'day', 'stars are not a sky');
+  assert.equal(recipeFromRules('a ship that shoots asteroids').kind, 'shooter');
+  assert.equal(recipeFromRules('a ship that shoots asteroids').sky, 'space');
+});

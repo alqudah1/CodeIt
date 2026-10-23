@@ -16,6 +16,7 @@ import { useSEO } from '../../hooks/useSEO';
 import { reportFailure } from '../../utils/humanError';
 import { POWERS } from '../Powers/powers';
 import { BOARD_SENTENCE } from './lessonPlans';
+import ExampleCards, { EXAMPLES } from '../../ds/Examples';
 import Header from '../Header/Header';
 import TabBar from '../../ds/TabBar';
 import '../../ds/ds.css';
@@ -312,46 +313,75 @@ function Student({ code, kid, token }) {
   const plays = games.reduce((a, g) => a + g.plays, 0);
   const next = powers.find((p) => p.state === 'next');
   const quiet = games.length === 0;
+  const nextSentence = BOARD_SENTENCE[next?.slug || 'numbers'];
   return (
     <div className="st">
-      <Link to={`/teach/${code}`} className="ci-ey cl__link-ey">{data.class.name} · {spaceCode(code)}</Link>
-      <h1 className="ci-h1 st__name">{student.name}</h1>
-      <p className="ci-sub st__joined">Joined {ago(student.joinedAt)}.</p>
-      <div className="cl__nums">
-        <div className="ci-blk ci-blk--violet"><div className="ci-num">{games.length}</div><div className="ci-cap">{games.length === 1 ? 'game' : 'games'}</div></div>
-        <div className="ci-blk ci-blk--ink"><div className="ci-num">{plays}</div><div className="ci-cap">{plays === 1 ? 'play' : 'plays'}</div></div>
-        <div className="ci-blk ci-blk--mint"><div className="ci-num">{done.length}</div><div className="ci-cap">of {POWERS.length} powers</div></div>
-      </div>
+      <header className="st__head">
+        <Link to={`/teach/${code}`} className="ci-ey cl__link-ey">{data.class.name} · {spaceCode(code)}</Link>
+        <h1 className="ci-h1 st__name">{student.name}</h1>
+        <p className="ci-sub st__joined">Joined {ago(student.joinedAt)}.</p>
+      </header>
 
-      {quiet && (
-        <div className="ci-blk ci-blk--sun st__nudge ci-rise">
-          <div className="ci-ey">No game yet</div>
-          <p>Sit with {student.name} and say one together: <b>{BOARD_SENTENCE[next?.slug || 'numbers']}</b>. On Build, type it and press Build it.</p>
+      <section className="st__left">
+        <div className="cl__nums">
+          <div className="ci-blk ci-blk--violet"><div className="ci-num">{games.length}</div><div className="ci-cap">{games.length === 1 ? 'game' : 'games'}</div></div>
+          <div className="ci-blk ci-blk--ink"><div className="ci-num">{plays}</div><div className="ci-cap">{plays === 1 ? 'play' : 'plays'}</div></div>
+          <div className="ci-blk ci-blk--mint"><div className="ci-num">{done.length}</div><div className="ci-cap">of {POWERS.length} powers</div></div>
         </div>
-      )}
 
-      {!quiet && (
+        {quiet && (
+          <div className="ci-blk ci-blk--sun st__nudge ci-rise">
+            <div className="ci-ey">No game yet</div>
+            <p>Sit with {student.name} and say one together: <b>{nextSentence}</b>. On Build, type it and press Build it.</p>
+          </div>
+        )}
+
+        {!quiet && (
+          <section className="st__sec">
+            <h2 className="ci-h2">What {student.name} typed</h2>
+            <ol className="st__said">
+              {games.map((g) => (
+                <li key={g.id} className="ci-blk ci-blk--paper">
+                  {g.prompt ? <q>{g.prompt}</q> : <span className="st__noprompt">Started from a game, no sentence.</span>}
+                  <span className="st__meta"><b>{g.title}</b> · {ago(g.createdAt)} · {g.plays} {g.plays === 1 ? 'play' : 'plays'}</span>
+                  {g.publicId ? <Link className="ci-chip" to={`/project/${g.publicId}`}>Play</Link> : <span className="st__private">Not published</span>}
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+
         <section className="st__sec">
-          <h2 className="ci-h2">What {student.name} typed</h2>
-          <ol className="st__said">
-            {games.map((g) => (
-              <li key={g.id} className="ci-blk ci-blk--paper">
-                {g.prompt ? <q>{g.prompt}</q> : <span className="st__noprompt">Started from a game, no sentence.</span>}
-                <span className="st__meta"><b>{g.title}</b> · {ago(g.createdAt)} · {g.plays} {g.plays === 1 ? 'play' : 'plays'}</span>
-                {g.publicId ? <Link className="ci-chip" to={`/project/${g.publicId}`}>Play</Link> : <span className="st__private">Not published</span>}
-              </li>
-            ))}
-          </ol>
+          <h2 className="ci-h2">Powers <small>{done.length} of {POWERS.length}</small></h2>
+          <div className="st__powers">
+            {powers.map((p) => <span key={p.slug} className={`st__power is-${p.state}`}><b>{p.n}</b>{p.name}</span>)}
+          </div>
+          {next && <p className="ci-sub st__next">Next for {student.name}: <b>{next.name}</b>, {next.does}. <Link to={`/teach/plans/${next.slug}`}>The lesson plan</Link>.</p>}
         </section>
-      )}
-
-      <section className="st__sec">
-        <h2 className="ci-h2">Powers <small>{done.length} of {POWERS.length}</small></h2>
-        <div className="st__powers">
-          {powers.map((p) => <span key={p.slug} className={`st__power is-${p.state}`}><b>{p.n}</b>{p.name}</span>)}
-        </div>
-        {next && <p className="ci-sub st__next">Next for {student.name}: <b>{next.name}</b>, {next.does}. <Link to={`/teach/plans/${next.slug}`}>The lesson plan</Link>.</p>}
+        <ExampleCards from={Number(kid) % EXAMPLES.length} count={4} link={false} title="Ideas to suggest" note={`Examples to read out if ${student.name} is stuck for an idea.`} />
       </section>
+
+      <aside className="st__right">
+        {data.newestCode && games[0] && (
+          <div className="st__newest ci-rise">
+            <div className="st__gamehead"><span className="ci-livedot" />Newest: <b>{games[0].title}</b> · {ago(games[0].createdAt)}</div>
+            <div className="ci-frame is-lit st__frame"><iframe title={games[0].title} srcDoc={data.newestCode} sandbox="allow-scripts" /></div>
+          </div>
+        )}
+        <div className="ci-blk ci-blk--ink st__try ci-rise" style={{ animationDelay: '.05s' }}>
+          <div className="ci-ey">Try next with {student.name}</div>
+          {next ? (
+            <>
+              <div className="st__trypower">{next.name}: {next.does}.</div>
+              <p>Say it together: <q>{nextSentence}</q></p>
+              <div className="st__trylinks">
+                <Link className="ci-chip" to={`/teach/plans/${next.slug}`}>The lesson plan</Link>
+                <Link className="ci-chip" to={`/powers/${next.slug}`}>Open the power</Link>
+              </div>
+            </>
+          ) : <p>Every power learned. Ask for one game that uses three of them at once.</p>}
+        </div>
+      </aside>
     </div>
   );
 }

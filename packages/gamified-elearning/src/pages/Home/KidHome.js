@@ -17,6 +17,7 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import TabBar from '../../ds/TabBar';
+import ExampleCards from '../../ds/Examples';
 import { API_BASE_URL } from '../../config/api';
 import { AuthContext } from '../../context/AuthContext';
 import { useSEO } from '../../hooks/useSEO';
@@ -121,6 +122,7 @@ export default function KidHome() {
               <div className="kh__track"><i style={{ width: `${xpPercent(level)}%` }} /></div>
             </div>
           </div>
+          {games.length < 3 && <ExampleCards from={0} count={4} title={games.length ? 'More to try' : 'Ideas to build'} note="Examples. Tap one and it is playing in two seconds." />}
         </section>
         <section className="kh__right">
           <h2 className="ci-h2">Your games {typeof today?.plays === 'number' && today.plays > 0 && <small className="kh__plays"><span className="ci-livedot" />{today.plays} plays</small>}</h2>

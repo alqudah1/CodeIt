@@ -190,6 +190,11 @@ router.get('/:code/student/:id', requireAuth, async (req, res) => {
       'SELECT id, title, prompt, public_id, is_public, project_type, view_count, created_at FROM ai_projects WHERE user_id = ? ORDER BY created_at DESC LIMIT 50',
       [studentId]
     );
+    // The newest game whole, so the teacher's page can play it beside the list.
+    const [newestRows] = await pool.query(
+      'SELECT generated_code FROM ai_projects WHERE user_id = ? ORDER BY created_at DESC LIMIT 1',
+      [studentId]
+    );
     const [powerRows] = await pool.query(
       'SELECT lesson_id FROM Student_Lesson_Progress WHERE user_id = ? AND lesson_id > ? AND lesson_id <= ?',
       [studentId, LESSON_BASE, LESSON_BASE + POWERS.length]
@@ -203,6 +208,7 @@ router.get('/:code/student/:id', requireAuth, async (req, res) => {
         id: g.id, title: g.title, prompt: g.prompt || '', type: g.project_type,
         publicId: g.is_public ? g.public_id : null, plays: Number(g.view_count) || 0, createdAt: g.created_at,
       })),
+      newestCode: newestRows[0]?.generated_code || null,
       done,
       powers: powerStates(done),
     });

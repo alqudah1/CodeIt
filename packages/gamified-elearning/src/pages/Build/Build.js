@@ -21,6 +21,7 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Header from '../Header/Header';
 import TabBar from '../../ds/TabBar';
+import ExampleCards, { ExampleHero } from '../../ds/Examples';
 import { API_BASE_URL } from '../../config/api';
 import { AuthContext } from '../../context/AuthContext';
 import { useCharacterDisplay } from '../../context/CharacterContext';
@@ -364,6 +365,7 @@ export default function Build() {
               <div className="bd__chips bd__chips--scroll">
                 {IDEAS.slice(0, 4).map((t) => <button key={t} type="button" className="ci-chip" onClick={() => { onIdea(t); build(t); }}>{t}</button>)}
               </div>
+              {!recipe && <ExampleCards from={4} count={4} title="Or start from one of these" onPick={(t) => { onIdea(t); build(t); }} className="bd__ex" />}
             </div>
           )}
 
@@ -419,10 +421,7 @@ export default function Build() {
             {gameHtml ? (
               <iframe key={gameHtml.length + recipe.title + recipe.kind + recipe.player + recipe.enemy + recipe.sky + recipe.twist + recipe.lives} title={recipe.title} srcDoc={gameHtml} sandbox="allow-scripts" />
             ) : (
-              <div className="bd__empty">
-                <img src="/brand/pixel-mascot-hero.png" alt="" />
-                <div>Your game shows up here.<br />Two seconds after you press Build.</div>
-              </div>
+              <ExampleHero onPick={(t) => { onIdea(t); build(t); }} />
             )}
             {thinking >= 0 && (
               <div className="bd__think" role="status" aria-live="polite">

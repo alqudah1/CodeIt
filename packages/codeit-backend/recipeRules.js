@@ -44,14 +44,26 @@ function titleFor(text) {
 function recipeFromRules(text) {
   const s = String(text || '').toLowerCase();
   let kind = 'dodge';
-  if (/shoot|shot|fire|laser|blast|gun|cannon|invader/.test(s)) kind = 'shooter';
+  // "fireballs" is a thing to dodge, not a reason to shoot; jumping wins
+  // over collecting, so "jumps over bombs and collects coins" runs.
+  if (/shoot|shot|fires? at|laser|blast|gun|cannon|invader/.test(s)) kind = 'shooter';
+  else if (/jump|runner|obby|obstacle|platform|parkour/.test(s)) kind = 'runner';
   else if (/catch|collect|basket|grab|falling|pick up|eat/.test(s)) kind = 'catch';
-  else if (/jump|run|runner|obby|obstacle|platform|parkour/.test(s)) kind = 'runner';
+  else if (/\brun/.test(s)) kind = 'runner';
   else if (/dodge|avoid|escape|survive|zombie|asteroid/.test(s)) kind = 'dodge';
   const player = first(PLAYERS, s, kind === 'catch' ? '🧺' : kind === 'runner' ? '🐱' : '🚀');
   const enemy = first(ENEMIES, s, kind === 'catch' ? '💣' : '👾');
   const treasure = first(GOODS, s, kind === 'catch' ? '⭐' : '💎');
-  const sky = /space|ship|alien|star|rocket|planet/.test(s) ? 'space' : /night|dark|zombie|ghost|spooky|halloween/.test(s) ? 'night' : /sea|ocean|fish|shark|water|under/.test(s) ? 'ocean' : /candy|pink|unicorn|sweet/.test(s) ? 'candy' : 'day';
+  // A place the child named beats a place guessed from a word.
+  const sky = /\bspace\b|planet|galaxy/.test(s) ? 'space'
+    : /night|dark|spooky|halloween|moon/.test(s) ? 'night'
+    : /\bsea\b|ocean|under ?water/.test(s) ? 'ocean'
+    : /candy|sweet/.test(s) ? 'candy'
+    : /ship|alien|rocket|asteroid|ufo/.test(s) ? 'space'
+    : /zombie|ghost/.test(s) ? 'night'
+    : /fish|shark/.test(s) ? 'ocean'
+    : /pink|unicorn/.test(s) ? 'candy'
+    : 'day';
   const speed = /fast|hard|crazy|insane|extreme/.test(s) ? 3 : /slow|easy|baby/.test(s) ? 1 : 2;
   return { kind, title: titleFor(text), player, enemy, treasure, sky, speed, lives: 3, winAt: kind === 'runner' ? 20 : 15 };
 }

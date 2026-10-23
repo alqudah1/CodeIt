@@ -65,3 +65,15 @@ test('a guest gets everyone\'s arcade from the explore feed and the door to join
   fireEvent.click(screen.getByRole('button', { name: 'Surprise me' }));
   expect(mockNavigate).toHaveBeenCalledWith(expect.stringMatching(/^\/project\/(x|y)$/));
 });
+
+test('a quiet week shows all time and says so, and short lists end with examples to build', async () => {
+  global.fetch = jest.fn((url) => {
+    if (String(url).endsWith('/api/explore')) return Promise.resolve({ ok: true, status: 200, json: async () => ({ trending: [{ id: 2, title: 'Coin Run', publicId: 'y', plays: 2, creatorName: 'Noor', createdAt: old }], newest: [], mostPlayed: [] }) });
+    return Promise.resolve({ ok: false, status: 404, json: async () => ({}) });
+  });
+  mount({ user: null, token: null });
+  expect(await screen.findByText('Nothing new this week yet, so here is all time.')).toBeInTheDocument();
+  expect(document.querySelectorAll('.ar__row')).toHaveLength(1);
+  expect(screen.getByText('Make one and it can be here')).toBeInTheDocument();
+  expect(document.querySelectorAll('.ex__card')).toHaveLength(4);
+});

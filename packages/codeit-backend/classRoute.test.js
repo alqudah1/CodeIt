@@ -41,6 +41,10 @@ async function fakeQuery(sql, params = []) {
   if (/^SELECT id, title, prompt, public_id, is_public, project_type, view_count, created_at FROM ai_projects WHERE user_id = \?/.test(s)) {
     return [state.projects.filter((p) => p.user_id === params[0]).sort((a, b) => b.created_at - a.created_at)];
   }
+  if (/^SELECT generated_code FROM ai_projects WHERE user_id = \?/.test(s)) {
+    const mine = state.projects.filter((p) => p.user_id === params[0]).sort((a, b) => b.created_at - a.created_at);
+    return [mine.slice(0, 1).map((p) => ({ generated_code: `<html>${p.title}</html>` }))];
+  }
   if (/^SELECT lesson_id FROM Student_Lesson_Progress/.test(s)) {
     return [(state.progress || []).filter((r) => r.user_id === params[0] && r.lesson_id > params[1] && r.lesson_id <= params[2])];
   }
@@ -239,6 +243,7 @@ test('a teacher sees one child\'s sentences, games and powers; nobody else does'
   assert.equal(page.body.student.name, 'Maya');
   assert.deepEqual(page.body.games.map((g) => [g.title, g.prompt, g.publicId]), [['Ship Game', 'a ship that shoots asteroids', null], ['Old One', '', 'oldpub']]);
   assert.deepEqual(page.body.done, ['numbers', 'loops']);
+  assert.equal(page.body.newestCode, '<html>Ship Game</html>', 'the newest game, whole, to play beside the list');
   assert.equal(page.body.powers.find((p) => p.state === 'next').slug, 'words');
   const mayaToken = jwt.sign({ user_id: state.maya, role: 'student', name: 'Maya' }, JWT_SECRET);
   assert.equal((await call('GET', `/api/class/${state.code}/student/${state.maya}`, null, mayaToken)).status, 403, 'a child cannot read the teacher view, even their own');

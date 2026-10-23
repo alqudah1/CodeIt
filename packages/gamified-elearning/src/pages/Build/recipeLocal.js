@@ -26,17 +26,20 @@ export function keepTheirWord(text) {
   return m ? m[1].toLowerCase() : 'dragon';
 }
 
-const PLAYER_WORDS = [[/ship|rocket|spaceship|plane|jet/, 'ship'], [/bunny|rabbit|dog|puppy|hero|kid|boy|girl|me\b/, 'hero'], [/alien|frog|green/, 'alien'], [/pink|cat|unicorn|princess/, 'pink'], [/blue|sky|bird|chick/, 'skyguy'], [/robot|dragon|purple|monster/, 'blob']];
+const PLAYER_WORDS = [[/ship|rocket|spaceship|plane|jet/, 'ship'], [/bunny|rabbit|dog|puppy|hero|kid|boy|girl|me\b/, 'hero'], [/alien|frog|green/, 'alien'], [/pink|\bcats?\b|kitten|unicorn|princess/, 'pink'], [/blue|sky|bird|chick/, 'skyguy'], [/robot|dragon|purple|monster/, 'blob']];
 const ENEMY_WORDS = [[/asteroid|rock|meteor|spike|stone/, 'rock'], [/bomb|mine|explosive/, 'bomb'], [/alien|ufo|ghost|zombie|enemy ship/, 'alien'], [/fire|lava|sun|flame|fireball|laser/, 'sun']];
 const GOOD_WORDS = [[/carrot/, 'carrot'], [/coin|gold|money|treasure/, 'coin'], [/star/, 'star'], [/gem|diamond|crystal|ruby/, 'gem']];
 const pick = (list, s, fallback) => (list.find(([re]) => re.test(s)) || [null, fallback])[1];
 
 export function titleFor(text) {
-  let t = String(text || '').trim();
+  let t = String(text || '').trim().replace(/[.!?]+$/, '');
   for (let i = 0; i < 3; i += 1) t = t.replace(/^(i want|i would like|please|make|build|me|a|an|the)\s+/i, '');
-  t = t.split(/\s+(where|that|which|with|in|at|and|who|were)\s+/i)[0].trim().slice(0, 22);
+  // The game's name is the part before the details: "catch coins under the
+  // sea, win at 30" is Catch Coins, not "Catch Coins Under The  Game".
+  t = t.split(/,|\s+(?:where|that|which|with|in|at|and|who|were|under|over|from|but|not)\s+/i)[0];
+  t = t.replace(/\b(the|a|an)\b/gi, ' ').replace(/\s+/g, ' ').trim().slice(0, 22).trim();
   if (!t) t = 'My Game';
-  t = t.split(/\s+/).map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w)).join(' ');
+  t = t.split(' ').map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w)).join(' ');
   return /game$/i.test(t) ? t : `${t} Game`;
 }
 
@@ -45,15 +48,34 @@ export function localRecipe(text) {
   const s = String(text || '').toLowerCase();
   let kind = 'dodge';
   if (/shoot|shot|laser|blast|fire at/.test(s)) kind = 'shooter';
+  // Jumping wins over collecting: "jumps over bombs and collects coins" is a runner.
+  else if (/jump|runner|obby|parkour|platform/.test(s)) kind = 'runner';
   else if (/catch|collect|eat|grab|pick up/.test(s)) kind = 'catch';
-  else if (/jump|run|runner|obby|parkour|platform/.test(s)) kind = 'runner';
-  const sky = /space|alien|asteroid|rocket|planet|galaxy/.test(s) ? 'space' : /night|dark|moon|zombie|ghost/.test(s) ? 'night' : /ocean|sea|under ?water|fish|shark/.test(s) ? 'ocean' : /sunset|fire|lava|volcano/.test(s) ? 'sunset' : /candy|pink|sweet|cake/.test(s) ? 'candy' : 'day';
+  else if (/\brun/.test(s)) kind = 'runner';
+  // A place the child named beats a place we guess from a word: "an alien
+  // at night" is night, and "fireballs in candy land" is candy.
+  const sky = /\bspace\b|planet|galaxy/.test(s) ? 'space'
+    : /night|dark|moon/.test(s) ? 'night'
+    : /ocean|\bsea\b|under ?water/.test(s) ? 'ocean'
+    : /candy|sweet|cake/.test(s) ? 'candy'
+    : /sunset|lava|volcano/.test(s) ? 'sunset'
+    : /alien|asteroid|rocket|ufo/.test(s) ? 'space'
+    : /zombie|ghost/.test(s) ? 'night'
+    : /fish|shark/.test(s) ? 'ocean'
+    : /fire|flame/.test(s) ? 'sunset'
+    : /pink|unicorn/.test(s) ? 'candy'
+    : 'day';
+  // The player is who the sentence is about, before "that": in "a shooter
+  // with five aliens", the aliens are the enemies, not the player.
+  const subject = s.split(/\s+(?:that|who|which|with)\s+|,/)[0];
+  const named = PLAYER_WORDS.find(([re]) => re.test(subject));
+  const rest = named ? s.slice(subject.length) : s;
   const goal = s.match(/win at (\d+)/);
   return {
     kind,
     title: titleFor(text),
-    player: pick(PLAYER_WORDS, s, kind === 'shooter' ? 'ship' : 'hero'),
-    enemy: pick(ENEMY_WORDS, s, kind === 'catch' ? 'bomb' : 'rock'),
+    player: named ? named[1] : (kind === 'shooter' ? 'ship' : 'hero'),
+    enemy: pick(ENEMY_WORDS, rest, kind === 'catch' ? 'bomb' : 'rock'),
     treasure: pick(GOOD_WORDS, s, 'gem'),
     sky,
     speed: /fast|hard|crazy|turbo/.test(s) ? 3 : /slow|easy|calm/.test(s) ? 1 : 2,

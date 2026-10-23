@@ -37,3 +37,23 @@ test('titles are short and end in Game; names come from the choices', () => {
   expect(rollIdea(() => 0)).toEqual(['a bunny', 'that catches', 'carrots', 'in space']);
   for (const idea of IDEAS) expect(looksLikeGame(idea)).toBe(true);
 });
+
+test('the sentence decides, not a word hiding inside another word', () => {
+  // "catches" has "cat" in it; the bunny stays a bunny.
+  expect(localRecipe('a robot that catches gems').player).toBe('blob');
+  expect(localRecipe('a bunny that catches carrots').player).toBe('hero');
+  // The player is who the sentence is about; the aliens here are enemies.
+  expect(localRecipe('a shooter with five aliens at once')).toMatchObject({ player: 'ship', enemy: 'alien' });
+  expect(localRecipe('an alien that catches stars')).toMatchObject({ player: 'alien', enemy: 'bomb' });
+  expect(localRecipe('dodge the bombs in space').enemy).toBe('bomb');
+  // Jumping wins over collecting.
+  expect(localRecipe('a runner that jumps over bombs and collects coins').kind).toBe('runner');
+  // A place the child named beats a guess from a word.
+  expect(localRecipe('a pink cat that dodges fireballs in candy land').sky).toBe('candy');
+  expect(localRecipe('an alien that shoots bombs at night').sky).toBe('night');
+  expect(localRecipe('a dragon that dodges fireballs').sky).toBe('sunset');
+  // Titles stop before the details and never carry double spaces.
+  expect(titleFor('catch coins under the sea, win at 30')).toBe('Catch Coins Game');
+  expect(titleFor('catch stars, not bombs, at sunset')).toBe('Catch Stars Game');
+  expect(titleFor('dodge the bombs in space')).toBe('Dodge Bombs Game');
+});

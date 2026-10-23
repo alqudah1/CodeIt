@@ -23,3 +23,5 @@
 .ar__join { display: block; margin-top: 16px; padding: 16px 18px; text-decoration: none; color: inherit; }
 .ar__join b { display: block; font: 800 18px var(--ci-display); }
 .ar__join small { font-size: 13px; }
+.ar__quiet { margin: 0 0 10px; }
+.ar__main { max-width: 900px; }

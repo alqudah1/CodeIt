@@ -144,7 +144,7 @@ test('a teacher opens one child: the sentences they typed, their games, their po
     if (String(url).endsWith('/api/class/ROCKET42/student/1')) {
       return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ready: true, class: { code: 'ROCKET42', name: 'Year 5' }, student: { id: 1, name: 'Maya', joinedAt: new Date(Date.now() - 30 * 60000).toISOString() },
         games: [{ id: 9, title: 'Ship Game', prompt: 'a ship that shoots asteroids', publicId: 'pub9', plays: 4, createdAt: new Date().toISOString() }, { id: 8, title: 'Catch', prompt: '', publicId: null, plays: 0, createdAt: new Date().toISOString() }],
-        done: ['numbers'], powers: [{ n: 1, slug: 'numbers', name: 'Numbers', does: 'change how fast', state: 'done' }, { n: 2, slug: 'words', name: 'Words', does: 'name things', state: 'next' }] }) });
+        newestCode: '<!DOCTYPE html><html><body>ship</body></html>', done: ['numbers'], powers: [{ n: 1, slug: 'numbers', name: 'Numbers', does: 'change how fast', state: 'done' }, { n: 2, slug: 'words', name: 'Words', does: 'name things', state: 'next' }] }) });
     }
     return Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({}) });
   });
@@ -156,7 +156,10 @@ test('a teacher opens one child: the sentences they typed, their games, their po
   expect(screen.getByRole('link', { name: 'Play' })).toHaveAttribute('href', '/project/pub9');
   expect(screen.getByText('Not published')).toBeInTheDocument();
   expect(screen.getByText(/Next for Maya:/)).toHaveTextContent('Next for Maya: Words, name things.');
-  expect(screen.getByRole('link', { name: 'The lesson plan' })).toHaveAttribute('href', '/teach/plans/words');
+  for (const plan of screen.getAllByRole('link', { name: 'The lesson plan' })) expect(plan).toHaveAttribute('href', '/teach/plans/words');
+  expect(screen.getByText('Try next with Maya')).toBeInTheDocument();
+  expect(screen.getByText('Ideas to suggest')).toBeInTheDocument();
+  expect(document.querySelector('.st__frame iframe').getAttribute('srcdoc')).toContain('ship');
   expect(global.fetch.mock.calls[0][1].headers.Authorization).toBe('Bearer t');
 });
 
@@ -165,7 +168,7 @@ test('a child with no game gets a sentence to say together, and a child cannot o
   global.fetch = jest.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ready: true, class: { code: 'ROCKET42', name: 'Year 5' }, student: { id: 2, name: 'Leo', joinedAt: new Date(Date.now() - 15 * 60000).toISOString() }, games: [], done: [], powers: [{ n: 1, slug: 'numbers', name: 'Numbers', does: 'change how fast', state: 'next' }] }) }));
   const first = mount(<Teach />, { user: { name: 'Mr Q' }, token: 't', login });
   expect(await screen.findByText('No game yet')).toBeInTheDocument();
-  expect(screen.getByText('a rocket that dodges comets and goes really fast')).toBeInTheDocument();
+  expect(screen.getAllByText('a rocket that dodges comets and goes really fast').length).toBeGreaterThan(0);
   first.unmount();
   global.fetch = jest.fn(() => Promise.resolve({ ok: false, status: 403, json: () => Promise.resolve({}) }));
   mount(<Teach />, { user: { name: 'Maya', role: 'student' }, token: 'k', login });

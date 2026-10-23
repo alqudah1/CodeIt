@@ -13,6 +13,7 @@ import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import Header from '../Header/Header';
 import TabBar from '../../ds/TabBar';
+import ExampleCards from '../../ds/Examples';
 import '../../ds/ds.css';
 import './Arcade.css';
 
@@ -73,9 +74,11 @@ export default function Arcade() {
     return () => { alive = false; };
   }, [user, token]);
 
-  const ranked = useMemo(() => rankGames(games, tab), [games, tab]);
-  const mine = ranked.find((g) => me && g.userId === me);
+  // A quiet week shows all time, and says so, rather than an empty list.
   const weekCount = useMemo(() => rankGames(games, 'week').length, [games]);
+  const view = tab === 'week' && weekCount === 0 && (games || []).length > 0 ? 'all' : tab;
+  const ranked = useMemo(() => rankGames(games, view), [games, view]);
+  const mine = ranked.find((g) => me && g.userId === me);
   const surprise = () => { if (ranked.length) navigate(`/project/${ranked[Math.floor(Math.random() * ranked.length)].publicId}`); };
 
   return (
@@ -97,10 +100,10 @@ export default function Arcade() {
 
         {klass && (
           <div className="ci-blk ci-blk--ink ar__you ci-rise">
-            <div className="ci-ey">{tab === 'week' ? 'This week' : 'All time'}</div>
+            <div className="ci-ey">{view === 'week' ? 'This week' : 'All time'}</div>
             {mine
               ? <div className="ar__rank"><b>You're {ordinal(mine.rank)}</b><span>{mine.title} · {mine.plays} {mine.plays === 1 ? 'play' : 'plays'}</span></div>
-              : <div className="ar__rank"><b>{tab === 'week' ? 'No game from you this week.' : 'No game from you yet.'}</b><Link to="/build">Build one</Link></div>}
+              : <div className="ar__rank"><b>{view === 'week' ? 'No game from you this week.' : 'No game from you yet.'}</b><Link to="/build">Build one</Link></div>}
           </div>
         )}
 
@@ -108,6 +111,7 @@ export default function Arcade() {
         {status === 'error' && <p className="ci-sub">The arcade did not load. Try again in a moment.</p>}
         {!ready && !klass && user && <p className="ci-sub">Classes are not switched on here yet, so this is everyone's arcade.</p>}
 
+        {status === 'ok' && view !== tab && <p className="ci-sub ar__quiet">Nothing new this week yet, so here is all time.</p>}
         {status === 'ok' && (
           <ol className="ar__list">
             {ranked.map((g, i) => (
@@ -123,7 +127,10 @@ export default function Arcade() {
           </ol>
         )}
         {status === 'ok' && ranked.length === 0 && (
-          <p className="ci-sub">{tab === 'week' && weekCount === 0 && (games || []).length > 0 ? 'Nothing published this week yet. All time has more.' : klass ? 'Nobody in the class has published a game yet. Be first.' : 'Nothing here yet.'}</p>
+          <p className="ci-sub">{klass ? 'Nobody in the class has published a game yet. Be first.' : 'Nothing here yet.'}</p>
+        )}
+        {status === 'ok' && ranked.length < 6 && (
+          <ExampleCards from={2} count={4} wide title={klass ? 'Get your game on this list' : 'Make one and it can be here'} note="Examples. Tap one, build it, publish it." />
         )}
 
         {!klass && (
