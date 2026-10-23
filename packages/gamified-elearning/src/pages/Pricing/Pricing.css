@@ -147,7 +147,7 @@
 .pricing-hero h1 { font-size: clamp(2rem, 4.6vw, 3rem); letter-spacing: -.01em; }
 .pricing-status { border: 0; background: rgba(23, 192, 139, .16); color: #0F7A58; }
 .pricing-status span { background: var(--ci-mint); box-shadow: 0 0 0 0 rgba(23,192,139,.6); animation: ci-ping 1.6s infinite; }
-.pricing-plans { gap: 14px; }
+.pricing-plans { gap: 14px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
 .pricing-card { border: 0; border-radius: var(--ci-r); background: var(--ci-paper); box-shadow: var(--ci-card); padding: 26px 26px 28px; }
 .pricing-card--plus { background: var(--ci-sun); color: var(--ci-ink); box-shadow: var(--ci-card-lg); }
 .pricing-card--founding { background: var(--ci-ink); color: #FFF6ED; border: 0; box-shadow: var(--ci-card-lg); }

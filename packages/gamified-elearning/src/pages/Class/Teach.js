@@ -28,6 +28,15 @@ export function spaceCode(code) {
   return m ? `${m[1]} ${m[2]}` : String(code || '');
 }
 
+/** Three numbers for the room: who has a game, who is still at it, who has been at it too long. */
+export const STUCK_AFTER_MS = 10 * 60 * 1000;
+export function roomNumbers(members, now = Date.now()) {
+  const made = members.filter((m) => m.games > 0);
+  const notYet = members.filter((m) => m.games === 0);
+  const stuck = notYet.filter((m) => m.joinedAt && now - new Date(m.joinedAt).getTime() >= STUCK_AFTER_MS);
+  return { made: made.length, building: notYet.length - stuck.length, stuck };
+}
+
 /** How long ago, in classroom words. */
 export function ago(iso, now = Date.now()) {
   const s = Math.max(0, Math.round((now - new Date(iso).getTime()) / 1000));
@@ -186,6 +195,7 @@ function Board({ code, token }) {
 
   const members = useMemo(() => board?.members || [], [board]);
   const totalGames = useMemo(() => members.reduce((a, m) => a + m.games, 0), [members]);
+  const numbers = useMemo(() => roomNumbers(members), [members]);
 
   if (status === 'notready') return <NotSetUp />;
   if (status === 'missing') return <div className="ci-blk ci-blk--paper cl__card"><h1 className="ci-h1 cl__title">No class has that code.</h1><p className="ci-sub">Check it against <Link to="/teach">your classes</Link>.</p></div>;
@@ -219,6 +229,16 @@ function Board({ code, token }) {
       )}
 
       <div className="cl__count"><span className="ci-livedot" />{members.length} {members.length === 1 ? 'child' : 'children'} in. {totalGames} {totalGames === 1 ? 'game' : 'games'} made.</div>
+      {members.length > 0 && (
+        <div className="cl__nums">
+          <div className="ci-blk ci-blk--sun"><div className="ci-num">{numbers.building}</div><div className="ci-cap">building</div></div>
+          <div className="ci-blk ci-blk--mint"><div className="ci-num">{numbers.made}</div><div className="ci-cap">with a game</div></div>
+          <div className={`ci-blk ${numbers.stuck.length ? 'ci-blk--coral' : 'ci-blk--paper'}`}>
+            <div className="ci-num">{numbers.stuck.length}</div>
+            <div className="ci-cap">{numbers.stuck.length ? `stuck: ${numbers.stuck.map((m) => m.name).join(', ')}` : 'stuck'}</div>
+          </div>
+        </div>
+      )}
       <div className="cl__grid">
         {members.map((m, i) => {
           const playable = m.newest?.publicId;

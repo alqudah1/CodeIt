@@ -15,8 +15,8 @@
 .kh__track { height: 6px; border-radius: 3px; background: rgba(0, 0, 0, .14); overflow: hidden; margin-top: 14px; }
 .kh__track i { display: block; height: 100%; background: #fff; border-radius: 3px; transition: width .8s cubic-bezier(.3, 1, .4, 1); }
 .kh__plays { font: 800 11px var(--ci-body); letter-spacing: .12em; text-transform: uppercase; color: var(--ci-ink-soft); }
-.kh__shelf { display: flex; gap: 12px; }
-.kh__tile { flex: 1; aspect-ratio: 1; border-radius: var(--ci-r); position: relative; overflow: hidden; box-shadow: var(--ci-card); text-decoration: none; color: #fff; display: block; transition: transform .2s var(--ci-spring); }
+.kh__shelf { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.kh__tile { aspect-ratio: 1; border-radius: var(--ci-r); position: relative; overflow: hidden; box-shadow: var(--ci-card); text-decoration: none; color: #fff; display: block; transition: transform .2s var(--ci-spring); }
 .kh__tile:active { transform: scale(.97); }
 .kh__tile iframe { position: absolute; left: 0; top: 0; width: 200%; height: 200%; transform: scale(.5); transform-origin: 0 0; border: 0; pointer-events: none; }
 .kh__tile::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, .35)); pointer-events: none; }

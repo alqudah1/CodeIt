@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import Join, { tidyCode } from './Join';
-import Teach, { ago, spaceCode } from './Teach';
+import Teach, { ago, roomNumbers, spaceCode } from './Teach';
 
 // ── Join and Teach ──────────────────────────────────────────────────────────
 //
@@ -33,6 +33,15 @@ const login = jest.fn();
 const mount = (el, auth = { user: null, token: null, login }) => render(<AuthContext.Provider value={auth}>{el}</AuthContext.Provider>);
 
 beforeEach(() => { mockNavigate.mockClear(); login.mockClear(); mockParams = {}; mockSearch = ''; });
+
+test('the room\'s three numbers: building, with a game, and stuck after ten minutes without one', () => {
+  const now = Date.now();
+  const m = (name, games, minutesAgo) => ({ name, games, joinedAt: new Date(now - minutesAgo * 60000).toISOString() });
+  const n = roomNumbers([m('Maya', 2, 30), m('Leo', 0, 3), m('Sam', 0, 12), m('Noor', 0, 40)], now);
+  expect(n.made).toBe(1);
+  expect(n.building).toBe(1);
+  expect(n.stuck.map((x) => x.name)).toEqual(['Sam', 'Noor']);
+});
 
 test('the helpers: codes are tidied and spaced, time reads in classroom words', () => {
   expect(tidyCode(' rocket-42 ')).toBe('ROCKET42');
@@ -106,8 +115,8 @@ test('the board shows the code big, every child, and plays a published game on t
   global.fetch = jest.fn((url) => {
     if (String(url).endsWith('/api/class/ROCKET42')) {
       return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ready: true, owner: true, class: { code: 'ROCKET42', name: 'Year 5' }, members: [
-        { id: 1, name: 'Maya', games: 2, plays: 3, newest: { title: 'Ship Game', publicId: 'pub1', createdAt: new Date().toISOString() } },
-        { id: 2, name: 'Leo', games: 0, plays: 0, newest: null },
+        { id: 1, name: 'Maya', games: 2, plays: 3, joinedAt: new Date(Date.now() - 20 * 60000).toISOString(), newest: { title: 'Ship Game', publicId: 'pub1', createdAt: new Date().toISOString() } },
+        { id: 2, name: 'Leo', games: 0, plays: 0, joinedAt: new Date(Date.now() - 20 * 60000).toISOString(), newest: null },
       ] }) });
     }
     if (String(url).endsWith('/api/builder/pub/pub1')) return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ project: { generated_code: '<!DOCTYPE html><html><body>ship</body></html>' } }) });
@@ -119,6 +128,7 @@ test('the board shows the code big, every child, and plays a published game on t
   expect(screen.getByText('2 games')).toBeInTheDocument();
   expect(screen.getByText('Joined')).toBeInTheDocument();
   expect(screen.getByText(/2 children in\. 2 games made\./)).toBeInTheDocument();
+  expect(screen.getByText('stuck: Leo')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: /Maya/ }));
   await waitFor(() => expect(document.querySelector('.cl__stage iframe')).not.toBeNull());
   fireEvent.click(screen.getByRole('button', { name: 'Projector' }));

@@ -37,6 +37,12 @@
 .cl__tools .ci-chip { text-decoration: none; }
 .cl__tools .ci-chip.is-on { background: var(--ci-ink); color: #fff; border-color: var(--ci-ink); }
 .cl__count { font: 800 13px var(--ci-body); color: var(--ci-ink-soft); margin: 0 0 12px; }
+.cl__nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 14px; }
+.cl__nums > * { padding: 12px 16px 14px; min-height: 0; }
+.cl__nums .ci-num { font-size: 34px; }
+.cl__nums .ci-cap { font-size: 12px; }
+.is-projector .cl__nums .ci-num { font-size: 52px; }
+.is-projector .cl__nums .ci-cap { font-size: 16px; }
 .cl__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
 .cl__tile { display: grid; align-content: start; gap: 4px; padding: 16px 16px 14px; min-height: 108px; text-align: left; font: inherit; border: 0; }
 .cl__tile.is-playable { cursor: pointer; transition: transform .2s var(--ci-spring); }
