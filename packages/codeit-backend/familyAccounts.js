@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('crypto');
+const { LESSON_BASE, POWERS, powerByLessonId } = require('./powers');
 const bcrypt = require('bcryptjs');
 const db = require('./db');
 const { ready: progressReady } = require('./progressNotifications');
@@ -478,7 +479,25 @@ async function getChildEvidence(adultUserId, childUserId) {
     [childUserId]
   );
 
+  // How many were made in the last seven days (the three above are the
+  // newest, not all of them), and which powers are learned: lesson rows
+  // 101 to 112 have no lessons row, so the join above cannot see them.
+  const [[week]] = await db.query(
+    `SELECT COUNT(*) AS n FROM ai_projects WHERE user_id = ? AND created_at >= CURRENT_DATE - INTERVAL 7 DAY`,
+    [childUserId]
+  );
+  const [powerRows] = await db.query(
+    'SELECT lesson_id, completed_at FROM Student_Lesson_Progress WHERE user_id = ? AND lesson_id > ? AND lesson_id <= ? ORDER BY completed_at ASC',
+    [childUserId, LESSON_BASE, LESSON_BASE + POWERS.length]
+  );
+  const powersDone = powerRows.map(row => powerByLessonId(row.lesson_id)).filter(Boolean);
+  const doneSlugs = new Set(powersDone.map(p => p.slug));
+  const nextPower = POWERS.find(p => !doneSlugs.has(p.slug)) || null;
+
   return {
+    weekCount: Number(week?.n) || 0,
+    powers: powersDone.map(p => ({ slug: p.slug, name: p.name, does: p.does })),
+    nextPower: nextPower ? { slug: nextPower.slug, name: nextPower.name, does: nextPower.does } : null,
     projects: projects.map(project => ({
       id: project.id,
       title: project.title,
