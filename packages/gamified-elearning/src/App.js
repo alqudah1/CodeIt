@@ -48,6 +48,7 @@ const Build         = lazy(() => import('./pages/Build/Build'));
 const KidHome       = lazy(() => import('./pages/Home/KidHome'));
 const Join          = lazy(() => import('./pages/Class/Join'));
 const Teach         = lazy(() => import('./pages/Class/Teach'));
+const Plans         = lazy(() => import('./pages/Class/Plans'));
 const PowersMap     = lazy(() => import('./pages/Powers/PowersMap'));
 const Power         = lazy(() => import('./pages/Powers/Power'));
 const ArcadeBoard   = lazy(() => import('./pages/Arcade/Arcade'));
@@ -200,6 +201,8 @@ const App = () => (
               <Route path="/build"             element={<Build />} />
               <Route path="/join"              element={<Join />} />
               <Route path="/teach"             element={<Teach />} />
+              <Route path="/teach/plans"       element={<Plans />} />
+              <Route path="/teach/plans/:slug" element={<Plans />} />
               <Route path="/teach/:code"       element={<Teach />} />
               <Route path="/arcade"            element={<ArcadeBoard />} />
               <Route path="/parent"            element={<ParentWeek />} />

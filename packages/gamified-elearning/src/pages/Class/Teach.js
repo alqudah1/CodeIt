@@ -114,6 +114,7 @@ function MyClasses({ token }) {
     <>
       <div className="ci-ey">Teach</div>
       <h1 className="ci-h1">Your classes</h1>
+      <p className="ci-sub"><Link to="/teach/plans">Twelve lesson plans</Link>, one per power, 45 minutes each.</p>
       <form className="ci-blk ci-blk--sun cl__new ci-rise" onSubmit={create}>
         <label className="cl__field">
           <span>New class</span>
@@ -212,6 +213,7 @@ function Board({ code, token }) {
         <div className="cl__tools">
           <button type="button" className="ci-chip" onClick={copy}>{copied ? 'Copied' : 'Copy join link'}</button>
           <button type="button" className={`ci-chip${projector ? ' is-on' : ''}`} onClick={() => setProjector((p) => !p)} aria-pressed={projector}>{projector ? 'Leave projector' : 'Projector'}</button>
+          {!projector && <Link className="ci-chip" to="/teach/plans">Today's plan</Link>}
           {!projector && <Link className="ci-chip" to="/teach">All classes</Link>}
         </div>
       </div>
