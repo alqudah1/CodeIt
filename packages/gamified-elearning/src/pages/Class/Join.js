@@ -24,7 +24,7 @@ export function tidyCode(raw) {
 }
 
 export default function Join() {
-  useSEO({ canonical: 'https://codeitlearn.com/join', title: 'Join your class | CodeIt', description: 'Type the class code from the board and your first name.', robots: 'noindex,nofollow' });
+  useSEO({ canonical: '/join', title: 'Join your class | CodeIt', description: 'Type the class code from the board and your first name.', robots: 'noindex,nofollow' });
   const { user, token, login } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();

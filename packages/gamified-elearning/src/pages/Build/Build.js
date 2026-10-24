@@ -75,7 +75,8 @@ function tone(freq, length = 0.08, type = 'sine', volume = 0.05) {
 const chord = () => [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => tone(f, 0.2, 'triangle'), i * 70));
 
 export default function Build() {
-  useSEO({ canonical: 'https://codeitlearn.com/build', title: 'Build a game from one sentence | CodeIt', description: 'Say the game you want to play, in your own words, and play it two seconds later. Or make it one choice at a time. No account needed to start.' });
+  // Title and description come from src/data/pageMeta.js, which the crawlable copy reads too.
+  useSEO({ canonical: '/build' });
   const navigate = useNavigate();
   const location = useLocation();
   const { user, token } = useContext(AuthContext);

@@ -28,7 +28,7 @@ export function rememberDone(storage, slug) {
 }
 
 export default function PowersMap() {
-  useSEO({ canonical: 'https://codeitlearn.com/powers', title: 'Powers | CodeIt', description: 'Twelve things your games can do. Learn each one inside your own game.', robots: 'noindex,nofollow' });
+  useSEO({ canonical: '/powers', title: 'Powers | CodeIt', description: 'Twelve things your games can do. Learn each one inside your own game.', robots: 'noindex,nofollow' });
   const { token } = useContext(AuthContext);
   const [serverDone, setServerDone] = useState(null);
   const localDone = useMemo(() => readDone(localStorage), []);

@@ -32,7 +32,7 @@ import './KidHome.css';
 const SKY_OF = ['linear-gradient(160deg,#2A1E5C,#5B3FD6)', 'linear-gradient(160deg,#FF7A00,#FFC93C)', 'linear-gradient(160deg,#17C08B,#BFE6FF)', 'linear-gradient(160deg,#FF6B6B,#FFD6E0)'];
 
 export default function KidHome() {
-  useSEO({ canonical: 'https://codeitlearn.com/home', title: "Today's build | CodeIt", description: 'Your streak, your games, and the one thing to build today.', robots: 'noindex,nofollow' });
+  useSEO({ canonical: '/home', title: "Today's build | CodeIt", description: 'Your streak, your games, and the one thing to build today.', robots: 'noindex,nofollow' });
   const { user, token } = useContext(AuthContext);
   const [today, setToday] = useState(null);
   const [codes, setCodes] = useState({});

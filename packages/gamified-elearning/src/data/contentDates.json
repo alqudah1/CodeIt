@@ -295,6 +295,62 @@
     "hash": "6f0461a2874f4456",
     "date": "2026-09-02"
   },
+  "/teach": {
+    "hash": "fb765ac1df133c0f",
+    "date": "2026-10-24"
+  },
+  "/teach/plans": {
+    "hash": "ec4f650f66d961a5",
+    "date": "2026-10-24"
+  },
+  "/teach/plans/boss": {
+    "hash": "132d79aa56345f42",
+    "date": "2026-10-24"
+  },
+  "/teach/plans/ifthen": {
+    "hash": "f038be4c9a48f217",
+    "date": "2026-10-24"
+  },
+  "/teach/plans/levels": {
+    "hash": "f3cb1e176325ab78",
+    "date": "2026-10-24"
+  },
+  "/teach/plans/lives": {
+    "hash": "63dc06c2d3c3ea90",
+    "date": "2026-10-24"
+  },
+  "/teach/plans/looks": {
+    "hash": "bcb9fe8125144866",
+    "date": "2026-10-24"
+  },
+  "/teach/plans/loops": {
+    "hash": "97fdb205a7cfcc86",
+    "date": "2026-10-24"
+  },
+  "/teach/plans/numbers": {
+    "hash": "f01218ac9f43fa57",
+    "date": "2026-10-24"
+  },
+  "/teach/plans/score": {
+    "hash": "ca21d3d1f2478731",
+    "date": "2026-10-24"
+  },
+  "/teach/plans/sound": {
+    "hash": "c1bc26a31d75e1d4",
+    "date": "2026-10-24"
+  },
+  "/teach/plans/timers": {
+    "hash": "d9f950a2af31f5da",
+    "date": "2026-10-24"
+  },
+  "/teach/plans/winning": {
+    "hash": "4e4927070bb0129e",
+    "date": "2026-10-24"
+  },
+  "/teach/plans/words": {
+    "hash": "b98e1cc86af80fe7",
+    "date": "2026-10-24"
+  },
   "/terms": {
     "hash": "a155f693fbeb765e",
     "date": "2026-08-29"

@@ -4,23 +4,25 @@ import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useSEO } from '../../hooks/useSEO';
 import Header from '../Header/Header';
-import { PLANS } from './lessonPlans';
+import { PLANS, PLANS_INDEX, planMeta } from './lessonPlans';
 import '../../ds/ds.css';
 import './Class.css';
 
 export default function Plans() {
   const { slug } = useParams();
   const plan = PLANS.find((p) => p.slug === slug) || null;
-  useSEO({ canonical: `https://codeitlearn.com/teach/plans${plan ? `/${plan.slug}` : ''}`, title: plan ? `${plan.title} Lesson plan | CodeIt` : 'Lesson plans | CodeIt', description: 'Twelve 45 minute classes, one per power, read aloud.', robots: 'noindex,nofollow' });
+  // Indexed: these are the pages a teacher searching for a coding lesson should find.
+  // The index takes its title from pageMeta.js; each plan builds its own from planMeta.
+  useSEO(plan ? { canonical: `/teach/plans/${plan.slug}`, ...planMeta(plan) } : { canonical: '/teach/plans' });
 
   if (!plan) {
     return (
       <div className="cl">
         <Header />
         <main className="cl__main">
-          <div className="ci-ey">Teach</div>
-          <h1 className="ci-h1">Twelve classes, one per power.</h1>
-          <p className="ci-sub">Each is 45 minutes you read aloud: the sentence for the board, when to open the projector, the power, and what to look for walking the room.</p>
+          <div className="ci-ey">{PLANS_INDEX.eyebrow}</div>
+          <h1 className="ci-h1">{PLANS_INDEX.h1}</h1>
+          <p className="ci-sub">{PLANS_INDEX.intro}</p>
           <div className="cl__list pl__list">
             {PLANS.map((p, i) => (
               <Link key={p.slug} to={`/teach/plans/${p.slug}`} className="ci-blk ci-blk--paper cl__item ci-rise" style={{ animationDelay: `${0.03 * i}s` }}>

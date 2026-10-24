@@ -15,6 +15,7 @@ const {
   loadCompany,
   loadPressFacts,
   loadStarterGames,
+  loadLessonPlans,
 } = require('./content-loader');
 
 const SITE = 'https://codeitlearn.com';
@@ -1080,8 +1081,85 @@ const HOME_PAGE = {
   ],
 };
 
+// ── The teacher's pages ─────────────────────────────────────────────────────
+// /teach and the twelve plans carried noindex with the class boards until
+// 24 October 2026, so the pages that answer "coding lesson plan for kids"
+// were invisible to the people searching it. The words come from
+// src/pages/Class/lessonPlans.js, the same module the pages render.
+const LESSON_PLANS = loadLessonPlans();
+
+function teachPages() {
+  const { PLANS, TEACH_LANDING, TEACH_STEPS, PLANS_INDEX, planMeta } = LESSON_PLANS;
+  const planLinks = PLANS.map((plan) =>
+    `<li><a href="/teach/plans/${escapeHtml(plan.slug)}">${escapeHtml(plan.title)}</a> On the board: ${escapeHtml(plan.sentence)}</li>`
+  ).join('\n        ');
+  const landing = {
+    route: '/teach',
+    eyebrow: TEACH_LANDING.eyebrow,
+    h1: TEACH_LANDING.h1,
+    intro: TEACH_LANDING.intro,
+    bodyHtml: [
+      '<h2>How the first lesson goes</h2>',
+      ...TEACH_STEPS.map(([n, head, text]) => `<h3>${escapeHtml(`${n}. ${head}`)}</h3>\n      <p>${escapeHtml(text)}</p>`),
+      `<h2>Twelve lesson plans, ready to read aloud</h2>`,
+      `<p>${escapeHtml(PLANS_INDEX.intro)} <a href="/teach/plans">All twelve lesson plans</a>.</p>`,
+      `<ol>\n        ${planLinks}\n      </ol>`,
+    ].join('\n      '),
+    sectionTitle: 'What a class needs',
+    detail: 'A projector and one device per child, or one per pair. Nothing to install, no student emails, no passwords. Classes are free.',
+    primaryLinkLabel: 'Make a class',
+    type: 'WebPage',
+  };
+  const index = {
+    route: '/teach/plans',
+    eyebrow: PLANS_INDEX.eyebrow,
+    h1: PLANS_INDEX.h1,
+    intro: PLANS_INDEX.intro,
+    bodyHtml: PLANS.map((plan) => [
+      `<h2><a href="/teach/plans/${escapeHtml(plan.slug)}">${escapeHtml(`${plan.n}. ${plan.title}`)}</a></h2>`,
+      `<p>On the board: "${escapeHtml(plan.sentence)}". ${escapeHtml(plan.say)}</p>`,
+    ].join('\n      ')).join('\n      '),
+    sectionTitle: 'How the plans fit together',
+    detail: 'Each plan teaches one power, and each power changes one line in the game a child just made from a sentence. Children join a class with a code and a first name. Classes are free.',
+    primaryLinkLabel: 'Open the lesson plans',
+    type: 'CollectionPage',
+    breadcrumbs: [['/', 'Home'], ['/teach', 'Teach'], ['/teach/plans', 'Lesson plans']],
+  };
+  const plans = PLANS.map((plan, i) => {
+    const meta = planMeta(plan);
+    const route = `/teach/plans/${plan.slug}`;
+    const prev = PLANS[i - 1];
+    const next = PLANS[i + 1];
+    return {
+      route,
+      title: meta.title,
+      description: meta.description,
+      eyebrow: `Lesson plan ${plan.n} of ${PLANS.length}`,
+      h1: plan.title,
+      intro: `On the board: "${plan.sentence}". ${plan.say}`,
+      bodyHtml: [
+        ...plan.steps.map((step) => `<h2>${escapeHtml(`${step.min} min: ${step.head}`)}</h2>\n      <p>${escapeHtml(step.text)}</p>`),
+        `<h2>What to look for</h2>\n      <p>${escapeHtml(plan.lookFor)}</p>`,
+        `<p>${[
+          prev ? `<a href="/teach/plans/${escapeHtml(prev.slug)}">Previous: ${escapeHtml(prev.title)}</a>` : '',
+          next ? `<a href="/teach/plans/${escapeHtml(next.slug)}">Next: ${escapeHtml(next.title)}</a>` : '',
+          '<a href="/teach/plans">All twelve lesson plans</a>',
+        ].filter(Boolean).join(' · ')}</p>`,
+      ].join('\n      '),
+      sectionTitle: 'Before the lesson',
+      detail: 'Make a class on CodeIt and put its code on the projector. Children join at codeitlearn.com/join with the code and a first name. Classes are free.',
+      primaryLinkLabel: 'Open this plan',
+      type: 'LearningResource',
+      breadcrumbs: [['/', 'Home'], ['/teach', 'Teach'], ['/teach/plans', 'Lesson plans'], [route, plan.title]],
+    };
+  });
+  return [landing, index, ...plans];
+}
+
 const PAGES = [
   ...IDENTITY_PAGES,
+
+  ...teachPages(),
 
   ...BASE_PAGES.map((page) => {
     if (page.route === '/coding-for-kids') return { ...page, faqs: FAQS, sections: SECTIONS_BY_ROUTE[page.route] };
@@ -1431,6 +1509,8 @@ function staticContent(page) {
     ['/python-games-for-kids', 'Python games for kids'],
     ['/journey', 'The learning journey'],
     ['/first-game-challenge', 'First game challenge'],
+    ['/teach', 'Teach a class'],
+    ['/teach/plans', 'Twelve coding lesson plans'],
     ['/explore', 'Projects to play and remix'],
     ['/pricing', 'Free access and family pilot'],
     ['/blog', 'Coding guides'],

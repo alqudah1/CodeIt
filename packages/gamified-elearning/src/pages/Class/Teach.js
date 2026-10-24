@@ -15,7 +15,7 @@ import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import { reportFailure } from '../../utils/humanError';
 import { POWERS } from '../Powers/powers';
-import { BOARD_SENTENCE, PLANS } from './lessonPlans';
+import { BOARD_SENTENCE, PLANS, TEACH_LANDING, TEACH_STEPS } from './lessonPlans';
 import ExampleCards, { EXAMPLES } from '../../ds/Examples';
 import Offline, { OfflineStrip, Waiting, isUnreachable, useRetry, whyUnreachable } from '../../ds/Offline';
 import Header from '../Header/Header';
@@ -63,18 +63,12 @@ function NotSetUp() {
 // The four steps and the plans: the landing shows them before sign-in, and a
 // teacher with no class yet sees them under the box that makes one, so the
 // page says what happens next instead of ending at "No classes yet".
-const STEPS = [
-  ['1', 'Make a class', 'Name it, and the code appears in letters the back row can read.'],
-  ['2', 'Children type the code', 'At codeitlearn.com/join, with a first name. They are building within the minute.'],
-  ['3', 'The projector fills', 'Each published game becomes a tile. Press one and it plays on the big screen.'],
-  ['4', 'Then a power', 'Twelve powers, one per lesson, each changing a line in the game they just made.'],
-];
 function TeachSteps({ title }) {
   return (
     <>
       {title && <h2 className="ci-h2 tl__stepshead">{title}</h2>}
       <section className="tl__steps">
-        {STEPS.map(([n, head, text], i) => (
+        {TEACH_STEPS.map(([n, head, text], i) => (
           <div key={n} className="ci-blk ci-blk--paper tl__step ci-rise" style={{ animationDelay: `${0.04 * i}s` }}>
             <b className="tl__n">{n}</b>
             <strong>{head}</strong>
@@ -110,9 +104,9 @@ function SignIn() {
     <div className="tl">
       <section className="tl__hero">
         <div className="ci-blk ci-blk--paper cl__card tl__intro ci-rise">
-          <div className="ci-ey">Teach with CodeIt</div>
-          <h1 className="ci-h1 cl__title">Make a class. Read out the code. Watch the games appear.</h1>
-          <p className="ci-sub">Sign in with your own account to make a class. Children join with the code and a first name, nothing else: no email, no password, no age screen.</p>
+          <div className="ci-ey">{TEACH_LANDING.eyebrow}</div>
+          <h1 className="ci-h1 cl__title">{TEACH_LANDING.h1}</h1>
+          <p className="ci-sub">{TEACH_LANDING.intro}</p>
           <div className="tl__btns">
             <Link className="ci-btn ci-btn--ink" to="/login" state={{ from: '/teach' }}>Sign in</Link>
             <Link className="ci-btn ci-btn--paper" to="/register" state={{ from: '/teach' }}>Make an account</Link>
@@ -543,8 +537,14 @@ function Student({ code, kid, token }) {
 export default function Teach() {
   const { code: rawCode, kid } = useParams();
   const code = String(rawCode || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-  useSEO({ canonical: `https://codeitlearn.com/teach${code ? `/${code}` : ''}`, title: code ? `${spaceCode(code)} | CodeIt` : 'Teach | CodeIt', description: 'Make a class, read out the code, watch the games appear.', robots: 'noindex,nofollow' });
   const { user, token } = useContext(AuthContext);
+  // The landing a visitor sees is indexed (title from pageMeta.js); a class
+  // board, a child's page and a signed-in teacher's list are not.
+  useSEO(code
+    ? { canonical: `/teach/${code}`, title: `${spaceCode(code)} | CodeIt`, description: 'Make a class, read out the code, watch the games appear.', robots: 'noindex,nofollow' }
+    : user && token
+      ? { canonical: '/teach', title: 'Your classes | CodeIt', robots: 'noindex,nofollow' }
+      : { canonical: '/teach' });
   return (
     <div className="cl">
       <Header />

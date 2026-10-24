@@ -29,7 +29,16 @@
   ],
   "headers": [
     {
-      "source": "/(login|register|forgot-password|reset-password|parent|parent-review|MainPage|home|arcade|join|teach|powers|admin|character|leaderboard|profile|quiz|project|creator-brief|investor-brief|understood|play)(/.*)?",
+      "source": "/(login|register|forgot-password|reset-password|parent|parent-review|MainPage|home|arcade|join|powers|admin|character|leaderboard|profile|quiz|project|creator-brief|investor-brief|understood|play)(/.*)?",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/teach/((?!plans(?:/|$)).+)",
       "headers": [
         {
           "key": "X-Robots-Tag",

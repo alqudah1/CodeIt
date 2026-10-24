@@ -35,7 +35,7 @@ export function rankGames(games, tab) {
 }
 
 export default function Arcade() {
-  useSEO({ canonical: 'https://codeitlearn.com/arcade', title: 'Arcade | CodeIt', description: 'Every game in your class, ranked by plays. Tap one and play.', robots: 'noindex,nofollow' });
+  useSEO({ canonical: '/arcade', title: 'Arcade | CodeIt', description: 'Every game in your class, ranked by plays. Tap one and play.', robots: 'noindex,nofollow' });
   const { user, token } = useContext(AuthContext);
   const navigate = useNavigate();
   const [klass, setKlass] = useState(null);     // the class, when the child is in one

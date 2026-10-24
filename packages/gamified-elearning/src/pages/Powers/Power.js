@@ -46,7 +46,7 @@ export default function Power() {
   const power = powerBySlug(slug);
   const navigate = useNavigate();
   const { user, token, loading: authLoading } = useContext(AuthContext);
-  useSEO({ canonical: `https://codeitlearn.com/powers/${slug}`, title: power ? `${power.name} | CodeIt` : 'Powers | CodeIt', description: power ? `${power.name}: ${power.does}, inside your own game.` : '', robots: 'noindex,nofollow' });
+  useSEO({ canonical: `/powers/${slug}`, title: power ? `${power.name} | CodeIt` : 'Powers | CodeIt', description: power ? `${power.name}: ${power.does}, inside your own game.` : '', robots: 'noindex,nofollow' });
 
   const [code, setCode] = useState('');          // the block as it stands
   const [startCode, setStartCode] = useState(''); // the block as the power found it

@@ -61,3 +61,36 @@ export function planFor(power) {
 }
 
 export const PLANS = POWERS.map(planFor);
+
+// The words on the teacher landing and the plans index. The pages render
+// them and the static generator writes the crawlable copy from them, so a
+// search engine and a teacher read the same sentences.
+export const TEACH_LANDING = {
+  eyebrow: 'Teach with CodeIt',
+  h1: 'Make a class. Read out the code. Watch the games appear.',
+  intro: 'Sign in with your own account to make a class. Children join with the code and a first name, nothing else: no email, no password, no age screen.',
+};
+
+export const TEACH_STEPS = [
+  ['1', 'Make a class', 'Name it, and the code appears in letters the back row can read.'],
+  ['2', 'Children type the code', 'At codeitlearn.com/join, with a first name. They are building within the minute.'],
+  ['3', 'The projector fills', 'Each published game becomes a tile. Press one and it plays on the big screen.'],
+  ['4', 'Then a power', 'Twelve powers, one per lesson, each changing a line in the game they just made.'],
+];
+
+export const PLANS_INDEX = {
+  eyebrow: 'Teach',
+  h1: 'Twelve classes, one per power.',
+  intro: 'Each is 45 minutes you read aloud: the sentence for the board, when to open the projector, the power, and what to look for walking the room.',
+};
+
+/**
+ * One plan's title and description, for the page and for the crawlable copy
+ * the static generator writes, so the two can never say different things.
+ */
+export function planMeta(plan) {
+  return {
+    title: `${plan.title.split('.')[0]}: a 45 Minute Coding Lesson Plan for Kids | CodeIt`,
+    description: `Free coding lesson plan ${plan.n} of ${POWERS.length}. On the board: "${plan.sentence}". Six timed steps to read aloud, and what to look for walking the room.`,
+  };
+}

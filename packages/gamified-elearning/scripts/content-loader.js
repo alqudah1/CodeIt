@@ -22,8 +22,23 @@ const vm = require('vm');
 
 const SRC = path.resolve(__dirname, '../src');
 
-function loadEsmDefault(filePath) {
-  const source = fs.readFileSync(filePath, 'utf8');
+function loadEsmDefault(filePath, provided = null) {
+  let source = fs.readFileSync(filePath, 'utf8');
+
+  // A module that imports another content module (the lesson plans import
+  // the powers) is loaded with what it imports handed in, so the import line
+  // goes and the names are already in scope. Anything else still throws.
+  if (provided) {
+    source = source.replace(/^import\s*\{([^}]*)\}\s*from\s*['"][^'"]+['"];?\s*$/gm, (line, names) => {
+      const wanted = names.split(',').map((n) => n.trim()).filter(Boolean);
+      const missing = wanted.filter((n) => !(n in provided));
+      if (missing.length) throw new Error(`content-loader: ${path.basename(filePath)} imports ${missing.join(', ')}, which was not provided`);
+      return '';
+    });
+  }
+  // `export const X` and `export function f` are collected so they reach
+  // module.exports like the names in an export block do.
+  const named = [...source.matchAll(/export\s+(?:const|let|function|class)\s+([A-Za-z_$][\w$]*)/g)].map((m) => m[1]);
 
   // `export default foo;`      -> `module.exports = foo;`
   // `export { A, B };`          -> `module.exports = { A, B };`
@@ -31,10 +46,12 @@ function loadEsmDefault(filePath) {
   const cjs = source
     .replace(/export\s+default\s+/g, 'module.exports = ')
     .replace(/export\s*\{([^}]*)\}\s*;/g, (_, names) => `module.exports = {${names}};`)
-    .replace(/export\s+(const|let|function|class)\s/g, '$1 ');
+    .replace(/export\s+(const|let|function|class)\s/g, '$1 ')
+    + (named.length ? `\n;Object.assign(module.exports, { ${named.join(', ')} });\n` : '');
 
   const sandboxModule = { exports: {} };
   const context = vm.createContext({
+    ...(provided || {}),
     module: sandboxModule,
     exports: sandboxModule.exports,
     require: () => {
@@ -174,7 +191,21 @@ function loadCompetitorPrices() {
   return ledger;
 }
 
+/** The twelve lesson plans, built from the twelve powers exactly as the app builds them. */
+function loadLessonPlans() {
+  const powers = loadEsmDefault(path.join(SRC, 'pages/Powers/powers.js'));
+  if (!Array.isArray(powers.POWERS) || powers.POWERS.length !== 12) {
+    throw new Error('content-loader: powers.js did not export twelve POWERS');
+  }
+  const plans = loadEsmDefault(path.join(SRC, 'pages/Class/lessonPlans.js'), { POWERS: powers.POWERS });
+  if (!Array.isArray(plans.PLANS) || plans.PLANS.length !== powers.POWERS.length) {
+    throw new Error('content-loader: lessonPlans.js did not export one plan per power');
+  }
+  return plans;
+}
+
 module.exports = {
+  loadLessonPlans,
   loadCompetitorPrices,
   loadStarterGames,
   loadPressFacts,

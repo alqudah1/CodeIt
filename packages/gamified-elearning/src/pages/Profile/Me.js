@@ -25,7 +25,7 @@ import '../../ds/ds.css';
 import './Me.css';
 
 export default function Me({ user, token, trophies = [], projectCount = null, logout }) {
-  useSEO({ canonical: 'https://codeitlearn.com/profile', title: 'Me | CodeIt', description: 'Your powers, your games, your look.', robots: 'noindex,nofollow' });
+  useSEO({ canonical: '/profile', title: 'Me | CodeIt', description: 'Your powers, your games, your look.', robots: 'noindex,nofollow' });
   const { character } = useCharacterDisplay();
   const [today, setToday] = useState(null);
   const [powersDone, setPowersDone] = useState(null);

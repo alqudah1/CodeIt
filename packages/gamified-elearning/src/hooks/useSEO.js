@@ -14,9 +14,21 @@ const DEFAULTS = {
   image: DEFAULT_IMAGE,
 };
 
+/**
+ * A canonical is a path. Ten pages passed the whole address instead, and this
+ * glued the site onto the front of it, so /build, an indexed page, told Google
+ * its canonical was "https://codeitlearn.comhttps//codeitlearn.com/build" from
+ * 21 October until 24 October 2026. Either form works now; the path is stored.
+ */
+export function canonicalPath(canonical) {
+  if (!canonical) return DEFAULTS.canonical;
+  const path = String(canonical).replace(/^https?:\/\/(www\.)?codeitlearn\.com/i, "");
+  return path.startsWith("/") ? path : `/${path}`;
+}
+
 export function useSEO({ title, description, canonical, image, robots = "index,follow" } = {}) {
   useEffect(() => {
-    const resolvedCanonical = canonical ?? DEFAULTS.canonical;
+    const resolvedCanonical = canonicalPath(canonical);
 
     // A page passes its canonical and nothing else. The title and description
     // for that route live in src/data/pageMeta.js, which the static generator

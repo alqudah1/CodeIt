@@ -64,7 +64,8 @@ test('no React page writes its own title or description for a route that has one
 test('every hand-written page has an entry, and every entry is used', () => {
   // Lesson, blog and guide routes build their titles from their own content and
   // are deliberately absent from pageMeta. Everything else should be there.
-  const derived = /^\/(lesson|blog|guide)\//;
+  // Lesson plans build theirs from the plan (planMeta in lessonPlans.js).
+  const derived = /^\/(lesson|blog|guide|teach\/plans)\//;
   for (const page of [HOME_PAGE, ...PAGES]) {
     const route = page.route || '/';
     if (derived.test(route)) continue;

@@ -112,6 +112,9 @@ test('every lesson count in rendered copy matches the lesson files', () => {
       const before = text.slice(Math.max(0, match.index - 20), match.index);
       if (NOT_A_TOTAL_BEFORE.test(before)) continue;
       if (NOT_A_QUANTITY.test(match[2])) continue;
+      // "Twelve lesson plans" counts the teacher's plans, one per power, not
+      // the Python course. Those are checked against the plans in the next test.
+      if (/^\s*plans?\b/i.test(match[3] || '')) continue;
 
       // Only counts that could plausibly be the size of the course.
       //
@@ -168,4 +171,22 @@ test('the scan still catches a stale total, and still ignores a range', () => {
   assert.deepEqual(claims('In the first ten lessons, passing the quiz also unlocks a puzzle'), []);
   assert.deepEqual(claims('through the first ten lessons in 3 to 4 weeks'), []);
   assert.deepEqual(claims('one of 31 lessons'), []);
+});
+
+test('every count of lesson plans matches the plans that exist', () => {
+  // The other half of the exemption above: a plan count is still a claim, and
+  // it is checked against the plans rather than waved through.
+  const { loadLessonPlans } = require('./content-loader');
+  const plans = loadLessonPlans().PLANS.length;
+  const template = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
+  const PLAN_CLAIM = new RegExp(`\\b(\\d+|${Object.keys(NUMBER_WORDS).join('|')})[^\\S\\n]+(?:(?:[A-Za-z]+|\\d+)[^\\S\\n]+){0,3}lesson[^\\S\\n]+plans\\b`, 'gi');
+  let checked = 0;
+  for (const page of [HOME_PAGE, ...PAGES]) {
+    const text = renderRouteDocument(template, page).replace(/<[^>]+>/g, ' ');
+    for (const match of text.matchAll(PLAN_CLAIM)) {
+      checked += 1;
+      assert.equal(claimedCount(match[1]), plans, `${page.route || '/'} claims "${match[0].trim()}" but there are ${plans} plans`);
+    }
+  }
+  assert.ok(checked > 0, 'no plan count was checked; this test is not doing anything');
 });

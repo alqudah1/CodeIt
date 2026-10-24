@@ -160,6 +160,17 @@ const PAGE_META = {
     title: 'Choose New Password | CodeIt',
     description: 'Choose a new password for your CodeIt account.',
   },
+  // The teacher's door. Indexed from 24 October 2026; before that it carried
+  // noindex with the class boards, so a teacher searching for a coding lesson
+  // could not find the twelve plans that answer exactly that.
+  '/teach': {
+    title: 'Free Coding for a Class: Children Join With One Code | CodeIt',
+    description: 'Make a class and read out the code. Children join with a first name, no email or password, and every game they make appears on the projector. Twelve 45 minute lesson plans included.',
+  },
+  '/teach/plans': {
+    title: '12 Free Coding Lesson Plans for Kids, 45 Minutes | CodeIt',
+    description: 'Twelve 45 minute coding classes a teacher reads aloud: the sentence for the board, when to open the projector, the power to teach, and what to look for walking the room.',
+  },
   '/terms': {
     title: 'Terms of Use | CodeIt',
     description: 'The rules for using CodeIt lessons, coding tools, AI-assisted projects, accounts, public sharing, and planned paid features.',

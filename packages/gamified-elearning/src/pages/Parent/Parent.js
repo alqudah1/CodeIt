@@ -37,7 +37,7 @@ export function dayOf(iso) {
 }
 
 export default function Parent() {
-  useSEO({ canonical: 'https://codeitlearn.com/parent', title: 'This week | CodeIt', description: 'What your child made, learned, and does next.', robots: 'noindex,nofollow' });
+  useSEO({ canonical: '/parent', title: 'This week | CodeIt', description: 'What your child made, learned, and does next.', robots: 'noindex,nofollow' });
   const { user, token } = useContext(AuthContext);
   const [family, setFamily] = useState(null);
   const [childId, setChildId] = useState(null);
