@@ -69,7 +69,7 @@ test('the sitemap uses the canonical host and no www', () => {
   const os = require('node:os');
   const dir = fsMod.mkdtempSync(path.join(os.tmpdir(), 'sitemap-host-'));
   fsMod.writeFileSync(path.join(dir, 'index.html'), TEMPLATE);
-  require('./generate-static-seo').generate(dir);
+  require('./generate-static-seo').generate(dir, { contentDatesPath: path.join(dir, 'contentDates.json') });
   const sitemap = fsMod.readFileSync(path.join(dir, 'sitemap.xml'), 'utf8');
   assert.doesNotMatch(sitemap, /www\.codeitlearn\.com/);
   assert.match(sitemap, /<loc>https:\/\/codeitlearn\.com\//);
@@ -399,7 +399,7 @@ test('the sitemap covers every generated route', () => {
   const os = require('node:os');
   const dir = fsMod.mkdtempSync(path.join(os.tmpdir(), 'sitemap-'));
   fsMod.writeFileSync(path.join(dir, 'index.html'), TEMPLATE);
-  require('./generate-static-seo').generate(dir);
+  require('./generate-static-seo').generate(dir, { contentDatesPath: path.join(dir, 'contentDates.json') });
   const xml = fsMod.readFileSync(path.join(dir, 'sitemap.xml'), 'utf8');
   for (const page of PAGES) {
     assert.ok(xml.includes(`<loc>https://codeitlearn.com${page.route}</loc>`),

@@ -81,9 +81,9 @@ export default function LearnPythonForKids() {
           <section className="seo-answer-box" aria-label="Quick answer">
             <span className="seo-answer-box__label">Quick Answer</span>
             <p className="seo-answer-box__answer">
-              CodeIt teaches Python for kids through 31 interactive lessons, one concept at a
-              time, then asks each child questions about the code they wrote themselves. No
-              experience or downloads needed.
+              CodeIt teaches Python for kids one concept at a time, from a first line of code
+              through loops, functions and classes to building a real game, then asks each child
+              questions about the code they wrote themselves. No experience or downloads needed.
             </p>
             <p className="seo-answer-box__detail">
               Every lesson includes a live code editor built into the page, so kids write and run
@@ -156,10 +156,10 @@ export default function LearnPythonForKids() {
             </section>
 
             <section className="seo-section">
-              <h2 className="seo-h2">What kids learn: all 31 Python lessons</h2>
+              <h2 className="seo-h2">What kids learn, in the order they learn it</h2>
               <p className="seo-p">
-                CodeIt teaches Python through 31 beginner lessons, each focused on one core concept.
-                By the end, kids have a solid foundation in real Python programming:
+                Each lesson introduces exactly one new idea and uses it. The path starts at a
+                single line of code and ends with a game the child builds themselves:
               </p>
               <ul className="seo-list">
                 <li><strong>Lesson 1:</strong> Hello Python. Using print() to display output</li>
@@ -273,10 +273,10 @@ export default function LearnPythonForKids() {
             <section className="seo-section">
               <h2 className="seo-h2">Start Python for kids online today</h2>
               <p className="seo-p">
-                Open Lesson 1 and write your first line of Python. There are 31 lessons, a quiz
-                after each one, and coding puzzles that use the concept you just learned. The
-                lessons and the playground are free and stay free. There is a paid family plan at
-                CA$12 a month, and you never need it to learn Python here.
+                Open Lesson 1 and write your first line of Python. Every lesson has a quiz after
+                it and coding puzzles that use the concept you just learned. The lessons and the
+                playground are free and stay free. There is a paid family plan at CA$12 a month,
+                and you never need it to learn Python here.
               </p>
               <p className="seo-p">
                 Want to explore before signing up? Try the{' '}
@@ -315,8 +315,8 @@ export default function LearnPythonForKids() {
           <div className="seo-bottom-cta">
             <h2>Ready to Learn Python?</h2>
             <p>
-              31 free beginner lessons, no downloads, no credit card. Start Lesson 1 in under a
-              minute. Or try the playground first to see Python in action.
+              Free from the first line to the last, no downloads, no credit card. Start Lesson 1
+              in under a minute, or try the playground first to see Python in action.
             </p>
             <Link
               to="/lesson/1"

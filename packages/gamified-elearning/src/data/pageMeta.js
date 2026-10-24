@@ -113,8 +113,15 @@ const PAGE_META = {
     // 30 to 44 for the same query without it, with zero clicks from any of
     // them. Google had only ever been offered the cheap-intent reading. The
     // head term leads now; "Free" stays, one word later.
-    title: 'Python for Kids: 31 Free Interactive Lessons Online | CodeIt',
-    description: 'Python coding for kids, free and in the browser. 31 interactive lessons with real code, quizzes and projects. No download or signup to open Lesson 1.',
+    //
+    // The lesson count came out on 24 October. Counting is a comparison, and
+    // 31 is the wrong end of it: Tynker advertises hundreds of courses, so a
+    // parent reading a number reads a small one. Where the lessons start and
+    // finish is both truer and not something a bigger catalogue beats.
+    // /press still states the count, because that page exists so a stranger
+    // can quote a figure without asking.
+    title: 'Python for Kids: Free Interactive Lessons Online | CodeIt',
+    description: 'Python coding for kids, free and in the browser. Interactive lessons from a first line of Python to a game they build. No download or signup for Lesson 1.',
   },
   '/lessons': {
     title: 'Beginner Coding Lessons for Kids | CodeIt',

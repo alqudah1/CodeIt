@@ -172,7 +172,7 @@ function useLessonJsonLd(lessonData, seoTitle, seoDesc) {
         isAccessibleForFree: true,
         isPartOf: {
           '@type': 'Course',
-          name:    `Python for Beginners. ${TOTAL_LESSONS} Free Interactive Lessons`,
+          name:    'Python for Beginners. Free Interactive Lessons',
           url:     `${BASE}/lessons`,
         },
         provider: { '@type': 'Organization', name: 'CodeIt', url: BASE },
@@ -1003,7 +1003,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               <span className="sl-around__title">{nextLesson.data.title}</span>
             </Link>
           )}
-          <Link className="sl-around__all" to="/lessons">All {TOTAL_LESSONS} lessons</Link>
+          <Link className="sl-around__all" to="/lessons">All lessons</Link>
         </nav>
 
         {/* ── Finish early: only once the lesson's own practice step is done ── */}
