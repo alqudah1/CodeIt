@@ -1712,8 +1712,8 @@
 /* ── Bold Blocks on the landing page: tokens over the older palette ───────── */
 .studio-home { background: var(--ci-cream); color: var(--ci-ink); }
 .studio-home h1, .studio-home h2 { font-family: var(--ci-display); }
-.studio-home .studio-kicker { color: var(--ci-orange-down); }
-.studio-home .studio-button--primary { background: var(--ci-orange); color: #fff; border: 0; border-radius: 999px; box-shadow: 0 1px 0 var(--ci-orange-down), 0 6px 0 rgba(53, 34, 14, .12); }
+.studio-home .studio-kicker { color: var(--ci-orange-text); }
+.studio-home .studio-button--primary { background: var(--ci-orange); color: var(--ci-ink); border: 0; border-radius: 999px; box-shadow: 0 1px 0 var(--ci-orange-down), 0 6px 0 rgba(53, 34, 14, .12); }
 .studio-home .studio-button--primary:hover { background: var(--ci-orange-down); }
 .studio-home .pick__card { border: 0; border-radius: var(--ci-r); background: var(--ci-paper); box-shadow: var(--ci-card); transition: transform .2s var(--ci-spring); }
 .studio-home .pick__card:hover { transform: translateY(-3px); }

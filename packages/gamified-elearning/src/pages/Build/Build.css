@@ -23,7 +23,7 @@
 .bd__notgame { margin-top: 12px; background: rgba(255, 107, 107, .1); border: 1px solid rgba(255, 107, 107, .35); border-radius: var(--ci-r-sm); padding: 12px 14px; font-size: 14px; }
 .bd__notgame .ci-chip { border-color: var(--ci-coral); }
 .bd__notgame small { display: block; margin-top: 10px; color: var(--ci-ink-soft); }
-.bd__notgame small a { color: var(--ci-orange-down); }
+.bd__notgame small a { color: var(--ci-orange-text); }
 .bd__chips { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
 .bd__chips--scroll { flex-wrap: nowrap; overflow-x: auto; margin-left: -20px; margin-right: -20px; padding: 0 20px 4px; scrollbar-width: none; }
 .bd__chips--scroll::-webkit-scrollbar { display: none; }
@@ -53,7 +53,7 @@
 @keyframes bd-twinkle { 50% { opacity: .2; } }
 .bd__choice.is-on { border-color: transparent; transform: scale(1.04); }
 .bd__choice.is-on::after { content: ""; position: absolute; inset: 0; border-radius: 18px; padding: 2.5px; background: conic-gradient(from var(--ci-a), var(--ci-orange), var(--ci-sun), var(--ci-mint), var(--ci-sky), var(--ci-violet), var(--ci-orange)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: ci-beam 2.4s linear infinite; pointer-events: none; }
-.bd__tick { position: absolute; right: 8px; top: 8px; width: 20px; height: 20px; border-radius: 50%; background: var(--ci-mint); color: #fff; display: none; place-items: center; font-size: 12px; z-index: 1; animation: ci-popin .4s var(--ci-spring); }
+.bd__tick { position: absolute; right: 8px; top: 8px; width: 20px; height: 20px; border-radius: 50%; background: var(--ci-mint); color: var(--ci-ink); display: none; place-items: center; font-size: 12px; z-index: 1; animation: ci-popin .4s var(--ci-spring); }
 .bd__choice.is-on .bd__tick { display: grid; }
 .bd__wnav { display: flex; gap: 10px; margin-top: 14px; }
 .bd__wnav .ci-btn { flex: 1; }

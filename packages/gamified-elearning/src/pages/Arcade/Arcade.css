@@ -15,7 +15,7 @@
 .ar__link:active { transform: scale(.99); }
 .ar__row.is-mine .ar__link { background: rgba(255, 201, 60, .35); border-color: rgba(255, 201, 60, .9); }
 .ar__n { width: 24px; font: 800 14px var(--ci-display); color: var(--ci-ink-soft); text-align: center; flex: none; }
-.ar__row:nth-child(1) .ar__n { color: var(--ci-orange); font-size: 18px; }
+.ar__row:nth-child(1) .ar__n { color: var(--ci-orange-text); font-size: 18px; }
 .ar__dot { width: 14px; height: 14px; border-radius: 50%; flex: none; }
 .ar__who { flex: 1; min-width: 0; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ar__who b { font-weight: 800; }

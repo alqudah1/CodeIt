@@ -2,9 +2,9 @@
 .kh__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 110px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
 .kh__left, .kh__right { min-width: 0; }
 .kh__quest { margin-top: 20px; min-height: 184px; padding-right: 128px; }
-.kh__quest.is-done { background: var(--ci-mint); color: #fff; }
-.kh__quest.is-done .kh__qey { color: rgba(255, 255, 255, .8); }
-.kh__qey { color: rgba(53, 34, 14, .6); }
+.kh__quest.is-done { background: var(--ci-mint); color: var(--ci-ink); }
+.kh__quest.is-done .kh__qey { color: rgba(53, 34, 14, .78); }
+.kh__qey { color: rgba(53, 34, 14, .78); }
 .kh__qtitle { font-family: var(--ci-display); font-size: 24px; line-height: 1.05; margin: 8px 0 16px; font-weight: 800; position: relative; z-index: 1; }
 .kh__quest .ci-btn { position: relative; z-index: 1; }
 .kh__pix { position: absolute; right: 6px; bottom: -4px; height: 112px; animation: kh-bob 2.4s ease-in-out infinite; transform-origin: 50% 100%; filter: drop-shadow(0 6px 0 rgba(53, 34, 14, .14)); pointer-events: none; }
@@ -24,6 +24,7 @@
 .kh__cap { position: absolute; left: 12px; right: 12px; bottom: 10px; z-index: 1; font: 800 12px var(--ci-body); line-height: 1.2; text-shadow: 0 1px 3px rgba(0, 0, 0, .35); }
 .kh__cap small { display: block; font-size: 10px; opacity: .85; }
 .kh__tile--new { background: var(--ci-paper); border: 1px dashed rgba(53, 34, 14, .25); box-shadow: none; display: grid; place-items: center; color: var(--ci-orange); font: 800 11px var(--ci-body); text-align: center; }
+.kh__tile--new { color: var(--ci-orange-text); }
 .kh__tile--new::after { display: none; }
 .kh__tile--new span { display: block; font: 800 28px var(--ci-display); line-height: 1; }
 .kh__row-link { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--ci-r); background: var(--ci-paper); border: 1px solid var(--ci-ink-line); margin-top: 12px; text-decoration: none; color: var(--ci-ink); min-height: 72px; }
@@ -32,7 +33,7 @@
 .kh__ic { width: 44px; height: 44px; border-radius: 14px; background: rgba(124, 92, 255, .14); color: var(--ci-violet); display: grid; place-items: center; flex: none; }
 .kh__ic--mint { background: rgba(23, 192, 139, .16); color: var(--ci-mint); }
 .kh__ic--sun { background: rgba(255, 201, 60, .4); color: var(--ci-ink); font-size: 20px; }
-.kh__chev { margin-left: auto; color: var(--ci-orange); font: 800 22px var(--ci-display); }
+.kh__chev { margin-left: auto; color: var(--ci-orange-down); font: 800 22px var(--ci-display); }
 @media (min-width: 900px) {
   .kh__main { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 36px; align-items: start; padding: 32px 40px 60px; }
   .kh__right { padding-top: 60px; }

@@ -10,7 +10,7 @@
 .pw__blk.is-next { min-height: 128px; }
 a.pw__blk:hover { transform: translateY(-2px); }
 a.pw__blk:active { transform: scale(.98); }
-.pw__n { font: 800 12px var(--ci-body); letter-spacing: .12em; opacity: .7; }
+.pw__n { font: 800 12px var(--ci-body); letter-spacing: .12em; }
 .pw__name { font: 800 22px var(--ci-display); line-height: 1.05; }
 .pw__does { font-size: 13px; opacity: .8; }
 .pw__go { position: absolute; right: 14px; bottom: 12px; background: var(--ci-ink); color: #fff; border-radius: 999px; padding: 6px 12px; font: 800 12px var(--ci-body); }
@@ -45,12 +45,12 @@ a.pw__blk:active { transform: scale(.98); }
 .pw__gamehead { font: 800 13px var(--ci-body); color: var(--ci-ink-soft); margin-bottom: 8px; }
 .pw__frame { aspect-ratio: 4 / 3; }
 .pw__actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
-.pw__hint { margin: 10px 0 0; font: 800 15px var(--ci-body); color: var(--ci-orange-down); }
+.pw__hint { margin: 10px 0 0; font: 800 15px var(--ci-body); color: var(--ci-orange-text); }
 
 /* The unlock sheet */
 .pw__sheet { position: fixed; inset: 0; z-index: 950; background: rgba(53, 34, 14, .5); display: grid; place-items: center; padding: 20px; }
-.pw__sheetin { max-width: 520px; width: 100%; padding: 32px 30px 28px; color: #fff; }
-.pw__sheetin .ci-ey { color: rgba(255, 255, 255, .8); }
+.pw__sheetin { max-width: 520px; width: 100%; padding: 32px 30px 28px; color: var(--ci-ink); }
+.pw__sheetin .ci-ey { color: rgba(53, 34, 14, .78); }
 .pw__sheetin h2 { font: 800 44px var(--ci-display); margin: 6px 0 10px; line-height: 1; }
 .pw__sheetin p { margin: 0 0 18px; font-size: 16px; }
 .pw__sheetbtns { display: flex; gap: 10px; flex-wrap: wrap; }

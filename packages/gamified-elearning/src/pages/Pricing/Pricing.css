@@ -145,7 +145,7 @@
 .pricing-page { background: var(--ci-cream); color: var(--ci-ink); font-family: var(--ci-body); }
 .pricing-hero h1, .pricing-card h2, .pricing-price strong, .pricing-principles h2, .pricing-faq h2 { font-family: var(--ci-display); color: inherit; }
 .pricing-hero h1 { font-size: clamp(2rem, 4.6vw, 3rem); letter-spacing: -.01em; }
-.pricing-status { border: 0; background: rgba(23, 192, 139, .16); color: #0F7A58; }
+.pricing-status { border: 0; background: rgba(23, 192, 139, .16); color: #0B6A4C; }
 .pricing-status span { background: var(--ci-mint); box-shadow: 0 0 0 0 rgba(23,192,139,.6); animation: ci-ping 1.6s infinite; }
 .pricing-plans { gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
 .pricing-card { border: 0; border-radius: var(--ci-r); background: var(--ci-paper); box-shadow: var(--ci-card); padding: 26px 26px 28px; }
@@ -170,18 +170,19 @@
 .pricing-button:active { transform: scale(.98); box-shadow: none; }
 .pricing-button--primary { background: var(--ci-ink); color: var(--ci-sun); }
 .pricing-button--primary:hover:not(:disabled) { background: #22150a; }
-.pricing-card--founding .pricing-button--primary { background: var(--ci-orange); color: #fff; }
+.pricing-card--founding .pricing-button--primary { background: var(--ci-orange); color: var(--ci-ink); }
 .pricing-card--founding .pricing-button--primary:hover:not(:disabled) { background: var(--ci-orange-down); }
 .pricing-button--quiet { background: var(--ci-quiet); color: var(--ci-ink); border: 1px solid var(--ci-ink-line); }
 .pricing-button--email { background: rgba(255, 246, 237, .1); color: #FFF6ED; border: 1px solid rgba(255, 246, 237, .25); }
 .pricing-button--email:hover { background: rgba(255, 246, 237, .18); box-shadow: none; }
 .pricing-plan-state { background: rgba(53, 34, 14, .1); border: 0; color: inherit; }
-.pricing-thanks { border: 0; background: var(--ci-mint); color: #fff; }
-.pricing-thanks strong, .pricing-thanks p, .pricing-thanks a { color: #fff; }
+.pricing-thanks { border: 0; background: var(--ci-mint); color: var(--ci-ink); }
+.pricing-thanks strong, .pricing-thanks p, .pricing-thanks a { color: var(--ci-ink); }
 .pricing-principles article { border-top: 2px solid var(--ci-ink-line); }
 .pricing-principles article p, .pricing-faq details p, .pricing-evidence__intro p:not(.pricing-kicker) { color: var(--ci-ink-soft); }
 .pricing-faq > div, .pricing-faq details { border-color: var(--ci-ink-line); }
-.pricing-kicker, .pricing-hero__pilot-link { color: var(--ci-orange-down); }
+.pricing-kicker { color: var(--ci-orange-text); }
+.pricing-hero__pilot-link { color: var(--ci-sun); }
 .pricing-hero__pilot-link { background: var(--ci-ink); color: var(--ci-sun); border-radius: 999px; box-shadow: none; }
 .pricing-hero__pilot-link:hover { background: #22150a; }
 
@@ -238,7 +239,7 @@
   max-width: 640px;
   margin: 1rem auto 0;
   text-align: center;
-  color: #8b6c58;
+  color: var(--ci-ink-soft);
   font-size: 0.8125rem;
   line-height: 1.5;
 }

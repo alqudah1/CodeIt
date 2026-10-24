@@ -13,12 +13,16 @@
   --ci-cream: #FFF6ED;
   --ci-paper: #FFFDFA;
   --ci-ink: #35220E;
-  --ci-ink-soft: rgba(53, 34, 14, .6);
+  /* .72, not .6: small grey labels read at 4.5:1 or better on cream, paper and quiet. */
+  --ci-ink-soft: rgba(53, 34, 14, .72);
   --ci-ink-line: rgba(53, 34, 14, .14);
   --ci-quiet: rgba(53, 34, 14, .045);
   --ci-orange: #FF7A00;
   --ci-orange-down: #C45E00;
-  --ci-violet: #7C5CFF;
+  /* Orange as small text: the brand orange is 2.6:1 on cream; this is 5.2:1. */
+  --ci-orange-text: #A84E00;
+  /* A shade deeper than #7C5CFF, where even pure white read at 4.3:1. */
+  --ci-violet: #6B4BF0;
   --ci-mint: #17C08B;
   --ci-mint-down: #10AB7A;
   --ci-sun: #FFC93C;
@@ -44,14 +48,14 @@
 .ci-cap { font-size: 12px; font-weight: 700; opacity: .9; margin-top: 6px; line-height: 1.2; }
 
 /* ── Buttons: orange for the one action, ink for publish, paper for the second choice ── */
-.ci-btn { appearance: none; border: 0; font: 800 16px var(--ci-body); border-radius: 999px; height: 50px; padding: 0 24px; background: var(--ci-orange); color: #fff; box-shadow: var(--ci-pop); cursor: pointer; transition: transform .08s, box-shadow .08s, filter .15s; line-height: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; white-space: nowrap; }
+.ci-btn { appearance: none; border: 0; font: 800 16px var(--ci-body); border-radius: 999px; height: 50px; padding: 0 24px; background: var(--ci-orange); color: var(--ci-ink); box-shadow: var(--ci-pop); cursor: pointer; transition: transform .08s, box-shadow .08s, filter .15s; line-height: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; white-space: nowrap; }
 .ci-btn:hover { filter: brightness(1.05); }
 .ci-btn:active { transform: translateY(3px); box-shadow: 0 0 0 transparent; }
 .ci-btn:focus-visible { outline: 3px solid rgba(255, 122, 0, .55); outline-offset: 4px; }
 .ci-btn[disabled] { background: var(--ci-ink-line); color: var(--ci-ink-soft); box-shadow: none; pointer-events: none; }
 .ci-btn--ink { background: var(--ci-ink); color: var(--ci-sun); box-shadow: 0 3px 0 #150D04; }
 .ci-btn--paper { background: var(--ci-paper); color: var(--ci-ink); box-shadow: 0 3px 0 var(--ci-ink-line); border: 1px solid var(--ci-ink-line); }
-.ci-btn--mint { background: var(--ci-mint); color: #fff; box-shadow: 0 3px 0 var(--ci-mint-down); }
+.ci-btn--mint { background: var(--ci-mint); color: var(--ci-ink); box-shadow: 0 3px 0 var(--ci-mint-down); }
 .ci-btn--sm { height: 40px; font-size: 14px; padding: 0 18px; }
 .ci-btn--block { width: 100%; }
 
@@ -59,9 +63,12 @@
 .ci-blk { border-radius: var(--ci-r); padding: 20px; position: relative; overflow: hidden; box-shadow: var(--ci-card); color: var(--ci-ink); background: var(--ci-paper); }
 .ci-blk--sun { background: var(--ci-sun); }
 .ci-blk--violet { background: var(--ci-violet); color: #fff; }
-.ci-blk--coral { background: var(--ci-coral); color: #fff; }
-.ci-blk--mint { background: var(--ci-mint); color: #fff; }
-.ci-blk--sky { background: var(--ci-sky); color: #fff; }
+/* The bright blocks take ink, the deep ones take white: white on mint, coral
+   or sky is under 3:1, ink on them is 5.5:1 to 6.7:1. */
+.ci-blk--coral { background: var(--ci-coral); color: var(--ci-ink); }
+.ci-blk--mint { background: var(--ci-mint); color: var(--ci-ink); }
+.ci-blk--sky { background: var(--ci-sky); color: var(--ci-ink); }
+.ci-blk--sun .ci-ey, .ci-blk--mint .ci-ey, .ci-blk--coral .ci-ey, .ci-blk--sky .ci-ey { color: rgba(53, 34, 14, .88); }
 .ci-blk--ink { background: var(--ci-ink); color: #fff; }
 .ci-blk--paper { background: var(--ci-paper); box-shadow: none; border: 1px solid var(--ci-ink-line); }
 .ci-blk--quiet { background: var(--ci-quiet); box-shadow: none; }
@@ -115,3 +122,15 @@
   .ci-rise, .ci-popin, .ci-shimmer, .ci-livedot, .ci-frame::before, .ci-knob.is-flip img, .ci-knob.is-flip b { animation: none !important; }
   .ci-shimmer { color: var(--ci-ink); background: none; -webkit-text-fill-color: initial; }
 }
+
+/* ── Where am I? A keyboard user always sees it ──
+   One ring for every box a child types into on these pages: solid, 3px, the
+   text orange (5:1 on cream), never a faint glow. */
+.cl__code:focus-visible, .cl__name:focus-visible, .pg__year:focus-visible,
+.pw__editor:focus-visible, .say__row input:focus-visible, .ex__card:focus-visible, .ar__link:focus-visible,
+a.cl__tile:focus-visible, button.cl__tile:focus-visible, .tl__plan:focus-visible, .cl__item:focus-visible {
+  outline: 3px solid var(--ci-orange-text); outline-offset: 3px;
+}
+
+/* Build's idea box: the ring goes on the white box, not the bare text area inside it. */
+.bd__ask:focus-within { outline: 3px solid var(--ci-orange-text); outline-offset: 2px; }

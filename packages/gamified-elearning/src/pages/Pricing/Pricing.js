@@ -442,7 +442,7 @@ export default function Pricing() {
             <div className="pricing-email__body">
               <p>Maya finished 3 lessons this month: <strong>Variables</strong>, <strong>If statements</strong>, and <strong>For loops</strong>.</p>
               <p>She opened <strong>Catch the Stars</strong>, looked inside, and changed it. These lines are hers:</p>
-              <pre><code>{'score = score + 2;   // each star is worth two now\nspeed = 9;            // she made the stars fall faster'}</code></pre>
+              <pre tabIndex={0} aria-label="Example code from the email"><code>{'score = score + 2;   // each star is worth two now\nspeed = 9;            // she made the stars fall faster'}</code></pre>
               <p>She used an if statement she learned in lesson 4 to end the game when the basket misses three stars.</p>
             </div>
           </article>
