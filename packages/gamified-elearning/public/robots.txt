@@ -1,9 +1,52 @@
-User-agent: *
-Allow: /
-
+# ── Everything is allowed ────────────────────────────────────────────────────
+#
 # Search exclusion for account, admin, and personal pages is sent with the
 # X-Robots-Tag HTTP header. Crawlers must be allowed to fetch those pages so
 # they can read and obey that noindex instruction.
+
+User-agent: *
+Allow: /
+
+# ── The assistant crawlers, named ────────────────────────────────────────────
+#
+# None of this changes what any crawler may do: the group above already allows
+# all of them, and Google-Extended and Applebot-Extended are not crawl tokens
+# at all, they govern whether an assistant may use what it already fetched,
+# where absence already means yes. Naming them states the permission on purpose
+# instead of by default, which is the thing a person checking the file is
+# looking for.
+#
+# READ THIS BEFORE ADDING A DISALLOW ANYWHERE IN THIS FILE.
+#
+# A crawler that finds its own name obeys only its own group and ignores the
+# wildcard entirely. So a Disallow added to "User-agent: *" would apply to
+# Googlebot and to nothing below, and the rule would look present while doing
+# nothing for exactly the crawlers it was aimed at. Every group in this file
+# has to say the same thing. robots-groups.test.js fails if they drift.
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
 
 Sitemap: https://codeitlearn.com/sitemap.xml
 
