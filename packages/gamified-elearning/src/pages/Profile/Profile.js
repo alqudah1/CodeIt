@@ -332,7 +332,7 @@ export default function Profile() {
   // ── The evidence a parent is paying for ────────────────────────────────────
   //
   // The summary line above says "4 projects · 12 lessons", and counts are what
-  // every learning product shows because counts are cheap. The question GOAL.md
+  // every learning product shows because counts are cheap. The question docs/notes/GOAL.md
   // wrote down — "the computer made it, so what did my child actually do?" —
   // is answered from the child's own newest file, read by the same concept
   // finder the child's code tab uses (codeConcepts.js), so parent and child

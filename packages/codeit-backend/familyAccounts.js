@@ -425,7 +425,7 @@ async function resetManagedChildPassword(adultUserId, childUserId, password) {
  *
  * getFamilyStatus counts things — 4 projects, 12 lessons — and counts are
  * what every learning product shows because counts are cheap. What a parent
- * wants to know is the question GOAL.md wrote down: "the computer made it,
+ * wants to know is the question docs/notes/GOAL.md wrote down: "the computer made it,
  * so what did my child actually do?" The honest answer lives in the child's
  * own files, and the studio already knows how to read it (codeConcepts.js
  * finds every concept with the line number and the child's own line).
