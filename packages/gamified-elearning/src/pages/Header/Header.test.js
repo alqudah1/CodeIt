@@ -103,3 +103,25 @@ describe('the shortcut to subscribing', () => {
     expect(screen.queryByRole('menuitem', { name: 'Plan' })).not.toBeInTheDocument();
   });
 });
+
+// A teacher who made a class on Monday had no way back to it but the address
+// bar; a parent's week was two taps behind the avatar.
+describe('an adult\'s header goes to the two pages adults came for', () => {
+  test('a signed-in adult sees This week and Classes in the bar', () => {
+    renderHeader({ id: 1, name: 'Ms R', role: 'Educator' });
+    expect(screen.getByRole('link', { name: 'This week' })).toHaveAttribute('href', '/parent');
+    expect(screen.getByRole('link', { name: 'Classes' })).toHaveAttribute('href', '/teach');
+    fireEvent.click(screen.getByRole('button', { name: /account menu/i }));
+    // One place for each destination, not two.
+    expect(screen.queryByRole('menuitem', { name: 'This week' })).not.toBeInTheDocument();
+  });
+
+  test('a child sees neither, and a visitor sees the door for teachers', () => {
+    const child = renderHeader({ id: 2, name: 'Maya', role: 'student' });
+    expect(screen.queryByRole('link', { name: 'Classes' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'This week' })).not.toBeInTheDocument();
+    child.unmount();
+    renderHeader(null);
+    expect(screen.getByRole('link', { name: 'For teachers' })).toHaveAttribute('href', '/teach');
+  });
+});

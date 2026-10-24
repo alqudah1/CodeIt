@@ -178,9 +178,13 @@ a.cl__tile.ci-blk--violet { color: #fff; }
 .tl__planshead { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
 .tl__planshead .ci-h2 { margin: 0; }
 .tl__planshead .ci-chip { text-decoration: none; }
-.tl__planlist { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 10px; }
+.tl__planlist { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 10px; }
 .tl__plan { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 12px; padding: 14px 16px; text-decoration: none; color: inherit; transition: transform .2s var(--ci-spring); }
 .tl__plan:hover { transform: translateY(-2px); }
 .tl__plann { grid-row: 1 / 3; font: 800 24px var(--ci-display); color: var(--ci-orange-down); line-height: 1.1; }
 .tl__plan small { color: var(--ci-ink-soft); font-size: 13px; line-height: 1.35; }
 @media (min-width: 900px) { .tl__hero { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); } }
+/* A teacher with no class yet: the steps and plans under the box, spaced as on the landing. */
+.cl__main > .tl__stepshead { margin: 26px 0 10px; }
+.cl__main > .tl__plans { margin-top: 26px; }
+.cl__none { margin-top: 14px; }

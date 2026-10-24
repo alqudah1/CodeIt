@@ -40,6 +40,7 @@ const PUBLIC_NAV = [
   { to: "/playground", label: "Playground" },
   { to: "/pricing", label: "Pricing" },
   { to: "/coding-for-kids", label: "For parents" },
+  { to: "/teach", label: "For teachers" },
 ];
 
 // Listed in full rather than sliced from PUBLIC_NAV: the slice silently
@@ -56,7 +57,13 @@ const PUBLIC_NAV = [
 // stayed are the four places to go and do something.
 // Three verbs a child understands, matching what each place does: you PLAY
 // other kids' games, you LEARN lessons, and the big key MAKEs your own.
+//
+// An adult signed in is a parent, a teacher, or both, and each came for one
+// page: their child's week, or their classes. Neither was in the bar. A
+// teacher who made a class on Monday had no way back to it but the address.
 const MEMBER_NAV = [
+  { to: "/parent", label: "This week", adultsOnly: true },
+  { to: "/teach", label: "Classes", adultsOnly: true },
   { to: "/explore", label: "Play" },
   { to: "/lessons", label: "Lessons" },
 ];
@@ -204,7 +211,7 @@ export default function Header() {
           <nav className="site-header__nav" aria-label="Main navigation">
             <ul className="site-header__nav-list">
               {navLinks.map(({ to, label, primary }) => {
-                const active = location.pathname === to;
+                const active = location.pathname === to || location.pathname.startsWith(`${to}/`);
                 return (
                   <li key={to}>
                     <Link
@@ -283,7 +290,6 @@ export default function Header() {
                         </div>
                       </div>
                     )}
-                    {isAdultAccount && <Link to="/parent" className="site-header__dropdown-item" role="menuitem">This week</Link>}
                     <Link to="/profile" className="site-header__dropdown-item" role="menuitem">My profile</Link>
                     <Link to="/builder?view=projects" className="site-header__dropdown-item" role="menuitem">My projects</Link>
                     {accountLinks.map(({ to, label }) => (

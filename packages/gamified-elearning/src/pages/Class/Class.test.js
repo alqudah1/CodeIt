@@ -259,3 +259,12 @@ test('a child joining while the Wi-Fi is down is not told to check a code that i
   expect(screen.queryByText(/Check the code/)).not.toBeInTheDocument();
   expect(login).not.toHaveBeenCalled();
 });
+
+test('a teacher with no class yet sees how the first lesson goes and the plans, not an empty page', async () => {
+  localStorage.clear();
+  global.fetch = jest.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ready: true, classes: [] }) }));
+  mount(<Teach />, { user: { user_id: 11, name: 'Ms T' }, token: 't', login });
+  expect(await screen.findByText('How the first lesson goes')).toBeInTheDocument();
+  expect(document.querySelectorAll('.tl__step')).toHaveLength(4);
+  expect(screen.getAllByRole('link').filter((a) => /^\/teach\/plans\//.test(a.getAttribute('href')))).toHaveLength(6);
+});

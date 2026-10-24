@@ -60,6 +60,51 @@ function NotSetUp() {
   );
 }
 
+// The four steps and the plans: the landing shows them before sign-in, and a
+// teacher with no class yet sees them under the box that makes one, so the
+// page says what happens next instead of ending at "No classes yet".
+const STEPS = [
+  ['1', 'Make a class', 'Name it, and the code appears in letters the back row can read.'],
+  ['2', 'Children type the code', 'At codeitlearn.com/join, with a first name. They are building within the minute.'],
+  ['3', 'The projector fills', 'Each published game becomes a tile. Press one and it plays on the big screen.'],
+  ['4', 'Then a power', 'Twelve powers, one per lesson, each changing a line in the game they just made.'],
+];
+function TeachSteps({ title }) {
+  return (
+    <>
+      {title && <h2 className="ci-h2 tl__stepshead">{title}</h2>}
+      <section className="tl__steps">
+        {STEPS.map(([n, head, text], i) => (
+          <div key={n} className="ci-blk ci-blk--paper tl__step ci-rise" style={{ animationDelay: `${0.04 * i}s` }}>
+            <b className="tl__n">{n}</b>
+            <strong>{head}</strong>
+            <span>{text}</span>
+          </div>
+        ))}
+      </section>
+    </>
+  );
+}
+function TeachPlans({ title = 'Twelve lesson plans, ready to read aloud' }) {
+  return (
+    <section className="tl__plans">
+      <div className="tl__planshead">
+        <h2 className="ci-h2">{title}</h2>
+        <Link className="ci-chip" to="/teach/plans">All twelve</Link>
+      </div>
+      <div className="tl__planlist">
+        {PLANS.slice(0, 6).map((plan) => (
+          <Link key={plan.slug} to={`/teach/plans/${plan.slug}`} className="ci-blk ci-blk--paper tl__plan">
+            <span className="tl__plann">{plan.n}</span>
+            <b>{plan.title}</b>
+            <small>On the board: {plan.sentence}</small>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function SignIn() {
   return (
     <div className="tl">
@@ -84,36 +129,8 @@ function SignIn() {
         </div>
       </section>
 
-      <section className="tl__steps">
-        {[
-          ['1', 'Make a class', 'Name it, and the code appears in letters the back row can read.'],
-          ['2', 'Children type the code', 'At codeitlearn.com/join, with a first name. They are building within the minute.'],
-          ['3', 'The projector fills', 'Each published game becomes a tile. Press one and it plays on the big screen.'],
-          ['4', 'Then a power', 'Twelve powers, one per lesson, each changing a line in the game they just made.'],
-        ].map(([n, head, text], i) => (
-          <div key={n} className="ci-blk ci-blk--paper tl__step ci-rise" style={{ animationDelay: `${0.04 * i}s` }}>
-            <b className="tl__n">{n}</b>
-            <strong>{head}</strong>
-            <span>{text}</span>
-          </div>
-        ))}
-      </section>
-
-      <section className="tl__plans">
-        <div className="tl__planshead">
-          <h2 className="ci-h2">Twelve lesson plans, ready to read aloud</h2>
-          <Link className="ci-chip" to="/teach/plans">All twelve</Link>
-        </div>
-        <div className="tl__planlist">
-          {PLANS.slice(0, 6).map((plan) => (
-            <Link key={plan.slug} to={`/teach/plans/${plan.slug}`} className="ci-blk ci-blk--paper tl__plan">
-              <span className="tl__plann">{plan.n}</span>
-              <b>{plan.title}</b>
-              <small>On the board: {plan.sentence}</small>
-            </Link>
-          ))}
-        </div>
-      </section>
+      <TeachSteps />
+      <TeachPlans />
     </div>
   );
 }
@@ -211,7 +228,7 @@ function MyClasses({ token, uid }) {
         {error && <p className="cl__err" role="alert">{error}</p>}
       </form>
       {classes === null && !failed && <Waiting what="your classes" />}
-      {classes && classes.length === 0 && !failed && <p className="ci-sub">No classes yet. Name one above and you get a code to read out.</p>}
+      {classes && classes.length === 0 && !failed && <p className="ci-sub cl__none">No classes yet. Name one above and you get a code to read out.</p>}
       <div className="cl__list">
         {(classes || []).map((c, i) => (
           <Link key={c.code} to={`/teach/${c.code}`} className="ci-blk ci-blk--paper cl__item ci-rise" style={{ animationDelay: `${0.05 * (i + 1)}s` }}>
@@ -221,6 +238,8 @@ function MyClasses({ token, uid }) {
           </Link>
         ))}
       </div>
+      {classes && classes.length === 0 && !failed && <TeachSteps title="How the first lesson goes" />}
+      {classes !== null && <TeachPlans title={classes.length ? 'Lesson plans' : 'Twelve lesson plans, ready to read aloud'} />}
     </>
   );
 }
