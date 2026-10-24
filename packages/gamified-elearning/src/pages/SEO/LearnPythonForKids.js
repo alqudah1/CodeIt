@@ -11,8 +11,15 @@ const FAQS = [
     a: 'Yes. Python is consistently ranked the best first programming language for beginners and kids. It uses simple, English-like syntax with no unnecessary punctuation, so kids can focus on thinking like a programmer rather than fighting the language. Python is also used professionally at companies like Google, NASA, and YouTube, so skills learned now remain valuable long-term.',
   },
   {
+    // This answered "what ages" with 5 to 12 and never said 8 to 14, which is
+    // the range the product is actually built for. It is an FAQPage entry, so
+    // it is the sentence a summariser reaches for first, and on 24 October
+    // Google's AI Overview duly described CodeIt as being "for ages 5-12".
+    // Being read as a product for five-year-olds undoes the positioning.
+    // The real range leads now; the managed-profile range stays, as the
+    // sub-case it always was.
     q: 'What ages can use CodeIt?',
-    a: 'Parents and legal guardians can create private managed profiles for learners ages 5 to 12 after confirming the adult account email. Independent learner accounts are for ages 13 and up, adults included.',
+    a: 'CodeIt is built for ages 8 to 14. Younger children can use it alongside an adult, and older beginners are welcome, adults included. For a learner under 13, a parent or legal guardian creates a private managed profile after confirming the adult account email; profiles for ages 5 to 12 work this way. Independent learner accounts begin at 13.',
   },
   {
     q: 'Do kids need prior coding experience to use CodeIt?',

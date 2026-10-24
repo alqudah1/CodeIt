@@ -344,7 +344,7 @@ const BASE_PAGES = [
     eyebrow: 'For parents & educators',
     h1: 'A first coding project they’ll want to keep improving.',
     intro: 'CodeIt helps a beginner turn an idea into a website, game, or quiz, then change the design, inspect the code, and understand what makes it work.',
-    detail: 'Parents can create private managed profiles for ages 5–12 after confirming the adult account email. Independent student accounts begin at 13. Managed younger profiles cannot publish publicly.',
+    detail: 'Built for ages 8 to 14. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way, and those managed profiles cannot publish publicly. Independent student accounts begin at 13.',
     type: 'LearningResource',
   },
   {
@@ -356,7 +356,7 @@ const BASE_PAGES = [
     eyebrow: 'Beginner Python, in the browser',
     h1: 'Python for kids: learn by making something work.',
     intro: 'Python coding for kids, free and in the browser. Write a line, run it, and see what changed. CodeIt gives beginners a clear path through real Python without downloads or a wall of theory first.',
-    detail: 'Parents can create private managed profiles for ages 5–12 after confirming the adult account email. Independent student accounts begin at 13, and the lessons also work for older beginners.',
+    detail: 'Built for ages 8 to 14. Younger children can use it alongside an adult and the lessons also work for older beginners. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way. Independent student accounts begin at 13.',
     type: 'LearningResource',
   },
   {
@@ -674,7 +674,7 @@ function pricingSections() {
     {
       heading: 'Who can have an account',
       paragraphs: [
-        'Parents and legal guardians create private managed profiles for learners ages 5–12 after confirming the adult account email. Independent student accounts begin at 13. Managed profiles for ages 5–12 cannot publish projects publicly.',
+        'CodeIt is built for ages 8 to 14. For a learner under 13 a parent or legal guardian creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way, and those managed profiles cannot publish projects publicly. Independent student accounts begin at 13.',
       ],
     },
   ];
@@ -837,7 +837,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'Then make it yours',
       paragraphs: [
         'Play with the result, edit individual elements, inspect the underlying HTML, CSS, and JavaScript, and save versions as you go. The project remains editable instead of becoming a locked AI result.',
-        'Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly, and managed profiles for ages 5–12 cannot publish projects at all.',
+        'The studio is built for ages 8 to 14. Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly, and managed profiles for ages 5–12 cannot publish projects at all.',
       ],
     },
   ],
@@ -914,7 +914,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'Published projects, playable and remixable',
       paragraphs: [
         'Published CodeIt projects are playable in the browser. A learner can open one for inspiration and remix a copy into their own version without changing the original.',
-        'Only eligible independent accounts can publish. Managed profiles for ages 5–12 cannot publish projects publicly.',
+        'CodeIt is built for ages 8 to 14. Only eligible independent accounts can publish; managed profiles for ages 5–12 cannot publish projects publicly.',
       ],
     },
   ],
@@ -952,7 +952,7 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'Who it suits',
       paragraphs: [
-        'The lessons work for young beginners and for older beginners meeting Python for the first time. Parents create private managed profiles for ages 5–12 after confirming the adult account email; independent student accounts begin at 13.',
+        'Built for ages 8 to 14. The lessons also work for younger children alongside an adult, and for older beginners meeting Python for the first time. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way, and independent student accounts begin at 13.',
         'Lesson 1 opens without a download. The structured lesson sequence is currently Python only — the project studio is where learners work with HTML, CSS, and JavaScript.',
       ],
     },

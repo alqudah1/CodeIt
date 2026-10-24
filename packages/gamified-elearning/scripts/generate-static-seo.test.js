@@ -27,7 +27,12 @@ test('replaces homepage fallback and metadata with route-specific content', () =
   const html = renderRouteDocument(TEMPLATE, page);
 
   assert.match(html, /A first coding project they’ll want to keep improving/);
-  assert.match(html, /private managed profiles for ages 5–12/);
+  // The detail line is substituted in. Its wording changed on 24 October when
+  // the real age range was moved in front of the managed-profile one; what
+  // this asserts is that the detail reaches the page, not any one sentence.
+  // age-range.test.js is what holds the ordering.
+  assert.match(html, /private managed profile after confirming the adult account email/);
+  assert.match(html, /profiles for ages 5–12 work this way/);
   assert.match(html, /Independent student accounts begin at 13/);
   assert.match(html, /canonical" href="https:\/\/codeitlearn\.com\/coding-for-kids/);
   assert.match(html, /static-route-jsonld/);
