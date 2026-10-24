@@ -190,3 +190,72 @@ test('before the tables exist the board says so instead of breaking', async () =
   mount(<Teach />, { user: { name: 'Mr Q' }, token: 't', login });
   expect(await screen.findByText('Not switched on here yet.')).toBeInTheDocument();
 });
+
+// ── When the school Wi-Fi drops ─────────────────────────────────────────────
+const down = () => Promise.reject(new TypeError('Failed to fetch'));
+
+test('offline, a teacher still sees the class codes this device last saw, and is not told they have none', async () => {
+  localStorage.clear();
+  const { saveClasses, readSavedClasses } = require('./Teach');
+  saveClasses(localStorage, 7, [{ code: 'PANDA77', name: 'Room 12', members: 3 }], new Date(Date.now() - 2 * 3600000).toISOString());
+  expect(readSavedClasses(localStorage, 7).classes[0].code).toBe('PANDA77');
+  global.fetch = jest.fn(down);
+  mount(<Teach />, { user: { user_id: 7, name: 'Mr Q' }, token: 't', login });
+  expect(await screen.findByText('Your class codes, saved on this device.')).toBeInTheDocument();
+  expect(screen.getByText('PANDA 77')).toBeInTheDocument();
+  expect(screen.getByText(/Saved 2 h ago\. Read them out as normal/)).toBeInTheDocument();
+  expect(screen.queryByText(/No classes yet/)).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Try again now' })).toBeInTheDocument();
+});
+
+test('offline with nothing saved, the teacher hears that the classes are safe, not that there are none', async () => {
+  localStorage.clear();
+  global.fetch = jest.fn(() => Promise.resolve({ ok: false, status: 502, json: () => Promise.reject(new Error('not json')) }));
+  mount(<Teach />, { user: { user_id: 8, name: 'Ms R' }, token: 't', login });
+  expect(await screen.findByText('Your classes cannot load right now.')).toBeInTheDocument();
+  expect(screen.getByText(/Your classes are safe/)).toBeInTheDocument();
+  expect(screen.queryByText(/No classes yet/)).not.toBeInTheDocument();
+  expect(screen.queryByText('Not switched on here yet.')).not.toBeInTheDocument();
+});
+
+test('a board that cannot load still shows the code big for the room, and comes back by itself', async () => {
+  mockParams = { code: 'ROCKET42' };
+  global.fetch = jest.fn(down);
+  mount(<Teach />, { user: { name: 'Mr Q' }, token: 't', login });
+  expect(await screen.findByText('The board is waiting for the connection.')).toBeInTheDocument();
+  expect(screen.getByLabelText('Class code ROCKET42')).toHaveTextContent('ROCKET 42');
+  expect(screen.queryByText('No class has that code.')).not.toBeInTheDocument();
+  global.fetch = jest.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ready: true, owner: true, class: { code: 'ROCKET42', name: 'Year 5' }, members: [] }) }));
+  fireEvent.click(screen.getByRole('button', { name: 'Try again now' }));
+  expect(await screen.findByText('Year 5')).toBeInTheDocument();
+  expect(screen.queryByText('The board is waiting for the connection.')).not.toBeInTheDocument();
+});
+
+test('a server error on the board is not mistaken for a wrong code', async () => {
+  mockParams = { code: 'ROCKET42' };
+  global.fetch = jest.fn(() => Promise.resolve({ ok: false, status: 504, json: () => Promise.resolve({}) }));
+  mount(<Teach />, { user: { name: 'Mr Q' }, token: 't', login });
+  expect(await screen.findByText('The board is waiting for the connection.')).toBeInTheDocument();
+  expect(screen.queryByText('No class has that code.')).not.toBeInTheDocument();
+});
+
+test('one child\'s page offline says the work is kept and offers the way back to the board', async () => {
+  mockParams = { code: 'ROCKET42', kid: '1' };
+  global.fetch = jest.fn(down);
+  mount(<Teach />, { user: { name: 'Mr Q' }, token: 't', login });
+  expect(await screen.findByText("Cannot reach this child's work right now.")).toBeInTheDocument();
+  expect(screen.getByText(/every game and sentence is kept/)).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /Back to the board/ })).toHaveAttribute('href', '/teach/ROCKET42');
+});
+
+test('a child joining while the Wi-Fi is down is not told to check a code that is fine', async () => {
+  global.fetch = jest.fn(down);
+  mount(<Join />);
+  fireEvent.change(screen.getByLabelText('Class code'), { target: { value: 'ROCKET42' } });
+  fireEvent.change(screen.getByLabelText('Your first name'), { target: { value: 'Maya' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Join' }));
+  const said = await screen.findByText(/It is not your code\./);
+  expect(said).toHaveTextContent('CodeIt is not answering right now. It is not your code. Wait a moment and press Join again.');
+  expect(screen.queryByText(/Check the code/)).not.toBeInTheDocument();
+  expect(login).not.toHaveBeenCalled();
+});

@@ -32,6 +32,7 @@ import { saveProject as saveShelfProject } from '../../utils/projectShelf';
 import { recipeGame } from '../Builder/recipeGame';
 import { PLAYERS, ENEMIES, TREASURES, SPRITE_LABEL, spriteUri } from './sprites';
 import { IDEAS, SKY_NAMES, TWISTS, keepTheirWord, localRecipe, looksLikeGame, nameFor, normaliseRecipe, rollIdea } from './recipeLocal';
+import { whyUnreachable } from '../../ds/Offline';
 import '../../ds/ds.css';
 import './Build.css';
 
@@ -93,6 +94,10 @@ export default function Build() {
   const [reels, setReels] = useState(null);
   const [flip, setFlip] = useState('');
   const [published, setPublished] = useState(null);
+  // A project the server made before the connection went, so pressing Publish
+  // again finishes that one rather than making a second copy.
+  const madeId = useRef(null);
+  const shelfId = useRef(null);
   const [publishing, setPublishing] = useState(false);
   const [toast, setToast] = useState('');
   const [ghost, setGhost] = useState('');
@@ -142,6 +147,8 @@ export default function Build() {
     setRecipe(r);
     setDraft((d) => ({ ...d, ...r }));
     setPublished(null);
+    madeId.current = null;
+    shelfId.current = null;
     if (from === 'build') { chord(); }
   }, []);
 
@@ -267,24 +274,32 @@ export default function Build() {
     if (user && token) {
       try {
         const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...journeyHeaders() };
-        const created = await fetch(`${API_BASE_URL}/api/builder/projects`, { method: 'POST', headers, body: JSON.stringify({ title: recipe.title, prompt, generated_code: gameHtml, project_type: 'game' }) });
-        const project = created.ok ? await created.json() : null;
-        const id = project?.id || project?.project?.id;
+        let id = madeId.current;
+        if (!id) {
+          const created = await fetch(`${API_BASE_URL}/api/builder/projects`, { method: 'POST', headers, body: JSON.stringify({ title: recipe.title, prompt, generated_code: gameHtml, project_type: 'game' }) });
+          const project = created.ok ? await created.json() : null;
+          id = project?.id || project?.project?.id || null;
+          madeId.current = id;
+        }
         if (id) {
           const pub = await fetch(`${API_BASE_URL}/api/builder/projects/${id}/publish`, { method: 'POST', headers });
           const data = pub.ok ? await pub.json() : null;
           if (data?.public_url) result = { url: data.public_url, xp: Number(data.xp_awarded) || 0, kept: true, id };
         }
-      } catch { /* the shelf below still keeps it */ }
+      } catch (err) { console.error('build/publish:', err); }
+      // Signed in and it did not reach the arcade: that is the connection,
+      // not a missing account. Say so, and keep the game on this device.
+      if (!result.kept) result.offline = true;
     }
     if (!result.kept) {
-      const entry = saveShelfProject(localStorage, { title: recipe.title, prompt, projectType: 'game', code: gameHtml });
+      const entry = saveShelfProject(localStorage, { id: shelfId.current || undefined, title: recipe.title, prompt, projectType: 'game', code: gameHtml });
+      shelfId.current = entry?.id || null;
       result = { ...result, kept: false, shelfId: entry?.id || '' };
     }
-    localStorage.setItem(FIRST_PUBLISH_KEY, '1');
-    setPublished({ ...result, first });
+    if (!result.offline) localStorage.setItem(FIRST_PUBLISH_KEY, '1');
+    setPublished({ ...result, first: first && !result.offline });
     setPublishing(false);
-    chord();
+    if (!result.offline) chord();
   };
   const share = async () => {
     const url = published?.url || window.location.origin + '/build';
@@ -447,7 +462,7 @@ export default function Build() {
                 ))}
               </div>
               <div className="bd__after">
-                <button type="button" className="ci-btn ci-btn--ink bd__publish" onClick={publish} disabled={publishing}>{publishing ? 'Publishing' : published ? 'In your arcade' : 'Publish to my arcade'}</button>
+                <button type="button" className="ci-btn ci-btn--ink bd__publish" onClick={publish} disabled={publishing}>{publishing ? 'Publishing' : published && !published.offline ? (published.kept ? 'In your arcade' : 'Kept on this device') : 'Publish to my arcade'}</button>
                 <button type="button" className="ci-btn ci-btn--paper" onClick={shakeUp}>Shake it up</button>
               </div>
               <button type="button" className="bd__seecode" onClick={seeCode}>See the code</button>
@@ -457,7 +472,7 @@ export default function Build() {
       </main>
 
       {published && (
-        <div className="bd__ov" role="dialog" aria-modal="true" aria-label="Published" onClick={(e) => { if (e.target === e.currentTarget) setPublished(null); }}>
+        <div className="bd__ov" role="dialog" aria-modal="true" aria-label={published.offline ? 'Saved on this device' : 'Published'} onClick={(e) => { if (e.target === e.currentTarget) setPublished(null); }}>
           <div className="bd__panel ci-popin">
             <div className="bd__card3d">
               <div className="bd__tcard">
@@ -469,11 +484,15 @@ export default function Build() {
               </div>
             </div>
             <div className="bd__moment">
-              <h2>{published.first ? 'Your first game!' : 'Published.'}</h2>
-              <p>{published.kept ? `${recipe.title} is in your arcade. Friends can play it now.` : `${recipe.title} is kept on this device for a week. Make a free account to keep it for good and share it.`}</p>
+              <h2>{published.offline ? 'Saved on this device.' : published.first ? 'Your first game!' : 'Published.'}</h2>
+              <p>{published.offline
+                ? `${whyUnreachable()} ${recipe.title} is safe here, but not in your arcade yet. Press Publish again when the connection is back.`
+                : published.kept ? `${recipe.title} is in your arcade. Friends can play it now.` : `${recipe.title} is kept on this device for a week. Make a free account to keep it for good and share it.`}</p>
               {published.xp > 0 && <div className="bd__xp"><b>+{published.xp}</b> XP</div>}
               <div className="bd__acts">
-                {published.kept ? <button type="button" className="ci-btn" onClick={share}>Show a friend</button> : <button type="button" className="ci-btn" onClick={() => navigate('/register')}>Keep my game</button>}
+                {published.offline
+                  ? <button type="button" className="ci-btn" onClick={() => { setPublished(null); publish(); }}>Publish again</button>
+                  : published.kept ? <button type="button" className="ci-btn" onClick={share}>Show a friend</button> : <button type="button" className="ci-btn" onClick={() => navigate('/register')}>Keep my game</button>}
                 <button type="button" className="ci-btn ci-btn--paper" onClick={() => { setPublished(null); shakeUp(); }}>Build another</button>
               </div>
               <button type="button" className="bd__seecode bd__gohome" onClick={() => navigate('/home')}>Go home</button>

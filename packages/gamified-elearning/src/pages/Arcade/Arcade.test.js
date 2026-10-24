@@ -77,3 +77,18 @@ test('a quiet week shows all time and says so, and short lists end with examples
   expect(screen.getByText('Make one and it can be here')).toBeInTheDocument();
   expect(document.querySelectorAll('.ex__card')).toHaveLength(4);
 });
+
+test('offline, the arcade says the games are kept, comes back on retry, and offers building meanwhile', async () => {
+  global.fetch = jest.fn(() => Promise.reject(new TypeError('Failed to fetch')));
+  mount({ user: null, token: null });
+  expect(await screen.findByText('The arcade cannot load right now.')).toBeInTheDocument();
+  expect(screen.getByText(/Every game and every play is kept/)).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Build a game' })).toHaveAttribute('href', '/build');
+  expect(screen.getByText('Build one while you wait')).toBeInTheDocument();
+  global.fetch = jest.fn((url) => String(url).endsWith('/api/explore')
+    ? Promise.resolve({ ok: true, status: 200, json: async () => ({ trending: [{ id: 1, title: 'Star Dodge', publicId: 'b', plays: 3, creatorName: 'Maya', createdAt: now }] }) })
+    : Promise.resolve({ ok: false, status: 404, json: async () => ({}) }));
+  fireEvent.click(screen.getByRole('button', { name: 'Try again now' }));
+  expect(await screen.findByText(/Star Dodge/)).toBeInTheDocument();
+  expect(screen.queryByText('The arcade cannot load right now.')).not.toBeInTheDocument();
+});

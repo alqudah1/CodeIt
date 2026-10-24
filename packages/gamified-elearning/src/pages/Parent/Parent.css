@@ -44,3 +44,5 @@
 .pa__btnline { background: transparent; color: #FFF6ED; box-shadow: inset 0 0 0 2px rgba(255, 246, 237, .35); }
 .pa__promises { display: grid; gap: 0; }
 .pa__promise { cursor: default; }
+.pa__retry { appearance: none; border: 0; background: none; padding: 4px 2px; color: var(--ci-orange-text); font: 800 inherit var(--ci-body); font-size: inherit; text-decoration: underline; cursor: pointer; }
+.pa__retry:focus-visible { outline: 3px solid var(--ci-orange-text); outline-offset: 3px; }

@@ -56,5 +56,11 @@
 .page-error__btn--primary {
   background: var(--arc-orange, #F87824);
   border-color: var(--arc-orange, #F87824);
-  color: #fff;
+  /* Ink on orange, as on every other orange button: white on this orange reads at 2.7:1. */
+  color: var(--ink, #35220E);
+}
+
+.page-error__btn:focus-visible {
+  outline: 3px solid #A84E00;
+  outline-offset: 3px;
 }

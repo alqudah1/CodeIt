@@ -14,6 +14,7 @@ import { useSEO } from '../../hooks/useSEO';
 import Header from '../Header/Header';
 import TabBar from '../../ds/TabBar';
 import ExampleCards from '../../ds/Examples';
+import Offline, { Waiting, useRetry } from '../../ds/Offline';
 import '../../ds/ds.css';
 import './Arcade.css';
 
@@ -43,6 +44,7 @@ export default function Arcade() {
   const [tab, setTab] = useState('week');
   const [status, setStatus] = useState('loading');
   const [ready, setReady] = useState(true);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let alive = true;
@@ -51,8 +53,8 @@ export default function Arcade() {
       try {
         if (user && token) {
           const res = await fetch(`${API_BASE_URL}/api/class/joined`, { headers: auth });
-          const data = res.ok ? await res.json() : null;
-          if (res.status === 503 && alive) setReady(false);
+          const data = await res.json().catch(() => null);
+          if (res.status === 503 && data?.ready === false && alive) setReady(false);
           const first = data?.classes?.[0];
           if (first) {
             const a = await fetch(`${API_BASE_URL}/api/class/${first.code}/arcade`, { headers: auth });
@@ -72,7 +74,9 @@ export default function Arcade() {
       } catch { if (alive) setStatus('error'); }
     })();
     return () => { alive = false; };
-  }, [user, token]);
+  }, [user, token, attempt]);
+  const retry = () => setAttempt((n) => n + 1);
+  useRetry(retry, status === 'error');
 
   // A quiet week shows all time, and says so, rather than an empty list.
   const weekCount = useMemo(() => rankGames(games, 'week').length, [games]);
@@ -107,8 +111,19 @@ export default function Arcade() {
           </div>
         )}
 
-        {status === 'loading' && <p className="ci-sub">Loading the arcade.</p>}
-        {status === 'error' && <p className="ci-sub">The arcade did not load. Try again in a moment.</p>}
+        {status === 'loading' && <Waiting what="the arcade" />}
+        {status === 'error' && (
+          <>
+            <Offline
+              title="The arcade cannot load right now."
+              detail="Every game and every play is kept. The list comes back by itself. Building still works on this device in the meantime."
+              onRetry={retry}
+            >
+              <Link className="ci-btn" to="/build">Build a game</Link>
+            </Offline>
+            <ExampleCards from={2} count={4} wide title="Build one while you wait" note="Examples. Tap one to build it." />
+          </>
+        )}
         {!ready && !klass && user && <p className="ci-sub">Classes are not switched on here yet, so this is everyone's arcade.</p>}
 
         {status === 'ok' && view !== tab && <p className="ci-sub ar__quiet">Nothing new this week yet, so here is all time.</p>}

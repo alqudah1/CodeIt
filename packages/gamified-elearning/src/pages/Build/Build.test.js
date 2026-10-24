@@ -113,3 +113,37 @@ test('publishing as a guest keeps the game on this device and shows the moment, 
   expect(screen.getByRole('button', { name: 'Keep my game' })).toBeInTheDocument();
   expect(JSON.parse(localStorage.getItem('codeit.shelf.v1'))).toHaveLength(1);
 });
+
+test('a signed-in child publishing with the Wi-Fi down is told the truth, keeps the game, and can publish again', async () => {
+  const { AuthContext } = require('../../context/AuthContext');
+  let online = false;
+  global.fetch = jest.fn((url) => {
+    if (!online) return Promise.reject(new TypeError('Failed to fetch'));
+    const u = String(url);
+    if (u.endsWith('/api/builder/projects')) return Promise.resolve({ ok: true, json: () => Promise.resolve({ id: 41 }) });
+    if (u.endsWith('/api/builder/projects/41/publish')) return Promise.resolve({ ok: true, json: () => Promise.resolve({ public_url: '/project/pub41', xp_awarded: 25 }) });
+    return Promise.resolve({ ok: false, json: () => Promise.resolve({}) });
+  });
+  render(<AuthContext.Provider value={{ user: { id: 9, name: 'Maya', role: 'student' }, token: 'k' }}><Build /></AuthContext.Provider>);
+  fireEvent.change(screen.getByLabelText('Describe the game you want to play'), { target: { value: 'catch coins at sunset' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
+  await waitFor(() => expect(frameDoc()).toContain("let gameKind   = 'catch';"), { timeout: 5000 });
+  fireEvent.click(screen.getByRole('button', { name: 'Publish to my arcade' }));
+  const dialog = await screen.findByRole('dialog', { name: 'Saved on this device' });
+  // Not "Your first game!", not "make a free account": she has one.
+  expect(dialog).toHaveTextContent('Saved on this device.');
+  expect(dialog).toHaveTextContent('CodeIt is not answering right now.');
+  expect(dialog).toHaveTextContent('not in your arcade yet');
+  expect(dialog).not.toHaveTextContent('free account');
+  expect(screen.queryByRole('button', { name: 'Keep my game' })).not.toBeInTheDocument();
+  expect(JSON.parse(localStorage.getItem('codeit.shelf.v1'))).toHaveLength(1);
+  expect(localStorage.getItem('codeit_first_publish_done')).toBeNull();
+  // Back online: one press, one project, in the arcade, and the shelf still holds one copy.
+  online = true;
+  fireEvent.click(screen.getByRole('button', { name: 'Publish again' }));
+  const done = await screen.findByRole('dialog', { name: 'Published' });
+  expect(done).toHaveTextContent('Your first game!');
+  expect(done).toHaveTextContent('in your arcade');
+  expect(global.fetch.mock.calls.filter(([u]) => String(u).endsWith('/api/builder/projects'))).toHaveLength(2);
+  expect(JSON.parse(localStorage.getItem('codeit.shelf.v1'))).toHaveLength(1);
+});

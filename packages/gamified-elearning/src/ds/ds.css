@@ -111,6 +111,7 @@
 @keyframes ci-popin { from { transform: scale(0) translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
 .ci-shimmer { background: linear-gradient(90deg, var(--ci-ink) 40%, var(--ci-orange) 50%, var(--ci-ink) 60%); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: ci-shim 3.2s linear infinite; }
 @keyframes ci-shim { to { background-position: -150% 0; } }
+.ci-livedot.is-off { background: rgba(53, 34, 14, .3); box-shadow: none; animation: none; }
 .ci-livedot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ci-mint); box-shadow: 0 0 0 0 rgba(23, 192, 139, .6); animation: ci-ping 1.6s infinite; vertical-align: middle; margin-right: 6px; }
 @keyframes ci-ping { to { box-shadow: 0 0 0 10px rgba(23, 192, 139, 0); } }
 

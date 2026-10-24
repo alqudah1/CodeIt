@@ -15,6 +15,7 @@ import { PRICE_PER_INTERVAL } from '../../config/pricing';
 import { useSEO } from '../../hooks/useSEO';
 import { fetchBillingStatus, isPlusMember, openBillingPortal, startCheckout } from '../../utils/billing';
 import { reportFailure } from '../../utils/humanError';
+import Offline, { Waiting, useRetry } from '../../ds/Offline';
 import Header from '../Header/Header';
 import { recipeGame } from '../Builder/recipeGame';
 import { localRecipe } from '../Build/recipeLocal';
@@ -45,6 +46,7 @@ export default function Parent() {
   const [status, setStatus] = useState('loading');
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState('');
+  const [attempt, setAttempt] = useState(0);
 
   const isStudent = String(user?.role || '').toLowerCase() === 'student';
 
@@ -54,17 +56,26 @@ export default function Parent() {
     (async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/api/family`, { headers: { Authorization: `Bearer ${token}` } });
-        const data = res.ok ? await res.json() : null;
+        // A failed answer is not "no children": saying so would send a parent
+        // off to add a child they already added.
+        if (!res.ok) throw new Error(`family ${res.status}`);
+        const data = await res.json();
         if (!alive) return;
         const st = data?.status || null;
         setFamily(st);
-        if (st?.children?.length) setChildId(st.children[0].id);
+        if (st?.children?.length) setChildId((id) => id || st.children[0].id);
         setStatus('ok');
-      } catch { if (alive) setStatus('error'); }
+      } catch (err) { console.error('parent/family:', err); if (alive) setStatus((s) => (s === 'ok' ? 'ok' : 'error')); }
       try { const b = await fetchBillingStatus(token); if (alive) setBilling(b); } catch { /* the price still shows */ }
     })();
     return () => { alive = false; };
-  }, [user, token, isStudent]);
+  }, [user, token, isStudent, attempt]);
+  const retry = () => { setStatus((s) => (s === 'error' ? 'loading' : s)); setAttempt((n) => n + 1); };
+  useRetry(retry, status === 'error');
+  // A child's games that failed to load try again too, on their own.
+  const evidenceFailed = Boolean(childId && evidence[childId]?.error);
+  const retryEvidence = () => setEvidence((e) => { const next = { ...e }; delete next[childId]; return next; });
+  useRetry(retryEvidence, evidenceFailed);
 
   useEffect(() => {
     if (!childId || !token || evidence[childId]) return undefined;
@@ -103,8 +114,18 @@ export default function Parent() {
     <div className="pa">
       <Header />
       <main className="pa__main">
-        {status === 'loading' && <p className="ci-sub">Loading this week.</p>}
-        {status === 'error' && <p className="ci-sub">This page did not load. Try again in a moment.</p>}
+        {status === 'loading' && <Waiting what="this week" />}
+        {status === 'error' && (
+          <>
+            <div className="ci-ey">This week</div>
+            <h1 className="ci-h1 pa__h1">Your child's week.</h1>
+            <Offline
+              title="This week cannot load right now."
+              onRetry={retry}
+              detail="Nothing is lost: their games and powers are kept on CodeIt. This page fills in by itself when the connection is back."
+            />
+          </>
+        )}
         {status === 'ok' && !(family?.children || []).length && (
           <div className="ci-blk ci-blk--sun pa__card ci-rise">
             <div className="ci-ey">For parents</div>
@@ -127,7 +148,7 @@ export default function Parent() {
                 <div className="ci-blk ci-blk--paper pa__made ci-rise">
                   <div className="ci-ey">Made</div>
                   {!ev && <p className="ci-sub">Loading.</p>}
-                  {ev?.error && <p className="ci-sub">Could not load {name}'s games just now.</p>}
+                  {ev?.error && <p className="ci-sub">Could not reach {name}'s games just now. Trying again by itself. <button type="button" className="pa__retry" onClick={retryEvidence}>Try now</button></p>}
                   {ev && !ev.error && !newest && <p className="ci-sub">No games yet. The first one takes about two minutes on <Link to="/build">Build</Link>.</p>}
                   {newest && (
                     <>

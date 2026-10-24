@@ -17,6 +17,7 @@ import { reportFailure } from '../../utils/humanError';
 import { POWERS } from '../Powers/powers';
 import { BOARD_SENTENCE, PLANS } from './lessonPlans';
 import ExampleCards, { EXAMPLES } from '../../ds/Examples';
+import Offline, { OfflineStrip, Waiting, isUnreachable, useRetry, whyUnreachable } from '../../ds/Offline';
 import Header from '../Header/Header';
 import TabBar from '../../ds/TabBar';
 import '../../ds/ds.css';
@@ -118,43 +119,72 @@ function SignIn() {
 }
 
 // ── /teach ──────────────────────────────────────────────────────────────────
-function MyClasses({ token }) {
+// The codes are what a teacher needs on Monday morning, so the last list this
+// device saw is kept, and shown with its age when CodeIt cannot be reached.
+export const CLASSES_KEY = 'codeit.classes.v1';
+export function readSavedClasses(store, uid) {
+  try {
+    const saved = JSON.parse(store.getItem(`${CLASSES_KEY}.${uid}`) || 'null');
+    return saved && Array.isArray(saved.classes) && saved.at ? saved : null;
+  } catch { return null; }
+}
+export function saveClasses(store, uid, classes, at = new Date().toISOString()) {
+  try { store.setItem(`${CLASSES_KEY}.${uid}`, JSON.stringify({ at, classes: classes.map((c) => ({ code: c.code, name: c.name, members: c.members })) })); } catch { /* the list still shows */ }
+}
+
+function MyClasses({ token, uid }) {
   const navigate = useNavigate();
   const [classes, setClasses] = useState(null);
   const [ready, setReady] = useState(true);
+  const [failed, setFailed] = useState(false);
+  const [saved, setSaved] = useState(null);
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const alive = useRef(true);
+  useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
 
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/class/mine`, { headers: { Authorization: `Bearer ${token}` } });
-        const data = await res.json().catch(() => ({}));
-        if (!alive) return;
-        if (res.status === 503) { setReady(false); return; }
-        setClasses(res.ok ? data.classes || [] : []);
-      } catch { if (alive) setClasses([]); }
-    })();
-    return () => { alive = false; };
-  }, [token]);
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/class/mine`, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json().catch(() => ({}));
+      if (!alive.current) return;
+      if (res.status === 503 && data.ready === false) { setReady(false); return; }
+      if (!res.ok || !Array.isArray(data.classes)) throw new Error(`classes ${res.status}`);
+      setClasses(data.classes); setFailed(false); setSaved(null);
+      saveClasses(localStorage, uid, data.classes);
+    } catch (err) {
+      console.error('class/mine:', err);
+      if (!alive.current) return;
+      const last = readSavedClasses(localStorage, uid);
+      setSaved(last);
+      setClasses((c) => c || (last ? last.classes : null));
+      setFailed(true);
+    }
+  }, [token, uid]);
+  useEffect(() => { load(); }, [load]);
+  useRetry(load, failed);
 
   async function create(e) {
     e.preventDefault();
     if (busy || name.trim().length < 2) return;
     setBusy(true); setError('');
+    let res = null;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/class`, {
+      res = await fetch(`${API_BASE_URL}/api/class`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ name: name.trim() }),
       });
       const data = await res.json().catch(() => ({}));
-      if (res.status === 503) { setReady(false); return; }
+      if (res.status === 503 && data.ready === false) { setReady(false); return; }
       if (!res.ok) throw new Error(data.error || 'Could not make the class.');
       navigate(`/teach/${data.class.code}`);
-    } catch (err) { setError(reportFailure('class/create', err, 'Could not make the class. Try again.')); } finally { setBusy(false); }
+    } catch (err) {
+      setError(isUnreachable(err, res && !res.ok ? res : null)
+        ? `${whyUnreachable()} The class was not made yet. Try again in a moment.`
+        : reportFailure('class/create', err, 'Could not make the class. Try again.'));
+    } finally { setBusy(false); }
   }
 
   if (!ready) return <NotSetUp />;
@@ -163,6 +193,15 @@ function MyClasses({ token }) {
       <div className="ci-ey">Teach</div>
       <h1 className="ci-h1">Your classes</h1>
       <p className="ci-sub"><Link to="/teach/plans">Twelve lesson plans</Link>, one per power, 45 minutes each.</p>
+      {failed && (
+        <Offline
+          onRetry={load}
+          title={saved ? 'Your class codes, saved on this device.' : 'Your classes cannot load right now.'}
+          detail={saved
+            ? `Saved ${ago(saved.at)}. Read them out as normal: children can join as soon as the connection is back.`
+            : 'Your classes are safe. This page tries again by itself every 15 seconds.'}
+        />
+      )}
       <form className="ci-blk ci-blk--sun cl__new ci-rise" onSubmit={create}>
         <label className="cl__field">
           <span>New class</span>
@@ -171,8 +210,8 @@ function MyClasses({ token }) {
         <button type="submit" className="ci-btn ci-btn--ink" disabled={busy || name.trim().length < 2}>{busy ? 'Making' : 'Make the class'}</button>
         {error && <p className="cl__err" role="alert">{error}</p>}
       </form>
-      {classes === null && <p className="ci-sub">Loading your classes.</p>}
-      {classes && classes.length === 0 && <p className="ci-sub">No classes yet. Name one above and you get a code to read out.</p>}
+      {classes === null && !failed && <Waiting what="your classes" />}
+      {classes && classes.length === 0 && !failed && <p className="ci-sub">No classes yet. Name one above and you get a code to read out.</p>}
       <div className="cl__list">
         {(classes || []).map((c, i) => (
           <Link key={c.code} to={`/teach/${c.code}`} className="ci-blk ci-blk--paper cl__item ci-rise" style={{ animationDelay: `${0.05 * (i + 1)}s` }}>
@@ -196,20 +235,30 @@ function Board({ code, token }) {
   const [copied, setCopied] = useState(false);
   const seen = useRef(new Set());
   const [fresh, setFresh] = useState(new Set());
+  // When a poll fails after the board has loaded, the board stays up, says so,
+  // and says how old it is. The tiles are still right about who joined.
+  const [lostSince, setLostSince] = useState('');
+  const lastOk = useRef('');
 
   const load = useCallback(async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/class/${encodeURIComponent(code)}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
       const data = await res.json().catch(() => ({}));
-      if (res.status === 503) { setStatus('notready'); return; }
-      if (!res.ok) { setStatus('missing'); return; }
+      if (res.status === 503 && data.ready === false) { setStatus('notready'); return; }
+      if (res.status === 404) { setStatus('missing'); return; }
+      if (!res.ok || !Array.isArray(data.members)) throw new Error(`board ${res.status}`);
       const arrived = new Set();
       for (const m of data.members) if (seen.current.size && !seen.current.has(m.id)) arrived.add(m.id);
       seen.current = new Set(data.members.map((m) => m.id));
       if (arrived.size) { setFresh(arrived); setTimeout(() => setFresh(new Set()), 2500); }
       setBoard(data);
       setStatus('ok');
-    } catch { setStatus((s) => (s === 'ok' ? 'ok' : 'error')); }
+      setLostSince('');
+      lastOk.current = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    } catch {
+      setStatus((s) => (s === 'ok' ? 'ok' : 'error'));
+      setLostSince(lastOk.current || 'lost');
+    }
   }, [code, token]);
 
   useEffect(() => { load(); }, [load]);
@@ -248,7 +297,29 @@ function Board({ code, token }) {
 
   if (status === 'notready') return <NotSetUp />;
   if (status === 'missing') return <div className="ci-blk ci-blk--paper cl__card"><h1 className="ci-h1 cl__title">No class has that code.</h1><p className="ci-sub">Check it against <Link to="/teach">your classes</Link>.</p></div>;
-  if (status === 'error' || !board) return <p className="ci-sub">Loading the board.</p>;
+  if (status === 'error') {
+    // Nothing loaded yet, but the code is in the address, and the code is
+    // what the room needs. Show it big, keep trying underneath.
+    return (
+      <div className="cl__board">
+        <div className="cl__head">
+          <div>
+            <div className="ci-ey">Class code</div>
+            <div className="cl__bigcode" aria-label={`Class code ${code}`}>{spaceCode(code)}</div>
+            <div className="cl__where">{SITE}/join</div>
+          </div>
+          <div className="cl__tools"><Link className="ci-chip" to="/teach">All classes</Link></div>
+        </div>
+        <Offline
+          level={1}
+          title="The board is waiting for the connection."
+          detail="Write the code up anyway: children can join the moment CodeIt answers, and their tiles appear here by themselves."
+          onRetry={load}
+        />
+      </div>
+    );
+  }
+  if (!board) return <Waiting what="the board" />;
 
   return (
     <div className={`cl__board${projector ? ' is-projector' : ''}${stage ? ' has-stage' : ''}`}>
@@ -266,6 +337,8 @@ function Board({ code, token }) {
         </div>
       </div>
 
+      {lostSince && <OfflineStrip since={lostSince === 'lost' ? '' : lostSince} onRetry={load} />}
+
       {stage && (
         <div className="cl__stage ci-rise">
           <div className="cl__stagebar">
@@ -278,7 +351,7 @@ function Board({ code, token }) {
         </div>
       )}
 
-      <div className="cl__count"><span className="ci-livedot" />{members.length} {members.length === 1 ? 'child' : 'children'} in. {totalGames} {totalGames === 1 ? 'game' : 'games'} made.</div>
+      <div className="cl__count"><span className={`ci-livedot${lostSince ? ' is-off' : ''}`} />{members.length} {members.length === 1 ? 'child' : 'children'} in. {totalGames} {totalGames === 1 ? 'game' : 'games'} made.</div>
       {members.length > 0 && (
         <div className="cl__nums">
           <div className="ci-blk ci-blk--sun"><div className="ci-num">{numbers.building}</div><div className="ci-cap">building</div></div>
@@ -333,26 +406,43 @@ function Board({ code, token }) {
 function Student({ code, kid, token }) {
   const [data, setData] = useState(null);
   const [status, setStatus] = useState('loading');
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/class/${encodeURIComponent(code)}/student/${encodeURIComponent(kid)}`, { headers: { Authorization: `Bearer ${token}` } });
-        const body = await res.json().catch(() => ({}));
-        if (!alive) return;
-        if (res.status === 503) { setStatus('notready'); return; }
-        if (res.status === 403) { setStatus('forbidden'); return; }
-        if (!res.ok) { setStatus('missing'); return; }
-        setData(body); setStatus('ok');
-      } catch { if (alive) setStatus('error'); }
-    })();
-    return () => { alive = false; };
+  const alive = useRef(true);
+  useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/class/${encodeURIComponent(code)}/student/${encodeURIComponent(kid)}`, { headers: { Authorization: `Bearer ${token}` } });
+      const body = await res.json().catch(() => ({}));
+      if (!alive.current) return;
+      if (res.status === 503 && body.ready === false) { setStatus('notready'); return; }
+      if (res.status === 403) { setStatus('forbidden'); return; }
+      if (res.status === 404) { setStatus('missing'); return; }
+      if (!res.ok || !body.student) throw new Error(`student ${res.status}`);
+      setData(body); setStatus('ok');
+    } catch (err) {
+      console.error('class/student:', err);
+      if (alive.current) setStatus((s) => (s === 'ok' ? 'ok' : 'error'));
+    }
   }, [code, kid, token]);
+  useEffect(() => { load(); }, [load]);
+  useRetry(load, status === 'error');
 
   if (status === 'notready') return <NotSetUp />;
   if (status === 'forbidden') return <div className="ci-blk ci-blk--paper cl__card"><h1 className="ci-h1 cl__title">This is the teacher's page.</h1><p className="ci-sub">Only the adult who made the class sees a child's sentences.</p></div>;
   if (status === 'missing') return <div className="ci-blk ci-blk--paper cl__card"><h1 className="ci-h1 cl__title">That child is not in this class.</h1><p className="ci-sub"><Link to={`/teach/${code}`}>Back to the board</Link></p></div>;
-  if (status !== 'ok') return <p className="ci-sub">{status === 'error' ? 'This page did not load. Try again in a moment.' : 'Loading.'}</p>;
+  if (status === 'error') {
+    return (
+      <div className="st__off">
+        <Link to={`/teach/${code}`} className="ci-ey cl__link-ey">Back to the board · {spaceCode(code)}</Link>
+        <Offline
+          level={1}
+          title="Cannot reach this child's work right now."
+          detail="Nothing is lost: every game and sentence is kept on CodeIt. This page tries again by itself every 15 seconds."
+          onRetry={load}
+        />
+      </div>
+    );
+  }
+  if (status !== 'ok') return <Waiting what="this child's work" />;
 
   const { student, games, powers, done } = data;
   const plays = games.reduce((a, g) => a + g.plays, 0);
@@ -443,7 +533,7 @@ export default function Teach() {
         {!user || !token
           ? (code && !kid ? <Board code={code} token={null} /> : <SignIn />)
           : code && kid ? <Student code={code} kid={kid} token={token} />
-          : code ? <Board code={code} token={token} /> : <MyClasses token={token} />}
+          : code ? <Board code={code} token={token} /> : <MyClasses token={token} uid={user.user_id ?? user.id ?? user.userId ?? 'me'} />}
       </main>
       <TabBar />
     </div>

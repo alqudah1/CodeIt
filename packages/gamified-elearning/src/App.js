@@ -1,5 +1,5 @@
-import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
+import React, { lazy, Suspense, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
@@ -16,6 +16,7 @@ import ChestTray from './components/Chest/ChestTray';
 import RequireAdmin from './pages/Admin/RequireAdmin';
 import AcquisitionTracker from './components/AcquisitionTracker/AcquisitionTracker';
 import ActivityTracker from './components/ActivityTracker/ActivityTracker';
+import { warmCoreRoutes } from './utils/warmRoutes';
 
 // ── Lazy-loaded routes ────────────────────────────────────────────
 const LessonMap      = lazy(() => import('./pages/Lessons/LessonMap'));
@@ -128,6 +129,19 @@ const QuizWrapper = () => {
   return <Quiz quizId={quizId} />;
 };
 
+// A new page gets a fresh boundary: one page's error card must not follow a
+// child to the next page they tap in the header.
+function RouteBoundary({ children }) {
+  const { pathname } = useLocation();
+  return <PageErrorBoundary resetKey={pathname}>{children}</PageErrorBoundary>;
+}
+
+// The pages a class uses, fetched once the first one is up (see warmRoutes).
+function WarmRoutes() {
+  useEffect(() => (process.env.NODE_ENV === 'test' ? undefined : warmCoreRoutes()), []);
+  return null;
+}
+
 const App = () => (
   <AuthProvider>
     <ProgressProvider>
@@ -140,7 +154,8 @@ const App = () => (
               all 31 lessons went white on 1 September and stayed that way for
               a day. Inside Router, so the boundary's own links work; outside
               Suspense, so a lazy chunk that fails to load lands here too. */}
-          <PageErrorBoundary>
+          <WarmRoutes />
+          <RouteBoundary>
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* ── Public / always-eager ── */}
@@ -275,7 +290,7 @@ const App = () => (
               />
             </Routes>
           </Suspense>
-          </PageErrorBoundary>
+          </RouteBoundary>
         </Router>
       </CharacterProvider>
     </ProgressProvider>

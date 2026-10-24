@@ -106,3 +106,30 @@ test('signed out, a parent sees an example week built from real parts, flagged, 
   expect(document.body.textContent).not.toMatch(/Maya|Leo|Omar/);
   expect(screen.getByRole('link', { name: 'Make an account' })).toHaveAttribute('href', '/register');
 });
+
+test('offline, a parent is not told to add a child they already added, and the page fills in when it can', async () => {
+  global.fetch = jest.fn(() => Promise.resolve({ ok: false, status: 502, json: async () => { throw new Error('not json'); } }));
+  mount({ user: { name: 'Sam', role: 'Parent' }, token: 't' });
+  expect(await screen.findByText('This week cannot load right now.')).toBeInTheDocument();
+  expect(screen.getByText(/their games and powers are kept/)).toBeInTheDocument();
+  expect(screen.queryByText('No child profile linked yet.')).not.toBeInTheDocument();
+  serve();
+  fireEvent.click(screen.getByRole('button', { name: 'Try again now' }));
+  expect(await screen.findByText('Carrot Rain')).toBeInTheDocument();
+  expect(screen.queryByText('This week cannot load right now.')).not.toBeInTheDocument();
+});
+
+test('a child\'s games that fail to load offer a retry, and arrive on it', async () => {
+  let evidenceUp = false;
+  global.fetch = jest.fn((url) => {
+    const u = String(url);
+    if (u.endsWith('/api/family')) return Promise.resolve({ ok: true, json: async () => ({ success: true, status: { children: [{ id: 4, username: 'maya' }] } }) });
+    if (u.endsWith('/evidence')) return evidenceUp ? Promise.resolve({ ok: true, json: async () => EVIDENCE }) : Promise.reject(new TypeError('Failed to fetch'));
+    return Promise.resolve({ ok: false, status: 404, json: async () => ({}) });
+  });
+  mount({ user: { name: 'Sam', role: 'Parent' }, token: 't' });
+  expect(await screen.findByText(/Could not reach Maya's games just now/)).toBeInTheDocument();
+  evidenceUp = true;
+  fireEvent.click(screen.getByRole('button', { name: 'Try now' }));
+  expect(await screen.findByText('Carrot Rain')).toBeInTheDocument();
+});

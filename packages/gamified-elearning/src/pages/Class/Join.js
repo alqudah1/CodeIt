@@ -13,6 +13,7 @@ import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
 import { reportFailure } from '../../utils/humanError';
+import { isUnreachable, whyUnreachable } from '../../ds/Offline';
 import Header from '../Header/Header';
 import TabBar from '../../ds/TabBar';
 import '../../ds/ds.css';
@@ -50,10 +51,19 @@ export default function Join() {
         body: JSON.stringify({ first_name: name.trim() }),
       });
       const data = await res.json().catch(() => ({}));
+      if (!res.ok && !data.error && res.status >= 500) throw new Error(`join ${res.status}`);
       if (!res.ok) throw new Error(data.error || 'Could not join. Check the code.');
       if (data.token) login({ user: data.user, token: data.token });
       navigate('/home', { replace: true, state: { joinedClass: data.class?.name } });
     } catch (err) {
+      // The code is probably right. Blaming it would send a child back to
+      // retype a code that was never the problem.
+      const unreachable = isUnreachable(err) || /^join 5\d\d$/.test(String(err.message));
+      if (unreachable) {
+        console.error('join:', err);
+        setError(`${whyUnreachable()} It is not your code. Wait a moment and press Join again.`);
+        return;
+      }
       setError(reportFailure('join', err, 'Could not join. Check the code and try again.'));
       setShake(true); setTimeout(() => setShake(false), 500);
     } finally { setBusy(false); }
