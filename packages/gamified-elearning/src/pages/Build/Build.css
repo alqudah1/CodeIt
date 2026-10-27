@@ -139,3 +139,4 @@
 .bd__kind:focus-visible { outline: 3px solid var(--ci-orange-text); outline-offset: 3px; }
 .bd__exact { margin: 10px 0 0; font-size: 14px; color: var(--ci-ink-soft); }
 .bd__exact a { color: var(--ci-orange-text); font-weight: 800; }
+.bd__prove { margin-top: 12px; }

@@ -34,6 +34,9 @@ import { PLAYERS, ENEMIES, TREASURES, SPRITE_LABEL } from './sprites';
 import { IDEAS, SKY_NAMES, TWISTS, keepTheirWord, localRecipe, looksLikeGame, nameFor, normaliseRecipe, rollIdea } from './recipeLocal';
 import { KINDS, KIND_SAY, nounsIn, wordFor } from './gameWords';
 import Look from './Look';
+import ProveItPanel from '../Builder/ProveItPanel';
+import { hasUnderstood, recordUnderstanding } from '../../utils/understanding';
+import { trackEvent } from '../../utils/trackEvent';
 import { whyUnreachable } from '../../ds/Offline';
 import '../../ds/ds.css';
 import './Build.css';
@@ -152,6 +155,10 @@ export default function Build() {
   // Whether the model answered. When it is out of credit or unreachable we do
   // not send a child to the studio to wait for a build that cannot happen.
   const [aiDown, setAiDown] = useState(false);
+  // "Show it's yours" waits until the child has made the game theirs: changed
+  // a knob, picked another kind, or published it. Asking about a game they
+  // have not touched would be asking them to explain our template.
+  const [changed, setChanged] = useState(false);
   const [said, setSaid] = useState('');
   // The things the child named, so tapping a knob can always come back to them.
   const own = useRef({ player: null, enemy: null });
@@ -205,8 +212,24 @@ export default function Build() {
     setPublished(null);
     madeId.current = null;
     shelfId.current = null;
-    if (from === 'build') { chord(); }
+    if (from === 'build') { chord(); setChanged(false); }
+    if (from === 'knob' || from === 'choice') setChanged(true);
   }, []);
+
+  // ── Show it's yours: questions made from this game's own code ──
+  const proofKey = recipe ? `build:${recipe.kind}:${recipe.title}:${recipe.player}` : '';
+  const proved = ({ skills, questionIds }) => {
+    const projectId = madeId.current || shelfId.current || proofKey;
+    recordUnderstanding(localStorage, { projectId, projectTitle: recipe.title, skills });
+    if (token && Array.isArray(questionIds) && questionIds.length) {
+      void fetch(`${API_BASE_URL}/api/understanding`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ projectKey: projectId, projectTitle: recipe.title, questionIds }),
+      }).catch(() => { /* the record on this device still stands */ });
+    }
+    void trackEvent('project_explained', String(skills.length), token);
+  };
 
   // ── Say it: the server's recipe, or ours ──
   const build = useCallback(async (text) => {
@@ -530,6 +553,11 @@ export default function Build() {
                 ))}
               </div>
               {mode === 'say' && <WhatWeMade recipe={recipe} said={said} aiDown={aiDown} onKind={remake} />}
+              {(changed || published) && gameHtml && (
+                <div className="bd__prove">
+                  <ProveItPanel code={gameHtml} projectTitle={recipe.title} onProved={proved} alreadyProved={hasUnderstood(localStorage, madeId.current || shelfId.current || proofKey)} />
+                </div>
+              )}
               <div className="bd__after">
                 <button type="button" className="ci-btn ci-btn--ink bd__publish" onClick={publish} disabled={publishing}>{publishing ? 'Publishing' : published && !published.offline ? (published.kept ? 'In your arcade' : 'Kept on this device') : 'Publish to my arcade'}</button>
                 <button type="button" className="ci-btn ci-btn--paper" onClick={shakeUp}>Shake it up</button>

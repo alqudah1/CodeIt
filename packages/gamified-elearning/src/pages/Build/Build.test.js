@@ -173,3 +173,20 @@ test('an idea with no game word says so, and a studio offer only appears when th
   expect(await screen.findByText(/We could not tell which kind of game you meant/, {}, { timeout: 5000 })).toBeInTheDocument();
   expect(screen.queryByRole('link', { name: /Have the studio write it from scratch/ })).toBeNull();
 });
+
+// Our Instagram post of 24 October: "The game works. Now comes the part most
+// apps skip. One question, made from your kid's own code." That step lived
+// only in the studio; the page most children build on never asked.
+test('once the child changes the game, it asks them to show it is theirs, from its own code', async () => {
+  global.fetch = jest.fn(() => Promise.reject(new Error('offline')));
+  render(<Build />);
+  fireEvent.change(screen.getByLabelText('Describe the game you want to play'), { target: { value: 'a samosa that has to dodge the fork' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
+  await waitFor(() => expect(frameDoc()).toContain("let gameKind   = 'dodge';"), { timeout: 5000 });
+  // Not before they have touched it: that would be asking about our template.
+  expect(screen.queryByText('Show this one is yours')).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: /Lives: 3/ }));
+  expect(await screen.findByText('Show this one is yours')).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: /I can explain it/ }));
+  expect(screen.getByText(/In your project|This line is in your project|How many times/)).toBeInTheDocument();
+});
