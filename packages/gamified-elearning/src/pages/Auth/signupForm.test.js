@@ -56,3 +56,32 @@ test('a child with a project in hand sees it running above the form', () => {
   expect(frame.getAttribute('sandbox')).toBe('allow-scripts');
   expect(frame.getAttribute('srcdoc')).toMatch(/canvas/);
 });
+
+test('a teacher from /teach goes straight to a teacher account, not a family profile, and comes back to make a class', async () => {
+  const axios = require('axios');
+  const mockNavigate = jest.fn();
+  jest.spyOn(require('react-router-dom'), 'useNavigate').mockReturnValue(mockNavigate);
+  axios.post.mockResolvedValueOnce({ data: { token: 't', user: { id: 3, role: 'educator', name: 'Ms R' } } });
+  mockLocation = { state: { from: '/teach' }, search: '?for=class' };
+  render(<Register />);
+  expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Make your teacher account');
+  expect(screen.getByText('Teacher')).toBeInTheDocument();
+  expect(screen.getByText(/They never type an email or a password/)).toBeInTheDocument();
+  expect(screen.queryByText(/private learner profile/)).toBeNull();
+  expect(screen.queryByText(/How would you like to start/)).toBeNull();
+  fireEvent.change(screen.getByLabelText('Full name'), { target: { value: 'Ms R' } });
+  fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'r@school.test' } });
+  fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'longenough1' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Make my account' }));
+  await new Promise((r) => setTimeout(r, 0));
+  await new Promise((r) => setTimeout(r, 0));
+  expect(axios.post.mock.calls[0][1]).toMatchObject({ accountType: 'educator', email: 'r@school.test' });
+  expect(mockNavigate).toHaveBeenCalledWith('/teach', expect.anything());
+});
+
+test('a family sign-up still says what it always said', () => {
+  mockLocation = { state: null, search: '?for=family' };
+  render(<Register />);
+  expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Create a private learner profile');
+  expect(screen.getByRole('button', { name: 'Create Parent / Educator Account' })).toBeInTheDocument();
+});

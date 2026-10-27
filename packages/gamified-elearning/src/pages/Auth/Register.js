@@ -74,7 +74,12 @@ export default function Register() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search || '');
   const familyEntry = searchParams.get('for') === 'family';
-  const [step, setStep] = useState(familyEntry ? 'educator' : 'choose');
+  // A teacher who pressed "Make an account" on /teach came to make a class.
+  // They were asked whether they are learning to code, then told the account
+  // was for setting up a private profile for their child.
+  const cameFrom = typeof location.state?.from === 'string' ? location.state.from : '';
+  const teacherEntry = searchParams.get('for') === 'class' || cameFrom === '/teach' || cameFrom.startsWith('/teach/');
+  const [step, setStep] = useState(familyEntry || teacherEntry ? 'educator' : 'choose');
   const [error, setError] = useState(null);
   const [showPw, setShowPw] = useState(false);
   const [pendingToken, setPendingToken] = useState(null);
@@ -471,14 +476,16 @@ export default function Register() {
           <button type="button" className="auth-back" onClick={goBack}>Back</button>
 
           <header className="auth-header">
-            <span className="auth-pill">Parent / Educator</span>
+            <span className="auth-pill">{teacherEntry ? 'Teacher' : 'Parent / Educator'}</span>
             <h1>
               {hasBuilderDraft
                 ? `Create an adult account to ${builderActionWord}`
-                : familyEntry ? 'Create a private learner profile' : 'Create your account'}
+                : teacherEntry ? 'Make your teacher account' : familyEntry ? 'Create a private learner profile' : 'Create your account'}
             </h1>
             <p>
-              {resumePricingInterest
+              {teacherEntry
+                ? 'Then make a class and read out its code. Children join with the code and a first name. They never type an email or a password.'
+                : resumePricingInterest
                 ? 'Create an adult account to finish joining the founding-family waitlist.'
                 : hasBuilderDraft
                   ? 'Your project is safe. After this setup, we’ll bring you back to finish.'
@@ -489,7 +496,9 @@ export default function Register() {
           </header>
 
           <div className="auth-educator-note">
-            After signup, confirm your adult email to create a private learner profile for ages 5 to 12.
+            {teacherEntry
+              ? 'Classes are free. Nothing to install, and the twelve lesson plans are ready to read aloud.'
+              : 'After signup, confirm your adult email to create a private learner profile for ages 5 to 12.'}
           </div>
 
           <form className="auth-form" onSubmit={submitE(onEducatorSubmit)}>
@@ -538,7 +547,7 @@ export default function Register() {
             </div>
 
             {error && <p className="error-message">{error}</p>}
-            <button type="submit" className="auth-button">Create Parent / Educator Account</button>
+            <button type="submit" className="auth-button">{teacherEntry ? 'Make my account' : 'Create Parent / Educator Account'}</button>
           </form>
 
           <div className="auth-footer">

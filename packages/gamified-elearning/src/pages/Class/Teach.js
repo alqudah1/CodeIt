@@ -109,7 +109,7 @@ function SignIn() {
           <p className="ci-sub">{TEACH_LANDING.intro}</p>
           <div className="tl__btns">
             <Link className="ci-btn ci-btn--ink" to="/login" state={{ from: '/teach' }}>Sign in</Link>
-            <Link className="ci-btn ci-btn--paper" to="/register" state={{ from: '/teach' }}>Make an account</Link>
+            <Link className="ci-btn ci-btn--paper" to="/register?for=class" state={{ from: '/teach' }}>Make an account</Link>
           </div>
         </div>
         <div className="ci-blk ci-blk--ink tl__board ci-rise" style={{ animationDelay: '.06s' }} aria-label="Example of the projector board">
