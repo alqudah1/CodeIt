@@ -2105,7 +2105,11 @@ export default function Builder() {
         });
         clearTimeout(quickTimeout);
         const quickData = quick.ok ? await quick.json() : null;
-        if (quickData?.game && quickData.recipe && RECIPE_KINDS.includes(quickData.recipe.kind)) {
+        // An idea none of the nine kinds fits goes to the full build, which can
+        // write anything, unless the model is out of reach; then the closest
+        // quick game is better than a starter that ignores the idea.
+        const fitsAKind = quickData?.fits !== false || quickData?.ai === 'down';
+        if (quickData?.game && quickData.recipe && RECIPE_KINDS.includes(quickData.recipe.kind) && fitsAKind) {
           const html = recipeGame(quickData.recipe);
           setCode(html);
           setBuiltPrompt(text);

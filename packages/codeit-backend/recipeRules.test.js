@@ -6,8 +6,10 @@ const { looksLikeGame, recipeFromRules, validRecipe, titleFor } = require('./rec
 test('the sentence a child typed in class becomes a shooter in space, without a model', () => {
   const r = recipeFromRules('I want a ship game were you shoot at enemy ships with the button');
   assert.equal(r.kind, 'shooter');
-  assert.equal(r.player, '🚀');
-  assert.equal(r.enemy, '👾');
+  // Nobody is named before "shoot", so you are our ship; the enemy ships are
+  // ships too, but not the same picture as you.
+  assert.equal(r.player, 'ship');
+  assert.equal(r.enemy, '🛸');
   assert.equal(r.sky, 'space');
   assert.equal(r.title, 'Ship Game');
   assert.deepEqual(validRecipe(r), r);
@@ -41,17 +43,29 @@ test('a model recipe is accepted only when every field is sane', () => {
   assert.equal(validRecipe(null), null);
 });
 
-test('titles are short, capitalised and end with Game', () => {
+test('titles come from the child\'s own words', () => {
   assert.equal(titleFor('make me a zombie game with lasers'), 'Zombie Game');
-  assert.equal(titleFor('a cat that catches pizza'), 'Cat Game');
-  assert.equal(titleFor('x'), 'My Game');
+  assert.equal(titleFor('a cat that catches pizza'), 'Cat Catch');
+  assert.equal(titleFor('a samosa that has to dodge the fork'), 'Samosa Dodge');
+  assert.equal(titleFor('a game where a cat catches falling pizza'), 'Cat Catch', 'never "Game Game"');
+});
+
+test('our snack challenge sentences keep their snacks, and say when no kind fits', () => {
+  assert.deepEqual(recipeFromRules('a samosa that has to dodge the fork'), { kind: 'dodge', fits: true, title: 'Samosa Dodge', player: '🥟', enemy: '🍴', treasure: 'gem', sky: 'day', speed: 2, lives: 3, winAt: 15 });
+  assert.equal(recipeFromRules('pizza that falls from the sky').treasure, '🍕');
+  assert.equal(looksLikeGame('pizza that falls from the sky'), true);
+  assert.equal(recipeFromRules('popcorn you catch in a bucket').player, '🪣');
+  assert.equal(recipeFromRules('a unicorn').fits, false);
+  assert.equal(recipeFromRules('a dragon that flies through the clouds').kind, 'flyer');
+  for (const t of ['a samosa that has to dodge the fork', 'a maze where a mouse finds cheese', 'a pet puppy you feed']) assert.ok(validRecipe(recipeFromRules(t)), t);
 });
 
 test('the rules read what the child said, not a word inside another word', () => {
   assert.equal(recipeFromRules('a dragon that dodges fireballs').kind, 'dodge', 'fireballs are dodged, not shot');
   assert.equal(recipeFromRules('a runner that jumps over bombs and collects coins').kind, 'runner');
   assert.equal(recipeFromRules('an alien that dodges rocks at night').sky, 'night', 'the place they named wins');
-  assert.equal(recipeFromRules('catch stars on the beach').sky, 'day', 'stars are not a sky');
+  assert.equal(recipeFromRules('catch stars in the park').sky, 'day', 'stars are not a sky');
+  assert.equal(recipeFromRules('catch stars on the beach').sky, 'ocean', 'a beach is by the sea');
   assert.equal(recipeFromRules('a ship that shoots asteroids').kind, 'shooter');
   assert.equal(recipeFromRules('a ship that shoots asteroids').sky, 'space');
 });

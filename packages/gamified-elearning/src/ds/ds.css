@@ -135,3 +135,5 @@ a.cl__tile:focus-visible, button.cl__tile:focus-visible, .tl__plan:focus-visible
 
 /* Build's idea box: the ring goes on the white box, not the bare text area inside it. */
 .bd__ask:focus-within { outline: 3px solid var(--ci-orange-text); outline-offset: 2px; }
+/* A picture a child named, sized like the sprite it stands beside. */
+.look--emoji { display: inline-grid; place-items: center; line-height: 1; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; font-style: normal; }

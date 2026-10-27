@@ -96,7 +96,9 @@ test('signed out, a parent sees an example week built from real parts, flagged, 
   expect(screen.getByText('Example week')).toBeInTheDocument();
   expect(screen.getByText(/Yours shows your own child/)).toBeInTheDocument();
   const game = document.querySelector('.pa__frame iframe').getAttribute('srcdoc');
-  expect(game).toContain("let gameTitle  = 'Bunny Game';");
+  // The example's name is the one the engine gives that sentence, so the page and the game agree.
+  expect(game).toContain("let gameTitle  = 'Bunny Catch';");
+  expect(screen.getByRole('heading', { name: 'Bunny Catch' })).toBeInTheDocument();
   expect(game).toContain("let treasure   = 'carrot';");
   expect(screen.getByText('Numbers: change how fast')).toBeInTheDocument();
   expect(screen.getByText('Loops: make waves')).toBeInTheDocument();

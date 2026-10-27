@@ -30,8 +30,10 @@ import { journeyHeaders } from '../../utils/journey';
 import { avatarSpriteDataUri, injectPlayerSprite } from '../../utils/avatarSprite';
 import { saveProject as saveShelfProject } from '../../utils/projectShelf';
 import { recipeGame } from '../Builder/recipeGame';
-import { PLAYERS, ENEMIES, TREASURES, SPRITE_LABEL, spriteUri } from './sprites';
+import { PLAYERS, ENEMIES, TREASURES, SPRITE_LABEL } from './sprites';
 import { IDEAS, SKY_NAMES, TWISTS, keepTheirWord, localRecipe, looksLikeGame, nameFor, normaliseRecipe, rollIdea } from './recipeLocal';
+import { KINDS, KIND_SAY, nounsIn, wordFor } from './gameWords';
+import Look from './Look';
 import { whyUnreachable } from '../../ds/Offline';
 import '../../ds/ds.css';
 import './Build.css';
@@ -39,16 +41,15 @@ import './Build.css';
 const SKY_COLOURS = { space: ['#2A1E5C', '#5B3FD6'], night: ['#1E1B3A', '#35220E'], ocean: ['#042F4A', '#0E7490'], candy: ['#FF6B6B', '#FFD6E0'], day: ['#3EB7F8', '#BFE6FF'], sunset: ['#FF7A00', '#FFC93C'] };
 const SKY_LABEL = { space: 'Space', night: 'Night', ocean: 'Under the sea', candy: 'Candy land', day: 'Day', sunset: 'Sunset' };
 const TWIST_LABEL = { none: 'None', faster: 'Faster', waves: 'Waves' };
-const KIND_LABEL = { catch: 'Catch things', dodge: 'Dodge things', shooter: 'Shoot things', runner: 'Run and jump' };
-const KIND_ICON = { catch: 'coin', dodge: 'bomb', shooter: 'rock', runner: 'carrot' };
+const KIND_LABEL = KIND_SAY;
+const KIND_ICON = { catch: 'coin', dodge: 'bomb', shooter: 'rock', runner: 'carrot', flyer: '🐦', racer: '🏎️', maze: '🧩', pop: '🎈', pet: '🐶' };
 const STEPS = ['Reading your idea', 'Picking the kind of game', 'Choosing who you are', 'Choosing the enemies', 'Setting the speed'];
-const TRAY_WORDS = [[/ship|rocket/, 'ship'], [/bunny|rabbit/, 'hero'], [/alien|ufo/, 'alien'], [/asteroid|rock|spike|meteor/, 'rock'], [/bomb/, 'bomb'], [/coin|gold/, 'coin'], [/carrot/, 'carrot'], [/star/, 'star'], [/gem|diamond/, 'gem'], [/sun|fire|lava/, 'sun']];
 const FIRST_PUBLISH_KEY = 'codeit_first_publish_done';
 
 const WIZARD = [
   { key: 'sky', title: 'Where does it happen?', hint: 'Pick a world. The frame changes as you tap.', options: SKY_NAMES.map((v) => ({ value: v, label: SKY_LABEL[v], sky: true })) },
   { key: 'player', title: 'Who are you?', hint: 'Your hero.', options: PLAYERS.map((v) => ({ value: v, label: SPRITE_LABEL[v], sprite: v })) },
-  { key: 'kind', title: 'What do you do?', hint: 'The one rule of the game.', two: true, options: Object.keys(KIND_LABEL).map((v) => ({ value: v, label: KIND_LABEL[v], sprite: KIND_ICON[v] })) },
+  { key: 'kind', title: 'What do you do?', hint: 'The one rule of the game.', two: true, options: KINDS.map((v) => ({ value: v, label: KIND_LABEL[v], sprite: KIND_ICON[v] })) },
   { key: 'enemy', title: 'What comes at you?', hint: 'The enemy.', options: ENEMIES.map((v) => ({ value: v, label: SPRITE_LABEL[v], sprite: v })) },
   { key: 'treasure', title: 'What do you collect?', hint: 'The treasure.', options: TREASURES.map((v) => ({ value: v, label: SPRITE_LABEL[v], sprite: v })) },
   { key: 'twist', title: 'Add a twist.', hint: 'This is what makes it yours.', options: TWISTS.map((v) => ({ value: v, label: v === 'none' ? 'Keep it simple' : v === 'faster' ? 'Gets faster' : 'Comes in waves', sprite: v === 'none' ? 'star' : v === 'faster' ? 'sun' : 'rock' })) },
@@ -57,6 +58,52 @@ const WIZARD = [
 
 const DEFAULT_RECIPE = { kind: 'catch', title: '', player: 'hero', enemy: 'bomb', treasure: 'coin', sky: 'day', speed: 2, lives: 3, winAt: 15, twist: 'none' };
 const KNOB_CYCLE = { player: PLAYERS, enemy: ENEMIES, twist: TWISTS, lives: [1, 3, 5] };
+
+const SITE_WORDS = /\b(quiz|trivia|website|web site|webpage|web page|home ?page|portfolio|shop|store|calculator|flash ?cards?|blog|page about|chat ?bot|essay|story|slideshow|presentation)\b/i;
+const triesFor = (word) => [`a ${word} that catches stars`, `a ${word} that flies through the clouds`, `a maze where a ${word} finds treasure`];
+
+// How the game reads back to the child: what kind it is, who they are, what
+// they catch and what they avoid, in their own words. If no word said which
+// kind of game it is, it says so, and every kind is one tap away.
+const PART = { player: 'you', enemy: 'bad thing', treasure: 'treasure' };
+const KIND_NOUN = { catch: 'a catching game', dodge: 'a dodging game', shooter: 'a shooting game', runner: 'a running game', flyer: 'a flying game', racer: 'a racing game', maze: 'a maze', pop: 'a popping game', pet: 'a pet game' };
+function Thing({ recipe, part }) {
+  const word = recipe.words?.[part] || SPRITE_LABEL[recipe[part]] || wordFor(recipe[part]) || PART[part];
+  return <><Look look={recipe[part]} /> <b>{String(word).toLowerCase()}</b></>;
+}
+function rule(recipe) {
+  const P = <Thing recipe={recipe} part="player" />, E = <Thing recipe={recipe} part="enemy" />, T = <Thing recipe={recipe} part="treasure" />;
+  switch (recipe.kind) {
+    case 'catch': return <>You are the {P}. Catch the {T}, not the {E}.</>;
+    case 'dodge': return <>You are the {P}. Dodge the {E}, collect the {T}.</>;
+    case 'shooter': return <>You are the {P}. Shoot the {E} before they land.</>;
+    case 'runner': return <>You are the {P}. Jump over the {E}, collect the {T}.</>;
+    case 'flyer': return <>You are the {P}. Flap through the gaps in the {E}, collect the {T}.</>;
+    case 'racer': return <>You are the {P}. Swap lanes to pass the {E}, pick up the {T}.</>;
+    case 'maze': return <>You are the {P}. Find every {T}, keep away from the {E}.</>;
+    case 'pop': return <>Tap the {T} before they go. Not the {E}.</>;
+    case 'pet': return <>Your pet is the {P}. Feed it {T}, play with it, tap the {E} away.</>;
+    default: return null;
+  }
+}
+function WhatWeMade({ recipe, said, aiDown, onKind }) {
+  return (
+    <div className="bd__made ci-rise" role="status">
+      {recipe.fits === false && <p className="bd__unsure">We could not tell which kind of game you meant, so we started with {KIND_NOUN[recipe.kind]}. Pick the closest one below.</p>}
+      <div><b>{KIND_SAY[recipe.kind]}.</b> {rule(recipe)}</div>
+      <div className="bd__kinds" role="group" aria-label="Make it a different kind of game">
+        {KINDS.map((k) => (
+          <button key={k} type="button" className={`bd__kind${k === recipe.kind ? ' is-on' : ''}`} aria-pressed={k === recipe.kind} onClick={() => onKind(k)}>
+            <Look look={KIND_ICON[k]} />{KIND_SAY[k]}
+          </button>
+        ))}
+      </div>
+      {said && !aiDown && (
+        <p className="bd__exact">Not what you imagined? <Link to={`/builder?prompt=${encodeURIComponent(said)}`}>Have the studio write it from scratch</Link>. It takes about a minute.</p>
+      )}
+    </div>
+  );
+}
 
 let audio = null;
 function tone(freq, length = 0.08, type = 'sine', volume = 0.05) {
@@ -102,6 +149,12 @@ export default function Build() {
   const [publishing, setPublishing] = useState(false);
   const [toast, setToast] = useState('');
   const [ghost, setGhost] = useState('');
+  // Whether the model answered. When it is out of credit or unreachable we do
+  // not send a child to the studio to wait for a build that cannot happen.
+  const [aiDown, setAiDown] = useState(false);
+  const [said, setSaid] = useState('');
+  // The things the child named, so tapping a knob can always come back to them.
+  const own = useRef({ player: null, enemy: null });
   const ideaRef = useRef(null);
   const frameRef = useRef(null);
   const toastTimer = useRef(null);
@@ -114,7 +167,9 @@ export default function Build() {
 
   // The player is the child's own avatar when there is one.
   const playerSprite = useMemo(() => (user && character ? avatarSpriteDataUri(character) : ''), [user, character]);
-  const gameHtml = useMemo(() => (recipe ? injectPlayerSprite(recipeGame(recipe), playerSprite) : ''), [recipe, playerSprite]);
+  // Your avatar plays only when your sentence did not name who you are: a
+  // child who asked to be a samosa is the samosa.
+  const gameHtml = useMemo(() => (recipe ? injectPlayerSprite(recipeGame(recipe), recipe.player === 'hero' ? playerSprite : '') : ''), [recipe, playerSprite]);
 
   // ── The input writes ideas to itself until the child types ──
   useEffect(() => {
@@ -140,7 +195,7 @@ export default function Build() {
     const t = value.toLowerCase();
     const sky = /space|alien|asteroid|rocket/.test(t) ? 'space' : /night|dark/.test(t) ? 'night' : /sea|ocean|under ?water/.test(t) ? 'ocean' : /sunset|fire|lava/.test(t) ? 'sunset' : /candy|pink|sweet/.test(t) ? 'candy' : '';
     setSkyHint(sky);
-    const found = TRAY_WORDS.filter(([re]) => re.test(t)).map(([, name]) => name);
+    const found = nounsIn(t).slice(0, 6).map((n) => n.emoji);
     setTray((prev) => { if (found.length > prev.length) tone(700 + found.length * 60, 0.06, 'triangle', 0.04); return found; });
   };
 
@@ -159,7 +214,7 @@ export default function Build() {
     if (!sentence) { ideaRef.current?.focus(); return; }
     if (!looksLikeGame(sentence)) {
       const word = keepTheirWord(sentence);
-      setNotGame({ word, tries: [`a ${word} that catches stars`, `dodge the ${word}s in space`] });
+      setNotGame({ word, site: SITE_WORDS.test(sentence), tries: triesFor(word) });
       tone(300, 0.08);
       return;
     }
@@ -178,14 +233,15 @@ export default function Build() {
       });
       clearTimeout(timeout);
       const data = res.ok ? await res.json() : null;
+      setAiDown(data?.ai === 'down');
       if (data && data.game === false) {
         const word = keepTheirWord(sentence);
         setThinking(-1);
-        setNotGame({ word, tries: [`a ${word} that catches stars`, `dodge the ${word}s in space`] });
+        setNotGame({ word, site: SITE_WORDS.test(sentence), tries: triesFor(word) });
         tone(300, 0.08);
         return;
       }
-      if (data?.recipe) next = normaliseRecipe(data.recipe, sentence);
+      if (data?.recipe) next = normaliseRecipe({ fits: data.fits, ...data.recipe }, sentence);
     } catch {
       next = null;
     }
@@ -200,8 +256,18 @@ export default function Build() {
       setThinking(i);
     }
     setThinking(-1);
+    own.current = { player: next.player, enemy: next.enemy };
+    setSaid(sentence);
     applyRecipe(next, 'build');
   }, [token, applyRecipe]);
+
+  // ── A different kind of game, from the same sentence ──
+  const remake = (kind) => {
+    if (!recipe || kind === recipe.kind) return;
+    const next = said ? { ...localRecipe(said, kind), twist: recipe.twist, lives: recipe.lives } : { ...recipe, kind };
+    tone(560, 0.06, 'triangle');
+    applyRecipe({ ...next, fits: true }, 'knob');
+  };
 
   // ── Make it: every tap rebuilds ──
   const current = WIZARD[step];
@@ -226,7 +292,8 @@ export default function Build() {
   // ── Knobs cycle the live game ──
   const cycle = (key) => {
     if (!recipe) return;
-    const list = KNOB_CYCLE[key];
+    const mine = own.current[key];
+    const list = mine && !KNOB_CYCLE[key].includes(mine) ? [mine, ...KNOB_CYCLE[key]] : KNOB_CYCLE[key];
     const at = list.indexOf(recipe[key]);
     const next = { ...recipe, [key]: list[(at + 1) % list.length] };
     setFlip(key);
@@ -353,15 +420,15 @@ export default function Build() {
                   onChange={(e) => onIdea(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); build(idea); } }}
                 />
-                <div className="bd__tray" aria-hidden="true">{tray.map((name) => <img key={name} src={spriteUri(name)} alt="" className="ci-popin" />)}</div>
+                <div className="bd__tray" aria-hidden="true">{tray.map((name) => <Look key={name} look={name} className="ci-popin" />)}</div>
                 {idea.length >= 100 && <span className="bd__count">{idea.length} / 120</span>}
                 <button type="button" className="ci-btn bd__go" onClick={() => build(idea)} disabled={thinking >= 0}>Build it</button>
               </div>
               {notGame && (
                 <div className="bd__notgame ci-rise" role="status">
-                  <b>That sounds like a website, not a game.</b> Try a game you would play:
+                  <b>{notGame.site ? 'That sounds like a website, not a game.' : 'We could not find a game in that yet.'}</b> {notGame.site ? 'Try a game you would play:' : 'Say who you are and what you do. Like one of these:'}
                   <div className="bd__chips">{notGame.tries.map((t) => <button key={t} type="button" className="ci-chip" onClick={() => { onIdea(t); build(t); }}>{t}</button>)}</div>
-                  <small>Or make it as a website: <Link to={`/builder?prompt=${encodeURIComponent(idea.trim())}`}>open the studio with your idea</Link>.</small>
+                  {!aiDown && <small>Or {notGame.site ? 'make it as a website' : 'have it written from scratch'}: <Link to={`/builder?prompt=${encodeURIComponent(idea.trim())}`}>open the studio with your idea</Link>.</small>}
                 </div>
               )}
               {reels && (
@@ -415,7 +482,7 @@ export default function Build() {
                           <span className="bd__skyp" style={{ background: `linear-gradient(${SKY_COLOURS[o.value][0]}, ${SKY_COLOURS[o.value][1]})` }}>
                             {(o.value === 'space' || o.value === 'night') && <><i style={{ left: '20%', top: '30%' }} /><i style={{ left: '60%', top: '20%', animationDelay: '.4s' }} /><i style={{ left: '75%', top: '60%', animationDelay: '.8s' }} /></>}
                           </span>
-                        ) : <img src={spriteUri(o.sprite)} alt="" />}
+                        ) : <Look look={o.sprite} />}
                         <b>{o.label}</b>
                       </button>
                     ))}
@@ -457,11 +524,12 @@ export default function Build() {
                     onPointerMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`); e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`); }}
                     aria-label={`${label}: ${recipe[key]}. Tap to change.`}
                   >
-                    {key === 'player' || key === 'enemy' ? <img src={spriteUri(recipe[key])} alt="" /> : <b>{key === 'twist' ? TWIST_LABEL[recipe.twist] : recipe.lives}</b>}
+                    {key === 'player' || key === 'enemy' ? <Look look={recipe[key]} /> : <b>{key === 'twist' ? TWIST_LABEL[recipe.twist] : recipe.lives}</b>}
                     <small>{label}</small>
                   </button>
                 ))}
               </div>
+              {mode === 'say' && <WhatWeMade recipe={recipe} said={said} aiDown={aiDown} onKind={remake} />}
               <div className="bd__after">
                 <button type="button" className="ci-btn ci-btn--ink bd__publish" onClick={publish} disabled={publishing}>{publishing ? 'Publishing' : published && !published.offline ? (published.kept ? 'In your arcade' : 'Kept on this device') : 'Publish to my arcade'}</button>
                 <button type="button" className="ci-btn ci-btn--paper" onClick={shakeUp}>Shake it up</button>

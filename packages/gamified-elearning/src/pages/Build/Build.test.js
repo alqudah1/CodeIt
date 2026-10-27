@@ -147,3 +147,29 @@ test('a signed-in child publishing with the Wi-Fi down is told the truth, keeps 
   expect(global.fetch.mock.calls.filter(([u]) => String(u).endsWith('/api/builder/projects'))).toHaveLength(2);
   expect(JSON.parse(localStorage.getItem('codeit.shelf.v1'))).toHaveLength(1);
 });
+
+test('the game reads back what it understood, in the child\'s own words, and any kind is one tap away', async () => {
+  global.fetch = jest.fn(() => Promise.reject(new Error('offline')));
+  render(<Build />);
+  fireEvent.change(screen.getByLabelText('Describe the game you want to play'), { target: { value: 'a samosa that has to dodge the fork' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
+  await waitFor(() => expect(frameDoc()).toContain("let gameKind   = 'dodge';"), { timeout: 5000 });
+  expect(frameDoc()).toContain("let playerLook = '🥟';");
+  expect(frameDoc()).toContain("let enemyLook  = '🍴';");
+  const made = document.querySelector('.bd__made');
+  expect(made).toHaveTextContent('Dodge things. You are the 🥟 samosa. Dodge the 🍴 fork');
+  expect(screen.getByRole('button', { name: 'Dodge things', pressed: true })).toBeInTheDocument();
+  // Another kind, from the same sentence.
+  fireEvent.click(screen.getByRole('button', { name: /Fly through gaps/ }));
+  await waitFor(() => expect(frameDoc()).toContain("let gameKind   = 'flyer';"));
+  expect(frameDoc()).toContain("let playerLook = '🥟';");
+});
+
+test('an idea with no game word says so, and a studio offer only appears when the model can answer', async () => {
+  global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({ game: true, fits: false, ai: 'down', source: 'rules', recipe: { kind: 'catch', title: 'Unicorn Catch', player: '🦄', enemy: '💣', treasure: '🌈', sky: 'candy', speed: 2, lives: 3, winAt: 15 } }) }));
+  render(<Build />);
+  fireEvent.change(screen.getByLabelText('Describe the game you want to play'), { target: { value: 'a unicorn' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
+  expect(await screen.findByText(/We could not tell which kind of game you meant/, {}, { timeout: 5000 })).toBeInTheDocument();
+  expect(screen.queryByRole('link', { name: /Have the studio write it from scratch/ })).toBeNull();
+});

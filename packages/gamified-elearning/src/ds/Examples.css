@@ -19,7 +19,7 @@ div.ex__card { cursor: default; }
 
 /* The little game: the bad thing falls, the treasure falls, the player bobs */
 .ex__stage { position: absolute; inset: 0; pointer-events: none; }
-.ex__stage img { position: absolute; width: 34px; height: 34px; filter: drop-shadow(0 3px 0 rgba(0, 0, 0, .18)); }
+.ex__stage img, .ex__stage .look--emoji { position: absolute; width: 34px; height: 34px; filter: drop-shadow(0 3px 0 rgba(0, 0, 0, .18)); }
 .ex__player { left: 50%; bottom: 46px; width: 44px !important; height: 44px !important; margin-left: -22px; animation: ex-bob 1.6s ease-in-out infinite; }
 .ex__enemy { left: 22%; top: -40px; animation: ex-fall 3.2s linear infinite; }
 .ex__enemy--b { left: 70%; animation-delay: -1.6s; }
@@ -55,4 +55,15 @@ div.ex__card { cursor: default; }
 .ex__dots i.is-on { background: #fff; transform: scale(1.3); }
 
 @media (min-width: 900px) { .ex__grid.ex__grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-@media (prefers-reduced-motion: reduce) { .ex__stage img, .ex__shot, .ex__card, .ex__herofoot .ex__say { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { .ex__stage img, .ex__stage .look--emoji, .ex__shot, .ex__card, .ex__herofoot .ex__say { animation: none !important; } }
+/* A named picture sits where its sprite would, at the sprite's size. */
+.ex__stage .look--emoji { position: absolute; width: 34px; height: 34px; font-size: 30px; }
+.ex__stage .ex__player.look--emoji { font-size: 38px; }
+.ex__stage .ex__treasure.look--emoji { font-size: 24px; }
+.ex__hero .ex__stage .ex__player.look--emoji { font-size: 66px; }
+.ex__hero .ex__stage .ex__treasure.look--emoji { font-size: 40px; }
+.ex__hero .ex__stage .ex__enemy.look--emoji { font-size: 44px; }
+/* Flyers and racers move sideways like the runner. */
+.is-flyer .ex__player { left: 20%; margin-left: 0; animation: ex-hop 1.2s ease-in-out infinite; }
+.is-flyer .ex__enemy { top: 18%; animation: ex-slide 2.8s linear infinite; }
+.is-flyer .ex__enemy--b { top: auto; bottom: 46px; animation-delay: -1.4s; }

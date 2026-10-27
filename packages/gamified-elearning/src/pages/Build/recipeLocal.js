@@ -2,99 +2,79 @@
 //
 // The server's /api/builder/recipe answers in about two seconds with a Haiku
 // call and falls back to rules. When the network is slow, the call fails, or
-// the child is on a school connection that drops, this file builds the same
-// shape of recipe from the sentence alone, so the game still appears. It is
-// the same idea as recipeRules.js on the server, kept small and local.
+// the model is out of credit, this file builds the same shape of recipe from
+// the sentence alone, so the game still appears. Both sides read the sentence
+// with the same rules (gameWords.js), so the page and the server agree about
+// what a child asked for.
 
-import { spriteNameFor } from './sprites';
+import { KINDS, emojiForWord, isEmojiLook, looksLikeGame as soundsLikeGame, nounsIn, recipeFromIdea } from './gameWords';
+import { EMOJI_TO_SPRITE, SPRITE_NAMES, spriteNameFor } from './sprites';
 
 export const SKY_NAMES = ['space', 'night', 'ocean', 'candy', 'day', 'sunset'];
 export const TWISTS = ['none', 'faster', 'waves'];
 
-const NOT_GAME = /\b(website|web site|webpage|home ?page|quiz|calculator|chat ?bot|story|blog|portfolio|slideshow|essay)\b/i;
-
 /** Does this sound like a game at all? Sites, quizzes and tools are not games. */
 export function looksLikeGame(text) {
-  const t = String(text || '').trim();
-  if (t.length < 3) return false;
-  return !NOT_GAME.test(t);
+  return soundsLikeGame(text);
 }
 
-/** The noun a child used, so a "try this instead" can keep their word. */
+/** The thing a child named, so a "try this instead" can keep their word. */
 export function keepTheirWord(text) {
-  const m = String(text || '').match(/\b(dog|cat|space|dragon|car|pizza|ninja|robot|unicorn|shark|bunny|rabbit|alien|ship|rocket|star|coin|bomb|gem|carrot|football|cake|horse|frog)s?\b/i);
-  return m ? m[1].toLowerCase() : 'dragon';
+  const first = nounsIn(text)[0];
+  return first ? first.word : 'dragon';
 }
 
-const PLAYER_WORDS = [[/ship|rocket|spaceship|plane|jet/, 'ship'], [/bunny|rabbit|dog|puppy|hero|kid|boy|girl|me\b/, 'hero'], [/alien|frog|green/, 'alien'], [/pink|\bcats?\b|kitten|unicorn|princess/, 'pink'], [/blue|sky|bird|chick/, 'skyguy'], [/robot|dragon|purple|monster/, 'blob']];
-const ENEMY_WORDS = [[/asteroid|rock|meteor|spike|stone/, 'rock'], [/bomb|mine|explosive/, 'bomb'], [/alien|ufo|ghost|zombie|enemy ship/, 'alien'], [/fire|lava|sun|flame|fireball|laser/, 'sun']];
-const GOOD_WORDS = [[/carrot/, 'carrot'], [/coin|gold|money|treasure/, 'coin'], [/star/, 'star'], [/gem|diamond|crystal|ruby/, 'gem']];
-const pick = (list, s, fallback) => (list.find(([re]) => re.test(s)) || [null, fallback])[1];
-
+/** A name for a game from a sentence: "Samosa Dodge", "Pizza Catch". */
 export function titleFor(text) {
-  let t = String(text || '').trim().replace(/[.!?]+$/, '');
-  for (let i = 0; i < 3; i += 1) t = t.replace(/^(i want|i would like|please|make|build|me|a|an|the)\s+/i, '');
-  // The game's name is the part before the details: "catch coins under the
-  // sea, win at 30" is Catch Coins, not "Catch Coins Under The  Game".
-  t = t.split(/,|\s+(?:where|that|which|with|in|at|and|who|were|under|over|from|but|not)\s+/i)[0];
-  t = t.replace(/\b(the|a|an)\b/gi, ' ').replace(/\s+/g, ' ').trim().slice(0, 22).trim();
-  if (!t) t = 'My Game';
-  t = t.split(' ').map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w)).join(' ');
-  return /game$/i.test(t) ? t : `${t} Game`;
+  if (!String(text || '').trim()) return 'My Game';
+  return localRecipe(text).title;
 }
 
-/** The nine lines of a game, from a sentence, with no network at all. */
-export function localRecipe(text) {
-  const s = String(text || '').toLowerCase();
-  let kind = 'dodge';
-  if (/shoot|shot|laser|blast|fire at/.test(s)) kind = 'shooter';
-  // Jumping wins over collecting: "jumps over bombs and collects coins" is a runner.
-  else if (/jump|runner|obby|parkour|platform/.test(s)) kind = 'runner';
-  else if (/catch|collect|eat|grab|pick up/.test(s)) kind = 'catch';
-  else if (/\brun/.test(s)) kind = 'runner';
-  // A place the child named beats a place we guess from a word: "an alien
-  // at night" is night, and "fireballs in candy land" is candy.
-  const sky = /\bspace\b|planet|galaxy/.test(s) ? 'space'
-    : /night|dark|moon/.test(s) ? 'night'
-    : /ocean|\bsea\b|under ?water/.test(s) ? 'ocean'
-    : /candy|sweet|cake/.test(s) ? 'candy'
-    : /sunset|lava|volcano/.test(s) ? 'sunset'
-    : /alien|asteroid|rocket|ufo/.test(s) ? 'space'
-    : /zombie|ghost/.test(s) ? 'night'
-    : /fish|shark/.test(s) ? 'ocean'
-    : /fire|flame/.test(s) ? 'sunset'
-    : /pink|unicorn/.test(s) ? 'candy'
-    : 'day';
-  // The player is who the sentence is about, before "that": in "a shooter
-  // with five aliens", the aliens are the enemies, not the player.
-  const subject = s.split(/\s+(?:that|who|which|with)\s+|,/)[0];
-  const named = PLAYER_WORDS.find(([re]) => re.test(subject));
-  const rest = named ? s.slice(subject.length) : s;
-  const goal = s.match(/win at (\d+)/);
+/** The recipe from a sentence, with no network at all. */
+export function localRecipe(text, kind) {
+  const r = recipeFromIdea(text, kind);
   return {
-    kind,
-    title: titleFor(text),
-    player: named ? named[1] : (kind === 'shooter' ? 'ship' : 'hero'),
-    enemy: pick(ENEMY_WORDS, rest, kind === 'catch' ? 'bomb' : 'rock'),
-    treasure: pick(GOOD_WORDS, s, 'gem'),
-    sky,
-    speed: /fast|hard|crazy|turbo/.test(s) ? 3 : /slow|easy|calm/.test(s) ? 1 : 2,
-    lives: /one life|1 life/.test(s) ? 1 : /five lives|5 lives/.test(s) ? 5 : 3,
-    winAt: goal ? Math.max(5, Math.min(99, Number(goal[1]))) : 15,
-    twist: /faster|harder|speed up|gets? fast/.test(s) ? 'faster' : /wave|five|5 at once|lots of|swarm/.test(s) ? 'waves' : 'none',
+    kind: r.kind,
+    fits: r.fits,
+    title: r.title,
+    player: lookFor(r.player, 'hero'),
+    enemy: lookFor(r.enemy, 'rock'),
+    treasure: lookFor(r.treasure, 'gem'),
+    sky: r.sky,
+    speed: r.speed,
+    lives: r.lives,
+    winAt: r.winAt,
+    twist: r.twist,
+    named: r.named,
+    words: r.words,
   };
 }
 
-/** Whatever the server said, as sprite names and sane numbers. */
+/** A look the engine can draw: one of our sprite names, or a picture (emoji). */
+export function lookFor(value, fallback) {
+  if (typeof value !== 'string' || !value.trim()) return fallback;
+  const v = value.trim();
+  if (SPRITE_NAMES.includes(v)) return v;
+  // The page and the game must show the same thing: a generic emoji is our sprite.
+  if (EMOJI_TO_SPRITE[v]) return EMOJI_TO_SPRITE[v];
+  if (isEmojiLook(v)) return Array.from(v).length <= 8 ? v : fallback;
+  return emojiForWord(v) || spriteNameFor(v, fallback);
+}
+
+/** Whatever the server said, kept as the child said it, with sane numbers. */
 export function normaliseRecipe(r, text = '') {
-  const base = localRecipe(text);
-  const kind = ['shooter', 'dodge', 'catch', 'runner'].includes(r?.kind) ? r.kind : base.kind;
+  const base = localRecipe(text, KINDS.includes(r?.kind) ? r.kind : undefined);
+  const kind = KINDS.includes(r?.kind) ? r.kind : base.kind;
+  const title = typeof r?.title === 'string' ? r.title.replace(/[<>"'&]/g, '').trim().slice(0, 24) : '';
   return {
+    ...base,
     kind,
-    title: (typeof r?.title === 'string' && r.title.trim()) ? r.title.trim().slice(0, 24) : base.title,
-    player: spriteNameFor(r?.player, base.player),
-    enemy: spriteNameFor(r?.enemy, base.enemy),
-    treasure: spriteNameFor(r?.treasure, base.treasure),
+    fits: typeof r?.fits === 'boolean' ? r.fits : base.fits,
+    // The server's own fallback title ("Game Game") never beats ours.
+    title: title.length > 2 && !/^(game\s*)+$/i.test(title) ? title : base.title,
+    player: lookFor(r?.player, base.player),
+    enemy: lookFor(r?.enemy, base.enemy),
+    treasure: lookFor(r?.treasure, base.treasure),
     sky: SKY_NAMES.includes(r?.sky) ? r.sky : base.sky,
     speed: Math.max(1, Math.min(3, Number(r?.speed) || base.speed)),
     lives: [1, 3, 5].includes(Number(r?.lives)) ? Number(r.lives) : base.lives,
@@ -107,19 +87,23 @@ export function normaliseRecipe(r, text = '') {
 export const IDEAS = [
   'a ship that shoots asteroids and they get faster',
   'a bunny that catches carrots at night',
+  'a dragon that flies through the clouds',
+  'a maze where a mouse finds cheese',
+  'a samosa that has to dodge the fork',
+  'a race car that passes the trucks',
+  'pop the balloons but not the bombs',
+  'a pet puppy you feed and play with',
   'dodge the bombs in space, one life',
   'a runner that jumps over bombs and collects coins',
-  'catch stars, not bombs, at sunset',
-  'a shooter with five aliens at once',
+  'pizza that falls from the sky',
   'catch coins under the sea, win at 30',
-  'a pink cat that dodges fireballs in candy land',
 ];
 
 /** Four reels for "Roll an idea". */
 export const REELS = [
-  ['a bunny', 'a ship', 'an alien', 'a pink cat', 'a robot', 'a dragon'],
-  ['that catches', 'that shoots', 'that dodges', 'that runs from'],
-  ['carrots', 'asteroids', 'bombs', 'gems', 'stars', 'coins'],
+  ['a bunny', 'a dragon', 'a samosa', 'a race car', 'a puppy', 'a robot', 'a cat', 'an alien'],
+  ['that catches', 'that dodges', 'that flies past', 'that jumps over', 'that shoots'],
+  ['carrots', 'forks', 'clouds', 'asteroids', 'cupcakes', 'pizza', 'stars', 'balloons'],
   ['in space', 'at night', 'at sunset', 'in candy land', 'under the sea', 'in the day'],
 ];
 
@@ -128,7 +112,7 @@ export function rollIdea(random = Math.random) {
 }
 
 const NAME_HERO = { hero: 'Bunny', ship: 'Ship', alien: 'Alien', pink: 'Pinky', skyguy: 'Sky', blob: 'Blob' };
-const NAME_KIND = { catch: 'Catch', dodge: 'Dodge', shooter: 'Blast', runner: 'Run' };
+const NAME_KIND = { catch: 'Catch', dodge: 'Dodge', shooter: 'Blast', runner: 'Run', flyer: 'Flight', racer: 'Race', maze: 'Maze', pop: 'Pop', pet: 'Pal' };
 const ADJ = ['Mega', 'Super', 'Turbo', 'Wild', 'Lucky', 'Rocket'];
 
 /** A name for a game built from choices, and another one when asked. */

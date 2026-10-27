@@ -213,7 +213,8 @@ const EXAMPLE_POWERS = ['numbers', 'loops'].map((slug) => powerBySlug(slug));
 const EXAMPLE_NEXT = powerBySlug('words');
 
 function ParentWelcome() {
-  const exampleGame = useMemo(() => recipeGame(localRecipe(EXAMPLE_SENTENCE)), []);
+  const exampleRecipe = useMemo(() => localRecipe(EXAMPLE_SENTENCE), []);
+  const exampleGame = useMemo(() => recipeGame(exampleRecipe), [exampleRecipe]);
   return (
     <div className="pa">
       <Header />
@@ -226,7 +227,7 @@ function ParentWelcome() {
               <div className="pa__exhead"><span className="ex__tag pa__extag">Example week</span><span className="pa__exnote">Yours shows your own child&apos;s games, words and powers.</span></div>
               <div className="ci-ey">Made</div>
               <div className="ci-frame pa__frame is-lit"><iframe title="Example game" srcDoc={exampleGame} sandbox="allow-scripts" /></div>
-              <h2 className="pa__title">Bunny Game</h2>
+              <h2 className="pa__title">{exampleRecipe.title}</h2>
               <p className="pa__prompt">They typed: <q>{EXAMPLE_SENTENCE}</q></p>
             </div>
             <div className="ci-blk ci-blk--mint pa__learned ci-rise" style={{ animationDelay: '.05s' }}>

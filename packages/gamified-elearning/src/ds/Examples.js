@@ -9,7 +9,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IDEAS, localRecipe } from '../pages/Build/recipeLocal';
-import { spriteNameFor, spriteUri } from '../pages/Build/sprites';
+import Look from '../pages/Build/Look';
 import './ds.css';
 import './Examples.css';
 
@@ -18,10 +18,12 @@ export const MORE_IDEAS = [
   'a robot that catches gems in the day',
   'an alien that shoots bombs at night',
   'a bunny that runs and jumps over rocks',
+  'popcorn you catch in a bucket',
+  'a penguin that eats fish under the sea',
 ];
 
 const SKY = { space: ['#2A1E5C', '#5B3FD6'], night: ['#1E1B3A', '#3B2A6B'], ocean: ['#042F4A', '#0E7490'], candy: ['#FF6B6B', '#FF9FB5'], day: ['#3EB7F8', '#8FD3FF'], sunset: ['#FF7A00', '#FFC93C'] };
-const VERB = { shooter: 'Shoot', catch: 'Catch', dodge: 'Dodge', runner: 'Run' };
+const VERB = { shooter: 'Shoot', catch: 'Catch', dodge: 'Dodge', runner: 'Run', flyer: 'Fly', racer: 'Race', maze: 'Maze', pop: 'Pop', pet: 'Pet' };
 
 /** Every example, as the engine reads it. */
 export const EXAMPLES = [...IDEAS, ...MORE_IDEAS].map((sentence) => {
@@ -30,9 +32,10 @@ export const EXAMPLES = [...IDEAS, ...MORE_IDEAS].map((sentence) => {
     sentence,
     kind: r.kind,
     sky: r.sky,
-    player: spriteNameFor(r.player, 'hero'),
-    enemy: spriteNameFor(r.enemy, 'rock'),
-    treasure: spriteNameFor(r.treasure, 'gem'),
+    // The pictures the sentence names, exactly as the game will draw them.
+    player: r.player,
+    enemy: r.enemy,
+    treasure: r.treasure,
   };
 });
 
@@ -47,11 +50,11 @@ export function examplesFrom(from = 0, count = 4) {
 function Stage({ ex }) {
   return (
     <span className={`ex__stage is-${ex.kind}`} aria-hidden="true">
-      <img className="ex__enemy" src={spriteUri(ex.enemy)} alt="" />
-      <img className="ex__enemy ex__enemy--b" src={spriteUri(ex.enemy)} alt="" />
-      <img className="ex__treasure" src={spriteUri(ex.treasure)} alt="" />
+      <Look className="ex__enemy" look={ex.enemy} />
+      <Look className="ex__enemy ex__enemy--b" look={ex.enemy} />
+      <Look className="ex__treasure" look={ex.treasure} />
       {ex.kind === 'shooter' && <i className="ex__shot" />}
-      <img className="ex__player" src={spriteUri(ex.player)} alt="" />
+      <Look className="ex__player" look={ex.player} />
     </span>
   );
 }

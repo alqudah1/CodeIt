@@ -9,63 +9,27 @@
 // a condition for getting one. When the model is slow, down or out of credit,
 // a child still gets their ship game, not a "could not build it" card.
 
-const KINDS = ['shooter', 'dodge', 'catch', 'runner'];
-const SKIES = ['space', 'night', 'ocean', 'candy', 'day'];
+// The sentence is read by gameWords.js, the same file the page uses, so the
+// server and the page make the same game from the same words.
+const words = require('./gameWords');
 
-const PLAYERS = [
-  [/space\s*ship|spaceship|rocket|ship\b|space/, '🚀'], [/plane|jet/, '✈️'], [/\bcar\b|race/, '🏎️'], [/\bcat\b|kitten/, '🐱'], [/\bdog\b|puppy/, '🐶'],
-  [/dragon/, '🐲'], [/robot/, '🤖'], [/ninja/, '🥷'], [/knight|sword/, '🛡️'], [/frog/, '🐸'], [/\bbird\b/, '🐦'], [/fish|shark/, '🐟'],
-  [/unicorn/, '🦄'], [/dino/, '🦖'], [/pizza/, '🍕'], [/basket/, '🧺'], [/wizard|magic/, '🧙'], [/\bbee\b/, '🐝'], [/penguin/, '🐧'],
-];
-const ENEMIES = [
-  [/enemy ship|alien|ufo|invader/, '👾'], [/zombie/, '🧟'], [/ghost/, '👻'], [/asteroid|rock|meteor/, '☄️'], [/monster/, '👹'], [/bomb/, '💣'],
-  [/dragon/, '🐉'], [/spider/, '🕷️'], [/\bbat\b/, '🦇'], [/shark/, '🦈'], [/robot/, '🤖'], [/enem/, '👾'], [/\bbird\b/, '🦅'], [/snake/, '🐍'], [/skull|death/, '💀'],
-];
-const GOODS = [[/star/, '⭐'], [/coin|gold|money/, '🪙'], [/gem|diamond/, '💎'], [/apple|fruit/, '🍎'], [/pizza/, '🍕'], [/heart/, '❤️'], [/candy|sweet/, '🍬'], [/fish/, '🐟'], [/battery/, '🔋'], [/cookie/, '🍪']];
-
-const first = (list, s, fallback) => (list.find(([re]) => re.test(s)) || [null, fallback])[1];
+const KINDS = words.KINDS;
+const SKIES = ['space', 'night', 'ocean', 'candy', 'day', 'sunset'];
 
 /** Is this sentence asking for a game at all? Websites, quizzes and tools go the slow way. */
 function looksLikeGame(text) {
-  const s = String(text || '').toLowerCase();
-  if (/quiz|trivia|question|website|web page|webpage|portfolio|shop|store|calculator|timer|flashcard|blog|page about/.test(s)) return false;
-  return /game|shoot|dodge|avoid|catch|collect|jump|run|runner|obby|platform|enemy|enemies|zombie|alien|asteroid|survive|escape|play|score|level|boss|ship|race|fly/.test(s);
+  return words.looksLikeGame(text);
 }
 
+/** The game's name from the child's own words: "Samosa Dodge", "Pizza Catch". */
 function titleFor(text) {
-  let t = String(text || '').trim().replace(/^(i want|i wanna|make me|make|build me|build|create|can you make|please make)\s+/i, '').replace(/^(a|an|the)\s+/i, '');
-  const m = t.match(/^(.*?)\s+game\b/i);
-  t = (m ? m[1] : t.split(/\s+(where|were|that|which|with|and|so|in which)\s+/i)[0]).trim().slice(0, 22);
-  t = t.split(/\s+/).filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1)).join(' ');
-  return t.length > 2 ? `${t} Game` : 'My Game';
+  return words.recipeFromIdea(text).title;
 }
 
 /** The rules-only recipe. Always returns a valid recipe for any text. */
 function recipeFromRules(text) {
-  const s = String(text || '').toLowerCase();
-  let kind = 'dodge';
-  // "fireballs" is a thing to dodge, not a reason to shoot; jumping wins
-  // over collecting, so "jumps over bombs and collects coins" runs.
-  if (/shoot|shot|fires? at|laser|blast|gun|cannon|invader/.test(s)) kind = 'shooter';
-  else if (/jump|runner|obby|obstacle|platform|parkour/.test(s)) kind = 'runner';
-  else if (/catch|collect|basket|grab|falling|pick up|eat/.test(s)) kind = 'catch';
-  else if (/\brun/.test(s)) kind = 'runner';
-  else if (/dodge|avoid|escape|survive|zombie|asteroid/.test(s)) kind = 'dodge';
-  const player = first(PLAYERS, s, kind === 'catch' ? '🧺' : kind === 'runner' ? '🐱' : '🚀');
-  const enemy = first(ENEMIES, s, kind === 'catch' ? '💣' : '👾');
-  const treasure = first(GOODS, s, kind === 'catch' ? '⭐' : '💎');
-  // A place the child named beats a place guessed from a word.
-  const sky = /\bspace\b|planet|galaxy/.test(s) ? 'space'
-    : /night|dark|spooky|halloween|moon/.test(s) ? 'night'
-    : /\bsea\b|ocean|under ?water/.test(s) ? 'ocean'
-    : /candy|sweet/.test(s) ? 'candy'
-    : /ship|alien|rocket|asteroid|ufo/.test(s) ? 'space'
-    : /zombie|ghost/.test(s) ? 'night'
-    : /fish|shark/.test(s) ? 'ocean'
-    : /pink|unicorn/.test(s) ? 'candy'
-    : 'day';
-  const speed = /fast|hard|crazy|insane|extreme/.test(s) ? 3 : /slow|easy|baby/.test(s) ? 1 : 2;
-  return { kind, title: titleFor(text), player, enemy, treasure, sky, speed, lives: 3, winAt: kind === 'runner' ? 20 : 15 };
+  const r = words.recipeFromIdea(text);
+  return { kind: r.kind, fits: r.fits, title: r.title, player: r.player, enemy: r.enemy, treasure: r.treasure, sky: r.sky, speed: r.speed, lives: r.lives, winAt: r.winAt };
 }
 
 /** Accept a model's recipe only if every field is sane; otherwise null. */
@@ -78,15 +42,24 @@ function validRecipe(r) {
   if (![1, 2, 3].includes(speed) || !(lives >= 1 && lives <= 5) || !(winAt >= 5 && winAt <= 50)) return null;
   const title = String(r.title || '').replace(/[<>"'&]/g, '').trim().slice(0, 28);
   if (title.length < 2) return null;
-  return { kind: r.kind, title, player: r.player, enemy: r.enemy, treasure: r.treasure, sky: r.sky, speed, lives: Math.round(lives), winAt: Math.round(winAt) };
+  const out = { kind: r.kind, title, player: r.player, enemy: r.enemy, treasure: r.treasure, sky: r.sky, speed, lives: Math.round(lives), winAt: Math.round(winAt) };
+  if (typeof r.fits === 'boolean') out.fits = r.fits;
+  return out;
 }
 
 const RECIPE_PROMPT = `You turn a child's game idea into a short JSON recipe for a small game engine. Reply with ONLY the JSON object, no prose.
 Fields:
-kind: one of "shooter" (player at the bottom shoots things coming down), "dodge" (avoid things coming down, collect treasure), "catch" (catch treasure falling, avoid the bad thing), "runner" (side-scrolling, jump over things).
-title: 2 to 4 words, fun, in the child's language, ends with "Game" if that reads well.
-player: ONE emoji for the player. enemy: ONE emoji for the bad thing. treasure: ONE emoji for the good thing.
-sky: one of "space", "night", "ocean", "candy", "day".
+kind: the one that fits best:
+  "catch" (things fall, you catch the good ones), "dodge" (things come at you, avoid them, collect treasure),
+  "shooter" (you at the bottom shoot things coming down), "runner" (side-scrolling, jump over things),
+  "flyer" (tap to flap through gaps, like a bird), "racer" (three lanes, swap lanes past traffic),
+  "maze" (move through a maze collecting things, avoid what roams), "pop" (things pop up, tap the good ones),
+  "pet" (look after a pet: feed it and play with it).
+fits: true if one of those kinds really is the game the child described, false if none of them is (for example a board game or a story).
+title: 2 to 4 words, fun, in the child's language.
+player: ONE emoji for who the child is. enemy: ONE emoji for the bad thing. treasure: ONE emoji for the good thing.
+Use the child's own things: if they say a samosa, the player is 🥟; if they say forks, the enemy is 🍴. Only invent one when they named none.
+sky: one of "space", "night", "ocean", "candy", "day", "sunset".
 speed: 1, 2 or 3. lives: 1 to 5. winAt: 5 to 50.
 Keep everything kind and age-appropriate for a 10-year-old; no weapons other than the game's "shoot", no gore.`;
 

@@ -1898,6 +1898,16 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
 // { game: false } and the studio takes the full build path as before.
 const RECIPE_TIMEOUT_MS = 8000;
 const recipeLimiter = createRequestLimiter({ anonymous: 30, authenticated: 90 });
+// When the model says no for a reason that will not change in the next second
+// (no credit, a bad key), stop asking for a while and tell the page, so the
+// page does not offer a full build that can only come back as a starter.
+// 27 October 2026: every recipe call answered "Your credit balance is too low".
+const MODEL_REST_MS = 10 * 60 * 1000;
+let modelRestUntil = 0;
+function modelRefused(err) {
+  const status = Number(err?.status || err?.statusCode || 0);
+  return status === 401 || status === 403 || status === 402 || /credit balance|billing|invalid x-api-key|authentication/i.test(String(err?.message || ''));
+}
 router.post('/recipe', optionalAuth, recipeLimiter, async (req, res) => {
   const prompt = typeof req.body?.prompt === 'string' ? req.body.prompt.trim() : '';
   if (!prompt) return res.status(400).json({ error: 'prompt is required' });
@@ -1905,7 +1915,9 @@ router.post('/recipe', optionalAuth, recipeLimiter, async (req, res) => {
   if (!looksLikeGame(prompt)) return res.json({ game: false });
   const rules = recipeFromRules(prompt);
   let recipe = null, source = 'rules';
-  if (process.env.ANTHROPIC_API_KEY) {
+  let ai = process.env.ANTHROPIC_API_KEY ? 'up' : 'down';
+  if (ai === 'up' && Date.now() < modelRestUntil) ai = 'down';
+  if (ai === 'up') {
     try {
       const message = await Promise.race([
         createTrackedMessage('recipe', {
@@ -1920,15 +1932,21 @@ router.post('/recipe', optionalAuth, recipeLimiter, async (req, res) => {
       if (recipe) source = 'model';
     } catch (err) {
       console.log(`Builder: recipe fell back to rules (${err.message})`);
+      if (modelRefused(err)) { modelRestUntil = Date.now() + MODEL_REST_MS; ai = 'down'; }
     }
   }
   if (!recipe) recipe = rules;
+  // The model's guess at the kind is kept, but the child's own named things
+  // are never replaced by an invented one: a samosa stays a samosa.
+  if (source === 'model') {
+    if (rules.fits === false && typeof recipe.fits !== 'boolean') recipe.fits = false;
+  }
   // Counted with the full builds, so the funnel sees every build a child got,
   // and the meta says which path gave it to them.
   const ctx = { userId: req.user?.user_id, journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')), meta: `recipe-${source}` };
   void recordEvent('builder_start', ctx);
   void recordEvent('generation_complete', ctx);
-  res.json({ game: true, recipe, source });
+  res.json({ game: true, recipe, source, fits: recipe.fits !== false, ai });
 });
 
 // ── POST /api/builder/edit ────────────────────────────────────────────────────

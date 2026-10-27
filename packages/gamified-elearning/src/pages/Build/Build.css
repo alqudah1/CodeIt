@@ -120,3 +120,22 @@
 @media (prefers-reduced-motion: reduce) {
   .bd__cursor, .bd__reels span, .bd__empty img, .bd__publish::after, .bd__tcard, .bd__holo, .bd__skyp i, .bd__choice.is-on::after { animation: none !important; }
 }
+/* Named pictures sit exactly where the sprites sit. */
+.bd__tray .look--emoji { height: 30px; font-size: 26px; filter: drop-shadow(0 3px 0 rgba(0, 0, 0, .18)); }
+.bd__choice .look--emoji { height: 44px; font-size: 38px; display: grid; margin: 0 auto 8px; }
+.ci-knob .look--emoji { height: 34px; font-size: 30px; display: grid; margin: 0 auto 8px; }
+
+/* What the game is, said in the child's words, and the way to change it. */
+.bd__made { margin-top: 12px; padding: 12px 14px; border-radius: var(--ci-r); background: var(--ci-paper); border: 1px solid var(--ci-ink-line); font: 700 15px/1.45 var(--ci-body); color: var(--ci-ink); }
+.bd__made b { font-weight: 800; }
+.bd__made .look { height: 22px; vertical-align: -4px; margin: 0 2px; }
+.bd__made .look--emoji { height: 22px; font-size: 19px; display: inline-grid; }
+.bd__unsure { margin: 0 0 6px; color: var(--ci-orange-text); font-weight: 800; }
+.bd__kinds { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.bd__kind { appearance: none; border: 1px solid var(--ci-ink-line); background: var(--ci-cream); color: var(--ci-ink); border-radius: 999px; min-height: 36px; padding: 0 12px 0 8px; display: inline-flex; align-items: center; gap: 6px; font: 800 13px var(--ci-body); cursor: pointer; }
+.bd__kind .look { height: 20px; }
+.bd__kind .look--emoji { height: 20px; font-size: 17px; }
+.bd__kind.is-on { background: var(--ci-ink); color: var(--ci-sun); border-color: var(--ci-ink); }
+.bd__kind:focus-visible { outline: 3px solid var(--ci-orange-text); outline-offset: 3px; }
+.bd__exact { margin: 10px 0 0; font-size: 14px; color: var(--ci-ink-soft); }
+.bd__exact a { color: var(--ci-orange-text); font-weight: 800; }

@@ -37,7 +37,7 @@ test('every kind of game and sky renders, and quotes in a title cannot break the
     expect(html).toContain(`let gameKind   = '${kind}';`);
     expect(html).toContain("let gameTitle  = 'Bobs Cat Game';");
   }
-  expect(RECIPE_KINDS).toEqual(['shooter', 'dodge', 'catch', 'runner']);
+  expect(RECIPE_KINDS).toEqual(['shooter', 'dodge', 'catch', 'runner', 'flyer', 'racer', 'maze', 'pop', 'pet']);
 });
 
 test('the player can be the child\'s own avatar when the studio provides one', () => {
@@ -50,13 +50,27 @@ test('a twist is one of three words and anything else becomes none', () => {
   expect(recipeSettings({ ...SHIP, twist: 'banana' })).toContain("let twist      = 'none';");
 });
 
-test('the page draws our own sprites, and still understands an emoji in the settings', () => {
+test('generic things are our own sprites; anything a child names is drawn as itself', () => {
   const html = recipeGame(SHIP);
   expect(html).toContain('const SPRITES = {');
   expect(html).toContain('"ship":"data:image/svg+xml');
   expect(html).toContain('"🚀":"ship"');
-  expect(html).not.toContain('drawEmoji');
+  // A cat is no longer redrawn as one of our blobs.
+  expect(html).not.toContain('"🐱":');
+  expect(html).toContain('function emojiImage(look)');
   expect(html).toContain('devicePixelRatio');
+  // The test for "is this a picture" survives the template: no raw control characters.
+  expect(html).toContain('/[^\\x00-\\x7F]/');
+  expect(html).not.toMatch(/[\u0000\uFFFD]/);
+});
+
+test('each new kind has its own loop, its own controls and its own way to score', () => {
+  const html = recipeGame({ ...SHIP, kind: 'maze' });
+  for (const fn of ['function stepFlyer()', 'function stepRacer()', 'function stepMaze()', 'function stepPop()', 'function stepPet()', 'function buildMaze()', 'function steer(dir)', 'function flap()', 'function tapAt(x, y)', 'function feedPet()']) expect(html).toContain(fn);
+  expect(html).toContain("if (gameKind === 'flyer') stepFlyer();");
+  expect(html).toContain('else stepClassic();');
+  expect(html).toContain("'Tap or press space to flap. Fly through the gaps.'");
+  expect(recipeSettings({ ...SHIP, kind: 'banana' })).toContain("let gameKind   = 'catch';");
 });
 
 // ── The powers block ─────────────────────────────────────────────────────────

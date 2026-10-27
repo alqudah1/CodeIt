@@ -5,9 +5,9 @@
 // canvas from the same data URIs, so the thing a child tapped is exactly the
 // thing that moves. Nothing here is licensed from anyone; they are ours.
 //
-// The recipe the server returns names objects as emoji (🚀, 👾). Those still
-// work: EMOJI_TO_SPRITE turns them into one of these names, and anything we
-// do not know becomes the hero.
+// A recipe names things as emoji. The generic ones (🚀, 👾, 💣, 💎, 🪙,
+// ⭐) become these drawn sprites; anything more particular (a samosa, a
+// fork, a cat) is drawn as itself, because that is what the child asked for.
 
 const INK = '#35220E';
 const ORANGE = '#FF7A00';
@@ -48,11 +48,8 @@ export const SPRITE_LABEL = Object.freeze({
   rock: 'Rocks', bomb: 'Bombs', sun: 'Fireballs', coin: 'Coins', carrot: 'Carrots', gem: 'Gems', star: 'Stars',
 });
 
-const EMOJI_TO_SPRITE = Object.freeze({
-  '🚀': 'ship', '🛸': 'ship', '✈️': 'ship', '🐰': 'hero', '🐇': 'hero', '👽': 'alien', '👾': 'alien', '🤖': 'blob',
-  '🧑': 'hero', '🧒': 'hero', '🐱': 'pink', '🐶': 'hero', '🐸': 'alien', '🐥': 'skyguy', '🦄': 'pink', '🐉': 'blob',
-  '☄️': 'rock', '🪨': 'rock', '🌑': 'rock', '💣': 'bomb', '🔥': 'sun', '☀️': 'sun', '⚡': 'sun', '🧟': 'blob', '👻': 'skyguy', '🦈': 'bomb',
-  '💎': 'gem', '🪙': 'coin', '💰': 'coin', '🥕': 'carrot', '⭐': 'star', '🌟': 'star', '🍎': 'coin', '🍬': 'gem', '🔑': 'coin',
+export const EMOJI_TO_SPRITE = Object.freeze({
+  '🚀': 'ship', '👾': 'alien', '☄️': 'rock', '🪨': 'rock', '💣': 'bomb', '💎': 'gem', '🪙': 'coin', '🥕': 'carrot', '⭐': 'star', '🌟': 'star',
 });
 
 /** A sprite name for anything the recipe might say: a name, an emoji, or noise. */
