@@ -1193,6 +1193,30 @@ document.addEventListener('touchend',e=>{
 },{passive:true});
 window.addEventListener('resize',()=>{if(running)resize();});`,
   },
+
+  // ── The child's own game ─────────────────────────────────────────────────
+  //
+  // 24 October 2026, live: "tic tac toe" was classified as a clicker, so the
+  // model was handed a tap-the-stars game and told to "keep all logic". Every
+  // idea nobody had written a template for became that same game, which is
+  // exactly the complaint: children get the game we made, not the one they
+  // imagined. This type is for those ideas. It carries no game logic at all,
+  // only the helpers every game here uses, and says to work the rules out of
+  // the child's own words.
+  custom: {
+    description: "The child's own game, exactly as they described it. No template fits it, so work out its rules from their words and build THAT game: a board game (tic tac toe, connect four, checkers), a card or dice game, a guessing or word game, a pet or farm game, a story with choices, a drawing or music game, a two-player game on one screen, or anything else. Use the things they named (their characters, their pieces, their way of winning). Do not turn it into a tapping, dodging, catching or shooting game unless that is what they asked for. Two players share one screen and take turns unless they asked to play against the computer.",
+    elements: '#start-screen(.screen.active: title + the rules in one sentence + Play button) | #game-screen(.screen: the game itself + #status(says whose turn it is or what to do next) + #score-display(wins, points or rounds, whatever fits)) | #result-screen(.screen: #final-score(who won, or the final score) + Play again button that calls startGame())',
+    coreJS: `let _ac=null;
+function playTone(f,t,d,v){try{if(!_ac)_ac=new(window.AudioContext||window.webkitAudioContext)();const o=_ac.createOscillator(),g=_ac.createGain();o.connect(g);g.connect(_ac.destination);o.type=t||'triangle';o.frequency.value=f;g.gain.setValueAtTime(v||0.12,_ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,_ac.currentTime+(d||0.1));o.start();o.stop(_ac.currentTime+(d||0.1));}catch(e){}}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.className='screen');document.getElementById(id).className='screen active';}
+function flashEl(id){const el=document.getElementById(id);if(!el)return;el.classList.remove('hud-flash');void el.offsetWidth;el.classList.add('hud-flash');}
+function setStatus(msg){const el=document.getElementById('status');if(el)el.textContent=msg;}
+let score=0;
+// The rules are yours to write from the child's idea:
+function startGame(){score=0;/* reset EVERY piece of game state here */document.getElementById('score-display').textContent=score;showScreen('game-screen');render();}
+function render(){/* draw the game from its state, every time the state changes */}
+function endGame(text){document.getElementById('final-score').textContent=text;playTone(880,'triangle',0.25);setTimeout(()=>showScreen('result-screen'),700);}`,
+  },
 };
 
 // ── Website Starter Patterns ─────────────────────────────────────
@@ -1293,7 +1317,7 @@ function classifyProject(prompt) {
     // include context words: penalty/kick → soccer; hoop/throw → basketball
     if (/\bsoccer\b|\bfootball\b|\bpenalty\b|\bkick\b|\bgoal\b/.test(p)) return { category: 'game', type: 'soccer' };
     if (/\bbasketball\b|\bhoop\b|\bthrow\b/.test(p)) return { category: 'game', type: 'basketball' };
-    return { category: 'game', type: 'clicker' };
+    return { category: 'game', type: 'custom' };
   }
   if (isSportsSite && /\b(soccer|football|basketball|sports?)\b/.test(p)) {
     return { category: 'website', type: 'sports' };
@@ -1316,10 +1340,12 @@ function classifyProject(prompt) {
 
   // ── GENERIC GAME INTENT → sub-signal routing (no defaulting to clicker) ───
   if (isGameWord) {
-    if (/\btyp|\bword|\bspell|\bkeyboard/.test(p))       return { category: 'game', type: 'typing' };
+    // Not "word": a word search or hangman is not a typing race.
+    if (/\btyp(e|ing)\b|\bspell(ing)?\b|\bkeyboard\b/.test(p)) return { category: 'game', type: 'typing' };
     if (/\bjump\b|\bplatform\b|\bdash\b|\brun\b/.test(p))      return { category: 'game', type: 'platformer' };
     if (/\brace\b|\bcar\b|\bdrive\b|\btrack\b/.test(p))        return { category: 'game', type: 'racing' };
-    if (/\bmatch\b|\bflip\b|\bcard\b|\bpair\b/.test(p))        return { category: 'game', type: 'memory' };
+    // "card" alone is not memory: a card game is Uno as often as pairs.
+    if (/\bmemory\b|\bmatch(ing)?\b|\bflip\b|\bpairs?\b/.test(p)) return { category: 'game', type: 'memory' };
     if (/\bmaze|\blabyrin|\bexit/.test(p))                return { category: 'game', type: 'maze' };
     if (/\bsurviv|\bdodge\b|\bavoid\b|\benem/.test(p))     return { category: 'game', type: 'survival' };
     if (/\bcook|\brecipe|\bingredient|\bchef/.test(p))    return { category: 'game', type: 'cooking' };
@@ -1327,8 +1353,10 @@ function classifyProject(prompt) {
     if (/\bbasketball|\bhoop/.test(p))                    return { category: 'game', type: 'basketball' };
     if (/\bpuzzle|\bslide|\btile/.test(p))                return { category: 'game', type: 'puzzle' };
     if (/\bclick|\btap|\bwhack|\bmole|\btarget|\bpop/.test(p)) return { category: 'game', type: 'clicker' };
-    if (/\bshoot|\baim|\bfire|\bblast/.test(p))           return { category: 'game', type: 'clicker' };
-    return { category: 'game', type: 'clicker' };
+    // Anything else is a game nobody wrote a template for, so it is built
+    // from the child's words (round 135). It used to be a clicker, shooting
+    // games included, which is how "a game where you shoot" became tap the stars.
+    return { category: 'game', type: 'custom' };
   }
 
   // ── TOOLS (before websites — tools with "app/page" in name shouldn't misfire) ─
@@ -1350,7 +1378,9 @@ function classifyProject(prompt) {
   if (isSiteWord || isAppWord) return { category: 'website', type: 'portfolio' };
 
   // ── Fallback ──────────────────────────────────────────────────────────────
-  return { category: 'game', type: 'clicker' };
+  // No game, site or tool words at all: "tic tac toe", "connect four", "a
+  // dragon that lays eggs". Those are games, and they are the child's own.
+  return { category: 'game', type: 'custom' };
 }
 
 function selectPalette(prompt, category, type) {

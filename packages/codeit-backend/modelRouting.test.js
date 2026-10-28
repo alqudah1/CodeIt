@@ -127,7 +127,7 @@ test('no build call site still names a model directly', () => {
     assert.match(site[2], /^(firstRoute|secondRoute)\.model$/, `build_${site[1]} still hardcodes a model`);
   }
   // And the one place a model string is passed to the SDK for a build takes it as a parameter.
-  assert.match(route, /const attemptOnce = async \(label, model, messages, timeoutMs\)/);
+  assert.match(route, /const attemptOnce = \(label, model, messages, totalMs\) => streamTrackedMessage\(label, \{\s*model,/);
 });
 
 // ── A page whose value is its words is not a cheap page ──────────────────────

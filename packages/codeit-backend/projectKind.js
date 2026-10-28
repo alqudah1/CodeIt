@@ -21,7 +21,7 @@
 const QUIZ_WORDS = /\b(quiz|quizzes|trivia)\b/;
 const SITE_WORDS = /\b(website|site|webpage|page|portfolio|restaurant|shop|store|sports|blog|landing|homepage|resume|business)\b/;
 const TOOL_WORDS = /\b(tool|calculator|timer|stopwatch|clock|drawing|paint|flashcards?|converter|simulator|simulation)\b/;
-const GAME_WORDS = /\b(game|clicker|runner|memory|reaction|soccer|platformer|dodge|dodger|racing|racer|typing|tower|maze|survival|puzzle|basketball|cooking|snake|catch|catcher|shooter|jumper|arcade|adventure)\b/;
+const GAME_WORDS = /\b(game|custom|clicker|runner|memory|reaction|soccer|platformer|dodge|dodger|racing|racer|typing|tower|maze|survival|puzzle|basketball|cooking|snake|catch|catcher|shooter|jumper|arcade|adventure)\b/;
 
 /** 'game' | 'quiz' | 'website' | 'tool' | 'other' — from free-text project_type. */
 function projectKind(value) {

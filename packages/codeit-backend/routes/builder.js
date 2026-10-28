@@ -121,6 +121,91 @@ async function createTrackedMessage(operation, params, requestOptions) {
   return message;
 }
 
+// ── A build call that can be stopped ─────────────────────────────────────────
+//
+// 24 October 2026, live: "tic tac toe" waited three minutes and got a starter.
+// The logs said both attempts timed out. The old timeout raced the call
+// against a timer and walked away from it, but never stopped it, so the model
+// went on writing (and being paid for) a game nobody would ever see, and the
+// retry started from nothing with less time than the first try had.
+//
+// This streams the reply instead. A build that is still writing is told apart
+// from one that has stalled (no new words for `idleMs`), a stopped attempt
+// stops costing at once, and the error says how far it got, so the logs show
+// whether the budget or the model was the problem.
+function buildTimeout(stall, info) {
+  const err = new Error('BUILD_TIMEOUT');
+  err.stall = stall;
+  Object.assign(err, info);
+  return err;
+}
+
+async function streamTrackedMessage(operation, params, { totalMs, idleMs }) {
+  const started = Date.now();
+  // Test doubles and clients without streaming: the same limits, and the
+  // request is still aborted rather than abandoned.
+  if (typeof client.messages.stream !== 'function') {
+    const controller = new AbortController();
+    let timer;
+    try {
+      return await Promise.race([
+        createTrackedMessage(operation, params, { signal: controller.signal }),
+        new Promise((_, reject) => {
+          timer = setTimeout(() => {
+            controller.abort();
+            reject(buildTimeout('total', { chars: 0, ms: Date.now() - started }));
+          }, totalMs);
+        }),
+      ]);
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  const stream = client.messages.stream(params);
+  let chars = 0;
+  let firstTokenMs = 0;
+  let stall = '';
+  let idle;
+  const stop = (why) => {
+    if (stall) return;
+    stall = why;
+    stream.abort();
+  };
+  const total = setTimeout(() => stop('total'), totalMs);
+  const touch = () => {
+    clearTimeout(idle);
+    idle = setTimeout(() => stop('idle'), idleMs);
+  };
+  touch();
+  stream.on('text', (delta) => {
+    chars += String(delta || '').length;
+    if (!firstTokenMs) firstTokenMs = Date.now() - started;
+    touch();
+  });
+  try {
+    const message = await stream.finalMessage();
+    void recordAIUsage(operation, message);
+    return message;
+  } catch (err) {
+    if (!stall) throw err;
+    // What was paid for before the stop. The stream only reports output
+    // tokens when it finishes, so for a stopped one they are estimated from
+    // the characters received (about four to a token for code).
+    const partial = stream.currentMessage;
+    if (partial?.usage) {
+      void recordAIUsage(operation, {
+        ...partial,
+        usage: { ...partial.usage, output_tokens: Math.max(partial.usage.output_tokens || 0, Math.ceil(chars / 4)) },
+      });
+    }
+    throw buildTimeout(stall, { chars, firstTokenMs, ms: Date.now() - started });
+  } finally {
+    clearTimeout(total);
+    clearTimeout(idle);
+  }
+}
+
 // ── Auto-create ai_project_versions table ─────────────────────────────────────
 if (pool.dialect !== 'postgres') (async () => {
   try {
@@ -421,7 +506,36 @@ input:focus,select:focus{border-color:var(--primary)}
 
   let starterSection = '';
 
-  if (category === 'game') {
+  if (category === 'game' && type === 'custom') {
+    // Round 135: an idea no template fits. No logic to keep, so nothing here
+    // pulls the game towards one we wrote; the checklist asks for the
+    // child's rules first and the juice only where it fits.
+    starterSection = `══ BUILD THE CHILD'S OWN GAME ══
+${pattern.description}
+
+INCLUDE THIS CSS IN YOUR <style> BLOCK (copy exactly):
+\`\`\`css
+${screenCSS}
+\`\`\`
+
+THESE HELPERS ARE YOURS TO USE. The rules of the game are yours to write, from the child's idea:
+\`\`\`js
+${pattern.coreJS}
+\`\`\`
+
+REQUIRED HTML IDs: ${pattern.elements}
+
+GAME CHECKLIST — verify every item before outputting:
+✓ It is the game the child described: their rules, their pieces, their way of winning. Read their idea again before you output.
+✓ Three screens: start-screen (active by default), game-screen, result-screen, switched with showScreen(id)
+✓ #status always says what to do next ("X's turn", "Pick a card", "Roll the dice")
+✓ A score shown live in #score-display: wins, points, rounds or moves, whichever fits this game; flash it with flashEl on change
+✓ The game can be won or lost (or drawn), and the result screen says which and why
+✓ Play again (startGame) resets ALL state and the board
+✓ Tap and click controls work on a phone; every control is at least 44px; keyboard is a bonus
+✓ Feel, where it fits this game: playTone on every move, a small celebration (.particle burst or animation) on a win, a short setTimeout pause before the computer moves or before the result screen
+✓ Fits a phone screen without sideways scrolling; game area max-width 480px, centered`;
+  } else if (category === 'game') {
     starterSection = `══ BUILD A ${type.toUpperCase()} GAME ══
 ${pattern.description}
 
@@ -430,7 +544,7 @@ INCLUDE THIS CSS IN YOUR <style> BLOCK (copy exactly):
 ${screenCSS}${memCSS}
 \`\`\`
 
-USE THIS JAVASCRIPT AS YOUR FOUNDATION — customize theme/names, keep all logic:
+USE THIS JAVASCRIPT AS YOUR FOUNDATION. Keep its screen system and helpers. The child's idea comes first: where their rules, characters or controls differ from this example, change the logic to match what they described:
 \`\`\`js
 ${pattern.coreJS}
 \`\`\`
@@ -735,7 +849,7 @@ Return ONLY the complete polished HTML file. No explanation. No markdown fences 
 
 async function runPolishPass(html, type) {
   try {
-    const categoryHint = ['clicker','runner','platformer','dodge','racing','memory','reaction','quiz','soccer','basketball','typing','tower','maze','survival','puzzle','cooking','game'].includes(type)
+    const categoryHint = ['clicker','runner','platformer','dodge','racing','memory','reaction','quiz','soccer','basketball','typing','tower','maze','survival','puzzle','cooking','custom','game'].includes(type)
       ? 'game' : ['website','portfolio','restaurant','shop','sports','blog','landing'].includes(type)
       ? 'website' : 'tool';
 
@@ -1570,8 +1684,21 @@ function getRichFallbackHtml(designConfig, userPrompt) {
   }
 }
 
+// The whole build, from the child pressing Build to the answer leaving here.
+// The browser waits 175 s (Builder.js) and the function may run 300 s
+// (vercel.json), so 165 s leaves the answer time to travel.
+const BUILD_BUDGET = {
+  totalMs:    165000,
+  firstMs:    120000, // attempt 1 may use this much of it
+  idleMs:      30000, // no new words for this long is a stall, not slowness
+  retryMinMs:  60000, // a whole project takes about this long to write
+  replyMs:      3000, // kept back for judging the reply and sending it
+};
+
 // ── POST /api/builder ─────────────────────────────────────────────────────────
 router.post('/', optionalAuth, generationLimiter, async (req, res) => {
+  // The budget below counts from here, because the child's wait does.
+  const requestStarted = Date.now();
   const { prompt } = req.body;
 
   if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
@@ -1676,38 +1803,41 @@ ${designConfig.category === 'game' ? '• Game must be startable, playable, scor
     // generic starter plus homework ("press Build again yourself"). Now the
     // first attempt runs on the routed model as before, and on a timeout, a
     // thrown error, or unusable output the route retries ONCE on the next
-    // tier up, saying nothing. The browser's progress indicator keeps
+    // tier up, saying nothing, when there is time left for a retry to finish. The browser's progress indicator keeps
     // running because this is still one request. Only if that also fails
     // does the starter go out, and it goes out with `retry`, which tells the
     // button what a third try would do differently.
     //
-    // Budget: the browser gives up at 150 s. 70 + 65 leaves room for the
-    // response to travel.
-    const FIRST_TIMEOUT_MS = 70000;
-    const SECOND_TIMEOUT_MS = 65000;
+    // Budget (round 135): see BUILD_BUDGET. The first attempt may use most
+    // of the time. Before, a build still writing at 70 s was thrown away and
+    // started again from nothing with 65 s, which is the worst use of the
+    // child's wait. The retry runs only if there is time left for it to
+    // finish; otherwise the starter goes out now instead of later.
 
     // A retry pressed from the fallback card starts one tier up already,
     // which is the thing the button promised.
     const startAttempt = req.body?.escalate === true ? 1 : 0;
 
-    const attemptOnce = async (label, model, messages, timeoutMs) => {
-      let timer;
-      try {
-        return await Promise.race([
-          createTrackedMessage(label, {
-            model,
-            max_tokens: maxTok,
-            system:     cached(systemPrompt),
-            messages,
-          }),
-          new Promise(function(_, reject) {
-            timer = setTimeout(function() { reject(new Error('BUILD_TIMEOUT')); }, timeoutMs);
-          }),
-        ]);
-      } finally {
-        clearTimeout(timer);
-      }
-    };
+    const timeLeft = () => BUILD_BUDGET.totalMs - (Date.now() - requestStarted);
+    // The retry button promises "more time", so a retry pressed from the
+    // starter card is one long attempt on the stronger model instead of two
+    // shorter ones.
+    const firstLimit = startAttempt > 0
+      ? BUILD_BUDGET.totalMs - BUILD_BUDGET.replyMs
+      : BUILD_BUDGET.firstMs;
+    let attempts = 1;
+
+    const attemptOnce = (label, model, messages, totalMs) => streamTrackedMessage(label, {
+      model,
+      max_tokens: maxTok,
+      system:     cached(systemPrompt),
+      messages,
+    }, { totalMs, idleMs: BUILD_BUDGET.idleMs });
+
+    // What a timeout looked like, for the logs: how long, and how far it got.
+    const describeStop = (err) => (err && err.message === 'BUILD_TIMEOUT'
+      ? ` (${err.stall === 'idle' ? 'stalled' : 'out of time'} after ${Math.round((err.ms || 0) / 1000)}s, ${err.chars || 0} chars${err.firstTokenMs ? `, first words at ${Math.round(err.firstTokenMs / 1000)}s` : ', no words'})`
+      : '');
 
     // Reads one response the way the child's browser will: does it parse,
     // does it run, does it do the thing. Returns the parsed project and, when
@@ -1795,7 +1925,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
     let firstVerdict = null;
     let firstFailure = null; // 'timeout' | 'error' | 'invalid-output'
     try {
-      const message = await attemptOnce('build_initial', firstRoute.model, [{ role: 'user', content: userMsg }], FIRST_TIMEOUT_MS);
+      const message = await attemptOnce('build_initial', firstRoute.model, [{ role: 'user', content: userMsg }], Math.min(firstLimit, timeLeft()));
       firstRaw = message.content[0].text;
       const rawHasHtml = /<\/html>/i.test(firstRaw);
       console.log(`Builder diag [${designConfig.type}]: rawLen=${firstRaw.length} </html>=${rawHasHtml} </body>=${/<\/body>/i.test(firstRaw)} </script>=${/<\/script>/i.test(firstRaw)}`);
@@ -1807,7 +1937,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
       if (!firstVerdict.ok) firstFailure = 'invalid-output';
     } catch (raceErr) {
       firstFailure = raceErr.message === 'BUILD_TIMEOUT' ? 'timeout' : 'error';
-      console.log(`Builder: attempt 1 ${firstFailure} on ${firstRoute.model} for type: ${designConfig.type}${firstFailure === 'error' ? ` (${raceErr.message})` : ''}`);
+      console.log(`Builder: attempt 1 ${firstFailure} on ${firstRoute.model} for type: ${designConfig.type}${firstFailure === 'error' ? ` (${raceErr.message})` : describeStop(raceErr)}`);
     }
 
     let parsed = firstVerdict?.ok ? firstVerdict.parsed : null;
@@ -1825,9 +1955,15 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
           { role: 'user',      content: correctionMessage(firstVerdict) },
         ]
         : [{ role: 'user', content: userMsg }];
-      console.log(`Builder: retrying on ${secondRoute.model}${secondRoute.escalated ? ' (escalated)' : ''} after ${firstFailure}`);
-      try {
-        const retryResponse = await attemptOnce('build_retry', secondRoute.model, messages, SECOND_TIMEOUT_MS);
+      // Less than this left and a retry would only fail again, later.
+      const retryMs = timeLeft() - BUILD_BUDGET.replyMs;
+      if (retryMs < BUILD_BUDGET.retryMinMs) {
+        fallbackReason = firstFailure;
+        console.log(`Builder: no time left to retry (${Math.round(retryMs / 1000)}s) after ${firstFailure}`);
+      } else try {
+        console.log(`Builder: retrying on ${secondRoute.model}${secondRoute.escalated ? ' (escalated)' : ''} after ${firstFailure}, ${Math.round(retryMs / 1000)}s left`);
+        attempts = 2;
+        const retryResponse = await attemptOnce('build_retry', secondRoute.model, messages, retryMs);
         const verdict = judge(retryResponse.content[0].text);
         if (verdict.ok) {
           parsed = verdict.parsed;
@@ -1837,17 +1973,19 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
         }
       } catch (raceErr2) {
         fallbackReason = raceErr2.message === 'BUILD_TIMEOUT' ? 'retry-timeout' : 'error';
-        console.log(`Builder: retry ${fallbackReason} on ${secondRoute.model} for type: ${designConfig.type}`);
+        console.log(`Builder: retry ${fallbackReason} on ${secondRoute.model} for type: ${designConfig.type}${describeStop(raceErr2)}`);
       }
 
       if (!parsed) {
-        // Both tries failed. Tell the button what a third one would do
-        // differently: a tier up from where THIS request started, if the
+        // The tries failed (two, or one that used the whole wait). Tell the
+        // button what another would do differently: a tier up from where THIS request started, if the
         // plan allows one, and more time either way.
         const nextRoute = modelForBuild(designConfig.type, planId, startAttempt + 1);
         const retry = {
           escalates: nextRoute.model !== firstRoute.model,
           moreTime: true,
+          // So the card does not say "I tried twice" after one long try.
+          attempts,
         };
         console.log('Builder: two attempts failed, using rich fallback for type:', designConfig.type);
         const fbHtml = getRichFallback(designConfig, prompt.trim());
@@ -2752,3 +2890,5 @@ router.post('/pub/:publicId/remix', requireAuth, async (req, res) => {
 });
 
 module.exports = router;
+// Tests shrink these to prove the stop and the retry rule without waiting.
+module.exports.BUILD_BUDGET = BUILD_BUDGET;

@@ -82,6 +82,10 @@ const TIER_BY_TYPE = Object.freeze({
   maze:        1,
   basketball:  1,
   soccer:      1,
+  // Round 135: a game no template fits, written from the child's words. One
+  // game, but all of its logic is new, so it starts where most games do and
+  // escalates on a bad first draft like everything else.
+  custom:      1,
 
   // Derived: several systems at once. Movement plus collision plus levels or
   // an economy, which is where a smaller model starts producing something that

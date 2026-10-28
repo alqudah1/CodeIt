@@ -30,8 +30,12 @@ describe('a starter is never dressed up as the child s project', () => {
     expect(CODE).toMatch(/setAiTitle\(data\.isFallback \? '' : \(data\.title \|\| ''\)\)/);
   });
 
-  test('the interface says plainly that the idea was not built, and that it was tried twice', () => {
+  test('the interface says plainly that the idea was not built, and how many times it was tried', () => {
     expect(CODE).toMatch(/I tried your idea twice and could not build it/);
+    // Round 135: a first attempt may use the whole wait, and then there is
+    // no second one to claim.
+    expect(CODE).toMatch(/starterRetry\?\.attempts === 1/);
+    expect(CODE).toMatch(/Your idea took longer to build than the time I had/);
   });
 
   test('the retry button says what it will do differently, and does it', () => {
@@ -44,10 +48,17 @@ describe('a starter is never dressed up as the child s project', () => {
     expect(CODE).toMatch(/escalate \? \{ prompt: text, escalate: true \} : \{ prompt: text \}/);
   });
 
-  test('the browser waits long enough for both server attempts', () => {
+  test('the browser waits longer than the server\'s whole build budget', () => {
     const m = CODE.match(/buildController\.abort\(\), (\d+)\)/);
     expect(m).not.toBeNull();
-    expect(Number(m[1])).toBeGreaterThanOrEqual(150000);
+    const server = fs.readFileSync(path.join(__dirname, '../../../../codeit-backend/routes/builder.js'), 'utf8');
+    const total = Number(server.match(/totalMs:\s*(\d+)/)[1]);
+    expect(Number(m[1])).toBeGreaterThan(total);
+  });
+
+  test('a long wait is said out loud, and the steps do not finish in three seconds', () => {
+    expect(CODE).toMatch(/can take up to three minutes/);
+    expect(CODE).not.toMatch(/\[900, 1900, 3100\]/);
   });
 
   test('the starter state resets, so one bad build does not label the next one', () => {

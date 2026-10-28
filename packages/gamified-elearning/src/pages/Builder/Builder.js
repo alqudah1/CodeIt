@@ -650,6 +650,9 @@ function detectProjectType(prompt) {
   const p = (prompt || '').toLowerCase();
   if (/quiz|trivia|question|answer|knowledge|multiple.?choice/.test(p)) return 'quiz';
   if (/game|click|catch|dodge|jump|score|play|hit|target|race|puzzle|tap/.test(p)) return 'game';
+  // Games children name without saying "game": "tic tac toe" waited under
+  // "Building your website..." (round 135).
+  if (/tic.?tac.?toe|noughts|connect.?(four|4)|chess|checkers|draughts|sudoku|hangman|bingo|\buno\b|pong|tetris|snake|rock.?paper|\bdice\b|word.?search|crossword/.test(p)) return 'game';
   if (/calc|tool|convert|measure|track|counter/.test(p)) return 'tool';
   if (/story|random|generat|pick|maker/.test(p)) return 'story';
   return 'website';
@@ -1713,10 +1716,22 @@ export default function Builder() {
   useEffect(() => {
     if (!loading) { setBuildStep(0); return; }
     setBuildStep(0);
-    const timers = [900, 1900, 3100].map((delay, i) =>
+    // Spread over the first minute, which is how long a whole project takes
+    // to write. These finished in three seconds and then sat on the last
+    // step for two minutes, which is a progress bar that lies.
+    const timers = [5000, 18000, 40000].map((delay, i) =>
       setTimeout(() => setBuildStep(i + 1), delay)
     );
     return () => timers.forEach(clearTimeout);
+  }, [loading]);
+
+  // How long this build has been going, so a long wait is said out loud.
+  const [waitedSeconds, setWaitedSeconds] = useState(0);
+  useEffect(() => {
+    if (!loading) { setWaitedSeconds(0); return undefined; }
+    const started = Date.now();
+    const id = setInterval(() => setWaitedSeconds(Math.floor((Date.now() - started) / 1000)), 1000);
+    return () => clearInterval(id);
   }, [loading]);
 
   useEffect(() => {
@@ -2105,6 +2120,9 @@ export default function Builder() {
         });
         clearTimeout(quickTimeout);
         const quickData = quick.ok ? await quick.json() : null;
+        // The server read the idea better than the guess above: "tic tac
+        // toe" has no game words in it, and was waiting as a website.
+        if (quickData?.game === true) setLoadingPreviewType('game');
         // An idea none of the nine kinds fits goes to the full build, which can
         // write anything, unless the model is out of reach; then the closest
         // quick game is better than a starter that ignores the idea.
@@ -2135,10 +2153,11 @@ export default function Builder() {
     }
 
     const buildController = new AbortController();
-    // The server tries twice before it gives up (70 s, then 65 s on the next
-    // model up), and the progress indicator runs through both, because from
-    // here it is one request. 150 s leaves room for the answer to travel.
-    const buildTimeout = setTimeout(() => buildController.abort(), 150000);
+    // The server has 165 s for the whole build (BUILD_BUDGET in
+    // routes/builder.js): a first attempt that may use most of it, and a
+    // retry on the next model up only if there is time for one to finish.
+    // From here it is one request, and 175 s leaves room for the answer.
+    const buildTimeout = setTimeout(() => buildController.abort(), 175000);
     try {
       const res  = await fetch(`${API_BASE_URL}/api/builder`, {
         method:  'POST',
@@ -3617,6 +3636,16 @@ export default function Builder() {
               <div className="bldr-loading-preview__say">
                 <strong>Play this while I build yours.</strong>
                 <span>{waitingGame ? waitingGame.label : 'One moment'}</span>
+                {/* At the top, where a child playing the waiting game can see
+                    it: the steps below finish in about a minute, and a whole
+                    project can take three. */}
+                {waitedSeconds >= 15 && (
+                  <p className="bldr-loading__slow" role="status">
+                    {waitedSeconds < 100
+                      ? 'Still writing yours. A project made from your own words can take up to three minutes.'
+                      : 'Still writing. If it is not ready by three minutes, you get something to start from and a button to try again.'}
+                  </p>
+                )}
               </div>
               <div className="bldr-loading-preview__iframe-wrap">
                 <iframe
@@ -3782,7 +3811,11 @@ export default function Builder() {
               </div>
               {isStarter && (
                 <div className="bldr-starter-notice" role="status">
-                  <strong>I tried your idea twice and could not build it.</strong>
+                  <strong>
+                    {starterRetry?.attempts === 1
+                      ? 'Your idea took longer to build than the time I had.'
+                      : 'I tried your idea twice and could not build it.'}
+                  </strong>
                   <p>
                     {starterRetry?.escalates
                       ? 'This is a starter you can change instead. Or try again: the next go starts on the bigger model and gets more time.'
