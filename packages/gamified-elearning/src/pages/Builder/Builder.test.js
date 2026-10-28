@@ -417,6 +417,20 @@ describe('studio opening', () => {
     }
   }, 10000);
 
+  test('scratch=1 skips the quick game the child already had', async () => {
+    mockBuilderLocation.search = '?prompt=a%20bunny%20that%20catches%20carrots&go=1&scratch=1';
+    window.history.replaceState(null, '', '/builder?prompt=a%20bunny%20that%20catches%20carrots&go=1&scratch=1');
+    try {
+      render(<Builder />);
+      await waitFor(() => expect(global.fetch.mock.calls.some(([url]) => url === 'http://codeit.test/api/builder')).toBe(true));
+      expect(global.fetch.mock.calls.some(([url]) => url === 'http://codeit.test/api/builder/recipe')).toBe(false);
+      expect(window.location.search).toBe('?prompt=a+bunny+that+catches+carrots');
+    } finally {
+      mockBuilderLocation.search = '';
+      window.history.replaceState(null, '', '/');
+    }
+  }, 10000);
+
   test('power-ups a game already has are not offered', () => {
     const { recipeGame } = require('./recipeGame');
     const instant = recipeGame({ kind: 'catch', title: 'Bunny Catch', player: '🐰', enemy: '🦊', treasure: '🥕', sky: 'night', speed: 2, lives: 3, winAt: 15, twist: 'none' });

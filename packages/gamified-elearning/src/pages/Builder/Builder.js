@@ -1087,7 +1087,7 @@ export default function Builder() {
   const shelfIdRef = useRef(null);
   // ?prompt=...&go=1 from /build: the child already pressed a button that
   // said "Write it for me", so the build starts without a second press.
-  const autoBuildRef = useRef('');
+  const autoBuildRef = useRef(null);
   const previewKeyRef = useRef('draft');
 
   // What the running project has complained about, and the last version of it
@@ -1600,7 +1600,11 @@ export default function Builder() {
       setPromptHistory([starter.prompt]);
       setBuildKey(k => k + 1);
     }
-    if (!starter && pre && pre.trim() && params.get('go') === '1') autoBuildRef.current = pre.trim().slice(0, 1000);
+    if (!starter && pre && pre.trim() && params.get('go') === '1') {
+      // scratch=1: the child already has the quick game for this sentence and
+      // asked for it written from scratch, so the quick path is skipped.
+      autoBuildRef.current = { text: pre.trim().slice(0, 1000), scratch: params.get('scratch') === '1' };
+    }
 
     // Auto-load a remixed project (redirected from /project/:publicId after remix)
     const remixId = params.get('remix');
@@ -2128,7 +2132,7 @@ export default function Builder() {
   }
 
   // ── Fresh build ────────────────────────────────────────────────────────────
-  const callBuilder = async (text, { escalate = false } = {}) => {
+  const callBuilder = async (text, { escalate = false, scratch = false } = {}) => {
     // ── Look at the thing you were given ───────────────────────────────────
     //
     // The prompt box sits below the twenty starter cards, so a child who typed
@@ -2188,7 +2192,7 @@ export default function Builder() {
     // Tic tac toe, chess, hangman: none of the nine quick kinds, so straight
     // to the full build rather than a catch game that ignores the idea.
     const ownRules = Boolean(namedGame(text) && !namedGame(text).kind);
-    if (!escalate && !ownRules) {
+    if (!escalate && !ownRules && !scratch) {
       try {
         const quickController = new AbortController();
         const quickTimeout = setTimeout(() => quickController.abort(), 12000);
@@ -2330,13 +2334,14 @@ export default function Builder() {
   useEffect(() => {
     const pending = autoBuildRef.current;
     if (!pending) return;
-    autoBuildRef.current = '';
+    autoBuildRef.current = null;
     try {
       const url = new URL(window.location.href);
       url.searchParams.delete('go');
+      url.searchParams.delete('scratch');
       window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
     } catch { /* the build still starts */ }
-    callBuilder(pending);
+    callBuilder(pending.text, { scratch: pending.scratch });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Edit with AI — modifies existing code, never starts from scratch ───────

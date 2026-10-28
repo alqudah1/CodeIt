@@ -103,7 +103,7 @@ function WhatWeMade({ recipe, said, aiDown, onKind }) {
         ))}
       </div>
       {said && !aiDown && (
-        <p className="bd__exact">Not what you imagined? <Link to={`/builder?prompt=${encodeURIComponent(said)}`}>Have the studio write it from scratch</Link>. It takes about a minute.</p>
+        <p className="bd__exact">Not what you imagined? <Link to={`/builder?prompt=${encodeURIComponent(said)}&go=1&scratch=1`}>Have the studio write it from scratch</Link>. It takes about a minute.</p>
       )}
     </div>
   );
@@ -479,7 +479,7 @@ export default function Build() {
                 <div className="bd__notgame ci-rise" role="status">
                   <b>{notGame.site ? 'That sounds like a website, not a game.' : 'We could not find a game in that yet.'}</b> {notGame.site ? 'Try a game you would play:' : 'Say who you are and what you do. Like one of these:'}
                   <div className="bd__chips">{notGame.tries.map((t) => <button key={t} type="button" className="ci-chip" onClick={() => { onIdea(t); build(t); }}>{t}</button>)}</div>
-                  {!aiDown && <small>Or {notGame.site ? 'make it as a website' : 'have it written from scratch'}: <Link to={`/builder?prompt=${encodeURIComponent(idea.trim())}`}>open the studio with your idea</Link>.</small>}
+                  {!aiDown && <small>Or {notGame.site ? 'make it as a website' : 'have it written from scratch'}: <Link to={`/builder?prompt=${encodeURIComponent(idea.trim())}&go=1`}>open the studio with your idea</Link>.</small>}
                 </div>
               )}
               {reels && (

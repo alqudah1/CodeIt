@@ -62,7 +62,7 @@ test('a website is not a game: no error, a sentence that keeps the child\'s word
   fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
   expect(await screen.findByText(/That sounds like a website, not a game/)).toBeInTheDocument();
   expect(screen.getByRole('button', { name: 'a dog that catches stars' })).toBeInTheDocument();
-  expect(screen.getByRole('link', { name: 'open the studio with your idea' })).toHaveAttribute('href', '/builder?prompt=a%20website%20about%20dogs');
+  expect(screen.getByRole('link', { name: 'open the studio with your idea' })).toHaveAttribute('href', '/builder?prompt=a%20website%20about%20dogs&go=1');
   expect(global.fetch).not.toHaveBeenCalled();
   expect(document.body.textContent).not.toMatch(/error/i);
 });
@@ -213,4 +213,13 @@ test('once the child changes the game, it asks them to show it is theirs, from i
   expect(await screen.findByText('Show this one is yours')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: /I can explain it/ }));
   expect(screen.getByText(/In your project|This line is in your project|How many times/)).toBeInTheDocument();
+});
+
+test('"Have the studio write it from scratch" starts a from-scratch build, not the same quick game', async () => {
+  global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({ game: true, fits: true, ai: 'up', source: 'model', recipe: { kind: 'catch', title: 'Bunny Catch', player: '🐰', enemy: '🦊', treasure: '🥕', sky: 'night', speed: 2, lives: 3, winAt: 15 } }) }));
+  render(<Build />);
+  fireEvent.change(screen.getByLabelText('Describe the game you want to play'), { target: { value: 'a bunny that catches carrots' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
+  const link = await screen.findByRole('link', { name: /Have the studio write it from scratch/ }, { timeout: 5000 });
+  expect(link).toHaveAttribute('href', '/builder?prompt=a%20bunny%20that%20catches%20carrots&go=1&scratch=1');
 });
