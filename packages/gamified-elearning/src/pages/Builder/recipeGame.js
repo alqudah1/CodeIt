@@ -126,9 +126,10 @@ ${recipeSettings(r)}
 // ── Powers: each line wakes up when you learn it ──
 ${recipePowers(r)}
 
-// You, in the game: if CodeIt handed us your avatar, you are the player.
+// You, in the game: if CodeIt handed us your avatar and your idea did not
+// name a player, you are the player. A bunny you asked for stays a bunny.
 let playerImg = null;
-if (window.CODEIT_PLAYER_SPRITE) {
+if (window.CODEIT_PLAYER_SPRITE && playerLook === 'hero') {
   playerImg = new Image();
   playerImg.src = window.CODEIT_PLAYER_SPRITE;
 }

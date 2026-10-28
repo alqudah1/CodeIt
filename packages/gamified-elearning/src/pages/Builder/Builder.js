@@ -2253,7 +2253,8 @@ export default function Builder() {
     setEditError('');
     const snapshot = code; // save fallback before we touch anything
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 50000);
+    // The server gives an edit 55 s in all (EDIT_BUDGET in routes/builder.js).
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
     try {
       const res  = await fetch(`${API_BASE_URL}/api/builder/edit`, {
         method:  'POST',
@@ -2297,7 +2298,7 @@ export default function Builder() {
       clearTimeout(timeoutId);
       // Code unchanged — snapshot was never committed
       const msg = err.name === 'AbortError'
-        ? 'Edit timed out. Your project is unchanged. Try a simpler instruction.'
+        ? 'That change took too long. Your project was not changed. Try asking for one smaller change.'
         : err.message;
       setEditError(msg);
     } finally {
@@ -4011,6 +4012,21 @@ export default function Builder() {
               {editing && (
                 <div className="bldr-browser__applying" role="status">
                   <span className="bldr-browser__bar-spinner" />Applying changes...
+                </div>
+              )}
+              {/* A change asked for from the side buttons failed, and the
+                  only place that said so was the edit panel, which those
+                  buttons never open. On 28 October a child waited fifty
+                  seconds and then saw nothing at all. It is said here, where
+                  "Applying changes..." just was. */}
+              {!editing && editError && !showEditPanel && (
+                <div className="bldr-browser__applying bldr-browser__applying--failed" role="alert">
+                  <span>
+                    {editError === 'AI_LIMIT'
+                      ? `Pixel needs a short break. Try again in ${friendlyWait(editRetrySeconds)}. Your project was not changed.`
+                      : editError}
+                  </span>
+                  <button type="button" onClick={() => setEditError('')}>OK</button>
                 </div>
               )}
               {/* sandbox="allow-scripts allow-forms allow-pointer-lock". enables JS, forms, and pointer lock for games */}

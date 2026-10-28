@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import Builder from './Builder';
 import { trackEvent } from '../../utils/trackEvent';
 import { AuthContext } from '../../context/AuthContext';
@@ -365,6 +365,37 @@ describe('studio opening', () => {
     expect(screen.getByRole('button', { name: /Play my project/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Change colours/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Wait 2 minutes/i })).toBeDisabled();
+  }, 10000);
+
+  test('a change from the power-up buttons that fails says so on the preview', async () => {
+    // Round 136: these buttons never open the edit panel, which was the only
+    // place an edit error was shown. A child waited and then saw nothing.
+    render(<Builder />);
+
+    fireEvent.click(screen.getByRole('button', { name: /Build a Game/i }));
+    await screen.findByRole('button', { name: /Play everything/i });
+    fireEvent.click(screen.getByRole('button', { name: /Play it now/i }));
+
+    const normalFetch = global.fetch.getMockImplementation();
+    global.fetch.mockImplementation((url, options = {}) => {
+      if (String(url).endsWith('/api/builder/edit')) {
+        return Promise.resolve({
+          ok: false,
+          status: 502,
+          headers: { get: () => 'application/json' },
+          json: async () => ({ error: 'I could not make that change without breaking something, so your project was not changed. Try saying it another way.' }),
+        });
+      }
+      return normalFetch(url, options);
+    });
+
+    openStudioPage('Change');
+    fireEvent.click(screen.getByRole('button', { name: 'Add score counter' }));
+
+    const alert = await screen.findByRole('alert');
+    expect(alert).toHaveTextContent('your project was not changed');
+    fireEvent.click(within(alert).getByRole('button', { name: 'OK' }));
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   }, 10000);
 
   test('backs up a generated guest project only in the current browser', async () => {

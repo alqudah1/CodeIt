@@ -44,6 +44,21 @@ test('the player can be the child\'s own avatar when the studio provides one', (
   expect(recipeGame(SHIP)).toContain('window.CODEIT_PLAYER_SPRITE');
 });
 
+test('the avatar only stands in for a player the idea did not name', () => {
+  // 28 October, live: "a bunny that catches carrots" drew the child's avatar
+  // with headphones, because the studio hands every game the avatar.
+  const draws = (player) => {
+    const html = recipeGame({ ...SHIP, player });
+    const script = html.split('<script>')[1].split('</' + 'script>')[0];
+    const images = [];
+    const fakeImage = function Image() { images.push(this); };
+    const run = new Function('window', 'Image', `${script.slice(0, script.indexOf('// ── The drawn things'))}; return playerImg;`);
+    return run({ CODEIT_PLAYER_SPRITE: 'data:image/svg+xml;utf8,me' }, fakeImage);
+  };
+  expect(draws('hero')).not.toBeNull();
+  expect(draws('🐰')).toBeNull();
+});
+
 test('a twist is one of three words and anything else becomes none', () => {
   expect(RECIPE_TWISTS).toEqual(['none', 'faster', 'waves']);
   expect(recipeSettings({ ...SHIP, twist: 'Waves' })).toContain("let twist      = 'waves';");

@@ -124,3 +124,23 @@ describe('the ideas hold still', () => {
       .toBe(JSON.stringify(changeIdeasFor(FOOTBALL_GAME)));
   });
 });
+
+describe('an instant game', () => {
+  // 28 October, live: "Start the coins at 6 instead of 3" for startLives, and
+  // "Rename it. It says "Game over" right now" for a game called Bunny Catch.
+  const { recipeGame } = require('./recipeGame');
+  const html = recipeGame({ kind: 'catch', title: 'Bunny Catch', player: '🐰', enemy: '🦊', treasure: '🥕', sky: 'night', speed: 2, lives: 3, winAt: 15, twist: 'none' });
+  const labels = changeIdeasFor(html).map(idea => idea.label);
+
+  test('calls its lives lives, not coins', () => {
+    expect(labels).toContain('Start the lives at 6 instead of 3');
+    expect(labels.join(' ')).not.toMatch(/coins/);
+  });
+
+  test('offers to rename the game by its name, not by its end screen', () => {
+    expect(labels).toContain('Rename it. It says "Bunny Catch" right now');
+    expect(labels.join(' ')).not.toMatch(/Game over/);
+    const rename = changeIdeasFor(html).find(idea => idea.id === 'title');
+    expect(rename.prompt).toBe('Change gameTitle from "Bunny Catch" to something of my own.');
+  });
+});

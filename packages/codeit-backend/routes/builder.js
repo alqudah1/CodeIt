@@ -345,6 +345,7 @@ function parseBuilderResponse(rawText) {
 // unbalanced brace shipped to a child, who pressed Play and watched nothing
 // happen. generatedCode.js compiles the scripts without calling them.
 const { syntaxErrorIn } = require('../generatedCode');
+const { shrinkForModel, parseEdits, applyEdits } = require('../editPatches');
 
 function validateHtml(html) {
   return (
@@ -2090,43 +2091,51 @@ router.post('/recipe', optionalAuth, recipeLimiter, async (req, res) => {
 // ── POST /api/builder/edit ────────────────────────────────────────────────────
 // Body: { currentCode, currentTitle, promptHistory, newInstruction }
 // AI receives full current code + title + edit history so it modifies, never rewrites.
-const EDIT_SYSTEM_PROMPT = `You are an expert frontend developer making targeted edits to existing interactive HTML projects.
+// ── Edits ────────────────────────────────────────────────────────────────────
+//
+// Round 136: the model answers with find-and-replace edits instead of the
+// whole file (see editPatches.js for why). The browser waits 60 s; the edit
+// has 55 s in all, with a retry on the stronger model when the first answer
+// did not apply or broke the code and there is time left for one.
+const EDIT_BUDGET = {
+  totalMs:    55000,
+  firstMs:    35000,
+  idleMs:     15000,
+  retryMinMs: 12000,
+  replyMs:     1500,
+};
+const EDIT_MODELS = ['claude-haiku-4-5-20251001', 'claude-sonnet-5'];
 
-You receive: the complete current HTML/CSS/JS · project title · change history · new instruction.
+const EDIT_SYSTEM_PROMPT = `You change a child's working project. It already works. Change only what the child asked for, and leave everything else exactly as it is.
 
-YOUR ROLE: Make ONLY the requested change. Preserve everything else exactly.
+You receive the current file, the project title, the changes asked for so far, and the new change.
 
-━━━ PRESERVE — never remove, rewrite, or accidentally break ━━━
-• Gameplay: game loops, requestAnimationFrame, setInterval/setTimeout timers, all game logic
-• Score systems: score variables, combo tracking, updateHUD(), score display elements, XP
-• Screen system: .screen/.screen.active, showScreen(), showOverlay(), start/game/result states
-• All event listeners: every onclick=, addEventListener — every button must keep working
-• Existing CSS: :root variables, @keyframes, hover effects, card styles, .fade-up, layout classes
-• Animations: particle functions, score-popup code, hud-flash, screen shake, CSS keyframes
-• Structural IDs: all element IDs used by JavaScript — never rename or remove them
-• Interactions: form logic, tab switching, cart systems, filter logic, modal open/close
-• Saved content: all existing text, labels, questions, menu items, product names, copy
+Reply with EDITS, never a whole new file. Each edit is the smallest piece of the current file that has to change, copied EXACTLY (same spaces, same quotes, whole lines), followed by what it becomes:
 
-━━━ CHANGE ━━━
-• Only what the instruction specifies — nothing more, nothing less
-• Adding new elements: wire with onclick= or addEventListener, use existing CSS classes
-• Changing styles: update rules in <style> block, keep all other rules intact
-• Adding features: append to existing JS — never rewrite the whole script block
+<EDIT>
+<FIND>
+exact whole lines copied from the current file
+</FIND>
+<REPLACE>
+the lines that take their place
+</REPLACE>
+</EDIT>
 
-━━━ RETURN ━━━
-1. Full updated HTML document (<!DOCTYPE html> … </html>)
-2. Complete <style> block — all original CSS plus your additions/changes
-3. Complete <script> block — all original JS plus your additions/changes
-4. Never return partial code, diffs, or "// unchanged" placeholders — always the full file
-5. ${NO_DASHES_RULE}
+RULES
+• Every FIND must appear exactly once in the current file. Add a neighbouring line when you need to make it unique.
+• Use as many edits as the change needs and no more. To add something new, FIND the line it goes after and REPLACE it with that same line plus the new lines.
+• Lines that end in a marker like __KEPT_1__ hold long data the child never reads (the pictures). Never remove or change them.
+• Many games start with a settings block ("let speed = 2;"). When changing a setting does what the child asked, change the setting.
+• Keep every element id, event listener, game loop, score and screen working. Wire up anything new you add.
+• New JavaScript must parse: balanced brackets and quotes, and no names that are not defined.
+• Use the child's own words for anything new the project says.
+• ${NO_DASHES_RULE}
 
-Return EXACTLY this format — nothing else before or after:
-<CODE>
-[complete updated HTML document]
-</CODE>
+After the edits, exactly one line:
 <SUMMARY>one sentence under 20 words starting with "We" describing what changed</SUMMARY>`;
 
 router.post('/edit', optionalAuth, helperLimiter, async (req, res) => {
+  const requestStarted = Date.now();
   const { currentCode, currentTitle, promptHistory, newInstruction } = req.body;
 
   if (typeof currentCode !== 'string' || !currentCode.trim()) return res.status(400).json({ error: 'currentCode is required' });
@@ -2138,51 +2147,77 @@ router.post('/edit', optionalAuth, helperLimiter, async (req, res) => {
     return res.status(500).json({ error: 'AI service is not configured.' });
   }
 
+  const original = currentCode.trim();
+  const shrunk = shrinkForModel(original);
   const titleText   = currentTitle ? `\nProject: "${currentTitle}"\n` : '';
   const historyText = Array.isArray(promptHistory) && promptHistory.length
     ? `\nChange history:\n${promptHistory.map((p, i) => `${i + 1}. ${p}`).join('\n')}\n`
     : '';
+  const ask = `Current file:\n\`\`\`html\n${shrunk.text}\n\`\`\`\n${titleText}${historyText}\nNew change: ${newInstruction.trim()}`;
+  // A project that was already broken (the child's own typing) is not held
+  // against the edit; one the edit breaks is.
+  const brokeBefore = Boolean(syntaxErrorIn(original));
+  const timeLeft = () => EDIT_BUDGET.totalMs - (Date.now() - requestStarted);
+
+  // Reads one reply the way the child's preview will. Returns the new file,
+  // or the reasons it cannot be used, in terms the model can act on.
+  const judge = (raw) => {
+    const { edits, summary } = parseEdits(raw);
+    if (!edits.length) return { problems: ['There were no <EDIT> blocks in your reply.'], summary };
+    const applied = applyEdits(shrunk.text, edits);
+    const problems = applied.misses.map((m) => `Edit ${m.edit}: ${m.why}. Copy the FIND lines exactly from the current file.`);
+    const restored = shrunk.restore(applied.code);
+    restored.lost.forEach((marker) => problems.push(`An edit removed the line holding ${marker}. Keep that line exactly as it was.`));
+    const html = restored.code;
+    if (!validateHtml(html)) problems.push('The file is no longer a complete HTML document.');
+    if (/<script/i.test(original) && !/<script[\s\S]*?>[\s\S]+?<\/script>/i.test(html)) problems.push('The JavaScript was removed.');
+    const broken = !brokeBefore && syntaxErrorIn(html);
+    if (broken) problems.push(`The JavaScript no longer parses: ${broken.message}.`);
+    if (html === original && !problems.length) problems.push('Nothing in the file changed.');
+    return { html, summary, problems };
+  };
 
   try {
-    const message = await createTrackedMessage('edit', {
-      model:      'claude-haiku-4-5-20251001',
-      max_tokens: 8192,
-      system:     EDIT_SYSTEM_PROMPT,
-      messages: [
-        {
-          role:    'user',
-          content: `Current code:\n\`\`\`html\n${currentCode.trim()}\n\`\`\`\n${titleText}${historyText}\nNew instruction: ${newInstruction.trim()}`,
-        },
-      ],
+    let verdict = null;
+    let raw = '';
+    for (let attempt = 0; attempt < EDIT_MODELS.length; attempt += 1) {
+      const limit = attempt === 0
+        ? Math.min(EDIT_BUDGET.firstMs, timeLeft())
+        : timeLeft() - EDIT_BUDGET.replyMs;
+      if (attempt > 0 && limit < EDIT_BUDGET.retryMinMs) break;
+      const messages = attempt === 0 || !raw
+        ? [{ role: 'user', content: ask }]
+        : [
+          { role: 'user', content: ask },
+          { role: 'assistant', content: raw },
+          { role: 'user', content: `Those edits could not be used:\n${verdict.problems.map((p) => `• ${p}`).join('\n')}\n\nReply again with the complete set of edits for the ORIGINAL file, in the same format.` },
+        ];
+      try {
+        const message = await streamTrackedMessage(attempt === 0 ? 'edit' : 'edit_retry', {
+          model: EDIT_MODELS[attempt],
+          max_tokens: 4096,
+          system: EDIT_SYSTEM_PROMPT,
+          messages,
+        }, { totalMs: limit, idleMs: EDIT_BUDGET.idleMs });
+        raw = (message.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('');
+        verdict = judge(raw);
+      } catch (err) {
+        if (err.message !== 'BUILD_TIMEOUT') throw err;
+        raw = '';
+        verdict = { problems: ['timeout'] };
+        console.log(`Builder edit: attempt ${attempt + 1} stopped on ${EDIT_MODELS[attempt]} (${err.stall}, ${err.chars || 0} chars)`);
+      }
+      if (!verdict.problems.length) {
+        return res.json({ code: verdict.html, html: verdict.html, summary: verdict.summary });
+      }
+      console.log(`Builder edit: attempt ${attempt + 1} unusable on ${EDIT_MODELS[attempt]}: ${verdict.problems[0]}`);
+    }
+    const timedOut = verdict?.problems?.[0] === 'timeout';
+    return res.status(502).json({
+      error: timedOut
+        ? 'That change took too long. Your project was not changed. Try asking for one smaller change.'
+        : 'I could not make that change without breaking something, so your project was not changed. Try saying it another way.',
     });
-
-    let rawText = message.content[0].text;
-    let { html, summary } = parseBuilderResponse(rawText);
-
-    // Retry once if script/event-listener check fails after edit
-    if (validateHtml(html) && !/<script[\s\S]*?>[\s\S]+?<\/script>/i.test(html)) {
-      const retry = await createTrackedMessage('edit_retry', {
-        model:      'claude-haiku-4-5-20251001',
-        max_tokens: 8192,
-        system:     EDIT_SYSTEM_PROMPT,
-        messages: [
-          {
-            role:    'user',
-            content: `Current code:\n\`\`\`html\n${currentCode.trim()}\n\`\`\`\n${titleText}${historyText}\nNew instruction: ${newInstruction.trim()}`,
-          },
-          { role: 'assistant', content: rawText },
-          { role: 'user',      content: 'Your output removed the JavaScript. Return the COMPLETE updated HTML keeping all existing <script> logic intact, only applying the requested change.' },
-        ],
-      });
-      rawText = retry.content[0].text;
-      ({ html, summary } = parseBuilderResponse(rawText));
-    }
-
-    if (!validateHtml(html)) {
-      return res.status(502).json({ error: 'AI returned an incomplete response. Your project was not changed.' });
-    }
-
-    res.json({ code: html, html, summary });
   } catch (err) {
     console.error('Builder edit error:', err.message);
     const msg = err.message || '';
@@ -2892,3 +2927,4 @@ router.post('/pub/:publicId/remix', requireAuth, async (req, res) => {
 module.exports = router;
 // Tests shrink these to prove the stop and the retry rule without waiting.
 module.exports.BUILD_BUDGET = BUILD_BUDGET;
+module.exports.EDIT_BUDGET = EDIT_BUDGET;

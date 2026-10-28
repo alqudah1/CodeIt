@@ -5687,6 +5687,24 @@ details.bldr-help-level .bldr-help-level__options {
   font-size: 0.8125rem;
   font-weight: 800;
 }
+.bldr-browser__applying--failed {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  background: #FFF1EC;
+  color: #8A2D12;
+  border-bottom: 1px solid rgba(255, 107, 107, .35);
+}
+.bldr-browser__applying--failed button {
+  min-height: 36px;
+  padding: 6px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: #38291F;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+.bldr-browser__applying--failed button:focus-visible { outline: 3px solid #FF7A00; outline-offset: 2px; }
 
 details.bldr-device-sizes { position: relative; }
 

@@ -24,19 +24,27 @@ import { readProject } from './proveIt';
 
 /** Words a child would recognise for a variable, when we can guess. */
 const FRIENDLY = [
-  { match: /score|point/i, noun: 'score' },
-  { match: /^lives?$|life/i, noun: 'lives' },
-  { match: /speed|velocity/i, noun: 'speed' },
-  { match: /time|timer|seconds|countdown/i, noun: 'timer' },
-  { match: /level|stage|round/i, noun: 'level' },
+  { match: /^(score|points?)$/, noun: 'score' },
+  { match: /^(lives?|life)$/, noun: 'lives' },
+  { match: /^(speed|velocity)$/, noun: 'speed' },
+  { match: /^(time|timer|seconds|countdown)$/, noun: 'timer' },
+  { match: /^(level|stage|round)s?$/, noun: 'level' },
   // Size before coins: `starSize` is a size, and "start the coins at 36"
   // named a number that is not coins.
-  { match: /size|width|height|radius/i, noun: 'size' },
-  { match: /coin|gem|star|gold/i, noun: 'coins' },
+  { match: /^(size|width|height|radius)$/, noun: 'size' },
+  { match: /^(coins?|gems?|stars?|gold)$/, noun: 'coins' },
 ];
 
+// Matched word by word: "startLives" is start + lives. Matched as one string
+// it hit "star" and the studio offered "Start the coins at 6 instead of 3"
+// for a game's lives (28 October, live).
+function wordsOf(name) {
+  return String(name).replace(/([a-z\d])([A-Z])/g, '$1 $2').toLowerCase().split(/[^a-z\d]+/).filter(Boolean);
+}
+
 function friendlyName(variable) {
-  const known = FRIENDLY.find(entry => entry.match.test(variable));
+  const words = wordsOf(variable);
+  const known = FRIENDLY.find(entry => words.some(word => entry.match.test(word)));
   return known ? known.noun : variable;
 }
 
@@ -85,14 +93,23 @@ function colourIdea(facts) {
   };
 }
 
+// The heading on the end screen is not the project's name. An instant game's
+// only <h2> is "Game over", and the studio offered to rename it.
+const END_SCREEN = /^(game over|you win|you won|you lost|well done|try again|the end)\b/i;
+
 function titleIdea(facts) {
-  const heading = facts.headings.find(text => text.length > 1 && text.length < 60);
+  // A game that keeps its name in a setting says so: that is the line to change.
+  const setting = facts.variables.find(v => /title/i.test(v.name) && /^['"].+['"]$/.test(v.value));
+  const named = setting ? setting.value.slice(1, -1).trim() : '';
+  const heading = named || facts.headings.find(text => text.length > 1 && text.length < 60 && !END_SCREEN.test(text));
   if (!heading) return null;
   return {
     id: 'title',
     label: `Rename it. It says "${heading}" right now`,
     why: 'Give your project a name that is yours.',
-    prompt: `Change the main title from "${heading}" to something of my own.`,
+    prompt: setting
+      ? `Change ${setting.name} from "${heading}" to something of my own.`
+      : `Change the main title from "${heading}" to something of my own.`,
   };
 }
 
