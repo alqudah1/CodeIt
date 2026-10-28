@@ -287,7 +287,12 @@ export default function Build() {
   // ── A different kind of game, from the same sentence ──
   const remake = (kind) => {
     if (!recipe || kind === recipe.kind) return;
-    const next = said ? { ...localRecipe(said, kind), twist: recipe.twist, lives: recipe.lives } : { ...recipe, kind };
+    // The child's things stay what they were: the mouse is still you and the
+    // cheese still the treasure when a maze becomes a flying game. Only the
+    // rule changes, and the name with it.
+    const next = said
+      ? { ...localRecipe(said, kind), player: recipe.player, enemy: recipe.enemy, treasure: recipe.treasure, words: recipe.words, twist: recipe.twist, lives: recipe.lives }
+      : { ...recipe, kind };
     tone(560, 0.06, 'triangle');
     applyRecipe({ ...next, fits: true }, 'knob');
   };

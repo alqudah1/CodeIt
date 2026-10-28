@@ -163,6 +163,8 @@ test('the game reads back what it understood, in the child\'s own words, and any
   fireEvent.click(screen.getByRole('button', { name: /Fly through gaps/ }));
   await waitFor(() => expect(frameDoc()).toContain("let gameKind   = 'flyer';"));
   expect(frameDoc()).toContain("let playerLook = '🥟';");
+  // The fork is still what you avoid: changing the kind keeps the child's things.
+  expect(frameDoc()).toContain("let enemyLook  = '🍴';");
 });
 
 test('an idea with no game word says so, and a studio offer only appears when the model can answer', async () => {
