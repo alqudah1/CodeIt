@@ -119,9 +119,10 @@ export default function LearnPythonForKids() {
               </p>
               <p className="seo-p">
                 So CodeIt asks. The comprehension questions are generated from the learner's own
-                file. The correct answer is the value that learner actually wrote, and the wrong
-                options are other real values from the same project, so the question cannot be
-                answered by recalling a lesson or looking anything up. Only first attempts count.
+                file. The correct answer is the value that learner actually wrote, so the question
+                cannot be answered by recalling a lesson or looking anything up. The wrong options
+                are other real values from the same project where the project has them, and plain
+                numbers where it does not. Only first attempts count.
               </p>
               <p className="seo-p">
                 What a parent reads back is a sentence describing something that happened, such as
@@ -266,8 +267,10 @@ export default function LearnPythonForKids() {
                 <li>Kids who've tried other platforms but found them too hard or too boring</li>
               </ul>
               <p className="seo-p">
-                The gamified format. XP, leaderboards, an avatar system, and a journey map. Keeps
-                young learners motivated well past the first few lessons.
+                The gamified format keeps young learners going well past the first few lessons:
+                XP for what they get right, a lesson map that fills in as they go, an avatar whose
+                outfit unlocks as they level up, and an arcade where published games are ranked by
+                how often other children play them.
               </p>
             </section>
 

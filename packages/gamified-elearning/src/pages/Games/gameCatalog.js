@@ -1,10 +1,20 @@
+// ── The cards on /games name the puzzles they open ──────────────────────────
+//
+// Every title and summary here has to match the puzzle its journeyRoute
+// opens, in src/pages/Journey/puzzleConfigs.js. They did not: card 1 was
+// "Talking Robot Adventure", "make the robot speak", and the puzzle behind
+// it is Hello World!, which has no robot in it. Those five titles were the
+// last live trace of the retired puzzle system, and the whole of
+// /python-games-for-kids had been written from them.
+//
+// puzzle-names.test.js checks the pairing.
 export const games = [
   // ── Challenges 1–5: live (route to Journey puzzle system) ──────────────────
   {
     id: '1',
     slug: 'talking-robot',
-    title: 'Talking Robot Adventure',
-    summary: 'Write a print statement to make the robot speak. Your first Python program in action.',
+    title: 'Hello World!',
+    summary: 'One print line is done. Add two more and say anything you like.',
     difficulty: 'Beginner',
     focus: ['print', 'strings', 'basics'],
     xpReward: 100,
@@ -16,8 +26,8 @@ export const games = [
   {
     id: '2',
     slug: 'apple-game',
-    title: 'Variables Challenge',
-    summary: 'Use variables to store values and print them. Master Python variable assignment.',
+    title: 'Variable Vault',
+    summary: 'Three variables hold the access codes. Print each one to unlock the vault.',
     difficulty: 'Beginner',
     focus: ['variables', 'assignment', 'numbers'],
     xpReward: 120,
@@ -29,8 +39,8 @@ export const games = [
   {
     id: '3',
     slug: 'loop-game',
-    title: 'Strings Challenge',
-    summary: 'Manipulate strings with concatenation and built-in methods. Text is your playground.',
+    title: 'String Joiner',
+    summary: 'Join a first name and a last name into one full name, using +.',
     difficulty: 'Beginner',
     focus: ['strings', 'concatenation', 'methods'],
     xpReward: 130,
@@ -42,8 +52,8 @@ export const games = [
   {
     id: '4',
     slug: 'condition-game',
-    title: 'If Statement Challenge',
-    summary: 'Write conditions that control the flow of your program. Make decisions in code.',
+    title: 'Weather Check',
+    summary: 'Run it and watch Python pick Hot, Warm or Cold from the temperature.',
     difficulty: 'Intermediate',
     focus: ['conditionals', 'if', 'comparison'],
     xpReward: 180,
@@ -55,8 +65,8 @@ export const games = [
   {
     id: '5',
     slug: 'loop-challenge',
-    title: 'For Loop Challenge',
-    summary: 'Write for loops using range() to repeat actions. Automation starts here.',
+    title: 'Repeat It',
+    summary: 'The loop is ready and the print line is missing. Add print(i) inside it.',
     difficulty: 'Intermediate',
     focus: ['loops', 'for', 'range'],
     xpReward: 160,

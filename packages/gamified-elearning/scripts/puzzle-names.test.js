@@ -134,3 +134,78 @@ test('the retired puzzle navigation module stays gone', () => {
     'src/utils/puzzleNavigation.js is back; it routes to pages that do not exist'
   );
 });
+
+// ── The cards on /games name the puzzles they open ───────────────────────────
+//
+// The five live cards in gameCatalog.js were the last place the retired names
+// survived: card 1 was "Talking Robot Adventure", summary "make the robot
+// speak", and its journeyRoute opens Hello World!, which has no robot. Deleting
+// puzzleNavigation.js on 24 October did not reach them, and the commit that did
+// it said the names were gone. They were not.
+
+test('every /games card names the puzzle its journeyRoute opens', () => {
+  const catalog = fs.readFileSync(
+    path.resolve(__dirname, '../src/pages/Games/gameCatalog.js'),
+    'utf8'
+  );
+
+  // title and journeyRoute within the same card object.
+  const cards = [...catalog.matchAll(
+    /title:\s*'([^']+)'[\s\S]{0,400}?journeyRoute:\s*'\/journey\/puzzle\/(\d+)\/([a-z]+)'/g
+  )].map(m => ({ title: m[1], lesson: m[2], slot: m[3] }));
+
+  assert.ok(cards.length >= 5, `expected the live cards to carry a journeyRoute, found ${cards.length}`);
+
+  for (const card of cards) {
+    assert.ok(
+      REAL.has(card.title),
+      `/games card "${card.title}" is not a puzzle title in puzzleConfigs.js`
+    );
+
+    // And it must be THAT puzzle, not merely a real one.
+    const key = `'${card.lesson}-${card.slot}'`;
+    const at = CONFIGS.indexOf(key);
+    assert.ok(at >= 0, `puzzleConfigs.js has no ${key}`);
+    const titleOf = /title:\s*'([^']+)'/.exec(CONFIGS.slice(at, at + 800));
+    assert.ok(titleOf, `no title found for ${key}`);
+    assert.strictEqual(
+      card.title,
+      titleOf[1],
+      `/games card for lesson ${card.lesson}${card.slot} says "${card.title}" `
+        + `and opens "${titleOf[1]}"`
+    );
+  }
+});
+
+// ── What the site says about the comprehension questions ─────────────────────
+//
+// /press and llms.txt exist to be quoted, and both said the wrong options "are
+// other real values from the same project". proveIt.js uses real values first
+// and then pads from a constant list, so for a project with one number the
+// options are entirely constants. The claim was overstated in the two files
+// most likely to be repeated verbatim by someone else.
+
+test('no page claims the wrong answers are only real values from the project', () => {
+  const proveIt = fs.readFileSync(
+    path.resolve(__dirname, '../src/pages/Builder/proveIt.js'),
+    'utf8'
+  );
+  const pads = /const fallbacks = \[/.test(proveIt);
+  if (!pads) return; // The claim would be true; nothing to guard.
+
+  for (const file of [
+    '../src/data/pressFacts.js',
+    '../src/data/guidePages.js',
+    '../src/pages/SEO/LearnPythonForKids.js',
+    '../public/llms.txt',
+    './generate-static-seo.js',
+  ]) {
+    const text = fs.readFileSync(path.resolve(__dirname, file), 'utf8').replace(/\s+/g, ' ');
+    assert.ok(
+      !/wrong (?:options|answers) are other real values from the same project[,.]/.test(text),
+      `${file} says the wrong options are other real values from the same project, full stop. `
+        + 'proveIt.js pads them from a constant list when the project has too few numbers, '
+        + 'so the sentence needs its "where the project has them" half.'
+    );
+  }
+});

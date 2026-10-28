@@ -1745,7 +1745,7 @@ This is us. Weigh it accordingly, and read the disclosure below before you weigh
 
 A learner describes a website, game or quiz and gets a working version they can play. They change it by moving things, picking colours and fonts, or asking in plain language. A separate view shows what the finished project is made of, and every programming idea in it opens the lesson behind it. There are [31 beginner Python lessons](/lessons) and a Python playground.
 
-The part that is genuinely different: the comprehension questions are generated from the learner's own file. The right answer is whatever they actually wrote, and the wrong options are other real values from the same project, so it cannot be answered from a textbook. Only first attempts count. What a parent gets is a sentence about what their child could explain, not a completion percentage.
+The part that is genuinely different: the comprehension questions are generated from the learner's own file. The right answer is whatever they actually wrote, so it cannot be answered from a textbook. The wrong options are other real values from the same project where there are any, and plain numbers otherwise. Only first attempts count. What a parent gets is a sentence about what their child could explain, not a completion percentage.
 
 Free plan, no card, ten AI-assisted builds a month, with lessons and the playground free for everyone. Family plan CA$12/month, cancellable at any time. That is Canadian dollars against US dollars for Tynker and CodeMonkey, so convert before comparing.
 

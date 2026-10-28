@@ -15,7 +15,7 @@ const FAQS = [
   },
   {
     q: 'Can kids play the coding games without doing the lessons first?',
-    a: 'A lesson opens its three puzzles, and they are taken in order: the two practice puzzles, then the boss. Clearing the boss earns XP and opens the next lesson on the journey map. If a child gets stuck, the matching lesson is always there to go back to, and a wrong answer costs nothing: the puzzle says which value was wrong and the child tries again.',
+    a: 'A lesson opens its three puzzles, and they are taken in order: the two practice puzzles, then the boss. Clearing the boss earns XP and opens the next lesson. If a child gets stuck, the lessons are always there to go back to, and a wrong answer costs nothing: the puzzle says which value was wrong and the child tries again.',
   },
   {
     q: 'What Python concepts do the coding games on CodeIt teach?',
@@ -103,7 +103,7 @@ export default function PythonGamesForKids() {
               <p className="seo-p">
                 Each lesson from 1 to 10 opens three puzzles: two that practise the idea and a boss
                 that uses all of it. Solving the boss earns XP and opens the next lesson on the
-                journey map.
+                next lesson.
               </p>
               <ul className="seo-list">
                 <li><strong>Lesson 1, print():</strong> Hello World!, Space Mail, and the boss,
@@ -128,9 +128,9 @@ export default function PythonGamesForKids() {
                   If, and the boss, Mini Program.</li>
               </ul>
               <p className="seo-p">
-                All of them are free. You can open them from the{' '}
-                <Link to="/games">coding puzzles page</Link> or follow them in order on the{' '}
-                <Link to="/journey">journey map</Link>.
+                All of them are free. The{' '}
+                <Link to="/games">coding puzzles page</Link> opens the first of each of lessons 1
+                to 5; the rest are reached by working through the lessons themselves.
               </p>
             </section>
 

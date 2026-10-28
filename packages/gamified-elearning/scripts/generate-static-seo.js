@@ -381,7 +381,7 @@ const BASE_PAGES = [
     eyebrow: 'Real Python, playful challenges',
     h1: 'Python games that make every line matter.',
     intro: 'Each short challenge gives a beginner a reason to use loops, variables, or conditions. They type real Python, run it, and see what their code changed.',
-    detail: 'Lessons 1 to 10 each open three puzzles: two that practise the new idea and a boss that uses all of it. Clearing the boss opens the next lesson on the journey map.',
+    detail: 'Lessons 1 to 10 each open three puzzles: two that practise the new idea and a boss that uses all of it. Clearing the boss opens the next lesson.',
     type: 'LearningResource',
   },
   {
@@ -963,7 +963,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'How a parent knows the child understood it',
       paragraphs: [
         'When an assistant can write the code, finishing a project proves nothing about whether a child understood a line of it. Lessons completed, minutes spent and badges earned answer a different question.',
-        "So CodeIt asks. The comprehension questions are generated from the learner's own file. The correct answer is the value that learner actually wrote, and the wrong options are other real values from the same project, so the question cannot be answered by recalling a lesson or looking anything up. Only first attempts count.",
+        "So CodeIt asks. The comprehension questions are generated from the learner's own file. The correct answer is the value that learner actually wrote, so the question cannot be answered by recalling a lesson or looking anything up. The wrong options are other real values from the same project where the project has them, and plain numbers where it does not. Only first attempts count.",
         'What a parent reads back is a sentence describing something that happened, such as "worked out how many times a loop repeats", rather than a score or a percentage. A percentage invites comparison between children and says nothing about what one child can do.',
       ],
     },
@@ -986,7 +986,7 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'The puzzles, in the order a child meets them',
       paragraphs: [
-        'Each lesson from 1 to 10 opens three puzzles: two that practise the new idea and a boss that uses all of it. Clearing the boss earns XP and opens the next lesson on the journey map.',
+        'Each lesson from 1 to 10 opens three puzzles: two that practise the new idea and a boss that uses all of it. Clearing the boss earns XP and opens the next lesson.',
         'Lesson 1 teaches print() through Hello World!, Space Mail and the boss Mission Banner. Lesson 2 teaches variables through Variable Vault, My Introduction and Profile Card. Then strings, if statements, repetition, for loops, lists, loops with lists and functions, ending with Function + Loop, Loop + List + If and the boss Mini Program.',
       ],
     },
