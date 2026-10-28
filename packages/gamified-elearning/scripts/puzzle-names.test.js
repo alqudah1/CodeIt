@@ -193,19 +193,30 @@ test('no page claims the wrong answers are only real values from the project', (
   const pads = /const fallbacks = \[/.test(proveIt);
   if (!pads) return; // The claim would be true; nothing to guard.
 
+  // Matching the exact sentence was too narrow: it missed the home page, which
+  // said "the wrong answers are other numbers from the same file" — same claim,
+  // different words, on the most-read page on the site. So find every way the
+  // claim is phrased and require the qualifier to follow it.
+  const CLAIM = /wrong (?:options|answers) are other (?:real values|numbers)[^.]*?from the same (?:project|file)([^.]*)\./gi;
+
   for (const file of [
     '../src/data/pressFacts.js',
     '../src/data/guidePages.js',
+    '../src/data/blogPosts.js',
     '../src/pages/SEO/LearnPythonForKids.js',
+    '../src/pages/SEO/PythonGamesForKids.js',
     '../public/llms.txt',
     './generate-static-seo.js',
   ]) {
     const text = fs.readFileSync(path.resolve(__dirname, file), 'utf8').replace(/\s+/g, ' ');
-    assert.ok(
-      !/wrong (?:options|answers) are other real values from the same project[,.]/.test(text),
-      `${file} says the wrong options are other real values from the same project, full stop. `
-        + 'proveIt.js pads them from a constant list when the project has too few numbers, '
-        + 'so the sentence needs its "where the project has them" half.'
-    );
+    for (const match of text.matchAll(CLAIM)) {
+      assert.match(
+        match[1],
+        /where/,
+        `${file} says "${match[0].trim()}" with no qualifier. proveIt.js pads the wrong `
+          + 'answers from a constant list when the project has too few numbers, so the '
+          + 'sentence needs its "where the project has them" half.'
+      );
+    }
   }
 });

@@ -1079,7 +1079,7 @@ const HOME_PAGE = {
     {
       heading: 'Showing the project is yours',
       paragraphs: [
-        'When AI writes the first version of a project, finishing it proves nothing about whether the learner understood any of it. CodeIt asks. The questions are generated from the learner\'s own project rather than from a question bank: if their game has a variable called fallSpeed set to 3, the question asks what fallSpeed starts as, and the wrong answers are other numbers from the same file.',
+        'When AI writes the first version of a project, finishing it proves nothing about whether the learner understood any of it. CodeIt asks. The questions are generated from the learner\'s own project rather than from a question bank: if their game has a variable called fallSpeed set to 3, the question asks what fallSpeed starts as. The wrong answers are other numbers from the same file where the file has them, and plain numbers where it does not.',
         'A question cannot be answered by someone who has not read their own code, and it cannot be passed by someone who did the last one. Only questions answered correctly at the first attempt are recorded, because a wrong answer shows the right one along with an explanation. What a parent sees is a plain sentence describing what their child worked out, not a score or a percentage.',
       ],
     },
