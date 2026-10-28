@@ -15,11 +15,11 @@ const FAQS = [
   },
   {
     q: 'Can kids play the coding games without doing the lessons first?',
-    a: 'On CodeIt, coding puzzles unlock after completing the matching lesson and quiz. This ensures kids have the Python skills they need before attempting each challenge. Preventing frustration and making success feel earned rather than accidental. If a child gets stuck on a puzzle, they can always revisit the matching lesson for a refresher.',
+    a: 'A lesson opens its three puzzles, and they are taken in order: the two practice puzzles, then the boss. Clearing the boss earns XP and opens the next lesson on the journey map. If a child gets stuck, the matching lesson is always there to go back to, and a wrong answer costs nothing: the puzzle says which value was wrong and the child tries again.',
   },
   {
     q: 'What Python concepts do the coding games on CodeIt teach?',
-    a: 'The current five puzzles cover: print statements (Puzzle 1. Talking Robot Adventure), variables (Puzzle 2. Apple Game Challenge), for loops (Puzzle 3. Loop Game Challenge), if/else statements (Puzzle 4. Condition Game Master), and arithmetic expressions (Puzzle 5. Math Game Quest). More puzzles covering dictionaries, file handling, exception handling, and object-oriented programming are in development.',
+    a: 'Lessons 1 to 10 each open three puzzles: two that practise the new idea and a boss that uses all of it. Lesson 1 covers print() with Hello World!, Space Mail and the boss Mission Banner; lesson 2 covers variables with Variable Vault, My Introduction and Profile Card; and it continues through strings, if statements, repetition, for loops, lists, loops with lists, functions, and a final lesson that combines them in Function + Loop, Loop + List + If and the boss Mini Program.',
   },
   {
     q: 'Are the Python coding games on CodeIt free?',
@@ -67,11 +67,9 @@ export default function PythonGamesForKids() {
             <p className="seo-answer-box__detail">
               Unlike visual coding platforms, CodeIt uses actual Python syntax from the very first
               lesson, so what kids learn in the games is exactly what professional developers use.
-              Each puzzle unlocks after its matching lesson and covers one specific concept: Puzzle 1
-              uses <code>print()</code>, Puzzle 2 uses variables, Puzzle 3 uses for loops, Puzzle 4
-              uses if/else statements, and Puzzle 5 uses arithmetic expressions. For example, in the
-              Apple Game Challenge, kids use variables to track and update a score as the game
-              plays out. Making an abstract concept immediately concrete and fun.
+              Lessons 1 to 10 each have three: two practice puzzles and a boss. The boss is the one
+              that asks for everything the lesson covered at once, and clearing it opens the next
+              lesson on the map.
             </p>
           </section>
 
@@ -101,29 +99,63 @@ export default function PythonGamesForKids() {
             </section>
 
             <section className="seo-section">
-              <h2 className="seo-h2">The CodeIt Coding Puzzle Collection</h2>
+              <h2 className="seo-h2">The puzzles, in the order a child meets them</h2>
               <p className="seo-p">
-                Each puzzle on CodeIt is tied directly to a lesson. Completing the lesson unlocks
-                the puzzle; solving the puzzle earns XP and unlocks the next chapter. Here's the
-                current puzzle lineup:
+                Each lesson from 1 to 10 opens three puzzles: two that practise the idea and a boss
+                that uses all of it. Solving the boss earns XP and opens the next lesson on the
+                journey map.
               </p>
               <ul className="seo-list">
-                <li><strong>Puzzle 1. Talking Robot Adventure:</strong> Use print() to guide a
-                  robot through a story. Covers Lesson 1: Hello Python.</li>
-                <li><strong>Puzzle 2. Apple Game Challenge:</strong> Use variables to track and
-                  update a score in an apple-catching challenge. Covers Lesson 2: Variables.</li>
-                <li><strong>Puzzle 3. Loop Game Challenge:</strong> Use for loops to repeat actions
-                  and make a programme more efficient. Covers loops.</li>
-                <li><strong>Puzzle 4. Condition Game Master:</strong> Use if/else to make
-                  a character respond differently to different situations. Covers Lesson 4:
-                  If Statements.</li>
-                <li><strong>Puzzle 5. Math Game Quest:</strong> Use arithmetic expressions to
-                  solve challenges and advance through levels. Covers expressions.</li>
+                <li><strong>Lesson 1, print():</strong> Hello World!, Space Mail, and the boss,
+                  Mission Banner.</li>
+                <li><strong>Lesson 2, variables:</strong> Variable Vault, My Introduction, and the
+                  boss, Profile Card.</li>
+                <li><strong>Lesson 3, strings:</strong> String Joiner, String Tricks, and the boss,
+                  Message Builder.</li>
+                <li><strong>Lesson 4, if statements:</strong> Weather Check, Grade Checker, and the
+                  boss, Temperature Report.</li>
+                <li><strong>Lesson 5, repetition:</strong> Repeat It, Count Up, and the boss, Round
+                  Counter.</li>
+                <li><strong>Lesson 6, for loops:</strong> Letter Loop, Vowel Finder, and the boss,
+                  Vowel Counter.</li>
+                <li><strong>Lesson 7, lists:</strong> List Creator, List Builder, and the boss,
+                  List Boss.</li>
+                <li><strong>Lesson 8, loops with lists:</strong> List Printer, Loop Filter, and the
+                  boss, Score Counter.</li>
+                <li><strong>Lesson 9, functions:</strong> First Function, Function Return, and the
+                  boss, Function Boss.</li>
+                <li><strong>Lesson 10, putting it together:</strong> Function + Loop, Loop + List +
+                  If, and the boss, Mini Program.</li>
               </ul>
               <p className="seo-p">
-                More puzzles. Covering dictionaries, file handling, exceptions, OOP, and modules
-. are coming soon. View the full list on the{' '}
-                <Link to="/games">coding puzzles page</Link>.
+                All of them are free. You can open them from the{' '}
+                <Link to="/games">coding puzzles page</Link> or follow them in order on the{' '}
+                <Link to="/journey">journey map</Link>.
+              </p>
+            </section>
+
+            <section className="seo-section">
+              <h2 className="seo-h2">The puzzle checks what you wrote, not whether something ran</h2>
+              <p className="seo-p">
+                A puzzle that accepts any output is a puzzle a child can pass without learning
+                anything, and for a long time most of these did exactly that. They looked for the
+                right text appearing somewhere rather than asking whether the output was right.
+                Printing the number 1 cleared the lesson 9 boss, whose task is to define a function,
+                return a value from it, and call it.
+              </p>
+              <p className="seo-p">
+                Now a puzzle expects specific lines in a specific order and nothing else. When a
+                line is wrong, the message names the value that is wrong rather than saying the
+                answer is incorrect, and it reports the first difference before it mentions the line
+                count, because three different mistakes can produce the same number of lines. Every
+                expected answer was produced by running the puzzle's own worked solution rather than
+                typed by hand, which is how the old ones drifted away from what the lesson teaches.
+              </p>
+              <p className="seo-p">
+                Where the goal names something the output cannot show, such as whether a function
+                was actually defined, the code itself is checked. That is a last resort rather than
+                the first move: a pattern that looks for the word "def" is easy to satisfy without
+                understanding anything.
               </p>
             </section>
 
@@ -154,17 +186,22 @@ export default function PythonGamesForKids() {
             </section>
 
             <section className="seo-section">
-              <h2 className="seo-h2">What Python Skill Each Game Teaches</h2>
+              <h2 className="seo-h2">What Python skill each chapter teaches</h2>
               <p className="seo-p">
-                Every puzzle on CodeIt is designed to make a specific Python concept feel natural
-                and necessary. Here's the skill map:
+                Nothing is asked for before it has been taught. The puzzles follow the lessons
+                exactly, so a child never meets a challenge that needs something they have not seen:
               </p>
               <ul className="seo-list">
-                <li><strong>print() and output:</strong> Talking Robot Adventure (Puzzle 1)</li>
-                <li><strong>Variables and assignment:</strong> Apple Game Challenge (Puzzle 2)</li>
-                <li><strong>For loops and range():</strong> Loop Game Challenge (Puzzle 3)</li>
-                <li><strong>If/else and conditionals:</strong> Condition Game Master (Puzzle 4)</li>
-                <li><strong>Arithmetic expressions:</strong> Math Game Quest (Puzzle 5)</li>
+                <li><strong>print() and output:</strong> showing a message, then several in order</li>
+                <li><strong>Variables:</strong> storing a value, then using it inside print()</li>
+                <li><strong>Strings:</strong> joining text together and changing it</li>
+                <li><strong>If statements:</strong> doing one thing or another depending on a value</li>
+                <li><strong>Repetition:</strong> doing something a set number of times</li>
+                <li><strong>For loops:</strong> walking through a word one letter at a time</li>
+                <li><strong>Lists:</strong> holding several values and reaching one of them</li>
+                <li><strong>Loops with lists:</strong> visiting every item, and counting only some</li>
+                <li><strong>Functions:</strong> naming a piece of code, then giving an answer back</li>
+                <li><strong>All of it together:</strong> a small program that uses the lot</li>
               </ul>
               <p className="seo-p">
                 Because each puzzle maps directly to a lesson, kids who are struggling with a

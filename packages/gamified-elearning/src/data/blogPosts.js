@@ -107,8 +107,8 @@ const BLOG_POSTS = [
       {
         heading: 'Coding Puzzles on CodeIt',
         body: [
-          'Each CodeIt puzzle is tied to a specific Python lesson. Puzzles cover the first ten lessons, and completing one of those lessons unlocks its puzzle. Here\'s what to expect:',
-          '• Puzzle 1: Talking Robot. Use print() to guide a robot through a story\n• Puzzle 2: Apple Game. Use variables to track and update a score\n• Puzzle 3: Loop Game. Use for loops to repeat actions efficiently\n• Puzzle 4: Condition Game. Use if/else to make decisions\n• Puzzle 5: Math Game. Use expressions to solve arithmetic challenges',
+          'Each CodeIt puzzle is tied to a specific Python lesson. Lessons 1 to 10 each open three: two that practise the new idea and a boss that uses all of it. Here\'s what to expect:',
+          '• Lesson 1, print(): Hello World!, Space Mail, boss Mission Banner\n• Lesson 2, variables: Variable Vault, My Introduction, boss Profile Card\n• Lesson 3, strings: String Joiner, String Tricks, boss Message Builder\n• Lesson 4, if statements: Weather Check, Grade Checker, boss Temperature Report\n• Lesson 5, repetition: Repeat It, Count Up, boss Round Counter\n• Lessons 6 to 10 carry on through for loops, lists, loops with lists and functions, ending at the boss Mini Program',
           'Each puzzle runs in a real Python environment directly in the browser. No installs, no setup, just code and run.',
         ],
       },
@@ -116,8 +116,8 @@ const BLOG_POSTS = [
         heading: 'The Journey Map: A Coding Adventure',
         body: [
           'CodeIt\'s Journey Map turns the learning path into a literal adventure. Each node on the map represents a lesson, quiz, or puzzle.',
-          'Completing a lesson unlocks the quiz. In the first ten lessons, passing the quiz also unlocks a puzzle. Beating the puzzle earns XP and advances you to the next chapter.',
-          'Mini puzzles and boss challenges make each chapter feel like a game level. The boss puzzle for Chapter 1, for example, requires combining print(), variables, and user input in a single program.',
+          'Completing a lesson unlocks the quiz. In the first ten lessons it also opens that lesson\'s three puzzles, taken in order: the two practice puzzles, then the boss. Beating the boss earns XP and opens the next lesson on the map.',
+          'Mini puzzles and boss challenges make each chapter feel like a game level. The boss for lesson 1, Mission Banner, asks for a three-line banner: a divider, a title of your own, then the divider again. Printing the divider three times does not pass it.',
         ],
       },
       {

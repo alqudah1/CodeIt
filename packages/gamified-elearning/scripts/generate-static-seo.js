@@ -373,7 +373,7 @@ const BASE_PAGES = [
     eyebrow: 'Real Python, playful challenges',
     h1: 'Python games that make every line matter.',
     intro: 'Each short challenge gives a beginner a reason to use loops, variables, or conditions. They type real Python, run it, and see what their code changed.',
-    detail: 'CodeIt pairs five current coding puzzles with lessons so each challenge reinforces a specific beginner skill.',
+    detail: 'Lessons 1 to 10 each open three puzzles: two that practise the new idea and a boss that uses all of it. Clearing the boss opens the next lesson on the journey map.',
     type: 'LearningResource',
   },
   {
@@ -975,10 +975,18 @@ const SECTIONS_BY_ROUTE = {
       ],
     },
     {
-      heading: 'Real Python, not a simulation of it',
+      heading: 'The puzzles, in the order a child meets them',
       paragraphs: [
-        'Each short challenge gives a beginner a reason to use a loop, a variable, or a condition. They type real Python, run it, and see exactly what their code changed.',
-        'The current set of coding puzzles is paired with the lessons, so each challenge reinforces a specific beginner skill rather than testing something the learner has not met yet.',
+        'Each lesson from 1 to 10 opens three puzzles: two that practise the new idea and a boss that uses all of it. Clearing the boss earns XP and opens the next lesson on the journey map.',
+        'Lesson 1 teaches print() through Hello World!, Space Mail and the boss Mission Banner. Lesson 2 teaches variables through Variable Vault, My Introduction and Profile Card. Then strings, if statements, repetition, for loops, lists, loops with lists and functions, ending with Function + Loop, Loop + List + If and the boss Mini Program.',
+      ],
+    },
+    {
+      heading: 'The puzzle checks what the child wrote',
+      paragraphs: [
+        'A puzzle that accepts any output can be passed without learning anything, and for a long time most of these could be. They looked for the right text appearing somewhere rather than asking whether the output was right: printing the number 1 cleared the lesson 9 boss, whose task is to define a function, return a value and call it.',
+        'A puzzle now expects specific lines in a specific order and nothing else. When a line is wrong the message names the value that is wrong, and it reports the first difference before the line count, because three different mistakes can produce the same number of lines. Every expected answer was produced by running the puzzle\u2019s own worked solution rather than typed by hand.',
+        'Where the goal names something the output cannot show, such as whether a function was really defined, the code itself is checked. That is the last resort rather than the first move, because a pattern looking for the word def is easy to satisfy without understanding anything.',
       ],
     },
   ],
