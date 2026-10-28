@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import Builder from './Builder';
+import Builder, { gameModifiersFor } from './Builder';
 import { trackEvent } from '../../utils/trackEvent';
 import { AuthContext } from '../../context/AuthContext';
 import {
@@ -322,6 +322,9 @@ describe('studio opening', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Ask for a change' }));
 
     expect(screen.getByRole('group', { name: 'How to change your project' })).toHaveTextContent('Pick an idea');
+    // Icons, not their names: this read "palette Change the colours".
+    expect(screen.getByRole('button', { name: /Change the colours/i })).toHaveTextContent(/^Change the colours$/);
+    expect(screen.getByRole('button', { name: /Add a win screen/i })).toHaveTextContent(/^Add a win screen$/);
     fireEvent.click(screen.getByRole('button', { name: /Change the colours/i }));
     expect(screen.getByLabelText('Or type your own idea')).toHaveValue('Change the game to bright rainbow colours.');
     fireEvent.click(screen.getByRole('button', { name: 'Make my change' }));
@@ -390,13 +393,30 @@ describe('studio opening', () => {
     });
 
     openStudioPage('Change');
-    fireEvent.click(screen.getByRole('button', { name: 'Add score counter' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Make it harder' }));
 
     const alert = await screen.findByRole('alert');
     expect(alert).toHaveTextContent('your project was not changed');
     fireEvent.click(within(alert).getByRole('button', { name: 'OK' }));
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   }, 10000);
+
+  test('power-ups a game already has are not offered', () => {
+    const { recipeGame } = require('./recipeGame');
+    const instant = recipeGame({ kind: 'catch', title: 'Bunny Catch', player: '🐰', enemy: '🦊', treasure: '🥕', sky: 'night', speed: 2, lives: 3, winAt: 15, twist: 'none' });
+    const offered = gameModifiersFor(instant);
+    for (const has of ['Add score counter', 'Add restart button', 'Add touch controls']) expect(offered).not.toContain(has);
+    expect(offered).toContain('Make it harder');
+    expect(offered).toContain('Add a golden one worth 5 points');
+    expect(offered.length).toBe(8);
+    // A bare page with none of them is offered all of them.
+    expect(gameModifiersFor('<canvas></canvas>')).toEqual(expect.arrayContaining(['Add score counter', 'Add restart button']));
+    // A game of turns gets ideas about turns, not golden carrots.
+    const board = '<div class="cell" onclick="play(0)"></div><script>let score = 0; function restart() {}</script>';
+    expect(gameModifiersFor(board)).toContain('Let me play against the computer');
+    expect(gameModifiersFor(board)).not.toContain('Add a golden one worth 5 points');
+    expect(gameModifiersFor(board)).not.toContain('Add touch controls');
+  });
 
   test('backs up a generated guest project only in the current browser', async () => {
     render(<Builder />);

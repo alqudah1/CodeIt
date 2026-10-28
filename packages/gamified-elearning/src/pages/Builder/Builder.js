@@ -144,6 +144,44 @@ const GAME_MODIFIERS = [
   'Add a second level',
 ];
 
+// A power-up is only offered if the game does not already have it. An
+// instant game was offered "Add score counter", "Add restart button" and
+// "Add touch controls", all of which it has (28 October, live), and asking
+// for one would at best change nothing and at worst add a second score.
+const ALREADY_HAS = {
+  'Add score counter':   /\bscore/i,
+  'Add countdown timer': /countdown|timeLeft|secondsLeft/i,
+  'Add restart button':  /restart|play again/i,
+  'Add touch controls':  /touchstart|pointerdown/i,
+  'Add high score':      /high.?score|best.?score|localStorage/i,
+};
+// What fills the gaps depends on the game: things that move get arcade
+// ideas, and a game of turns (tic tac toe, connect four) gets ideas about
+// turns. "Add a golden one" means nothing on a noughts and crosses board.
+const MOVING_GAME = /requestAnimationFrame/;
+const ARCADE_EXTRAS = [
+  'Add a golden one worth 5 points',
+  'Add a shield that saves me once',
+  'Make it get faster as I play',
+];
+const TURN_EXTRAS = [
+  'Let me play against the computer',
+  'Add a sound for every move',
+  'Add a celebration when someone wins',
+];
+
+export function gameModifiersFor(code) {
+  const source = String(code || '');
+  const moving = MOVING_GAME.test(source);
+  const fresh = GAME_MODIFIERS.filter((m) => {
+    if (ALREADY_HAS[m] && ALREADY_HAS[m].test(source)) return false;
+    // Taps are clicks already in a game that waits for you.
+    if (m === 'Add touch controls' && !moving) return false;
+    return true;
+  });
+  return [...fresh, ...(moving ? ARCADE_EXTRAS : TURN_EXTRAS)].slice(0, GAME_MODIFIERS.length);
+}
+
 const WEBSITE_MODIFIERS = [
   'Make the design better',
   'Add button actions',
@@ -681,7 +719,7 @@ const EDIT_STEPS = [
 const EASY_EDIT_IDEAS = {
   game: [
     { icon: 'palette', label: 'Change the colours', instruction: 'Change the game to bright rainbow colours.' },
-    { icon: '⭐', label: 'Add a power-up', instruction: 'Add a fun star power-up that helps the player.' },
+    { icon: 'star', label: 'Add a power-up', instruction: 'Add a fun star power-up that helps the player.' },
     { icon: 'trophy', label: 'Add a win screen', instruction: 'Add a colorful celebration screen when the player wins.' },
   ],
   website: [
@@ -3182,13 +3220,13 @@ export default function Builder() {
   const allVersions = useMemo(() => [...localVersions, ...serverVersions], [localVersions, serverVersions]);
   const activeModifiers = useMemo(() => {
     const t = (projectType || '').toLowerCase();
-    if (['clicker', 'runner', 'memory', 'reaction', 'game', 'soccer'].includes(t)) return GAME_MODIFIERS;
+    if (['clicker', 'runner', 'memory', 'reaction', 'game', 'soccer'].includes(t)) return gameModifiersFor(code);
     if (['website', 'portfolio', 'restaurant', 'shop', 'sports', 'blog', 'landing'].includes(t)) return WEBSITE_MODIFIERS;
     if (['calculator', 'timer', 'drawing', 'flashcards', 'tool'].includes(t)) return TOOL_MODIFIERS;
-    if (/game|clicker|runner|memory|reaction|quiz|soccer/.test(t)) return GAME_MODIFIERS;
+    if (/game|clicker|runner|memory|reaction|quiz|soccer/.test(t)) return gameModifiersFor(code);
     if (/website|portfolio|restaurant|shop|sports|blog|landing/.test(t)) return WEBSITE_MODIFIERS;
-    return GAME_MODIFIERS;
-  }, [projectType]);
+    return gameModifiersFor(code);
+  }, [projectType, code]);
 
   const sortedProjects = useMemo(() => {
     let list = [...savedProjects];
@@ -5142,7 +5180,9 @@ export default function Builder() {
                       onClick={() => { setEditInstruction(idea.instruction); setEditError(''); }}
                       disabled={editing}
                     >
-                      <span aria-hidden="true">{idea.icon}</span>{idea.label}
+                      {/* These are icon names. Printed as text, the button read
+                          "palette Change the colours" (28 October, live). */}
+                      <Icon name={idea.icon} size={18} />{idea.label}
                     </button>
                   ))}
                 </div>
