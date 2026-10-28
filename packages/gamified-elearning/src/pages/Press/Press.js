@@ -1,5 +1,5 @@
 import Header from '../Header/Header';
-import COMPANY from '../../config/company';
+import COMPANY, { AGE_RANGE } from '../../config/company';
 import { PRICE_PER_INTERVAL, FREE_MONTHLY_AI_BUILDS } from '../../config/pricing';
 import { TOTAL_LESSONS } from '../Lessons/lessonRegistry';
 import pressFacts from '../../data/pressFacts';
@@ -31,6 +31,7 @@ export default function Press() {
     pricePerInterval: PRICE_PER_INTERVAL,
     freeMonthlyAiBuilds: FREE_MONTHLY_AI_BUILDS,
     lessonCount: TOTAL_LESSONS,
+    ages: AGE_RANGE.short,
   });
 
   return (

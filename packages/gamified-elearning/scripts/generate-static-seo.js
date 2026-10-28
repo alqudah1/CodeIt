@@ -213,6 +213,14 @@ const PRICING = loadPricing();
 const FAQS = loadFaqs();
 const COMPANY = loadCompany();
 
+// ── The marketing age range, from the one place it is written ───────────────
+//
+// config/company.js owns this and src/ageRange.test.js guards it. On 24
+// October I wrote "ages 8 to 14" into seven strings in this file by hand,
+// which is how "ages 5 to 18" ended up in fifty-nine places and is the exact
+// drift the constant exists to stop. Read it instead.
+const AGES = COMPANY.AGE_RANGE.short;
+
 const LESSONS = [
   ['hello-python', 'Hello Python', 'print statements and your first working Python program'],
   ['variables', 'Variables', 'storing names, numbers, scores, and other information'],
@@ -353,7 +361,7 @@ const BASE_PAGES = [
     eyebrow: 'For parents & educators',
     h1: 'A first coding project they’ll want to keep improving.',
     intro: 'CodeIt helps a beginner turn an idea into a website, game, or quiz, then change the design, inspect the code, and understand what makes it work.',
-    detail: 'Built for ages 8 to 14. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way, and those managed profiles cannot publish publicly. Independent student accounts begin at 13.',
+    detail: `Built for ${AGES}. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way, and those managed profiles cannot publish publicly. Independent student accounts begin at 13.`,
     type: 'LearningResource',
   },
   {
@@ -365,7 +373,7 @@ const BASE_PAGES = [
     eyebrow: 'Beginner Python, in the browser',
     h1: 'Python for kids: learn by making something work.',
     intro: 'Python coding for kids, free and in the browser. Write a line, run it, and see what changed. CodeIt gives beginners a clear path through real Python without downloads or a wall of theory first.',
-    detail: 'Built for ages 8 to 14. Younger children can use it alongside an adult and the lessons also work for older beginners. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way. Independent student accounts begin at 13.',
+    detail: `Built for ${AGES}. Younger children can use it alongside an adult and the lessons also work for older beginners. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way. Independent student accounts begin at 13.`,
     type: 'LearningResource',
   },
   {
@@ -683,7 +691,7 @@ function pricingSections() {
     {
       heading: 'Who can have an account',
       paragraphs: [
-        'CodeIt is built for ages 8 to 14. For a learner under 13 a parent or legal guardian creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way, and those managed profiles cannot publish projects publicly. Independent student accounts begin at 13.',
+        `CodeIt is built for ${AGES}. For a learner under 13 a parent or legal guardian creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way, and those managed profiles cannot publish projects publicly. Independent student accounts begin at 13.`,
       ],
     },
   ];
@@ -724,13 +732,14 @@ const IDENTITY_PAGES = [
       pricePerInterval: PRICING.PRICE_PER_INTERVAL,
       freeMonthlyAiBuilds: PRICING.FREE_MONTHLY_AI_BUILDS,
       lessonCount: LESSON_COUNT,
+      ages: AGES,
     }),
   },
   {
     route: '/about',
     eyebrow: 'About',
     h1: 'About CodeIt',
-    intro: `CodeIt is a browser-based coding studio for learners aged 8 to 14, built in ${COMPANY.locationLine()}${COMPANY.founderName ? ` by ${COMPANY.founderName}` : ''}. A learner describes a website, game or quiz; CodeIt builds a working first version; and then the learner opens it up and changes it.`,
+    intro: `CodeIt is a browser-based coding studio for learners aged ${COMPANY.AGE_RANGE.from} to ${COMPANY.AGE_RANGE.to}, built in ${COMPANY.locationLine()}${COMPANY.founderName ? ` by ${COMPANY.founderName}` : ''}. A learner describes a website, game or quiz; CodeIt builds a working first version; and then the learner opens it up and changes it.`,
     detail: 'The project stays editable rather than becoming a finished result you can only look at.',
     type: 'AboutPage',
     sections: [
@@ -846,7 +855,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'Then make it yours',
       paragraphs: [
         'Play with the result, edit individual elements, inspect the underlying HTML, CSS, and JavaScript, and save versions as you go. The project remains editable instead of becoming a locked AI result.',
-        'The studio is built for ages 8 to 14. Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly, and managed profiles for ages 5–12 cannot publish projects at all.',
+        `The studio is built for ${AGES}. Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly, and managed profiles for ages 5–12 cannot publish projects at all.`,
       ],
     },
   ],
@@ -923,7 +932,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'Published projects, playable and remixable',
       paragraphs: [
         'Published CodeIt projects are playable in the browser. A learner can open one for inspiration and remix a copy into their own version without changing the original.',
-        'CodeIt is built for ages 8 to 14. Only eligible independent accounts can publish; managed profiles for ages 5–12 cannot publish projects publicly.',
+        `CodeIt is built for ${AGES}. Only eligible independent accounts can publish; managed profiles for ages 5–12 cannot publish projects publicly.`,
       ],
     },
   ],
@@ -961,7 +970,7 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'Who it suits',
       paragraphs: [
-        'Built for ages 8 to 14. The lessons also work for younger children alongside an adult, and for older beginners meeting Python for the first time. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way, and independent student accounts begin at 13.',
+        `Built for ${AGES}. The lessons also work for younger children alongside an adult, and for older beginners meeting Python for the first time. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way, and independent student accounts begin at 13.`,
         'Lesson 1 opens without a download. The structured lesson sequence is currently Python only — the project studio is where learners work with HTML, CSS, and JavaScript.',
       ],
     },

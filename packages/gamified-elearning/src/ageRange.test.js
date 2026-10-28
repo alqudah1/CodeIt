@@ -22,7 +22,7 @@ function walk(dir, out = []) {
 const read = (f) => fs.readFileSync(f, 'utf8');
 const strip = (src) => src.replace(/\{\/\*[\s\S]*?\*\/\}/g, '').replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
 
-const PRESS = pressFacts({ locationLine: 'Toronto, Canada', founderName: 'M', contactEmail: 'a@b.c', url: 'https://x', primaryAlternateName: 'Code It', sameAs: [], pricePerInterval: 'CA$12 a month', freeMonthlyAiBuilds: 5, lessonCount: 31 });
+const PRESS = pressFacts({ locationLine: 'Toronto, Canada', founderName: 'M', contactEmail: 'a@b.c', url: 'https://x', primaryAlternateName: 'Code It', sameAs: [], pricePerInterval: 'CA$12 a month', freeMonthlyAiBuilds: 5, lessonCount: 31, ages: AGE_RANGE.short });
 const pressText = JSON.stringify(PRESS);
 const notFor = (() => {
   const sections = PRESS.sections || [];

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
+import { AGE_RANGE } from '../../config/company';
 import { useSEO } from '../../hooks/useSEO';
 import { useFAQSchema } from '../../hooks/useFAQSchema';
 import { trackEvent } from '../../utils/trackEvent';
@@ -19,7 +20,7 @@ const FAQS = [
     // The real range leads now; the managed-profile range stays, as the
     // sub-case it always was.
     q: 'What ages can use CodeIt?',
-    a: 'CodeIt is built for ages 8 to 14. Younger children can use it alongside an adult, and older beginners are welcome, adults included. For a learner under 13, a parent or legal guardian creates a private managed profile after confirming the adult account email; profiles for ages 5 to 12 work this way. Independent learner accounts begin at 13.',
+    a: `${AGE_RANGE.statement} Adults learning from scratch are welcome too. For a learner under 13, a parent or legal guardian creates a private managed profile after confirming the adult account email; profiles for ages 5 to 12 work this way. Independent learner accounts begin at 13.`,
   },
   {
     q: 'Do kids need prior coding experience to use CodeIt?',

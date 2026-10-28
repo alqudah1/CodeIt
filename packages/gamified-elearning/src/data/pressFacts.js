@@ -25,17 +25,40 @@ export default function pressFacts({
   pricePerInterval,
   freeMonthlyAiBuilds,
   lessonCount,
+  // The marketing range, from config/company.js. Passed rather than
+  // imported because this file is evaluated in a sandbox that refuses require,
+  // and hardcoding it here is how /press would drift from the constant the
+  // rest of the site follows.
+  ages,
 }) {
+  // ── Nothing on this page may render as "undefined" ────────────────────────
+  //
+  // Every value here is passed in rather than typed, so that the page other
+  // people quote cannot go stale. The cost of that is a caller who forgets
+  // one, and a template literal does not complain: adding the `ages`
+  // parameter on 28 October made /press say "a coding studio built for
+  // undefined" in a test, and it would have said it on the live page just as
+  // quietly. This is the page journalists and assistants copy from, so a
+  // missing fact stops the render rather than shipping.
+  for (const [name, value] of Object.entries({
+    locationLine, founderName, contactEmail, url, primaryAlternateName,
+    pricePerInterval, freeMonthlyAiBuilds, lessonCount, ages,
+  })) {
+    if (value === undefined || value === null || value === '') {
+      throw new Error(`pressFacts: ${name} was not supplied, and /press must not state it as "undefined".`);
+    }
+  }
+
   return {
     eyebrow: "Press and facts",
     h1: "Everything you need to write about CodeIt.",
-    intro: `CodeIt is a browser-based coding studio built for ages 8 to 14, in ${locationLine} by ${founderName}. This page exists so that anyone writing about the product can check a fact without asking, and so that what gets written is accurate.`,
+    intro: `CodeIt is a browser-based coding studio built for ${ages}, in ${locationLine} by ${founderName}. This page exists so that anyone writing about the product can check a fact without asking, and so that what gets written is accurate.`,
     detail: "If something here is unclear or you need a detail that is not on this page, email and ask. A correction is cheaper than a wrong sentence.",
     sections: [
     {
       heading: "The paragraph to quote",
       paragraphs: [
-        `CodeIt is a browser-based coding studio built for ages 8 to 14, in ${locationLine}. Younger children can use it alongside an adult and older beginners are welcome. A learner describes a website, game or quiz and gets a working version they can play, changes it by moving things and picking colours or asking in plain language, then opens a separate view showing what the project is made of and the lesson behind each idea in it. Alongside the studio are ${lessonCount} beginner Python lessons and a Python playground.`,
+        `CodeIt is a browser-based coding studio built for ${ages}, in ${locationLine}. Younger children can use it alongside an adult and older beginners are welcome. A learner describes a website, game or quiz and gets a working version they can play, changes it by moving things and picking colours or asking in plain language, then opens a separate view showing what the project is made of and the lesson behind each idea in it. Alongside the studio are ${lessonCount} beginner Python lessons and a Python playground.`,
         "Use that as written, or cut it. It is accurate as of the date at the bottom of this page.",
       ],
     },
