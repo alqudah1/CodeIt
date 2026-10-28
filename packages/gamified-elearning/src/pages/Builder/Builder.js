@@ -1150,6 +1150,13 @@ export default function Builder() {
 
   // ── AI Companion ───────────────────────────────────────────────────────────
   const [companionTip, setCompanionTip]       = useState('');
+  // The tip floats in the top right corner, and on a phone or a small laptop
+  // that corner is where the project's own Size, Full screen and Play
+  // buttons sit once the page scrolls (28 October, live: "Describe a change
+  // when you want a bigger update" covered Play). It steps aside whenever it
+  // would sit on the project's bar.
+  const toastsRef = useRef(null);
+  const [tipBlocked, setTipBlocked] = useState(false);
   const [companionVisible, setCompanionVisible] = useState(false);
 
   // ── Wow moment ─────────────────────────────────────────────────────────────
@@ -1836,6 +1843,31 @@ export default function Builder() {
     }, 15000);
     return () => clearInterval(id);
   }, [companionVisible, projectType]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!companionVisible || !companionTip) return undefined;
+    let frame = 0;
+    const check = () => {
+      frame = 0;
+      const stack = toastsRef.current;
+      const bar = document.querySelector('.bldr-success-banner');
+      if (!stack || !bar) { setTipBlocked(false); return; }
+      const a = stack.getBoundingClientRect();
+      const b = bar.getBoundingClientRect();
+      // Where the tip would be: the stack's corner, as tall as a tip.
+      const tip = { left: window.innerWidth - Math.min(240, window.innerWidth - 24) - 12, right: window.innerWidth - 12, top: a.top, bottom: a.top + 72 };
+      setTipBlocked(tip.left < b.right && tip.right > b.left && tip.top < b.bottom && tip.bottom > b.top);
+    };
+    const later = () => { if (!frame) frame = window.requestAnimationFrame(check); };
+    check();
+    window.addEventListener('scroll', later, { passive: true });
+    window.addEventListener('resize', later);
+    return () => {
+      window.removeEventListener('scroll', later);
+      window.removeEventListener('resize', later);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [companionVisible, companionTip, code]);
 
   // ── Load saved projects when user logs in ──────────────────────────────────
   useEffect(() => {
@@ -5970,13 +6002,13 @@ export default function Builder() {
             column at the top right, newest at the bottom, each below the
             last; they never cover the play bar or Pixel, whose corners are
             theirs (Pixel bottom right, the chest bottom left). */}
-        <div className="bldr-toasts" aria-live="polite">
+        <div className="bldr-toasts" aria-live="polite" ref={toastsRef}>
           {xpPopup && (
             <div key={xpPopup.id} className="bldr-xp-popup" role="status">
               {xpPopup.amount > 0 ? `+${xpPopup.amount} XP${xpPopup.reason ? `. ${xpPopup.reason}` : ''}` : xpPopup.reason}
             </div>
           )}
-          {companionVisible && companionTip && !studioPanel && (
+          {companionVisible && companionTip && !studioPanel && !tipBlocked && (
             <div className="bldr-companion">
               <div className="bldr-companion__bubble">
                 <p className="bldr-companion__text">{companionTip}</p>
