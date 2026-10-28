@@ -67,6 +67,28 @@ test('a website is not a game: no error, a sentence that keeps the child\'s word
   expect(document.body.textContent).not.toMatch(/error/i);
 });
 
+test('tic tac toe is a game with its own rules: one button, and the studio writes it', async () => {
+  // 28 October, live: it was told "We could not find a game in that yet".
+  global.fetch = jest.fn();
+  render(<Build />);
+  fireEvent.change(screen.getByLabelText('Describe the game you want to play'), { target: { value: 'tic tac toe' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
+  expect(await screen.findByText(/“tic tac toe” has rules of its own/)).toBeInTheDocument();
+  expect(document.body.textContent).not.toMatch(/could not find a game/);
+  fireEvent.click(screen.getByRole('button', { name: 'Write it for me' }));
+  expect(mockNavigate).toHaveBeenCalledWith('/builder?prompt=tic%20tac%20toe&go=1');
+  expect(global.fetch).not.toHaveBeenCalled();
+});
+
+test('a named game that is one of the nine stays instant', async () => {
+  global.fetch = jest.fn(() => Promise.reject(new Error('offline')));
+  render(<Build />);
+  fireEvent.change(screen.getByLabelText('Describe the game you want to play'), { target: { value: 'flappy bird but a cat' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
+  await waitFor(() => expect(frameDoc()).toContain("let gameKind   = 'flyer';"), { timeout: 4000 });
+  expect(screen.queryByText(/has rules of its own/)).not.toBeInTheDocument();
+});
+
 test('Make it builds a game from choices, one tap at a time, and names it', async () => {
   global.fetch = jest.fn();
   render(<Build />);

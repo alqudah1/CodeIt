@@ -36,6 +36,7 @@ export function localRecipe(text, kind) {
   return {
     kind: r.kind,
     fits: r.fits,
+    ownRules: r.ownRules,
     title: r.title,
     player: lookFor(r.player, 'hero'),
     enemy: lookFor(r.enemy, 'rock'),

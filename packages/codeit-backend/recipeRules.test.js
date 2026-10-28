@@ -69,3 +69,22 @@ test('the rules read what the child said, not a word inside another word', () =>
   assert.equal(recipeFromRules('a ship that shoots asteroids').kind, 'shooter');
   assert.equal(recipeFromRules('a ship that shoots asteroids').sky, 'space');
 });
+
+// 28 October 2026, live: "tic tac toe" on /build was "not a game".
+test('a game the child names by name is a game; one with its own rules goes to the studio', () => {
+  for (const idea of ['tic tac toe', 'connect four against a friend', 'chess', 'hangman with animal words', 'rock paper scissors', 'a memory game', 'snake']) {
+    assert.equal(looksLikeGame(idea), true, idea);
+    const r = recipeFromRules(idea);
+    assert.equal(r.fits, false, `${idea} is none of the nine`);
+    assert.equal(r.ownRules, true, `${idea} has its own rules`);
+  }
+  for (const [idea, kind] of [['flappy bird with a cat', 'flyer'], ['pac man', 'maze'], ['whack a mole', 'pop']]) {
+    const r = recipeFromRules(idea);
+    assert.equal(r.kind, kind, idea);
+    assert.equal(r.fits, true, idea);
+    assert.equal(r.ownRules, undefined, idea);
+  }
+  // A snake in a sentence is a snake, not the game called Snake.
+  assert.equal(recipeFromRules('a snake that eats apples').ownRules, undefined);
+  assert.equal(recipeFromRules('a bunny that catches carrots').ownRules, undefined);
+});

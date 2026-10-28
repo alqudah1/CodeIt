@@ -5,6 +5,7 @@ import { API_BASE_URL } from "../../config/api";
 import Header from "../Header/Header";
 import BrandLogo from "../../components/BrandLogo/BrandLogo";
 import { looksLikeGame } from '../Build/recipeLocal';
+import { namedGame } from '../Build/gameWords';
 import { useSEO } from "../../hooks/useSEO";
 import { trackEvent } from "../../utils/trackEvent";
 import HomePilotSignup from "./HomePilotSignup";
@@ -117,8 +118,12 @@ export default function Home() {
     }
     trackEvent("landing_cta_click", "hero-idea");
     // A game idea goes to the instant builder, where it is playing two seconds
-    // later. A website or a quiz still goes to the full studio.
-    navigate(`${looksLikeGame(idea) && /game|play|shoot|catch|dodge|jump|run|enemy|enemies|level/i.test(idea) ? '/build' : '/builder'}?prompt=${encodeURIComponent(idea)}`);
+    // later. A website, a quiz, or a game with rules of its own (tic tac toe,
+    // chess) goes to the full studio, which starts building at once: the
+    // button said "Build it", so it should not need pressing twice.
+    const named = namedGame(idea);
+    const instant = !(named && !named.kind) && looksLikeGame(idea) && /game|play|shoot|catch|dodge|jump|run|enemy|enemies|level/i.test(idea);
+    navigate(instant ? `/build?prompt=${encodeURIComponent(idea)}` : `/builder?prompt=${encodeURIComponent(idea)}&go=1`);
   };
 
   useSEO({

@@ -160,9 +160,50 @@ const KIND_RULES = [
   ['runner', /\b(run|runs|running)\b/],
 ];
 
+// ── Games children name by name ─────────────────────────────────────────────
+//
+// 28 October 2026, live: "tic tac toe" on /build was told "We could not find a
+// game in that yet" and offered dragon games. It is a game; it is just not one
+// of our nine. These are the games children ask for by name. The ones with
+// their own rules (a board, cards, turns) are written from scratch in the
+// studio. The few that ARE one of the nine say which, so they stay instant.
+const NAMED_GAMES = [
+  [/\btic[\s-]*tac[\s-]*toe\b|\bnoughts (?:and|&) crosses\b|\bx(?:'?s)? (?:and|&) o(?:'?s)?\b/, null],
+  [/\bconnect[\s-]*(?:four|4)\b|\bfour in a row\b/, null],
+  [/\bchess\b/, null],
+  [/\bcheckers\b|\bdraughts\b/, null],
+  [/\bsnakes? (?:and|&) ladders\b|\bludo\b|\bboard game\b|\bdice game\b/, null],
+  [/\bhangman\b|\bword ?search\b|\bcrossword\b|\bwordle\b|\bspelling bee\b|\bword game\b/, null],
+  [/\brock[\s,]+paper[\s,]+scissors?\b/, null],
+  [/\bsudoku\b|\bminesweeper\b|\b2048\b|\bsliding puzzle\b|\bjigsaw\b/, null],
+  [/\bbingo\b|\buno\b|\bgo fish\b|\bsolitaire\b|\bblackjack\b|\bcard game\b|\bdominoes\b/, null],
+  [/\bbattleships?\b|\bdots (?:and|&) boxes\b|\bsimon says\b/, null],
+  [/\bmemory (?:game|match)\b|\bmatching pairs\b|\bmatch(?:ing)? (?:the )?cards\b|\bpairs game\b/, null],
+  [/\btetris\b|\bpong\b|\bping[\s-]?pong\b|\bbreakout\b|\bbrick breaker\b/, null],
+  [/^\s*(?:make |build |play )?(?:me )?(?:a |an |the )?(?:classic )?snake(?: game)?\s*$/, null],
+  [/\bflappy\b/, 'flyer'],
+  [/\bspace invaders?\b/, 'shooter'],
+  [/\bpac[\s-]*man\b/, 'maze'],
+  [/\bwhack[\s-]*a[\s-]*mole\b/, 'pop'],
+  [/\btamagotchi\b|\bvirtual pet\b/, 'pet'],
+  [/\btemple run\b|\bsubway surfers?\b|\bendless runner\b/, 'runner'],
+  [/\bfrogger\b|\bcrossy road\b/, 'dodge'],
+];
+
+/** A game the child named by name: { kind } for one of the nine, { kind: null } for one with its own rules. */
+function namedGame(text) {
+  const s = tidy(text);
+  for (const [re, kind] of NAMED_GAMES) if (re.test(s)) return { kind };
+  return null;
+}
+
 /** The kind of game a sentence asks for, and whether a word really said so. */
 function kindOf(text) {
   const s = tidy(text);
+  const named = namedGame(s);
+  if (named && named.kind) return { kind: named.kind, sure: true };
+  // A game with its own rules is none of the nine: say so, do not guess one.
+  if (named) return { kind: 'catch', sure: false };
   for (const [kind, re] of KIND_RULES) if (re.test(s)) return { kind, sure: true };
   return { kind: 'catch', sure: false };
 }
@@ -287,6 +328,7 @@ const NOT_A_GAME = /\b(quiz|trivia|website|web site|webpage|web page|home ?page|
 function looksLikeGame(text) {
   const s = tidy(text);
   if (s.trim().length < 3) return false;
+  if (namedGame(s)) return true;
   if (NOT_A_GAME.test(s)) return false;
   if (/\b(game|play|score|level|win|lose|lives|boss|enemy|enemies)\b/.test(s)) return true;
   if (kindOf(s).sure) return true;
@@ -324,9 +366,12 @@ function recipeFromIdea(text, kindOverride) {
     : /pink|unicorn|fairy/.test(s) ? 'candy'
     : 'day';
   const goal = s.match(/\bwin at (\d+)/);
+  const named = namedGame(s);
   return {
     kind,
     fits: sure,
+    // A game with rules of its own: the studio writes it, nothing here does.
+    ownRules: Boolean(named && !named.kind && !KINDS.includes(kindOverride)),
     title: titleFromIdea(text, kind, roles),
     player,
     // "enemy ships" in a ship game: same picture as you would be confusing.
@@ -353,4 +398,4 @@ function isEmojiLook(look) {
 }
 
 // ── exports ──
-module.exports = { DEFAULTS, KINDS, KIND_SAY, KIND_TITLE, WORDS, emojiForWord, isEmojiLook, kindOf, looksLikeGame, nounsIn, recipeFromIdea, rolesIn, titleFromIdea, wordFor };
+module.exports = { DEFAULTS, KINDS, KIND_SAY, KIND_TITLE, WORDS, emojiForWord, isEmojiLook, kindOf, looksLikeGame, namedGame, nounsIn, recipeFromIdea, rolesIn, titleFromIdea, wordFor };

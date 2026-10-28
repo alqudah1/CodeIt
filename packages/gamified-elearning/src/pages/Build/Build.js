@@ -32,6 +32,7 @@ import { saveProject as saveShelfProject } from '../../utils/projectShelf';
 import { recipeGame } from '../Builder/recipeGame';
 import { PLAYERS, ENEMIES, TREASURES, SPRITE_LABEL } from './sprites';
 import { IDEAS, SKY_NAMES, TWISTS, keepTheirWord, localRecipe, looksLikeGame, nameFor, normaliseRecipe, rollIdea } from './recipeLocal';
+import { namedGame } from './gameWords';
 import { KINDS, KIND_SAY, nounsIn, wordFor } from './gameWords';
 import Look from './Look';
 import ProveItPanel from '../Builder/ProveItPanel';
@@ -137,6 +138,9 @@ export default function Build() {
   const [tray, setTray] = useState([]);
   const [skyHint, setSkyHint] = useState('');
   const [notGame, setNotGame] = useState(null);
+  // A game the child named that has rules of its own (tic tac toe, chess):
+  // the sentence, kept so the studio can be handed it.
+  const [ownRules, setOwnRules] = useState('');
   const [thinking, setThinking] = useState(-1);
   const [recipe, setRecipe] = useState(null);
   const [step, setStep] = useState(0);
@@ -199,6 +203,7 @@ export default function Build() {
   const onIdea = (value) => {
     setIdea(value);
     setNotGame(null);
+    setOwnRules('');
     const t = value.toLowerCase();
     const sky = /space|alien|asteroid|rocket/.test(t) ? 'space' : /night|dark/.test(t) ? 'night' : /sea|ocean|under ?water/.test(t) ? 'ocean' : /sunset|fire|lava/.test(t) ? 'sunset' : /candy|pink|sweet/.test(t) ? 'candy' : '';
     setSkyHint(sky);
@@ -235,6 +240,16 @@ export default function Build() {
   const build = useCallback(async (text) => {
     const sentence = String(text || '').trim();
     if (!sentence) { ideaRef.current?.focus(); return; }
+    // Tic tac toe is a game, just not one of our nine. It was told "We could
+    // not find a game in that yet" and offered dragons (28 October, live).
+    const named = namedGame(sentence);
+    if (named && !named.kind) {
+      setNotGame(null);
+      setOwnRules(sentence);
+      tone(660, 0.08, 'triangle');
+      return;
+    }
+    setOwnRules('');
     if (!looksLikeGame(sentence)) {
       const word = keepTheirWord(sentence);
       setNotGame({ word, site: SITE_WORDS.test(sentence), tries: triesFor(word) });
@@ -452,6 +467,14 @@ export default function Build() {
                 {idea.length >= 100 && <span className="bd__count">{idea.length} / 120</span>}
                 <button type="button" className="ci-btn bd__go" onClick={() => build(idea)} disabled={thinking >= 0}>Build it</button>
               </div>
+              {ownRules && (
+                <div className="bd__own ci-rise" role="status">
+                  <b>“{ownRules}” has rules of its own.</b> The quick games here come in nine kinds and yours is none of them, so the studio writes it from scratch, just for you. It takes about a minute.
+                  <div className="bd__ownacts">
+                    <button type="button" className="ci-btn" onClick={() => navigate(`/builder?prompt=${encodeURIComponent(ownRules)}&go=1`)}>Write it for me</button>
+                  </div>
+                </div>
+              )}
               {notGame && (
                 <div className="bd__notgame ci-rise" role="status">
                   <b>{notGame.site ? 'That sounds like a website, not a game.' : 'We could not find a game in that yet.'}</b> {notGame.site ? 'Try a game you would play:' : 'Say who you are and what you do. Like one of these:'}

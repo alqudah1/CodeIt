@@ -20,6 +20,8 @@
 .bd__tray img { height: 30px; filter: drop-shadow(0 3px 0 rgba(0, 0, 0, .18)); }
 .bd__count { position: absolute; right: 14px; top: 14px; font-size: 11px; color: var(--ci-coral); font-weight: 800; }
 .bd__go { position: absolute; right: 10px; bottom: 10px; height: 38px; padding: 0 18px; font-size: 14px; }
+.bd__own { margin-top: 12px; background: rgba(23, 192, 139, .1); border: 1px solid rgba(23, 192, 139, .4); border-radius: var(--ci-r-sm); padding: 12px 14px; font-size: 14px; line-height: 1.45; }
+.bd__ownacts { margin-top: 10px; }
 .bd__notgame { margin-top: 12px; background: rgba(255, 107, 107, .1); border: 1px solid rgba(255, 107, 107, .35); border-radius: var(--ci-r-sm); padding: 12px 14px; font-size: 14px; }
 .bd__notgame .ci-chip { border-color: var(--ci-coral); }
 .bd__notgame small { display: block; margin-top: 10px; color: var(--ci-ink-soft); }

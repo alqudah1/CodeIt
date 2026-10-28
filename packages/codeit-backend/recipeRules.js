@@ -29,7 +29,7 @@ function titleFor(text) {
 /** The rules-only recipe. Always returns a valid recipe for any text. */
 function recipeFromRules(text) {
   const r = words.recipeFromIdea(text);
-  return { kind: r.kind, fits: r.fits, title: r.title, player: r.player, enemy: r.enemy, treasure: r.treasure, sky: r.sky, speed: r.speed, lives: r.lives, winAt: r.winAt };
+  return { kind: r.kind, fits: r.fits, title: r.title, player: r.player, enemy: r.enemy, treasure: r.treasure, sky: r.sky, speed: r.speed, lives: r.lives, winAt: r.winAt, ...(r.ownRules ? { ownRules: true } : {}) };
 }
 
 /** Accept a model's recipe only if every field is sane; otherwise null. */

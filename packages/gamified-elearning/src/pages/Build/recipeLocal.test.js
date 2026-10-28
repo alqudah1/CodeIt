@@ -94,5 +94,8 @@ test('when no word says which kind of game, the recipe says so instead of preten
   expect(localRecipe('a cat that catches pizza').fits).toBe(true);
   // A kind the child picks wins, and the sentence is read again for that kind.
   expect(localRecipe('a unicorn', 'flyer')).toMatchObject({ kind: 'flyer', fits: true, player: '🦄' });
-  expect(looksLikeGame('tic tac toe')).toBe(false);
+  // Tic tac toe is a game, just none of the nine: it says so, and the page
+  // sends it to the studio (round 139; it used to be "not a game").
+  expect(looksLikeGame('tic tac toe')).toBe(true);
+  expect(localRecipe('tic tac toe')).toMatchObject({ fits: false, ownRules: true });
 });

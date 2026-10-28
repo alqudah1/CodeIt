@@ -98,7 +98,7 @@ describe('Home', () => {
 
     expect(trackEvent).toHaveBeenCalledWith('landing_cta_click', 'hero-idea');
     expect(trackEvent).not.toHaveBeenCalledWith(expect.anything(), 'A space quiz about planets');
-    expect(__navigate).toHaveBeenCalledWith('/builder?prompt=A%20space%20quiz%20about%20planets');
+    expect(__navigate).toHaveBeenCalledWith('/builder?prompt=A%20space%20quiz%20about%20planets&go=1');
   });
 
   test('a game idea from the hero goes to the instant builder, where it plays in two seconds', () => {
@@ -107,6 +107,14 @@ describe('Home', () => {
     fireEvent.change(screen.getByLabelText('What do you want to build?'), { target: { value: 'a ship game where you shoot at enemy ships' } });
     fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
     expect(__navigate).toHaveBeenCalledWith('/build?prompt=a%20ship%20game%20where%20you%20shoot%20at%20enemy%20ships');
+  });
+
+  test('a game with rules of its own goes straight to the studio, which starts building', () => {
+    const { __navigate } = require('react-router-dom');
+    render(<Home />);
+    fireEvent.change(screen.getByLabelText('What do you want to build?'), { target: { value: 'a tic tac toe game' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
+    expect(__navigate).toHaveBeenCalledWith('/builder?prompt=a%20tic%20tac%20toe%20game&go=1');
   });
 
   test('lets a returning student continue their latest project from the homepage', async () => {

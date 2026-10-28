@@ -401,6 +401,22 @@ describe('studio opening', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   }, 10000);
 
+  test('?go=1 from /build starts the full build once, skipping the quick game', async () => {
+    mockBuilderLocation.search = '?prompt=tic%20tac%20toe&go=1';
+    window.history.replaceState(null, '', '/builder?prompt=tic%20tac%20toe&go=1');
+    try {
+      render(<Builder />);
+      await waitFor(() => expect(global.fetch.mock.calls.some(([url]) => url === 'http://codeit.test/api/builder')).toBe(true));
+      expect(global.fetch.mock.calls.some(([url]) => url === 'http://codeit.test/api/builder/recipe')).toBe(false);
+      const build = global.fetch.mock.calls.find(([url]) => url === 'http://codeit.test/api/builder');
+      expect(JSON.parse(build[1].body)).toEqual({ prompt: 'tic tac toe' });
+      expect(window.location.search).toBe('?prompt=tic+tac+toe');
+    } finally {
+      mockBuilderLocation.search = '';
+      window.history.replaceState(null, '', '/');
+    }
+  }, 10000);
+
   test('power-ups a game already has are not offered', () => {
     const { recipeGame } = require('./recipeGame');
     const instant = recipeGame({ kind: 'catch', title: 'Bunny Catch', player: '🐰', enemy: '🦊', treasure: '🥕', sky: 'night', speed: 2, lives: 3, winAt: 15, twist: 'none' });

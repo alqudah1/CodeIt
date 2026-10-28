@@ -69,6 +69,7 @@ import { VOICE_EVENT, setVoiceState, speak, stopSpeaking, voiceState } from '../
 import { lookInside } from './lookInside';
 import { closestStarter } from './closestStarter';
 import { recipeGame, RECIPE_KINDS } from './recipeGame';
+import { namedGame } from '../Build/gameWords';
 
 import ProveItPanel from './ProveItPanel';
 import { hasUnderstood, recordUnderstanding } from '../../utils/understanding';
@@ -691,6 +692,7 @@ function detectProjectType(prompt) {
   // Games children name without saying "game": "tic tac toe" waited under
   // "Building your website..." (round 135).
   if (/tic.?tac.?toe|noughts|connect.?(four|4)|chess|checkers|draughts|sudoku|hangman|bingo|\buno\b|pong|tetris|snake|rock.?paper|\bdice\b|word.?search|crossword/.test(p)) return 'game';
+  if (namedGame(p)) return 'game';
   if (/calc|tool|convert|measure|track|counter/.test(p)) return 'tool';
   if (/story|random|generat|pick|maker/.test(p)) return 'story';
   return 'website';
@@ -1083,6 +1085,9 @@ export default function Builder() {
   const [showStartOver, setShowStartOver] = useState(false);
 
   const shelfIdRef = useRef(null);
+  // ?prompt=...&go=1 from /build: the child already pressed a button that
+  // said "Write it for me", so the build starts without a second press.
+  const autoBuildRef = useRef('');
   const previewKeyRef = useRef('draft');
 
   // What the running project has complained about, and the last version of it
@@ -1588,6 +1593,7 @@ export default function Builder() {
       setPromptHistory([starter.prompt]);
       setBuildKey(k => k + 1);
     }
+    if (!starter && pre && pre.trim() && params.get('go') === '1') autoBuildRef.current = pre.trim().slice(0, 1000);
 
     // Auto-load a remixed project (redirected from /project/:publicId after remix)
     const remixId = params.get('remix');
@@ -2147,7 +2153,10 @@ export default function Builder() {
     // engine in recipeGame.js turns it into a playable game here, and the
     // full build is never waited for. If this call fails for any reason the
     // code falls through to the full build exactly as before.
-    if (!escalate) {
+    // Tic tac toe, chess, hangman: none of the nine quick kinds, so straight
+    // to the full build rather than a catch game that ignores the idea.
+    const ownRules = Boolean(namedGame(text) && !namedGame(text).kind);
+    if (!escalate && !ownRules) {
       try {
         const quickController = new AbortController();
         const quickTimeout = setTimeout(() => quickController.abort(), 12000);
@@ -2283,6 +2292,20 @@ export default function Builder() {
       setLoading(false);
     }
   };
+
+  // Started once. The go is taken out of the address first, so a refresh or
+  // a back button does not spend a second build on the same sentence.
+  useEffect(() => {
+    const pending = autoBuildRef.current;
+    if (!pending) return;
+    autoBuildRef.current = '';
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('go');
+      window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
+    } catch { /* the build still starts */ }
+    callBuilder(pending);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Edit with AI — modifies existing code, never starts from scratch ───────
   const applyEdit = async (instruction) => {

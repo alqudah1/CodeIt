@@ -2098,12 +2098,16 @@ router.post('/recipe', optionalAuth, recipeLimiter, async (req, res) => {
   if (source === 'model') {
     if (rules.fits === false && typeof recipe.fits !== 'boolean') recipe.fits = false;
   }
+  // Tic tac toe, chess, hangman: a game with its own rules is none of the
+  // nine, whatever the model guessed, and the page sends it to the studio.
+  const ownRules = Boolean(rules.ownRules);
+  if (ownRules) recipe.fits = false;
   // Counted with the full builds, so the funnel sees every build a child got,
   // and the meta says which path gave it to them.
   const ctx = { userId: req.user?.user_id, journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')), meta: `recipe-${source}` };
   void recordEvent('builder_start', ctx);
   void recordEvent('generation_complete', ctx);
-  res.json({ game: true, recipe, source, fits: recipe.fits !== false, ai });
+  res.json({ game: true, recipe, source, fits: recipe.fits !== false, ai, ownRules });
 });
 
 // ── POST /api/builder/edit ────────────────────────────────────────────────────
