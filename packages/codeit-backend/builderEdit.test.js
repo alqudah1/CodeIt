@@ -106,6 +106,7 @@ test('a change to a 48 KB game is one small edit, and the rest of the file is un
   const sent = calls[0].messages[0].content;
   assert.ok(!sent.includes('%3Cpath'), 'the picture data was not sent to the model');
   assert.ok(calls[0].max_tokens <= 4096, 'an answer is edits, not a file');
+  assert.deepEqual(calls[0].thinking, { type: 'disabled' });
 });
 
 test('an edit whose FIND is not in the file is retried on the stronger model, with the reason', async () => {

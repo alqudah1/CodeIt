@@ -121,6 +121,21 @@ async function createTrackedMessage(operation, params, requestOptions) {
   return message;
 }
 
+// The words of a reply. Not content[0].text: a model that thinks first puts a
+// thinking block at content[0], and on 28 October, live, every Sonnet build
+// failed with "Cannot read properties of undefined (reading 'length')".
+function textOf(message) {
+  return (message?.content || []).filter((block) => block.type === 'text').map((block) => block.text || '').join('');
+}
+
+// Claude Sonnet 5 thinks before it writes unless told not to, and with the
+// thinking hidden by default the stream says nothing while it does: the
+// builds stalled at 30 s with no words (28 October, live). A build or an
+// edit is told exactly what to make, so it writes straight away. "disabled"
+// is accepted by every model these routes use (Haiku 4.5, Sonnet 5, Opus 5 at
+// its default effort): https://platform.claude.com/docs/en/build-with-claude/thinking
+const NO_THINKING = Object.freeze({ type: 'disabled' });
+
 // ── A build call that can be stopped ─────────────────────────────────────────
 //
 // 24 October 2026, live: "tic tac toe" waited three minutes and got a starter.
@@ -183,6 +198,8 @@ async function streamTrackedMessage(operation, params, { totalMs, idleMs }) {
     if (!firstTokenMs) firstTokenMs = Date.now() - started;
     touch();
   });
+  // Any event at all (a thinking block, a ping) means the call is alive.
+  stream.on('streamEvent', touch);
   try {
     const message = await stream.finalMessage();
     void recordAIUsage(operation, message);
@@ -867,7 +884,7 @@ async function runPolishPass(html, type) {
       maxRetries: 0,
     });
 
-    const raw = message.content[0]?.text || '';
+    const raw = textOf(message);
     const { html: polished } = parseBuilderResponse(raw);
     return polished || null;
   } catch (e) {
@@ -1831,6 +1848,7 @@ ${designConfig.category === 'game' ? '• Game must be startable, playable, scor
     const attemptOnce = (label, model, messages, totalMs) => streamTrackedMessage(label, {
       model,
       max_tokens: maxTok,
+      thinking:   NO_THINKING,
       system:     cached(systemPrompt),
       messages,
     }, { totalMs, idleMs: BUILD_BUDGET.idleMs });
@@ -1927,7 +1945,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
     let firstFailure = null; // 'timeout' | 'error' | 'invalid-output'
     try {
       const message = await attemptOnce('build_initial', firstRoute.model, [{ role: 'user', content: userMsg }], Math.min(firstLimit, timeLeft()));
-      firstRaw = message.content[0].text;
+      firstRaw = textOf(message);
       const rawHasHtml = /<\/html>/i.test(firstRaw);
       console.log(`Builder diag [${designConfig.type}]: rawLen=${firstRaw.length} </html>=${rawHasHtml} </body>=${/<\/body>/i.test(firstRaw)} </script>=${/<\/script>/i.test(firstRaw)}`);
       if (!rawHasHtml) {
@@ -1965,7 +1983,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
         console.log(`Builder: retrying on ${secondRoute.model}${secondRoute.escalated ? ' (escalated)' : ''} after ${firstFailure}, ${Math.round(retryMs / 1000)}s left`);
         attempts = 2;
         const retryResponse = await attemptOnce('build_retry', secondRoute.model, messages, retryMs);
-        const verdict = judge(retryResponse.content[0].text);
+        const verdict = judge(textOf(retryResponse));
         if (verdict.ok) {
           parsed = verdict.parsed;
         } else {
@@ -2196,10 +2214,11 @@ router.post('/edit', optionalAuth, helperLimiter, async (req, res) => {
         const message = await streamTrackedMessage(attempt === 0 ? 'edit' : 'edit_retry', {
           model: EDIT_MODELS[attempt],
           max_tokens: 4096,
+          thinking: NO_THINKING,
           system: EDIT_SYSTEM_PROMPT,
           messages,
         }, { totalMs: limit, idleMs: EDIT_BUDGET.idleMs });
-        raw = (message.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('');
+        raw = textOf(message);
         verdict = judge(raw);
       } catch (err) {
         if (err.message !== 'BUILD_TIMEOUT') throw err;
@@ -2256,7 +2275,7 @@ router.post('/explain', optionalAuth, helperLimiter, async (req, res) => {
       ],
     });
 
-    res.json({ explanation: message.content[0].text.trim() });
+    res.json({ explanation: textOf(message).trim() });
   } catch (err) {
     console.error('Builder explain error:', err.message);
     const msg = err.message || '';
@@ -2595,7 +2614,7 @@ Return only the updated element HTML:`,
       ],
     });
 
-    const patchedHtml = message.content[0].text.trim();
+    const patchedHtml = textOf(message).trim();
     res.json({ success: true, patchedHtml });
   } catch (err) {
     console.error('Builder patch error:', err.message);
@@ -2698,7 +2717,7 @@ Example format: ["Mission one", "Mission two", "Mission three", "Mission four", 
       messages: [{ role: 'user', content: missionPrompt }],
     });
 
-    const raw = message.content[0]?.text?.trim() || '[]';
+    const raw = textOf(message).trim() || '[]';
     // Extract JSON array from response
     const arrMatch = raw.match(/\[[\s\S]*\]/);
     if (!arrMatch) return res.status(200).json({ missions: [] });

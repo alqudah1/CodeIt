@@ -60,7 +60,9 @@ function fakeStream(params) {
           const next = () => {
             if (aborted) return;
             if (i < pieces.length) { emit(pieces[i++]); timer = setTimeout(next, step.every || 0); return; }
-            resolve({ model: params.model, content: [{ type: 'text', text: step.text }], usage: { input_tokens: 5, output_tokens: 9 } });
+            const content = [{ type: 'text', text: step.text }];
+            if (step.thinksFirst) content.unshift({ type: 'thinking', thinking: '', signature: 'sig' });
+            resolve({ model: params.model, content, usage: { input_tokens: 5, output_tokens: 9 } });
           };
           next();
         }
@@ -204,4 +206,14 @@ test('a game with a template is told the child\'s idea comes first', async () =>
   const system = systemText(calls[0]);
   assert.match(system, /BUILD A CLICKER GAME/);
   assert.match(system, /The child's idea comes first/);
+});
+
+test('a reply that starts with a thinking block is still read, and builds ask for no thinking', async () => {
+  // 28 October, live: Sonnet 5 thinks by default, its reply put a thinking
+  // block at content[0], and every Sonnet build failed reading content[0].text.
+  script = [{ text: GOOD_GAME, thinksFirst: true }];
+  const { status, data } = await build({ prompt: 'tic tac toe' });
+  assert.equal(status, 200);
+  assert.equal(data.isFallback, undefined);
+  assert.deepEqual(calls[0].thinking, { type: 'disabled' }, 'it writes straight away instead of thinking in silence');
 });
