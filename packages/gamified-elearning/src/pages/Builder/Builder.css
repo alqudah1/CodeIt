@@ -413,6 +413,8 @@
   color: #38291F;
 }
 
+.bldr-loading__peek { flex-basis: 100%; font-size: 0.88rem; font-weight: 800; color: #A84A11; text-decoration: underline; text-underline-offset: 3px; }
+.bldr-loading__peek:focus-visible { outline: 3px solid #FF7A00; outline-offset: 2px; border-radius: 4px; }
 .bldr-loading__writing { display: flex; flex-direction: column; gap: 8px; }
 .bldr-loading__writing-label { margin: 0; font-size: 0.9rem; font-weight: 700; color: #5C4232; }
 .bldr-loading__writing-label b { color: #38291F; }

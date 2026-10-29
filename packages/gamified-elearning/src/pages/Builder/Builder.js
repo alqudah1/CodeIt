@@ -3774,6 +3774,13 @@ export default function Builder() {
                       : 'Still writing. If it is not ready by three minutes, you get something to start from and a button to try again.'}
                   </p>
                 )}
+                {/* On a phone the code panel is below the waiting game, so the
+                    count that says it is really happening is up here too. */}
+                {buildProgress && buildProgress.lines > 0 && (
+                  <a className="bldr-loading__peek" href="#bldr-writing" onClick={(e) => { e.preventDefault(); document.getElementById('bldr-writing')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }}>
+                    Yours: {buildProgress.lines} {buildProgress.lines === 1 ? 'line' : 'lines'} of code written. Watch it
+                  </a>
+                )}
               </div>
               <div className="bldr-loading-preview__iframe-wrap">
                 <iframe
@@ -3795,7 +3802,7 @@ export default function Builder() {
                   the child's own code as it is written. Until the first words
                   arrive (or if the connection does not stream) the steps show. */}
               {buildProgress && buildProgress.lines > 0 ? (
-                <div className="bldr-loading__writing">
+                <div className="bldr-loading__writing" id="bldr-writing">
                   <p className="bldr-loading__writing-label">
                     {buildProgress.attempt > 1 ? 'Second try, on a stronger model. ' : ''}
                     Your code, being written: <b>{buildProgress.lines}</b> {buildProgress.lines === 1 ? 'line' : 'lines'} so far

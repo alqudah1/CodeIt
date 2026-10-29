@@ -496,6 +496,8 @@ describe('studio opening', () => {
       render(<Builder />);
       expect(await screen.findByText(/lines so far/)).toHaveTextContent('Your code, being written: 12 lines so far');
       expect(document.querySelector('.bldr-loading__code')).toHaveTextContent('function startGame(){');
+      // And where a child playing the waiting game can see it.
+      expect(screen.getByRole('link', { name: /Yours: 12 lines of code written/ })).toHaveAttribute('href', '#bldr-writing');
       const build = global.fetch.mock.calls.find(([url]) => String(url).endsWith('/api/builder'));
       expect(build[1].headers.Accept).toMatch(/application\/x-ndjson/);
       release();
