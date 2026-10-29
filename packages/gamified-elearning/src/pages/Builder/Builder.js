@@ -744,6 +744,17 @@ function getEasyEditIdeas(type) {
       : EASY_EDIT_IDEAS.default;
 }
 
+// The same rule as the header's Get Plus: a signed-in account that is not a
+// student and not a family profile. Everyone else may be a child.
+function isAdultAccount(user) {
+  return Boolean(user && !user.managedProfile && String(user.role || '').toLowerCase() !== 'student');
+}
+
+/** "1 November": when the month's free studio builds come back. */
+function firstOfNextMonth(now = new Date()) {
+  return new Date(now.getFullYear(), now.getMonth() + 1, 1).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+}
+
 function friendlyWait(seconds) {
   const safeSeconds = Math.max(0, Number(seconds) || 0);
   if (safeSeconds < 60) return `${safeSeconds} second${safeSeconds === 1 ? '' : 's'}`;
@@ -2266,7 +2277,8 @@ export default function Builder() {
         // place that knows it happened. What the browser knows, and the
         // server cannot, is whether the offer was actually put in front of
         // anyone.
-        void trackEvent('upgrade_prompt_shown', 'build-limit', token);
+        // Counted only when an offer is actually shown, which is to grown-ups.
+        if (isAdultAccount(user)) void trackEvent('upgrade_prompt_shown', 'build-limit', token);
         return;
       }
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
@@ -3812,20 +3824,34 @@ export default function Builder() {
         ════════════════════════════════════════ */}
         {hasLimit && (
           <div className="bldr-limit-card" role="status">
+            {/* The Parent page promises "Nothing is sold to your child... Plans
+                are for grown-ups, on a page children do not see", and the
+                header only offers Plus to an adult account. This card showed
+                "See CodeIt Plus" to whoever hit the limit, which is usually
+                the child. A child is told what still works and when the
+                builds come back; a grown-up is shown the plan. */}
             <div className="bldr-limit-card__body">
-              <p className="bldr-limit-card__title">That is this month's free AI builds used up.</p>
+              <p className="bldr-limit-card__title">That is this month's free studio builds used up.</p>
               <p className="bldr-limit-card__sub">
-                {limitReached || 'Every lesson, puzzle and project stays open, and you can keep changing anything you have already built.'}
+                {isAdultAccount(user)
+                  ? (limitReached || 'Every lesson, puzzle and project stays open, and you can keep changing anything you have already built.')
+                  : `Quick games on Build do not count, so make as many as you like. You can still change every game you have made and do every lesson. New studio builds come back on ${firstOfNextMonth()}.`}
               </p>
             </div>
             <div className="bldr-limit-card__actions">
-              <Link
-                className="bldr-action-btn bldr-action-btn--primary bldr-action-btn--sm"
-                to="/pricing#codeit-plus"
-                onClick={() => void trackEvent('upgrade_click', 'build-limit', token)}
-              >
-                See CodeIt Plus
-              </Link>
+              {isAdultAccount(user) ? (
+                <Link
+                  className="bldr-action-btn bldr-action-btn--primary bldr-action-btn--sm"
+                  to="/pricing#codeit-plus"
+                  onClick={() => void trackEvent('upgrade_click', 'build-limit', token)}
+                >
+                  See CodeIt Plus
+                </Link>
+              ) : (
+                <Link className="bldr-action-btn bldr-action-btn--primary bldr-action-btn--sm" to="/build">
+                  Make a quick game
+                </Link>
+              )}
               <button
                 type="button"
                 className="bldr-action-btn bldr-action-btn--sm"

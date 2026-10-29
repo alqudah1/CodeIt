@@ -431,6 +431,44 @@ describe('studio opening', () => {
     }
   }, 10000);
 
+  test('at the monthly limit a child is told what still works, and only a grown-up is shown the plan', async () => {
+    const limitFetch = (url) => {
+      const target = String(url);
+      if (target.endsWith('/api/builder/recipe')) return Promise.resolve({ ok: true, status: 200, headers: { get: () => 'application/json' }, json: async () => ({ game: false }) });
+      if (target.endsWith('/api/builder')) {
+        return Promise.resolve({ ok: false, status: 402, headers: { get: () => 'application/json' }, json: async () => ({ code: 'FREE_AI_LIMIT_REACHED', error: 'You have used this month\'s free AI builds.' }) });
+      }
+      return Promise.resolve({ ok: true, status: 200, headers: { get: () => 'application/json' }, json: async () => ({}) });
+    };
+    const { AuthContext } = require('../../context/AuthContext');
+    const run = async (user) => {
+      global.fetch = jest.fn(limitFetch);
+      trackEvent.mockClear();
+      mockBuilderLocation.search = '?prompt=a%20website%20about%20my%20dog&go=1';
+      const view = render(
+        <AuthContext.Provider value={{ user, token: 't' }}>
+          <Builder />
+        </AuthContext.Provider>
+      );
+      await screen.findByText(/free studio builds used up/);
+      return view;
+    };
+    try {
+      const child = await run({ id: 1, name: 'Sam', role: 'Student' });
+      expect(screen.queryByRole('link', { name: 'See CodeIt Plus' })).toBeNull();
+      expect(screen.getByRole('link', { name: 'Make a quick game' })).toHaveAttribute('href', '/build');
+      expect(screen.getByText(/Quick games on Build do not count/)).toBeInTheDocument();
+      expect(trackEvent).not.toHaveBeenCalledWith('upgrade_prompt_shown', 'build-limit', 't');
+      child.unmount();
+
+      await run({ id: 2, name: 'Pat', role: 'Parent' });
+      expect(screen.getByRole('link', { name: 'See CodeIt Plus' })).toHaveAttribute('href', '/pricing#codeit-plus');
+      expect(trackEvent).toHaveBeenCalledWith('upgrade_prompt_shown', 'build-limit', 't');
+    } finally {
+      mockBuilderLocation.search = '';
+    }
+  }, 15000);
+
   test('power-ups a game already has are not offered', () => {
     const { recipeGame } = require('./recipeGame');
     const instant = recipeGame({ kind: 'catch', title: 'Bunny Catch', player: '🐰', enemy: '🦊', treasure: '🥕', sky: 'night', speed: 2, lives: 3, winAt: 15, twist: 'none' });
