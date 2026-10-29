@@ -70,6 +70,7 @@ import { lookInside } from './lookInside';
 import { closestStarter } from './closestStarter';
 import { recipeGame, RECIPE_KINDS } from './recipeGame';
 import { namedGame } from '../Build/gameWords';
+import { readBuildStream, writtenShare } from './buildStream';
 
 import ProveItPanel from './ProveItPanel';
 import { hasUnderstood, recordUnderstanding } from '../../utils/understanding';
@@ -962,6 +963,8 @@ export default function Builder() {
   const [lessonsDone, setLessonsDone] = useState([]);
   const [loading, setLoading]           = useState(false);
   const [buildStep, setBuildStep]       = useState(0);
+  // What the server has written so far, when it streams: { chars, lines, tail, attempt }.
+  const [buildProgress, setBuildProgress] = useState(null);
   const [error, setError]               = useState('');
   // The monthly free AI limit is not an error. A parent whose child has just
   // hit it is more willing to pay at that second than at any other point in
@@ -2174,6 +2177,7 @@ export default function Builder() {
     setGuestDraftRecovered(false);
     const previewType = detectProjectType(text);
     setLoadingPreviewType(previewType);
+    setBuildProgress(null);
     setLoading(true);
     setError('');
     setLimitReached('');
@@ -2253,22 +2257,35 @@ export default function Builder() {
     // From here it is one request, and 175 s leaves room for the answer.
     const buildTimeout = setTimeout(() => buildController.abort(), 175000);
     try {
-      const res  = await fetch(`${API_BASE_URL}/api/builder`, {
+      const response = await fetch(`${API_BASE_URL}/api/builder`, {
         method:  'POST',
         signal:  buildController.signal,
         headers: {
           'Content-Type': 'application/json',
+          // Round 143: ask to watch it being written. A server or a proxy that
+          // does not stream still answers with the same JSON as before.
+          Accept: 'application/x-ndjson, application/json',
           ...journeyHeaders(),
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body:    JSON.stringify(escalate ? { prompt: text, escalate: true } : { prompt: text }),
       });
-      clearTimeout(buildTimeout);
-      const responseType = res.headers.get('content-type') || '';
-      if (!responseType.includes('application/json')) {
+      const responseType = response.headers.get('content-type') || '';
+      let data;
+      let res = response;
+      if (responseType.includes('application/x-ndjson') && response.body?.getReader) {
+        // The timer stays on until the last line: a stream that stops
+        // halfway must still end in "timed out", not a spinner for ever.
+        const finished = await readBuildStream(response.body, (p) => setBuildProgress(p));
+        if (!finished) throw new Error('The studio stopped answering halfway. Please try again in a moment.');
+        data = finished;
+        res = { status: finished.status || 200, ok: (finished.status || 200) < 400 };
+      } else if (responseType.includes('application/json')) {
+        data = await response.json();
+      } else {
         throw new Error('The studio is temporarily unavailable. Please try again in a moment.');
       }
-      const data = await res.json();
+      clearTimeout(buildTimeout);
       // 402 with this code is the monthly allowance, not a fault. It gets its
       // own panel with a way forward, not the red error card.
       if (res.status === 402 && data.code === 'FREE_AI_LIMIT_REACHED') {
@@ -3774,6 +3791,18 @@ export default function Builder() {
               </div>
               <p className="bldr-loading__idea">"{prompt}"</p>
 
+              {/* The real thing, once the server streams it: the last lines of
+                  the child's own code as it is written. Until the first words
+                  arrive (or if the connection does not stream) the steps show. */}
+              {buildProgress && buildProgress.lines > 0 ? (
+                <div className="bldr-loading__writing">
+                  <p className="bldr-loading__writing-label">
+                    {buildProgress.attempt > 1 ? 'Second try, on a stronger model. ' : ''}
+                    Your code, being written: <b>{buildProgress.lines}</b> {buildProgress.lines === 1 ? 'line' : 'lines'} so far
+                  </p>
+                  <pre className="bldr-loading__code" aria-hidden="true"><code>{buildProgress.tail}</code><span className="bldr-loading__caret" /></pre>
+                </div>
+              ) : (
               <div className="bldr-loading__steps">
                 {activeBuildSteps.map((step, i) => (
                   <div
@@ -3790,11 +3819,12 @@ export default function Builder() {
                   </div>
                 ))}
               </div>
+              )}
 
               <div className="bldr-loading__bar-wrap">
                 <div
                   className="bldr-loading__bar"
-                  style={{ width: `${Math.min(((buildStep) / activeBuildSteps.length) * 100 + 8, 92)}%` }}
+                  style={{ width: `${buildProgress && buildProgress.chars > 0 ? writtenShare(buildProgress.chars) : Math.min(((buildStep) / activeBuildSteps.length) * 100 + 8, 92)}%` }}
                 />
               </div>
             </div>

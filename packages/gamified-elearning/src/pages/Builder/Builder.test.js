@@ -469,6 +469,42 @@ describe('studio opening', () => {
     }
   }, 15000);
 
+  test('a streamed build shows the child their code being written, then the project', async () => {
+    const { TextEncoder: Enc, TextDecoder: Dec } = require('util');
+    if (typeof global.TextDecoder === 'undefined') global.TextDecoder = Dec;
+    const enc = new Enc();
+    let release;
+    const gate = new Promise((r) => { release = r; });
+    const html = '<!doctype html><html><head><style>body{font-family:system-ui;padding:2rem}</style></head><body><h1>Tic Tac Toe Showdown</h1><p>A working test project with enough real markup to pass the builder validation.</p><button>Play</button><script>window.score = 0;</script></body></html>';
+    const lines = [
+      `${JSON.stringify({ event: 'progress', attempt: 1, chars: 640, lines: 12, tail: '.cell{width:96px}\nfunction startGame(){' })}\n`,
+      `${JSON.stringify({ event: 'done', status: 200, html, code: html, title: 'Tic Tac Toe Showdown', type: 'custom', summary: 'We built it.', conceptsUsed: [] })}\n`,
+    ];
+    let i = 0;
+    global.fetch = jest.fn((url) => {
+      if (String(url).endsWith('/api/builder')) {
+        return Promise.resolve({
+          ok: true, status: 200,
+          headers: { get: () => 'application/x-ndjson; charset=utf-8' },
+          body: { getReader: () => ({ read: async () => { if (i === 1) await gate; return i < lines.length ? { value: enc.encode(lines[i++]), done: false } : { value: undefined, done: true }; } }) },
+        });
+      }
+      return Promise.resolve({ ok: true, status: 200, headers: { get: () => 'application/json' }, json: async () => ({ game: false }) });
+    });
+    mockBuilderLocation.search = '?prompt=tic%20tac%20toe&go=1';
+    try {
+      render(<Builder />);
+      expect(await screen.findByText(/lines so far/)).toHaveTextContent('Your code, being written: 12 lines so far');
+      expect(document.querySelector('.bldr-loading__code')).toHaveTextContent('function startGame(){');
+      const build = global.fetch.mock.calls.find(([url]) => String(url).endsWith('/api/builder'));
+      expect(build[1].headers.Accept).toMatch(/application\/x-ndjson/);
+      release();
+      expect(await screen.findByRole('heading', { name: 'Tic Tac Toe Showdown' }, { timeout: 4000 })).toBeInTheDocument();
+    } finally {
+      mockBuilderLocation.search = '';
+    }
+  }, 15000);
+
   test('power-ups a game already has are not offered', () => {
     const { recipeGame } = require('./recipeGame');
     const instant = recipeGame({ kind: 'catch', title: 'Bunny Catch', player: '🐰', enemy: '🦊', treasure: '🥕', sky: 'night', speed: 2, lives: 3, winAt: 15, twist: 'none' });

@@ -217,3 +217,46 @@ test('a reply that starts with a thinking block is still read, and builds ask fo
   assert.equal(data.isFallback, undefined);
   assert.deepEqual(calls[0].thinking, { type: 'disabled' }, 'it writes straight away instead of thinking in silence');
 });
+
+test('a browser that asks for it watches the code being written, then gets the project', async () => {
+  Object.assign(BUILD_BUDGET, { totalMs: 4000, firstMs: 3500 });
+  script = [{ text: GOOD_GAME, every: 30 }];
+  const res = await fetch(`${base}/api/builder`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/x-ndjson, application/json', 'X-CodeIt-Journey': require('crypto').randomUUID() },
+    body: JSON.stringify({ prompt: 'tic tac toe' }),
+  });
+  assert.match(res.headers.get('content-type'), /application\/x-ndjson/);
+  const lines = (await res.text()).trim().split('\n').map((l) => JSON.parse(l));
+  const progress = lines.filter((l) => l.event === 'progress');
+  const done = lines[lines.length - 1];
+  assert.ok(progress.length >= 2, `${progress.length} progress lines`);
+  assert.ok(progress.every((p, i) => i === 0 || p.chars >= progress[i - 1].chars), 'it only goes forward');
+  assert.ok(progress.some((p) => /<\/?[a-z]/i.test(p.tail)), 'the tail is the page itself');
+  assert.ok(progress.every((p) => !p.tail.includes('<META>')), 'not the metadata line');
+  assert.equal(done.event, 'done');
+  assert.equal(done.type, 'custom', 'the project keeps its own type');
+  assert.equal(done.status, 200);
+  assert.equal(done.title, 'Noughts Duel');
+  assert.match(done.html, /<\/html>/i);
+});
+
+test('a plain request still gets plain JSON', async () => {
+  script = [{ text: GOOD_GAME }];
+  const res = await fetch(`${base}/api/builder`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CodeIt-Journey': require('crypto').randomUUID() },
+    body: JSON.stringify({ prompt: 'tic tac toe' }),
+  });
+  assert.match(res.headers.get('content-type'), /application\/json/);
+  assert.equal((await res.json()).title, 'Noughts Duel');
+});
+
+test('writingSoFar shows the page, not the metadata, cut to a phone\'s width', () => {
+  const { writingSoFar } = require('./routes/builder');
+  assert.deepEqual(writingSoFar('<META>{"title":"x"'), { chars: 18, lines: 0, tail: '' });
+  const w = writingSoFar(`<META>{}</META>\n<HTML><!doctype html>\n<style>\nbody{margin:0}\n${'x'.repeat(100)}`);
+  assert.equal(w.lines, 4);
+  assert.ok(w.tail.split('\n').every((l) => l.length <= 72));
+  assert.ok(!w.tail.includes('META'));
+});

@@ -136,6 +136,19 @@ function textOf(message) {
 // its default effort): https://platform.claude.com/docs/en/build-with-claude/thinking
 const NO_THINKING = Object.freeze({ type: 'disabled' });
 
+/**
+ * What a streamed build has written so far, for the child watching: how much,
+ * and the last few lines of the page itself (not the <META> line in front of
+ * it), each cut to a width a phone can show.
+ */
+function writingSoFar(written) {
+  const text = String(written || '');
+  const page = text.includes('<HTML>') ? text.slice(text.indexOf('<HTML>') + 6) : (text.includes('</META>') ? '' : text.replace(/^<META>[\s\S]*/, ''));
+  const lines = page.split('\n');
+  const tail = lines.slice(-6).map((line) => line.replace(/\s+$/, '').slice(0, 72)).join('\n');
+  return { chars: text.length, lines: page ? lines.length : 0, tail };
+}
+
 // ── A build call that can be stopped ─────────────────────────────────────────
 //
 // 24 October 2026, live: "tic tac toe" waited three minutes and got a starter.
@@ -155,7 +168,7 @@ function buildTimeout(stall, info) {
   return err;
 }
 
-async function streamTrackedMessage(operation, params, { totalMs, idleMs }) {
+async function streamTrackedMessage(operation, params, { totalMs, idleMs, onText }) {
   const started = Date.now();
   // Test doubles and clients without streaming: the same limits, and the
   // request is still aborted rather than abandoned.
@@ -193,8 +206,13 @@ async function streamTrackedMessage(operation, params, { totalMs, idleMs }) {
     idle = setTimeout(() => stop('idle'), idleMs);
   };
   touch();
+  let written = '';
   stream.on('text', (delta) => {
     chars += String(delta || '').length;
+    if (onText) {
+      written += String(delta || '');
+      try { onText(written); } catch { /* a watcher never stops a build */ }
+    }
     if (!firstTokenMs) firstTokenMs = Date.now() - started;
     touch();
   });
@@ -1795,6 +1813,44 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
     return res.json({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready — AI polish can be added next', isFallback: true, conceptsUsed: [] });
   }
 
+  // ── Watching it being written (round 143) ──────────────────────────────
+  //
+  // A build takes forty to ninety seconds, and the child watched a progress
+  // bar that was made up. A browser that asks for application/x-ndjson now
+  // gets one line every third of a second saying how much has been written,
+  // with the last few lines of the actual code, and then one line with the
+  // project. Anything else (tests, old pages) gets the same JSON as before.
+  const streaming = /application\/x-ndjson/i.test(String(req.get('Accept') || ''));
+  let lastProgress = 0;
+  const startStream = () => {
+    if (!streaming || res.headersSent) return;
+    res.status(200);
+    res.set({
+      'Content-Type': 'application/x-ndjson; charset=utf-8',
+      'Cache-Control': 'no-cache, no-transform',
+      'X-Accel-Buffering': 'no',
+    });
+    if (typeof res.flushHeaders === 'function') res.flushHeaders();
+  };
+  const progress = (attempt, written) => {
+    if (!streaming || !res.headersSent || res.writableEnded) return;
+    const now = Date.now();
+    if (now - lastProgress < 350) return;
+    lastProgress = now;
+    res.write(`${JSON.stringify({ event: 'progress', attempt, ...writingSoFar(written) })}\n`);
+  };
+  // Every answer from here on goes through this, so a streamed request ends
+  // with its result line and a plain one gets its JSON.
+  const reply = (payload, status = 200) => {
+    if (streaming && res.headersSent) {
+      // `event`, not `type`: the project has a type of its own.
+      if (!res.writableEnded) res.end(`${JSON.stringify({ ...payload, event: 'done', status })}\n`);
+      return undefined;
+    }
+    return res.status(status).json(payload);
+  };
+  startStream();
+
   try {
     // Creative Director — classify prompt, select palette + starter pattern
     // (designConfig already set above)
@@ -1851,7 +1907,7 @@ ${designConfig.category === 'game' ? '• Game must be startable, playable, scor
       thinking:   NO_THINKING,
       system:     cached(systemPrompt),
       messages,
-    }, { totalMs, idleMs: BUILD_BUDGET.idleMs });
+    }, { totalMs, idleMs: BUILD_BUDGET.idleMs, onText: (written) => progress(label === 'build_retry' ? 2 : 1, written) });
 
     // What a timeout looked like, for the logs: how long, and how far it got.
     const describeStop = (err) => (err && err.message === 'BUILD_TIMEOUT'
@@ -2009,7 +2065,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
         console.log('Builder: two attempts failed, using rich fallback for type:', designConfig.type);
         const fbHtml = getRichFallback(designConfig, prompt.trim());
         const fbTitle = derivePromptTitle(prompt.trim());
-        return res.json({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready — AI polish can be added next', isFallback: true, retry, conceptsUsed: [] });
+        return reply({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready — AI polish can be added next', isFallback: true, retry, conceptsUsed: [] });
       }
     }
 
@@ -2027,7 +2083,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
     // Use design engine type as authoritative fallback
     const type = parsed.type && parsed.type !== 'website' ? parsed.type : designConfig.type;
     generationMode = 'ai';
-    res.json({ code: html, html, title, type, summary, conceptsUsed });
+    reply({ code: html, html, title, type, summary, conceptsUsed });
   } catch (err) {
     fallbackReason = 'error';
     console.error('Builder AI error:', err.message);
@@ -2035,10 +2091,10 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
       const fbHtml = getRichFallback(designConfig, prompt.trim());
       const fbTitle = derivePromptTitle(prompt.trim());
       console.log('Builder: serving fallback after error for type:', designConfig.type);
-      return res.json({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready — AI polish can be added next', isFallback: true, conceptsUsed: [] });
+      return reply({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready — AI polish can be added next', isFallback: true, conceptsUsed: [] });
     } catch (fbErr) {
       console.error('Builder: fallback also failed:', fbErr.message);
-      return res.status(502).json({ error: 'AI generation failed. Please try again.' });
+      return reply({ error: 'AI generation failed. Please try again.' }, 502);
     }
   }
 });
@@ -2951,3 +3007,4 @@ module.exports = router;
 // Tests shrink these to prove the stop and the retry rule without waiting.
 module.exports.BUILD_BUDGET = BUILD_BUDGET;
 module.exports.EDIT_BUDGET = EDIT_BUDGET;
+module.exports.writingSoFar = writingSoFar;
