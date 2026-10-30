@@ -80,7 +80,7 @@ describe('public project sharing', () => {
 
     await screen.findByRole('heading', { name: 'Solar System Quiz' });
     expect(screen.getByRole('link', { name: 'Build your own' })).toHaveAttribute('href', '/build');
-    expect(screen.getByText(/creative playground for builders/i)).toBeInTheDocument();
+    expect(screen.getByText(/where kids say a game and get one/i)).toBeInTheDocument();
   });
 
   test('returns a guest to the same project after sign in so remix can finish', async () => {

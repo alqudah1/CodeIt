@@ -297,7 +297,7 @@ export default function PublicProject() {
         <div className="pp-attribution">
           <span>Made on</span>
           <Link to="/" className="pp-attribution__brand">CodeIt</Link>
-          <span>,  the creative playground for builders</span>
+          <span>, where kids say a game and get one</span>
         </div>
 
       </div>
