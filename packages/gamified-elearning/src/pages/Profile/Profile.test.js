@@ -230,7 +230,7 @@ describe('parent progress availability', () => {
   test("shows a parent the evidence: their child's own lines, not a count", async () => {
     // "4 projects · 12 lessons" is a count, and counts are what every learning
     // product shows because counts are cheap. The evidence panel answers the
-    // question GOAL.md wrote down — what did my child actually do — with the
+    // question docs/notes/GOAL.md wrote down — what did my child actually do — with the
     // child's own line, read by the same concept finder the child's code tab
     // uses. If this test fails, the paid product has lost its reason to exist.
     mockProfileUser = { user_id: 9, name: 'Parent Builder', email: 'parent@example.com', role: 'Educator' };

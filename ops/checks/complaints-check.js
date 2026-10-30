@@ -1,6 +1,6 @@
 // The complaints, checked rather than crossed off.
 //
-// COMPLAINTS.md holds what real children said about the live site, in Mustafa's
+// docs/notes/COMPLAINTS.md holds what real children said about the live site, in Mustafa's
 // words, and its own rule is that nothing comes off the list because the code
 // changed — only because a browser was pointed at it afterwards and the thing
 // that was wrong is measurably no longer wrong.
