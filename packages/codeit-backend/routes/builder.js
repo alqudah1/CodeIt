@@ -2159,10 +2159,13 @@ router.post('/recipe', optionalAuth, recipeLimiter, async (req, res) => {
   const ownRules = Boolean(rules.ownRules);
   if (ownRules) recipe.fits = false;
   // Counted with the full builds, so the funnel sees every build a child got,
-  // and the meta says which path gave it to them.
-  const ctx = { userId: req.user?.user_id, journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')), meta: `recipe-${source}` };
-  void recordEvent('builder_start', ctx);
-  void recordEvent('generation_complete', ctx);
+  // and the meta says which path gave it to them. A game with its own rules
+  // is not counted here: the page sends it to the studio, which counts it.
+  if (!ownRules) {
+    const who = { userId: req.user?.user_id, journeyId: normalizeJourneyId(req.get('X-CodeIt-Journey')) };
+    void recordEvent('builder_start', { ...who, meta: 'game' });
+    void recordEvent('generation_complete', { ...who, meta: `recipe-${source}` });
+  }
   res.json({ game: true, recipe, source, fits: recipe.fits !== false, ai, ownRules });
 });
 

@@ -95,7 +95,7 @@ const ACQUISITION_SOURCES = [
 ];
 
 const fmt = (value) => (Number(value) || 0).toLocaleString();
-const usd = (value) => value == null ? ', ' : `$${Number(value).toFixed(3)}`;
+const usd = (value) => value == null ? 'no data' : `$${Number(value).toFixed(3)}`;
 
 function ratio(numerator, denominator) {
   if (!denominator) return 'Collecting data';
@@ -254,8 +254,21 @@ export default function AdminFunnel() {
     .filter(([meta]) => meta === 'fallback' || meta.startsWith('fallback-'))
     .map(([meta, count]) => [meta === 'fallback' ? 'untagged (older builds)' : meta.replace('fallback-', ''), count]);
   const fallbackProjects = fallbackReasons.reduce((sum, [, count]) => sum + count, 0);
-  const costPerAiGenerated = aiGeneratedProjects && costs?.totals?.estimated_usd != null
-    ? costs.totals.estimated_usd / aiGeneratedProjects
+  // Instant games from /build, read by the model or by the rules. They cost
+  // one Haiku call or nothing, so they are counted apart from studio builds
+  // and never in the AI generation rate.
+  const instantByModel = generationResults['recipe-model'] || 0;
+  const instantByRules = generationResults['recipe-rules'] || 0;
+  const instantGames = instantByModel + instantByRules;
+  // The cost of the builds themselves (build_initial and build_retry), when
+  // the report breaks cost down by operation; otherwise everything, which
+  // also holds edits, explanations and instant-game reads.
+  const buildOps = (costs?.operations || []).filter((row) => /^build_/.test(String(row.operation || '')));
+  const buildCost = buildOps.length && buildOps.every((row) => row.estimated_usd != null)
+    ? buildOps.reduce((sum, row) => sum + row.estimated_usd, 0)
+    : costs?.totals?.estimated_usd;
+  const costPerAiGenerated = aiGeneratedProjects && buildCost != null
+    ? buildCost / aiGeneratedProjects
     : null;
 
   return (
@@ -336,8 +349,7 @@ export default function AdminFunnel() {
                         <td>{lesson.id}. {lesson.title}</td>
                         <td>{fmt(lesson.started)}</td>
                         <td>{fmt(lesson.finished)}</td>
-                        {/* allow-em-dash: the empty-cell mark in an internal table, not a sentence. */}
-                        <td>{lesson.started > 0 ? `${Math.round((lesson.finished / lesson.started) * 100)}%` : '—'}</td>
+                        <td>{lesson.started > 0 ? `${Math.round((lesson.finished / lesson.started) * 100)}%` : 'none'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -584,7 +596,7 @@ export default function AdminFunnel() {
                     <td>{lead.name || 'Parent / educator'}</td>
                     <td><a href={`mailto:${lead.email}`}>{lead.email}</a></td>
                     <td>{lead.source || 'account opt-in'}</td>
-                    <td>{lead.interested_at ? new Date(lead.interested_at).toLocaleDateString() : ', '}</td>
+                    <td>{lead.interested_at ? new Date(lead.interested_at).toLocaleDateString() : 'none'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -609,6 +621,8 @@ export default function AdminFunnel() {
             <article><span>Estimated API cost</span><strong>{usd(costs?.totals?.estimated_usd)}</strong></article>
             <article><span>AI calls</span><strong>{fmt(costs?.totals?.calls)}</strong></article>
             <article><span>AI-built projects</span><strong>{fmt(aiGeneratedProjects)}</strong></article>
+            <article><span>Instant games</span><strong>{fmt(instantGames)}</strong></article>
+            {instantByRules > 0 && <article><span>Instant games read by rules (model unreachable)</span><strong>{fmt(instantByRules)}</strong></article>}
             <article><span>Safe fallback projects</span><strong>{fmt(fallbackProjects)}</strong></article>
             <article><span>AI generation rate</span><strong>{ratio(aiGeneratedProjects, aiGeneratedProjects + fallbackProjects)}</strong></article>
             {fallbackReasons.filter(([, count]) => count > 0).map(([reason, count]) => (
@@ -617,7 +631,7 @@ export default function AdminFunnel() {
             <article><span>Cost / AI-built project</span><strong>{usd(costPerAiGenerated)}</strong></article>
             <article><span>Input / output tokens</span><strong>{fmt(costs?.totals?.input_tokens)} / {fmt(costs?.totals?.output_tokens)}</strong></article>
           </div>
-          <p className="funnel-cost-note">AI-built projects and safe fallbacks are shown separately so the cost per working AI result is not understated. The estimate uses the standard Claude Haiku 4.5 list price; timed-out calls are still counted when Anthropic finishes them.</p>
+          <p className="funnel-cost-note">AI-built projects and safe fallbacks are shown separately so the cost per working AI result is not understated. The estimate uses each model's standard list price (Haiku 4.5, Sonnet 5, Opus 5); a stopped call is counted for what it wrote before it was stopped. Instant games are a Haiku call of about 200 tokens, or none.</p>
 
           <div className="adm-section-head">The money path</div>
           <div className="funnel-cost-grid">

@@ -24,6 +24,10 @@ const EVENT_META = Object.freeze({
     // different fixes.
     'fallback-no-api-key', 'fallback-timeout', 'fallback-retry-timeout',
     'fallback-invalid-output', 'fallback-error', 'fallback-unknown',
+    // An instant game from /build: read by the model, or by the rules when
+    // the model could not. These were sent and dropped as unknown, so every
+    // instant game was a generation with no path (30 October 2026).
+    'recipe-model', 'recipe-rules',
   ]),
   guest_draft_recovered: new Set(),
   project_personalize: new Set(),

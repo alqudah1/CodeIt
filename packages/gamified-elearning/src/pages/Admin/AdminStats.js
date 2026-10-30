@@ -141,7 +141,7 @@ const AdminStats = () => {
               <tr key={l.user_id} className="clickable" onClick={() => navigate(`/admin/users/${l.user_id}`)}>
                 <td style={{ color: '#718096', fontWeight: 700 }}>{i + 1}</td>
                 <td>
-                  <strong>{l.name || ', '}</strong>
+                  <strong>{l.name || 'none'}</strong>
                   {l.username && <span style={{ color: '#aaa', fontSize: '0.8rem', marginLeft: '0.4rem' }}>@{l.username}</span>}
                 </td>
                 <td><strong style={{ color: '#6c63ff' }}>{fmt(l.total_xp)}</strong></td>
@@ -150,7 +150,7 @@ const AdminStats = () => {
                     <div style={{ width: `${(l.total_xp / maxLearnerXP) * 100}%`, height: '100%', background: 'linear-gradient(90deg,#6c63ff,#FF8A3D)', borderRadius: '999px' }} />
                   </div>
                 </td>
-                <td>{l.current_streak ? `${l.current_streak}d` : ', '}</td>
+                <td>{l.current_streak ? `${l.current_streak}d` : 'none'}</td>
                 <td>{l.lessons_done || 0}</td>
                 <td>{l.quizzes_done || 0}</td>
               </tr>
@@ -172,7 +172,7 @@ const AdminStats = () => {
                 {progress.lessonStats.map(row => (
                   <tr key={row.lesson_id}>
                     <td>Lesson {row.lesson_id}</td>
-                    <td style={{ color: '#4a5568' }}>{row.title || ', '}</td>
+                    <td style={{ color: '#4a5568' }}>{row.title || 'none'}</td>
                     <td><strong>{fmt(row.completions)}</strong></td>
                     <td>
                       <span className={`adm-badge ${row.pct >= 50 ? 'adm-badge-green' : 'adm-badge-amber'}`}>

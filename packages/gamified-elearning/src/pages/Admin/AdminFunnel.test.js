@@ -64,6 +64,8 @@ describe('admin acquisition funnel', () => {
             { event_name: 'activation_next_step', meta: 'improve', event_count: 1 },
             { event_name: 'generation_complete', meta: 'ai', event_count: 8 },
             { event_name: 'generation_complete', meta: 'fallback', event_count: 2 },
+            { event_name: 'generation_complete', meta: 'recipe-model', event_count: 30 },
+            { event_name: 'generation_complete', meta: 'recipe-rules', event_count: 3 },
             { event_name: 'landing_cta_click', meta: 'hero-idea', event_count: 5 },
             { event_name: 'landing_cta_click', meta: 'member-resume-project', event_count: 3 },
             { event_name: 'landing_cta_click', meta: 'hero-lessons', event_count: 2 },
@@ -128,7 +130,15 @@ describe('admin acquisition funnel', () => {
       });
     orderedMocks.push({
       ok: true,
-      json: async () => ({ totals: { estimated_usd: 0.08, calls: 8, input_tokens: 1200, output_tokens: 2400 } }),
+      json: async () => ({
+        totals: { estimated_usd: 0.08, calls: 8, input_tokens: 1200, output_tokens: 2400 },
+        // The builds are $0.06 of the $0.08; the rest is edits and instant reads.
+        operations: [
+          { operation: 'build_initial', model: 'claude-sonnet-5', calls: 6, estimated_usd: 0.05 },
+          { operation: 'build_retry', model: 'claude-sonnet-5', calls: 2, estimated_usd: 0.01 },
+          { operation: 'edit', model: 'claude-haiku-4-5-20251001', calls: 3, estimated_usd: 0.02 },
+        ],
+      }),
     });
   });
 
@@ -212,7 +222,11 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText('AI-built projects').parentElement).toHaveTextContent('8');
     expect(screen.getByText('Safe fallback projects').parentElement).toHaveTextContent('2');
     expect(screen.getByText('AI generation rate').parentElement).toHaveTextContent('80%');
-    expect(screen.getByText('Cost / AI-built project').parentElement).toHaveTextContent('$0.010');
+    // Instant games are shown apart and do not move the AI rate.
+    expect(screen.getByText('Instant games').parentElement).toHaveTextContent('33');
+    expect(screen.getByText(/read by rules/).parentElement).toHaveTextContent('3');
+    // $0.06 of builds over 8 AI-built projects, not the $0.08 that holds edits too.
+    expect(screen.getByText('Cost / AI-built project').parentElement).toHaveTextContent('$0.008');
     expect(screen.getByText(/cost per working AI result is not understated/i)).toBeInTheDocument();
   });
 // ── Did families actually use it (12 September 2026) ─────────────────────────

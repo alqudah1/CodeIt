@@ -128,8 +128,6 @@ describe('published copy', () => {
     expect(byFile).toEqual({
       // Google's published wording for CS First, quoted twice.
       'data/guidePages.js': 2,
-      // The empty-cell mark in the internal funnel table.
-      'pages/Admin/AdminFunnel.js': 1,
       // A regex that has to match the dashes children type.
       'utils/projectName.js': 1,
     });
@@ -137,5 +135,28 @@ describe('published copy', () => {
 
   test('contains no em-dashes', () => {
     expect(offenders).toEqual([]);
+  });
+});
+
+// ── The dash that became a comma ─────────────────────────────────────────────
+//
+// A sweep that removed em-dashes turned the placeholder "—" (an empty cell, a
+// result not yet shown) into ", " in nineteen places, so the admin pages
+// printed a comma for a missing name and the calculator starter showed ", "
+// where a number would go (30 October 2026). A comma is never a placeholder.
+describe('no placeholder is a lone comma', () => {
+  test('nothing displays ", " as a value', () => {
+    const found = [];
+    for (const file of files) {
+      const text = fs.readFileSync(file, 'utf8');
+      const ranges = commentRanges(text, path.relative(SRC, file));
+      const re = /(\|\|\s*', '|:\s*', '\s*[;})]|return ', ';|>, <\/)/g;
+      let m;
+      while ((m = re.exec(text))) {
+        if (ranges.some(([a, b]) => m.index >= a && m.index < b)) continue;
+        found.push(`${path.relative(SRC, file)}:${text.slice(0, m.index).split('\n').length}`);
+      }
+    }
+    expect(found).toEqual([]);
   });
 });

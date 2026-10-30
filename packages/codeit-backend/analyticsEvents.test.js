@@ -121,3 +121,9 @@ test('accepts only short privacy-safe campaign codes', () => {
   assert.equal(normalizeCampaignCode('x'), null);
   assert.equal(normalizeCampaignCode('creator-code-that-is-far-too-long'), null);
 });
+
+test('an instant game is a generation with a path, not one with no meta', () => {
+  assert.equal(normalizeMeta('generation_complete', 'recipe-model'), 'recipe-model');
+  assert.equal(normalizeMeta('generation_complete', 'recipe-rules'), 'recipe-rules');
+  assert.equal(normalizeMeta('builder_start', 'game'), 'game');
+});
