@@ -127,6 +127,8 @@ app.use('/api/today', todayRoutes);
 app.use('/api/class', classRoutes);
 app.use('/api/powers', powersRoutes);
 app.use('/api/billing', billingRoutes);
+// Scheduled by Vercel (vercel.json "crons"); guarded by CRON_SECRET, not a login.
+app.use('/api/cron', require('./routes/cron'));
 
 const PORT = Number(process.env.PORT || 8080);
 if (require.main === module) {

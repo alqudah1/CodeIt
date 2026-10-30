@@ -52,6 +52,19 @@ Before production deployment:
 6. Send one confirmation email and one milestone email to a controlled test
    parent account.
 
+## The weekly and monthly emails send themselves
+
+`vercel.json` schedules two cron jobs: `/api/cron/weekly-digest` every Sunday
+at 18:00 UTC and `/api/cron/monthly-digest` on the 28th at 16:00 UTC (on the
+Hobby plan Vercel may run them at any point in that hour). Both are no-ops
+without a `CRON_SECRET` environment variable of at least 16 characters on the
+Vercel project: Vercel sends it as `Authorization: Bearer <CRON_SECRET>` and
+the route refuses anything else. Set it in the project's Environment Variables
+and redeploy. The admin dashboard's send buttons still work for a manual run,
+and a send is logged per family per period, so a manual run and the cron
+never send the same email twice. `?dry=1` on either path counts without
+sending.
+
 ## Privacy behaviour
 
 - A student cannot activate updates merely by entering somebody's email.

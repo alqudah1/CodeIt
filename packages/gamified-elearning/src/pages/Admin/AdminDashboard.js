@@ -169,6 +169,8 @@ const AdminDashboard = () => {
             Sends each confirmed parent one email with what their child explained, finished and made
             this month. Real records only, one send per family per month, nothing goes out for an
             empty month. Preview shows the exact email for a learner before anything is sent.
+            {' '}<b>Sent by itself on the 28th</b> (a Vercel cron job; it needs CRON_SECRET set on
+            the project). The buttons here are for a manual run.
             {' '}
             <button
               type="button"
@@ -228,6 +230,8 @@ const AdminDashboard = () => {
             The parent page, in the inbox: what was made this week (the newest game plays from a
             link), what was learned in plain words, what is next. Same families as the monthly email,
             one send per family per week, nothing for an empty week. Preview first.
+            {' '}<b>Sent by itself every Sunday</b> (a Vercel cron job; it needs CRON_SECRET set on
+            the project). The buttons here are for a manual run.
             {' '}
             <button
               type="button"
