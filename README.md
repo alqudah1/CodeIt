@@ -2,7 +2,7 @@
   <img src="packages/gamified-elearning/public/images/CodeItLogo.png" alt="CodeIt" width="220">
 </p>
 
-<p align="center"><b>A coding studio built for ages 8 to 14. Kids describe a game, get a working first version, then change it and see the code behind every change.</b></p>
+<p align="center"><b>A coding studio for kids and teens. They describe a game, get a working first version, then change it and see the code behind every change.</b></p>
 
 <p align="center">
   <a href="https://codeitlearn.com">codeitlearn.com</a> ·
