@@ -4032,6 +4032,14 @@
   animation: bldr-companion-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 1.2s both;
 }
 
+/* On a phone the bubble is 320px of a 390px screen and sits on whatever is
+   under the header: on 30 October it covered "You changed ... uses Variables"
+   on the save card. The tips are generic ("A boss level would make this
+   epic"); the change ideas under Change cover them. Phones go without. */
+@media (max-width: 719px) {
+  .bldr-companion { display: none; }
+}
+
 @keyframes bldr-companion-in {
   from { opacity: 0; transform: translateY(18px) scale(0.82); }
   to   { opacity: 1; transform: translateY(0)     scale(1);   }

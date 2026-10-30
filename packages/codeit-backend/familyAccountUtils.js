@@ -66,6 +66,9 @@ function validateManagedChildInput(input = {}, now = new Date()) {
       noticeVersion: FAMILY_NOTICE_VERSION,
       age: eligibility.age,
       progressEmails: input.progressEmails === true,
+      // The games saved on the adult's account are the child's: a child
+      // builds as a guest, presses Save, and the parent makes the account.
+      claimProjects: input.claimProjects === true,
     },
   };
 }

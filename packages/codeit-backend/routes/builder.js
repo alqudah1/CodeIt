@@ -2545,12 +2545,19 @@ router.post('/projects/:id/versions', requireAuth, async (req, res) => {
     const primaryColor = primaryMatch ? primaryMatch[1] : '#FF7A00';
     const accentColor  = accentMatch  ? accentMatch[1]  : '#A855F7';
 
-    // Auto-increment version_num per project
-    const [[{ maxNum }]] = await pool.query(
-      'SELECT COALESCE(MAX(version_num), 0) AS maxNum FROM ai_project_versions WHERE project_id = ?',
+    // Auto-increment version_num per project.
+    //
+    // The alias is lower case on purpose. Postgres folds an unquoted
+    // "AS maxNum" to maxnum, so row.maxNum was undefined, undefined + 1 was
+    // NaN, and every version save on the live database failed with 'invalid
+    // input syntax for type integer: "NaN"' (found 30 October 2026 by
+    // walking a family through saving on a local Postgres). Version history
+    // on the server had never worked.
+    const [[row]] = await pool.query(
+      'SELECT COALESCE(MAX(version_num), 0) AS max_num FROM ai_project_versions WHERE project_id = ?',
       [id]
     );
-    const versionNum = maxNum + 1;
+    const versionNum = Number(row?.max_num || 0) + 1;
 
     const [result] = await pool.query(
       `INSERT INTO ai_project_versions

@@ -74,6 +74,7 @@ describe('parent progress availability', () => {
             emailVerified: true,
             emailConfigured: true,
             noticeVersion: '2026-07-28',
+            ownProjects: [{ id: 51, title: 'Bunny Catch' }],
             children: mockFamilyChildren,
           }),
         });
@@ -96,9 +97,11 @@ describe('parent progress availability', () => {
         });
       }
       if (requestUrl.endsWith('/api/family/children') && options.method === 'POST') {
+        const sent = JSON.parse(options.body || '{}');
         const child = {
           id: 23,
           username: 'new_coder',
+          movedProjects: sent.claimProjects ? 1 : 0,
           totalXP: 0,
           lessons: 0,
           quizzes: 0,
@@ -265,6 +268,7 @@ describe('parent progress availability', () => {
     render(<Profile />);
 
     await screen.findByLabelText('Learner username');
+    expect(screen.getByLabelText(/Move Bunny Catch, saved on this account, to this learner/i)).toBeChecked();
     fireEvent.change(screen.getByLabelText('Learner username'), { target: { value: 'new_coder' } });
     fireEvent.change(screen.getByLabelText('Learner birthday'), { target: { value: '2016-08-01' } });
     fireEvent.change(screen.getByLabelText('Learner password'), { target: { value: 'strong-password' } });
@@ -272,6 +276,12 @@ describe('parent progress availability', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Create private learner profile' }));
 
     await screen.findByText(/Use “Switch to learner” below/i);
+    // The game saved on the parent's account went with the learner, and the
+    // form said so before and after (30 October 2026: it used to stay on the
+    // parent, and the child's Home was empty the next day).
+    expect(screen.getByText(/their game moved to it/i)).toBeInTheDocument();
+    const sent = JSON.parse(global.fetch.mock.calls.find(([url, o]) => String(url).endsWith('/api/family/children') && o?.method === 'POST')[1].body);
+    expect(sent.claimProjects).toBe(true);
     expect(global.fetch).toHaveBeenCalledWith(
       'http://codeit.test/api/family/children',
       expect.objectContaining({

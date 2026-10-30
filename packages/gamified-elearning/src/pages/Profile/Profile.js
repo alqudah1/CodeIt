@@ -64,6 +64,9 @@ export default function Profile() {
     relationship: 'parent',
     consent: false,
     progressEmails: false,
+    // The games saved on this account are usually the child's (built as a
+    // guest, saved by the parent making the profile). On by default.
+    claimProjects: true,
   });
 
   const totalXP    = stats?.totalXP ?? 0;
@@ -249,8 +252,12 @@ export default function Profile() {
         relationship: 'parent',
         consent: false,
         progressEmails: false,
+        claimProjects: true,
       });
-      setFamilyMessage(`Private learner profile “${data.child.username}” created. Use “Switch to learner” below to open their first project.`);
+      const moved = Number(data.child.movedProjects) || 0;
+      setFamilyMessage(moved > 0
+        ? `Private learner profile “${data.child.username}” created, with ${moved === 1 ? 'their game' : `their ${moved} games`} moved to it. Use “Switch to learner” below to open it.`
+        : `Private learner profile “${data.child.username}” created. Use “Switch to learner” below to open their first project.`);
     } catch (error) {
       setFamilyMessage(reportFailure('Family controls', error, 'That did not go through. Please try again.'));
     } finally {
@@ -709,6 +716,20 @@ export default function Profile() {
                       </select>
                     </label>
                   </div>
+                  {familyStatus.ownProjects?.length > 0 && (
+                    <label className="profile-family__consent">
+                      <input
+                        type="checkbox"
+                        checked={childForm.claimProjects}
+                        onChange={event => updateChildField('claimProjects', event.target.checked)}
+                      />
+                      <span>
+                        {familyStatus.ownProjects.length === 1
+                          ? <>Move <strong>{familyStatus.ownProjects[0].title}</strong>, saved on this account, to this learner. It is theirs.</>
+                          : <>Move the {familyStatus.ownProjects.length} projects saved on this account ({familyStatus.ownProjects.slice(0, 3).map(p => p.title).join(', ')}{familyStatus.ownProjects.length > 3 ? ' and more' : ''}) to this learner. They are theirs.</>}
+                      </span>
+                    </label>
+                  )}
                   <label className="profile-family__consent">
                     <input
                       type="checkbox"

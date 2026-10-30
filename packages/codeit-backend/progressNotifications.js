@@ -364,13 +364,16 @@ async function getProgressSummary(userId) {
      FROM student_milestones WHERE user_id = ?`,
     [userId]
   );
-  const [recent] = await pool.query(
-    `SELECT event_type AS eventType, title, detail, target_url AS targetUrl,
-            occurred_at AS occurredAt
+  // Named in JavaScript, not in SQL: Postgres folds "AS eventType" to
+  // eventtype, so the profile's "Recently tracked" list found no eventType
+  // and called every milestone "Milestone" (30 October 2026).
+  const [rows] = await pool.query(
+    `SELECT event_type, title, detail, target_url, occurred_at
        FROM student_milestones
       WHERE user_id = ? ORDER BY occurred_at DESC LIMIT 8`,
     [userId]
   );
+  const recent = rows.map((r) => ({ eventType: r.event_type, title: r.title, detail: r.detail, targetUrl: r.target_url, occurredAt: r.occurred_at }));
   return {
     counts: {
       lessons: Number(counts[0]?.lessons || 0),

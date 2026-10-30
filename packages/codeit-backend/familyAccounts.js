@@ -100,11 +100,19 @@ async function getFamilyStatus(userId) {
       ORDER BY l.consented_at DESC`,
     [adult.user_id]
   );
+  // The projects saved on the adult's own account. A child builds as a
+  // guest, presses Save, and a parent makes the account: the game lands on
+  // the parent. The form offers to hand these to the learner profile.
+  const [ownProjects] = await db.query(
+    'SELECT id, title FROM ai_projects WHERE user_id = ? ORDER BY created_at DESC LIMIT 12',
+    [adult.user_id]
+  );
   return {
     adultEmail: adult.email,
     emailVerified: Boolean(verificationRows[0]?.verified_at),
     emailConfigured: Boolean(process.env.RESEND_API_KEY),
     noticeVersion: FAMILY_NOTICE_VERSION,
+    ownProjects: ownProjects.map((p) => ({ id: p.id, title: p.title })),
     children: children.map(child => ({
       id: child.id,
       username: child.username,
@@ -314,8 +322,19 @@ async function createManagedChild(adultUserId, input) {
         [created.insertId, email, hashToken(createToken())]
       );
     }
+    // The child's games, saved on the parent's account while the parent made
+    // the profile, go to the child now. Only the adult's own rows move;
+    // versions and likes hang off the project id and follow it.
+    let movedProjects = 0;
+    if (data.claimProjects) {
+      const [moved] = await connection.query(
+        'UPDATE ai_projects SET user_id = ? WHERE user_id = ?',
+        [created.insertId, adult.user_id]
+      );
+      movedProjects = Number(moved.affectedRows || 0);
+    }
     await connection.commit();
-    return { id: created.insertId, username: data.username, dob: data.dob, relationship: data.relationship };
+    return { id: created.insertId, username: data.username, dob: data.dob, relationship: data.relationship, movedProjects };
   } catch (error) {
     if (connection) await connection.rollback();
     throw error;
