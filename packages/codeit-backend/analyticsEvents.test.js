@@ -89,6 +89,9 @@ test('limits browser-reported events to events the server cannot infer', () => {
   assert.equal(CLIENT_REPORTED_EVENTS.has('activation_next_step'), true);
   assert.equal(CLIENT_REPORTED_EVENTS.has('signup_complete'), false);
   assert.equal(CLIENT_REPORTED_EVENTS.has('project_remix'), false);
+  // A guest's remix never touches the server, so only the browser can say it happened.
+  assert.equal(CLIENT_REPORTED_EVENTS.has('guest_remix'), true);
+  assert.equal(normalizeMeta('guest_remix', 'game'), 'game');
 });
 
 test('requires a fixed metadata value whenever an event has a metadata vocabulary', () => {

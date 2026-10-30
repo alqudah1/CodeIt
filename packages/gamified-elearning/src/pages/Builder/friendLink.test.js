@@ -49,8 +49,11 @@ describe('the friend link', () => {
     expect(P).toMatch(/generated_code: data\.project\.code/);
   });
 
-  test('remix is hidden on an unlisted link, because it would always fail', () => {
-    expect(P).toMatch(/\{!unlistedId && \(/);
+  test('remix on an unlisted link never asks the server, which has no account to copy from', () => {
+    // It used to be hidden. Now it is the guest remix: the game goes on this
+    // browser's shelf and opens in the studio, for anyone who was sent the link.
+    expect(P).toMatch(/if \(!user \|\| !token \|\| unlistedId\) \{/);
+    expect(P).not.toMatch(/\{!unlistedId && \(/);
   });
 
   test('the child is told plainly what the link does', () => {

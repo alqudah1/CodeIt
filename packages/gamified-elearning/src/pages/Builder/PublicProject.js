@@ -6,6 +6,7 @@ import { reportFailure } from '../../utils/humanError';
 import Header from '../Header/Header';
 import { trackEvent } from '../../utils/trackEvent';
 import { journeyHeaders } from '../../utils/journey';
+import { saveProject as saveShelfProject } from '../../utils/projectShelf';
 import './PublicProject.css';
 import {
   injectPreviewStorage,
@@ -13,6 +14,16 @@ import {
   loadPreviewStorage,
   savePreviewStorage,
 } from './previewStorage';
+
+// The five words analytics accepts for a kind of project, from free text.
+function projectKindOf(value) {
+  const t = String(value || '').toLowerCase();
+  if (/quiz|trivia/.test(t)) return 'quiz';
+  if (/website|site|page|portfolio|restaurant|shop|blog|landing/.test(t)) return 'website';
+  if (/tool|calculator|timer|drawing|flashcard/.test(t)) return 'tool';
+  if (/game|clicker|runner|memory|reaction|soccer|platformer|dodge|racing|typing|tower|maze|survival|puzzle|basketball|cooking|custom/.test(t)) return 'game';
+  return 'other';
+}
 
 export default function PublicProject() {
   const { publicId }        = useParams();
@@ -124,8 +135,29 @@ export default function PublicProject() {
   }
 
   function handleRemix() {
-    if (!user || !token) {
-      sessionStorage.setItem('codeit_remix_intent', publicId);
+    // An unlisted link has no account behind it to copy from on the server,
+    // so it is remixed the guest way whoever is looking at it.
+    if (!user || !token || unlistedId) {
+      // A friend with no account. This used to send them to a sign-in page,
+      // which is the end of the road for a nine-year-old who was handed a
+      // link. The game goes onto this browser's shelf and opens in the
+      // studio, where every change works without an account; saving it to
+      // an account is the studio's own gate, in its own time.
+      const entry = saveShelfProject(localStorage, {
+        title: project.title,
+        prompt: `Remix of ${project.title}`,
+        projectType: project.project_type || 'game',
+        code: project.generated_code,
+      });
+      if (entry) {
+        void trackEvent('guest_remix', projectKindOf(project.project_type));
+        navigate(`/builder?shelf=${entry.id}`);
+        return;
+      }
+      // No room on this browser (private window, storage off): the old road,
+      // which an unlisted link cannot take.
+      if (unlistedId) { setRemixStatus('error'); setTimeout(() => setRemixStatus(null), 3000); return; }
+      try { sessionStorage.setItem('codeit_remix_intent', publicId); } catch { /* the sign-in still happens */ }
       navigate('/login', { state: { from: `/project/${publicId}` } });
       return;
     }
@@ -269,7 +301,6 @@ export default function PublicProject() {
               >
                 Build your own
               </Link>
-              {!unlistedId && (
               <button
                 className="pp-cta-btn pp-cta-btn--remix"
                 onClick={handleRemix}
@@ -280,7 +311,6 @@ export default function PublicProject() {
                   : remixStatus === 'error' ? 'Try again'
                   : 'Remix this'}
               </button>
-              )}
               <button
                 className="pp-cta-btn pp-cta-btn--copy"
                 onClick={handleShare}

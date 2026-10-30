@@ -51,7 +51,7 @@ describe('public project sharing', () => {
             creator_name: 'CodeIt creator',
             created_at: new Date().toISOString(),
             view_count: 3,
-            generated_code: '<!doctype html><html><body><h1>Solar System Quiz</h1></body></html>',
+            generated_code: '<!doctype html><html><head><title>Solar System Quiz</title></head><body><h1>Solar System Quiz</h1><button>Start</button></body></html>',
           },
         }),
       });
@@ -83,15 +83,35 @@ describe('public project sharing', () => {
     expect(screen.getByText(/where kids say a game and get one/i)).toBeInTheDocument();
   });
 
-  test('returns a guest to the same project after sign in so remix can finish', async () => {
+  test('a friend with no account remixes straight into the studio, with the game on their shelf', async () => {
+    localStorage.clear();
     render(<PublicProject />);
 
     await screen.findByRole('heading', { name: 'Solar System Quiz' });
     fireEvent.click(screen.getByRole('button', { name: 'Remix this' }));
 
-    expect(sessionStorage.getItem('codeit_remix_intent')).toBe('public-123');
-    expect(mockNavigate).toHaveBeenCalledWith('/login', {
-      state: { from: '/project/public-123' },
+    const { listProjects } = require('../../utils/projectShelf');
+    const [entry] = listProjects(localStorage);
+    expect(entry).toMatchObject({ title: 'Solar System Quiz', prompt: 'Remix of Solar System Quiz' });
+    expect(entry.code).toContain('Solar System Quiz');
+    expect(mockNavigate).toHaveBeenCalledWith(`/builder?shelf=${entry.id}`);
+    expect(trackEvent).toHaveBeenCalledWith('guest_remix', 'other');
+    expect(sessionStorage.getItem('codeit_remix_intent')).toBeNull();
+  });
+
+  test('with no room on the shelf, a guest still gets the sign-in road back to this project', async () => {
+    const real = Storage.prototype.setItem;
+    const setItem = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(function (key, value) {
+      if (String(key).includes('shelf')) throw new Error('QuotaExceededError');
+      return real.call(this, key, value);
     });
+    try {
+      render(<PublicProject />);
+      await screen.findByRole('heading', { name: 'Solar System Quiz' });
+      fireEvent.click(screen.getByRole('button', { name: 'Remix this' }));
+      expect(mockNavigate).toHaveBeenCalledWith('/login', { state: { from: '/project/public-123' } });
+    } finally {
+      setItem.mockRestore();
+    }
   });
 });

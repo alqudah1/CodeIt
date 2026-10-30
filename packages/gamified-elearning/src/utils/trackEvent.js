@@ -40,6 +40,7 @@ const CLIENT_EVENTS = new Set([
   "project_played",
   "builder_starter_open",
   "shelf_project_reopened",
+  "guest_remix",
   "project_explained",
   "builder_look_inside",
   "publish_refused",
