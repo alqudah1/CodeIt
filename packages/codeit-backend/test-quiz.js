@@ -33,7 +33,7 @@ const unlistedRoutes = require('./routes/unlisted');
 const activityRoutes = require('./routes/activity');
 const billingRoutes = require('./routes/billing');
 const { legacyAccessGuard } = require('./legacyParentReview');
-const { studioReadiness, studioReadinessMessage } = require('./studioReadiness');
+const { studioReadiness, studioReadinessMessage, familyReadiness } = require('./studioReadiness');
 
 const app = express();
 app.set('trust proxy', 1);
@@ -46,7 +46,9 @@ app.set('trust proxy', 1);
 // do the thing the product is named for. It never reports the key itself.
 const healthBody = () => {
   const studio = studioReadiness(process.env);
-  return { ok: true, studio: { ready: studio.ready, missing: studio.missing } };
+  // Whether email and the scheduled emails can work, so the owner can check
+  // from a browser after setting a variable on Vercel. Names, never values.
+  return { ok: true, studio: { ready: studio.ready, missing: studio.missing }, ...familyReadiness(process.env) };
 };
 app.get('/health', (req, res) => { res.json(healthBody()); });
 app.get('/api/health', (req, res) => { res.json(healthBody()); });

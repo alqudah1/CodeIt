@@ -51,4 +51,21 @@ function studioReadinessMessage(readiness) {
     + 'Every build will return a canned starter instead of the child\'s idea.';
 }
 
-module.exports = { studioReadiness, studioReadinessMessage, AI_KEY };
+/**
+ * The two other things a family is promised and that fail just as quietly:
+ * email (parent confirmation, password resets, progress emails) and the
+ * weekly and monthly emails going out on their own (routes/cron.js refuses
+ * every call until CRON_SECRET is set). Names only, never values.
+ */
+function familyReadiness(env = {}) {
+  const has = (name) => typeof env[name] === 'string' && env[name].trim().length > 0;
+  const emailMissing = has('RESEND_API_KEY') || has('SMTP_HOST') ? [] : ['RESEND_API_KEY'];
+  const cron = typeof env.CRON_SECRET === 'string' ? env.CRON_SECRET : '';
+  const scheduleMissing = cron.length >= 16 ? [] : ['CRON_SECRET'];
+  return {
+    email: { ready: emailMissing.length === 0, missing: emailMissing },
+    scheduledEmails: { ready: scheduleMissing.length === 0 && emailMissing.length === 0, missing: [...scheduleMissing, ...emailMissing] },
+  };
+}
+
+module.exports = { familyReadiness, studioReadiness, studioReadinessMessage, AI_KEY };

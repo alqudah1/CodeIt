@@ -45,3 +45,16 @@ test('the builder route still records which fallback reason it used', () => {
   assert.match(route, /fallbackReason = 'error'/);
   assert.match(route, /generation_complete/);
 });
+
+test('email and the scheduled emails say which setting they wait for, and never its value', () => {
+  const { familyReadiness } = require('./studioReadiness');
+  assert.deepEqual(familyReadiness({}), {
+    email: { ready: false, missing: ['RESEND_API_KEY'] },
+    scheduledEmails: { ready: false, missing: ['CRON_SECRET', 'RESEND_API_KEY'] },
+  });
+  const ready = familyReadiness({ RESEND_API_KEY: 're_abc', CRON_SECRET: 'a-long-enough-secret-value' });
+  assert.deepEqual(ready, { email: { ready: true, missing: [] }, scheduledEmails: { ready: true, missing: [] } });
+  assert.doesNotMatch(JSON.stringify(ready), /re_abc|a-long-enough/);
+  assert.equal(familyReadiness({ RESEND_API_KEY: 're_abc', CRON_SECRET: 'short' }).scheduledEmails.missing[0], 'CRON_SECRET');
+  assert.equal(familyReadiness({ SMTP_HOST: 'smtp.example.test', CRON_SECRET: 'a-long-enough-secret-value' }).scheduledEmails.ready, true);
+});
