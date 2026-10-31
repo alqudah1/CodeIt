@@ -34,6 +34,16 @@
 .kh__ic--mint { background: rgba(23, 192, 139, .16); color: var(--ci-mint); }
 .kh__ic--sun { background: rgba(255, 201, 60, .4); color: var(--ci-ink); font-size: 20px; }
 .kh__chev { margin-left: auto; color: var(--ci-orange-down); font: 800 22px var(--ci-display); }
+/* A phone shows one column, and the examples sat between a child and their
+   own game: on 31 October 2026 a nine-year-old signing in for the first time
+   scrolled past four examples to find the game they had made. With a game of
+   their own, the examples go to the end on a phone; with none, they stay up
+   top as ideas. Desktop has two columns and is unchanged. */
+@media (max-width: 899px) {
+  .kh--has-games .kh__main { row-gap: 0; }
+  .kh--has-games .kh__left, .kh--has-games .kh__right { display: contents; }
+  .kh--has-games .kh__examples { order: 1; }
+}
 @media (min-width: 900px) {
   .kh__main { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 36px; align-items: start; padding: 32px 40px 60px; }
   .kh__right { padding-top: 60px; }

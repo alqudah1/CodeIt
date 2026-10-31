@@ -66,3 +66,29 @@ test('a signed-in child sees the server\'s numbers and the quest opens Build pre
   expect(screen.getByText('7 plays')).toBeInTheDocument();
   expect(screen.getByText('12 plays')).toBeInTheDocument();
 });
+
+test('with a game of their own, the page is marked so a phone puts the examples after it; with none, the examples stay up top', async () => {
+  global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({ signedIn: false, quest: { text: 'Shoot the asteroids.', prompt: 'x' } }) }));
+  const first = mount({ user: null, token: null });
+  await screen.findByText('Ideas to build');
+  expect(first.container.querySelector('.kh')).not.toHaveClass('kh--has-games');
+  first.unmount();
+
+  const now = Date.now();
+  localStorage.setItem('codeit.shelf.v1', JSON.stringify([{ id: 'pabc', title: 'Bunny Catch', prompt: 'x', projectType: 'game', code: '<!DOCTYPE html><html><body><canvas id="screen"></canvas><script>let a = 1;</script></body></html>', savedAt: now, updatedAt: now }]));
+  const second = mount({ user: null, token: null });
+  await screen.findByText('More to try');
+  expect(second.container.querySelector('.kh')).toHaveClass('kh--has-games');
+  expect(second.container.querySelector('.kh__examples')).not.toBeNull();
+});
+
+test('a game nobody has played yet says nothing about plays, and one play is one play', async () => {
+  global.fetch = jest.fn((url) => {
+    if (String(url).endsWith('/api/today')) return Promise.resolve({ ok: true, json: () => Promise.resolve({ signedIn: true, quest: { text: 'Q.', prompt: 'q' }, streak: 1, builtToday: true, level: { n: 1, title: 'Rookie', xp: 0, next: 100, toNext: 100 }, games: [{ id: 1, title: 'Bunny Catch', plays: 0 }, { id: 2, title: 'Star Rain', plays: 1 }] }) });
+    return Promise.resolve({ ok: false, json: () => Promise.resolve({}) });
+  });
+  mount({ user: { name: 'sam_k5myi' }, token: 't' });
+  expect(await screen.findByText('Bunny Catch')).toBeInTheDocument();
+  expect(screen.queryByText('0 plays')).toBeNull();
+  expect(screen.getByText('1 play')).toBeInTheDocument();
+});

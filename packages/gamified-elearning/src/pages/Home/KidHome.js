@@ -97,7 +97,7 @@ export default function KidHome() {
   const done = streakInfo.builtToday;
 
   return (
-    <div className="kh">
+    <div className={`kh${games.length ? ' kh--has-games' : ''}`}>
       <Header />
       <main className="kh__main">
         <section className="kh__left">
@@ -122,7 +122,7 @@ export default function KidHome() {
               <div className="kh__track"><i style={{ width: `${xpPercent(level)}%` }} /></div>
             </div>
           </div>
-          {games.length < 3 && <ExampleCards from={0} count={4} title={games.length ? 'More to try' : 'Ideas to build'} note="Examples. Tap one and it is playing in two seconds." />}
+          {games.length < 3 && <ExampleCards className="kh__examples" from={0} count={4} title={games.length ? 'More to try' : 'Ideas to build'} note="Examples. Tap one and it is playing in two seconds." />}
         </section>
         <section className="kh__right">
           <h2 className="ci-h2">Your games {typeof today?.plays === 'number' && today.plays > 0 && <small className="kh__plays"><span className="ci-livedot" />{today.plays} plays</small>}</h2>
@@ -130,7 +130,7 @@ export default function KidHome() {
             {games.slice(0, 2).map((g, i) => (
               <Link key={g.id} to={g.href} className="kh__tile" style={{ background: SKY_OF[i % SKY_OF.length] }}>
                 {g.code && <iframe title={g.title} srcDoc={g.code} sandbox="allow-scripts" tabIndex={-1} />}
-                <span className="kh__cap">{g.title}{typeof g.plays === 'number' && <small>{g.plays} plays</small>}</span>
+                <span className="kh__cap">{g.title}{g.plays > 0 && <small>{g.plays === 1 ? '1 play' : `${g.plays} plays`}</small>}</span>
               </Link>
             ))}
             <Link to="/build" className="kh__tile kh__tile--new" aria-label="Make a new game"><span>+</span>New game</Link>
