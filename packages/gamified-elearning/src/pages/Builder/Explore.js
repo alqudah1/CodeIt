@@ -14,6 +14,9 @@ import { reportFailure } from '../../utils/humanError';
 import Icon from '../../components/Icon/Icon';
 import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
+import { saveProject as saveShelfProject } from '../../utils/projectShelf';
+import { projectKindOf } from '../../utils/analyticsKind';
+import { trackEvent } from '../../utils/trackEvent';
 import { displayTitle } from '../../utils/displayTitle';
 import LiveCardArt from '../../components/LiveCardArt/LiveCardArt';
 import './Explore.css';
@@ -319,7 +322,29 @@ export default function Explore() {
 
   const handleRemix = useCallback(async (project) => {
     if (!user) {
-      sessionStorage.setItem('codeit_remix_intent', project.publicId);
+      // A guest pressing Remix used to land on a sign-in page. The project
+      // page stopped doing that on 30 October 2026; this button is the same
+      // promise, so it keeps it the same way: the game goes onto this
+      // browser's shelf and opens in the studio, no account needed to play
+      // with it.
+      setRemixingId(project.publicId);
+      const code = await loadProjectCode(project.publicId);
+      let entry = null;
+      try {
+        entry = code ? saveShelfProject(localStorage, {
+          title: project.title,
+          prompt: `Remix of ${project.title}`,
+          projectType: project.projectType || 'game',
+          code,
+        }) : null;
+      } catch { entry = null; }
+      setRemixingId(null);
+      if (entry) {
+        void trackEvent('guest_remix', projectKindOf(project.projectType));
+        navigate(`/builder?shelf=${entry.id}`);
+        return;
+      }
+      try { sessionStorage.setItem('codeit_remix_intent', project.publicId); } catch { /* the sign-in still happens */ }
       navigate('/login', { state: { from: `/project/${project.publicId}` } });
       return;
     }

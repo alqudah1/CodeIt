@@ -61,12 +61,14 @@ test('every tag the shim rewrites exists in the template it rewrites', () => {
 test('a shared project carries its own title, creator and image', () => {
   const out = applyShareTags(TEMPLATE, PROJECT, 'codeitlearn.com', 'abc123');
 
-  assert.equal(tag(out, /<title>([^<]*)<\/title>/), 'Cat Dodger — play it on CodeIt');
+  assert.equal(tag(out, /<title>([^<]*)<\/title>/), 'Cat Dodger | Play it on CodeIt');
   assert.equal(
     tag(out, /<meta property="og:title" content="([^"]*)"/),
-    'Cat Dodger — play it on CodeIt'
+    'Cat Dodger | Play it on CodeIt'
   );
   assert.match(tag(out, /<meta property="og:description" content="([^"]*)"/), /Amina/);
+  // What a friend sees in the message preview is published copy: no em dashes.
+  for (const m of out.matchAll(/<title>([^<]*)<\/title>|content="([^"]*)"/g)) assert.doesNotMatch(m[1] || m[2], /\u2014/);
   assert.equal(
     tag(out, /<meta property="og:image" content="([^"]*)"/),
     'https://codeitlearn.com/brand/share-game.png'
@@ -89,7 +91,7 @@ test('the canonical points at the project, not at the homepage', () => {
   );
   assert.equal(
     tag(out, /<meta property="og:image:alt" content="([^"]*)"/),
-    'Cat Dodger — play it on CodeIt'
+    'Cat Dodger | Play it on CodeIt'
   );
 });
 

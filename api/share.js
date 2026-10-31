@@ -100,7 +100,7 @@ function setTag(html, pattern, replacement) {
 function applyShareTags(html, project, host, publicId) {
   if (!project?.title) return html;
 
-  const title = escapeHtml(`${project.title} — play it on CodeIt`);
+  const title = escapeHtml(`${project.title} | Play it on CodeIt`);
   const creator = project.creator_name ? escapeHtml(project.creator_name) : null;
   const description = escapeHtml(
     creator
