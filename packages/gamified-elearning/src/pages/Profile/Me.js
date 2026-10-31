@@ -119,7 +119,7 @@ export default function Me({ user, token, trophies = [], projectCount = null, lo
         </section>
 
         <section className="me__right">
-          <h2 className="ci-h2">Your games {typeof today?.plays === 'number' && today.plays > 0 && <small><span className="ci-livedot" />{today.plays} plays</small>}</h2>
+          <h2 className="ci-h2">Your games {typeof today?.plays === 'number' && today.plays > 0 && <small><span className="ci-livedot" />{today.plays === 1 ? '1 play' : `${today.plays} plays`}</small>}</h2>
           {games.length === 0 && <p className="ci-sub">Nothing here yet. <Link to="/build">Build the first one</Link>.</p>}
           <div className="me__games">
             {games.map((g) => (

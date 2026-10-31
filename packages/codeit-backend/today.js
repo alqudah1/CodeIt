@@ -92,15 +92,24 @@ function questFor(now = Date.now()) {
   return { ...QUESTS[index], day: key };
 }
 
-/** Levels: a cut of total XP. The titles are the ones a child sees. */
+/** Levels: a cut of total XP. The titles are the ones a child sees.
+ *
+ * The same table as src/data/unlocks.js on the frontend, which the header,
+ * the avatar unlocks, lessons and puzzles all read. Until 31 October 2026
+ * this file had its own table (Rookie, Tinkerer, level 2 at 100 XP), so a
+ * child with 150 XP was level 2 on Home and level 1 in the header menu.
+ * levels.test.js on the frontend pins the two tables together. */
 const LEVELS = Object.freeze([
-  { n: 1, at: 0, title: 'Rookie' },
-  { n: 2, at: 100, title: 'Tinkerer' },
-  { n: 3, at: 220, title: 'Builder' },
-  { n: 4, at: 380, title: 'Game Designer' },
-  { n: 5, at: 600, title: 'Level Maker' },
-  { n: 6, at: 900, title: 'Studio Boss' },
-  { n: 7, at: 1300, title: 'Legend' },
+  { n: 1, at: 0, title: 'Beginner' },
+  { n: 2, at: 200, title: 'Explorer' },
+  { n: 3, at: 500, title: 'Coder' },
+  { n: 4, at: 900, title: 'Builder' },
+  { n: 5, at: 1400, title: 'Developer' },
+  { n: 6, at: 2000, title: 'Hacker' },
+  { n: 7, at: 2800, title: 'Engineer' },
+  { n: 8, at: 3800, title: 'Architect' },
+  { n: 9, at: 5000, title: 'Master' },
+  { n: 10, at: 6500, title: 'Legend' },
 ]);
 
 function levelFor(totalXp) {

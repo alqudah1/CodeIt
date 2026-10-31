@@ -34,7 +34,7 @@ const EVIDENCE = { success: true, weekCount: 2, powers: [{ slug: 'numbers', name
 function serve(ev = EVIDENCE, children = [{ id: 4, username: 'maya', progressEmailsEnabled: true }]) {
   global.fetch = jest.fn((url) => {
     const u = String(url);
-    if (u.endsWith('/api/family')) return Promise.resolve({ ok: true, json: async () => ({ success: true, status: { children } }) });
+    if (u.endsWith('/api/family')) return Promise.resolve({ ok: true, json: async () => ({ success: true, children }) });
     if (/\/api\/family\/children\/\d+\/evidence$/.test(u)) return Promise.resolve({ ok: true, json: async () => ev });
     return Promise.resolve({ ok: false, status: 404, json: async () => ({}) });
   });
@@ -125,7 +125,7 @@ test('a child\'s games that fail to load offer a retry, and arrive on it', async
   let evidenceUp = false;
   global.fetch = jest.fn((url) => {
     const u = String(url);
-    if (u.endsWith('/api/family')) return Promise.resolve({ ok: true, json: async () => ({ success: true, status: { children: [{ id: 4, username: 'maya' }] } }) });
+    if (u.endsWith('/api/family')) return Promise.resolve({ ok: true, json: async () => ({ success: true, children: [{ id: 4, username: 'maya' }] }) });
     if (u.endsWith('/evidence')) return evidenceUp ? Promise.resolve({ ok: true, json: async () => EVIDENCE }) : Promise.reject(new TypeError('Failed to fetch'));
     return Promise.resolve({ ok: false, status: 404, json: async () => ({}) });
   });
@@ -134,4 +134,14 @@ test('a child\'s games that fail to load offer a retry, and arrive on it', async
   evidenceUp = true;
   fireEvent.click(screen.getByRole('button', { name: 'Try now' }));
   expect(await screen.findByText('Carrot Rain')).toBeInTheDocument();
+});
+
+test('the page reads the family answer the server really sends, and a username keeps its spelling', async () => {
+  // GET /api/family answers { success, children, ... } at the top level
+  // (routes/family.js spreads getFamilyStatus). The page read data.status and
+  // told every parent "No child profile linked yet" (fixed 31 October 2026).
+  serve(EVIDENCE, [{ id: 39, username: 'sam_k95c7', progressEmailsEnabled: false }]);
+  mount({ user: { name: 'Pat Parent', role: 'Educator' }, token: 't' });
+  expect(await screen.findByText('sam_k95c7 made 2 games this week.')).toBeInTheDocument();
+  expect(screen.queryByText(/No child profile linked yet/)).toBeNull();
 });

@@ -40,12 +40,13 @@ test('the quest of the day is the same for everyone and different from yesterday
 });
 
 test('levels cut total XP, and the next threshold is honest', () => {
-  assert.deepEqual(levelFor(0), { n: 1, title: 'Rookie', xp: 0, next: 100, toNext: 100 });
-  assert.deepEqual(levelFor(420), { n: 4, title: 'Game Designer', xp: 420, next: 600, toNext: 180 });
-  assert.equal(levelFor(5000).n, 7);
-  assert.equal(levelFor(5000).next, null);
+  assert.deepEqual(levelFor(0), { n: 1, title: 'Beginner', xp: 0, next: 200, toNext: 200 });
+  assert.deepEqual(levelFor(420), { n: 2, title: 'Explorer', xp: 420, next: 500, toNext: 80 });
+  assert.equal(levelFor(5000).n, 9);
+  assert.equal(levelFor(7000).n, 10);
+  assert.equal(levelFor(7000).next, null);
   assert.equal(levelFor('junk').n, 1);
-  assert.equal(LEVELS.length, 7);
+  assert.equal(LEVELS.length, 10);
 });
 
 test('the today route is mounted and asks for nothing that does not exist', () => {

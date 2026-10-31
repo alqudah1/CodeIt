@@ -25,6 +25,22 @@ import './Profile.css';
 // At 500 XP this page said Level 6 and the Avatar Lab refused the level-4
 // outfit. A child was told two different numbers by the same product.
 
+// "0 XP · 0 lessons · 0 quizzes · 0 puzzles · 1 projects" on a learner made a
+// minute ago: four zeros and a plural that is wrong. Only what they have done,
+// counted right, and a plain sentence when it is nothing yet.
+export function childActivityLine(child) {
+  const count = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+  const parts = [
+    [Number(child?.projects) || 0, 'project', 'projects'],
+    [Number(child?.lessons) || 0, 'lesson', 'lessons'],
+    [Number(child?.puzzles) || 0, 'puzzle', 'puzzles'],
+    [Number(child?.quizzes) || 0, 'quiz', 'quizzes'],
+  ].filter(([n]) => n > 0).map(([n, one, many]) => count(n, one, many));
+  const xp = Number(child?.totalXP) || 0;
+  if (xp > 0) parts.push(`${xp} XP`);
+  return parts.length ? parts.join(' · ') : 'Nothing yet. Their first game will show here.';
+}
+
 export default function Profile() {
   useSEO({
     canonical: '/profile',
@@ -767,10 +783,7 @@ export default function Profile() {
                       <div className="profile-family__child-summary">
                         <div>
                           <strong>{child.username}</strong>
-                          <span>
-                            {child.totalXP} XP · {child.lessons} lessons · {child.quizzes} quizzes ·
-                            {' '}{child.puzzles} puzzles · {child.projects} projects
-                          </span>
+                          <span>{childActivityLine(child)}</span>
                           <span>
                             Private publishing · Progress emails {child.progressEmailsEnabled ? 'on' : 'off'}
                           </span>

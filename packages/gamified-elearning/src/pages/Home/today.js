@@ -7,6 +7,8 @@
 // streak stays alive until midnight. Keep this in step with today.js on the
 // backend; the tests pin the same cases on both sides.
 
+import { LEVELS as UNLOCK_LEVELS } from '../../data/unlocks';
+
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 export function dayKey(date) {
@@ -31,10 +33,10 @@ export function streakFrom(madeOn, now = Date.now()) {
   return { streak, builtToday };
 }
 
-export const LEVELS = [
-  { n: 1, at: 0, title: 'Rookie' }, { n: 2, at: 100, title: 'Tinkerer' }, { n: 3, at: 220, title: 'Builder' }, { n: 4, at: 380, title: 'Game Designer' },
-  { n: 5, at: 600, title: 'Level Maker' }, { n: 6, at: 900, title: 'Studio Boss' }, { n: 7, at: 1300, title: 'Legend' },
-];
+// The one table, from data/unlocks.js, in the shape this page uses. The
+// header, avatar unlocks and lessons read the same one, so a child's level
+// is the same number everywhere (it was not, until 31 October 2026).
+export const LEVELS = UNLOCK_LEVELS.map((l) => ({ n: l.level, at: l.min, title: l.title }));
 
 export function levelFor(totalXp) {
   const xp = Math.max(0, Number(totalXp) || 0);

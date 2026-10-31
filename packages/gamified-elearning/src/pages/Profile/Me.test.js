@@ -46,14 +46,14 @@ function serve(today, understanding = []) {
 beforeEach(() => { localStorage.clear(); sessionStorage.clear(); mockLogout.mockClear(); window.history.pushState({}, '', '/profile'); });
 
 test('a child sees the numbers, the powers with the next lit, the medals, and the games', async () => {
-  serve({ signedIn: true, streak: 4, level: { n: 4, title: 'Game Designer', xp: 420, next: 600, toNext: 180 }, games: [{ id: 7, title: 'Carrot Rain', plays: 7, publicId: 'p7' }, { id: 8, title: 'Star Dodge', plays: 0, publicId: null }], plays: 7 },
+  serve({ signedIn: true, streak: 4, level: { n: 2, title: 'Explorer', xp: 420, next: 500, toNext: 80 }, games: [{ id: 7, title: 'Carrot Rain', plays: 7, publicId: 'p7' }, { id: 8, title: 'Star Dodge', plays: 0, publicId: null }], plays: 7 },
     [{ projectTitle: 'Carrot Rain', skills: ['how many times a loop runs'] }]);
   render(<Profile />);
   expect(await screen.findByText('Maya')).toBeInTheDocument();
-  expect(await screen.findByText('Level 4 · Game Designer')).toBeInTheDocument();
+  expect(await screen.findByText('Level 2 · Explorer')).toBeInTheDocument();
   expect(document.querySelector('.ci-blk--coral .ci-num')).toHaveTextContent('4');
   expect(screen.getByText('420')).toBeInTheDocument();
-  expect(screen.getByText('XP · 180 to level 5')).toBeInTheDocument();
+  expect(screen.getByText('XP · 80 to level 3')).toBeInTheDocument();
   await waitFor(() => expect(document.querySelector('.ci-blk--ink .ci-num')).toHaveTextContent('3'));
   expect(screen.getByText('games made')).toBeInTheDocument();
   await waitFor(() => expect(document.querySelectorAll('.me__power.is-done')).toHaveLength(2));
@@ -70,15 +70,15 @@ test('a child sees the numbers, the powers with the next lit, the medals, and th
 });
 
 test('a fresh account shows zeros and the honest empty states, never a made-up number', async () => {
-  serve({ signedIn: true, streak: 0, level: { n: 1, title: 'Rookie', xp: 0, next: 100, toNext: 100 }, games: [], plays: 0 });
+  serve({ signedIn: true, streak: 0, level: { n: 1, title: 'Beginner', xp: 0, next: 200, toNext: 200 }, games: [], plays: 0 });
   global.fetch.mockImplementation((url) => {
     const u = String(url);
-    if (u.endsWith('/api/today')) return Promise.resolve({ ok: true, json: async () => ({ signedIn: true, streak: 0, level: { n: 1, title: 'Rookie', xp: 0, next: 100, toNext: 100 }, games: [], plays: 0 }) });
+    if (u.endsWith('/api/today')) return Promise.resolve({ ok: true, json: async () => ({ signedIn: true, streak: 0, level: { n: 1, title: 'Beginner', xp: 0, next: 200, toNext: 200 }, games: [], plays: 0 }) });
     if (u.endsWith('/api/builder/projects')) return Promise.resolve({ ok: true, json: async () => ({ success: true, projects: [] }) });
     return Promise.resolve({ ok: true, json: async () => ({ success: true, done: [], records: [] }) });
   });
   render(<Profile />);
-  expect(await screen.findByText('Level 1 · Rookie')).toBeInTheDocument();
+  expect(await screen.findByText('Level 1 · Beginner')).toBeInTheDocument();
   expect(screen.getByText(/Nothing here yet/)).toBeInTheDocument();
   expect(screen.getByText('0 of 12')).toBeInTheDocument();
   expect(screen.getByText('0 of 5')).toBeInTheDocument();

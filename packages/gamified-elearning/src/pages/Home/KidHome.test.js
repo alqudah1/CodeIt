@@ -33,8 +33,8 @@ test('the streak rule matches the server: weekends never break it, yesterday kee
   expect(streakFrom(['2026-10-16T12:00:00Z', '2026-10-19T09:00:00Z'], mon).streak).toBe(2);
   expect(streakFrom(['2026-10-20T16:00:00Z', '2026-10-19T10:00:00Z'], '2026-10-21T15:00:00Z')).toEqual({ streak: 2, builtToday: false });
   expect(streakFrom([], mon).streak).toBe(0);
-  expect(levelFor(420)).toMatchObject({ n: 4, title: 'Game Designer', toNext: 180 });
-  expect(xpPercent(levelFor(420))).toBeCloseTo(((420 - 380) / (600 - 380)) * 100);
+  expect(levelFor(420)).toMatchObject({ n: 2, title: 'Explorer', toNext: 80 });
+  expect(xpPercent(levelFor(420))).toBeCloseTo(((420 - 200) / (500 - 200)) * 100);
   expect(questFor('2026-10-21T08:00:00Z').text).toBe(questFor('2026-10-21T23:00:00Z').text);
 });
 
@@ -52,7 +52,7 @@ test('a guest sees today\'s quest, a streak from the shelf, 0 XP with the honest
 
 test('a signed-in child sees the server\'s numbers and the quest opens Build pre-typed', async () => {
   global.fetch = jest.fn((url) => {
-    if (String(url).endsWith('/api/today')) return Promise.resolve({ ok: true, json: () => Promise.resolve({ signedIn: true, quest: { text: 'Catch carrots at night.', prompt: 'a bunny that catches carrots at night' }, streak: 3, builtToday: false, level: { n: 4, title: 'Game Designer', xp: 420, next: 600, toNext: 180 }, games: [{ id: 7, title: 'Carrot Rain', type: 'game', publicId: 'pub7', plays: 7 }], plays: 12 }) });
+    if (String(url).endsWith('/api/today')) return Promise.resolve({ ok: true, json: () => Promise.resolve({ signedIn: true, quest: { text: 'Catch carrots at night.', prompt: 'a bunny that catches carrots at night' }, streak: 3, builtToday: false, level: { n: 2, title: 'Explorer', xp: 420, next: 500, toNext: 80 }, games: [{ id: 7, title: 'Carrot Rain', type: 'game', publicId: 'pub7', plays: 7 }], plays: 12 }) });
     return Promise.resolve({ ok: true, json: () => Promise.resolve({ project: { generated_code: '<!DOCTYPE html><html><body>game</body></html>' } }) });
   });
   mount({ user: { name: 'Maya Q' }, token: 't' });
@@ -60,7 +60,7 @@ test('a signed-in child sees the server\'s numbers and the quest opens Build pre
   expect(screen.getByText('Hey Maya.')).toBeInTheDocument();
   expect(screen.getByText('3')).toBeInTheDocument();
   expect(screen.getByText('420')).toBeInTheDocument();
-  expect(screen.getByText('XP · 180 to level 5')).toBeInTheDocument();
+  expect(screen.getByText('XP · 80 to level 3')).toBeInTheDocument();
   expect(screen.getByRole('link', { name: 'Build it' })).toHaveAttribute('href', '/build?prompt=a%20bunny%20that%20catches%20carrots%20at%20night');
   await waitFor(() => expect(document.querySelector('.kh__tile iframe')).not.toBeNull());
   expect(screen.getByText('7 plays')).toBeInTheDocument();
@@ -84,7 +84,7 @@ test('with a game of their own, the page is marked so a phone puts the examples 
 
 test('a game nobody has played yet says nothing about plays, and one play is one play', async () => {
   global.fetch = jest.fn((url) => {
-    if (String(url).endsWith('/api/today')) return Promise.resolve({ ok: true, json: () => Promise.resolve({ signedIn: true, quest: { text: 'Q.', prompt: 'q' }, streak: 1, builtToday: true, level: { n: 1, title: 'Rookie', xp: 0, next: 100, toNext: 100 }, games: [{ id: 1, title: 'Bunny Catch', plays: 0 }, { id: 2, title: 'Star Rain', plays: 1 }] }) });
+    if (String(url).endsWith('/api/today')) return Promise.resolve({ ok: true, json: () => Promise.resolve({ signedIn: true, quest: { text: 'Q.', prompt: 'q' }, streak: 1, builtToday: true, level: { n: 1, title: 'Beginner', xp: 0, next: 200, toNext: 200 }, games: [{ id: 1, title: 'Bunny Catch', plays: 0 }, { id: 2, title: 'Star Rain', plays: 1 }] }) });
     return Promise.resolve({ ok: false, json: () => Promise.resolve({}) });
   });
   mount({ user: { name: 'sam_k5myi' }, token: 't' });

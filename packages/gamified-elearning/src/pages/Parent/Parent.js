@@ -61,7 +61,12 @@ export default function Parent() {
         if (!res.ok) throw new Error(`family ${res.status}`);
         const data = await res.json();
         if (!alive) return;
-        const st = data?.status || null;
+        // GET /api/family answers with the status itself ({ success, children,
+        // ... }), the same object Profile reads. This page read data.status,
+        // which only the POST and DELETE answers carry, so from 23 to 31
+        // October 2026 every parent with a child was told "No child profile
+        // linked yet" on the page they would pay for. Both shapes are read.
+        const st = data?.status || (Array.isArray(data?.children) ? data : null);
         setFamily(st);
         if (st?.children?.length) setChildId((id) => id || st.children[0].id);
         setStatus('ok');
@@ -92,7 +97,11 @@ export default function Parent() {
 
   const child = useMemo(() => (family?.children || []).find((c) => c.id === childId) || null, [family, childId]);
   const ev = childId ? evidence[childId] : null;
-  const name = child?.username ? child.username.charAt(0).toUpperCase() + child.username.slice(1) : 'Your child';
+  // "maya" reads as a name and gets its capital. "sam_k95c7" is a username,
+  // and "Sam_k95c7 made 1 game" is neither the name nor the username.
+  const name = !child?.username ? 'Your child'
+    : /^[a-z]+$/i.test(child.username) ? child.username.charAt(0).toUpperCase() + child.username.slice(1)
+      : child.username;
   const newest = ev?.projects?.[0] || null;
   const learned = [...(ev?.powers || []).map((p) => `${p.name}: ${p.does}`), ...(ev?.understood || []).flatMap((u) => (u.skills || []).map((s) => `${s} (in ${u.projectTitle})`))];
   const plus = billing ? isPlusMember(billing) : false;

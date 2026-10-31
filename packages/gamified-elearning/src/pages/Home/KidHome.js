@@ -125,7 +125,7 @@ export default function KidHome() {
           {games.length < 3 && <ExampleCards className="kh__examples" from={0} count={4} title={games.length ? 'More to try' : 'Ideas to build'} note="Examples. Tap one and it is playing in two seconds." />}
         </section>
         <section className="kh__right">
-          <h2 className="ci-h2">Your games {typeof today?.plays === 'number' && today.plays > 0 && <small className="kh__plays"><span className="ci-livedot" />{today.plays} plays</small>}</h2>
+          <h2 className="ci-h2">Your games {typeof today?.plays === 'number' && today.plays > 0 && <small className="kh__plays"><span className="ci-livedot" />{today.plays === 1 ? '1 play' : `${today.plays} plays`}</small>}</h2>
           <div className="kh__shelf">
             {games.slice(0, 2).map((g, i) => (
               <Link key={g.id} to={g.href} className="kh__tile" style={{ background: SKY_OF[i % SKY_OF.length] }}>

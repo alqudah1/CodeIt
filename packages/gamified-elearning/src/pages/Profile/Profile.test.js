@@ -249,6 +249,9 @@ describe('parent progress availability', () => {
     }];
     render(<Profile />);
 
+    // Only what they did, counted right: no "0 puzzles", no "1 projects".
+    expect(await screen.findByText('1 project · 2 lessons · 1 quiz · 120 XP')).toBeInTheDocument();
+
     fireEvent.click(await screen.findByRole('button', { name: /What did they actually do\?/i }));
 
     // The concept, named; the count; and the line from the child's own file.
@@ -291,5 +294,12 @@ describe('parent progress availability', () => {
         }),
       })
     );
+  });
+
+  test('a learner made a minute ago reads as a sentence, not a row of zeros', () => {
+    const { childActivityLine } = require('./Profile');
+    expect(childActivityLine({ totalXP: 0, lessons: 0, quizzes: 0, puzzles: 0, projects: 0 })).toBe('Nothing yet. Their first game will show here.');
+    expect(childActivityLine({ totalXP: 0, lessons: 0, quizzes: 0, puzzles: 0, projects: 1 })).toBe('1 project');
+    expect(childActivityLine({ totalXP: 40, lessons: 1, quizzes: 3, puzzles: 2, projects: 4 })).toBe('4 projects · 1 lesson · 2 puzzles · 3 quizzes · 40 XP');
   });
 });
