@@ -73,12 +73,18 @@ const allowed = [];
 for (const file of files) {
   const rel = path.relative(SRC, file);
   const text = fs.readFileSync(file, 'utf8');
-  if (!text.includes('—')) continue;
+  // The dash itself, and the two ways JSX and JS spell it without typing it:
+  // "&mdash;" and "\u2014". "&mdash;" was on the live Pricing page and the
+  // puzzle header on 31 October 2026, because the scan only looked for the
+  // character.
+  const DASH = /—|&mdash;|\\u2014/g;
+  if (!DASH.test(text)) continue;
+  DASH.lastIndex = 0;
   const ranges = commentRanges(text, rel);
   const lines = text.split('\n');
 
-  for (let i = 0; i < text.length; i += 1) {
-    if (text[i] !== '—') continue;
+  for (const hit of text.matchAll(DASH)) {
+    const i = hit.index;
     if (ranges.some(([a, b]) => i >= a && i < b)) continue;
 
     const lineNumber = text.slice(0, i).split('\n').length;
@@ -94,7 +100,7 @@ for (const file of files) {
       allowed.push(`${rel}:${lineNumber}`);
       continue;
     }
-    offenders.push(`${rel}:${lineNumber} ${line.slice(Math.max(0, line.indexOf('—') - 60), line.indexOf('—') + 60).trim()}`);
+    offenders.push(`${rel}:${lineNumber} ${line.trim().slice(0, 140)}`);
   }
 }
 

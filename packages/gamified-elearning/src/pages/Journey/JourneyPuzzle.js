@@ -196,7 +196,7 @@ const JourneyPuzzle = () => {
 
           <div className="jp-header">
             <div className="jp-header__meta">
-              <span className="jp-header__tag">Lesson {lessonId} &mdash; Puzzle {slotLabels[slot]}</span>
+              <span className="jp-header__tag">Lesson {lessonId} · Puzzle {slotLabels[slot]}</span>
               {nextStep && (
                 <span className="jp-header__next-hint">
                   Next: {nextStep.label}

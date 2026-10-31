@@ -1810,7 +1810,7 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
     console.log('Builder: ANTHROPIC_API_KEY missing, serving fallback for type:', designConfig.type);
     const fbHtml = getRichFallback(designConfig, prompt.trim());
     const fbTitle = derivePromptTitle(prompt.trim());
-    return res.json({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready — AI polish can be added next', isFallback: true, conceptsUsed: [] });
+    return res.json({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready. AI polish can be added next.', isFallback: true, conceptsUsed: [] });
   }
 
   // ── Watching it being written (round 143) ──────────────────────────────
@@ -2065,7 +2065,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
         console.log('Builder: two attempts failed, using rich fallback for type:', designConfig.type);
         const fbHtml = getRichFallback(designConfig, prompt.trim());
         const fbTitle = derivePromptTitle(prompt.trim());
-        return reply({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready — AI polish can be added next', isFallback: true, retry, conceptsUsed: [] });
+        return reply({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready. AI polish can be added next.', isFallback: true, retry, conceptsUsed: [] });
       }
     }
 
@@ -2091,7 +2091,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
       const fbHtml = getRichFallback(designConfig, prompt.trim());
       const fbTitle = derivePromptTitle(prompt.trim());
       console.log('Builder: serving fallback after error for type:', designConfig.type);
-      return reply({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready — AI polish can be added next', isFallback: true, conceptsUsed: [] });
+      return reply({ code: fbHtml, html: fbHtml, title: fbTitle, type: designConfig.type, summary: 'Starter ready. AI polish can be added next.', isFallback: true, conceptsUsed: [] });
     } catch (fbErr) {
       console.error('Builder: fallback also failed:', fbErr.message);
       return reply({ error: 'AI generation failed. Please try again.' }, 502);
@@ -2343,7 +2343,7 @@ router.post('/explain', optionalAuth, helperLimiter, async (req, res) => {
     console.error('Builder explain error:', err.message);
     const msg = err.message || '';
     if (msg.includes('credit balance') || msg.includes('billing') || msg.includes('credit')) {
-      return res.status(503).json({ error: 'The AI service is temporarily unavailable — credits have run out.' });
+      return res.status(503).json({ error: 'Explaining code is not available right now. Try again in a little while.' });
     }
     res.status(502).json({ error: 'Could not generate explanation. Please try again.' });
   }

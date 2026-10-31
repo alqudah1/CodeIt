@@ -56,7 +56,7 @@ router.post('/signup', async (req, res) => {
       );
       if (dup.length) {
         await connection.rollback();
-        return res.status(400).json({ field: 'username', error: 'That username is already taken — try another one' });
+        return res.status(400).json({ field: 'username', error: 'That username is already taken. Try another one.' });
       }
     } else {
       const [dup] = await connection.query(

@@ -430,12 +430,12 @@ export default function Pricing() {
             <h2 id="evidence-title">Not screen-time minutes. Their actual code.</h2>
             <p>
               Founding Families get one email a month. It is built from your
-              child&rsquo;s real projects and finished lessons &mdash; here is
-              what one looks like.
+              child&rsquo;s real projects and finished lessons. Here is what
+              one looks like.
             </p>
           </div>
           <article className="pricing-email" aria-label="An example of the monthly family email">
-            <div className="pricing-email__flag">Example &mdash; Maya is made up. Your email is built from your child&rsquo;s real work.</div>
+            <div className="pricing-email__flag">Example: Maya is made up. Your email is built from your child&rsquo;s real work.</div>
             <div className="pricing-email__subject">
               <span>Subject:</span> What Maya built this month on CodeIt
             </div>
