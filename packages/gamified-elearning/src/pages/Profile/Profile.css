@@ -365,7 +365,8 @@
 }
 
 .profile-family__verify button,
-.profile-family__form > button {
+.profile-family__form > button,
+.profile-family__add {
   min-height: 48px;
   padding: 0.75rem 1rem;
   border: 0;
@@ -1031,3 +1032,9 @@
   background: var(--arc-sun, #FED340); color: var(--ink, #35220E);
   font-family: var(--font-display, inherit); font-weight: 800; font-size: 14px;
 }
+
+/* An adult's page leads with their family: the hero, then the learners, then
+   anything of their own. A child's settings page keeps its own order. */
+.profile-page--adult .profile-hero { order: -2; }
+.profile-page--adult .profile-family { order: -1; }
+.profile-family__add { align-self: flex-start; margin-top: 0.75rem; }

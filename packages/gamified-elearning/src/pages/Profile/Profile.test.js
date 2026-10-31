@@ -7,6 +7,7 @@ const mockLogout = jest.fn();
 let mockFetchMode = 'unavailable';
 let mockProfileUser = { user_id: 8, name: 'Student Builder', username: 'student-builder', role: 'Student' };
 let mockFamilyChildren = [];
+let mockXP = 20;
 
 jest.mock('react-router-dom', () => {
   const React = require('react');
@@ -34,7 +35,7 @@ jest.mock('../../context/CharacterContext', () => ({
   useCharacterDisplay: () => ({ character: {} }),
   useCharacter: () => ({
     character: {},
-    stats: { totalXP: 20, currentStreak: 1, longestStreak: 2 },
+    stats: { totalXP: mockXP, currentStreak: 1, longestStreak: 2 },
   }),
 }));
 
@@ -54,6 +55,7 @@ describe('parent progress availability', () => {
     mockLogout.mockClear();
     mockProfileUser = { user_id: 8, name: 'Student Builder', username: 'student-builder', role: 'Student' };
     mockFamilyChildren = [];
+    mockXP = 20;
     sessionStorage.clear();
     window.location.hash = '';
     // A child's /profile is Me; these tests are about the page behind its Settings chip.
@@ -301,5 +303,31 @@ describe('parent progress availability', () => {
     expect(childActivityLine({ totalXP: 0, lessons: 0, quizzes: 0, puzzles: 0, projects: 0 })).toBe('Nothing yet. Their first game will show here.');
     expect(childActivityLine({ totalXP: 0, lessons: 0, quizzes: 0, puzzles: 0, projects: 1 })).toBe('1 project');
     expect(childActivityLine({ totalXP: 40, lessons: 1, quizzes: 3, puzzles: 2, projects: 4 })).toBe('4 projects · 1 lesson · 2 puzzles · 3 quizzes · 40 XP');
+  });
+
+  test('a parent who only came for their child sees the child first, not a level and three zeros', async () => {
+    mockXP = 0;
+    mockProfileUser = { user_id: 9, name: 'Pat Parent', email: 'parent@example.com', role: 'Educator' };
+    mockFamilyChildren = [{ id: 39, username: 'sam_k95c7', totalXP: 0, lessons: 0, quizzes: 0, puzzles: 0, projects: 1, progressEmailsEnabled: false }];
+    render(<Profile />);
+
+    expect(await screen.findByText('sam_k95c7')).toBeInTheDocument();
+    expect(screen.queryByText('How to earn XP')).toBeNull();
+    expect(screen.queryByText('Projects built')).toBeNull();
+    expect(screen.queryByText(/XP to Level/)).toBeNull();
+    // With a learner already there, the form waits behind one button.
+    expect(screen.queryByLabelText('Learner username')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Add another learner' }));
+    expect(screen.getByLabelText('Learner username')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Add another learner' })).toBeInTheDocument();
+  });
+
+  test('an adult who builds keeps their own numbers', async () => {
+    mockXP = 75;
+    mockProfileUser = { user_id: 9, name: 'Pat Parent', email: 'parent@example.com', role: 'Educator' };
+    render(<Profile />);
+    expect(await screen.findByText('How to earn XP')).toBeInTheDocument();
+    // No learner yet: the form is open, as it was.
+    expect(await screen.findByLabelText('Learner username')).toBeInTheDocument();
   });
 });

@@ -73,6 +73,7 @@ export default function Profile() {
   const [familySaving, setFamilySaving] = useState(false);
   const [passwordResetId, setPasswordResetId] = useState(null);
   const [newChildPassword, setNewChildPassword] = useState('');
+  const [addingChild, setAddingChild] = useState(false);
   const [childForm, setChildForm] = useState({
     username: '',
     password: '',
@@ -270,6 +271,7 @@ export default function Profile() {
         progressEmails: false,
         claimProjects: true,
       });
+      setAddingChild(false);
       const moved = Number(data.child.movedProjects) || 0;
       setFamilyMessage(moved > 0
         ? `Private learner profile “${data.child.username}” created, with ${moved === 1 ? 'their game' : `their ${moved} games`} moved to it. Use “Switch to learner” below to open it.`
@@ -435,10 +437,18 @@ export default function Profile() {
     return <><Header /><ParentGate onPass={() => setGatePassed(true)} /><TabBar /></>;
   }
 
+  // A parent who came to set up their child does not need a level bubble,
+  // three zeros and "How to earn XP" above the family controls (seen on a
+  // 390px walk, 31 October 2026). Those stay for an adult who builds too.
+  const isAdult = String(user.role).toLowerCase() !== 'student';
+  const quietGame = isAdult && !(Number(totalXP) > 0) && !(Number(projectCount) > 0);
+  const hasChildren = (familyStatus?.children?.length || 0) > 0;
+  const showChildForm = !hasChildren || addingChild;
+
   return (
     <>
       <Header />
-      <div className="profile-page">
+      <div className={`profile-page${isAdult ? ' profile-page--adult' : ''}`}>
 
         {/* ── Avatar hero ── */}
         <section className="profile-hero">
@@ -448,10 +458,11 @@ export default function Profile() {
 
           <div className="profile-hero__copy">
             <h1 className="profile-name">{user.name || user.username}</h1>
-            <div className="profile-title-badge">{title}</div>
+            {!quietGame && <div className="profile-title-badge">{title}</div>}
           </div>
         </section>
 
+        {!quietGame && (<>
         {/* ── Level + XP card ── */}
         <div className="profile-card profile-card--xp">
           <div className="profile-xp-header">
@@ -496,6 +507,7 @@ export default function Profile() {
             <span className="profile-stat__lbl">Total XP</span>
           </div>
         </div>
+        </>)}
 
         {/* ── The trophy wall ─────────────────────────────────────────────
             Every plaque is a sentence the server wrote only after this kid
@@ -684,101 +696,9 @@ export default function Profile() {
 
             {!familyLoading && familyStatus?.emailVerified && (
               <>
-                <form className="profile-family__form" onSubmit={createChildProfile}>
-                  <h3>Create a private learner profile</h3>
-                  <p>Use a nickname, not the child’s full name. The learner signs in with this username and password.</p>
-                  <div className="profile-family__fields">
-                    <label>
-                      Learner username
-                      <input
-                        value={childForm.username}
-                        onChange={event => updateChildField('username', event.target.value)}
-                        pattern="[A-Za-z0-9_]{3,20}"
-                        minLength="3"
-                        maxLength="20"
-                        placeholder="creative_coder"
-                        required
-                      />
-                    </label>
-                    <label>
-                      Learner birthday
-                      <input
-                        type="date"
-                        value={childForm.dob}
-                        onChange={event => updateChildField('dob', event.target.value)}
-                        required
-                      />
-                    </label>
-                    <label>
-                      Learner password
-                      <input
-                        type="password"
-                        value={childForm.password}
-                        onChange={event => updateChildField('password', event.target.value)}
-                        minLength="10"
-                        maxLength="128"
-                        autoComplete="new-password"
-                        required
-                      />
-                    </label>
-                    <label>
-                      Your relationship
-                      <select
-                        value={childForm.relationship}
-                        onChange={event => updateChildField('relationship', event.target.value)}
-                      >
-                        <option value="parent">Parent</option>
-                        <option value="guardian">Guardian</option>
-                      </select>
-                    </label>
-                  </div>
-                  {familyStatus.ownProjects?.length > 0 && (
-                    <label className="profile-family__consent">
-                      <input
-                        type="checkbox"
-                        checked={childForm.claimProjects}
-                        onChange={event => updateChildField('claimProjects', event.target.checked)}
-                      />
-                      <span>
-                        {familyStatus.ownProjects.length === 1
-                          ? <>Move <strong>{familyStatus.ownProjects[0].title}</strong>, saved on this account, to this learner. It is theirs.</>
-                          : <>Move the {familyStatus.ownProjects.length} projects saved on this account ({familyStatus.ownProjects.slice(0, 3).map(p => p.title).join(', ')}{familyStatus.ownProjects.length > 3 ? ' and more' : ''}) to this learner. They are theirs.</>}
-                      </span>
-                    </label>
-                  )}
-                  <label className="profile-family__consent">
-                    <input
-                      type="checkbox"
-                      checked={childForm.consent}
-                      onChange={event => updateChildField('consent', event.target.checked)}
-                      required
-                    />
-                    <span>
-                      I am this learner’s parent or legal guardian. I reviewed the <Link to="/privacy">privacy notice</Link>,
-                      consent to this private managed profile, and understand public publishing is disabled.
-                    </span>
-                  </label>
-                  <label className="profile-family__consent">
-                    <input
-                      type="checkbox"
-                      checked={childForm.progressEmails}
-                      onChange={event => updateChildField('progressEmails', event.target.checked)}
-                    />
-                    <span>
-                      Email me when this learner completes lessons, exercises, or creates projects.
-                      I can pause these updates at any time.
-                    </span>
-                  </label>
-                  <button type="submit" disabled={familySaving}>
-                    {familySaving ? 'Creating…' : 'Create private learner profile'}
-                  </button>
-                </form>
-
                 <div className="profile-family__children">
-                  <h3>Managed learner profiles</h3>
-                  {familyStatus.children.length === 0 ? (
-                    <p>No managed profiles yet.</p>
-                  ) : familyStatus.children.map(child => (
+                  {hasChildren && <h3>Managed learner profiles</h3>}
+                  {familyStatus.children.map(child => (
                     <article key={child.id}>
                       <div className="profile-family__child-summary">
                         <div>
@@ -944,12 +864,108 @@ export default function Profile() {
                     </article>
                   ))}
                 </div>
+                {showChildForm ? (
+                <form className="profile-family__form" onSubmit={createChildProfile}>
+                  <h3>{hasChildren ? 'Add another learner' : 'Create a private learner profile'}</h3>
+                  <p>Use a nickname, not the child’s full name. The learner signs in with this username and password.</p>
+                  <div className="profile-family__fields">
+                    <label>
+                      Learner username
+                      <input
+                        value={childForm.username}
+                        onChange={event => updateChildField('username', event.target.value)}
+                        pattern="[A-Za-z0-9_]{3,20}"
+                        minLength="3"
+                        maxLength="20"
+                        placeholder="creative_coder"
+                        required
+                      />
+                    </label>
+                    <label>
+                      Learner birthday
+                      <input
+                        type="date"
+                        value={childForm.dob}
+                        onChange={event => updateChildField('dob', event.target.value)}
+                        required
+                      />
+                    </label>
+                    <label>
+                      Learner password
+                      <input
+                        type="password"
+                        value={childForm.password}
+                        onChange={event => updateChildField('password', event.target.value)}
+                        minLength="10"
+                        maxLength="128"
+                        autoComplete="new-password"
+                        required
+                      />
+                    </label>
+                    <label>
+                      Your relationship
+                      <select
+                        value={childForm.relationship}
+                        onChange={event => updateChildField('relationship', event.target.value)}
+                      >
+                        <option value="parent">Parent</option>
+                        <option value="guardian">Guardian</option>
+                      </select>
+                    </label>
+                  </div>
+                  {familyStatus.ownProjects?.length > 0 && (
+                    <label className="profile-family__consent">
+                      <input
+                        type="checkbox"
+                        checked={childForm.claimProjects}
+                        onChange={event => updateChildField('claimProjects', event.target.checked)}
+                      />
+                      <span>
+                        {familyStatus.ownProjects.length === 1
+                          ? <>Move <strong>{familyStatus.ownProjects[0].title}</strong>, saved on this account, to this learner. It is theirs.</>
+                          : <>Move the {familyStatus.ownProjects.length} projects saved on this account ({familyStatus.ownProjects.slice(0, 3).map(p => p.title).join(', ')}{familyStatus.ownProjects.length > 3 ? ' and more' : ''}) to this learner. They are theirs.</>}
+                      </span>
+                    </label>
+                  )}
+                  <label className="profile-family__consent">
+                    <input
+                      type="checkbox"
+                      checked={childForm.consent}
+                      onChange={event => updateChildField('consent', event.target.checked)}
+                      required
+                    />
+                    <span>
+                      I am this learner’s parent or legal guardian. I reviewed the <Link to="/privacy">privacy notice</Link>,
+                      consent to this private managed profile, and understand public publishing is disabled.
+                    </span>
+                  </label>
+                  <label className="profile-family__consent">
+                    <input
+                      type="checkbox"
+                      checked={childForm.progressEmails}
+                      onChange={event => updateChildField('progressEmails', event.target.checked)}
+                    />
+                    <span>
+                      Email me when this learner completes lessons, exercises, or creates projects.
+                      I can pause these updates at any time.
+                    </span>
+                  </label>
+                  <button type="submit" disabled={familySaving}>
+                    {familySaving ? 'Creating…' : 'Create private learner profile'}
+                  </button>
+                </form>
+                ) : (
+                  <button type="button" className="profile-family__add" onClick={() => setAddingChild(true)}>
+                    Add another learner
+                  </button>
+                )}
               </>
             )}
           </section>
         )}
 
-        {/* ── Next level preview ── */}
+        {!quietGame && (
+        /* ── Next level preview ── */
         <div className="profile-card profile-card--next">
           <div className="profile-next__icon">{nextLevel}</div>
           <div className="profile-next__copy">
@@ -962,6 +978,7 @@ export default function Profile() {
             </p>
           </div>
         </div>
+        )}
 
         {/* ── Chests opened ── */}
         {chestBadges.length > 0 && (
@@ -975,7 +992,8 @@ export default function Profile() {
           </div>
         )}
 
-        {/* ── How to earn XP ── */}
+        {!quietGame && (
+        /* ── How to earn XP ── */
         <div className="profile-earn">
           <h2 className="profile-earn__title">How to earn XP</h2>
           <div className="profile-earn__grid">
@@ -998,6 +1016,7 @@ export default function Profile() {
             ))}
           </div>
         </div>
+        )}
 
         {/* ── CTAs ── */}
         <div className="profile-actions">
