@@ -2696,6 +2696,12 @@ Return only the updated element HTML:`,
   }
 });
 
+/** A jsonb value ready to send back as a parameter: text stays text. */
+function jsonOrNull(value) {
+  if (value === null || value === undefined) return null;
+  return typeof value === 'string' ? value : JSON.stringify(value);
+}
+
 // POST /api/builder/projects/:id/fork — duplicate project + copy latest version
 router.post('/projects/:id/fork', requireAuth, async (req, res) => {
   const userId = req.user.user_id;
@@ -2733,7 +2739,11 @@ router.post('/projects/:id/fork', requireAuth, async (req, res) => {
         `INSERT INTO ai_project_versions
            (project_id, version_num, title, generated_code, prompt_history, label, primary_color, accent_color)
          VALUES (?, 1, ?, ?, ?, 'Forked from original', ?, ?)`,
-        [newId, v.title, v.generated_code, v.prompt_history, v.primary_color, v.accent_color]
+        // jsonb comes back from Postgres as a JS array, and node-pg sends a JS
+        // array as a Postgres array literal, which jsonb refuses. Every fork
+        // of a project with a prompt history failed after the copy was made
+        // (31 October 2026), leaving a version-less copy behind a 500.
+        [newId, v.title, v.generated_code, jsonOrNull(v.prompt_history), v.primary_color, v.accent_color]
       );
     }
 

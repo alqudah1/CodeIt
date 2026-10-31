@@ -1522,7 +1522,8 @@ export default function Builder() {
           label:         version.label,
           title:         data.title || version.title || '',
           code:          restored,
-          promptHistory: (() => { try { return JSON.parse(data.prompt_history || '[]'); } catch { return []; } })(),
+          // jsonb arrives as an array on Postgres; JSON.parse of an array threw and the history was lost.
+          promptHistory: (() => { if (Array.isArray(data.prompt_history)) return data.prompt_history; try { return JSON.parse(data.prompt_history || '[]'); } catch { return []; } })(),
           primary, accent,
           createdAt:     version.createdAt || new Date().toISOString(),
           isLocal:       true,
@@ -5945,7 +5946,7 @@ export default function Builder() {
                       <div className="bldr-project-card__name">{project.title}</div>
                       <div className="bldr-project-card__prompt">{project.prompt}</div>
                       <div className="bldr-project-card__date">Updated {timeAgo(project.updated_at || project.created_at)}</div>
-                      {project.is_public && project.public_id && (
+                      {Boolean(project.is_public) && project.public_id && (
                         <div className="bldr-project-card__plays">
                           <Icon name="play" size={11} />{' '}
                           {Number(project.view_count) > 0

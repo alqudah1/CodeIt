@@ -36,12 +36,13 @@ export const ENDPOINTS = {
     progress:    `${API_BASE_URL}/api/rewards/progress-percentages`,
     leaderboard: `${API_BASE_URL}/api/rewards/leaderboard`,
   },
-  quiz: {
-    base:     `${API_BASE_URL}/api/quiz`,
-    progress: `${API_BASE_URL}/api/quiz/progress`,
-  },
-  leaderboard: {
-    base: `${API_BASE_URL}/api/leaderboard`,
+  // Quizzes, lessons and journey puzzles done, in one answer:
+  // { completedLessons, completedMiniQuizzes, completedBigQuizzes,
+  //   completedPuzzles: ["1A", "1B", "1BOSS", ...] }. There is no
+  // /api/quiz/progress or /api/puzzles/progress; pages that asked those
+  // were answered 404 (or "puzzle id progress") and showed nothing as done.
+  journey: {
+    progress: `${API_BASE_URL}/api/journey/progress`,
   },
   lessons: {
     list:     `${API_BASE_URL}/api/lessons`,
@@ -50,15 +51,11 @@ export const ENDPOINTS = {
   },
   puzzles: {
     list:     `${API_BASE_URL}/api/puzzles`,
-    progress: `${API_BASE_URL}/api/puzzles/progress`,
     complete: (id) => `${API_BASE_URL}/api/puzzles/${id}/complete`,
   },
   profile: {
     get:            `${API_BASE_URL}/api/profile`,
     character:      `${API_BASE_URL}/api/profile/character`,
-    dailyActivity:  `${API_BASE_URL}/api/profile/daily-activity`,
-    gameScore:      `${API_BASE_URL}/api/profile/game-score`,
-    gameScores:     `${API_BASE_URL}/api/profile/game-scores`,
     parentEmail:    `${API_BASE_URL}/api/add-parent-email`,
   },
   admin: {

@@ -58,3 +58,28 @@ test('recent milestones come back with eventType, so the profile can label them'
   assert.ok(EVENT_LABELS[summary.recent[0].eventType], 'the label lookup works');
   assert.equal(summary.recent[0].title, 'Hello Python');
 });
+
+test('a project whose version has a prompt history can be forked on Postgres', { skip: !HAS_PG && 'no local Postgres' }, async () => {
+  const pool = require('./db');
+  const router = require('./routes/builder');
+  const stamp = `${Date.now().toString(36)}f`;
+  const [user] = await pool.query(`INSERT INTO Users (username, name, password, role) VALUES (?, ?, 'x', 'Student')`, [`f_${stamp}`, 'F']);
+  const token = jwt.sign({ user_id: user.insertId, role: 'Student' }, process.env.JWT_SECRET);
+  const app = express(); app.use(express.json()); app.use('/api/builder', router);
+  const server = await new Promise((resolve) => { const s = app.listen(0, () => resolve(s)); });
+  const base = `http://127.0.0.1:${server.address().port}`;
+  try {
+    const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+    const code = '<!doctype html><html><body><h1>Bunny Catch</h1><script>let score = 0;</script></body></html>';
+    const made = await (await fetch(`${base}/api/builder/projects`, { method: 'POST', headers, body: JSON.stringify({ title: 'Bunny Catch', prompt: 'a bunny', generated_code: code, project_type: 'game' }) })).json();
+    const saved = await fetch(`${base}/api/builder/projects/${made.project.id}/versions`, { method: 'POST', headers, body: JSON.stringify({ generated_code: code, title: 'Bunny Catch', label: 'Saved', prompt_history: ['a bunny', 'make it harder'] }) });
+    assert.equal(saved.status, 201);
+    const fork = await fetch(`${base}/api/builder/projects/${made.project.id}/fork`, { method: 'POST', headers });
+    const body = await fork.json();
+    assert.equal(fork.status, 201, JSON.stringify(body));
+    const [rows] = await pool.query('SELECT prompt_history FROM ai_project_versions WHERE project_id = ?', [body.project.id]);
+    assert.deepEqual(rows[0].prompt_history, ['a bunny', 'make it harder']);
+  } finally {
+    server.close();
+  }
+});

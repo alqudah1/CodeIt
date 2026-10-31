@@ -7,7 +7,7 @@ import Header from '../Header/Header';
 import { useSEO } from '../../hooks/useSEO';
 import { usePlayerProgress } from '../../hooks/usePlayerProgress';
 import { isUnlocked, unlockAt, getNextUnlock, getNextUnlockLabel } from '../../data/unlocks';
-import { ENDPOINTS } from '../../config/api';
+import { API_BASE_URL, ENDPOINTS } from '../../config/api';
 import './CharacterLab.css';
 
 // ── Option data ──────────────────────────────────────────────
@@ -83,12 +83,14 @@ const AvatarLab = () => {
 
   useEffect(() => {
     if (!token) return;
-    fetch(ENDPOINTS.profile.get, {
+    // GET /api/profile never carried the parent email, so this box was always
+    // empty and invited saving it again. The settings answer has it.
+    fetch(`${API_BASE_URL}/api/progress-notifications/settings`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then(r => r.json())
+      .then(r => (r.ok ? r.json() : null))
       .then(data => {
-        if (data.parentEmail) setParentEmailInput(data.parentEmail);
+        if (data?.settings?.parentEmail) setParentEmailInput(data.settings.parentEmail);
       })
       .catch(() => {});
   }, [token]);

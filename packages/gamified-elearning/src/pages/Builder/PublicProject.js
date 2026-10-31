@@ -80,8 +80,17 @@ export default function PublicProject() {
           // The two endpoints name the code field differently. Normalised here
           // rather than in the render, so nothing below has to know which kind
           // of link it is looking at.
+          // The unlisted answer is camelCase (projectType, createdAt); the
+          // page reads the published one's snake_case. Without these two, an
+          // unlisted page said "NaNd ago" and a remix of a website was saved
+          // as a game (31 October 2026).
           setProject(unlistedId
-            ? { ...data.project, generated_code: data.project.code }
+            ? {
+              ...data.project,
+              generated_code: data.project.code,
+              project_type: data.project.projectType,
+              created_at: data.project.createdAt,
+            }
             : data.project);
         }
         // Fire-and-forget view count. The unlisted read counts its own views
@@ -189,6 +198,7 @@ export default function PublicProject() {
 
   function timeAgo(dateStr) {
     const s = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+    if (!Number.isFinite(s)) return '';
     if (s < 60)    return 'just now';
     if (s < 3600)  return `${Math.floor(s / 60)}m ago`;
     if (s < 86400) return `${Math.floor(s / 3600)}h ago`;

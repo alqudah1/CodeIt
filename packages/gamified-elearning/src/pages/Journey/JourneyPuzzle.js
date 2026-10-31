@@ -57,6 +57,13 @@ const NEXT_STEP = {
   '10-boss':{ label: 'Journey Complete', route: '/journey?complete=1' },
 };
 
+/** 101 -> "1A", 102 -> "1B", 103 -> "1BOSS": how /api/journey/progress names a puzzle. */
+export function puzzleLabel(id) {
+  const n = Number(id);
+  const slot = { 1: 'A', 2: 'B', 3: 'BOSS' }[n % 100];
+  return slot ? `${Math.floor(n / 100)}${slot}` : '';
+}
+
 const JourneyPuzzle = () => {
   const { lessonId, slot } = useParams();
   const { user, token } = useContext(AuthContext);
@@ -95,12 +102,15 @@ const JourneyPuzzle = () => {
   // Check if already completed
   useEffect(() => {
     if (!token || !config) return;
-    fetch(`${API_BASE_URL}/api/puzzles/progress`, {
+    // There is no /api/puzzles/progress: the puzzle router read "progress"
+    // as a puzzle id, so a finished puzzle always opened as new. The journey
+    // answer lists puzzles as labels: 101 is "1A", 203 is "2BOSS".
+    fetch(`${API_BASE_URL}/api/journey/progress`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => r.json())
       .then(data => {
-        if ((data.completedPuzzles || []).map(String).includes(String(config.id))) {
+        if ((data.completedPuzzles || []).map(String).includes(puzzleLabel(config.id))) {
           setAlreadyDone(true);
           setCheckResult({ pass: true, message: 'Already completed. Well done!' });
         }

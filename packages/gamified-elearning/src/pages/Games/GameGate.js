@@ -30,12 +30,14 @@ const GameGate = ({ gameId }) => {
 
     const check = async () => {
       try {
-        const res = await fetch(ENDPOINTS.quiz.progress, {
+        // This asked /api/quiz/progress, which was never a route: every
+        // child was told to finish the quiz first, forever (31 October 2026).
+        const res = await fetch(ENDPOINTS.journey.progress, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
           const data = await res.json();
-          const completed = (data.completedQuizzes || []).map(Number);
+          const completed = [...(data.completedMiniQuizzes || []), ...(data.completedBigQuizzes || [])].map(Number);
           if (completed.includes(Number(gameId))) {
             setAllowed(true);
           }
