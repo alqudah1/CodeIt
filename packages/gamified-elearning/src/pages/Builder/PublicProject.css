@@ -347,3 +347,37 @@
   .pp-invite__bubble { border-radius: 4px 18px 18px 18px; }
 }
 @media (prefers-reduced-motion: reduce) { .pp-invite__pixel { animation: none; } }
+
+/* ── The score to beat ──────────────────────────────────────────────
+   One bar between the title and the game: the number to beat, or the
+   number just made. Mint when it is beaten. */
+.pp-beat {
+  width: calc(100% - 32px);
+  max-width: 868px;
+  margin: 0 16px 12px;
+  padding: 12px 16px;
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 14px;
+  background: var(--arc-sun, #FFC93C);
+  color: var(--ink, #35220E);
+  font-weight: 700;
+  line-height: 1.35;
+  box-shadow: 0 4px 0 var(--ink, #35220E);
+}
+.pp-beat { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
+.pp-beat__send {
+  margin-left: auto;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 2.5px solid var(--ink, #35220E);
+  border-radius: 12px;
+  background: var(--ink, #35220E);
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.pp-beat strong { font-family: var(--font-display, inherit); font-size: 1.15rem; font-weight: 800; margin-right: 6px; }
+.pp-beat.is-beaten { background: #17C08B; animation: pp-beat-pop .5s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes pp-beat-pop { from { transform: scale(.94); } to { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .pp-beat.is-beaten { animation: none; } }

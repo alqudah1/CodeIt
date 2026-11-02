@@ -8,6 +8,7 @@ import { trackEvent } from '../../utils/trackEvent';
 import { journeyHeaders } from '../../utils/journey';
 import { saveProject as saveShelfProject } from '../../utils/projectShelf';
 import { projectKindOf } from '../../utils/analyticsKind';
+import { beatLink, injectScoreBridge, readScoreMessage, scoreToBeat } from './scoreBridge';
 import './PublicProject.css';
 import {
   injectPreviewStorage,
@@ -38,9 +39,30 @@ export default function PublicProject() {
   const storageSeed = useRef(null);
   if (storageSeed.current === null) storageSeed.current = loadPreviewStorage(`x${publicId}`);
 
+  // "Can you beat my score?": the score to beat comes in the link, the score
+  // just made comes out of the game (see scoreBridge.js).
+  const [beat] = useState(() => (typeof window === 'undefined' ? null : scoreToBeat(window.location.search)));
+  const [best, setBest] = useState(0);
+  const beaten = beat !== null && best > beat;
+  const challengeSeen = useRef({ opened: false, beaten: false });
+  useEffect(() => {
+    if (beat !== null && project && !challengeSeen.current.opened) {
+      challengeSeen.current.opened = true;
+      void trackEvent('score_challenge', 'opened');
+    }
+  }, [beat, project]);
+  useEffect(() => {
+    if (beaten && !challengeSeen.current.beaten) {
+      challengeSeen.current.beaten = true;
+      void trackEvent('score_challenge', 'beaten');
+    }
+  }, [beaten]);
+
   useEffect(() => {
     function onMessage(event) {
       if (event.source !== frameRef.current?.contentWindow) return;
+      const score = readScoreMessage(event.data);
+      if (score !== null) { setBest((prev) => Math.max(prev, score)); return; }
       if (!isStorageMessage(event.data)) return;
       savePreviewStorage(`x${publicId}`, event.data.data);
     }
@@ -49,7 +71,7 @@ export default function PublicProject() {
   }, [publicId]);
 
   const playableCode = useMemo(
-    () => injectPreviewStorage(project?.generated_code || '', storageSeed.current),
+    () => injectScoreBridge(injectPreviewStorage(project?.generated_code || '', storageSeed.current)),
     [project?.generated_code]
   );
 
@@ -165,11 +187,11 @@ export default function PublicProject() {
   }
 
   async function handleShare() {
-    const shareUrl = new URL(`/project/${publicId}`, window.location.origin);
-    shareUrl.searchParams.set('utm_source', 'project-share');
-    const url = shareUrl.toString();
+    const url = beatLink(`/project/${publicId}`, window.location.origin, best);
     const title = project?.title || 'A CodeIt project';
-    const text = `Try "${title}", made with CodeIt, then remix it or build your own.`;
+    const text = best > 0
+      ? `I got ${best} on "${title}". Can you beat it?`
+      : `Try "${title}", made with CodeIt, then remix it or build your own.`;
     let completed = false;
 
     if (navigator.share) {
@@ -192,6 +214,7 @@ export default function PublicProject() {
 
     if (completed) {
       void trackEvent('project_share', 'viewer', token);
+      if (best > 0) void trackEvent('score_challenge', 'sent');
       setTimeout(() => setShareStatus(null), 2000);
     }
   }
@@ -261,6 +284,24 @@ export default function PublicProject() {
             the studio, still living on here. On the one page that strangers
             see, the child's game looked like an embed. Now it gets the same
             ink-outlined toy screen the studio gives it. */}
+        {(beat !== null || best > 0) && (
+          <div className={`pp-beat${beaten ? ' is-beaten' : ''}`} role="status" aria-live="polite">
+            {beaten ? (
+              <><strong>You beat it: {best}!</strong> <span>The score to beat was {beat}.</span></>
+            ) : beat !== null ? (
+              <><strong>Score to beat: {beat}</strong> <span>{best > 0 ? `Your best: ${best}. Keep going.` : 'Can you beat it?'}</span></>
+            ) : (
+              <><strong>Your score: {best}</strong> <span>Send it to a friend and see if they can beat it.</span></>
+            )}
+            {/* The share button sits below the game, out of sight on a phone
+                at the moment the score is made. This one is right here. */}
+            {best > 0 && (beat === null || beaten) && (
+              <button type="button" className="pp-beat__send" onClick={handleShare}>
+                {shareStatus === 'copied' ? 'Link copied!' : shareStatus === 'shared' ? 'Sent!' : beaten ? 'Send it back' : 'Send it'}
+              </button>
+            )}
+          </div>
+        )}
         <div className="pp-frame-wrap">
           <div className="pp-arcade-frame">
             <iframe
@@ -318,6 +359,7 @@ export default function PublicProject() {
               >
                 {shareStatus === 'shared' ? 'Shared!'
                   : shareStatus === 'copied' ? 'Link copied!'
+                  : best > 0 ? `Challenge a friend to beat ${best}`
                   : 'Share project'}
               </button>
             </div>

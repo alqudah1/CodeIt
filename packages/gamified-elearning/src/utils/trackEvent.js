@@ -41,6 +41,7 @@ const CLIENT_EVENTS = new Set([
   "builder_starter_open",
   "shelf_project_reopened",
   "guest_remix",
+  "score_challenge",
   "project_explained",
   "builder_look_inside",
   "publish_refused",

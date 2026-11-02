@@ -570,7 +570,8 @@ GAME CHECKLIST — verify every item before outputting:
 ✓ Play again (startGame) resets ALL state and the board
 ✓ Tap and click controls work on a phone; every control is at least 44px; keyboard is a bonus
 ✓ Feel, where it fits this game: playTone on every move, a small celebration (.particle burst or animation) on a win, a short setTimeout pause before the computer moves or before the result screen
-✓ Fits a phone screen without sideways scrolling; game area max-width 480px, centered`;
+✓ Fits a phone screen without sideways scrolling; game area max-width 480px, centered
+✓ When a round ends (won, lost or over), call window.parent.postMessage({ type: 'CODEIT_ROUND_END', score: score }, '*') once, so a friend's "beat my score" link can see it`;
   } else if (category === 'game') {
     starterSection = `══ BUILD A ${type.toUpperCase()} GAME ══
 ${pattern.description}
@@ -600,7 +601,8 @@ GAME CHECKLIST — verify every item before outputting:
 ✓ SOUND ARCHITECTURE: include playTone(freq,type,dur,vol) using Web Audio API try/catch
 ✓ DIFFICULTY PROGRESSION: speed, size, or frequency changes as score/level increases
 ✓ Touch/tap controls work on mobile — no keyboard-only interactions
-✓ Game area: position:relative, overflow:hidden, max-width 480px centered`;
+✓ Game area: position:relative, overflow:hidden, max-width 480px centered
+✓ When a round ends (won, lost or over), call window.parent.postMessage({ type: 'CODEIT_ROUND_END', score: score }, '*') once, so a friend's "beat my score" link can see it`;
   } else if (category === 'website') {
     starterSection = `══ BUILD A ${type.toUpperCase()} WEBSITE ══
 ${pattern.description}

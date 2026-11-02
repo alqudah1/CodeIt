@@ -71,6 +71,8 @@ const EVENT_META = Object.freeze({
   // A friend with no account pressed Remix on a shared game and got it in
   // the studio (30 October 2026). The server's project_remix needs a login.
   guest_remix: new Set(['website', 'game', 'quiz', 'tool', 'other']),
+  // "Can you beat my score?" links: opened with a score to beat, beaten, sent on.
+  score_challenge: new Set(['opened', 'beaten', 'sent']),
   project_explained: new Set(),
   builder_look_inside: new Set(),
   publish_refused: new Set(),
@@ -181,7 +183,7 @@ const CLIENT_REPORTED_EVENTS = new Set([
   'project_share', 'return_use', 'pricing_view',
   // Added 1 September 2026 after the audit. See EVENT_META above.
   'lesson_to_studio', 'quiz_to_studio', 'project_played', 'builder_starter_open',
-  'shelf_project_reopened', 'guest_remix', 'project_explained', 'builder_look_inside',
+  'shelf_project_reopened', 'guest_remix', 'score_challenge', 'project_explained', 'builder_look_inside',
   'publish_refused', 'publish_celebrate_share', 'parent_evidence_open',
   'billing_portal_open', 'billing_checkout_start',
   // Added 2 September 2026: the two missing denominators.

@@ -92,6 +92,8 @@ test('limits browser-reported events to events the server cannot infer', () => {
   // A guest's remix never touches the server, so only the browser can say it happened.
   assert.equal(CLIENT_REPORTED_EVENTS.has('guest_remix'), true);
   assert.equal(normalizeMeta('guest_remix', 'game'), 'game');
+  assert.equal(CLIENT_REPORTED_EVENTS.has('score_challenge'), true);
+  assert.equal(normalizeMeta('score_challenge', 'beaten'), 'beaten');
 });
 
 test('requires a fixed metadata value whenever an event has a metadata vocabulary', () => {
