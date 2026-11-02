@@ -372,7 +372,7 @@ const BASE_PAGES = [
     route: '/learn-python-for-kids',
     eyebrow: 'Beginner Python, in the browser',
     h1: 'Python for kids: learn by making something work.',
-    intro: 'Python coding for kids, free and in the browser. Write a line, run it, and see what changed. CodeIt gives beginners a clear path through real Python without downloads or a wall of theory first.',
+    intro: `Python coding for kids, free and in the browser. Write a line, run it, and see what changed. Then CodeIt asks about the code your child wrote, so finishing is not the same as understanding.`,
     detail: `Built for ${AGES}. Younger children can use it alongside an adult and the lessons also work for older beginners. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way. Independent student accounts begin at 13.`,
     type: 'LearningResource',
   },
@@ -938,20 +938,6 @@ const SECTIONS_BY_ROUTE = {
   ],
   '/learn-python-for-kids': [
     {
-      heading: 'What the lesson path covers',
-      paragraphs: [
-        // This said "Sixteen sequenced lessons" while there were thirty-one, on
-        // the page that actually ranks, describing half the course to every
-        // parent who found it. The count is now counted, and the sentence that
-        // follows it names what the second half contains — which is what a
-        // parent deciding whether this is worth their evening wants to know,
-        // and was the reason the stale number mattered.
-        'The path takes a beginner from a first print statement through variables, strings, if statements, loops, lists and reusable functions, then on to arithmetic, booleans, logical operators, type casting, string formatting and string methods.',
-        'From there the path continues into while loops, break and continue, importing modules, dictionaries, tuples and sets, slicing, list comprehensions, return values, scope, error handling with try and except, enumerate and zip, classes and objects, and recursion. It ends with a capstone: building a real game.',
-        'Each lesson introduces one idea, gives a runnable example, and ends with a challenge that requires changing the code.',
-      ],
-    },
-    {
       // Added 16 October 2026. Google's AI Overview for "python for kids
       // online" named CodeIt first and wrote the entry out of this page:
       // "31 interactive lessons with built-in code editors, short quizzes, and
@@ -965,6 +951,20 @@ const SECTIONS_BY_ROUTE = {
         'When an assistant can write the code, finishing a project proves nothing about whether a child understood a line of it. Lessons completed, minutes spent and badges earned answer a different question.',
         "So CodeIt asks. The comprehension questions are generated from the learner's own file. The correct answer is the value that learner actually wrote, so the question cannot be answered by recalling a lesson or looking anything up. The wrong options are other real values from the same project where the project has them, and plain numbers where it does not. Only first attempts count.",
         'What a parent reads back is a sentence describing something that happened, such as "worked out how many times a loop repeats", rather than a score or a percentage. A percentage invites comparison between children and says nothing about what one child can do.',
+      ],
+    },
+    {
+      heading: 'What the lesson path covers',
+      paragraphs: [
+        // This said "Sixteen sequenced lessons" while there were thirty-one, on
+        // the page that actually ranks, describing half the course to every
+        // parent who found it. The count is now counted, and the sentence that
+        // follows it names what the second half contains — which is what a
+        // parent deciding whether this is worth their evening wants to know,
+        // and was the reason the stale number mattered.
+        'The path takes a beginner from a first print statement through variables, strings, if statements, loops, lists and reusable functions, then on to arithmetic, booleans, logical operators, type casting, string formatting and string methods.',
+        'From there the path continues into while loops, break and continue, importing modules, dictionaries, tuples and sets, slicing, list comprehensions, return values, scope, error handling with try and except, enumerate and zip, classes and objects, and recursion. It ends with a capstone: building a real game.',
+        'Each lesson introduces one idea, gives a runnable example, and ends with a challenge that requires changing the code.',
       ],
     },
     {

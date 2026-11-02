@@ -121,7 +121,7 @@ const PAGE_META = {
     // /press still states the count, because that page exists so a stranger
     // can quote a figure without asking.
     title: 'Python for Kids: Free Interactive Lessons Online | CodeIt',
-    description: 'Python coding for kids, free and in the browser. Interactive lessons from a first line of Python to a game they build. No download or signup for Lesson 1.',
+    description: 'Python coding for kids, free and in the browser, with questions about the code your child wrote so you can see what they understood. No signup for Lesson 1.',
   },
   '/lessons': {
     title: 'Beginner Coding Lessons for Kids | CodeIt',

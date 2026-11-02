@@ -36,15 +36,30 @@ const REAL = new Set(
 );
 
 /** Files that describe the puzzles to a reader. */
+// Every file that describes the puzzles to a reader. LearnPythonForKids.js was
+// missing from this list until 2 November, which is why the robot and the
+// apple game survived on it: the test that exists to catch retired puzzles was
+// not reading the page they were on.
 const COPY = [
   '../src/pages/SEO/PythonGamesForKids.js',
+  '../src/pages/SEO/LearnPythonForKids.js',
   '../src/data/blogPosts.js',
+  '../src/data/guidePages.js',
+  '../src/pages/Games/gameCatalog.js',
   './generate-static-seo.js',
 ].map(file => {
   const raw = fs.readFileSync(path.resolve(__dirname, file), 'utf8');
-  // Source wraps. "Round\n Counter" is the same name to a reader and a crawler,
-  // and matching raw source would have called it missing.
-  return { file, text: raw.replace(/\s+/g, ' ') };
+  const text = raw
+    // Comments explain history and quote the retired names on purpose. The
+    // first widened version of this list failed on gameCatalog.js for the note
+    // saying card 1 used to be "Talking Robot Adventure", which is a sentence
+    // doing its job. Only check what a reader is served.
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/^[ \t]*\/\/.*$/gm, ' ')
+    // Source wraps. "Round\n Counter" is the same name to a reader and a
+    // crawler, and matching raw source would have called it missing.
+    .replace(/\s+/g, ' ');
+  return { file, text };
 });
 
 test('puzzleConfigs still defines the puzzles this test checks against', () => {
@@ -219,4 +234,64 @@ test('no page claims the wrong answers are only real values from the project', (
       );
     }
   }
+});
+
+// ── The retired puzzles had stories, and the copy kept telling them ──────────
+//
+// /learn-python-for-kids said "after Lesson 1, kids use print() to guide a
+// robot through an adventure story" and "after Lesson 2, they use variables to
+// track scores in an apple-catching game". Lesson 1's puzzles are Hello World!,
+// Space Mail and Mission Banner: add two print lines, fix a string, print a
+// three-line banner. There is no robot and no apple game. Those sentences were
+// the retired system described in prose rather than by name, which is why
+// deleting the names on 24 October did not reach them.
+//
+// They also did real damage. That paragraph sat in the block labelled "Quick
+// Answer", the most quotable thing on the page, and every AI Overview that
+// named CodeIt described it as "story-driven coding puzzles, built-in browser
+// code editor, quizzes" — which is that paragraph, and which Tynker could also
+// claim.
+
+test('no page tells a story from the retired puzzles', () => {
+  for (const { file, text } of COPY) {
+    for (const story of ['guide a robot', 'robot through', 'apple-catching', 'adventure story']) {
+      assert.ok(
+        !new RegExp(story, 'i').test(text),
+        `${file} says "${story}", which describes a puzzle that does not exist. `
+          + 'Lesson 1 is Hello World!, Space Mail and Mission Banner.'
+      );
+    }
+  }
+});
+
+test('the Quick Answer on the Python page leads with what no competitor has', () => {
+  // Google writes its sentence about CodeIt from this block. While it held only
+  // editors, quizzes and puzzles, that is what Google said back.
+  const page = fs.readFileSync(
+    path.resolve(__dirname, '../src/pages/SEO/LearnPythonForKids.js'),
+    'utf8'
+  ).replace(/\s+/g, ' ');
+
+  const box = /seo-answer-box__detail">([\s\S]*?)<\/p>/.exec(page);
+  assert.ok(box, 'the Quick Answer detail paragraph has gone');
+
+  const detail = box[1];
+  assert.match(
+    detail,
+    /generated from the child's own file|own file/i,
+    'the Quick Answer no longer says the questions come from the child\'s own file'
+  );
+  assert.match(
+    detail,
+    /first attempts count/i,
+    'the Quick Answer no longer says only first attempts count'
+  );
+
+  // And it has to come before the generic material, not after it.
+  const unique = detail.search(/own file/i);
+  const generic = detail.search(/live code editor|short quiz/i);
+  assert.ok(
+    generic < 0 || unique < generic,
+    'the Quick Answer puts the editor and the quiz before the thing no competitor has'
+  );
 });

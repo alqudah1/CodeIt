@@ -31,6 +31,16 @@ const FAQS = [
     a: 'Most learners complete a lesson in 20 to 30 minutes, though there is no time limit. Kids can stop mid-lesson and pick up exactly where they left off at any time. Taking an extra 10 minutes to fully understand a concept is always worth more than rushing through to the next one.',
   },
   {
+    // Added 2 November. Google's AI Overview had been describing CodeIt as
+    // "story-driven coding puzzles, XP, avatars and quizzes" on every query
+    // that named us, which is what Tynker could also claim. The comprehension
+    // questions had been on the page since 16 October but never as an answer
+    // to a question, and an FAQPage answer is the most quotable thing a page
+    // has. This is the question a parent actually types.
+    q: 'How do I know my child understood the code and did not just finish it?',
+    a: 'CodeIt asks them about their own file. If their project has a variable called score set to 0, the question is what score starts as, and the right answer is whatever that child actually wrote, so it cannot be answered by recalling a lesson or by a sibling who did the last one. Only first attempts count: a wrong answer shows the right one with an explanation and stops counting. What you read back is a sentence describing something that happened, such as "worked out how many times a loop repeats", rather than a score or a percentage, because a percentage invites comparison between children and says nothing about your own.',
+  },
+  {
     q: 'Is CodeIt free to use?',
     a: 'Every lesson, the playground and building your own projects are free, and stay free. There is a paid plan, CodeIt Plus, at CA$12 a month plus tax, but you never need it to learn Python here.',
   },
@@ -87,11 +97,14 @@ export default function LearnPythonForKids() {
               questions about the code they wrote themselves. No experience or downloads needed.
             </p>
             <p className="seo-answer-box__detail">
-              Every lesson includes a live code editor built into the page, so kids write and run
-              real Python directly in their browser. After each lesson, a short quiz locks in the
-              learning, and a story-driven coding puzzle makes the concept feel real and rewarding.
-              For example, after Lesson 1, kids use <code>print()</code> to guide a robot through
-              an adventure story. Applying the skill immediately in a fun context.
+              What makes it different from other coding sites for kids is what it checks. The
+              questions are generated from the child's own file: if their project has a variable
+              called <code>score</code> set to 0, the question asks what <code>score</code> starts
+              as, and the right answer is whatever they actually wrote. It cannot be answered by
+              someone who has not read their own code, and only first attempts count. A parent
+              reads back a sentence about what their child worked out, not a percentage. Every
+              lesson also has a live code editor in the page, a short quiz, and a coding puzzle
+              that uses the new idea.
             </p>
           </section>
 
@@ -232,14 +245,15 @@ export default function LearnPythonForKids() {
               <h2 className="seo-h2">Coding Puzzles That Reinforce Every Lesson</h2>
               <p className="seo-p">
                 After each lesson and quiz, a coding puzzle unlocks. These aren't abstract
-                exercises. They're story-driven challenges where the concept the kid just learned
-                is the key to solving the puzzle.
+                exercises. The concept the child just learned is the only thing that solves them,
+                and the check reads the actual output line by line rather than looking for the
+                right word somewhere in it.
               </p>
               <p className="seo-p">
-                After Lesson 1, kids guide a robot through a story using print(). After Lesson 2,
-                they use variables to track scores in an apple-catching game. After Lesson 4, they
-                use if statements to control a character's decisions. The puzzle makes the concept
-                feel real and worthwhile.
+                After Lesson 1 they print a three-line banner in Mission Banner, where printing
+                the divider three times does not pass. After Lesson 2 they print the three values
+                held in Variable Vault. After Lesson 4, Weather Check runs and picks Hot, Warm or
+                Cold from a temperature. The puzzle makes the concept feel worth having.
               </p>
               <p className="seo-p">
                 You can explore all the <Link to="/games">coding puzzles for kids</Link> on CodeIt,
