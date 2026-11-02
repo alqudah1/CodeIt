@@ -97,15 +97,22 @@ function setTag(html, pattern, replacement) {
  * serverless runtime. The handler below is now only plumbing: find the file,
  * fetch the project, hand both to this.
  */
-function applyShareTags(html, project, host, publicId) {
+function applyShareTags(html, project, host, publicId, options = {}) {
   if (!project?.title) return html;
 
-  const title = escapeHtml(`${project.title} | Play it on CodeIt`);
+  // A "beat my score" link (?beat=42) says so in the message preview, which
+  // is the first thing the friend sees, before they decide to tap.
+  const beat = /^\d{1,8}$/.test(String(options.beat || '')) && Number(options.beat) > 0 ? Number(options.beat) : null;
+  const title = escapeHtml(beat
+    ? `Can you beat ${beat} on ${project.title}?`
+    : `${project.title} | Play it on CodeIt`);
   const creator = project.creator_name ? escapeHtml(project.creator_name) : null;
   const description = escapeHtml(
-    creator
-      ? `A real project ${creator} built on CodeIt. Play it, look at the code inside, then remix it into your own.`
-      : 'A real project built by a young creator on CodeIt. Play it, look at the code inside, then remix it into your own.'
+    beat
+      ? `A friend scored ${beat}. Play it on CodeIt and send your score back. No account needed.`
+      : creator
+        ? `A real project ${creator} built on CodeIt. Play it, look at the code inside, then remix it into your own.`
+        : 'A real project built by a young creator on CodeIt. Play it, look at the code inside, then remix it into your own.'
   );
   const origin = canonicalOrigin(html, host);
   const image = `${origin}${shareImageFor(project.project_type)}`;
@@ -149,17 +156,28 @@ module.exports = async (request, response) => {
   const rawId = request.query?.pub;
   const publicId = String(Array.isArray(rawId) ? rawId[0] : rawId || '').split('/')[0];
 
+  const rawBeat = request.query?.beat;
+  const beat = String(Array.isArray(rawBeat) ? rawBeat[0] : rawBeat || '');
+
   let out = html;
   if (/^[A-Za-z0-9_-]{1,64}$/.test(publicId)) {
     try {
       const host = request.headers['x-forwarded-host'] || request.headers.host;
       const proto = request.headers['x-forwarded-proto'] || 'https';
-      const api = `${proto}://${host}/api/builder/pub/${encodeURIComponent(publicId)}`;
+      // A friend link ("u-" and twelve hex) is read from the unlisted
+      // endpoint, which answers in camelCase; preview=1 keeps a link preview
+      // from counting as a play.
+      const unlisted = /^u-[a-f0-9]{12}$/.test(publicId) ? publicId.slice(2) : null;
+      const api = unlisted
+        ? `${proto}://${host}/api/builder/unlisted/${unlisted}?preview=1`
+        : `${proto}://${host}/api/builder/pub/${encodeURIComponent(publicId)}`;
       const res = await fetch(api, { signal: AbortSignal.timeout(4000) });
       if (res.ok) {
         const body = await res.json();
-        const project = body?.project;
-        out = applyShareTags(out, project, host, publicId);
+        const project = unlisted && body?.project
+          ? { title: body.project.title, project_type: body.project.projectType }
+          : body?.project;
+        out = applyShareTags(out, project, host, publicId, { beat });
       }
     } catch (_) {
       // Fail open: the untouched page is always a correct answer.

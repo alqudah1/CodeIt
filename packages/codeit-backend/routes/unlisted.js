@@ -129,8 +129,9 @@ router.get('/:publicId', async (req, res) => {
     // a review queue drains.
     if (project.reported) return res.status(451).json({ error: 'This project is not available.' });
 
-    // Fire and forget; a view must never fail a read.
-    pool.query(
+    // Fire and forget; a view must never fail a read. A link preview being
+    // drawn in a chat app (api/share.js, ?preview=1) is not a play.
+    if (req.query.preview !== '1') pool.query(
       'UPDATE unlisted_projects SET view_count = view_count + 1, last_seen_at = NOW() WHERE public_id = ?',
       [publicId]
     ).catch(() => {});

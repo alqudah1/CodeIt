@@ -215,3 +215,34 @@ test('the origin comes from the template, not from a constant in this file', () 
     'https://example.org/project/abc123'
   );
 });
+
+test('a "beat my score" link says the score in the message preview', () => {
+  const out = applyShareTags(TEMPLATE, PROJECT, 'codeitlearn.com', 'abc123', { beat: '42' });
+  assert.equal(tag(out, /<title>([^<]*)<\/title>/), 'Can you beat 42 on Cat Dodger?');
+  assert.equal(tag(out, /<meta property="og:title" content="([^"]*)"/), 'Can you beat 42 on Cat Dodger?');
+  assert.match(tag(out, /<meta property="og:description" content="([^"]*)"/), /A friend scored 42\./);
+  // Anything that is not a plain positive number is ignored.
+  for (const beat of ['0', '-3', '4e3', '<b>', '', undefined]) {
+    assert.equal(tag(applyShareTags(TEMPLATE, PROJECT, 'codeitlearn.com', 'abc123', { beat }), /<title>([^<]*)<\/title>/), 'Cat Dodger | Play it on CodeIt');
+  }
+});
+
+test('a friend link (u-) is read from the unlisted endpoint, without counting a play', async () => {
+  const handler = require('./share');
+  const calls = [];
+  const realFetch = global.fetch;
+  global.fetch = async (url) => {
+    calls.push(String(url));
+    return { ok: true, json: async () => ({ success: true, project: { publicId: '0123456789ab', title: 'Rock Blaster', projectType: 'game', code: 'x' } }) };
+  };
+  try {
+    let body = '';
+    const response = { setHeader() {}, end(text) { body = text; } };
+    await handler({ query: { pub: 'u-0123456789ab', beat: '7' }, headers: { host: 'codeitlearn.com' } }, response);
+    if (!body.includes('<title>')) return; // no built index.html here: nothing to rewrite
+    assert.deepEqual(calls, ['https://codeitlearn.com/api/builder/unlisted/0123456789ab?preview=1']);
+    assert.match(body, /<title>Can you beat 7 on Rock Blaster\?<\/title>/);
+  } finally {
+    global.fetch = realFetch;
+  }
+});
