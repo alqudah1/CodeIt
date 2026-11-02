@@ -203,7 +203,7 @@ function injectPreviewStorage(html, seed = {}) {
 function stripPreviewScripts(html) {
   if (typeof html !== 'string' || !html) return html;
   return html.replace(
-    /<script\s+id="(?:__codeit_storage__|__codeit_bridge__|__codeit_errors__)"[^>]*>[\s\S]*?<\/script>/gi,
+    /<script\s+id="(?:__codeit_storage__|__codeit_bridge__|__codeit_errors__|__codeit_score_bridge)"[^>]*>[\s\S]*?<\/script>/gi,
     ''
   );
 }

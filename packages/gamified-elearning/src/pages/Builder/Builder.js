@@ -68,6 +68,7 @@ import { isSessionError } from '../../utils/tokenExpiry';
 import { VOICE_EVENT, setVoiceState, speak, stopSpeaking, voiceState } from '../../utils/voice';
 import { lookInside } from './lookInside';
 import { closestStarter } from './closestStarter';
+import { beatLink, injectScoreBridge, readScoreMessage } from './scoreBridge';
 import { recipeGame, RECIPE_KINDS } from './recipeGame';
 import { namedGame } from '../Build/gameWords';
 import { readBuildStream, writtenShare } from './buildStream';
@@ -835,7 +836,9 @@ function preparePreview(html, seed, spriteUri) {
   // project that throws on its opening line still gets reported. The player
   // sprite goes in with the rest: starters that know about it draw the kid's
   // own avatar as the player; every other project ignores it.
-  return injectErrorReporter(injectBridge(injectPreviewStorage(injectPlayerSprite(html, spriteUri), seed)));
+  // The score bridge reads the child's own score while they play, so the link
+  // they send can say "can you beat 120?" (scoreBridge.js).
+  return injectErrorReporter(injectBridge(injectPreviewStorage(injectScoreBridge(injectPlayerSprite(html, spriteUri)), seed)));
 }
 
 function rgbToHex(rgb) {
@@ -952,7 +955,11 @@ export default function Builder() {
   // on 1 September. Nothing in the browser had ever called them. This is the
   // call. No account, no email, no personal data, and the link is the only
   // credential.
-  const [friendLink, setFriendLink] = useState(null);
+  const [friendPath, setFriendPath] = useState(null);
+  // The child's best score in the preview since this project was built: the
+  // score their friend link challenges someone to beat.
+  const [studioBest, setStudioBest] = useState(0);
+  const friendLink = friendPath ? beatLink(friendPath, window.location.origin, studioBest, null) : null;
   const [friendStatus, setFriendStatus] = useState(null);
   const [aiTitle, setAiTitle]           = useState('');
   const [projectType, setProjectType]   = useState('website');
@@ -2042,6 +2049,10 @@ export default function Builder() {
         }
         return;
       }
+      {
+        const score = readScoreMessage(d);
+        if (score !== null) { setStudioBest((prev) => Math.max(prev, score)); return; }
+      }
       if (isStorageMessage(d)) {
         // The preview saved something — a high score, a level, a name. It runs
         // on an opaque origin with no storage of its own, so we keep it here,
@@ -2179,6 +2190,7 @@ export default function Builder() {
     const previewType = detectProjectType(text);
     setLoadingPreviewType(previewType);
     setBuildProgress(null);
+    setStudioBest(0);
     setLoading(true);
     setError('');
     setLimitReached('');
@@ -2949,9 +2961,10 @@ export default function Builder() {
       });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error || 'Could not make a link.');
-      const url = `${window.location.origin}${data.path}`;
-      setFriendLink(url);
+      const url = beatLink(data.path, window.location.origin, studioBest, null);
+      setFriendPath(data.path);
       setFriendStatus('ready');
+      if (studioBest > 0) void trackEvent('score_challenge', 'sent');
       void trackEvent('project_share', 'creator', token);
       // The link is the deliverable, so it is put on the clipboard straight
       // away as well as shown. A child who taps once and walks off with it
@@ -2966,8 +2979,10 @@ export default function Builder() {
   const handleShare = async () => {
     if (!publicId) return;
     const title = projectName || 'My Project';
-    const url = `https://codeitlearn.com/project/${publicId}?utm_source=project-share`;
-    const text = `I made "${title}" with CodeIt. Try it, then build your own.`;
+    const url = beatLink(`/project/${publicId}`, 'https://codeitlearn.com', studioBest);
+    const text = studioBest > 0
+      ? `I got ${studioBest} on "${title}", a game I made with CodeIt. Can you beat it?`
+      : `I made "${title}" with CodeIt. Try it, then build your own.`;
     let completed = false;
 
     if (navigator.share) {
@@ -5182,6 +5197,7 @@ export default function Builder() {
                       ? <><span className="bldr-spinner bldr-spinner--sm" />Making a link...</>
                       : friendStatus === 'error' ? 'Try again'
                       : friendStatus === 'ready' ? 'Link copied. Send it!'
+                      : studioBest > 0 ? `Challenge a friend to beat ${studioBest}`
                       : 'Send it to a friend'}
                   </button>
                   {friendLink && (

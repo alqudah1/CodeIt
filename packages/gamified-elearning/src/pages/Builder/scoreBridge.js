@@ -39,9 +39,9 @@ export function scoreToBeat(search) {
 }
 
 /** The link to send: this page, with the score to beat when there is one. */
-export function beatLink(path, origin, score) {
+export function beatLink(path, origin, score, utmSource = 'project-share') {
   const url = new URL(path, origin);
-  url.searchParams.set('utm_source', 'project-share');
+  if (utmSource) url.searchParams.set('utm_source', utmSource);
   if (Number.isFinite(score) && score > 0) url.searchParams.set('beat', String(Math.floor(score)));
   return url.toString();
 }

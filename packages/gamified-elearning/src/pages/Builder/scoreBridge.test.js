@@ -31,3 +31,14 @@ test('the bridge goes in once, before the body closes', () => {
   expect(once.indexOf('__codeit_score_bridge')).toBeLessThan(once.indexOf('</body>'));
   expect(injectScoreBridge(once)).toBe(once);
 });
+
+test('a friend link can go without the campaign tag and still carry the score', () => {
+  expect(beatLink('/project/u-0123456789ab', 'https://codeitlearn.com', 120, null)).toBe('https://codeitlearn.com/project/u-0123456789ab?beat=120');
+  expect(beatLink('/project/u-0123456789ab', 'https://codeitlearn.com', 0, null)).toBe('https://codeitlearn.com/project/u-0123456789ab');
+});
+
+test('the bridge never ends up in a saved project', () => {
+  const { stripPreviewScripts } = require('./previewStorage');
+  const game = '<html><body><p id="score">0</p><script>let score = 0;</script></body></html>';
+  expect(stripPreviewScripts(injectScoreBridge(game))).toBe(game);
+});
