@@ -7346,3 +7346,19 @@ details.bldr-device-sizes .bldr-device-sizes__options {
 @media (max-width: 640px) {
   .bldr-shelf__marquee { height: 96px; }
 }
+
+/* The score, and the challenge, right under the game. */
+.bldr-beat {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;
+  margin: 10px 0 0; padding: 10px 12px 10px 16px;
+  border: 2.5px solid #35220E; border-radius: 14px;
+  background: #FFC93C; color: #35220E; font-weight: 700;
+  box-shadow: 0 4px 0 #35220E;
+}
+.bldr-beat strong { font-size: 1.05rem; font-weight: 800; margin-right: 4px; }
+.bldr-beat button {
+  min-height: 44px; padding: 8px 16px; border: 0; border-radius: 12px;
+  background: #35220E; color: #fff; font: inherit; font-weight: 800; cursor: pointer;
+}
+.bldr-beat button:focus-visible { outline: 3px solid #FF7A00; outline-offset: 2px; }
+.bldr-beat button:disabled { opacity: .6; cursor: wait; }

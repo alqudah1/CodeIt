@@ -2975,6 +2975,23 @@ export default function Builder() {
     }
   };
 
+  // One button under the game: a published game shares its page, anything
+  // else gets (or reuses) its private friend link. Either way the link carries
+  // the score to beat, and a link already made is copied again, not remade.
+  const [challengeCopied, setChallengeCopied] = useState(false);
+  useEffect(() => { setChallengeCopied(false); }, [studioBest]);
+  const challengeFriend = async () => {
+    if (isPublished && publicId) { await handleShare(); setChallengeCopied(true); return; }
+    if (friendLink) {
+      try { await navigator.clipboard.writeText(friendLink); } catch (_) {}
+      void trackEvent('score_challenge', 'sent');
+      setChallengeCopied(true);
+      return;
+    }
+    await handleSendToFriend();
+    setChallengeCopied(true);
+  };
+
   // ── Share project ──────────────────────────────────────────────────────────
   const handleShare = async () => {
     if (!publicId) return;
@@ -4216,6 +4233,22 @@ export default function Builder() {
               />
             </div>
             </div>
+
+            {/* ── Right under the game, at the moment of the score ─────────
+                The friend button lives far down the page, below the change
+                tools, out of sight on a phone. The moment a child has a score
+                is the moment they want to show it off, so it is offered here,
+                next to the game they just played. */}
+            {studioBest > 0 && !isStarter && !editing && (
+              <div className="bldr-beat" role="status">
+                <span><strong>You scored {studioBest}!</strong> Can a friend beat it?</span>
+                <button type="button" onClick={challengeFriend} disabled={friendStatus === 'making'}>
+                  {friendStatus === 'making' ? 'Making a link...'
+                    : challengeCopied ? 'Link copied. Send it!'
+                    : `Challenge a friend to beat ${studioBest}`}
+                </button>
+              </div>
+            )}
 
             {!user && (onTab('keep') || (guestDraftRecovered && onTab('play'))) && (
               <aside id="guest-project-recovery" className={`bldr-guest-backup${guestDraftRecovered ? ' is-recovered' : ''}`} aria-label="Guest project recovery">
