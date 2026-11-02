@@ -62,7 +62,13 @@ const SCREENS = [
   // measure. Worth its own fix; not this one's.
   { name: 'a quiz',           url: '/quiz/17',  want: '.qz-question-card, .qz-options', came: 'the question and its answers', signedIn: true, union: true },
   { name: 'explore',          url: '/explore',  want: '.exp-grid',      came: 'projects to play' },
-  { name: 'profile',          url: '/profile',  want: '.profile-card--xp, .profile-stats', came: 'their progress', signedIn: true, union: true },
+  // A student lands on Me, not the adult settings page: Profile.js:407 routes
+  // the two apart by role, and this check was written before Me existed. It
+  // reported "not found" on a page that works, at all three sizes, every run.
+  // A check that cries wolf is how a real failure gets waved through, and
+  // this project has four of those in its history. Both sets of selectors are
+  // listed so the row is honest whichever profile the seeded account gets.
+  { name: 'profile',          url: '/profile',  want: '.me__nums, .me__level, .profile-card--xp, .profile-stats', came: 'their progress', signedIn: true, union: true },
   { name: 'pricing',          url: '/pricing',  want: '.pricing-plans', came: 'the plans' },
 ];
 
