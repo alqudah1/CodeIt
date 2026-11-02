@@ -74,6 +74,7 @@ router.get('/', optionalAuth, async (req, res) => {
       [userId]
     );
     const totalXP = await totalXpFor(pool, userId);
+    const [[lessonsRow]] = await pool.query('SELECT COUNT(DISTINCT lesson_id) AS done FROM Student_Lesson_Progress WHERE user_id = ?', [userId]);
     // A day with a Python quest done counts for the streak like a day with a
     // game made: the streak is "did something today", not "built a game".
     const questDays = await pythonQuestDays(userId);
@@ -85,6 +86,7 @@ router.get('/', optionalAuth, async (req, res) => {
       streak,
       builtToday,
       level: levelFor(totalXP),
+      lessonsDone: Number(lessonsRow?.done) || 0,
       levels: LEVELS,
       games: games.map((g) => ({ id: g.id, title: g.title, type: g.project_type, publicId: g.is_public ? g.public_id : null, plays: Number(g.view_count) || 0, createdAt: g.created_at })),
       plays: Number(plays?.plays) || 0,

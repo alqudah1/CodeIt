@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useRef } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
+import { trackMinutes } from '../../utils/minutesToday';
 
 export const ACTIVITY_PING_INTERVAL_MS = 15 * 60 * 1000;
 
@@ -31,6 +32,10 @@ export default function ActivityTracker() {
       document.removeEventListener('visibilitychange', ping);
     };
   }, [ping]);
+
+  // Minutes on CodeIt today, counted in this browser for everyone, signed in
+  // or not (utils/minutesToday.js). Home shows it.
+  useEffect(() => { try { return trackMinutes(); } catch { return undefined; } }, []);
 
   return null;
 }

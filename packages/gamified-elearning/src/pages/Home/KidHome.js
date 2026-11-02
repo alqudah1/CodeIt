@@ -25,6 +25,8 @@ import { journeyHeaders } from '../../utils/journey';
 import { listProjects as listShelf, migrateLegacyDraft } from '../../utils/projectShelf';
 import { LEVELS, levelFor, questFor, streakFrom } from './today';
 import PythonQuest from './PythonQuest';
+import ProgressPanel from './ProgressPanel';
+import { minutesToday } from '../../utils/minutesToday';
 import { pythonQuestFor } from './pythonQuests';
 import { powerStates } from '../Powers/powers';
 import { readDone } from '../Powers/PowersMap';
@@ -119,19 +121,15 @@ export default function KidHome() {
             token={token}
             onDone={(data) => setToday((prev) => (prev ? { ...prev, builtToday: true, streak: data.streak ?? prev.streak, level: data.level || prev.level, pythonQuest: { ...(prev.pythonQuest || {}), done: true } } : prev))}
           />
-          <div className="kh__row">
-            <div className="ci-blk ci-blk--coral ci-rise" style={{ animationDelay: '.05s' }}>
-              <svg className="kh__flame" viewBox="0 0 24 24" aria-hidden="true"><path fill="#FFC93C" d="M12 2c1 4-3 5-3 9a3 3 0 0 0 6 0c0-1.5-.6-2.5-1-3 2 1 4 3.5 4 7a6 6 0 0 1-12 0c0-5 4-7 6-13z" /></svg>
-              <div className="ci-num">{streakInfo.streak}</div>
-              <div className="ci-cap">days in a row</div>
-              <div className="kh__track"><i style={{ width: `${Math.min(100, (streakInfo.streak / 7) * 100)}%` }} /></div>
-            </div>
-            <div className="ci-blk ci-blk--violet ci-rise" style={{ animationDelay: '.1s' }}>
-              <div className="ci-num">{guest ? '0' : level.xp}</div>
-              <div className="ci-cap">{guest ? 'XP. Make an account to keep it.' : level.next ? `XP · ${level.toNext} to level ${level.n + 1}` : `XP · Level ${level.n}, ${level.title}`}</div>
-              <div className="kh__track"><i style={{ width: `${xpPercent(level)}%` }} /></div>
-            </div>
-          </div>
+          {/* One panel, every number real: level and course from the server,
+              streak from the server or the shelf, minutes from this device. */}
+          <ProgressPanel
+            level={level}
+            streak={streakInfo.streak}
+            minutes={minutesToday()}
+            lessonsDone={guest ? 0 : (today?.lessonsDone || 0)}
+            guest={guest}
+          />
           {games.length < 3 && <ExampleCards className="kh__examples" from={0} count={4} title={games.length ? 'More to try' : 'Ideas to build'} note="Examples. Tap one and it is playing in two seconds." />}
         </section>
         <section className="kh__right">

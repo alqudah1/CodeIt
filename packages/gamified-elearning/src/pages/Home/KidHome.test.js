@@ -20,6 +20,7 @@ jest.mock('../../config/api', () => ({ API_BASE_URL: 'http://codeit.test' }));
 jest.mock('../../hooks/useSEO', () => ({ useSEO: jest.fn() }));
 // The Python editor (CodeMirror) prints line numbers, which collide with the streak digits below.
 jest.mock('../../components/CodeRunnerPython', () => () => null);
+jest.mock('../../context/CharacterContext', () => ({ useCharacterDisplay: () => ({ character: {} }) }));
 
 jest.mock('../../context/AuthContext', () => {
   const React = require('react');
@@ -47,7 +48,7 @@ test('a guest sees today\'s quest, a streak from the shelf, 0 XP with the honest
   mount({ user: null, token: null });
   expect(await screen.findByText('Done. Build another?')).toBeInTheDocument();
   expect(screen.getByText('1')).toBeInTheDocument();
-  expect(screen.getByText('XP. Make an account to keep it.')).toBeInTheDocument();
+  expect(screen.getByText('0 XP. Make an account to keep it.')).toBeInTheDocument();
   expect(screen.getByText('Star Dodge')).toBeInTheDocument();
   expect(screen.getByRole('link', { name: /Keep your games for good/ })).toHaveAttribute('href', '/register');
 });
@@ -61,8 +62,8 @@ test('a signed-in child sees the server\'s numbers and the quest opens Build pre
   expect(await screen.findByText('Catch carrots at night.')).toBeInTheDocument();
   expect(screen.getByText('Hey Maya.')).toBeInTheDocument();
   expect(screen.getByText('3')).toBeInTheDocument();
-  expect(screen.getByText('420')).toBeInTheDocument();
-  expect(screen.getByText('XP · 80 to level 3')).toBeInTheDocument();
+  expect(screen.getByText('420 / 500 XP')).toBeInTheDocument();
+  expect(screen.getByText('Level 2')).toBeInTheDocument();
   expect(screen.getByRole('link', { name: 'Build it' })).toHaveAttribute('href', '/build?prompt=a%20bunny%20that%20catches%20carrots%20at%20night');
   await waitFor(() => expect(document.querySelector('.kh__tile iframe')).not.toBeNull());
   expect(screen.getByText('7 plays')).toBeInTheDocument();
