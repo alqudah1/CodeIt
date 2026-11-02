@@ -6,6 +6,7 @@ const pool       = require('../db');
 const jwt        = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
 const { SHOWCASE_PROJECTS, findShowcaseProject } = require('../showcaseProjects');
+const { questFor } = require('../today');
 
 function optionalAuth(req, res, next) {
   const header = req.headers['authorization'];
@@ -73,17 +74,26 @@ router.get('/', optionalAuth, async (req, res) => {
     WHERE p.is_public = 1
   `;
 
+  // ── Today's build ─────────────────────────────────────────────────────
+  // The quest on every child's Home (today.js), and the games children
+  // published from it today: the same sentence, made today, public. Real
+  // entries only; no top-up, so an empty day says so.
+  const quest = questFor();
+  const dayStart = new Date(`${quest.day}T00:00:00Z`);
+
   try {
     const [
       [trending],
       [newest],
       [mostPlayed],
       [mostRemixed],
+      [todayRows],
     ] = await Promise.all([
       pool.query(base + ` ORDER BY (p.view_count + p.like_count * 3) DESC LIMIT ?`, [limit]),
       pool.query(base + ` ORDER BY p.created_at DESC LIMIT ?`,                       [limit]),
       pool.query(base + ` ORDER BY p.view_count DESC LIMIT ?`,                       [limit]),
       pool.query(base + ` ORDER BY p.remix_count DESC, p.view_count DESC LIMIT ?`,   [limit]),
+      pool.query(base + ` AND LOWER(TRIM(p.prompt)) = ? AND p.created_at >= ? ORDER BY p.created_at DESC LIMIT 6`, [quest.prompt.toLowerCase(), dayStart]),
     ]);
 
     // Collect liked project ids for the current user in one query
@@ -94,6 +104,7 @@ router.get('/', optionalAuth, async (req, res) => {
         ...newest.map(r => r.id),
         ...mostPlayed.map(r => r.id),
         ...mostRemixed.map(r => r.id),
+        ...todayRows.map(r => r.id),
       ])];
       if (allIds.length) {
         // One placeholder per id, not `IN (?)` with an array.
@@ -134,6 +145,10 @@ router.get('/', optionalAuth, async (req, res) => {
       newest:      withStudioTopUp(newest).map(r      => formatProject(r, likedSet)),
       mostPlayed:  withStudioTopUp(mostPlayed).map(r  => formatProject(r, likedSet)),
       mostRemixed: withStudioTopUp(mostRemixed).map(r => formatProject(r, likedSet)),
+      today: {
+        quest: { text: quest.text, prompt: quest.prompt, day: quest.day },
+        entries: todayRows.map(r => formatProject(r, likedSet)),
+      },
     });
   } catch (err) {
     console.error('Explore feed error:', err.message);

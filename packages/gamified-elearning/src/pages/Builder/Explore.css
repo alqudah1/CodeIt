@@ -699,3 +699,26 @@
 .exp-card__live { position: absolute; inset: 0; z-index: 1; }
 .exp-card__live .livecard__frame { border-bottom: 2.5px solid var(--ink); }
 .exp-card__thumb > .exp-card__type-badge { z-index: 2; }
+
+/* ── Today's build ─────────────────────────────────────────────── */
+.exp-today {
+  max-width: 1180px;
+  margin: 8px auto 20px;
+  padding: 0 16px;
+}
+.exp-today__head {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;
+  padding: 16px 18px;
+  border: 2.5px solid #35220E; border-radius: 18px;
+  background: #FFC93C; color: #35220E;
+  box-shadow: 0 4px 0 #35220E;
+}
+.exp-today__eyebrow { margin: 0; font-size: 12px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+.exp-today__title { margin: 2px 0 4px; font-size: clamp(1.4rem, 4.5vw, 2rem); line-height: 1.1; font-weight: 800; }
+.exp-today__line { margin: 0; font-weight: 700; color: rgba(53, 34, 14, .85); }
+.exp-today__go {
+  display: inline-flex; align-items: center; min-height: 48px; padding: 10px 22px;
+  border-radius: 14px; background: #35220E; color: #fff; font-weight: 900; text-decoration: none;
+}
+.exp-today__go:focus-visible { outline: 3px solid #FF7A00; outline-offset: 3px; }
+.exp-today .exp-grid { margin-top: 14px; }

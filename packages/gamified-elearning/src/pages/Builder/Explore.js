@@ -300,6 +300,7 @@ export default function Explore() {
       newest:      toggleLike(prev.newest),
       mostPlayed:  toggleLike(prev.mostPlayed),
       mostRemixed: toggleLike(prev.mostRemixed),
+      today:       prev.today ? { ...prev.today, entries: toggleLike(prev.today.entries || []) } : prev.today,
     } : prev);
 
     try {
@@ -316,6 +317,7 @@ export default function Explore() {
         newest:      toggleLike(prev.newest),
         mostPlayed:  toggleLike(prev.mostPlayed),
         mostRemixed: toggleLike(prev.mostRemixed),
+        today:       prev.today ? { ...prev.today, entries: toggleLike(prev.today.entries || []) } : prev.today,
       } : prev);
     }
   }, [user, token, navigate]);
@@ -425,6 +427,36 @@ export default function Explore() {
           </div>
         </div>
       </div>
+
+      {/* ── Today's build ─────────────────────────────────────────────
+          The quest every child's Home shows today, and the games children
+          published from it today. Real entries only: on a day with none,
+          it says so and asks for the first. */}
+      {!loading && !error && data?.today?.quest && (
+        <section className="exp-today" aria-labelledby="exp-today-title">
+          <div className="exp-today__head">
+            <div>
+              <p className="exp-today__eyebrow">Today's build</p>
+              <h2 id="exp-today-title" className="exp-today__title">{data.today.quest.text}</h2>
+              <p className="exp-today__line">
+                {(data.today.entries || []).length === 0
+                  ? 'Nobody has published one today yet. Yours could be the first.'
+                  : (data.today.entries.length === 1 ? 'One made today. Play it, then make yours.' : `${data.today.entries.length} made today. Play them, then make yours.`)}
+              </p>
+            </div>
+            <Link className="exp-today__go" to={`/build?prompt=${encodeURIComponent(data.today.quest.prompt)}`}>
+              Build it
+            </Link>
+          </div>
+          {(data.today.entries || []).length > 0 && (
+            <div className="exp-grid">
+              {data.today.entries.map(p => (
+                <ProjectCard key={`today-${p.id}`} project={p} onLike={handleLike} onRemix={handleRemix} remixingId={remixingId} />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Tab bar */}
       <div className="exp-tabs">
