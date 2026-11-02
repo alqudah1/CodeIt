@@ -145,3 +145,22 @@ test('the page reads the family answer the server really sends, and a username k
   expect(await screen.findByText('sam_k95c7 made 2 games this week.')).toBeInTheDocument();
   expect(screen.queryByText(/No child profile linked yet/)).toBeNull();
 });
+
+test('while paid plans are closed, the card is the free pilot, not a price nobody can pay', async () => {
+  mockBilling = { billingEnabled: false, canSubscribe: false, plan: 'free', status: null };
+  serve();
+  mount({ user: { name: 'Mr Q', role: 'Educator' }, token: 't' });
+  expect(await screen.findByText('Maya made 2 games this week.')).toBeInTheDocument();
+  expect(await screen.findByText('Founding Family Pilot')).toBeInTheDocument();
+  expect(screen.queryByText('CA$12/month')).toBeNull();
+  expect(screen.getByRole('link', { name: 'About the pilot' })).toHaveAttribute('href', '/pricing#family-pilot');
+});
+
+test('the Plus card sells only what Plus adds', async () => {
+  serve();
+  mount({ user: { name: 'Mr Q', role: 'Educator' }, token: 't' });
+  const card = (await screen.findByText('CA$12/month')).closest('.pa__price');
+  expect(card).toHaveTextContent(/up to four children/);
+  expect(card).toHaveTextContent(/Lessons, powers and this page stay free/);
+  expect(card).not.toHaveTextContent(/every power|Unlimited builds/);
+});

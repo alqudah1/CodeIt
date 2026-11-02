@@ -5,7 +5,8 @@ const { LESSON_BASE, POWERS, powerByLessonId } = require('./powers');
 const bcrypt = require('bcryptjs');
 const db = require('./db');
 const { ready: progressReady } = require('./progressNotifications');
-const { planForSubscription } = require('./entitlements');
+const { planForSubscription, PLANS } = require('./entitlements');
+const { billingReadiness } = require('./billingReadiness');
 const {
   FAMILY_NOTICE_VERSION,
   validManagedPassword,
@@ -224,11 +225,27 @@ async function countManagedChildren(adultUserId) {
  * The plan this adult is on, or null when billing cannot be read. Null means
  * "do not enforce".
  */
-async function currentPlan(adultUserId) {
+async function isFoundingFamily(adult) {
+  const email = String(adult?.email || '').trim().toLowerCase();
+  const [rows] = await db.query(
+    'SELECT id FROM founding_family_leads WHERE user_id = ? OR LOWER(email) = ? LIMIT 1',
+    [adult.user_id, email]
+  );
+  return rows.length > 0;
+}
+
+async function currentPlan(adultUserId, adult = null) {
   try {
     const billingStore = require('./billingStore');
     const subscription = await billingStore.getSubscriptionByUserId(adultUserId);
-    return planForSubscription(subscription);
+    const plan = planForSubscription(subscription);
+    // While paid plans are closed, a family who asked for a pilot spot has the
+    // pilot's room: two learners. Once Plus is on sale, the pilot is over and
+    // the pricing page's "then CA$12/month if you stay" takes over.
+    if (plan.id === 'free' && !billingReadiness(process.env).ready && adult && await isFoundingFamily(adult)) {
+      return PLANS.founding;
+    }
+    return plan;
   } catch (error) {
     console.error('Child-profile allowance check skipped:', error.message);
     return null;
@@ -263,13 +280,16 @@ async function createManagedChild(adultUserId, input) {
   // unreadable. A family already over the number keeps every child they have
   // and simply cannot add another. Standing between a parent and their own
   // children because Stripe is slow would be the worse mistake.
-  const plan = await currentPlan(adultUserId);
+  const plan = await currentPlan(adultUserId, adult);
   const existing = await countManagedChildren(adultUserId);
   if (plan && existing >= plan.maxChildProfiles) {
+    const plusOnSale = billingReadiness(process.env).ready;
     throw Object.assign(
       new Error(
         plan.maxChildProfiles === 1
-          ? 'This account holds one learner profile. CodeIt Plus holds up to four.'
+          ? (plusOnSale
+            ? 'This account holds one learner profile. CodeIt Plus holds up to four.'
+            : 'This account holds one learner profile. Families in the free Founding Family pilot can add a second: request a spot on the Pricing page with this account\'s email, then try again.')
           : `This plan holds up to ${plan.maxChildProfiles} learner profiles.`
       ),
       { statusCode: 403, code: 'CHILD_LIMIT_REACHED' }

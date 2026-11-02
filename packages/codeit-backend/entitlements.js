@@ -32,6 +32,19 @@ const PLANS = {
     canPublish: true,
     maxChildProfiles: 1,
   },
+  // The Founding Family pilot, as the pricing page promises it: "20 new
+  // projects a month" and "Two children, one adult account". It applies to an
+  // adult who asked for a pilot spot, only while paid plans are closed (see
+  // familyAccounts.currentPlan). Until 2 November 2026 nothing granted it, and
+  // a pilot parent adding their second child was told to buy a plan that was
+  // not on sale.
+  founding: {
+    id: 'founding',
+    label: 'Founding Family',
+    monthlyAiBuilds: 20,
+    canPublish: true,
+    maxChildProfiles: 2,
+  },
   plus: {
     id: 'plus',
     label: 'CodeIt Plus',

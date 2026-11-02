@@ -70,3 +70,41 @@ test('without claimProjects nothing moves', { skip: !HAS_PG && 'no local Postgre
   const [rows] = await pool.query('SELECT user_id FROM ai_projects WHERE user_id = ?', [adult.insertId]);
   assert.equal(rows.length, 1);
 });
+
+// ── The pilot's second child ────────────────────────────────────────────────
+// The pricing page promises Founding Family pilot families "Two children, one
+// adult account". Until 2 November 2026 every free account held one, and the
+// refusal told a pilot parent to buy a plan that was not on sale.
+async function verifiedAdult(pool, tag) {
+  const stamp = `${Date.now().toString(36)}${tag}`;
+  const email = `pilot.${stamp}@example.test`;
+  const [adult] = await pool.query(`INSERT INTO Users (username, name, email, password, role) VALUES (?, ?, ?, 'x', 'Educator')`, [`pp_${stamp}`, 'Pat', email]);
+  await pool.query(`INSERT INTO adult_email_verifications (user_id, email, verified_at, token_hash, expires_at) VALUES (?, ?, NOW(), NULL, NULL)`, [adult.insertId, email]);
+  return { id: adult.insertId, email, stamp };
+}
+const kid = (stamp, n) => ({ username: `k${n}_${stamp}`.slice(0, 20), password: 'bunnybunny123', dob: '2017-05-04', relationship: 'parent', consent: true, noticeVersion: require('./familyAccountUtils').FAMILY_NOTICE_VERSION, progressEmails: false });
+
+test('a pilot family can add a second learner while paid plans are closed; a third is refused', { skip: !HAS_PG && 'no local Postgres' }, async () => {
+  delete process.env.BILLING_ENABLED;
+  const pool = require('./db');
+  const { createManagedChild } = require('./familyAccounts');
+  const adult = await verifiedAdult(pool, 'p');
+  // Asked for a pilot spot on the pricing page, with a capital letter in the address.
+  await pool.query(`INSERT INTO founding_family_leads (email, source) VALUES (?, 'pricing')`, [adult.email.toUpperCase()]);
+  await createManagedChild(adult.id, kid(adult.stamp, 1));
+  await createManagedChild(adult.id, kid(adult.stamp, 2));
+  await assert.rejects(createManagedChild(adult.id, kid(adult.stamp, 3)), /up to 2 learner profiles/);
+});
+
+test('a family that did not ask for the pilot holds one, and is told how to get a second', { skip: !HAS_PG && 'no local Postgres' }, async () => {
+  delete process.env.BILLING_ENABLED;
+  const pool = require('./db');
+  const { createManagedChild } = require('./familyAccounts');
+  const adult = await verifiedAdult(pool, 'n');
+  await createManagedChild(adult.id, kid(adult.stamp, 1));
+  await assert.rejects(createManagedChild(adult.id, kid(adult.stamp, 2)), (error) => {
+    assert.match(error.message, /Founding Family pilot can add a second/);
+    assert.doesNotMatch(error.message, /CodeIt Plus/);
+    return true;
+  });
+});
