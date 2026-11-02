@@ -439,9 +439,12 @@ export default function Explore() {
               <p className="exp-today__eyebrow">Today's build</p>
               <h2 id="exp-today-title" className="exp-today__title">{data.today.quest.text}</h2>
               <p className="exp-today__line">
-                {(data.today.entries || []).length === 0
-                  ? 'Nobody has published one today yet. Yours could be the first.'
-                  : (data.today.entries.length === 1 ? 'One made today. Play it, then make yours.' : `${data.today.entries.length} made today. Play them, then make yours.`)}
+                {(() => {
+                  // The server's count, not the length of the four cards shown.
+                  const made = Number(data.today.count) || (data.today.entries || []).length;
+                  if (made === 0) return 'Nobody has published one today yet. Yours could be the first.';
+                  return made === 1 ? 'One made today. Play it, then make yours.' : `${made} made today. Play them, then make yours.`;
+                })()}
               </p>
             </div>
             <Link className="exp-today__go" to={`/build?prompt=${encodeURIComponent(data.today.quest.prompt)}`}>

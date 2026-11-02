@@ -36,6 +36,8 @@ test('only public games made today from today\'s sentence are entries', { skip: 
     assert.equal(body.today.quest.prompt, quest.prompt);
     const mine = body.today.entries.map((e) => e.title).filter((t) => t.endsWith(stamp));
     assert.deepEqual(mine, [`Today ${stamp}`]);
+    assert.ok(body.today.entries.length <= 4);
+    assert.ok(body.today.count >= 1, 'the count is a number from the database');
   } finally {
     server.close();
   }

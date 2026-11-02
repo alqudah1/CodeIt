@@ -88,12 +88,15 @@ router.get('/', optionalAuth, async (req, res) => {
       [mostPlayed],
       [mostRemixed],
       [todayRows],
+      [[todayCount]],
     ] = await Promise.all([
       pool.query(base + ` ORDER BY (p.view_count + p.like_count * 3) DESC LIMIT ?`, [limit]),
       pool.query(base + ` ORDER BY p.created_at DESC LIMIT ?`,                       [limit]),
       pool.query(base + ` ORDER BY p.view_count DESC LIMIT ?`,                       [limit]),
       pool.query(base + ` ORDER BY p.remix_count DESC, p.view_count DESC LIMIT ?`,   [limit]),
-      pool.query(base + ` AND LOWER(TRIM(p.prompt)) = ? AND p.created_at >= ? ORDER BY p.created_at DESC LIMIT 6`, [quest.prompt.toLowerCase(), dayStart]),
+      pool.query(base + ` AND LOWER(TRIM(p.prompt)) = ? AND p.created_at >= ? ORDER BY p.created_at DESC LIMIT 4`, [quest.prompt.toLowerCase(), dayStart]),
+      // The count is its own query: "4 made today" must not mean "at least 4".
+      pool.query(`SELECT COUNT(*) AS made FROM ai_projects p WHERE p.is_public = 1 AND LOWER(TRIM(p.prompt)) = ? AND p.created_at >= ?`, [quest.prompt.toLowerCase(), dayStart]),
     ]);
 
     // Collect liked project ids for the current user in one query
@@ -148,6 +151,7 @@ router.get('/', optionalAuth, async (req, res) => {
       today: {
         quest: { text: quest.text, prompt: quest.prompt, day: quest.day },
         entries: todayRows.map(r => formatProject(r, likedSet)),
+        count: Number(todayCount?.made) || 0,
       },
     });
   } catch (err) {
