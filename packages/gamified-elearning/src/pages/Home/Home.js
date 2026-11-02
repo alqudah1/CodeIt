@@ -47,12 +47,18 @@ const POPULAR_LESSONS = [
   [6, "Repeating ideas with loops"],
 ];
 const HOME_VIEW_SESSION_KEY = "codeit_homepage_view_recorded";
+export const CAME_FROM_GAME_KEY = "codeit.came.from.game";
 
 export default function Home() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const ideaInputRef = useRef(null);
   const [heroIdea, setHeroIdea] = useState("");
+  const kidIdeaRef = useRef(null);
+  // A child who arrived by playing a friend's game (PublicProject marks this
+  // browser) and has not made anything yet came for a game, not for a Python
+  // lesson pitched to their parent. They get the game door first.
+  const [fromGame] = useState(() => { try { return localStorage.getItem(CAME_FROM_GAME_KEY) === "1"; } catch { return false; } });
   const [latestProject, setLatestProject] = useState(null);
 
   useEffect(() => {
@@ -109,14 +115,14 @@ export default function Home() {
     }
   }, []);
 
-  const startHeroIdea = (event) => {
+  const startHeroIdea = (event, inputRef = ideaInputRef, source = "hero-idea") => {
     event.preventDefault();
     const idea = heroIdea.trim();
     if (!idea) {
-      ideaInputRef.current?.focus();
+      inputRef.current?.focus();
       return;
     }
-    trackEvent("landing_cta_click", "hero-idea");
+    trackEvent("landing_cta_click", source);
     // A game idea goes to the instant builder, where it is playing two seconds
     // later. A website, a quiz, or a game with rules of its own (tic tac toe,
     // chess) goes to the full studio, which starts building at once: the
@@ -143,6 +149,35 @@ export default function Home() {
       <Header />
       <div className="studio-home">
         <main>
+          {fromGame && !shelf.length && (
+            <section className="studio-kid-door" aria-labelledby="studio-kid-title">
+              <h2 id="studio-kid-title">Make a game like that one.</h2>
+              <p>Say what happens in it. It is playing in a few seconds, and you can change anything.</p>
+              <form className="say ci-blk ci-blk--ink" onSubmit={(event) => startHeroIdea(event, kidIdeaRef, "kid-door")}>
+                <label htmlFor="studio-kid-idea" className="say__label">What is your game?</label>
+                <div className="say__row">
+                  <input
+                    ref={kidIdeaRef}
+                    id="studio-kid-idea"
+                    value={heroIdea}
+                    onChange={(event) => setHeroIdea(event.target.value)}
+                    placeholder="a cat that dodges bombs in the ocean"
+                    maxLength={240}
+                    autoComplete="off"
+                  />
+                  <button type="submit" className="ci-btn">
+                    Make it <span aria-hidden="true">→</span>
+                  </button>
+                </div>
+                <div className="say__chips" aria-label="Try one of these">
+                  {SAY_IDEAS.map((idea) => (
+                    <button type="button" key={idea} className="ci-chip" onClick={() => { setHeroIdea(idea); kidIdeaRef.current?.focus(); }}>{idea}</button>
+                  ))}
+                </div>
+                <p className="say__fine">No account needed to make one.</p>
+              </form>
+            </section>
+          )}
           <section className="studio-hero" aria-labelledby="studio-title">
             <div className="studio-hero__copy">
               {/* "Coding for ages 5 to 18" sat here. A number in the hero is a
@@ -274,6 +309,7 @@ export default function Home() {
             {/* The builder, on the page. It used to sit folded under "Or type
                 your own idea", behind three starter cards: the thing the site
                 does best was the one thing a visitor had to go looking for. */}
+            {!(fromGame && !shelf.length) && (
             <form className="say ci-blk ci-blk--ink" onSubmit={startHeroIdea}>
               <label htmlFor="studio-hero-idea" className="say__label">
                 What do you want to build?
@@ -299,6 +335,7 @@ export default function Home() {
               </div>
               <p className="say__fine">No account to try it. Publishing asks for a first name and a class code or a parent.</p>
             </form>
+            )}
 
             {!shelf.length && <AvatarInGame />}
             <div className="pick">

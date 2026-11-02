@@ -45,6 +45,12 @@ export default function PublicProject() {
   const [best, setBest] = useState(0);
   const beaten = beat !== null && best > beat;
   const challengeSeen = useRef({ opened: false, beaten: false });
+  // Played a friend's game on this browser: the home page opens on the game
+  // door for them, not the Python pitch written for a parent (Home.js).
+  useEffect(() => {
+    if (!project || user) return;
+    try { localStorage.setItem('codeit.came.from.game', '1'); } catch { /* the home page simply opens as usual */ }
+  }, [project, user]);
   useEffect(() => {
     if (beat !== null && project && !challengeSeen.current.opened) {
       challengeSeen.current.opened = true;
