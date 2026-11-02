@@ -18,6 +18,8 @@ jest.mock('react-router-dom', () => {
 jest.mock('../Header/Header', () => () => null);
 jest.mock('../../config/api', () => ({ API_BASE_URL: 'http://codeit.test' }));
 jest.mock('../../hooks/useSEO', () => ({ useSEO: jest.fn() }));
+// The Python editor (CodeMirror) prints line numbers, which collide with the streak digits below.
+jest.mock('../../components/CodeRunnerPython', () => () => null);
 
 jest.mock('../../context/AuthContext', () => {
   const React = require('react');

@@ -24,6 +24,8 @@ import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
 import { listProjects as listShelf, migrateLegacyDraft } from '../../utils/projectShelf';
 import { LEVELS, levelFor, questFor, streakFrom } from './today';
+import PythonQuest from './PythonQuest';
+import { pythonQuestFor } from './pythonQuests';
 import { powerStates } from '../Powers/powers';
 import { readDone } from '../Powers/PowersMap';
 import '../../ds/ds.css';
@@ -109,6 +111,14 @@ export default function KidHome() {
             <Link className="ci-btn ci-btn--ink" to={done ? '/build' : `/build?prompt=${encodeURIComponent(quest.prompt)}`}>{done ? 'Build' : 'Build it'}</Link>
             <img className="kh__pix" src="/brand/pixel-mascot-hero.png" alt="" />
           </div>
+          {/* Two minutes of real Python, every day, under the game quest. The
+              server's copy says whether it is done; before it answers, or for a
+              guest, the bank's quest for today. */}
+          <PythonQuest
+            quest={today?.pythonQuest || { ...pythonQuestFor(), done: false }}
+            token={token}
+            onDone={(data) => setToday((prev) => (prev ? { ...prev, builtToday: true, streak: data.streak ?? prev.streak, level: data.level || prev.level, pythonQuest: { ...(prev.pythonQuest || {}), done: true } } : prev))}
+          />
           <div className="kh__row">
             <div className="ci-blk ci-blk--coral ci-rise" style={{ animationDelay: '.05s' }}>
               <svg className="kh__flame" viewBox="0 0 24 24" aria-hidden="true"><path fill="#FFC93C" d="M12 2c1 4-3 5-3 9a3 3 0 0 0 6 0c0-1.5-.6-2.5-1-3 2 1 4 3.5 4 7a6 6 0 0 1-12 0c0-5 4-7 6-13z" /></svg>

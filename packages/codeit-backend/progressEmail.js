@@ -9,6 +9,7 @@ const EVENT_LABELS = Object.freeze({
   exercise_completed: 'Exercise completed',
   puzzle_completed: 'Challenge completed',
   quiz_completed: 'Quiz completed',
+  python_quest: 'Daily Python quest done',
   project_created: 'Project created',
   project_published: 'Project published',
 });

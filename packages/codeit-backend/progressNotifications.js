@@ -14,6 +14,7 @@ const EVENT_PREFERENCE_COLUMNS = Object.freeze({
   exercise_completed: 'notify_exercises',
   puzzle_completed: 'notify_exercises',
   quiz_completed: 'notify_exercises',
+  python_quest: 'notify_exercises',
   project_created: 'notify_projects',
   project_published: 'notify_publishing',
 });
