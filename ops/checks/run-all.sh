@@ -104,6 +104,7 @@ run complaints-check.js
 run first-five-minutes.js
 run colours-change.js
 run cold-start.js
+run lesson-to-studio.js
 run kid-alone.js
 run lesson-alone.js
 run shelf-alignment.js
