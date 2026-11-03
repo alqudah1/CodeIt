@@ -4,6 +4,7 @@
 
 .lm-page {
   min-height: 100vh;
+  overflow-x: hidden;
   background: var(--ground, #FFF4E5);
   font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   color: var(--ink, #35220E);
@@ -422,3 +423,68 @@
 .lm-ask__first { background: var(--paper, #FFFDF7); }
 .lm-ask__close { background: none; border-color: transparent; box-shadow: none; font-weight: 700; color: #6f5a48; }
 .lm-ask__start:focus-visible, .lm-ask__first:focus-visible { outline: 3px solid var(--arc-violet, #B39DDB); outline-offset: 3px; }
+
+/* ── The four lands ─────────────────────────────────────────────────
+   A ground behind each stage's rows, a sign where one becomes the next,
+   and a castle stop after the last lesson. Drawn in CSS: no images. */
+.lm-land {
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  max-width: 100vw;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden; /* the hills and sun hang off the edges; nothing may widen the page */
+}
+.lm-land--beginner { background: linear-gradient(180deg, rgba(23, 192, 139, 0) 0, rgba(23, 192, 139, .10) 120px, rgba(23, 192, 139, .10) 100%); }
+.lm-land--intermediate { background: linear-gradient(180deg, rgba(107, 75, 240, .12), rgba(107, 75, 240, .07)); }
+.lm-land--advanced { background: linear-gradient(180deg, rgba(119, 196, 255, .22), rgba(119, 196, 255, .10)); }
+.lm-land--expert { background: linear-gradient(180deg, rgba(255, 122, 0, .16), rgba(255, 107, 107, .12)); border-bottom-left-radius: 48px; border-bottom-right-radius: 48px; }
+/* Hills, clouds and a sun, as soft shapes along the edges. */
+.lm-land::before, .lm-land::after { content: ""; position: absolute; border-radius: 50%; opacity: .55; }
+.lm-land--beginner::before { left: -60px; bottom: 40px; width: 260px; height: 120px; background: #17C08B; opacity: .22; }
+.lm-land--beginner::after { right: -40px; top: 180px; width: 200px; height: 90px; background: #17C08B; opacity: .18; }
+.lm-land--intermediate::before { left: -30px; top: 140px; width: 0; height: 0; border-radius: 0; border-left: 110px solid transparent; border-right: 110px solid transparent; border-bottom: 170px solid rgba(107, 75, 240, .18); }
+.lm-land--intermediate::after { right: -50px; bottom: 60px; width: 0; height: 0; border-radius: 0; border-left: 140px solid transparent; border-right: 140px solid transparent; border-bottom: 210px solid rgba(107, 75, 240, .14); }
+.lm-land--advanced::before { left: 6%; top: 150px; width: 150px; height: 56px; background: #fff; opacity: .9; box-shadow: 40px 18px 0 -6px #fff, -30px 20px 0 -10px #fff; }
+.lm-land--advanced::after { right: 8%; top: 420px; width: 120px; height: 46px; background: #fff; opacity: .85; box-shadow: 34px 14px 0 -6px #fff; }
+.lm-land--expert::before { right: 7%; top: 120px; width: 96px; height: 96px; background: #FFC93C; opacity: .9; box-shadow: 0 0 0 14px rgba(255, 201, 60, .25); }
+.lm-land--expert::after { left: -40px; bottom: 80px; width: 240px; height: 100px; background: #FF7A00; opacity: .16; }
+
+.lm-land__sign {
+  position: absolute; top: 22px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 10px;
+  width: min(92vw, 420px); padding: 10px 14px;
+  background: var(--paper, #FFFDF7); border: 2.5px solid var(--ink, #35220E); border-radius: 16px;
+  box-shadow: 0 4px 0 var(--ink, #35220E);
+  font-family: 'Nunito', sans-serif; color: var(--ink, #35220E);
+}
+.lm-land__sign-icon { flex: none; width: 36px; height: 36px; border-radius: 10px; background: var(--sun, #FFC93C); display: grid; place-items: center; }
+.lm-land__sign b { display: block; font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 800; line-height: 1.1; }
+.lm-land__sign small { display: block; font-size: .8rem; font-weight: 700; color: #6B4F3A; }
+.lm-trail, .lm-stops { position: relative; z-index: 1; }
+.lm-trail { position: absolute; }
+
+/* The stages row under the title: four lands and the castle. */
+.lm-stages {
+  list-style: none; margin: 0.25rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px;
+  width: 100%; max-width: 560px;
+}
+.lm-stage { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; font-family: 'Nunito', sans-serif; }
+.lm-stage__disc { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; border: 2.5px solid var(--ink, #35220E); background: var(--paper, #FFFDF7); box-shadow: 0 3px 0 var(--ink, #35220E); color: var(--ink, #35220E); }
+.lm-stage--done .lm-stage__disc { background: #17C08B; }
+.lm-stage--here .lm-stage__disc { background: var(--sun, #FFC93C); animation: lm-stage-pulse 1.6s ease-in-out infinite; }
+.lm-stage--ahead .lm-stage__disc { opacity: .55; border-style: dashed; box-shadow: none; }
+.lm-stage__name { font-size: .72rem; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; color: var(--ink, #35220E); }
+.lm-stage__count { font-size: .72rem; font-weight: 800; color: #6B4F3A; }
+.lm-stage--ahead .lm-stage__name, .lm-stage--ahead .lm-stage__count { color: #9b8575; }
+@keyframes lm-stage-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+@media (prefers-reduced-motion: reduce) { .lm-stage--here .lm-stage__disc { animation: none; } }
+@media (max-width: 420px) { .lm-stage__name { font-size: .62rem; } .lm-stage__disc { width: 34px; height: 34px; } }
+
+/* The castle: the last stop, the certificate behind it. */
+.lm-node--castle { width: 78px; height: 78px; border-radius: 22px; background: var(--sun, #FFC93C); }
+.lm-node--castle.lm-node--completed { background: #17C08B; }
+.lm-stop--castle .lm-card--ahead .lm-node { opacity: .9; }

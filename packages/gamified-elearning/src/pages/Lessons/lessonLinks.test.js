@@ -58,7 +58,8 @@ test('the ones ahead of the child are linked too', () => {
   expect(ahead.length).toBeGreaterThan(10);
   for (const card of ahead) {
     expect(card.tagName).toBe('A');
-    expect(card.getAttribute('href')).toMatch(/^\/lesson\/\d+$/);
+    // Every stop is a lesson, except the castle at the end, which is the certificate.
+    expect(card.getAttribute('href')).toMatch(/^\/(lesson\/\d+|certificate)$/);
   }
 });
 

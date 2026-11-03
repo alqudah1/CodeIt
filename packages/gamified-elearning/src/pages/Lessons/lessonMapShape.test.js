@@ -52,8 +52,10 @@ test('every fifth lesson is the boss stop, and nothing else is', () => {
 
 test('nodes, not cards: every lesson is a numbered stop on the path', () => {
   renderMap();
-  expect(document.querySelectorAll('.lm-stop')).toHaveLength(TOTAL_LESSONS);
-  expect(document.querySelectorAll('.lm-node')).toHaveLength(TOTAL_LESSONS);
+  // 31 lessons, and the castle after the last one.
+  expect(document.querySelectorAll('.lm-stop:not(.lm-stop--castle)')).toHaveLength(TOTAL_LESSONS);
+  expect(document.querySelectorAll('.lm-stop--castle')).toHaveLength(1);
+  expect(document.querySelectorAll('.lm-node:not(.lm-node--castle)')).toHaveLength(TOTAL_LESSONS);
   expect(document.querySelectorAll('.lm-node--boss')).toHaveLength(Math.floor(TOTAL_LESSONS / 5));
   expect(document.querySelector('.lm-trail path.lm-trail__all')).not.toBeNull();
 });
@@ -86,7 +88,7 @@ test('one Start button, on the stop the child is looking at', () => {
 
 test('the XP badges stay, one per lesson', () => {
   renderMap();
-  expect(document.querySelectorAll('.lm-xp')).toHaveLength(TOTAL_LESSONS);
+  expect(document.querySelectorAll('.lm-stop:not(.lm-stop--castle) .lm-xp')).toHaveLength(TOTAL_LESSONS);
 });
 
 test('the label beside a stop never hangs off the edge of the path', () => {

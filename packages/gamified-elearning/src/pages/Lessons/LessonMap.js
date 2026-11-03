@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ENDPOINTS } from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../Header/Header';
+import { STAGES, STAGE_BAND, stageIndexOfLesson, stageProgress } from './lessonStages';
 import Icon from '../../components/Icon/Icon';
 import { lessonSummaries } from './lessonRegistry';
 import './LessonMap.css';
@@ -28,12 +29,17 @@ import { useCharacterDisplay } from '../../context/CharacterContext';
 // sitemap and this is the page that vouches for them (lessonLinks.test.js).
 
 const FALLBACK_LESSONS = lessonSummaries();
+const CERT_ROW = 1; // one more stop after the last lesson: the castle
 
 // Where each stop sits across the path, as a percentage of the width. A slow
 // wave, so the path bends left and right and the eye follows it down.
 export const ROW_HEIGHT = 108;
 export function stopX(index) {
   return 50 + 30 * Math.sin(index * (Math.PI / 2.6) + Math.PI / 5);
+}
+/** Where a stop sits down the path: its row, plus a band for each stage line crossed. */
+export function stopY(index) {
+  return index * ROW_HEIGHT + ROW_HEIGHT / 2 + stageIndexOfLesson(index + 1) * STAGE_BAND;
 }
 export function isBoss(id) {
   return id % 5 === 0;
@@ -70,7 +76,7 @@ export function labelBox(xPct, pathWidth, boss) {
 export function trailPath(count, upTo = count) {
   const n = Math.max(0, Math.min(count, upTo));
   if (n === 0) return '';
-  const pts = Array.from({ length: n }, (_, i) => [stopX(i), i * ROW_HEIGHT + ROW_HEIGHT / 2]);
+  const pts = Array.from({ length: n }, (_, i) => [stopX(i), stopY(i)]);
   let d = `M ${pts[0][0].toFixed(2)} ${pts[0][1]}`;
   for (let i = 1; i < pts.length; i += 1) {
     const [x0, y0] = pts[i - 1];
@@ -183,7 +189,9 @@ const LessonMap = () => {
 
   const trail = useMemo(() => trailPath(lessons.length), [lessons.length]);
   const walked = useMemo(() => trailPath(lessons.length, hereIndex + 1), [lessons.length, hereIndex]);
-  const height = lessons.length * ROW_HEIGHT;
+  const allDone = !loading && lessons.length > 0 && completedIds.length === lessons.length;
+  const height = (lessons.length + CERT_ROW) * ROW_HEIGHT + (STAGES.length - 1) * STAGE_BAND;
+  const nextId = nextLesson ? nextLesson.id : null;
 
   return (
     <div className="lm-page">
@@ -227,10 +235,47 @@ const LessonMap = () => {
               {loading ? '…' : `${completedIds.length} / ${lessons.length} done`}
             </span>
           </div>
+          {/* The whole journey in one row, like a level select: four lands
+              and the castle, with where you are. */}
+          <ol className="lm-stages" aria-label="Stages">
+            {STAGES.map((stage) => {
+              const p = stageProgress(stage, completedIds, nextId);
+              return (
+                <li key={stage.id} className={`lm-stage lm-stage--${p.state}`}>
+                  <span className="lm-stage__disc" aria-hidden="true"><Icon name={stage.icon} size={18} /></span>
+                  <span className="lm-stage__name">{stage.name}</span>
+                  <span className="lm-stage__count">{p.done}/{p.total}</span>
+                </li>
+              );
+            })}
+            <li className={`lm-stage lm-stage--cert${allDone ? ' lm-stage--done' : ' lm-stage--ahead'}`}>
+              <span className="lm-stage__disc" aria-hidden="true"><Icon name="trophy" size={18} /></span>
+              <span className="lm-stage__name">Certificate</span>
+              <span className="lm-stage__count">{allDone ? 'Yours' : 'At the end'}</span>
+            </li>
+          </ol>
         </div>
 
         {/* ── The path ─────────────────────────────────────────────────── */}
         <div className="lm-path" aria-label="Lesson progression map" style={{ height }} ref={pathRef}>
+          {/* The four lands: a ground behind each stage's rows, and a sign
+              where one land becomes the next. */}
+          {STAGES.map((stage, si) => {
+            const top = (stage.from - 1) * ROW_HEIGHT + si * STAGE_BAND;
+            const rows = stage.to - stage.from + 1;
+            const bandHeight = rows * ROW_HEIGHT + (si === 0 ? 0 : STAGE_BAND) + (si === STAGES.length - 1 ? CERT_ROW * ROW_HEIGHT : 0);
+            const p = stageProgress(stage, completedIds, nextId);
+            return (
+              <div key={stage.id} className={`lm-land lm-land--${stage.id}`} style={{ top: si === 0 ? 0 : top - STAGE_BAND, height: bandHeight }} aria-hidden="true">
+                {si > 0 && (
+                  <div className="lm-land__sign">
+                    <span className="lm-land__sign-icon"><Icon name={stage.icon} size={20} /></span>
+                    <span><b>{stage.name}: {stage.place}</b><small>Lessons {stage.from} to {stage.to} · {p.done} of {p.total} done</small></span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <svg
             className="lm-trail"
             viewBox={`0 0 100 ${height}`}
@@ -257,7 +302,7 @@ const LessonMap = () => {
                 <li
                   key={lesson.id}
                   className={`lm-stop lm-stop--${status}${isHere ? ' lm-stop--here' : ''}${boss ? ' lm-stop--boss' : ''}${titled ? ` lm-stop--titled lm-stop--${side}` : ''}`}
-                  style={{ top: idx * ROW_HEIGHT, left: `${x}%` }}
+                  style={{ top: stopY(idx) - ROW_HEIGHT / 2, left: `${x}%` }}
                 >
                   {/* A real anchor, so the crawler and a middle click get
                       the page. The click is intercepted so a stop ahead of
@@ -302,6 +347,21 @@ const LessonMap = () => {
                 </li>
               );
             })}
+            {lessons.length > 0 && (
+              <li
+                className={`lm-stop lm-stop--castle${allDone ? ' lm-stop--completed' : ' lm-stop--ahead'}`}
+                style={{ top: stopY(lessons.length) - ROW_HEIGHT / 2, left: `${stopX(lessons.length)}%` }}
+              >
+                <Link
+                  to="/certificate"
+                  className={`lm-card lm-card--${allDone ? 'completed' : 'ahead'}`}
+                  aria-label={allDone ? 'Your certificate' : `The certificate. ${completedIds.length} of ${lessons.length} lessons done`}
+                >
+                  <span className={`lm-node lm-node--castle${allDone ? ' lm-node--completed' : ''}`} aria-hidden="true"><Icon name="trophy" size={34} /></span>
+                  <span className={`lm-xp lm-xp--${allDone ? 'completed' : 'ahead'}`}>Certificate</span>
+                </Link>
+              </li>
+            )}
           </ol>
         </div>
 

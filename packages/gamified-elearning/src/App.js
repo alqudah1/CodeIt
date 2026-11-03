@@ -20,6 +20,7 @@ import { warmCoreRoutes } from './utils/warmRoutes';
 
 // ── Lazy-loaded routes ────────────────────────────────────────────
 const LessonMap      = lazy(() => import('./pages/Lessons/LessonMap'));
+const Certificate    = lazy(() => import('./pages/Lessons/Certificate'));
 // The child's shell (28 September 2026): one living screen, no site header.
 const Arcade         = lazy(() => import('./arcade/Arcade'));
 
@@ -173,6 +174,7 @@ const App = () => (
               {/* ── Lessons ── */}
               <Route path="/play"       element={<Arcade />} />
               <Route path="/lessons"    element={<LessonMap />} />
+              <Route path="/certificate" element={<Certificate />} />
               <Route path="/lesson/:lessonId" element={<LessonRoute />} />
 
               {/* ── Quiz ── */}

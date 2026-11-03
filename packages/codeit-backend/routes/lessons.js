@@ -34,11 +34,14 @@ router.get('/progress', authenticateToken, async (req, res) => {
   const userId = req.user.user_id;
   try {
     const [rows] = await pool.query(
-      'SELECT lesson_id FROM Student_Lesson_Progress WHERE user_id = ? ORDER BY lesson_id',
+      'SELECT lesson_id, completed_at FROM Student_Lesson_Progress WHERE user_id = ? ORDER BY lesson_id',
       [userId]
     );
     const completedLessons = rows.map(r => r.lesson_id);
-    res.json({ success: true, completedLessons });
+    // When the last of them was finished: the date on the certificate.
+    const times = rows.map(r => new Date(r.completed_at).getTime()).filter(Number.isFinite);
+    const finishedAt = times.length ? new Date(Math.max(...times)).toISOString() : null;
+    res.json({ success: true, completedLessons, finishedAt });
   } catch (err) {
     console.error('❌ Error fetching lesson progress:', err);
     res.status(500).json({ error: err.message });
