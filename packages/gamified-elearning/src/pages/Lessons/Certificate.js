@@ -50,13 +50,21 @@ export default function Certificate() {
         {progress && earned && (
           <>
             <article className="cert" aria-label="Certificate">
+              <div className="cert__corner cert__corner--tl" aria-hidden="true" />
+              <div className="cert__corner cert__corner--tr" aria-hidden="true" />
+              <div className="cert__corner cert__corner--bl" aria-hidden="true" />
+              <div className="cert__corner cert__corner--br" aria-hidden="true" />
               <BrandLogo className="cert__logo" alt="CodeIt" />
-              <p className="cert__ey">Certificate of completion</p>
+              <div className="cert__ribbon"><span>Certificate of completion</span></div>
+              <p className="cert__awarded">This certifies that</p>
               <h1 className="cert__name">{name}</h1>
-              <p className="cert__line">finished all {TOTAL_LESSONS} lessons of the CodeIt Python course:</p>
-              <p className="cert__what">printing, variables, if statements, loops, lists, functions and a game of their own</p>
-              {progress.finishedAt && <p className="cert__date">{certificateDate(progress.finishedAt)}</p>}
-              <div className="cert__seal" aria-hidden="true">31/31</div>
+              <p className="cert__line">finished all {TOTAL_LESSONS} lessons of the CodeIt Python course</p>
+              <p className="cert__what">printing, variables, if statements, loops, lists, functions, and a game of their own</p>
+              <div className="cert__foot">
+                <div className="cert__sig"><span className="cert__sig-line" /><small>CodeIt</small></div>
+                <div className="cert__seal" aria-hidden="true"><span className="cert__seal-star">★</span><span>{TOTAL_LESSONS}/{TOTAL_LESSONS}</span></div>
+                <div className="cert__sig"><span className="cert__sig-line" /><small>{progress.finishedAt ? certificateDate(progress.finishedAt) : 'Date'}</small></div>
+              </div>
             </article>
             <div className="cert__actions">
               <button type="button" className="ci-btn ci-btn--ink" onClick={() => window.print()}>Print it</button>

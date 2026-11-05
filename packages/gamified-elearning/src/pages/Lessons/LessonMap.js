@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ENDPOINTS } from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../Header/Header';
-import { STAGES, STAGE_BAND, stageIndexOfLesson, stageProgress } from './lessonStages';
+import { STAGES, STAGE_BAND, stageIndexOfLesson, stageOfLesson, stageProgress } from './lessonStages';
+import { Island, Tree, Bush, Mountains, Cloud, Sun, Castle, Signpost, Gem } from './MapArt';
 import Icon from '../../components/Icon/Icon';
 import { lessonSummaries } from './lessonRegistry';
 import './LessonMap.css';
@@ -29,7 +30,8 @@ import { useCharacterDisplay } from '../../context/CharacterContext';
 // sitemap and this is the page that vouches for them (lessonLinks.test.js).
 
 const FALLBACK_LESSONS = lessonSummaries();
-const CERT_ROW = 1; // one more stop after the last lesson: the castle
+const CASTLE_ROW = 260; // the castle after the last lesson needs a taller row than a lesson
+const ISLAND_OF = { beginner: 'meadow', intermediate: 'mountain', advanced: 'cloud', expert: 'castle' };
 
 // Where each stop sits across the path, as a percentage of the width. A slow
 // wave, so the path bends left and right and the eye follows it down.
@@ -190,7 +192,7 @@ const LessonMap = () => {
   const trail = useMemo(() => trailPath(lessons.length), [lessons.length]);
   const walked = useMemo(() => trailPath(lessons.length, hereIndex + 1), [lessons.length, hereIndex]);
   const allDone = !loading && lessons.length > 0 && completedIds.length === lessons.length;
-  const height = (lessons.length + CERT_ROW) * ROW_HEIGHT + (STAGES.length - 1) * STAGE_BAND;
+  const height = lessons.length * ROW_HEIGHT + CASTLE_ROW + (STAGES.length - 1) * STAGE_BAND;
   const nextId = nextLesson ? nextLesson.id : null;
 
   return (
@@ -258,21 +260,43 @@ const LessonMap = () => {
 
         {/* ── The path ─────────────────────────────────────────────────── */}
         <div className="lm-path" aria-label="Lesson progression map" style={{ height }} ref={pathRef}>
-          {/* The four lands: a ground behind each stage's rows, and a sign
-              where one land becomes the next. */}
+          {/* The four lands. Each is a stretch of sky with its own things in
+              it (trees, mountains, clouds, a sun) and a signpost where one
+              land becomes the next. The islands sit under the stops below. */}
           {STAGES.map((stage, si) => {
-            const top = (stage.from - 1) * ROW_HEIGHT + si * STAGE_BAND;
+            const top = si === 0 ? 0 : (stage.from - 1) * ROW_HEIGHT + (si - 1) * STAGE_BAND;
             const rows = stage.to - stage.from + 1;
-            const bandHeight = rows * ROW_HEIGHT + (si === 0 ? 0 : STAGE_BAND) + (si === STAGES.length - 1 ? CERT_ROW * ROW_HEIGHT : 0);
-            const p = stageProgress(stage, completedIds, nextId);
+            const bandHeight = rows * ROW_HEIGHT + (si === 0 ? 0 : STAGE_BAND) + (si === STAGES.length - 1 ? CASTLE_ROW : 0);
             return (
-              <div key={stage.id} className={`lm-land lm-land--${stage.id}`} style={{ top: si === 0 ? 0 : top - STAGE_BAND, height: bandHeight }} aria-hidden="true">
-                {si > 0 && (
-                  <div className="lm-land__sign">
-                    <span className="lm-land__sign-icon"><Icon name={stage.icon} size={20} /></span>
-                    <span><b>{stage.name}: {stage.place}</b><small>Lessons {stage.from} to {stage.to} · {p.done} of {p.total} done</small></span>
-                  </div>
-                )}
+              <div key={stage.id} className={`lm-land lm-land--${stage.id}`} style={{ top, height: bandHeight }} aria-hidden="true">
+                <div className="lm-land__in">
+                {stage.id === 'beginner' && (<>
+                  <Cloud className="lm-decor lm-decor--c0" width={120} />
+                  <Tree className="lm-decor lm-decor--t1" size={60} />
+                  <Tree className="lm-decor lm-decor--t2" size={48} dark />
+                  <Bush className="lm-decor lm-decor--b1" size={46} />
+                  <Tree className="lm-decor lm-decor--t3" size={56} />
+                  <Bush className="lm-decor lm-decor--b2" size={40} />
+                </>)}
+                {stage.id === 'intermediate' && (<>
+                  <Mountains className="lm-decor lm-decor--m1" width={440} />
+                  <Cloud className="lm-decor lm-decor--c1" width={90} />
+                  <Tree className="lm-decor lm-decor--t4" size={44} dark />
+                  <Gem className="lm-decor lm-decor--g1" size={30} />
+                </>)}
+                {stage.id === 'advanced' && (<>
+                  <Cloud className="lm-decor lm-decor--c2" width={140} />
+                  <Cloud className="lm-decor lm-decor--c3" width={100} />
+                  <Cloud className="lm-decor lm-decor--c4" width={120} />
+                  <Cloud className="lm-decor lm-decor--c5" width={80} />
+                  <Gem className="lm-decor lm-decor--g2" size={26} />
+                </>)}
+                {stage.id === 'expert' && (<>
+                  <Sun className="lm-decor lm-decor--sun" size={110} />
+                  <Cloud className="lm-decor lm-decor--c6" width={110} />
+                  <Mountains className="lm-decor lm-decor--m2" width={380} />
+                </>)}
+                </div>
               </div>
             );
           })}
@@ -283,10 +307,27 @@ const LessonMap = () => {
             aria-hidden="true"
             focusable="false"
           >
+            <path className="lm-trail__edge" d={trail} vectorEffect="non-scaling-stroke" />
             <path className="lm-trail__all" d={trail} vectorEffect="non-scaling-stroke" />
             {hereIndex > 0 && <path className="lm-trail__done" d={walked} vectorEffect="non-scaling-stroke" />}
           </svg>
 
+          {/* Signposts where one land becomes the next, above the bridge. */}
+          {STAGES.map((stage, si) => {
+            if (si === 0) return null;
+            const p = stageProgress(stage, completedIds, nextId);
+            const top = (stage.from - 1) * ROW_HEIGHT + (si - 1) * STAGE_BAND;
+            return (
+              <Signpost
+                key={stage.id}
+                className="lm-signpost"
+                style={{ top: top + 10 }}
+                icon={<Icon name={stage.icon} size={20} />}
+                title={`${stage.name}: ${stage.place}`}
+                line={`Lessons ${stage.from} to ${stage.to} · ${p.done} of ${p.total} done`}
+              />
+            );
+          })}
           <ol className="lm-stops">
             {lessons.map((lesson, idx) => {
               const status = getStatus(lesson.id);
@@ -314,6 +355,7 @@ const LessonMap = () => {
                     onClick={(e) => { e.preventDefault(); handleLessonClick(lesson); }}
                     aria-label={`Lesson ${lesson.id}: ${lesson.title}. ${status === 'ahead' ? 'ahead of you' : status}${boss ? '. Boss puzzle' : ''}`}
                   >
+                    <Island className="lm-island" width={boss ? 190 : 170} variant={ISLAND_OF[stageOfLesson(lesson.id).id]} />
                     <span className={`lm-node lm-node--${status}${boss ? ' lm-node--boss' : ''}`} aria-hidden="true">
                       {isHere ? (
                         <span className="lm-you">
@@ -357,8 +399,10 @@ const LessonMap = () => {
                   className={`lm-card lm-card--${allDone ? 'completed' : 'ahead'}`}
                   aria-label={allDone ? 'Your certificate' : `The certificate. ${completedIds.length} of ${lessons.length} lessons done`}
                 >
-                  <span className={`lm-node lm-node--castle${allDone ? ' lm-node--completed' : ''}`} aria-hidden="true"><Icon name="trophy" size={34} /></span>
-                  <span className={`lm-xp lm-xp--${allDone ? 'completed' : 'ahead'}`}>Certificate</span>
+                  <Island className="lm-island lm-island--castle" width={230} variant="castle" />
+                  <Castle className="lm-castle" width={150} lit={allDone} />
+                  <span className={`lm-node lm-node--castle${allDone ? ' lm-node--completed' : ''}`} aria-hidden="true"><Icon name="trophy" size={30} /></span>
+                  <span className={`lm-xp lm-xp--${allDone ? 'completed' : 'ahead'}`}>{allDone ? 'Your certificate' : 'Certificate'}</span>
                 </Link>
               </li>
             )}
