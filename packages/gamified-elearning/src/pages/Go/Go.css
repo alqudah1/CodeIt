@@ -1,0 +1,42 @@
+.go { min-height: 100vh; background: var(--ci-cream, #FFF4E5); color: var(--ci-ink, #35220E); font-family: 'Nunito', 'Trebuchet MS', sans-serif; }
+.go__main { max-width: 980px; margin: 0 auto; padding: 24px 16px 64px; }
+
+.go__hero { text-align: center; padding: 8px 0 20px; }
+.go__ey { margin: 0 0 10px; font-size: .74rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; color: #C94F0C; }
+.go__h1 { margin: 0; font-family: var(--ci-display, 'Baloo 2'), 'Nunito', sans-serif; font-size: clamp(2.3rem, 9vw, 4.2rem); line-height: 1.02; letter-spacing: -.01em; }
+.go__sub { max-width: 560px; margin: 14px auto 0; font-size: 1.05rem; font-weight: 700; line-height: 1.45; color: #5A3E2B; }
+.go__cta { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 22px; }
+.go__start { height: 58px; font-size: 1.1rem; padding: 0 30px; border: 3px solid var(--ci-ink, #35220E); box-shadow: 0 5px 0 var(--ci-ink, #35220E); }
+.go__start:active { box-shadow: 0 0 0 var(--ci-ink, #35220E); }
+.go__try { font-weight: 800; color: var(--ci-ink, #35220E); text-decoration: underline; text-underline-offset: 3px; }
+
+/* Three real screens in phone frames, side by side where they fit. */
+.go__shots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 26px 0 8px; }
+.go__shot { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.go__shot img {
+  width: 100%; height: auto; aspect-ratio: 390 / 620; object-fit: cover; object-position: top;
+  border: 4px solid var(--ci-ink, #35220E); border-radius: 28px; box-shadow: 0 8px 0 var(--ci-ink, #35220E); background: #fff;
+}
+.go__shot figcaption { font-size: .92rem; line-height: 1.4; color: #5A3E2B; font-weight: 700; padding: 0 4px; }
+.go__shot figcaption b { color: var(--ci-ink, #35220E); font-weight: 900; }
+
+.go__rows { display: grid; gap: 12px; margin: 26px auto 0; max-width: 640px; }
+.go__row {
+  display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; border-radius: 18px;
+  background: #FFFDF7; border: 2.5px solid var(--ci-ink, #35220E); box-shadow: 0 4px 0 var(--ci-ink, #35220E);
+  font-size: 1rem; line-height: 1.45; font-weight: 700; color: #5A3E2B;
+}
+.go__row b { color: var(--ci-ink, #35220E); font-weight: 900; }
+.go__num {
+  flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+  background: #FFC93C; border: 2.5px solid var(--ci-ink, #35220E); font-family: var(--ci-display, 'Baloo 2'), 'Nunito', sans-serif; font-weight: 800; font-size: 1.1rem;
+}
+
+.go__end { text-align: center; margin-top: 30px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.go__fine { margin: 0; max-width: 420px; font-size: .9rem; font-weight: 700; color: #7A6552; line-height: 1.4; }
+
+@media (max-width: 760px) {
+  .go__shots { grid-template-columns: 1fr; gap: 22px; max-width: 340px; margin-left: auto; margin-right: auto; }
+  .go__shot img { aspect-ratio: 390 / 560; }
+  .go__start { width: 100%; max-width: 360px; }
+}

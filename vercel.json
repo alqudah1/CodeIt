@@ -27,13 +27,13 @@
       "destination": "/api/share?pub=:pub*"
     },
     {
-      "source": "/(MainPage|about|arcade|faq|press|admin|ai-website-builder-for-kids|blog|build|builder|certificate|home|character|coding-for-kids|creator-brief|explore|first-game-challenge|forgot-password|game|games|guide|investor-brief|join|journey|leaderboard|learn-python-for-kids|lesson|lessons|login|parent|parent-review|play|playground|powers|pricing|privacy|profile|python-games-for-kids|quiz|register|reset-password|teach|terms|understood)(/.*)?",
+      "source": "/(MainPage|about|arcade|faq|press|admin|ai-website-builder-for-kids|blog|build|builder|certificate|home|character|coding-for-kids|creator-brief|explore|first-game-challenge|forgot-password|game|games|go|guide|investor-brief|join|journey|leaderboard|learn-python-for-kids|lesson|lessons|login|parent|parent-review|play|playground|powers|pricing|privacy|profile|python-games-for-kids|quiz|register|reset-password|teach|terms|understood)(/.*)?",
       "destination": "/index.html"
     }
   ],
   "headers": [
     {
-      "source": "/(login|register|forgot-password|reset-password|parent|parent-review|MainPage|home|arcade|join|powers|admin|character|certificate|leaderboard|profile|quiz|project|creator-brief|investor-brief|understood|play)(/.*)?",
+      "source": "/(login|register|forgot-password|reset-password|parent|parent-review|MainPage|home|arcade|join|powers|admin|character|certificate|go|leaderboard|profile|quiz|project|creator-brief|investor-brief|understood|play)(/.*)?",
       "headers": [
         {
           "key": "X-Robots-Tag",
