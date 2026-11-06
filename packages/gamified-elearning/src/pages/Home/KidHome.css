@@ -17,15 +17,22 @@
 .kh__track i { display: block; height: 100%; background: #fff; border-radius: 3px; transition: width .8s cubic-bezier(.3, 1, .4, 1); }
 .kh__plays { font: 800 11px var(--ci-body); letter-spacing: .12em; text-transform: uppercase; color: var(--ci-ink-soft); }
 .kh__shelf { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.kh__tile { aspect-ratio: 1; border-radius: var(--ci-r); position: relative; overflow: hidden; box-shadow: var(--ci-card); text-decoration: none; color: #fff; display: block; transition: transform .2s var(--ci-spring); }
-.kh__tile:active { transform: scale(.97); }
-.kh__tile iframe { position: absolute; left: 0; top: 0; width: 200%; height: 200%; transform: scale(.5); transform-origin: 0 0; border: 0; pointer-events: none; }
-.kh__tile::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, .35)); pointer-events: none; }
-.kh__cap { position: absolute; left: 12px; right: 12px; bottom: 10px; z-index: 1; font: 800 12px var(--ci-body); line-height: 1.2; text-shadow: 0 1px 3px rgba(0, 0, 0, .35); }
-.kh__cap small { display: block; font-size: 10px; opacity: .85; }
-.kh__tile--new { background: var(--ci-paper); border: 1px dashed rgba(53, 34, 14, .25); box-shadow: none; display: grid; place-items: center; color: var(--ci-orange); font: 800 11px var(--ci-body); text-align: center; }
-.kh__tile--new { color: var(--ci-orange-text); }
-.kh__tile--new::after { display: none; }
+/* A game on the shelf: the game itself, live, in a little screen, and its
+   name on a solid card below it, so the game's own text and ours never
+   overlap. Same ink edge and 3D shadow as the map's stops. */
+.kh__tile {
+  display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; text-decoration: none; color: var(--ci-ink);
+  border: 2.5px solid var(--ci-ink); box-shadow: 0 5px 0 var(--ci-ink); background: var(--ci-paper);
+  transition: transform .2s var(--ci-spring), box-shadow .2s var(--ci-spring);
+}
+.kh__tile:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--ci-ink); }
+.kh__tile:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--ci-ink); }
+.kh__screen { position: relative; aspect-ratio: 1; overflow: hidden; background: #1B1B2F; }
+.kh__screen iframe { position: absolute; left: 0; top: 0; width: 200%; height: 200%; transform: scale(.5); transform-origin: 0 0; border: 0; pointer-events: none; }
+.kh__cap { display: flex; flex-direction: column; gap: 1px; padding: 8px 10px 9px; border-top: 2.5px solid var(--ci-ink); font: 800 12px var(--ci-body); line-height: 1.2; color: var(--ci-ink); background: var(--ci-paper); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kh__cap small { font-size: 10px; font-weight: 800; color: var(--ci-ink-soft); }
+.kh__tile--new { background: #FFF6E6; border-style: dashed; box-shadow: none; display: grid; place-items: center; align-content: center; color: var(--ci-orange-text); font: 800 11px var(--ci-body); text-align: center; aspect-ratio: auto; }
+.kh__tile--new:hover, .kh__tile--new:active { transform: none; box-shadow: none; }
 .kh__tile--new span { display: block; font: 800 28px var(--ci-display); line-height: 1; }
 .kh__row-link { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--ci-r); background: var(--ci-paper); border: 1px solid var(--ci-ink-line); margin-top: 12px; text-decoration: none; color: var(--ci-ink); min-height: 72px; }
 .kh__row-link b { display: block; font-size: 15px; font-weight: 800; }

@@ -136,8 +136,10 @@ export default function KidHome() {
           <h2 className="ci-h2">Your games {typeof today?.plays === 'number' && today.plays > 0 && <small className="kh__plays"><span className="ci-livedot" />{today.plays === 1 ? '1 play' : `${today.plays} plays`}</small>}</h2>
           <div className="kh__shelf">
             {games.slice(0, 2).map((g, i) => (
-              <Link key={g.id} to={g.href} className="kh__tile" style={{ background: SKY_OF[i % SKY_OF.length] }}>
-                {g.code && <iframe title={g.title} srcDoc={g.code} sandbox="allow-scripts" tabIndex={-1} />}
+              <Link key={g.id} to={g.href} className="kh__tile">
+                <span className="kh__screen" style={{ background: SKY_OF[i % SKY_OF.length] }} aria-hidden="true">
+                  {g.code && <iframe title={g.title} srcDoc={g.code} sandbox="allow-scripts" tabIndex={-1} />}
+                </span>
                 <span className="kh__cap">{g.title}{g.plays > 0 && <small>{g.plays === 1 ? '1 play' : `${g.plays} plays`}</small>}</span>
               </Link>
             ))}
