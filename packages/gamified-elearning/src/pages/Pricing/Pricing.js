@@ -53,14 +53,19 @@ const PILOT_EMAIL_HREF = [
 
 const FAQ = [
   ['Can we use CodeIt for free?', 'Yes. The lessons, playground, coding games, and core project tools will keep a useful free option.'],
-  ['Is the family pilot free?', 'Yes. Requesting a pilot spot and using the current pilot are free. No card, trial, or subscription starts automatically.'],
-  ['What happens after I request a spot?', 'We email you the setup steps straight away, so you can try the family experience today.'],
   // These two answers contradicted the card six centimetres above them: the
   // card says CodeIt Plus is unlimited AI builds and up to four children, and
   // the FAQ said the paid plan is capped and holds two. The free plan is the
   // one with a monthly number on it.
   ['Why does the free plan have a limit?', 'Every AI-built project costs us real money to make. Ten a month keeps the free plan genuinely free rather than something that quietly disappears, and CodeIt Plus removes the limit.'],
   ['Who is the family plan for?', 'Parents or guardians who want unlimited project creation, a view of learning progress, and room for up to four young learners on one adult account.'],
+];
+// Asked and answered only while the pilot is the offer, which is while paid
+// plans are closed. Once Plus is on sale the pilot card is gone and so are
+// these.
+const PILOT_FAQ = [
+  ['Is the family pilot free?', 'Yes. Requesting a pilot spot and using the current pilot are free. No card, trial, or subscription starts automatically.'],
+  ['What happens after I request a spot?', 'We email you the setup steps straight away, so you can try the family experience today.'],
 ];
 
 export default function Pricing() {
@@ -225,12 +230,12 @@ export default function Pricing() {
           <div className="pricing-status">
             <span aria-hidden="true" />
             {billing.billingEnabled
-              ? 'The pilot is free. No card needed to request a spot.'
+              ? 'Free to start, no card. Plus is CA$12 a month, cancel any time.'
               : 'Paid plans are not open yet. Nothing is charged today.'}
           </div>
         </section>
 
-        <section className="pricing-plans" aria-label="CodeIt plan comparison">
+        <section className={`pricing-plans${billing.billingEnabled ? ' pricing-plans--on-sale' : ''}`} aria-label="CodeIt plan comparison">
           <article className="pricing-card">
             <p className="pricing-card__eyebrow">For every beginner</p>
             <h2>Free</h2>
@@ -320,6 +325,12 @@ export default function Pricing() {
             </article>
           )}
 
+          {/* The pilot was the stand-in while paid plans were closed: the
+              same things Plus gives, free, for the families who asked. With
+              Plus on sale it would sit on this page as a free copy of the
+              paid plan, two cards away from the checkout button, which is
+              the one thing a pricing page must not do. */}
+          {!billing.billingEnabled && (
           <article id="family-pilot" className="pricing-card pricing-card--founding">
             <div className="pricing-card__flag">Free pilot requests open</div>
             <p className="pricing-card__eyebrow">For parents and guardians</p>
@@ -404,6 +415,7 @@ export default function Pricing() {
               Email links open your email app; nothing is sent automatically.
             </small>
           </article>
+          )}
         </section>
 
         {interestStatus === 'saved' && (
@@ -429,7 +441,7 @@ export default function Pricing() {
             <p className="pricing-kicker">The monthly email</p>
             <h2 id="evidence-title">Not screen-time minutes. Their actual code.</h2>
             <p>
-              Founding Families get one email a month. It is built from your
+              {billing.billingEnabled ? 'Plus families' : 'Founding Families'} get one email a month. It is built from your
               child&rsquo;s real projects and finished lessons. Here is what
               one looks like.
             </p>
@@ -467,7 +479,7 @@ export default function Pricing() {
         <section className="pricing-faq" aria-labelledby="pricing-faq-title">
           <p className="pricing-kicker">Questions</p>
           <h2 id="pricing-faq-title">Before you decide</h2>
-          <div>{FAQ.map(([question, answer]) => <details key={question}><summary>{question}</summary><p>{answer}</p></details>)}</div>
+          <div>{(billing.billingEnabled ? FAQ : [FAQ[0], ...PILOT_FAQ, ...FAQ.slice(1)]).map(([question, answer]) => <details key={question}><summary>{question}</summary><p>{answer}</p></details>)}</div>
         </section>
       </main>
       <SiteFooter />

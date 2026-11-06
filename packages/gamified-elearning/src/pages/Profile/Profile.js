@@ -17,6 +17,7 @@ import { openedRewards, whoAmI } from '../../utils/chests';
 import { MEDALS, medalsFrom } from './medals';
 import Me from './Me';
 import ParentGate, { gateOpen } from './ParentGate';
+import { usePublicPlan } from '../../hooks/usePublicPlan';
 import './Profile.css';
 
 // Levels come from data/unlocks.js, and only from there. This file used to
@@ -42,6 +43,7 @@ export function childActivityLine(child) {
 }
 
 export default function Profile() {
+  const plan = usePublicPlan();
   useSEO({
     canonical: '/profile',
     robots: 'noindex,nofollow',
@@ -822,15 +824,16 @@ export default function Profile() {
                                     nothing charges today), and one link. */}
                                 <div className="profile-evidence__offer">
                                   <span>
-                                    Want more of this? The family pilot is free: more projects,
-                                    two learners, and one email a month with exactly this kind of evidence.
+                                    {plan.billingEnabled
+                                      ? 'Want more of this? CodeIt Plus: as many builds as they want, up to four learners, and one email a month with exactly this kind of evidence.'
+                                      : 'Want more of this? The family pilot is free: more projects, two learners, and one email a month with exactly this kind of evidence.'}
                                   </span>
                                   <Link
-                                    to="/pricing#family-pilot"
+                                    to={plan.billingEnabled ? '/pricing#codeit-plus' : '/pricing#family-pilot'}
                                     className="profile-evidence__offer-link"
-                                    onClick={() => void trackEvent('parent_cta_click', 'evidence-pilot', token)}
+                                    onClick={() => void trackEvent('parent_cta_click', plan.billingEnabled ? 'evidence-plus' : 'evidence-pilot', token)}
                                   >
-                                    See the pilot
+                                    {plan.billingEnabled ? 'See CodeIt Plus' : 'See the pilot'}
                                   </Link>
                                 </div>
                               </>

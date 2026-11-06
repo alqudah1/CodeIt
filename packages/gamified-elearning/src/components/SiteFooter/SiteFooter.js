@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import BrandLogo from '../BrandLogo/BrandLogo';
+import { usePublicPlan } from '../../hooks/usePublicPlan';
 import './SiteFooter.css';
 
 // ── Why this list is gone ────────────────────────────────────────────────────
@@ -20,6 +21,7 @@ import './SiteFooter.css';
 // So the footer says "All beginner lessons" and means it.
 
 export default function SiteFooter() {
+  const plan = usePublicPlan();
   return (
     <footer className="site-footer">
       <div className="site-footer__inner">
@@ -49,7 +51,7 @@ export default function SiteFooter() {
           <ul>
             <li><Link to="/coding-for-kids">How CodeIt works</Link></li>
             <li><Link to="/pricing">Pricing</Link></li>
-            <li><Link to="/pricing">Join the family pilot</Link></li>
+            <li><Link to="/pricing">{plan.billingEnabled ? 'CodeIt Plus' : 'Join the family pilot'}</Link></li>
           </ul>
           <strong>Explore</strong>
           <ul>

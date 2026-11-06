@@ -9,6 +9,7 @@ import { namedGame } from '../Build/gameWords';
 import { useSEO } from "../../hooks/useSEO";
 import { trackEvent } from "../../utils/trackEvent";
 import HomePilotSignup from "./HomePilotSignup";
+import { usePublicPlan } from "../../hooks/usePublicPlan";
 import { HOME_PICKS } from "../Builder/starterGames";
 import { conceptsIn } from "../Builder/codeConcepts";
 import Icon from "../../components/Icon/Icon";
@@ -50,6 +51,7 @@ const HOME_VIEW_SESSION_KEY = "codeit_homepage_view_recorded";
 export const CAME_FROM_GAME_KEY = "codeit.came.from.game";
 
 export default function Home() {
+  const plan = usePublicPlan();
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const ideaInputRef = useRef(null);
@@ -468,7 +470,7 @@ export default function Home() {
                 data-cta="family-pilot"
                 onClick={() => trackEvent("parent_cta_click", "view-pricing")}
               >
-                See full pilot details <span aria-hidden="true">→</span>
+                {plan.billingEnabled ? 'See the plans' : 'See full pilot details'} <span aria-hidden="true">→</span>
               </Link>
             </div>
             {/* A mock progress email about a child called Sam who published a
@@ -526,7 +528,7 @@ export default function Home() {
               <Link to="/ai-website-builder-for-kids">AI website builder for kids</Link>
               <Link to="/blog">Guides and ideas</Link>
               <Link to="/pricing">Pricing</Link>
-              <Link to="/pricing">Join the family pilot</Link>
+              <Link to="/pricing">{plan.billingEnabled ? 'CodeIt Plus' : 'Join the family pilot'}</Link>
               <Link to="/privacy">Privacy</Link>
             </div>
           </div>

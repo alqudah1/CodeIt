@@ -135,3 +135,8 @@
   font-family: var(--font-display);
   font-weight: 700;
 }
+
+.founding-signup--plus { display: grid; gap: .5rem; }
+.founding-signup--plus p { margin: 0; color: var(--founding-muted); line-height: 1.5; }
+.founding-signup--plus a { font-weight: 900; color: var(--founding-orange-dark); text-decoration: none; }
+.founding-signup--plus a:hover { text-decoration: underline; }

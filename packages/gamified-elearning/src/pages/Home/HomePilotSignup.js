@@ -5,6 +5,7 @@ import { ENDPOINTS } from '../../config/api';
 import { journeyHeaders } from '../../utils/journey';
 import './HomePilotSignup.css';
 import COMPANY from '../../config/company';
+import { usePublicPlan } from '../../hooks/usePublicPlan';
 
 const PILOT_EMAIL_HREF = [
   `mailto:${COMPANY.contactEmail}`,
@@ -14,6 +15,7 @@ const PILOT_EMAIL_HREF = [
 
 export default function HomePilotSignup({ source = 'homepage', showHeading = true }) {
   const { user, token } = useAuth();
+  const plan = usePublicPlan();
   const normalizedSource = source === 'parents-guide' ? 'parents-guide' : 'homepage';
   const emailId = normalizedSource === 'parents-guide' ? 'parents-guide-pilot-email' : 'homepage-pilot-email';
   const isStudentAccount = String(user?.role || '').toLowerCase() === 'student';
@@ -67,6 +69,17 @@ export default function HomePilotSignup({ source = 'homepage', showHeading = tru
       setStatus('error');
     }
   };
+
+  // With Plus on sale the pilot is over: the same block offers the plan.
+  if (plan.billingEnabled) {
+    return (
+      <div className="founding-signup founding-signup--plus">
+        {showHeading && <strong>Parent, guardian, or educator?</strong>}
+        <p>Free to start, no card. CodeIt Plus is CA${plan.amount} a month for as many AI builds as they want, who played their games, and up to four children. Cancel any time.</p>
+        <Link to="/pricing#codeit-plus">See CodeIt Plus <span aria-hidden="true">→</span></Link>
+      </div>
+    );
+  }
 
   if (status === 'saved') {
     return (

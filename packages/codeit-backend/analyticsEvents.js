@@ -13,7 +13,7 @@ const EVENT_META = Object.freeze({
   landing_cta_click: new Set(['hero-build', 'hero-idea', 'hero-lessons', 'hero-lesson-one', 'hero-playground', 'try-python', 'try-python-playground', 'avatar-demo', 'avatar-demo-lab', 'final-build', 'member-resume-project', 'public-project-build', 'shelf', 'starter', 'kid-door', 'go-start', 'go-try', 'go-start-end']),
   learning_start: new Set(['lesson-one', 'playground']),
   parent_guide_view: new Set(),
-  parent_cta_click: new Set(['create-family-account', 'try-project', 'join-pilot', 'view-pricing', 'pilot-email', 'builder-trial-return', 'evidence-pilot']),
+  parent_cta_click: new Set(['create-family-account', 'try-project', 'join-pilot', 'view-pricing', 'pilot-email', 'builder-trial-return', 'evidence-pilot', 'evidence-plus']),
   signup_complete: new Set(['student', 'educator']),
   new_account_studio_view: new Set(),
   new_account_family_setup_view: new Set(),

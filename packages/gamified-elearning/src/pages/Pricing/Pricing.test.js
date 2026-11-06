@@ -306,3 +306,30 @@ describe('Pricing', () => {
     expect(screen.getByText(/open this view any time on your child/i)).toBeInTheDocument();
   });
 });
+
+describe('Pricing with Plus on sale', () => {
+  beforeEach(() => {
+    global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
+      ok: true,
+      json: async () => (String(url).includes('/api/billing/')
+        ? { billingEnabled: true, plan: 'free', amount: 12, currency: 'CAD', interval: 'month' }
+        : { ready: true }),
+    }));
+    mockAuth = { user: null, token: null };
+  });
+
+  test('the pilot steps aside and Plus is the first card', async () => {
+    renderPricing();
+    await screen.findByRole('heading', { name: 'CodeIt Plus' });
+    // No free copy of the paid plan on the page that sells it.
+    expect(screen.queryByText('Free pilot requests open')).toBeNull();
+    expect(screen.queryByRole('button', { name: /pilot spot/i })).toBeNull();
+    expect(screen.queryByText('Is the family pilot free?')).toBeNull();
+    expect(screen.getByText('Free to start, no card. Plus is CA$12 a month, cancel any time.')).toBeInTheDocument();
+    expect(screen.getByText(/Plus families get one email a month/)).toBeInTheDocument();
+    const plans = document.querySelector('.pricing-plans');
+    expect(plans.classList.contains('pricing-plans--on-sale')).toBe(true);
+    expect(document.querySelectorAll('.pricing-card')).toHaveLength(2);
+    expect(document.body.textContent).not.toMatch(/—/);
+  });
+});

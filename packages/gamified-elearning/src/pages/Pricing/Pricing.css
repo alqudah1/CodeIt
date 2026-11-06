@@ -99,6 +99,9 @@
 .pricing-faq summary { padding: 1.1rem 2rem 1.1rem 0; font-weight: 900; cursor: pointer; }
 .pricing-faq details p { margin: -.25rem 0 1.2rem; color: #704c37; line-height: 1.65; }
 
+/* With Plus on sale it is the first card a parent sees, on any width. */
+.pricing-plans--on-sale .pricing-card--plus { order: -1; }
+
 @media (max-width: 760px) {
   .pricing-page main { width: min(100% - 28px, 1120px); padding-top: 1.25rem; }
   .pricing-plans, .pricing-principles__grid { grid-template-columns: 1fr; }

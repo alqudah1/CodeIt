@@ -7,6 +7,7 @@ import { useFAQSchema } from '../../hooks/useFAQSchema';
 import FAQS from '../../data/faqs';
 import { trackEvent } from '../../utils/trackEvent';
 import HomePilotSignup from '../Home/HomePilotSignup';
+import { usePublicPlan } from '../../hooks/usePublicPlan';
 import RecentProjects from '../Home/RecentProjects';
 import { AGE_RANGE } from '../../config/company';
 import './CodingForKids.css';
@@ -41,6 +42,7 @@ const PATHS = [
 ];
 
 export default function CodingForKids() {
+  const plan = usePublicPlan();
   useSEO({
     canonical: '/coding-for-kids',
   });
@@ -78,7 +80,7 @@ export default function CodingForKids() {
                   className="parents-button parents-button--quiet"
                   onClick={() => void trackEvent('parent_cta_click', 'join-pilot')}
                 >
-                  Join the free parent pilot
+                  {plan.billingEnabled ? 'What it costs' : 'Join the free parent pilot'}
                 </a>
               </div>
               <p className="parents-hero__ages">{AGE_RANGE.statement}</p>
@@ -256,11 +258,12 @@ export default function CodingForKids() {
           <div className="parents-wrap">
             <div className="parents-pilot">
               <div>
-                <span className="parents-eyebrow">Founding Family pilot</span>
-                <h2>Help shape a coding product your learner would actually return to.</h2>
+                <span className="parents-eyebrow">{plan.billingEnabled ? 'For parents and guardians' : 'Founding Family pilot'}</span>
+                <h2>{plan.billingEnabled ? 'Free to start. Pay only if they want more.' : 'Help shape a coding product your learner would actually return to.'}</h2>
                 <p>
-                  We’re inviting a small group of parents and educators to try CodeIt, tell us where
-                  a beginner gets stuck, and influence what we build next.
+                  {plan.billingEnabled
+                    ? 'The lessons, the daily Python quest and the map cost nothing. CodeIt Plus adds as many AI builds as they want, who played their games, and room for up to four children.'
+                    : 'We’re inviting a small group of parents and educators to try CodeIt, tell us where a beginner gets stuck, and influence what we build next.'}
                 </p>
               </div>
               <div className="parents-pilot__action">
@@ -270,9 +273,9 @@ export default function CodingForKids() {
                   className="parents-button parents-button--quiet"
                   onClick={() => void trackEvent('parent_cta_click', 'view-pricing')}
                 >
-                  See the planned family plan
+                  {plan.billingEnabled ? 'See the plans' : 'See the planned family plan'}
                 </Link>
-                <span>No charge or subscription starts by joining the pilot list.</span>
+                <span>{plan.billingEnabled ? 'Nothing is sold to your child. Plans are on a page they never see.' : 'No charge or subscription starts by joining the pilot list.'}</span>
               </div>
             </div>
           </div>
