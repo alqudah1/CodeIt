@@ -17,6 +17,9 @@ const EVENT_PREFERENCE_COLUMNS = Object.freeze({
   python_quest: 'notify_exercises',
   project_created: 'notify_projects',
   project_published: 'notify_publishing',
+  // The month's free studio builds used up: the one email that is for the
+  // grown-up who pays, sent once a month at most (event_key is the month).
+  ai_limit_reached: 'notify_projects',
 });
 
 let transporter;

@@ -116,6 +116,7 @@ function checkAiBuildAllowance(subscription, buildsThisMonth, now = new Date()) 
     allowed: false,
     remaining: 0,
     unlimited: false,
+    limit: plan.monthlyAiBuilds,
     code: 'FREE_AI_LIMIT_REACHED',
     // Never a dead end: the studio's instant controls need no AI at all.
     message: 'You have used this month\'s free AI builds. You can still open, '

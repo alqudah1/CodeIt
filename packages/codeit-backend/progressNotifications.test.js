@@ -38,3 +38,23 @@ test('escapes student-controlled milestone content and strips header newlines', 
   assert.match(email.html, /&lt;b&gt;unsafe&lt;\/b&gt;/);
   assert.doesNotMatch(email.html, /<script>bad\(\)<\/script>/);
 });
+
+test('the limit email is for the grown-up: what happened, what Plus gives, one button', () => {
+  assert.equal(EVENT_LABELS.ai_limit_reached, 'Free studio builds used up');
+  const email = milestoneEmail({
+    studentName: 'Sam',
+    eventType: 'ai_limit_reached',
+    title: 'used all 10 free studio builds this month',
+    detail: '10 games asked for in the studio since the 1st, which is the free plan\'s monthly allowance.',
+    targetUrl: 'https://codeitlearn.com/pricing?utm_source=limit-email#codeit-plus',
+    unsubscribeToken: 'tok',
+  });
+  assert.equal(email.subject, 'Sam used every free studio build this month');
+  assert.match(email.html, /Sam used all 10 free studio builds this month/);
+  assert.match(email.html, /CA\$12 a month plus tax, cancel any time/);
+  assert.match(email.html, /href="https:\/\/codeitlearn\.com\/pricing\?utm_source=limit-email#codeit-plus"/);
+  assert.match(email.html, /See CodeIt Plus/);
+  assert.match(email.html, /unsubscribe\/tok/);
+  assert.doesNotMatch(email.html, /—/);
+  assert.doesNotMatch(email.text, /—/);
+});

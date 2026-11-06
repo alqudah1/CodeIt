@@ -1799,6 +1799,16 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
           userId: analyticsContext.userId,
           journeyId: analyticsContext.journeyId,
         });
+        // The grown-up who pays is told once a month, by email, if they
+        // asked for progress emails. The child's page never sells anything.
+        void recordMilestoneAndNotify({
+          userId: req.user.user_id,
+          eventType: 'ai_limit_reached',
+          eventKey: new Date().toISOString().slice(0, 7),
+          title: `used all ${allowance.limit} free studio builds this month`,
+          detail: `${buildsThisMonth} games asked for in the studio since the 1st, which is the free plan's monthly allowance.`,
+          targetUrl: `${(process.env.PUBLIC_SITE_URL || 'https://codeitlearn.com').replace(/\/+$/, '')}/pricing?utm_source=limit-email#codeit-plus`,
+        }).catch(error => console.error('Limit milestone error:', error.message));
         return res.status(402).json({ code: allowance.code, error: allowance.message });
       }
     } catch (error) {
