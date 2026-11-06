@@ -14,6 +14,7 @@ import { useSEO } from '../../hooks/useSEO';
 import { useAuth } from '../../context/AuthContext';
 import { trackEvent } from '../../utils/trackEvent';
 import { TOTAL_LESSONS } from '../Lessons/lessonRegistry';
+import { Sun, Cloud, Tree, Bush } from '../Lessons/MapArt';
 import './Go.css';
 
 const START = '/register?for=family&from=go';
@@ -33,7 +34,21 @@ export default function Go() {
     <div className="go">
       <Header />
       <main className="go__main">
-        <section className="go__hero">
+        {/* The hero is the map's own sky and meadow, so the page looks like
+            the product it sells: the same sun, clouds and trees, drawn once. */}
+        <section className="go__stage" aria-label="Python in your pocket, like a game">
+          <div className="go__sky" aria-hidden="true">
+            <Sun className="go__sun" size={120} />
+            <Cloud className="go__cloud go__cloud--a" width={150} />
+            <Cloud className="go__cloud go__cloud--b" width={100} />
+            <Cloud className="go__cloud go__cloud--c" width={120} />
+          </div>
+          <div className="go__ground" aria-hidden="true">
+            <Tree className="go__tree go__tree--a" size={72} />
+            <Bush className="go__bush go__bush--a" size={56} />
+            <Tree className="go__tree go__tree--b" size={60} dark />
+          </div>
+        <div className="go__hero">
           <p className="go__ey">CodeIt · ages 8 to 14</p>
           <h1 className="go__h1">Python in your pocket.<br />Like a game.</h1>
           <p className="go__sub">
@@ -44,9 +59,9 @@ export default function Go() {
             <Link className="ci-btn go__start" to={START} onClick={() => go('go-start')}>Set up my child, free</Link>
             <Link className="go__try" to="/lessons" onClick={() => go('go-try')}>Or let them try the map first</Link>
           </div>
-        </section>
+        </div>
 
-        <section className="go__shots" aria-label="Three screens from CodeIt">
+        <div className="go__shots">
           <figure className="go__shot">
             <img src="/images/go/map.webp" alt="The lesson map: a road through a green meadow with numbered stops, the child's avatar on lesson 7, and a wooden gate into the Mountain Pass" width="390" height="620" loading="eager" />
             <figcaption><b>{TOTAL_LESSONS} lessons on a map.</b> Four lands, a boss puzzle every fifth stop, a castle at the end.</figcaption>
@@ -59,6 +74,7 @@ export default function Go() {
             <img src="/images/go/castle.webp" alt="The end of the map: the last lessons, the capstone, and a castle with a certificate" width="390" height="750" loading="lazy" />
             <figcaption><b>A certificate at the castle.</b> With their name on it, ready to print.</figcaption>
           </figure>
+        </div>
         </section>
 
         <section className="go__rows">

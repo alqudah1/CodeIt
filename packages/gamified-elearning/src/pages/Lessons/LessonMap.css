@@ -448,3 +448,17 @@ svg.lm-decor { max-width: none; height: auto; }
 .lm-ask__close { background: none; border-color: transparent; box-shadow: none; font-weight: 700; color: #6f5a48; }
 .lm-ask__start:focus-visible, .lm-ask__first:focus-visible { outline: 3px solid var(--arc-violet, #B39DDB); outline-offset: 3px; }
 
+
+/* ── Motion: the world is alive, quietly ────────────────────────────────
+   Clouds drift, the sun turns, gems twinkle. Nothing moves that the child
+   has to read, and nothing moves at all when the system asks for less. */
+@keyframes lm-drift { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(14px); } }
+@keyframes lm-turn { to { transform: rotate(360deg); } }
+@keyframes lm-twinkle { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .55; transform: scale(.92); } }
+.lm-decor .ma-cloud, svg.lm-decor.ma-cloud { animation: lm-drift 9s ease-in-out infinite; }
+.lm-land--advanced .lm-decor:nth-child(odd) .ma-cloud { animation-duration: 12s; animation-delay: -4s; }
+.lm-decor--sun { animation: lm-turn 80s linear infinite; transform-origin: 50% 50%; }
+.lm-decor .ma-gem { animation: lm-twinkle 2.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .lm-decor .ma-cloud, svg.lm-decor.ma-cloud, .lm-decor--sun, .lm-decor .ma-gem { animation: none; }
+}
