@@ -1,5 +1,8 @@
 /* ───────────────────────────────────────────────────────
-   LessonMap: a path of numbered stops, the child standing on it
+   LessonMap: a road through four lands to a castle, the
+   child standing on it. The world is drawn in CSS and the
+   small SVGs in MapArt.js: flat colour, ink outlines, 3D
+   buttons for the stops.
 ──────────────────────────────────────────────────────── */
 
 .lm-page {
@@ -8,13 +11,13 @@
   background: var(--ground, #FFF4E5);
   font-family: 'Nunito', 'Trebuchet MS', sans-serif;
   color: var(--ink, #35220E);
-  padding-bottom: 5rem;
+  padding-bottom: 0;
 }
 
 .lm-container {
   width: min(760px, 92%);
   margin: 0 auto;
-  padding: 1.25rem 0 3rem;
+  padding: 1.25rem 0 0;
 }
 
 /* ── Header ────────────────────────────────────────── */
@@ -103,246 +106,279 @@
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* ── The path ──────────────────────────────────────── */
-/* The container is sized in JS (one row per stop) and everything inside is
-   placed on it: the trail as one SVG behind, the stops on top at a
-   percentage across and a fixed row down. Fixed rows keep the trail and the
-   stops in exact agreement whatever the width. */
+/* ── The stages track: five discs on a line, a level select ──────────── */
+.lm-stages {
+  list-style: none; margin: 0.75rem 0 0; padding: 0 4px;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+  width: 100%; max-width: 560px; position: relative;
+}
+.lm-stages::before {
+  content: ''; position: absolute; left: 10%; right: 10%; top: 24px; height: 6px;
+  background: #E6DCCB; border: 2.5px solid var(--ink, #35220E); border-radius: 999px;
+}
+.lm-stage {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  text-align: center; font-family: 'Nunito', sans-serif;
+}
+.lm-stage__disc {
+  width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center;
+  border: 3px solid var(--ink, #35220E); background: #FFFDF7; color: var(--ink, #35220E);
+  box-shadow: 0 4px 0 var(--ink, #35220E);
+}
+.lm-stage--beginner.lm-stage--done .lm-stage__disc, .lm-stage--beginner.lm-stage--here .lm-stage__disc { background: #7FD86A; }
+.lm-stage--intermediate.lm-stage--done .lm-stage__disc, .lm-stage--intermediate.lm-stage--here .lm-stage__disc { background: #B9ADEB; }
+.lm-stage--advanced.lm-stage--done .lm-stage__disc, .lm-stage--advanced.lm-stage--here .lm-stage__disc { background: #9ED6FF; }
+.lm-stage--expert.lm-stage--done .lm-stage__disc, .lm-stage--expert.lm-stage--here .lm-stage__disc { background: #F6B35A; }
+.lm-stage--cert.lm-stage--done .lm-stage__disc { background: #FFC93C; }
+.lm-stage--here .lm-stage__disc { outline: 4px solid #FFC93C; outline-offset: 2px; animation: lm-stage-pulse 1.6s ease-in-out infinite; }
+.lm-stage--ahead .lm-stage__disc { background: #F3EBDD; color: #9b8575; border-style: dashed; box-shadow: none; }
+.lm-stage__name { margin-top: 5px; font-size: .62rem; font-weight: 900; letter-spacing: .05em; text-transform: uppercase; color: var(--ink, #35220E); }
+.lm-stage__count { font-size: .78rem; font-weight: 800; color: #6B4F3A; }
+.lm-stage--ahead .lm-stage__name, .lm-stage--ahead .lm-stage__count { color: #9b8575; }
+@keyframes lm-stage-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+@media (max-width: 420px) {
+  .lm-stage__disc { width: 42px; height: 42px; }
+  .lm-stages::before { top: 20px; }
+  .lm-stage__name { font-size: .52rem; letter-spacing: .02em; }
+  .lm-stage__count { font-size: .7rem; }
+}
+
+/* ── The world ──────────────────────────────────────────────────────────
+   The frame is sized in JS (one row per stop, a band per land crossed, a
+   tall row for the castle). The stops are placed on it at a percentage
+   across and a fixed row down, so the road and the stops agree whatever the
+   width. The lands bleed to the screen edges behind the frame. */
 .lm-path {
   position: relative;
-  margin: 0.75rem 0 0;
-  /* Room for the label card beside the outermost stops. */
-  padding: 0;
+  margin: 1.25rem 0 3rem;
 }
 
-.lm-trail {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+.lm-land {
+  position: absolute; left: 50%; transform: translateX(-50%); width: min(100vw, 1000px); z-index: 0;
   overflow: visible;
-  pointer-events: none;
 }
-
-.lm-trail__all {
-  fill: none;
-  stroke: var(--ink, #35220E);
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-dasharray: 1 11;
-  opacity: 0.45;
+.lm-land--beginner {
+  background:
+    radial-gradient(ellipse 160px 60px at 18% 18%, #98E585 0 60%, transparent 61%),
+    radial-gradient(ellipse 200px 70px at 82% 48%, #98E585 0 60%, transparent 61%),
+    radial-gradient(ellipse 140px 50px at 12% 78%, #98E585 0 60%, transparent 61%),
+    #7FD86A;
+  border-top-left-radius: 32px; border-top-right-radius: 32px;
+  border-top: 3px solid var(--ink, #35220E);
 }
-
-.lm-trail__done {
-  fill: none;
-  stroke: var(--arc-orange, #F87824);
-  stroke-width: 7;
-  stroke-linecap: round;
+.lm-land--intermediate {
+  background:
+    radial-gradient(ellipse 180px 60px at 80% 30%, #BBAFEB 0 60%, transparent 61%),
+    radial-gradient(ellipse 160px 60px at 14% 62%, #BBAFEB 0 60%, transparent 61%),
+    #A99BE3;
 }
-
-.lm-stops {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  inset: 0;
+.lm-land--advanced {
+  background:
+    radial-gradient(ellipse 220px 80px at 20% 30%, #C5E7FF 0 60%, transparent 61%),
+    radial-gradient(ellipse 200px 70px at 84% 70%, #C5E7FF 0 60%, transparent 61%),
+    #9ED6FF;
 }
-
-.lm-stop {
-  position: absolute;
-  width: 0;
-  height: 108px;
-  /* left is the centre of the stop; the card inside centres on it. */
+.lm-land--expert {
+  background:
+    radial-gradient(ellipse 180px 60px at 16% 24%, #FFC77A 0 60%, transparent 61%),
+    radial-gradient(ellipse 200px 70px at 84% 56%, #FFC77A 0 60%, transparent 61%),
+    #F6B35A;
+  border-bottom: 3px solid var(--ink, #35220E);
+  border-bottom-left-radius: 32px; border-bottom-right-radius: 32px;
 }
+@media (min-width: 1000px) {
+  .lm-land--beginner, .lm-land--intermediate, .lm-land--advanced, .lm-land--expert { border-left: 3px solid var(--ink, #35220E); border-right: 3px solid var(--ink, #35220E); }
+}
+.lm-land__edge { position: absolute; left: 0; right: 0; top: -40px; width: 100%; height: 60px; }
+.lm-land__peaks { position: absolute; left: 0; right: 0; top: -84px; width: 100%; height: 118px; }
 
-/* The link: the node, its XP, and (on two stops) the label beside it. */
+/* Things beside the road, inside the land, never under the stops. */
+.lm-decor { position: absolute; line-height: 0; }
+.lm-decor svg { max-width: none; height: auto; display: block; filter: drop-shadow(0 4px 0 rgba(53, 34, 14, .12)); }
+.lm-decor--left { left: max(8px, calc(50% - 390px)); }
+.lm-decor--right { right: max(8px, calc(50% - 390px)); }
+svg.lm-decor { max-width: none; height: auto; }
+.lm-decor--sun { right: 4%; top: 150px; }
+.lm-decor--top { left: 4%; top: 150px; }
+.lm-land--advanced .lm-decor--left { left: max(2px, calc(50% - 400px)); }
+.lm-land--advanced .lm-decor--right { right: max(2px, calc(50% - 400px)); }
+
+/* A gate where one land becomes the next: a board between two posts. */
+.lm-gate {
+  position: absolute; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: none;
+  display: flex; align-items: center; gap: 10px;
+  width: max-content; max-width: min(360px, 92%);
+  padding: 8px 16px 8px 8px; border-radius: 16px;
+  background: #D9A066; border: 3px solid var(--ink, #35220E);
+  box-shadow: inset 0 -6px 0 #B8773A, 0 6px 0 var(--ink, #35220E);
+  font-family: 'Nunito', sans-serif; color: var(--ink, #35220E);
+}
+.lm-gate::before, .lm-gate::after {
+  content: ''; position: absolute; top: 100%; width: 12px; height: 40px;
+  background: #B8773A; border: 3px solid var(--ink, #35220E); border-top: 0; border-radius: 0 0 5px 5px;
+}
+.lm-gate::before { left: 18px; }
+.lm-gate::after { right: 18px; }
+.lm-gate__disc {
+  flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+  background: #FFF6E6; border: 2.5px solid var(--ink, #35220E);
+}
+.lm-gate--done .lm-gate__disc { background: #4CC779; }
+.lm-gate--here .lm-gate__disc { background: #FFC93C; }
+.lm-gate__text { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.lm-gate__text b { font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 800; }
+.lm-gate__text small { font-size: .72rem; font-weight: 800; color: #5A3A1E; }
+
+/* The road. */
+.lm-trail {
+  position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 1;
+}
+.lm-trail path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.lm-trail__edge { stroke: var(--ink, #35220E); stroke-width: 32; }
+.lm-trail__all { stroke: #F3D9A4; stroke-width: 26; }
+.lm-trail__done { stroke: #FFB020; stroke-width: 26; }
+.lm-trail__dash { stroke: #FFFFFF; stroke-width: 3; stroke-dasharray: 10 12; opacity: .85; }
+
+/* The stops. */
+.lm-stops { list-style: none; margin: 0; padding: 0; position: absolute; inset: 0; z-index: 2; }
+.lm-stop { position: absolute; width: 0; height: 128px; }
+.lm-stop--titled { z-index: 3; }
+.lm-stop--here { z-index: 4; }
+
 .lm-card {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 108px;
+  position: absolute; left: 0; top: 0; height: 128px;
   transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  /* The node's centre sits exactly on the trail (half a row down). */
-  padding-top: 22px;
-  gap: 4px;
-  text-decoration: none;
-  color: var(--ink, #35220E);
-  border-radius: 999px;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  /* The node's centre sits exactly on the road (half a row down). */
+  padding-top: 28px;
+  text-decoration: none; color: var(--ink, #35220E);
 }
-.lm-stop--boss .lm-card { padding-top: 15px; }
+.lm-stop--boss .lm-card { padding-top: 22px; }
+.lm-card:focus-visible { outline: none; }
+.lm-card:focus-visible .lm-node { outline: 4px solid #fff; outline-offset: 3px; }
 
-.lm-card--ahead .lm-node { cursor: pointer; }
-
+/* A round 3D button. The inner span holds the number or mark, so the
+   boss diamond can turn without turning its star. */
 .lm-node {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
+  flex: none; position: relative; z-index: 1;
+  width: 72px; height: 72px; border-radius: 50%;
   border: 3px solid var(--ink, #35220E);
-  background: var(--paper, #FFFDF7);
-  box-shadow: 0 4px 0 var(--ink, #35220E);
+  display: grid; place-items: center;
   font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif;
-  font-weight: 800;
-  font-size: 1.5rem;
-  line-height: 1;
-  color: var(--ink, #35220E);
-  transition: transform 0.09s ease, box-shadow 0.09s ease;
-  overflow: hidden;
+  font-weight: 800; font-size: 1.6rem; line-height: 1;
+  transition: transform .09s ease, box-shadow .09s ease;
 }
+.lm-node__in { display: grid; place-items: center; width: 100%; height: 100%; border-radius: inherit; overflow: hidden; }
+.lm-node--ahead { background: #FFF6E6; color: #8A6E55; box-shadow: 0 7px 0 #C9B698, 0 7px 0 3px var(--ink, #35220E); }
+.lm-node--completed { background: #4CC779; color: #fff; box-shadow: 0 7px 0 #2E9A54, 0 7px 0 3px var(--ink, #35220E); }
+.lm-node--available { background: #FF8A1E; color: #fff; box-shadow: 0 7px 0 #C95E00, 0 7px 0 3px var(--ink, #35220E); }
+.lm-card:hover .lm-node, .lm-card:focus-visible .lm-node { transform: translateY(-2px); }
+.lm-card:active .lm-node { transform: translateY(5px); box-shadow: 0 2px 0 var(--ink, #35220E), 0 2px 0 3px var(--ink, #35220E); }
 
-.lm-card:hover .lm-node,
-.lm-card:focus-visible .lm-node {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 0 var(--ink, #35220E);
-}
-.lm-card:focus-visible { outline: 3px solid var(--arc-orange, #F87824); outline-offset: 4px; }
+/* Every fifth stop: the boss puzzle, a bigger diamond with a star and a flag. */
+.lm-node--boss { width: 84px; height: 84px; border-radius: 26px; transform: rotate(45deg); }
+.lm-node--boss .lm-node__in { transform: rotate(-45deg); }
+.lm-node--boss.lm-node--ahead { background: #D9CCF5; color: #6B4FB0; box-shadow: 5px 5px 0 #9A84D6, 5px 5px 0 3px var(--ink, #35220E); }
+.lm-node--boss.lm-node--completed { background: #B39DDB; color: #FFE27A; box-shadow: 5px 5px 0 #7D62B8, 5px 5px 0 3px var(--ink, #35220E); }
+.lm-node--boss.lm-node--available { background: #FF8A1E; box-shadow: 5px 5px 0 #C95E00, 5px 5px 0 3px var(--ink, #35220E); }
+.lm-card:hover .lm-node--boss, .lm-card:focus-visible .lm-node--boss { transform: rotate(45deg) translate(-1px, -1px); }
+.lm-card:active .lm-node--boss { transform: rotate(45deg) translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink, #35220E), 2px 2px 0 3px var(--ink, #35220E); }
+.lm-flag { position: absolute; left: -36px; top: 10px; z-index: 0; max-width: none; height: auto; }
+.lm-flag svg, .lm-hill, .lm-castle { max-width: none; height: auto; }
 
-.lm-node--completed {
-  background: var(--arc-mint, #5FD3A2);
+/* The child, standing on their stop, with a ring that breathes. */
+.lm-stop--here .lm-node { animation: lm-here 1.8s ease-in-out infinite; }
+.lm-stop--here .lm-node::after {
+  content: ''; position: absolute; inset: -11px; border-radius: inherit;
+  border: 4px solid #FFC93C; opacity: .9; animation: lm-ring 1.8s ease-in-out infinite;
 }
-
-.lm-node--available {
-  background: var(--arc-sun, #FED340);
-}
-
-.lm-node--ahead {
-  background: #efe3d3;
-  border-style: dashed;
-  border-color: #a08b76;
-  color: #7a6653;
-  box-shadow: none;
-}
-
-/* Every fifth stop: the boss puzzle, a bigger stop with a different mark. */
-.lm-node--boss {
-  width: 78px;
-  height: 78px;
-  border-radius: 22px;
-  transform: rotate(45deg);
-  background: var(--arc-violet, #B39DDB);
-}
-.lm-node--boss > * { transform: rotate(-45deg); }
-.lm-node--boss.lm-node--ahead { background: #e6dcef; }
-.lm-node--boss.lm-node--completed { background: var(--arc-mint, #5FD3A2); }
-.lm-card:hover .lm-node--boss,
-.lm-card:focus-visible .lm-node--boss { transform: rotate(45deg) translate(-1px, -1px); }
-
-/* The child, standing on their stop. The avatar fills the node, so there is
-   nothing for it to overlap. */
-.lm-stop--here .lm-node {
-  background: var(--paper, #FFFDF7);
-  animation: lm-here 1.6s ease-in-out infinite;
-}
-.lm-you {
-  display: block;
-  line-height: 0;
-  margin-top: 6px;
-}
-.lm-node--boss .lm-you { margin-top: 10px; }
+@keyframes lm-here { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes lm-ring { 0%, 100% { transform: scale(1); opacity: .9; } 50% { transform: scale(1.1); opacity: .4; } }
+.lm-stop--here.lm-stop--boss .lm-node { animation: none; }
+.lm-you { display: grid; place-items: center; width: 100%; height: 100%; background: #FFF6E6; border-radius: inherit; }
 .lm-you__flag {
-  position: absolute;
-  top: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 1px 7px;
-  border: 2px solid var(--ink, #35220E);
-  border-radius: 999px;
-  background: var(--arc-orange, #F87824);
-  font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif;
-  font-size: 0.8125rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  color: var(--ink, #35220E);
-  white-space: nowrap;
+  position: absolute; top: 2px; left: 50%; transform: translateX(-50%); z-index: 3;
+  padding: 3px 10px; border-radius: 999px; border: 2.5px solid var(--ink, #35220E);
+  background: #FF7A00; color: #fff; font-size: .68rem; font-weight: 900; letter-spacing: .08em;
+  box-shadow: 0 2px 0 var(--ink, #35220E);
 }
+.lm-stop--boss .lm-you__flag { top: -6px; }
 
-@keyframes lm-here {
-  0%, 100% { box-shadow: 0 4px 0 var(--ink, #35220E), 0 0 0 0 rgba(248, 120, 36, 0.55); }
-  50%      { box-shadow: 0 4px 0 var(--ink, #35220E), 0 0 0 10px rgba(248, 120, 36, 0); }
-}
-
-/* The XP badges stay. */
+/* The XP tag, pinned to the node's top right like a price tag. */
 .lm-xp {
-  padding: 1px 8px;
-  border: 2px solid var(--ink, #35220E);
-  border-radius: 999px;
-  background: var(--arc-sun, #FED340);
-  font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif;
-  font-size: 0.8125rem;
-  font-weight: 800;
-  color: var(--ink, #35220E);
-  white-space: nowrap;
+  position: absolute; top: 24px; left: calc(50% + 22px); z-index: 2;
+  padding: 2px 8px; border-radius: 999px; border: 2.5px solid var(--ink, #35220E);
+  background: #FFC93C; color: var(--ink, #35220E); font-size: .66rem; font-weight: 900; white-space: nowrap;
+  box-shadow: 0 2px 0 var(--ink, #35220E);
 }
-.lm-xp--ahead { background: var(--paper, #FFFDF7); border-color: #a08b76; color: #7a6653; }
-.lm-xp--completed { background: var(--arc-mint, #5FD3A2); }
+.lm-stop--boss .lm-xp { top: 16px; left: calc(50% + 30px); }
+.lm-xp--ahead { background: #FFF6E6; color: #8A6E55; }
+.lm-xp--completed { background: #4CC779; color: #fff; }
+.lm-stop--here .lm-xp { display: none; }
 
-/* Titles only on the current and next stop, beside the node on whichever
-   side has room. */
+/* The lesson's name under its stop. */
+.lm-name {
+  margin-top: 12px; width: 124px; text-align: center;
+  padding: 4px 8px; border-radius: 10px; border: 2.5px solid var(--ink, #35220E);
+  background: #FFFDF7; color: var(--ink, #35220E); font-size: .7rem; font-weight: 800; line-height: 1.2;
+  box-shadow: 0 2px 0 var(--ink, #35220E);
+}
+.lm-name__t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.lm-stop--boss .lm-name { margin-top: 16px; }
+.lm-name--ahead { background: #FFF6E6; color: #7A6552; }
+
+/* The speech bubble beside the current and next stop. */
 .lm-label {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: min(240px, 52vw);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 3px;
-  padding: 10px 12px;
-  border: 2px solid var(--ink, #35220E);
-  border-radius: 16px;
-  background: var(--paper, #FFFDF7);
-  box-shadow: 0 4px 0 var(--ink, #35220E);
+  position: absolute; top: 20px; z-index: 3;
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 10px 12px; border-radius: 16px;
+  background: #FFFDF7; border: 3px solid var(--ink, #35220E);
+  box-shadow: 0 5px 0 var(--ink, #35220E);
   text-align: left;
 }
-.lm-stop--right .lm-label { left: 52px; }
-.lm-stop--left .lm-label { right: 52px; }
-.lm-stop--boss.lm-stop--right .lm-label { left: 62px; }
-.lm-stop--boss.lm-stop--left .lm-label { right: 62px; }
-
-.lm-label__num {
-  font-size: 0.8125rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #6f5a48;
+.lm-label::before {
+  content: ''; position: absolute; top: 30px; width: 16px; height: 16px;
+  background: #FFFDF7; border: 3px solid var(--ink, #35220E); border-width: 0 0 3px 3px;
 }
-.lm-label__title {
-  font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif;
-  font-weight: 800;
-  font-size: 1rem;
-  line-height: 1.2;
-  color: var(--ink, #35220E);
-}
-.lm-label__next {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: #6f5a48;
-}
-
-/* The one Unlock button, on the node the child is looking at. */
+.lm-stop--right .lm-label::before { left: -11px; transform: rotate(45deg); }
+.lm-stop--left .lm-label::before { right: -11px; transform: rotate(-135deg); }
+.lm-label__num { font-size: .66rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; color: var(--arc-orange, #F87824); }
+.lm-label__title { font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; line-height: 1.15; color: var(--ink, #35220E); }
+.lm-label__next { font-size: .74rem; font-weight: 800; color: #7A6552; }
 .lm-badge {
-  margin-top: 4px;
-  padding: 5px 14px;
-  border: 2px solid var(--ink, #35220E);
-  border-radius: 999px;
-  background: var(--arc-orange, #F87824);
-  box-shadow: 0 3px 0 var(--ink, #35220E);
-  font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 800;
-  color: var(--ink, #35220E);
+  align-self: flex-start; margin-top: 2px; padding: 7px 18px; border-radius: 999px;
+  border: 2.5px solid var(--ink, #35220E); background: var(--arc-orange, #F87824); color: var(--ink, #35220E);
+  font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif; font-size: .92rem; font-weight: 800;
+  box-shadow: 0 3px 0 var(--ink, #35220E); transition: transform .09s ease, box-shadow .09s ease;
 }
 .lm-card:hover .lm-badge { transform: translateY(-1px); box-shadow: 0 4px 0 var(--ink, #35220E); }
 
+/* The castle at the end of the road. */
+.lm-stop--castle { height: 270px; }
+.lm-stop--castle .lm-card { height: 270px; padding-top: 130px; }
+.lm-hill { position: absolute; left: 50%; top: 72px; transform: translateX(-50%); z-index: 0; pointer-events: none; }
+.lm-castle { position: absolute; left: 50%; top: -6px; transform: translateX(-50%); z-index: 1; pointer-events: none; }
+.lm-node--castle { width: 72px; height: 72px; border-radius: 50%; }
+.lm-node--castle.lm-node--completed { background: #FFC93C; color: var(--ink, #35220E); box-shadow: 0 7px 0 #D39A12, 0 7px 0 3px var(--ink, #35220E); }
+.lm-stop--castle .lm-xp { top: 126px; }
+.lm-stop--castle .lm-name { width: 150px; }
+
+@media (max-width: 480px) {
+  .lm-label { padding: 8px 10px; }
+  .lm-label__title { font-size: .92rem; }
+  .lm-name { width: 108px; font-size: .66rem; }
+  .lm-gate { padding: 6px 12px 6px 6px; }
+  .lm-gate__text b { font-size: .95rem; }
+  .lm-gate__text small { font-size: .66rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lm-stop--here .lm-node, .lm-stop--here .lm-node::after, .lm-stage--here .lm-stage__disc { animation: none; }
+}
+
 /* ── All-done banner ───────────────────────────────── */
 .lm-all-done {
-  margin-top: 2.5rem;
+  margin: 1.5rem 0 3rem;
   padding: 1.5rem 2rem;
   background: var(--arc-mint, #5FD3A2);
   border: 2px solid var(--ink, #35220E);
@@ -352,18 +388,6 @@
   font-weight: 700;
   color: var(--ink, #35220E);
   box-shadow: 0 5px 0 var(--ink, #35220E);
-}
-
-/* ── Narrow phones: the label must still fit beside the outermost stops. ── */
-@media (max-width: 480px) {
-  .lm-label { width: min(200px, 50vw); padding: 8px 10px; }
-  .lm-label__title { font-size: 0.92rem; }
-  .lm-stop--right .lm-label { left: 46px; }
-  .lm-stop--left .lm-label { right: 46px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .lm-stop--here .lm-node { animation: none; }
 }
 
 /* ── The ask (message 74) ─────────────────────────────────
@@ -424,146 +448,3 @@
 .lm-ask__close { background: none; border-color: transparent; box-shadow: none; font-weight: 700; color: #6f5a48; }
 .lm-ask__start:focus-visible, .lm-ask__first:focus-visible { outline: 3px solid var(--arc-violet, #B39DDB); outline-offset: 3px; }
 
-/* ── The drawn world ────────────────────────────────────────────────
-   A sky that runs from morning in the meadow to sunset at the castle,
-   four lands with their own things in them, an island under every stop,
-   a rope bridge for the path, 3D buttons for the stops. All drawn in
-   MapArt.js and here: no image files. */
-.lm-page { background: #FFF4E5; }
-.lm-path {
-  border-radius: 28px;
-  overflow: visible;
-}
-.lm-land {
-  position: absolute; left: 50%; width: 100vw; transform: translateX(-50%);
-  pointer-events: none; z-index: 0; overflow: hidden;
-}
-.lm-land--beginner { background: linear-gradient(180deg, #CFEFFF 0, #E9F8FF 55%, #DFF7E6 100%); border-top-left-radius: 28px; border-top-right-radius: 28px; }
-.lm-land--intermediate { background: linear-gradient(180deg, #DFF7E6 0, #D9D4F7 30%, #C7BDF2 100%); }
-.lm-land--advanced { background: linear-gradient(180deg, #C7BDF2 0, #BFE4FF 35%, #E7F5FF 100%); }
-.lm-land--expert { background: linear-gradient(180deg, #E7F5FF 0, #FFD9A6 30%, #FFB37A 75%, #FF9A7A 100%); border-bottom-left-radius: 28px; border-bottom-right-radius: 28px; }
-
-/* Things in each land, placed by hand inside a frame as wide as the path, so
-   on a wide screen the trees stay near the road. */
-.lm-land__in { position: absolute; left: 50%; top: 0; bottom: 0; width: min(760px, 100vw); transform: translateX(-50%); }
-.lm-decor { position: absolute; }
-.lm-decor--c0 { left: 4%; top: 14px; opacity: .95; }
-.lm-decor--t1 { left: 8%; top: 230px; }
-.lm-decor--t2 { right: 6%; top: 120px; }
-.lm-decor--b1 { right: 10%; top: 400px; }
-.lm-decor--t3 { left: 5%; top: 560px; }
-.lm-decor--b2 { left: 14%; top: 760px; }
-.lm-decor--m1 { left: 50%; top: 60px; transform: translateX(-50%); opacity: .9; }
-.lm-decor--c1 { right: 5%; top: 330px; }
-.lm-decor--t4 { left: 6%; top: 560px; }
-.lm-decor--g1 { right: 12%; top: 760px; }
-.lm-decor--c2 { left: 3%; top: 140px; }
-.lm-decor--c3 { right: 4%; top: 300px; }
-.lm-decor--c4 { left: 6%; top: 560px; }
-.lm-decor--c5 { right: 8%; top: 780px; }
-.lm-decor--g2 { left: 12%; top: 420px; }
-.lm-decor--sun { right: 6%; top: 60px; }
-.lm-decor--c6 { left: 4%; top: 200px; }
-.lm-decor--m2 { left: 50%; top: 110px; transform: translateX(-50%); opacity: .5; }
-@media (max-width: 600px) {
-  .lm-decor--m1 { width: 100vw; height: auto; }
-  .lm-decor--t1, .lm-decor--t3, .lm-decor--t4 { left: 1%; }
-  .lm-decor--t2, .lm-decor--b1, .lm-decor--c1, .lm-decor--c3, .lm-decor--c5 { right: 1%; }
-}
-
-/* The signpost between lands. */
-.lm-signpost { position: absolute; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; z-index: 2; pointer-events: none; }
-.ma-sign__board {
-  display: flex; align-items: center; gap: 10px; width: min(88vw, 400px); padding: 10px 14px;
-  background: #C98A4B; border: 3px solid var(--ink, #35220E); border-radius: 12px;
-  box-shadow: inset 0 0 0 3px #E2A869, 0 4px 0 var(--ink, #35220E);
-  font-family: 'Nunito', sans-serif; color: #FFF6E6;
-}
-.ma-sign__icon { flex: none; width: 34px; height: 34px; border-radius: 9px; background: var(--sun, #FFC93C); color: var(--ink, #35220E); display: grid; place-items: center; border: 2px solid var(--ink, #35220E); }
-.ma-sign__text b { display: block; font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 800; line-height: 1.1; text-shadow: 0 1px 0 rgba(53, 34, 14, .5); }
-.ma-sign__text small { display: block; font-size: .78rem; font-weight: 800; color: #FFE6C4; }
-.ma-sign__post { width: 14px; height: 34px; background: #9C6A3A; border: 3px solid var(--ink, #35220E); border-top: 0; border-radius: 0 0 6px 6px; }
-
-/* The path: a rope bridge, walked part in orange. */
-.lm-trail, .lm-stops { position: relative; z-index: 1; }
-.lm-trail { position: absolute; }
-.lm-trail__all { stroke: #C98A4B; stroke-width: 9; stroke-dasharray: none; opacity: 1; }
-.lm-trail__done { stroke: #FF7A00; stroke-width: 9; stroke-dasharray: none; }
-
-/* An island under every stop. The card is absolute and 0-wide at the stop's
-   centre, so the island is centred on it and drawn first, under the node. */
-.lm-card { border-radius: 0; overflow: visible; }
-.lm-island { position: absolute; left: 50%; top: 40px; transform: translateX(-50%); z-index: 0; pointer-events: none; filter: drop-shadow(0 10px 0 rgba(53, 34, 14, .14)); max-width: none; width: 170px; height: auto; }
-.lm-stop--boss .lm-island { width: 190px; }
-.lm-island--castle { width: 230px; }
-.lm-castle { max-width: none; width: 150px; height: auto; }
-.lm-decor { max-width: none; height: auto; }
-.lm-node { flex: none; }
-.lm-node, .lm-xp { position: relative; z-index: 1; }
-.lm-you__flag, .lm-label { z-index: 2; }
-.lm-stop--boss .lm-island { top: 48px; }
-.lm-stop { z-index: 1; }
-.lm-stop--titled { z-index: 3; }
-
-/* The stops: round 3D buttons set into the grass. */
-.lm-node {
-  width: 64px; height: 64px; border-radius: 50%;
-  border: 3px solid var(--ink, #35220E);
-  background: #ECE3D4; color: var(--ink, #35220E);
-  box-shadow: 0 6px 0 #B9A98F, 0 6px 0 3px var(--ink, #35220E);
-  font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif; font-weight: 800; font-size: 1.5rem;
-}
-.lm-node--ahead { background: #E6DDCF; color: #7A6552; border-style: solid; opacity: 1; }
-.lm-node--completed { background: #FFC93C; color: var(--ink, #35220E); box-shadow: 0 6px 0 #D39A12, 0 6px 0 3px var(--ink, #35220E); }
-.lm-node--available { background: #FFFDF7; box-shadow: 0 6px 0 #B9A98F, 0 6px 0 3px var(--ink, #35220E); }
-.lm-node--boss { width: 78px; height: 78px; border-radius: 26px; transform: rotate(45deg); }
-.lm-node--boss > * { transform: rotate(-45deg); }
-.lm-node--boss.lm-node--ahead { background: #D8CCF0; }
-.lm-node--boss.lm-node--completed { background: #FF7A00; box-shadow: 0 6px 0 #B85600, 0 6px 0 3px var(--ink, #35220E); }
-.lm-card--next .lm-node { background: #FFFDF7; box-shadow: 0 6px 0 #B9A98F, 0 6px 0 3px var(--ink, #35220E), 0 0 0 8px rgba(255, 201, 60, .45); animation: lm-glow 1.6s ease-in-out infinite; }
-@keyframes lm-glow { 0%, 100% { box-shadow: 0 6px 0 #B9A98F, 0 6px 0 3px var(--ink, #35220E), 0 0 0 6px rgba(255, 201, 60, .45); } 50% { box-shadow: 0 6px 0 #B9A98F, 0 6px 0 3px var(--ink, #35220E), 0 0 0 14px rgba(255, 201, 60, .18); } }
-@media (prefers-reduced-motion: reduce) { .lm-card--next .lm-node { animation: none; } }
-.lm-card:hover .lm-node, .lm-card:focus-visible .lm-node { transform: translateY(-2px); }
-.lm-card:hover .lm-node--boss, .lm-card:focus-visible .lm-node--boss { transform: rotate(45deg) translateY(-2px); }
-
-/* XP pill, pinned on the island's dirt. */
-.lm-xp { margin-top: 6px; border: 2.5px solid var(--ink, #35220E); background: #FFF6E6; color: var(--ink, #35220E); font-weight: 900; box-shadow: 0 3px 0 var(--ink, #35220E); }
-.lm-xp--completed { background: #FFC93C; }
-.lm-xp--ahead { background: #FFF6E6; color: #7A6552; }
-
-/* The castle at the end. */
-.lm-stop--castle { height: 210px; }
-.lm-stop--castle .lm-card { height: 210px; padding-top: 116px; }
-.lm-stop--castle .lm-island { top: 126px; }
-.lm-castle { position: absolute; left: 50%; top: -18px; transform: translateX(-50%); z-index: 0; pointer-events: none; }
-.lm-node--castle { width: 64px; height: 64px; border-radius: 50%; background: #FFC93C; }
-.lm-node--castle.lm-node--completed { background: #17C08B; box-shadow: 0 6px 0 #0E8A62, 0 6px 0 3px var(--ink, #35220E); }
-
-/* The stages row under the title: five tiles, a level select. */
-.lm-stages {
-  list-style: none; margin: 0.5rem 0 0; padding: 0;
-  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px;
-  width: 100%; max-width: 620px;
-}
-.lm-stage {
-  display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center;
-  padding: 10px 4px 8px; border-radius: 16px; border: 2.5px solid var(--ink, #35220E);
-  background: #FFFDF7; box-shadow: 0 4px 0 var(--ink, #35220E); font-family: 'Nunito', sans-serif;
-}
-.lm-stage--done { background: #CDF5E0; }
-.lm-stage--here { background: #FFC93C; }
-.lm-stage--ahead { background: #F3EBDD; border-style: dashed; box-shadow: none; }
-.lm-stage__disc { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; border: 2.5px solid var(--ink, #35220E); background: #fff; color: var(--ink, #35220E); }
-.lm-stage--done .lm-stage__disc { background: #17C08B; }
-.lm-stage--here .lm-stage__disc { animation: lm-stage-pulse 1.6s ease-in-out infinite; }
-.lm-stage--ahead .lm-stage__disc { opacity: .6; }
-.lm-stage__name { font-size: .66rem; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; color: var(--ink, #35220E); }
-.lm-stage__count { font-size: .76rem; font-weight: 800; color: #6B4F3A; }
-.lm-stage--ahead .lm-stage__name, .lm-stage--ahead .lm-stage__count { color: #9b8575; }
-@keyframes lm-stage-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-@media (prefers-reduced-motion: reduce) { .lm-stage--here .lm-stage__disc { animation: none; } }
-@media (max-width: 420px) { .lm-stage__name { font-size: .56rem; } .lm-stage__disc { width: 32px; height: 32px; } .lm-stage { padding: 8px 2px 6px; } }
-
-.lm-trail__edge { fill: none; stroke: var(--ink, #35220E); stroke-width: 15; stroke-linecap: round; }
-.lm-trail__all { stroke-linecap: round; }
-.lm-trail__all, .lm-trail__done { stroke-dasharray: 3 9; }

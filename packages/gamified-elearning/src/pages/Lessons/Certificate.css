@@ -1,41 +1,85 @@
 .cert-page { min-height: 100vh; background: var(--ci-cream, #FFF4E5); color: var(--ci-ink, #35220E); padding-bottom: 110px; }
-.cert-main { max-width: 760px; margin: 0 auto; padding: 24px 16px; }
+.cert-main { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
 .cert-wait, .cert__ey { font: 800 12px 'Nunito', sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #6B4F3A; margin: 0 0 8px; }
 
-/* The award: a double gold frame on cream, corner flourishes, a ribbon, a seal. */
+/* The award: a scene from the map on top (sky, the castle on its hill),
+   the words on cream below, a gold frame around all of it. */
 .cert {
-  position: relative; text-align: center; padding: 34px 28px 30px; overflow: hidden;
+  position: relative; overflow: hidden; text-align: center;
   background: #FFFDF7; color: #35220E;
-  border: 4px solid #35220E; border-radius: 10px;
-  box-shadow: 0 8px 0 #35220E, inset 0 0 0 8px #FFF4E5, inset 0 0 0 11px #E2B13C, inset 0 0 0 14px #FFF4E5, inset 0 0 0 16px #F3CF6A;
-  background-image: radial-gradient(circle at 50% 40%, rgba(255, 201, 60, .12), transparent 60%);
+  border: 4px solid #35220E; border-radius: 26px;
+  box-shadow: 0 8px 0 #35220E;
 }
-.cert__corner { position: absolute; width: 54px; height: 54px; border: 4px solid #E2B13C; }
-.cert__corner--tl { left: 20px; top: 20px; border-right: 0; border-bottom: 0; border-top-left-radius: 14px; }
-.cert__corner--tr { right: 20px; top: 20px; border-left: 0; border-bottom: 0; border-top-right-radius: 14px; }
-.cert__corner--bl { left: 20px; bottom: 20px; border-right: 0; border-top: 0; border-bottom-left-radius: 14px; }
-.cert__corner--br { right: 20px; bottom: 20px; border-left: 0; border-top: 0; border-bottom-right-radius: 14px; }
-.cert__logo { height: 48px; width: auto; margin: 6px 0 10px; }
-.cert__ribbon { display: inline-block; position: relative; margin: 0 auto 14px; padding: 8px 26px; background: #FF7A00; color: #fff; border: 3px solid #35220E; border-radius: 6px; font: 900 13px 'Nunito', sans-serif; letter-spacing: .16em; text-transform: uppercase; box-shadow: 0 4px 0 #35220E; }
+.cert::after {
+  content: ''; position: absolute; inset: 10px; border-radius: 18px; pointer-events: none;
+  border: 3px solid #F3CF6A; box-shadow: inset 0 0 0 3px #FFFDF7, inset 0 0 0 5px #E2B13C;
+}
+.cert__scene {
+  position: relative; height: 200px; overflow: hidden;
+  background: linear-gradient(180deg, #8FD0FF 0, #C9E9FF 70%, #7FD86A 70%, #7FD86A 100%);
+  border-bottom: 3px solid #35220E;
+}
+.cert__scene.is-lit { background: linear-gradient(180deg, #FFD9A6 0, #FFF0C9 70%, #7FD86A 70%, #7FD86A 100%); }
+.cert__scene svg { position: absolute; max-width: none; height: auto; }
+.cert__sun { right: 8%; top: 14px; }
+.cert__scene:not(.is-lit) .cert__sun { opacity: .35; }
+.cert__cloud--a { left: 6%; top: 22px; }
+.cert__cloud--b { left: 24%; top: 70px; }
+.cert__hill { left: 50%; bottom: -8px; transform: translateX(-50%); }
+.cert__castle { left: 50%; bottom: 44px; transform: translateX(-50%); }
+.cert__tree--a { left: 10%; bottom: 10px; }
+.cert__tree--b { right: 12%; bottom: 14px; }
+.cert__flag { left: calc(50% + 86px); bottom: 56px; }
+.cert__body { position: relative; padding: 18px 24px 26px; }
+.cert__logo { height: 42px; width: auto; margin: 0 0 8px; }
+.cert__ribbon { display: inline-block; position: relative; margin: 0 auto 12px; padding: 8px 26px; background: #FF7A00; color: #fff; border: 3px solid #35220E; border-radius: 6px; font: 900 13px 'Nunito', sans-serif; letter-spacing: .16em; text-transform: uppercase; box-shadow: 0 4px 0 #35220E; }
 .cert__ribbon::before, .cert__ribbon::after { content: ""; position: absolute; top: 6px; width: 22px; height: 100%; background: #E25E00; border: 3px solid #35220E; z-index: -1; }
 .cert__ribbon::before { left: -18px; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 40% 50%); }
 .cert__ribbon::after { right: -18px; clip-path: polygon(0 0, 100% 0, 60% 50%, 100% 100%, 0 100%); }
-.cert__awarded { margin: 4px 0 2px; font: 800 14px 'Nunito', sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #6B4F3A; }
-.cert__name { font-family: var(--ci-display, 'Baloo 2'), 'Nunito', sans-serif; font-size: clamp(2.4rem, 10vw, 4.2rem); line-height: 1; margin: 2px 0 10px; color: #35220E; text-shadow: 0 3px 0 #FFC93C; }
-.cert__line { margin: 0 0 6px; font-weight: 800; font-size: 1.05rem; }
-.cert__what { margin: 0 auto 20px; max-width: 460px; font-weight: 700; color: #6B4F3A; line-height: 1.4; }
-.cert__foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin: 0 24px; }
+.cert__awarded { margin: 4px 0 0; font: 800 13px 'Nunito', sans-serif; letter-spacing: .1em; text-transform: uppercase; color: #6B4F3A; }
+.cert__name { font-family: var(--ci-display, 'Baloo 2'), 'Nunito', sans-serif; font-size: clamp(2.4rem, 10vw, 4rem); line-height: 1.05; margin: 2px 0 8px; color: #35220E; text-shadow: 0 3px 0 #FFC93C; overflow-wrap: anywhere; }
+.cert__line { margin: 0 0 14px; font-weight: 800; font-size: 1.05rem; }
+.cert__count { font-family: var(--ci-display, 'Baloo 2'), 'Nunito', sans-serif; font-size: clamp(1.6rem, 6vw, 2.4rem); margin: 0 0 12px; line-height: 1.1; }
+.cert__bar { height: 16px; max-width: 360px; margin: 0 auto 16px; border: 3px solid #35220E; border-radius: 999px; background: #FFF4E5; overflow: hidden; box-shadow: 0 3px 0 #35220E; }
+.cert__bar i { display: block; height: 100%; background: #FFB020; border-right: 3px solid #35220E; min-width: 6px; }
+
+/* The four lands, ticked as they are finished. */
+.cert__lands { list-style: none; margin: 0 auto 14px; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; max-width: 520px; }
+.cert__land { display: flex; flex-direction: column; align-items: center; gap: 3px; font-family: 'Nunito', sans-serif; }
+.cert__land b { font-size: .68rem; font-weight: 900; line-height: 1.1; }
+.cert__land small { font-size: .7rem; font-weight: 800; color: #6B4F3A; }
+.cert__land-disc { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; border: 3px solid #35220E; background: #FFFDF7; box-shadow: 0 3px 0 #35220E; }
+.cert__land--beginner.cert__land--done .cert__land-disc, .cert__land--beginner.cert__land--here .cert__land-disc { background: #7FD86A; }
+.cert__land--intermediate.cert__land--done .cert__land-disc, .cert__land--intermediate.cert__land--here .cert__land-disc { background: #B9ADEB; }
+.cert__land--advanced.cert__land--done .cert__land-disc, .cert__land--advanced.cert__land--here .cert__land-disc { background: #9ED6FF; }
+.cert__land--expert.cert__land--done .cert__land-disc, .cert__land--expert.cert__land--here .cert__land-disc { background: #F6B35A; }
+.cert__land--here .cert__land-disc { outline: 3px solid #FFC93C; outline-offset: 2px; }
+.cert__land--ahead .cert__land-disc { background: #F3EBDD; border-style: dashed; box-shadow: none; color: #9b8575; }
+.cert__land--ahead b, .cert__land--ahead small { color: #9b8575; }
+
+.cert__what { margin: 0 auto 18px; max-width: 460px; font-weight: 700; color: #6B4F3A; line-height: 1.4; }
+.cert__go { display: inline-block; }
+.cert__foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin: 0 12px; }
 .cert__sig { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; font: 800 12px 'Nunito', sans-serif; color: #6B4F3A; }
 .cert__sig-line { display: block; width: 100%; max-width: 160px; height: 2px; background: #35220E; }
 .cert__seal { position: relative; width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center; background: #FFC93C; border: 3px solid #35220E; box-shadow: 0 4px 0 #35220E, inset 0 0 0 5px #FFFDF7, inset 0 0 0 7px #E2B13C; font: 900 12px 'Nunito', sans-serif; transform: rotate(-8deg); flex: none; }
 .cert__seal-star { font-size: 22px; line-height: 1; color: #35220E; }
 .cert__actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 22px; }
-.cert-not-yet { text-align: center; padding: 32px 16px; }
-.cert-not-yet h1 { font-family: var(--ci-display, 'Baloo 2'), 'Nunito', sans-serif; font-size: clamp(1.6rem, 6vw, 2.4rem); margin: 0 0 10px; }
-.cert-not-yet p { max-width: 420px; margin: 0 auto 18px; font-weight: 700; color: #6B4F3A; line-height: 1.4; }
-@media (max-width: 480px) { .cert { padding: 28px 18px 24px; } .cert__corner { width: 36px; height: 36px; left: 16px; right: auto; } .cert__corner--tr, .cert__corner--br { left: auto; right: 16px; } .cert__foot { margin: 0 8px; } }
+
+@media (max-width: 480px) {
+  .cert__body { padding: 16px 14px 22px; }
+  .cert__scene { height: 170px; }
+  .cert__castle { bottom: 40px; }
+  .cert__hill { width: 260px; }
+  .cert__tree--a { left: 2%; }
+  .cert__tree--b { right: 3%; }
+  .cert__lands { gap: 4px; }
+  .cert__land b { font-size: .6rem; }
+  .cert__land-disc { width: 38px; height: 38px; }
+  .cert__foot { margin: 0; }
+}
 @media print {
   .cert-page { background: #fff; padding: 0; }
   .cert__actions, .cert-page header, .cert-page nav, .site-header, .ds-tabbar { display: none !important; }
-  .cert { box-shadow: inset 0 0 0 8px #FFF4E5, inset 0 0 0 11px #E2B13C; }
+  .cert { box-shadow: none; }
 }

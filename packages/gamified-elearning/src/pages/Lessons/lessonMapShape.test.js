@@ -43,7 +43,7 @@ test('the trail passes through every stop, in order', () => {
   expect(d.startsWith(`M ${stopX(0).toFixed(2)} ${ROW_HEIGHT / 2}`)).toBe(true);
   expect(d.endsWith(`${stopX(3).toFixed(2)} ${3 * ROW_HEIGHT + ROW_HEIGHT / 2}`)).toBe(true);
   expect(trailPath(0)).toBe('');
-  expect(trailPath(31, 1)).toMatch(/^M [\d.]+ 54$/);
+  expect(trailPath(31, 1)).toMatch(new RegExp(`^M [\\d.]+ ${ROW_HEIGHT / 2}$`));
 });
 
 test('every fifth lesson is the boss stop, and nothing else is', () => {
@@ -99,16 +99,25 @@ test('the label beside a stop never hangs off the edge of the path', () => {
       for (const boss of [false, true]) {
         const box = labelBox(x, width, boss);
         const cx = (x / 100) * width;
-        const cardLeft = cx - (boss ? 78 : 64) / 2;
+        const cardLeft = cx - (boss ? 84 : 72) / 2;
         const absLeft = cardLeft + box.style.left;
         expect(absLeft).toBeGreaterThanOrEqual(-0.5);
         expect(absLeft + box.style.width).toBeLessThanOrEqual(width + 0.5);
         // And never over the node it labels.
-        const nodeW = boss ? 78 : 64;
+        const nodeW = boss ? 84 : 72;
         const overlaps = absLeft < cx + nodeW / 2 && absLeft + box.style.width > cx - nodeW / 2;
         expect(overlaps).toBe(false);
       }
     }
   }
   expect(labelBox(50, 0, false)).toBeNull();
+});
+
+test('the name under a stop is the short title, from the registry', () => {
+  const { shortTitle, stopTitle } = require('./LessonMap');
+  expect(shortTitle('While Loops. Keep Going Until')).toBe('While Loops');
+  expect(shortTitle('Break and Continue — Stop or Skip')).toBe('Break and Continue');
+  expect(shortTitle('Hello Python!')).toBe('Hello Python!');
+  expect(stopTitle({ id: 17, title: 'While Loops — Keep Going Until' })).toBe('While Loops. Keep Going Until');
+  expect(stopTitle({ id: 999, title: 'Unknown' })).toBe('Unknown');
 });

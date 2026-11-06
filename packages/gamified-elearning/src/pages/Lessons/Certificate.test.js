@@ -8,6 +8,7 @@ jest.mock('react-router-dom', () => {
 jest.mock('../Header/Header', () => () => null);
 jest.mock('../../ds/TabBar', () => () => null);
 jest.mock('../../components/BrandLogo/BrandLogo', () => () => null);
+jest.mock('../../components/Icon/Icon', () => () => null);
 jest.mock('../../hooks/useSEO', () => ({ useSEO: jest.fn() }));
 jest.mock('../../config/api', () => ({ ENDPOINTS: { lessons: { progress: 'http://codeit.test/api/lessons/progress' } } }));
 jest.mock('../../context/AuthContext', () => {
