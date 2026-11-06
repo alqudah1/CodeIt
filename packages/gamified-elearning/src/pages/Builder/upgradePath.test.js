@@ -59,10 +59,20 @@ describe('hitting the monthly AI limit', () => {
 });
 
 describe('the plan page is one tap from an adult account', () => {
-  test('the header only offers Get Plus to an adult without a subscription', () => {
-    expect(HEADER).toMatch(/const showGetPlus = isAdultAccount && billing\.billingEnabled && !isPlusMember\(billing\)/);
+  // This asserted the gate's exact expression, including !== "student". That
+  // pinned the wrong rule: the backend and the pricing page decide who may buy
+  // from date of birth, because an adult can hold a learner account, and the
+  // header was the one surface still guessing from the role. Pinning the text
+  // of a guess is how the guess outlived the thing it was standing in for.
+  // What matters is the promise, so that is what is asserted now, and
+  // scripts/who-may-buy.test.js keeps all three surfaces agreeing.
+  test('the header only offers Get Plus to someone the server will sell to', () => {
+    expect(HEADER).toMatch(/const showGetPlus = billing\.canSubscribe === true/);
+    expect(HEADER).toMatch(/billing\.billingEnabled/);
+    expect(HEADER).toMatch(/!isPlusMember\(billing\)/);
+    // A managed profile is the one case the browser can rule out on its own,
+    // and it is what decides whether to ask the server at all.
     expect(HEADER).toMatch(/!user\.managedProfile/);
-    expect(HEADER).toMatch(/!== "student"/);
   });
 
   test('it lands on the paid card, not the top of the page', () => {

@@ -18,12 +18,18 @@ jest.mock('../../components/BrandLogo/BrandLogo', () => () => null);
 const mockTrack = jest.fn();
 jest.mock('../../utils/trackEvent', () => ({ trackEvent: (...args) => mockTrack(...args) }));
 
-// The header asks the billing API once per mount for an adult account. Each
-// test says what that answer is; the default is the free plan, which is also
-// what an unreachable billing API leaves behind.
-let mockBilling = { billingEnabled: false, plan: 'free' };
+// The header asks the billing API once per mount for any account that is not
+// a managed profile. Each test says what that answer is; the default is the
+// free plan with no verdict yet, which is also what an unreachable billing API
+// leaves behind.
+//
+// canSubscribe is the server's answer to "may this account be charged", and it
+// is the whole point of asking. It is null here rather than false because that
+// is the real starting state, and the header has to show nothing while it is
+// null without treating it as a refusal.
+let mockBilling = { billingEnabled: false, plan: 'free', canSubscribe: null };
 jest.mock('../../utils/billing', () => ({
-  DEFAULT_BILLING_STATE: { billingEnabled: false, plan: 'free' },
+  DEFAULT_BILLING_STATE: { billingEnabled: false, plan: 'free', canSubscribe: null },
   fetchBillingStatus: () => Promise.resolve(mockBilling),
   isPlusMember: (state) => Boolean(state && state.plan === 'plus'),
 }));
@@ -69,10 +75,10 @@ describe('header navigation', () => {
 // CodeIt's first paying family said subscribing took too many buttons. From a
 // signed-in adult's studio the plan page was two taps behind an avatar.
 describe('the shortcut to subscribing', () => {
-  afterEach(() => { mockBilling = { billingEnabled: false, plan: 'free' }; mockTrack.mockClear(); });
+  afterEach(() => { mockBilling = { billingEnabled: false, plan: 'free', canSubscribe: null }; mockTrack.mockClear(); });
 
   test('an adult on the free plan gets one tap to the paid card', async () => {
-    mockBilling = { billingEnabled: true, plan: 'free' };
+    mockBilling = { billingEnabled: true, plan: 'free', canSubscribe: true };
     renderHeader({ id: 1, name: 'Parent', role: 'Educator' }, 'token-abc');
     const link = await screen.findByRole('link', { name: 'Get Plus' });
     expect(link).toHaveAttribute('href', '/pricing#codeit-plus');
@@ -87,7 +93,7 @@ describe('the shortcut to subscribing', () => {
   });
 
   test('a subscriber is never sold to again', async () => {
-    mockBilling = { billingEnabled: true, plan: 'plus' };
+    mockBilling = { billingEnabled: true, plan: 'plus', canSubscribe: true };
     renderHeader({ id: 1, name: 'Parent', role: 'Educator' }, 'token-abc');
     fireEvent.click(await screen.findByRole('button', { name: /account menu/i }));
     expect(screen.queryByRole('link', { name: 'Get Plus' })).not.toBeInTheDocument();
@@ -95,8 +101,44 @@ describe('the shortcut to subscribing', () => {
     expect(mockTrack).not.toHaveBeenCalledWith('upgrade_prompt_shown', 'header', 'token-abc');
   });
 
+  // The reason the gate moved off the role. An adult beginner signs up on the
+  // learner path, so their role is 'student' and their account is not managed.
+  // The server looks at their date of birth and says yes; /pricing offered them
+  // the plan; the header used to read the role, decide "child", and never even
+  // ask. They were the one group in the product that had said yes to paying and
+  // been shown no way to.
+  test('an adult on a learner account is offered the plan the server will sell them', async () => {
+    mockBilling = { billingEnabled: true, plan: 'free', canSubscribe: true };
+    renderHeader({ id: 3, name: 'Dana', role: 'student' }, 'token-abc');
+    const link = await screen.findByRole('link', { name: 'Get Plus' });
+    expect(link).toHaveAttribute('href', '/pricing#codeit-plus');
+    expect(mockTrack).toHaveBeenCalledWith('upgrade_prompt_shown', 'header', 'token-abc');
+  });
+
+  // The other half of the same change, and the one that must never break: the
+  // role no longer keeps a price away from a child, so the server's answer has
+  // to. An eleven-year-old who signed up on their own holds exactly the same
+  // kind of account as the adult above.
+  test('a child who signed up alone is not offered a price, whatever the nav says', async () => {
+    mockBilling = { billingEnabled: true, plan: 'free', canSubscribe: false };
+    renderHeader({ id: 4, name: 'Maya', role: 'student' }, 'token-abc');
+    expect(await screen.findByRole('link', { name: 'Lessons' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Get Plus' })).not.toBeInTheDocument();
+    expect(mockTrack).not.toHaveBeenCalledWith('upgrade_prompt_shown', 'header', 'token-abc');
+  });
+
+  // Fail closed. Between mount and the answer there is no verdict, and a
+  // header that reads "no verdict" as "go ahead" flashes a price at whoever is
+  // holding the phone.
+  test('nothing is offered while the server has not answered', async () => {
+    mockBilling = { billingEnabled: true, plan: 'free', canSubscribe: null };
+    renderHeader({ id: 5, name: 'Unknown', role: 'student' }, 'token-abc');
+    expect(await screen.findByRole('link', { name: 'Lessons' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Get Plus' })).not.toBeInTheDocument();
+  });
+
   test('a child is never sold to at all', async () => {
-    mockBilling = { billingEnabled: true, plan: 'free' };
+    mockBilling = { billingEnabled: true, plan: 'free', canSubscribe: false };
     renderHeader({ id: 2, name: 'Sara', role: 'student', managedProfile: true }, 'token-abc');
     fireEvent.click(await screen.findByRole('button', { name: /account menu/i }));
     expect(screen.queryByRole('link', { name: 'Get Plus' })).not.toBeInTheDocument();

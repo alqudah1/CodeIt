@@ -431,18 +431,26 @@ describe('studio opening', () => {
     }
   }, 10000);
 
+  // Who gets shown the plan here used to be read off the role on the account,
+  // which was the same thing as an age test for as long as every student was a
+  // child. It is the server's answer now, so this test supplies it: the studio
+  // asks /api/billing/status and canSubscribe is the verdict. The role is left
+  // in each case deliberately, to show that it no longer decides anything.
   test('at the monthly limit a child is told what still works, and only a grown-up is shown the plan', async () => {
-    const limitFetch = (url) => {
+    const limitFetch = (canSubscribe) => (url) => {
       const target = String(url);
       if (target.endsWith('/api/builder/recipe')) return Promise.resolve({ ok: true, status: 200, headers: { get: () => 'application/json' }, json: async () => ({ game: false }) });
       if (target.endsWith('/api/builder')) {
         return Promise.resolve({ ok: false, status: 402, headers: { get: () => 'application/json' }, json: async () => ({ code: 'FREE_AI_LIMIT_REACHED', error: 'You have used this month\'s free AI builds.' }) });
       }
+      if (target.includes('/api/billing/status')) {
+        return Promise.resolve({ ok: true, status: 200, headers: { get: () => 'application/json' }, json: async () => ({ billingEnabled: true, plan: 'free', canSubscribe }) });
+      }
       return Promise.resolve({ ok: true, status: 200, headers: { get: () => 'application/json' }, json: async () => ({}) });
     };
     const { AuthContext } = require('../../context/AuthContext');
-    const run = async (user) => {
-      global.fetch = jest.fn(limitFetch);
+    const run = async (user, canSubscribe) => {
+      global.fetch = jest.fn(limitFetch(canSubscribe));
       trackEvent.mockClear();
       mockBuilderLocation.search = '?prompt=a%20website%20about%20my%20dog&go=1';
       const view = render(
@@ -454,20 +462,36 @@ describe('studio opening', () => {
       return view;
     };
     try {
-      const child = await run({ id: 1, name: 'Sam', role: 'Student' });
+      const child = await run({ id: 1, name: 'Sam', role: 'Student' }, false);
       expect(screen.queryByRole('link', { name: 'See CodeIt Plus' })).toBeNull();
       expect(screen.getByRole('link', { name: 'Make a quick game' })).toHaveAttribute('href', '/build');
       expect(screen.getByText(/Quick games on Build do not count/)).toBeInTheDocument();
       expect(trackEvent).not.toHaveBeenCalledWith('upgrade_prompt_shown', 'build-limit', 't');
       child.unmount();
 
-      await run({ id: 2, name: 'Pat', role: 'Parent' });
-      expect(screen.getByRole('link', { name: 'See CodeIt Plus' })).toHaveAttribute('href', '/pricing#codeit-plus');
+      const parent = await run({ id: 2, name: 'Pat', role: 'Parent' }, true);
+      expect(await screen.findByRole('link', { name: 'See CodeIt Plus' })).toHaveAttribute('href', '/pricing#codeit-plus');
       expect(trackEvent).toHaveBeenCalledWith('upgrade_prompt_shown', 'build-limit', 't');
+      parent.unmount();
+
+      // The case the role test got wrong, and the only moment in the product
+      // where somebody is demonstrably willing to pay: an adult working through
+      // the studio on a learner account, who hit the wall and was handed a
+      // child's consolation message.
+      const adultLearner = await run({ id: 3, name: 'Dana', role: 'Student' }, true);
+      expect(await screen.findByRole('link', { name: 'See CodeIt Plus' })).toHaveAttribute('href', '/pricing#codeit-plus');
+      expect(screen.queryByText(/Quick games on Build do not count/)).toBeNull();
+      expect(trackEvent).toHaveBeenCalledWith('upgrade_prompt_shown', 'build-limit', 't');
+      adultLearner.unmount();
+
+      // And fail closed: no answer is not permission.
+      await run({ id: 4, name: 'Unknown', role: 'Parent' }, null);
+      expect(screen.queryByRole('link', { name: 'See CodeIt Plus' })).toBeNull();
+      expect(trackEvent).not.toHaveBeenCalledWith('upgrade_prompt_shown', 'build-limit', 't');
     } finally {
       mockBuilderLocation.search = '';
     }
-  }, 15000);
+  }, 25000);
 
   test('a streamed build shows the child their code being written, then the project', async () => {
     const { TextEncoder: Enc, TextDecoder: Dec } = require('util');

@@ -7,6 +7,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { useSEO } from '../../hooks/useSEO';
 import { trackEvent } from '../../utils/trackEvent';
+import { DEFAULT_BILLING_STATE, fetchBillingStatus } from '../../utils/billing';
 import { trackActivityComplete, trackActivityStart } from '../../utils/activity';
 import { reportFailure } from '../../utils/humanError';
 import { journeyHeaders } from '../../utils/journey';
@@ -746,11 +747,15 @@ function getEasyEditIdeas(type) {
       : EASY_EDIT_IDEAS.default;
 }
 
-// The same rule as the header's Get Plus: a signed-in account that is not a
-// student and not a family profile. Everyone else may be a child.
-function isAdultAccount(user) {
-  return Boolean(user && !user.managedProfile && String(user.role || '').toLowerCase() !== 'student');
-}
+// Who may be offered a plan is not decided here any more. It used to be
+// "signed in, not a family profile, role is not student", which was the same
+// thing as an age test only for as long as every student was a child. The
+// backend decides it from date of birth and answers on /api/billing/status as
+// canSubscribe, and the pricing page has read that answer for a while. This
+// file and the header were the two places still guessing from the role, which
+// meant an adult on a learner account was never offered the plan the server
+// would have sold them, and the upgrade_prompt_shown event undercounted by
+// exactly that group. See the billing state in the component below.
 
 /** "1 November": when the month's free studio builds come back. */
 function firstOfNextMonth(now = new Date()) {
@@ -978,6 +983,24 @@ export default function Builder() {
   // the product, and until today they were shown a red card that said "We
   // couldn't build that yet" with no button on it.
   const [limitReached, setLimitReached] = useState('');
+  // Whether this account may be offered a plan, straight from the server.
+  // Fail-closed: canSubscribe starts null and every test below is an
+  // explicit true, so a child is never shown a price by an answer that has
+  // not arrived.
+  const [billing, setBilling] = useState(DEFAULT_BILLING_STATE);
+  const couldBePayer = Boolean(user) && !user.managedProfile;
+  const mayBuy = billing.canSubscribe === true && billing.billingEnabled;
+
+  // Asked once per mount for any account that is not a managed profile. Silent
+  // on failure: the state stays on the free plan, which offers nothing.
+  useEffect(() => {
+    if (!token || !couldBePayer) return undefined;
+    let cancelled = false;
+    fetchBillingStatus(token)
+      .then((state) => { if (!cancelled) setBilling(state); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [token, couldBePayer]);
   const [buildKey, setBuildKey]         = useState(0);
   const [hasPersonalized, setHasPersonalized] = useState(false);
   const [hasPlayedOnce, setHasPlayedOnce] = useState(false);
@@ -2304,11 +2327,11 @@ export default function Builder() {
       if (res.status === 402 && data.code === 'FREE_AI_LIMIT_REACHED') {
         setLimitReached(data.error || data.message || '');
         // The refusal itself is recorded by the server, which is the only
-        // place that knows it happened. What the browser knows, and the
-        // server cannot, is whether the offer was actually put in front of
-        // anyone.
-        // Counted only when an offer is actually shown, which is to grown-ups.
-        if (isAdultAccount(user)) void trackEvent('upgrade_prompt_shown', 'build-limit', token);
+        // place that knows it happened. Whether the offer was actually put in
+        // front of anyone is recorded where the card is rendered, further down
+        // this file, and not here: at this instant the server may not have
+        // said yet whether this account may be charged, so a count taken here
+        // misses anyone whose answer was still in flight.
         return;
       }
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
@@ -3164,6 +3187,18 @@ export default function Builder() {
   const hasResult   = !loading && code;
   const hasError    = !loading && error;
   const hasLimit    = !loading && Boolean(limitReached);
+
+  // The offer is counted when it is on the screen, which is the only claim
+  // upgrade_prompt_shown can honestly make. It used to be recorded the moment
+  // the 402 came back, under a different condition than the card itself, so
+  // the number answered "how many refusals happened to an account we had
+  // already classified" rather than "how many people were asked".
+  const limitOfferShownRef = useRef(false);
+  useEffect(() => {
+    if (!hasLimit || !mayBuy || limitOfferShownRef.current) return;
+    limitOfferShownRef.current = true;
+    void trackEvent('upgrade_prompt_shown', 'build-limit', token);
+  }, [hasLimit, mayBuy, token]);
   const earnsProjectXp = String(user?.role || '').toLowerCase() === 'student';
   const activeBuildSteps = getBuildSteps(loadingPreviewType);
   const loadingTitle = loadingPreviewType === 'quiz' ? 'Building your quiz...'
@@ -3903,13 +3938,13 @@ export default function Builder() {
             <div className="bldr-limit-card__body">
               <p className="bldr-limit-card__title">That is this month's free studio builds used up.</p>
               <p className="bldr-limit-card__sub">
-                {isAdultAccount(user)
+                {mayBuy
                   ? (limitReached || 'Every lesson, puzzle and project stays open, and you can keep changing anything you have already built.')
                   : `Quick games on Build do not count, so make as many as you like. You can still change every game you have made and do every lesson. New studio builds come back on ${firstOfNextMonth()}.`}
               </p>
             </div>
             <div className="bldr-limit-card__actions">
-              {isAdultAccount(user) ? (
+              {mayBuy ? (
                 <Link
                   className="bldr-action-btn bldr-action-btn--primary bldr-action-btn--sm"
                   to="/pricing#codeit-plus"

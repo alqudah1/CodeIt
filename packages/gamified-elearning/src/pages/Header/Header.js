@@ -112,10 +112,22 @@ export default function Header() {
   // The first family to pay said it took too many buttons, and they were
   // right: from a signed-in adult's studio, the plan page was two taps behind
   // an avatar. This is one tap, and only for the person allowed to buy.
-  const isAdultAccount = Boolean(user)
-    && !user.managedProfile
-    && String(user.role || "").toLowerCase() !== "student";
-  const showGetPlus = isAdultAccount && billing.billingEnabled && !isPlusMember(billing);
+  //
+  // Who that is comes from the server, not from the role on the account. This
+  // read role !== "student", which was the same thing as an age test for as
+  // long as every student was a child. The backend and the pricing page both
+  // moved to the age rule and this header did not, so an adult on a learner
+  // account was told by /pricing that they could subscribe and was never
+  // shown the one button that goes there. The fetch below was gated on the
+  // same guess, so the header never even asked the question.
+  //
+  // canSubscribe starts as null and the test is an explicit true, so the
+  // button appears only once the server has said yes. A child is never shown
+  // a price by a request that has not come back.
+  const mayBuy = Boolean(user) && !user.managedProfile;
+  const showGetPlus = billing.canSubscribe === true
+    && billing.billingEnabled
+    && !isPlusMember(billing);
 
   // Two controls with one destination is the mistake this header already made
   // once with Studio. When Get Plus is in the top bar, Plan leaves the menu;
@@ -131,16 +143,17 @@ export default function Header() {
     setDropOpen(false);
   }, [location.pathname]);
 
-  // Asked once per mount, and only for an adult account. A failure is silent:
-  // the header keeps the default free-plan state, which shows nothing new.
+  // Asked once per mount for any account that could be the payer, which is
+  // every account that is not a managed profile. A failure is silent: the
+  // header keeps the default free-plan state, which shows nothing new.
   useEffect(() => {
-    if (!token || !isAdultAccount) return undefined;
+    if (!token || !mayBuy) return undefined;
     let cancelled = false;
     fetchBillingStatus(token)
       .then((state) => { if (!cancelled) setBilling(state); })
       .catch(() => {});
     return () => { cancelled = true; };
-  }, [token, isAdultAccount]);
+  }, [token, mayBuy]);
 
   useEffect(() => {
     if (!dropOpen) return undefined;
