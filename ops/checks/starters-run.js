@@ -154,6 +154,36 @@ async function run() {
           continue;
         }
 
+        // ── Wait for the canvas to have a size, do not assume it ──────────
+        //
+        // This check read the canvas 3.7 seconds after navigation and called a
+        // zero-sized one "nothing drawn". That reported a drawing bug for what
+        // is a documented sequence: several of these games size themselves from
+        // window.innerWidth, the studio keeps the preview hidden until the
+        // child presses Play, and the game's own fitScreen comment says so and
+        // re-fits on resize. So whether the canvas had a size yet depended on
+        // how busy the machine was, and the check failed on a different game at
+        // a different viewport each run. It went red on cat-chase at laptop in
+        // one run and cat-chase at phone in the next, with nothing changed in
+        // between, which is the signature of a race in the measurement rather
+        // than a fault in the thing measured.
+        //
+        // A flaky check is worse than no check: it teaches whoever reads CI
+        // that red means nothing. So wait for a size, bounded, and say plainly
+        // which of the two things failed.
+        const sized = await frame.waitForFunction(() => {
+          const c = document.querySelector('canvas');
+          // Element-built worlds have no canvas and are judged below.
+          if (!c) return true;
+          return c.width > 0 && c.height > 0;
+        }, null, { timeout: 8000 }).then(() => true).catch(() => false);
+
+        if (!sized) {
+          fail(where, 'the canvas never got a size in 8s, so the game had nothing to draw on');
+          await context.close();
+          continue;
+        }
+
         const state = await frame.evaluate(() => {
           const over = document.getElementById('gameOver');
           const ended = over ? getComputedStyle(over).display !== 'none' : false;
