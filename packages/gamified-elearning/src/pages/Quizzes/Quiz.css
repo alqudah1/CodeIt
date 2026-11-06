@@ -602,3 +602,18 @@
 @media (max-width: 520px) {
   .qz-btn-forward--studio { font-size: 0.95rem; }
 }
+
+/* ── Hearts ───────────────────────────────────────────────────── */
+.qz-hearts { display: inline-flex; gap: 2px; margin-left: 8px; flex: none; }
+.qz-heart { display: inline-block; color: #FF6B6B; line-height: 0; transition: transform .25s cubic-bezier(.3, 1.6, .5, 1), color .25s; }
+.qz-heart.is-lost { color: #E8DCC9; transform: scale(.85); }
+.qz-heart.is-full { animation: qz-heart-in .3s ease-out; }
+.qz-hearts--off .qz-heart { color: #E8DCC9; }
+@keyframes qz-heart-in { from { transform: scale(.6); } to { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .qz-heart, .qz-heart.is-full { animation: none; transition: none; } }
+.qz-hearts-out { text-align: center; padding: 32px 20px; }
+.qz-hearts-out .qz-hearts { margin: 0 0 10px; }
+.qz-hearts-out .qz-heart svg { width: 34px; height: 31px; }
+.qz-hearts-out__title { font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif; font-size: 1.9rem; margin: 0 0 8px; color: var(--ink, #35220E); }
+.qz-hearts-out__body { max-width: 380px; margin: 0 auto 18px; font-weight: 700; color: #6B4F3A; line-height: 1.45; }
+.qz-hearts-out__actions { display: flex; flex-direction: column; gap: 10px; align-items: center; }

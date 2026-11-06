@@ -32,6 +32,20 @@ const applyShuffles = (list) =>
     options: Array.isArray(q.options) ? shuffle(q.options) : q.options,
   }));
 
+const HEARTS = 3;
+
+export function Hearts({ left, total = HEARTS, off = false }) {
+  return (
+    <span className={`qz-hearts${off ? ' qz-hearts--off' : ''}`} role="img" aria-label={off ? 'Hearts off' : `${left} of ${total} hearts left`}>
+      {Array.from({ length: total }, (_, i) => (
+        <span key={i} className={`qz-heart${i < left ? ' is-full' : ' is-lost'}`} aria-hidden="true">
+          <svg viewBox="0 0 24 22" width="22" height="20"><path d="M12 21 C5 15 1 11.5 1 7 A5 5 0 0 1 12 4 A5 5 0 0 1 23 7 C23 11.5 19 15 12 21 Z" fill="currentColor" stroke="#35220E" strokeWidth="2.2" strokeLinejoin="round" /></svg>
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export default function Quiz() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -65,6 +79,14 @@ export default function Quiz() {
   const [questionResults, setQuestionResults] = useState({});
 
   // Final results
+  // ── Hearts ──────────────────────────────────────────────────────────────
+  // Three per quiz, one lost per wrong answer. Out of hearts is not a dead
+  // end: the child can start again with three, or keep going without them
+  // (the quiz still counts and pays the same). Hearts live only on this
+  // screen; nothing is stored and no XP depends on them.
+  const [hearts, setHearts] = useState(HEARTS);
+  const [heartsOut, setHeartsOut] = useState(false);
+  const [noHearts, setNoHearts] = useState(false);
   const [done, setDone] = useState(false);
   const [results, setResults] = useState(null);
   const [submitErr, setSubmitErr] = useState("");
@@ -200,6 +222,7 @@ export default function Quiz() {
       );
       const result = res.data; // { correct, correctAnswerText, explanation }
       setCheckResult(result);
+      if (!result.correct && !noHearts) setHearts((h) => Math.max(0, h - 1));
       // Accumulate for missed-question review
       setQuestionResults((prev) => ({
         ...prev,
@@ -220,6 +243,7 @@ export default function Quiz() {
 
   // ── Next / finish ─────────────────────────────────────────────────────────
   const handleNext = async () => {
+    if (hearts === 0 && !noHearts && currentIdx < total - 1) { setHeartsOut(true); return; }
     if (currentIdx < total - 1) {
       setCurrentIdx((i) => i + 1);
       setSelected(null);
@@ -246,6 +270,8 @@ export default function Quiz() {
 
   // ── Retry — re-shuffles everything ───────────────────────────────────────
   const handleRetry = () => {
+    setHearts(HEARTS);
+    setHeartsOut(false);
     setQuestions(applyShuffles(rawQuestionsRef.current));
     setCurrentIdx(0);
     setSelected(null);
@@ -475,6 +501,28 @@ export default function Quiz() {
     );
   }
 
+  // ── Out of hearts ─────────────────────────────────────────────────────────
+  if (heartsOut) {
+    const rightSoFar = Object.values(questionResults).filter((r) => r.correct).length;
+    return (
+      <div className="qz-page">
+        <div className="qz-card qz-hearts-out">
+          <Hearts left={0} />
+          <h2 className="qz-hearts-out__title">Out of hearts.</h2>
+          <p className="qz-hearts-out__body">
+            {rightSoFar} right out of {currentIdx + 1} so far. Start again with three hearts, or keep going without them. Either way the quiz counts the same.
+          </p>
+          <div className="qz-hearts-out__actions">
+            <button className="qz-btn-next" onClick={handleRetry}>Try again with 3 hearts</button>
+            <button className="qz-btn-forward qz-btn-forward--quiet" onClick={() => { setNoHearts(true); setHeartsOut(false); setCurrentIdx((i) => i + 1); setSelected(null); setRevealed(false); setCheckResult(null); }}>
+              Keep going without hearts
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // ── Main quiz ─────────────────────────────────────────────────────────────
   return (
     <div className="qz-page">
@@ -497,6 +545,7 @@ export default function Quiz() {
           <span className="qz-progress-text">
             {currentIdx + 1} / {total}
           </span>
+          <Hearts left={hearts} off={noHearts} />
         </div>
 
         {/* Question */}
