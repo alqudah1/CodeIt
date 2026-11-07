@@ -135,7 +135,6 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
           onKeyDown={e => e.key === 'Enter' && navigate(`/project/${project.publicId}`)}
           aria-label={`Play ${name}`}
         >
-          <span className="exp-card__type-badge">{typeWord(project.projectType)}</span>
           {/* The art is the project itself, running, while the card is on
               screen (LiveCardArt keeps it to a few at once). The sticker is
               what it rests on and what it shows while loading. */}
@@ -157,26 +156,32 @@ function ProjectCard({ project, onLike, onRemix, remixingId }) {
             )}
           />
         </div>
-        {!project.isShowcase && (
-          <button
-            className={`exp-card__heart${project.liked ? ' exp-card__heart--liked' : ''}`}
-            onClick={() => onLike(project)}
-            aria-label={project.liked ? 'Unlike' : 'Like'}
-            aria-pressed={Boolean(project.liked)}
-          >
-            {project.liked ? '♥' : '♡'}
-          </button>
-        )}
       </div>
 
       {/* Meta. The title once, below the art (message 68): it used to be
           printed on the banner as well, clipped through the letters, and
           again here at a different length. */}
       <div className="exp-card__meta">
-        <p className="exp-card__title" title={project.title}>{name}</p>
+        {/* The kind and the heart used to sit over the running game, on top
+            of whatever the game draws in its own corners. They live on the
+            card now, in the title row, and the game is only the game. */}
+        <div className="exp-card__title-row">
+          <p className="exp-card__title" title={project.title}>{name}</p>
+          {!project.isShowcase && (
+            <button
+              className={`exp-card__heart${project.liked ? ' exp-card__heart--liked' : ''}`}
+              onClick={() => onLike(project)}
+              aria-label={project.liked ? 'Unlike' : 'Like'}
+              aria-pressed={Boolean(project.liked)}
+            >
+              {project.liked ? '♥' : '♡'}
+            </button>
+          )}
+        </div>
         <div className="exp-card__creator">
           <CreatorBubble name={project.creatorName} creator={project.creator} />
           <span className="exp-card__creator-name">{project.creatorName}</span>
+          <span className="exp-card__type-badge">{typeWord(project.projectType)}</span>
         </div>
         {/* A row of zeros reads as an abandoned site. A brand-new project is
             not abandoned, it is new, so say that, and show numbers only once

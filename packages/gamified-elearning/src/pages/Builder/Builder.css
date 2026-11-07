@@ -7362,3 +7362,18 @@ details.bldr-device-sizes .bldr-device-sizes__options {
 }
 .bldr-beat button:focus-visible { outline: 3px solid #FF7A00; outline-offset: 2px; }
 .bldr-beat button:disabled { opacity: .6; cursor: wait; }
+
+/* ── The marquee on a phone ─────────────────────────────────────────────────
+   On a phone the marquee was four rows: name, state sticker, three knobs,
+   then a big violet "Learn the code behind it". A phone cannot preview as a
+   desktop or tablet, so Size goes; "The code" is already a tab under the
+   game, so the violet button goes too. What is left is one row: the tick,
+   the name, the state, Full screen and Play, flush on top of the game. */
+@media (max-width: 600px) {
+  .bldr-success-banner { gap: 8px 10px; padding: 10px 12px; }
+  .bldr-success-banner__copy { flex: 1 1 auto; gap: 6px; }
+  .bldr-success-banner__name { font-size: 1.05rem; }
+  .bldr-success-banner__label { font-size: 0.72rem; padding: 2px 8px; }
+  .bldr-success-banner__deck .bldr-device-sizes { display: none; }
+  .bldr-success-banner__behind { display: none; }
+}

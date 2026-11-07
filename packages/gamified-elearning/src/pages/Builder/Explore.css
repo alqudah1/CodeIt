@@ -722,3 +722,11 @@
 }
 .exp-today__go:focus-visible { outline: 3px solid #FF7A00; outline-offset: 3px; }
 .exp-today .exp-grid { margin-top: 14px; }
+
+/* ── The title row: name, kind, heart. The art is only the art. ────────── */
+.exp-card__title-row { display: flex; align-items: flex-start; gap: 8px; min-width: 0; }
+.exp-card__title-row .exp-card__title { flex: 1 1 auto; min-width: 0; margin: 0; overflow-wrap: normal; word-break: normal; }
+.exp-card__creator .exp-card__type-badge { position: static; max-width: none; flex: none; margin-left: auto; font-size: .68rem; padding: 2px 8px; }
+.exp-card__title-row .exp-card__heart { position: static; flex: none; width: 34px; height: 34px; border: 2px solid var(--ink); border-radius: 999px; background: var(--paper); box-shadow: 0 2px 0 var(--ink); color: var(--ink); font-size: 1.05rem; backdrop-filter: none; }
+.exp-card__title-row .exp-card__heart--liked { color: #d6453d; background: #ffe3e0; }
+.exp-card__thumb-wrap .exp-card__heart { display: none; }
