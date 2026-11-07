@@ -17,10 +17,15 @@ const FAQS = [
     // it is the sentence a summariser reaches for first, and on 24 October
     // Google's AI Overview duly described CodeIt as being "for ages 5-12".
     // Being read as a product for five-year-olds undoes the positioning.
-    // The real range leads now; the managed-profile range stays, as the
-    // sub-case it always was.
+    // The real range leads, and the managed-profile range is no longer written
+    // as a range beside it. On 7 November Google's AI Overview for "free python
+    // for kids" called CodeIt "gamified Python lessons for kids aged 5 to 12
+    // (with independent accounts for ages 13+)" while citing this page: it had
+    // taken the account sentence, where two ranges sit either side of an "and",
+    // over the audience sentence above it. The floor is stated as a floor now,
+    // and the 13-and-over case comes first so the answer does not end on a 5.
     q: 'What ages can use CodeIt?',
-    a: `${AGE_RANGE.statement} Adults learning from scratch are welcome too. For a learner under 13, a parent or legal guardian creates a private managed profile after confirming the adult account email; profiles for ages 5 to 12 work this way. Independent learner accounts begin at 13.`,
+    a: `${AGE_RANGE.statement} Adults learning from scratch are welcome too. A learner aged 13 or over opens their own account. For anyone younger, a parent or legal guardian confirms their email and creates a private managed profile, which CodeIt supports from age 5.`,
   },
   {
     q: 'Do kids need prior coding experience to use CodeIt?',

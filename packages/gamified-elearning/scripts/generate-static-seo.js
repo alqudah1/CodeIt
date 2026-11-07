@@ -225,6 +225,32 @@ const AGES = COMPANY.AGE_RANGE.short;
 // four of them in this file, while the sentence beside them read the constant.
 const MANAGED = COMPANY.MANAGED_RANGE.short;
 
+// ── Why the account rule is worded this way ─────────────────────────────────
+//
+// Measured on 7 November 2026. Google's AI Overview for "free python for kids"
+// (organic 1) and "python for kids free" (organic 2) described CodeIt as
+// "free, self-paced, gamified Python lessons for kids aged 5 to 12 (with
+// independent accounts for ages 13+)". Wrong on the one fact the age work
+// exists to get right, and it positions the product as younger than it is.
+//
+// It cites /learn-python-for-kids, so it had read the page. The clause it
+// summarised was the account-mechanics one: "profiles for ages 5 to 12 work
+// this way, and independent student accounts begin at 13". Two ranges joined
+// by "and" is the most quotable shape on the page, more quotable than "Built
+// for ages 8 to 14" three sentences earlier, so that is what got quoted. The
+// dash-to-"to" fix does nothing for this: the structure is the problem.
+//
+// So the managed range stops being written as a range next to the audience.
+// The floor is stated as a floor, the 13-and-over clause comes first so the
+// sentence does not end on a 5, and nothing in it reads as "who this is for".
+// No fact is lost: "aged 13 or over opens their own account" already implies
+// the upper bound of a managed profile.
+const MANAGED_FLOOR = 'a parent or guardian confirms their email and creates a '
+  + 'private managed profile, which CodeIt supports from age 5';
+
+// The same floor, for a sentence that has already named the parent.
+const MANAGED_FLOOR_SHORT = 'which CodeIt supports from age 5';
+
 const LESSONS = [
   ['hello-python', 'Hello Python', 'print statements and your first working Python program'],
   ['variables', 'Variables', 'storing names, numbers, scores, and other information'],
@@ -365,7 +391,7 @@ const BASE_PAGES = [
     eyebrow: 'For parents & educators',
     h1: 'A first coding project they’ll want to keep improving.',
     intro: 'CodeIt helps a beginner turn an idea into a website, game, or quiz, then change the design, inspect the code, and understand what makes it work.',
-    detail: `Built for ${AGES}. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ${MANAGED} work this way, and those managed profiles cannot publish publicly. Independent student accounts begin at 13.`,
+    detail: `Built for ${AGES}. A learner aged 13 or over opens their own account. For anyone younger, ${MANAGED_FLOOR}, and a managed profile cannot publish publicly.`,
     type: 'LearningResource',
   },
   {
@@ -377,7 +403,7 @@ const BASE_PAGES = [
     eyebrow: 'Beginner Python, in the browser',
     h1: 'Python for kids: learn by making something work.',
     intro: `Python coding for kids, free and in the browser. Write a line, run it, and see what changed. Then CodeIt asks about the code your child wrote, so finishing is not the same as understanding.`,
-    detail: `Built for ${AGES}. Younger children can use it alongside an adult and the lessons also work for older beginners. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ${MANAGED} work this way. Independent student accounts begin at 13.`,
+    detail: `Built for ${AGES}. Younger children can use it alongside an adult and the lessons also work for older beginners. A learner aged 13 or over opens their own account. For anyone younger, ${MANAGED_FLOOR}.`,
     type: 'LearningResource',
   },
   {
@@ -695,7 +721,7 @@ function pricingSections() {
     {
       heading: 'Who can have an account',
       paragraphs: [
-        `CodeIt is built for ${AGES}. For a learner under 13 a parent or legal guardian creates a private managed profile after confirming the adult account email; profiles for ${MANAGED} work this way, and those managed profiles cannot publish projects publicly. Independent student accounts begin at 13.`,
+        `CodeIt is built for ${AGES}. A learner aged 13 or over opens their own account. For anyone younger, ${MANAGED_FLOOR}, and a managed profile cannot publish projects publicly.`,
       ],
     },
   ];
@@ -771,7 +797,7 @@ const IDENTITY_PAGES = [
       {
         heading: 'Accounts, ages and safety',
         paragraphs: [
-          'Parents and legal guardians create private managed profiles for learners aged 5 to 12, after confirming the adult account email address. Independent student accounts begin at 13.',
+          `A learner aged 13 or over opens their own account. For anyone younger, ${MANAGED_FLOOR}, after confirming the adult account email address.`,
           'Saved projects are private by default, and eligible independent accounts must actively choose Publish before a project appears publicly. Managed profiles for ages 5 to 12 cannot publish projects at all. Leaderboards use coder aliases rather than real names.',
         ],
       },
@@ -974,7 +1000,7 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'Who it suits',
       paragraphs: [
-        `Built for ${AGES}. The lessons also work for younger children alongside an adult, and for older beginners meeting Python for the first time. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ${MANAGED} work this way, and independent student accounts begin at 13.`,
+        `Built for ${AGES}. The lessons also work for younger children alongside an adult, and for older beginners meeting Python for the first time. A learner aged 13 or over opens their own account. For anyone younger, ${MANAGED_FLOOR}.`,
         'Lesson 1 opens without a download. The structured lesson sequence is currently Python only — the project studio is where learners work with HTML, CSS, and JavaScript.',
       ],
     },
@@ -1062,7 +1088,7 @@ const HOME_PAGE = {
   intro:
     'Start with a free Python lesson: run a program and change its message. Separately, the studio lets learners play and customize browser games made with HTML, CSS and JavaScript, with optional AI project building.',
   detail:
-    `Students ${AGES} can build, edit, save, and learn from real browser projects. Parents can create private managed learner profiles for children ${MANAGED} and receive progress updates.`,
+    `Students ${AGES} can build, edit, save, and learn from real browser projects. For a child under 13 a parent creates a private managed learner profile, ${MANAGED_FLOOR_SHORT}, and receives progress updates.`,
   type: 'SoftwareApplication',
   faqs: FAQS,
   sections: [
@@ -1090,7 +1116,7 @@ const HOME_PAGE = {
     {
       heading: 'Who it is for',
       paragraphs: [
-        `Built for ${AGES}. Younger children can use it alongside an adult. Older beginners are welcome. Parents and legal guardians create private managed profiles for ${MANAGED} after confirming the adult account email. Independent student accounts begin at 13. Managed profiles for ${MANAGED} cannot publish projects publicly.`,
+        `Built for ${AGES}. Younger children can use it alongside an adult. Older beginners are welcome. A learner aged 13 or over opens their own account. For anyone younger, ${MANAGED_FLOOR}, after confirming the adult account email. A managed profile cannot publish projects publicly.`,
         'CodeIt suits a beginner who has outgrown block-based tools such as Scratch and wants to work with real HTML, CSS, and JavaScript. It is not a schools product: there is no rostering, LMS integration, or teacher dashboard.',
       ],
     },

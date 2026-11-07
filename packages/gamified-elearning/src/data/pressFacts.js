@@ -103,7 +103,7 @@ export default function pressFacts({
     {
       heading: "Children and accounts",
       paragraphs: [
-        "Profiles for ages 5 to 12 are created and managed by a parent or guardian after the adult account email is confirmed. Those managed profiles cannot publish projects publicly. Independent student accounts begin at 13.",
+        "A learner aged 13 or over opens their own account. For anyone younger, a parent or guardian confirms their email and creates a private managed profile, which CodeIt supports from age 5. A managed profile cannot publish projects publicly.",
       ],
     },
     {

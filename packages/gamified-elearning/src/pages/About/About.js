@@ -77,9 +77,9 @@ export default function About() {
 
           <h2>Accounts, ages and safety</h2>
           <p>
-            Parents and legal guardians create private managed profiles for learners aged 5 to 12,
-            after confirming the adult account&rsquo;s email address. Independent student accounts
-            begin at 13.
+            A learner aged 13 or over opens their own account. For anyone younger, a parent
+            or legal guardian creates a private managed profile, which CodeIt supports from
+            age 5, after confirming the adult account&rsquo;s email address.
           </p>
           <p>
             Saved projects are private by default, and eligible independent accounts must actively

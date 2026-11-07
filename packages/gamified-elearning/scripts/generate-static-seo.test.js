@@ -32,11 +32,19 @@ test('replaces homepage fallback and metadata with route-specific content', () =
   // this asserts is that the detail reaches the page, not any one sentence.
   // age-range.test.js is what holds the ordering.
   assert.match(html, /private managed profile after confirming the adult account email/);
-  // Either spelling of the range: see the note in "public search documents
-  // use one accurate age range" below. What matters is the sentence, not
-  // which of the two ways the project wrote the numbers that day.
-  assert.match(html, /profiles for ages 5\s*(?:to|–|-)\s*12 work this way/);
-  assert.match(html, /Independent student accounts begin at 13/);
+  // This pinned the sentence "profiles for ages 5 to 12 work this way", which
+  // is the exact clause Google turned into "gamified Python lessons for kids
+  // aged 5 to 12" while citing this page. The wording is gone and the fact is
+  // not: a parent sets the account up for anyone under 13, from age 5.
+  // scripts/age-claim-shape.test.js owns the shape of it now.
+  assert.match(html, /managed profile/i);
+  assert.match(html, /from age 5/i);
+  assert.match(html, /13 or over/i);
+  // "Independent student accounts begin at 13" said the same thing as "a
+  // learner aged 13 or over opens their own account" and read as the second
+  // half of a range, which is what the sentence above it was being collapsed
+  // into. One statement of the rule, in the voice a parent would use.
+  assert.match(html, /13 or over opens their own account/i);
   assert.match(html, /canonical" href="https:\/\/codeitlearn\.com\/coding-for-kids/);
   assert.match(html, /static-route-jsonld/);
   assert.doesNotMatch(html, /homepage fallback/);
@@ -127,7 +135,10 @@ test('homepage fallback explains the family offer and links to commercial pages'
   const template = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
 
   assert.match(template, /Students ages 8\s*(?:to|–|-)\s*14 can build, edit, save/);
-  assert.match(template, /managed learner profiles for children ages 5\s*(?:to|–|-)\s*12/);
+  // Was /managed learner profiles for children ages 5 to 12/. Same reason as
+  // above: the fact survives, the second age range does not.
+  assert.match(template, /managed learner profile/i);
+  assert.match(template, /from age 5/i);
   assert.match(template, /No card or paid subscription starts automatically/);
   for (const route of ['/coding-for-kids', '/ai-website-builder-for-kids', '/pricing', '/blog']) {
     assert.match(template, new RegExp(`href="${route}"`));
