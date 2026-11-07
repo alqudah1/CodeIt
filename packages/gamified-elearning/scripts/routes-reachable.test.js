@@ -68,18 +68,38 @@ test('the static generator knows about every content route the app renders', () 
   // is served to a crawler as the shared template with no body of its own,
   // which is how eleven pages were orphaned before.
   //
-  // Scoped to content routes: account, admin and interactive pages are
-  // deliberately absent from the sitemap and carry X-Robots-Tag noindex.
-  const NOT_CONTENT = new RegExp(
-    '^/(MainPage|home|arcade|join|teach/(?!plans)|powers|admin|login|register|forgot-password|reset-password|parent|parent-review|' +
-      'character|leaderboard|profile|quiz|project|creator-brief|investor-brief|' +
-      'journey/puzzle|game/|play$)'
-  );
+  // Scoped to content routes. Which routes are not content is already written
+  // down, once, in vercel.json: every one of them is sent X-Robots-Tag
+  // noindex, because that is what actually keeps them out of search.
+  //
+  // This test used to keep a second copy of that list as a regex here. Two
+  // hand-maintained lists of the same fact drift, and they did: /go and
+  // /certificate shipped correctly, in the rewrite allowlist and in the
+  // noindex header, and this test failed them for having no crawlable copy —
+  // which is the whole point of a noindexed page. The failure was in the copy,
+  // not the work.
+  //
+  // So the exclusion is read from the headers now. A new page that is meant to
+  // stay out of search is excluded here the moment it is given the header that
+  // keeps it out of search, and a page with no such header still has to be
+  // crawlable, which is the thing worth failing on.
+  const noindexSources = VERCEL.headers
+    .filter((entry) => entry.headers.some(
+      (header) => header.key === 'X-Robots-Tag' && /noindex/.test(header.value)
+    ))
+    .map((entry) => new RegExp(entry.source));
+
+  // These two cannot be expressed as a path prefix the headers match: both are
+  // interactive views under a route whose parent is a real content page.
+  const NOT_CONTENT = /^\/(journey\/puzzle|game\/|play$)/;
+
+  const isNotContent = (route) => NOT_CONTENT.test(route)
+    || noindexSources.some((pattern) => pattern.test(route));
 
   const generated = new Set([HOME_PAGE, ...PAGES].map((page) => page.route || '/'));
   const missing = reactRoutes()
     .map((route) => route.raw)
-    .filter((route) => !route.includes(':') && !NOT_CONTENT.test(route))
+    .filter((route) => !route.includes(':') && !isNotContent(route))
     .filter((route) => !generated.has(route));
 
   assert.deepEqual(
