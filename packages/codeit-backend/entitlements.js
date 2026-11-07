@@ -125,8 +125,16 @@ function checkAiBuildAllowance(subscription, buildsThisMonth, now = new Date()) 
 }
 
 /**
- * Publishing is a paid feature, but the age rule wins over the billing rule:
- * a child under 13 on a managed profile is never publishable, paid or not.
+ * Publishing is free on every plan (see the note at the top of this file), so
+ * the billing branch below cannot fire today and is kept only so that turning
+ * canPublish off on a plan refuses rather than silently allows. What this
+ * function is actually for is the age rule, which always wins: a child under 13
+ * on a managed profile is never publishable, paid or not.
+ *
+ * The comment here used to say publishing was a paid feature. It had been free
+ * for a while by then, and a stale sentence in the one module that defines what
+ * a plan allows is how the pricing page, the parent page and the terms all
+ * ended up selling something that was already included.
  */
 function checkPublishAllowance(subscription, { managedProfile = false, studentAge = null } = {}, now = new Date()) {
   if (managedProfile || (studentAge !== null && Number(studentAge) < 13)) {

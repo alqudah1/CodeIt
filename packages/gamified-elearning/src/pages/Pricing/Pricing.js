@@ -19,31 +19,7 @@ import {
 import '../../ds/ds.css';
 import './Pricing.css';
 import COMPANY from '../../config/company';
-
-const FREE_FEATURES = [
-  'Beginner Python lessons and coding games',
-  'The browser-based Python playground',
-  'Build, edit, save, and publish projects',
-  'Explore, play and remix published projects',
-];
-
-const FOUNDING_FEATURES = [
-  'Everything in the free plan',
-  '20 new projects a month, built for you by AI',
-  'Two children, one adult account',
-  'One email a month: what your child made and understood',
-  'We help you set it up, and you can write to us directly',
-];
-
-const PLUS_FEATURES = [
-  'As many AI-built projects and changes as you want',
-  // Publishing moved to the free plan, where this page had always said it was.
-  // Listing it here as well would make Plus look like it unlocks something a
-  // family already has.
-  'See how many people played what your child made',
-  'Up to four children, one adult account',
-  'Everything in the free plan stays free',
-];
+import { FREE_FEATURES, FOUNDING_FEATURES, PLUS_FEATURES } from './planFeatures';
 
 const PILOT_EMAIL_HREF = [
   `mailto:${COMPANY.contactEmail}`,
@@ -260,7 +236,7 @@ export default function Pricing() {
               <p className="pricing-card__summary">
                 For families who build a lot. Lessons, the playground and saving stay free for everyone.
               </p>
-              <ul>{PLUS_FEATURES.map((feature) => <li key={feature}>{feature}</li>)}</ul>
+              <ul>{PLUS_FEATURES.map((feature) => <li key={feature.text}>{feature.text}</li>)}</ul>
 
               {isPlusMember(billing) ? (
                 <>

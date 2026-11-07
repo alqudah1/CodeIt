@@ -181,17 +181,22 @@ export default function Parent() {
                   <div className="ci-blk ci-blk--ink pa__price ci-rise" style={{ animationDelay: '.1s' }}>
                     <div className="ci-ey">CodeIt Plus</div>
                     <div className="pa__big">{billing.cancelAtPeriodEnd ? 'Ends' : 'Renews'} {dayOf(billing.currentPeriodEnd) || 'soon'}</div>
-                    <p>As many AI builds as {name} wants, and who played them.</p>
+                    <p>As many AI builds as {name} wants, and room for up to four children.</p>
                     <button type="button" className="ci-btn ci-btn--paper" onClick={buy} disabled={busy}>{busy ? 'Opening' : 'Manage'}</button>
                   </div>
                 ) : billing?.billingEnabled ? (
                   /* What Plus adds, and only that: the powers, lessons and
                      this weekly email are free for every family, and the card
-                     used to sell them as Plus (31 October 2026). */
+                     used to sell them as Plus (31 October 2026).
+                     "Who played them" was still on both cards after that
+                     cleanup. Play counts come from /api/today, which has no
+                     plan gate, so every family has always had them. Plus
+                     changes two things and nothing else: the AI build
+                     allowance and the number of learner profiles. */
                   <div className="ci-blk ci-blk--sun pa__price ci-rise" style={{ animationDelay: '.1s' }}>
                     <div className="ci-ey">CodeIt Plus</div>
                     <div className="pa__big">{PRICE_PER_INTERVAL}</div>
-                    <p>As many AI builds as {name} wants, who played them, and room for up to four children. Lessons, powers and this page stay free. Nothing is ever sold to {name} inside the app.</p>
+                    <p>As many AI builds as {name} wants, and room for up to four children. Lessons, powers, play counts and this page stay free. Nothing is ever sold to {name} inside the app.</p>
                     {billing.canSubscribe
                       ? <button type="button" className="ci-btn ci-btn--ink" onClick={buy} disabled={busy}>{busy ? 'Opening' : 'Start Plus'}</button>
                       : <Link className="ci-btn ci-btn--ink" to="/pricing">See the plans</Link>}

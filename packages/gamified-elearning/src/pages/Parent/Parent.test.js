@@ -161,6 +161,12 @@ test('the Plus card sells only what Plus adds', async () => {
   mount({ user: { name: 'Mr Q', role: 'Educator' }, token: 't' });
   const card = (await screen.findByText('CA$12/month')).closest('.pa__price');
   expect(card).toHaveTextContent(/up to four children/);
-  expect(card).toHaveTextContent(/Lessons, powers and this page stay free/);
+  expect(card).toHaveTextContent(/Lessons, powers, play counts and this page stay free/);
   expect(card).not.toHaveTextContent(/every power|Unlimited builds/);
+  // This test's name was already right and the card was still wrong. It said
+  // "who played them" among the things Plus adds, through the cleanup that
+  // removed powers and lessons from the same sentence. Play counts come from
+  // /api/today, which has no plan gate: four files in the backend read a plan
+  // at all, and that is not one of them. Plus adds two things.
+  expect(card).not.toHaveTextContent(/who played them/);
 });
