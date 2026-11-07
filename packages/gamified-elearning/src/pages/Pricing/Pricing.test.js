@@ -155,7 +155,25 @@ describe('Pricing', () => {
   });
 
   test('keeps a working email fallback when the direct endpoint is unavailable', async () => {
-    global.fetch.mockResolvedValueOnce({ ok: false });
+    // This used to be mockResolvedValueOnce({ ok: false }), which looks like
+    // "the waitlist endpoint is down" and was not. The once-mock is consumed by
+    // the first fetch the page makes, which is /api/billing/status, so the
+    // waitlist endpoint answered ready: true as usual and the form rendered.
+    // The test passed because findByRole ran in the tick before that answer
+    // landed and caught the fallback on its way out: it asserted a render
+    // order, not a failure mode, and adding a 50ms wait fails it on an
+    // untouched checkout.
+    //
+    // Name the endpoint instead, so the scenario in the title is the one that
+    // runs.
+    global.fetch.mockImplementation((url) => (String(url).includes('/api/founding-waitlist/status')
+      ? Promise.resolve({ ok: false })
+      : Promise.resolve({
+        ok: true,
+        json: async () => (String(url).includes('/api/billing/')
+          ? { billingEnabled: false, plan: 'free' }
+          : { ready: true }),
+      })));
     renderPricing();
 
     const fallback = await screen.findByRole('link', { name: 'Email us to join the pilot' });

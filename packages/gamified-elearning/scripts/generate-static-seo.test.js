@@ -32,7 +32,10 @@ test('replaces homepage fallback and metadata with route-specific content', () =
   // this asserts is that the detail reaches the page, not any one sentence.
   // age-range.test.js is what holds the ordering.
   assert.match(html, /private managed profile after confirming the adult account email/);
-  assert.match(html, /profiles for ages 5–12 work this way/);
+  // Either spelling of the range: see the note in "public search documents
+  // use one accurate age range" below. What matters is the sentence, not
+  // which of the two ways the project wrote the numbers that day.
+  assert.match(html, /profiles for ages 5\s*(?:to|–|-)\s*12 work this way/);
   assert.match(html, /Independent student accounts begin at 13/);
   assert.match(html, /canonical" href="https:\/\/codeitlearn\.com\/coding-for-kids/);
   assert.match(html, /static-route-jsonld/);
@@ -83,9 +86,20 @@ test('public search documents use one accurate age range', () => {
     PAGES.find((item) => item.route === '/coding-for-kids')
   );
 
+  // This asserted the en-dash spelling, /ages 8–14/, which is not what the
+  // test is named after or for. The range is written "ages 8 to 14" in the
+  // dozen places wired to AGE_RANGE in src/config/company.js, and that
+  // constant's own comment claims to be the only place it is written. It was
+  // not: this template, llms.txt and four strings in generate-static-seo.js
+  // spelled it by hand with a dash, so both forms were published, sometimes in
+  // the same document. Pinning one of the two spellings here is what kept them
+  // apart. Either spelling passes now; what the test actually protects is that
+  // the range is 8 to 14 and not a stale 8 to 12, 17 or 18.
+  const RANGE = /ages 8(?:\s*(?:to|–|-)\s*)14/;
+  const STALE = /ages 8\s*(?:to|–|-)\s*(?:12|17|18)/;
   for (const document of [template, llms, codingForKids]) {
-    assert.match(document, /ages 8–14/);
-    assert.doesNotMatch(document, /ages 8[–-](?:12|17|18)/);
+    assert.match(document, RANGE);
+    assert.doesNotMatch(document, STALE);
   }
 });
 
@@ -112,8 +126,8 @@ test('homepage search copy leads with creating and learning, not AI', () => {
 test('homepage fallback explains the family offer and links to commercial pages', () => {
   const template = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
 
-  assert.match(template, /Students ages 8–14 can build, edit, save/);
-  assert.match(template, /managed learner profiles for children ages 5–12/);
+  assert.match(template, /Students ages 8\s*(?:to|–|-)\s*14 can build, edit, save/);
+  assert.match(template, /managed learner profiles for children ages 5\s*(?:to|–|-)\s*12/);
   assert.match(template, /No card or paid subscription starts automatically/);
   for (const route of ['/coding-for-kids', '/ai-website-builder-for-kids', '/pricing', '/blog']) {
     assert.match(template, new RegExp(`href="${route}"`));
@@ -230,7 +244,10 @@ test('every generated route carries substantive crawlable body text', () => {
 test('homepage states what the product is, who it is for, and what it costs', () => {
   const text = bodyText(renderRouteDocument(TEMPLATE, HOME_PAGE));
   assert.ok(text.length >= 2000, `homepage body text is only ${text.length} characters`);
-  assert.match(text, /ages 8.14/i);
+  // /ages 8.14/ matched the dash spelling by accident, since `.` is one
+  // character and "to " is three. Both spellings now, same as the other
+  // range assertions in this file.
+  assert.match(text, /ages 8\s*(?:to|–|-)\s*14/i);
   assert.match(text, /HTML, CSS, and JavaScript/i);
   assert.ok(text.includes(PRICING.PRICE_PER_INTERVAL), 'homepage does not state the price');
 });

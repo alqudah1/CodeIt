@@ -220,6 +220,10 @@ const COMPANY = loadCompany();
 // which is how "ages 5 to 18" ended up in fifty-nine places and is the exact
 // drift the constant exists to stop. Read it instead.
 const AGES = COMPANY.AGE_RANGE.short;
+// The parent-managed range, read from the same file for the same reason. Six
+// published strings spelled one of these two ranges by hand with an en-dash,
+// four of them in this file, while the sentence beside them read the constant.
+const MANAGED = COMPANY.MANAGED_RANGE.short;
 
 const LESSONS = [
   ['hello-python', 'Hello Python', 'print statements and your first working Python program'],
@@ -286,7 +290,7 @@ const BLOG_POSTS = [
 const BASE_PAGES = [
   {
     route: '/ai-website-builder-for-kids',
-    eyebrow: 'Creative coding for ages 8–14',
+    eyebrow: `Creative coding for ${AGES}`,
     h1: 'An AI website builder for kids that teaches the code.',
     intro: 'CodeIt helps a young creator turn an idea into a website, game, or quiz, then change the design, inspect the real code, and understand how the project works.',
     detail: 'The first version stays editable. Learners can change the content, colors, layout, and behavior, compare the preview with the HTML, CSS, and JavaScript, save their work, and keep improving it.',
@@ -361,7 +365,7 @@ const BASE_PAGES = [
     eyebrow: 'For parents & educators',
     h1: 'A first coding project they’ll want to keep improving.',
     intro: 'CodeIt helps a beginner turn an idea into a website, game, or quiz, then change the design, inspect the code, and understand what makes it work.',
-    detail: `Built for ${AGES}. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way, and those managed profiles cannot publish publicly. Independent student accounts begin at 13.`,
+    detail: `Built for ${AGES}. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ${MANAGED} work this way, and those managed profiles cannot publish publicly. Independent student accounts begin at 13.`,
     type: 'LearningResource',
   },
   {
@@ -373,7 +377,7 @@ const BASE_PAGES = [
     eyebrow: 'Beginner Python, in the browser',
     h1: 'Python for kids: learn by making something work.',
     intro: `Python coding for kids, free and in the browser. Write a line, run it, and see what changed. Then CodeIt asks about the code your child wrote, so finishing is not the same as understanding.`,
-    detail: `Built for ${AGES}. Younger children can use it alongside an adult and the lessons also work for older beginners. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way. Independent student accounts begin at 13.`,
+    detail: `Built for ${AGES}. Younger children can use it alongside an adult and the lessons also work for older beginners. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ${MANAGED} work this way. Independent student accounts begin at 13.`,
     type: 'LearningResource',
   },
   {
@@ -691,7 +695,7 @@ function pricingSections() {
     {
       heading: 'Who can have an account',
       paragraphs: [
-        `CodeIt is built for ${AGES}. For a learner under 13 a parent or legal guardian creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way, and those managed profiles cannot publish projects publicly. Independent student accounts begin at 13.`,
+        `CodeIt is built for ${AGES}. For a learner under 13 a parent or legal guardian creates a private managed profile after confirming the adult account email; profiles for ${MANAGED} work this way, and those managed profiles cannot publish projects publicly. Independent student accounts begin at 13.`,
       ],
     },
   ];
@@ -855,7 +859,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'Then make it yours',
       paragraphs: [
         'Play with the result, edit individual elements, inspect the underlying HTML, CSS, and JavaScript, and save versions as you go. The project remains editable instead of becoming a locked AI result.',
-        `The studio is built for ${AGES}. Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly, and managed profiles for ages 5–12 cannot publish projects at all.`,
+        `The studio is built for ${AGES}. Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly, and managed profiles for ${MANAGED} cannot publish projects at all.`,
       ],
     },
   ],
@@ -932,7 +936,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'Published projects, playable and remixable',
       paragraphs: [
         'Published CodeIt projects are playable in the browser. A learner can open one for inspiration and remix a copy into their own version without changing the original.',
-        `CodeIt is built for ${AGES}. Only eligible independent accounts can publish; managed profiles for ages 5–12 cannot publish projects publicly.`,
+        `CodeIt is built for ${AGES}. Only eligible independent accounts can publish; managed profiles for ${MANAGED} cannot publish projects publicly.`,
       ],
     },
   ],
@@ -970,7 +974,7 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'Who it suits',
       paragraphs: [
-        `Built for ${AGES}. The lessons also work for younger children alongside an adult, and for older beginners meeting Python for the first time. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ages 5–12 work this way, and independent student accounts begin at 13.`,
+        `Built for ${AGES}. The lessons also work for younger children alongside an adult, and for older beginners meeting Python for the first time. For a learner under 13 a parent creates a private managed profile after confirming the adult account email; profiles for ${MANAGED} work this way, and independent student accounts begin at 13.`,
         'Lesson 1 opens without a download. The structured lesson sequence is currently Python only — the project studio is where learners work with HTML, CSS, and JavaScript.',
       ],
     },
@@ -1017,7 +1021,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'Projects and publishing',
       paragraphs: [
         'Saved projects are private until their owner chooses Publish. An unsaved guest project can remain only in that browser for up to seven days and is not uploaded as an account project without an explicit save.',
-        'Managed profiles for ages 5–12 cannot publish projects publicly. Leaderboards use coder aliases rather than real names.',
+        `Managed profiles for ${MANAGED} cannot publish projects publicly. Leaderboards use coder aliases rather than real names.`,
       ],
     },
   ],
@@ -1032,7 +1036,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'Sharing responsibly',
       paragraphs: [
         'Public projects must not include private or harmful information. AI-assisted results are a starting point that the learner is expected to review and change.',
-        'Saved projects stay private until their owner chooses Publish, and managed profiles for ages 5–12 cannot publish at all.',
+        `Saved projects stay private until their owner chooses Publish, and managed profiles for ${MANAGED} cannot publish at all.`,
       ],
     },
     {
@@ -1048,7 +1052,7 @@ const SECTIONS_BY_ROUTE = {
 // other route uses build/index.html as its shell.
 const HOME_PAGE = {
   route: '/',
-  eyebrow: 'Creative coding for ages 8–14',
+  eyebrow: `Creative coding for ${AGES}`,
   // Kept in step with the real page. The app's headline changed when the front
   // door became three tappable games, and a crawlable copy that claims a
   // different headline from the page a person sees is the one kind of drift
@@ -1058,7 +1062,7 @@ const HOME_PAGE = {
   intro:
     'Start with a free Python lesson: run a program and change its message. Separately, the studio lets learners play and customize browser games made with HTML, CSS and JavaScript, with optional AI project building.',
   detail:
-    'Students ages 8–14 can build, edit, save, and learn from real browser projects. Parents can create private managed learner profiles for children ages 5–12 and receive progress updates.',
+    `Students ${AGES} can build, edit, save, and learn from real browser projects. Parents can create private managed learner profiles for children ${MANAGED} and receive progress updates.`,
   type: 'SoftwareApplication',
   faqs: FAQS,
   sections: [
@@ -1086,7 +1090,7 @@ const HOME_PAGE = {
     {
       heading: 'Who it is for',
       paragraphs: [
-        'Built for ages 8–14. Younger children can use it alongside an adult. Older beginners are welcome. Parents and legal guardians create private managed profiles for ages 5–12 after confirming the adult account email. Independent student accounts begin at 13. Managed profiles for ages 5–12 cannot publish projects publicly.',
+        `Built for ${AGES}. Younger children can use it alongside an adult. Older beginners are welcome. Parents and legal guardians create private managed profiles for ${MANAGED} after confirming the adult account email. Independent student accounts begin at 13. Managed profiles for ${MANAGED} cannot publish projects publicly.`,
         'CodeIt suits a beginner who has outgrown block-based tools such as Scratch and wants to work with real HTML, CSS, and JavaScript. It is not a schools product: there is no rostering, LMS integration, or teacher dashboard.',
       ],
     },

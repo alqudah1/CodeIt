@@ -28,7 +28,7 @@ const FAQS = [
   },
   {
     q: 'Are projects public?',
-    a: 'Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly. Managed profiles ages 5–12 cannot publish projects.',
+    a: 'Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly. Managed profiles for ages 5 to 12 cannot publish projects.',
   },
   {
     q: 'Is CodeIt the same as Code.org, MIT CodeIt, or CodeIT in London?',

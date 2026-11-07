@@ -46,6 +46,25 @@ export const AGE_RANGE = Object.freeze({
   statement: 'Built for ages 8 to 14. Younger children can use it alongside an adult. Older beginners are welcome.',
 });
 
+// ── The parent-managed range, which is a different fact ─────────────────────
+//
+// 5 to 12 is not marketing. It is MIN_MANAGED_AGE and MAX_MANAGED_AGE in
+// codeit-backend/familyAccountUtils.js, the ages at which the server will
+// create a managed profile at all, and ageRange.test.js holds it to them.
+//
+// It is here because the claim "this is the ONLY place the range is written"
+// above was not true when it was written. Six published strings spelled one
+// range or the other by hand, with an en-dash, inside the same documents that
+// read the constant: public/index.html and public/llms.txt each contained
+// "ages 8–14" and "ages 8 to 14", and generate-static-seo.js, the file that
+// produces what a crawler actually sees, had four more. Two spellings of the
+// same fact handed to assistants side by side.
+export const MANAGED_RANGE = Object.freeze({
+  from: 5,
+  to: 12,
+  short: 'ages 5 to 12',
+});
+
 const COMPANY = {
   name: 'CodeIt',
   // 'CodeIt Learn' is what the public profiles are named. On LinkedIn there
