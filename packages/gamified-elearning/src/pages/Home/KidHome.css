@@ -237,3 +237,34 @@ a.kh__goal-label:hover { color: #FFC93C; }
 .kh--night .kh__quest { margin-top: 0; }
 .kh--night .pq, .kh--night .pp-panel { margin-top: 14px; }
 .kh--night .ci-blk { border-radius: 24px; }
+
+/* ── Round 182: the screen has one hero, and the rest makes room for it ── */
+/* The avatar wears its XP as a ring: how far to the next level, in sun. */
+.kh__hud-avatar { border: 0; background: conic-gradient(var(--n-sun, #FFC93C) var(--ring, 0%), rgba(255, 255, 255, .12) 0); padding: 4px; box-shadow: var(--ci-base-sm); }
+.kh__hud-avatar > :first-child { border-radius: 50%; background: var(--n-surface-2, #FFF6E6); width: 52px; height: 52px; display: grid; place-items: center; overflow: hidden; }
+.kh__hud-note { margin-top: 3px; font: 800 12px var(--ci-body); color: var(--n-muted, var(--ci-ink-soft)); }
+.kh__hud-note a { color: var(--n-sun, var(--ci-orange-text)); text-decoration: none; }
+/* The HUD already says level and XP; the panel keeps its three tiles. */
+.kh--night .pp-panel__top { display: none; }
+.kh--night .pp-panel__ey { margin-bottom: 12px; }
+
+/* The hero: taller, the mascot bigger, a glow under it, a few sparks. */
+.kh--night .kh__quest { min-height: 216px; padding: 22px 150px 24px 22px; border-radius: 28px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4), 0 18px 48px rgba(255, 122, 0, .38), 0 0 0 1px rgba(255, 255, 255, .18); }
+.kh--night .kh__quest .kh__qtitle { font-size: 29px; margin: 8px 0 18px; }
+.kh--night .kh__pix { height: 150px; right: 4px; bottom: -8px; filter: drop-shadow(0 10px 16px rgba(120, 50, 0, .35)); }
+.kh__spark { position: absolute; width: 10px; height: 10px; background: #fff; border-radius: 50%; opacity: .9; pointer-events: none; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); animation: kh-spark 2.8s ease-in-out infinite; }
+.kh__spark--a { left: 58%; top: 18px; width: 14px; height: 14px; }
+.kh__spark--b { right: 20px; top: 26px; animation-delay: -1s; }
+.kh__spark--c { left: 50%; bottom: 22px; width: 8px; height: 8px; animation-delay: -2s; }
+@keyframes kh-spark { 0%, 100% { transform: scale(.6) rotate(0); opacity: .5; } 50% { transform: scale(1.15) rotate(25deg); opacity: 1; } }
+
+/* A goal ticks: the circle pops. */
+.kh__goal.is-done .kh__goal-check { animation: kh-pop .45s var(--ci-spring) both; }
+@keyframes kh-pop { from { transform: scale(.4); } 60% { transform: scale(1.2); } to { transform: scale(1); } }
+
+/* The blocks arrive in order. */
+.kh--night .kh__goals { animation-delay: .02s; }
+.kh--night .pq { animation: ci-rise .45s var(--ci-ease) both; animation-delay: .14s; }
+.kh--night .pp-panel { animation-delay: .2s; }
+@media (prefers-reduced-motion: reduce) { .kh__spark, .kh__goal.is-done .kh__goal-check { animation: none; } }
+@media (max-width: 420px) { .kh--night .kh__quest { padding-right: 128px; } .kh--night .kh__pix { height: 128px; } .kh--night .kh__quest .kh__qtitle { font-size: 25px; } }

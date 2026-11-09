@@ -27,7 +27,7 @@ import { journeyHeaders } from '../../utils/journey';
 import { listProjects as listShelf, migrateLegacyDraft } from '../../utils/projectShelf';
 import { LEVELS, levelFor, questFor, streakFrom } from './today';
 import PythonQuest from './PythonQuest';
-import ProgressPanel from './ProgressPanel';
+import ProgressPanel, { levelPercent } from './ProgressPanel';
 import { minutesToday } from '../../utils/minutesToday';
 import { pythonQuestFor } from './pythonQuests';
 import { powerStates } from '../Powers/powers';
@@ -120,13 +120,19 @@ export default function KidHome() {
           {/* The top of a game screen: who you are, your level, your streak,
               your XP. On a phone this stands in for the site header. */}
           <header className="kh__hud">
-            <Link to={guest ? '/register' : '/character'} className="kh__hud-avatar" aria-label={guest ? 'Make an account' : 'Change your look'}>
+            <Link
+              to={guest ? '/register' : '/character'}
+              className="kh__hud-avatar"
+              aria-label={guest ? 'Make an account' : 'Change your look'}
+              style={{ '--ring': `${guest ? 0 : levelPercent(level)}%` }}
+            >
               <CharacterAvatar character={character} size={52} />
               <span className="kh__hud-lv" aria-hidden="true">{level.n}</span>
             </Link>
             <div className="kh__hud-who">
               <div className="ci-ey">{weekday}</div>
               <h1 className="ci-h1">{firstName ? `Hey ${firstName}.` : 'Hey there.'}</h1>
+              {guest ? <div className="kh__hud-note"><Link to="/register">Make an account</Link> to keep your XP.</div> : <div className="kh__hud-note">Level {level.n} {level.title}{level.next ? ` · ${level.next - level.xp} XP to level ${level.n + 1}` : ''}</div>}
             </div>
             <div className="kh__hud-chips" aria-label="Your streak and XP">
               <span className={`kh__chip kh__chip--streak${streakInfo.streak > 0 ? ' is-lit' : ''}`} title="Days in a row">
@@ -162,7 +168,8 @@ export default function KidHome() {
               ))}
             </ol>
           </section>
-          <div className={`ci-blk kh__quest ci-rise${done ? ' is-done' : ' ci-blk--sun'}`}>
+          <div className={`ci-blk kh__quest ci-rise${done ? ' is-done' : ' ci-blk--sun'}`} style={{ animationDelay: '.08s' }}>
+            <span className="kh__spark kh__spark--a" aria-hidden="true" /><span className="kh__spark kh__spark--b" aria-hidden="true" /><span className="kh__spark kh__spark--c" aria-hidden="true" />
             <div className="ci-ey kh__qey">{done ? 'Done for today' : "Today's build"}</div>
             <h2 className="kh__qtitle">{done ? 'Done. Build another?' : quest.text}</h2>
             <Link className="ci-btn ci-btn--ink" to={done ? '/build' : `/build?prompt=${encodeURIComponent(quest.prompt)}`}>{done ? 'Build' : 'Build it'}</Link>
