@@ -1,7 +1,9 @@
-.kh { min-height: 100vh; background: var(--ci-cream); color: var(--ci-ink); font-family: var(--ci-body); font-weight: 700; }
-.kh__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 110px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+/* The page is a sky over the meadow, like the map and the ads: pale blue at
+   the top fading to cream, so every card sits in the same world. */
+.kh { min-height: 100vh; background: linear-gradient(180deg, #DCF0FF 0, #F3F9FF 260px, var(--ci-cream) 560px); color: var(--ci-ink); font-family: var(--ci-body); font-weight: 700; }
+.kh__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 110px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
 .kh__left, .kh__right { min-width: 0; }
-.kh__quest { margin-top: 20px; min-height: 184px; padding-right: 128px; }
+.kh__quest { margin-top: 20px; min-height: 184px; padding-right: 128px; background: var(--ci-sun); }
 .kh__quest.is-done { background: var(--ci-mint); color: var(--ci-ink); }
 .kh__quest.is-done .kh__qey { color: rgba(53, 34, 14, .78); }
 .kh__qey { color: rgba(53, 34, 14, .78); }
@@ -34,10 +36,10 @@
 .kh__tile--new { background: #FFF6E6; border-style: dashed; box-shadow: none; display: grid; place-items: center; align-content: center; color: var(--ci-orange-text); font: 800 11px var(--ci-body); text-align: center; aspect-ratio: auto; }
 .kh__tile--new:hover, .kh__tile--new:active { transform: none; box-shadow: none; }
 .kh__tile--new span { display: block; font: 800 28px var(--ci-display); line-height: 1; }
-.kh__row-link { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--ci-r); background: var(--ci-paper); border: 1px solid var(--ci-ink-line); margin-top: 12px; text-decoration: none; color: var(--ci-ink); min-height: 72px; }
+.kh__row-link { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--ci-r); background: var(--ci-paper); border: var(--ci-line); box-shadow: var(--ci-base-sm); margin-top: 14px; text-decoration: none; color: var(--ci-ink); min-height: 72px; }
 .kh__row-link b { display: block; font-size: 15px; font-weight: 800; }
 .kh__row-link small { display: block; color: var(--ci-ink-soft); font-size: 13px; font-weight: 700; margin-top: 2px; line-height: 1.3; }
-.kh__ic { width: 44px; height: 44px; border-radius: 14px; background: rgba(124, 92, 255, .14); color: var(--ci-violet); display: grid; place-items: center; flex: none; }
+.kh__ic { width: 44px; height: 44px; border-radius: 14px; background: #EDE7FF; border: 2px solid var(--ci-ink); color: var(--ci-violet); display: grid; place-items: center; flex: none; }
 .kh__ic--mint { background: rgba(23, 192, 139, .16); color: var(--ci-mint); }
 .kh__ic--sun { background: rgba(255, 201, 60, .4); color: var(--ci-ink); font-size: 20px; }
 .kh__chev { margin-left: auto; color: var(--ci-orange-down); font: 800 22px var(--ci-display); }

@@ -1,5 +1,5 @@
-.pq { margin-top: 12px; padding: 18px 18px 16px; background: var(--ci-paper); border: 1px solid var(--ci-ink-line); }
-.pq.is-done { background: var(--ci-mint); border-color: transparent; }
+.pq { margin-top: 12px; padding: 18px 18px 16px; background: var(--ci-paper); }
+.pq.is-done { background: var(--ci-mint); }
 .pq__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .pq__ey { color: var(--ci-ink-soft); }
 .pq.is-done .pq__ey { color: rgba(53, 34, 14, .75); }

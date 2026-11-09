@@ -2,10 +2,10 @@
 .ex__title { margin: 0 0 4px; }
 .ex__note { margin: 0 0 10px; font-size: 14px; }
 .ex__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.ex__card { position: relative; min-width: 0; display: flex; flex-direction: column; justify-content: flex-start; gap: 36px; min-height: 150px; padding: 9px 10px 10px; border: 0; border-radius: var(--ci-r); overflow: hidden; color: #fff; text-decoration: none; text-align: left; font: inherit; cursor: pointer; box-shadow: var(--ci-card); animation: ci-rise .45s var(--ci-ease) both; transition: transform .2s var(--ci-spring); }
+.ex__card { position: relative; min-width: 0; display: flex; flex-direction: column; justify-content: flex-start; gap: 36px; min-height: 150px; padding: 9px 10px 10px; border: var(--ci-line); border-radius: var(--ci-r); overflow: hidden; color: #fff; text-decoration: none; text-align: left; font: inherit; cursor: pointer; box-shadow: var(--ci-card); animation: ci-rise .45s var(--ci-ease) both; transition: transform .2s var(--ci-spring); }
 div.ex__card { cursor: default; }
-.ex__card:hover { transform: translateY(-3px); }
-.ex__card:active { transform: scale(.98); }
+.ex__card:hover { transform: translateY(-2px); box-shadow: var(--ci-card-lg); }
+.ex__card:active { transform: translateY(4px); box-shadow: none; }
 .ex__card::after, .ex__hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, .42)); pointer-events: none; }
 /* The two labels share a row that wraps on a narrow card instead of colliding. */
 .ex__top { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 4px; pointer-events: none; }
