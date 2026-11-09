@@ -65,3 +65,28 @@ test('done once, paid once, streak counts it, parent summary lists it', { skip: 
     server.close();
   }
 });
+
+test("today's three goals each come back on their own", { skip: !HAS_PG && 'no local Postgres' }, async () => {
+  const pool = require('./db');
+  const stamp = Date.now().toString(36);
+  const [user] = await pool.query(`INSERT INTO Users (username, name, password, role) VALUES (?, ?, 'x', 'Student')`, [`gl_${stamp}`, 'GL']);
+  const userId = user.insertId;
+  await pool.query('INSERT INTO Students (user_id, total_xp) VALUES (?, 0)', [userId]).catch(() => {});
+  const token = jwt.sign({ user_id: userId, role: 'Student' }, process.env.JWT_SECRET);
+  const app = express(); app.use(express.json()); app.use('/api/today', require('./routes/today'));
+  const server = await new Promise((resolve) => { const s = app.listen(0, () => resolve(s)); });
+  const base = `http://127.0.0.1:${server.address().port}/api/today`;
+  const headers = { Authorization: `Bearer ${token}` };
+  try {
+    let t = await (await fetch(base, { headers })).json();
+    assert.deepEqual([t.gameToday, t.pythonQuest.done, t.lessonToday, t.builtToday], [false, false, false, false]);
+    await pool.query('INSERT INTO Student_Lesson_Progress (user_id, lesson_id, xp_earned) VALUES (?, 1, 50)', [userId]);
+    t = await (await fetch(base, { headers })).json();
+    assert.deepEqual([t.gameToday, t.lessonToday, t.builtToday], [false, true, false]);
+  } finally {
+    server.close();
+    await pool.query('DELETE FROM Student_Lesson_Progress WHERE user_id = ?', [userId]).catch(() => {});
+    await pool.query('DELETE FROM Students WHERE user_id = ?', [userId]).catch(() => {});
+    await pool.query('DELETE FROM Users WHERE user_id = ?', [userId]).catch(() => {});
+  }
+});

@@ -47,7 +47,11 @@ test('a guest sees today\'s quest, a streak from the shelf, 0 XP with the honest
   localStorage.setItem('codeit.shelf.v1', JSON.stringify([{ id: 'pabc', title: 'Star Dodge', prompt: 'x', projectType: 'game', code: '<!DOCTYPE html><html><body><canvas id="screen"></canvas><script>let a = 1;</script></body></html>', savedAt: today, updatedAt: today }]));
   mount({ user: null, token: null });
   expect(await screen.findByText('Done. Build another?')).toBeInTheDocument();
-  expect(screen.getByText('1')).toBeInTheDocument();
+  // The streak, in the panel tile and in the HUD chip.
+  expect(document.querySelector('.pp-panel__tile--streak .ci-num').textContent).toBe('1');
+  expect(document.querySelector('.kh__chip--streak').textContent.trim()).toBe('1');
+  // The shelf game counts as today's game goal; the other two need an account.
+  expect(document.querySelectorAll('.kh__goal.is-done')).toHaveLength(1);
   expect(screen.getByText('0 XP. Make an account to keep it.')).toBeInTheDocument();
   expect(screen.getByText('Star Dodge')).toBeInTheDocument();
   expect(screen.getByRole('link', { name: /Keep your games for good/ })).toHaveAttribute('href', '/register');
@@ -61,7 +65,11 @@ test('a signed-in child sees the server\'s numbers and the quest opens Build pre
   mount({ user: { name: 'Maya Q' }, token: 't' });
   expect(await screen.findByText('Catch carrots at night.')).toBeInTheDocument();
   expect(screen.getByText('Hey Maya.')).toBeInTheDocument();
-  expect(screen.getByText('3')).toBeInTheDocument();
+  expect(document.querySelector('.pp-panel__tile--streak .ci-num').textContent).toBe('3');
+  expect(document.querySelector('.kh__chip--streak').textContent.trim()).toBe('3');
+  expect(document.querySelector('.kh__chip--xp').textContent.trim()).toBe('420');
+  expect(document.querySelector('.kh__hud-lv').textContent).toBe('2');
+  expect(document.querySelector('.kh__goals-count').textContent).toBe('0/3');
   expect(screen.getByText('420 / 500 XP')).toBeInTheDocument();
   expect(screen.getByText('Level 2')).toBeInTheDocument();
   expect(screen.getByRole('link', { name: 'Build it' })).toHaveAttribute('href', '/build?prompt=a%20bunny%20that%20catches%20carrots%20at%20night');

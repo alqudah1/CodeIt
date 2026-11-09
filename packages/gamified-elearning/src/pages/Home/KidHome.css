@@ -200,3 +200,40 @@ body:has(.kh--night) { background: #131F24; }
 .kh--night .ex__card { border: 1.5px solid var(--n-edge); box-shadow: var(--n-shadow); }
 .kh--night .ex__tag { background: rgba(0, 0, 0, .5); color: #fff; }
 .kh--night .ex__note { color: var(--n-muted); }
+
+/* ── The HUD: who, level, streak, XP ───────────────────────────────────── */
+.kh__hud { display: flex; align-items: center; gap: 14px; margin: 2px 0 18px; }
+.kh__hud-avatar { position: relative; flex: none; width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center; text-decoration: none; background: var(--n-surface-2, #FFF6E6); border: 2.5px solid var(--n-sun, var(--ci-ink)); box-shadow: 0 0 0 4px rgba(255, 201, 60, .18), var(--ci-base-sm); }
+.kh__hud-lv { position: absolute; right: -6px; bottom: -4px; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 999px; display: grid; place-items: center; background: var(--n-sun, var(--ci-sun)); color: #2A1500; font: 800 12px var(--ci-display); border: 2px solid var(--n-bg, var(--ci-ink)); }
+.kh__hud-who { flex: 1 1 auto; min-width: 0; }
+.kh__hud-who .ci-h1 { font-size: 28px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kh__hud-chips { display: flex; flex-direction: column; gap: 6px; flex: none; }
+.kh__chip { display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 10px; border-radius: 999px; font: 800 13px var(--ci-display); background: var(--n-surface-2, var(--ci-paper)); border: 1.5px solid var(--n-edge-strong, var(--ci-ink)); color: var(--n-text, var(--ci-ink)); white-space: nowrap; }
+.kh__chip--streak { color: rgba(241, 247, 249, .6); }
+.kh__chip--streak.is-lit { color: #FF8A1E; background: rgba(255, 138, 30, .14); border-color: rgba(255, 138, 30, .5); }
+.kh__chip--xp { color: var(--n-sun, var(--ci-sun)); }
+.kh--night .ci-h1 { font-size: 28px; }
+@media (max-width: 899px) { .kh--night .site-header { display: none; } .kh--night .kh__main { padding-top: 16px; } }
+
+/* ── Today's goals ──────────────────────────────────────────────────────── */
+.kh__goals { padding: 16px 18px 14px; margin-bottom: 14px; }
+.kh__goals-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.kh__goals-title { margin: 4px 0 0; font: 800 20px var(--ci-display); line-height: 1.1; }
+.kh__goals-count { font: 800 28px var(--ci-display); line-height: 1; color: var(--n-sun, var(--ci-ink)); }
+.kh__goals-count small { font-size: 14px; color: var(--n-muted, var(--ci-ink-soft)); }
+.kh__goals-bar { height: 10px; border-radius: 999px; background: rgba(255, 255, 255, .1); margin: 12px 0 10px; overflow: hidden; }
+.kh__goals-bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #FF8A1E, #FFC93C); box-shadow: 0 0 14px rgba(255, 138, 30, .55); transition: width .8s cubic-bezier(.3, 1, .4, 1); }
+.kh__goal-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.kh__goal { display: flex; align-items: center; gap: 12px; min-height: 40px; }
+.kh__goal-check { flex: none; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--n-edge-strong, var(--ci-ink)); display: grid; place-items: center; font: 800 14px var(--ci-body); color: #06251A; }
+.kh__goal.is-done .kh__goal-check { background: var(--n-mint, var(--ci-mint)); border-color: var(--n-mint, var(--ci-mint)); box-shadow: 0 0 12px rgba(46, 230, 166, .5); }
+.kh__goal-label { flex: 1 1 auto; font: 800 15px var(--ci-body); color: var(--n-text, var(--ci-ink)); text-decoration: none; }
+a.kh__goal-label:hover { color: #FFC93C; }
+.kh__goal.is-done .kh__goal-label { color: var(--n-muted, var(--ci-ink-soft)); text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, .35); }
+.kh__goal-xp { flex: none; font: 800 12px var(--ci-display); color: var(--n-sun, var(--ci-sun)); background: rgba(255, 201, 60, .12); border: 1px solid rgba(255, 201, 60, .35); border-radius: 999px; padding: 3px 9px; }
+.kh__goal-xp.is-done { color: var(--n-mint, var(--ci-mint)); background: rgba(46, 230, 166, .1); border-color: rgba(46, 230, 166, .35); }
+
+/* More air between the big blocks. */
+.kh--night .kh__quest { margin-top: 0; }
+.kh--night .pq, .kh--night .pp-panel { margin-top: 14px; }
+.kh--night .ci-blk { border-radius: 24px; }

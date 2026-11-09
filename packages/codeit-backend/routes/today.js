@@ -79,12 +79,22 @@ router.get('/', optionalAuth, async (req, res) => {
     // game made: the streak is "did something today", not "built a game".
     const questDays = await pythonQuestDays(userId);
     const { streak, builtToday } = streakFrom([...made.map((row) => row.created_at), ...questDays.map((d) => `${d}T12:00:00Z`)]);
+    // The three things a day can hold, each on its own, for the goals strip:
+    // a game made, the Python quest, a lesson finished. builtToday stays
+    // "did something today", which is what the streak and the build card use.
+    const gameToday = streakFrom(made.map((row) => row.created_at)).builtToday;
+    const [[lessonTodayRow]] = await pool.query(
+      "SELECT COUNT(*) AS n FROM Student_Lesson_Progress WHERE user_id = ? AND completed_at >= date_trunc('day', now())",
+      [userId]
+    );
     return res.json({
       signedIn: true,
       quest,
       pythonQuest: { ...pythonQuest, done: questDays.includes(pythonQuest.day) },
       streak,
       builtToday,
+      gameToday,
+      lessonToday: Number(lessonTodayRow?.n) > 0,
       level: levelFor(totalXP),
       lessonsDone: Number(lessonsRow?.done) || 0,
       levels: LEVELS,

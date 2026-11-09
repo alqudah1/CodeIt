@@ -14,6 +14,8 @@
 // keeps it that way.
 
 import { useContext, useEffect, useMemo, useState } from 'react';
+import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
+import { useCharacterDisplay } from '../../context/CharacterContext';
 import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import TabBar from '../../ds/TabBar';
@@ -99,14 +101,67 @@ export default function KidHome() {
   const firstName = (user?.name || '').split(' ')[0];
   const weekday = new Date().toLocaleDateString(undefined, { weekday: 'long' });
   const done = streakInfo.builtToday;
+  const { character } = useCharacterDisplay();
+  // Today's three goals, each its own fact from the server. A guest's game
+  // goal is the shelf's; the other two need an account to be known.
+  const pyDone = Boolean(today?.pythonQuest?.done);
+  const goals = [
+    { id: 'game', label: "Build today's game", done: guest ? streakInfo.builtToday : Boolean(today?.gameToday), xp: null, to: done ? '/build' : `/build?prompt=${encodeURIComponent(quest.prompt)}` },
+    { id: 'python', label: "Today's Python quest", done: pyDone, xp: today?.pythonQuest?.xp || 15, to: '#today-python' },
+    { id: 'lesson', label: 'Finish a lesson on the map', done: Boolean(today?.lessonToday), xp: 50, to: '/lessons' },
+  ];
+  const goalsDone = goals.filter((g) => g.done).length;
 
   return (
     <div className={`kh kh--night${games.length ? ' kh--has-games' : ''}`}>
       <Header />
       <main className="kh__main">
         <section className="kh__left">
-          <div className="ci-ey">{weekday}</div>
-          <h1 className="ci-h1">{firstName ? `Hey ${firstName}.` : 'Hey there.'}</h1>
+          {/* The top of a game screen: who you are, your level, your streak,
+              your XP. On a phone this stands in for the site header. */}
+          <header className="kh__hud">
+            <Link to={guest ? '/register' : '/character'} className="kh__hud-avatar" aria-label={guest ? 'Make an account' : 'Change your look'}>
+              <CharacterAvatar character={character} size={52} />
+              <span className="kh__hud-lv" aria-hidden="true">{level.n}</span>
+            </Link>
+            <div className="kh__hud-who">
+              <div className="ci-ey">{weekday}</div>
+              <h1 className="ci-h1">{firstName ? `Hey ${firstName}.` : 'Hey there.'}</h1>
+            </div>
+            <div className="kh__hud-chips" aria-label="Your streak and XP">
+              <span className={`kh__chip kh__chip--streak${streakInfo.streak > 0 ? ' is-lit' : ''}`} title="Days in a row">
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 2c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9Z" fill="currentColor" /></svg>
+                {streakInfo.streak}
+              </span>
+              <span className="kh__chip kh__chip--xp" title="XP">
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z" fill="currentColor" /></svg>
+                {guest ? 0 : level.xp}
+              </span>
+            </div>
+          </header>
+
+          {/* Today's goals: three things a day can hold, ticked as they are
+              done. One of them keeps the streak; all three is a full day. */}
+          <section className="ci-blk kh__goals ci-rise" aria-labelledby="kh-goals-title">
+            <div className="kh__goals-head">
+              <div>
+                <div className="ci-ey">Today's goals</div>
+                <h2 id="kh-goals-title" className="kh__goals-title">{goalsDone === 3 ? 'A full day. Nice.' : goalsDone > 0 ? 'Today counts.' : 'Do one and today counts.'}</h2>
+              </div>
+              <span className="kh__goals-count" aria-label={`${goalsDone} of 3 done`}>{goalsDone}<small>/3</small></span>
+            </div>
+            <div className="kh__goals-bar" aria-hidden="true"><i style={{ width: `${(goalsDone / 3) * 100}%` }} /></div>
+            <ol className="kh__goal-list">
+              {goals.map((g) => (
+                <li key={g.id} className={`kh__goal${g.done ? ' is-done' : ''}`}>
+                  <span className="kh__goal-check" aria-hidden="true">{g.done ? '✓' : ''}</span>
+                  {g.done ? <span className="kh__goal-label">{g.label}</span> : <Link className="kh__goal-label" to={g.to}>{g.label}</Link>}
+                  {g.xp && !g.done && <span className="kh__goal-xp">+{g.xp} XP</span>}
+                  {g.done && <span className="kh__goal-xp is-done">Done</span>}
+                </li>
+              ))}
+            </ol>
+          </section>
           <div className={`ci-blk kh__quest ci-rise${done ? ' is-done' : ' ci-blk--sun'}`}>
             <div className="ci-ey kh__qey">{done ? 'Done for today' : "Today's build"}</div>
             <h2 className="kh__qtitle">{done ? 'Done. Build another?' : quest.text}</h2>
@@ -116,6 +171,7 @@ export default function KidHome() {
           {/* Two minutes of real Python, every day, under the game quest. The
               server's copy says whether it is done; before it answers, or for a
               guest, the bank's quest for today. */}
+          <div id="today-python" />
           <PythonQuest
             quest={today?.pythonQuest || { ...pythonQuestFor(), done: false }}
             token={token}
