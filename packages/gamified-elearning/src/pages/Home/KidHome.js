@@ -101,7 +101,7 @@ export default function KidHome() {
   const done = streakInfo.builtToday;
 
   return (
-    <div className={`kh${games.length ? ' kh--has-games' : ''}`}>
+    <div className={`kh kh--night${games.length ? ' kh--has-games' : ''}`}>
       <Header />
       <main className="kh__main">
         <section className="kh__left">

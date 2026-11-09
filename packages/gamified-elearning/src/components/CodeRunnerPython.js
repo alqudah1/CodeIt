@@ -60,6 +60,9 @@ const CodeRunnerPython = ({
   // first Run, which is right for an editor embedded in a page somebody came
   // to read: a ten megabyte download nobody asked for is not a welcome.
   loadPython = 'mount',
+  // 'dark' for the night screens (the child's home); the chrome around the
+  // editor is themed by the page, this only switches the editor itself.
+  theme = 'light',
 }) => {
   const initialCode = starterCode || LESSON_STARTER[lessonId] || DEFAULT_CODE;
 
@@ -224,7 +227,7 @@ const CodeRunnerPython = ({
         <CodeMirror
           value={code}
           height={height}
-          theme="light"
+          theme={theme === 'dark' ? 'dark' : 'light'}
           extensions={[python()]}
           onChange={(val) => setCode(val)}
           basicSetup={{

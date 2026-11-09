@@ -62,3 +62,141 @@
   .ci-h1 { font-size: 40px; }
 }
 @media (prefers-reduced-motion: reduce) { .kh__pix, .kh__flame { animation: none !important; } }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Night: the child's home as a game screen. Deep navy, cards that glow at
+   the edge, orange and mint that read like lights, white type. The map's
+   world stays bright; this is the console it is played from. Scoped to
+   .kh--night so no other page changes until the look is approved.
+   ══════════════════════════════════════════════════════════════════════════ */
+.kh--night {
+  /* Ocean: deep teal charcoal, the complement of the orange logo, so the
+     orange glows instead of fighting the dark. Orange is the light, sun the
+     reward, mint the success, sky the third tile. */
+  --n-bg: #131F24;
+  --n-bg-2: #1A2A31;
+  --n-surface: #202F36;
+  --n-surface-2: #28393F;
+  --n-deep: #0E171B;
+  --n-edge: rgba(255, 255, 255, .10);
+  --n-edge-strong: rgba(255, 255, 255, .24);
+  --n-text: #F1F7F9;
+  --n-muted: rgba(241, 247, 249, .66);
+  --n-shadow: 0 12px 32px rgba(0, 0, 0, .40);
+  --n-orange: #FF8A1E;
+  --n-mint: #2EE6A6;
+  --n-sun: #FFC93C;
+  --n-sky: #4FC3FF;
+  --n-coral: #FF6B8A;
+
+  --ci-cream: var(--n-bg);
+  --ci-paper: var(--n-surface);
+  --ci-ink: var(--n-text);
+  --ci-ink-soft: var(--n-muted);
+  --ci-ink-line: var(--n-edge);
+  --ci-quiet: rgba(255, 255, 255, .06);
+  --ci-line: 1.5px solid var(--n-edge);
+  --ci-base: var(--n-shadow);
+  --ci-base-sm: 0 6px 18px rgba(0, 0, 0, .32);
+  --ci-card: var(--n-shadow);
+  --ci-card-lg: 0 20px 50px rgba(0, 0, 0, .5);
+  --ci-pop: 0 4px 0 #B85400, 0 10px 28px rgba(255, 122, 0, .45);
+  --ci-orange: var(--n-orange);
+  --ci-sun: var(--n-sun);
+  --ci-mint: var(--n-mint);
+  --ci-violet: var(--n-sky);
+  --ci-sky: var(--n-sky);
+  --ci-coral: var(--n-coral);
+
+  color: var(--n-text);
+  background:
+    radial-gradient(900px 420px at 0% -10%, rgba(255, 122, 0, .24), transparent 60%),
+    radial-gradient(700px 420px at 100% 10%, rgba(46, 230, 166, .12), transparent 60%),
+    linear-gradient(180deg, var(--n-bg-2) 0, var(--n-bg) 520px);
+}
+/* Stars, faint, so the dark is a sky and not a hole. */
+.kh--night::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .5;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 48% 8%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 82% 22%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 68% 40%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 26% 52%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 90% 64%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 8% 78%, #fff 50%, transparent 51%);
+}
+.kh--night .kh__main { position: relative; z-index: 1; }
+
+/* The header and the tab bar belong to the screen. */
+.kh--night .site-header { background: rgba(19, 31, 36, .9); border-bottom: 1px solid var(--n-edge); box-shadow: none; }
+.kh--night .site-header__nav a, .kh--night .site-header__nav button, .kh--night .site-header__nav-list a { color: var(--n-text); }
+.kh--night .site-header__login { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); }
+.kh--night .site-header__cta { box-shadow: 0 3px 0 #B85400, 0 8px 22px rgba(255, 122, 0, .4); }
+.kh--night .site-header [aria-label*='menu' i], .kh--night .site-header [aria-label*='Menu'] { color: var(--n-text); }
+body:has(.kh--night) { background: #131F24; }
+.kh--night .site-header__burger span { background: var(--n-text); }
+.kh--night .ci-tabs { background: rgba(15, 26, 30, .97); border-top: 1px solid var(--n-edge); backdrop-filter: blur(16px); }
+.kh--night .ci-tab { color: var(--n-muted); }
+.kh--night .ci-tab.is-on { color: var(--n-orange); }
+.kh--night .ci-tab.is-on svg { fill: rgba(255, 138, 30, .25); stroke: var(--n-orange); }
+
+/* Type. */
+.kh--night .ci-ey { color: var(--n-muted); letter-spacing: .14em; }
+.kh--night .ci-h1 { color: var(--n-text); font-size: 36px; }
+.kh--night .ci-h2 { color: var(--n-text); margin-top: 32px; }
+.kh--night .ci-sub { color: var(--n-muted); }
+
+/* Blocks: a surface with a light edge, a highlight along the top, deep shadow. */
+.kh--night .ci-blk { background: linear-gradient(180deg, var(--n-surface-2) 0, var(--n-surface) 100%); border: 1.5px solid var(--n-edge); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), var(--n-shadow); }
+/* The one orange card is a light: today's build. */
+.kh--night .kh__quest { background: linear-gradient(135deg, #FF7A00 0, #FFB020 100%); color: #2A1500; border-color: rgba(255, 255, 255, .25); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 16px 40px rgba(255, 122, 0, .35); }
+.kh--night .kh__quest .ci-ey, .kh--night .kh__qey { color: rgba(42, 21, 0, .72); }
+.kh--night .kh__quest.is-done { background: linear-gradient(135deg, #17C08B 0, #5FE3B6 100%); color: #06251A; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 16px 40px rgba(23, 192, 139, .35); }
+.kh--night .kh__quest .ci-btn { background: var(--n-deep); color: var(--n-text); border-color: rgba(0, 0, 0, .3); box-shadow: 0 4px 0 #000, 0 10px 24px rgba(0, 0, 0, .35); }
+
+/* Buttons: orange lights with dark type, pressed flat. */
+.kh--night .ci-btn { color: #1A1300; border-color: rgba(0, 0, 0, .25); }
+.kh--night .ci-btn:active { box-shadow: 0 0 0 #B85400, 0 0 0 rgba(0, 0, 0, 0); }
+.kh--night .ci-btn--paper, .kh--night .ci-btn--ink { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 4px 0 #0A1114; }
+.kh--night .ci-chip { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 2px 0 #0A1114; }
+
+/* Today's Python: the editor goes dark, the chrome around it with it. */
+.kh--night .pq__title { color: var(--n-text); }
+.kh--night .pq__task { color: var(--n-muted); }
+.kh--night .pq__xp { background: var(--n-sun); color: #2A1500; border: 0; }
+.kh--night .cr-wrap { background: var(--n-deep); border: 1.5px solid var(--n-edge); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06); border-radius: 16px; }
+.kh--night .cr-header { background: #172327; border-bottom: 1px solid var(--n-edge); }
+.kh--night .cr-title { color: var(--n-text); }
+.kh--night .cr-btn--reset { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); }
+.kh--night .cr-btn--run { background: var(--n-orange); color: #1A1300; box-shadow: 0 3px 0 #B85400, 0 8px 20px rgba(255, 122, 0, .4); }
+.kh--night .cr-output-wrap { background: #0A1114; border-top: 1px solid var(--n-edge); }
+.kh--night .cr-output-label { color: var(--n-sun); }
+.kh--night .cr-output { color: var(--n-mint); }
+.kh--night .cr-output--error { color: var(--n-coral); }
+.kh--night .pq__note { color: var(--n-muted); }
+.kh--night .pq__note a { color: var(--n-sun); }
+
+/* Your progress: the tiles are the three lights on the console. */
+.kh--night .pp-panel__lv { color: var(--n-text); }
+.kh--night .pp-panel__lv span { color: var(--n-muted); }
+.kh--night .pp-panel__xp { color: var(--n-muted); }
+.kh--night .pp-panel__bar { background: rgba(255, 255, 255, .1); border: 0; }
+.kh--night .pp-panel__bar i { background: linear-gradient(90deg, var(--n-mint), #9BFFD9); box-shadow: 0 0 14px rgba(46, 230, 166, .6); }
+.kh--night .pp-panel__avatar { border-color: var(--n-edge-strong); background: var(--n-surface-2); box-shadow: 0 0 0 3px rgba(255, 201, 60, .25); }
+.kh--night .pp-panel__tile { color: #1A1300; border: 0; box-shadow: 0 6px 18px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .35); }
+.kh--night .pp-panel__tile--course { background: var(--n-sky); color: #06202E; }
+
+/* The shelf and the rows. */
+.kh--night .kh__tile { border-color: var(--n-edge); box-shadow: var(--n-shadow); color: var(--n-text); }
+.kh--night .kh__cap { background: var(--n-surface); border-top: 1px solid var(--n-edge); color: var(--n-text); }
+.kh--night .kh__cap small { color: var(--n-muted); }
+.kh--night .kh__tile--new { background: rgba(255, 255, 255, .04); border: 1.5px dashed var(--n-edge-strong); color: var(--n-orange); }
+.kh--night .kh__row-link { background: linear-gradient(180deg, var(--n-surface-2) 0, var(--n-surface) 100%); border: 1.5px solid var(--n-edge); box-shadow: var(--n-shadow); color: var(--n-text); }
+.kh--night .kh__row-link small { color: var(--n-muted); }
+.kh--night .kh__ic { background: rgba(79, 195, 255, .16); border-color: rgba(79, 195, 255, .45); color: #9FDFFF; }
+.kh--night .kh__chev { color: var(--n-muted); }
+.kh--night .kh__plays { color: var(--n-muted); }
+.kh--night .ex__card { border: 1.5px solid var(--n-edge); box-shadow: var(--n-shadow); }
+.kh--night .ex__tag { background: rgba(0, 0, 0, .5); color: #fff; }
+.kh--night .ex__note { color: var(--n-muted); }

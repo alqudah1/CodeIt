@@ -72,6 +72,7 @@ export default function PythonQuest({ quest, token, onDone }) {
           title="Python"
           height="150px"
           loadPython="demand"
+          theme="dark"
           onOutput={handleOutput}
         />
       )}
