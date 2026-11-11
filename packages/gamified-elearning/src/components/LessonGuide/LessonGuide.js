@@ -37,10 +37,13 @@ const getHint = (stepType, isCurrentDone, isLastStep) => {
   }
 };
 
-const LessonGuide = ({ stepType, isCurrentDone, isLastStep }) => {
+// `say` is the step's own one instruction, when it has one (a step with Pixel
+// on a stage). The guide then says the same words Pixel's bubble shows, so a
+// child who asks to be read to hears the line that is on the screen.
+const LessonGuide = ({ stepType, isCurrentDone, isLastStep, say }) => {
   const { user } = useContext(AuthContext) || {};
   const { character } = useCharacter() || {};
-  const hint = getHint(stepType, isCurrentDone, isLastStep);
+  const hint = say || getHint(stepType, isCurrentDone, isLastStep);
   // Read defensively for the same reason the lesson page above it now does:
   // this component sits on all 31 lesson pages, and a null read here takes the
   // whole page down with it. The context supplies a default character, so this

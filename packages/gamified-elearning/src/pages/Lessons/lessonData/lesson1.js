@@ -1,22 +1,75 @@
+// Lesson 1, rebuilt as the model for the rest (11 November 2026).
+//
+// It used to open with reading: a numbered panel, a story, a paragraph, a KEY
+// IDEA box and a read-only code block, and only then a guess. Now the first
+// thing a child does is press Run, and somebody answers: Pixel, on a small
+// drawn stage, says whatever their Python prints. The explanation comes
+// second, as the line they just ran taken apart piece by piece.
+//
+// The rules this lesson keeps, for every lesson that follows it:
+//   1. Do first, then explain. Step one runs.
+//   2. Every step ends in something that moves: Pixel says the output.
+//   3. One voice per screen, two short sentences at most.
+//   4. The last step is the child's own: here, a joke in three lines.
+//
+// The step ids are stable: two public activity links land on 'example' and
+// 'tryit' by id, never by position.
 const lesson1 = {
   id: 1,
   title: "Hello Python!",
   subtitle: "Make a computer say your first message. It is easier than you think!",
   emoji: "🐍",
-  story: "Every program you will ever write starts here: telling the computer to say something, and watching it obey.",
+  story: "This is Pixel. Pixel only says what Python tells it to say.",
   steps: [
+    {
+      type: 'example',
+      id: 'example',
+      title: 'Your First Python Program',
+      stage: 'say',
+      idle: 'Hi, I am Pixel! Press the orange Run button and I will say it.',
+      description: 'This is one line of real Python. Press Run and watch Pixel.',
+      code: 'print("Hello!")',
+      successPattern: /Hello/i,
+      hint: 'Press the orange Run button under the code. Pixel says Hello!',
+      xp: 10,
+    },
     {
       type: 'concept',
       id: 'concept',
-      title: 'How Do You Talk to a Computer?',
-      body: 'In Python, print() is how you make the computer show a message on screen. You type what you want to say inside the brackets and Python says it!',
-      highlight: 'print("Hello!")   →   Hello!\nprint("I love coding!")   →   I love coding!',
-      code: 'print("Hello!")\nprint("I love coding!")\nprint("Python is awesome!")',
+      title: 'What Just Happened?',
+      body: 'You told the computer what to say, and it said it. Here is your line again. Tap each piece.',
+      parts: {
+        pieces: [['print', 'a'], ['(', 'b'], ['"Hello!"', 'c'], [')', 'b']],
+        notes: {
+          a: 'This word means: say it.',
+          b: 'Brackets hold what to say.',
+          c: 'The words. They always sit inside quote marks.',
+        },
+      },
+    },
+    {
+      type: 'tryit',
+      id: 'tryit',
+      title: 'Make It Your Own',
+      stage: 'say',
+      idle: 'Change my words. Then press Run!',
+      description: 'Change Hello! to anything you like. Your name. A silly word. Then press Run.',
+      code: 'print("Hello!")',
+      // Open-ended: the child writes their own message, so the check is that
+      // they still used print and that something was actually printed.
+      expectedDifferentOutput: 'Hello!',
+      expectedKeywords: ['print('],
+      wrongOutputHint: 'Keep the print( and the quote marks, then press Run.',
+      hint: 'Tap inside the code box. Change only the words between the quote marks. Then press Run.',
+      xp: 15,
     },
     {
       type: 'predict',
       id: 'predict-print',
       title: 'What Will It Say?',
+      stage: 'say',
+      idle: 'Two prints this time. What will I say?',
+      plays: ['Hello', 'Python'],
       question: 'What does this print?',
       code: 'print("Hello")\nprint("Python")',
       choices: ['Hello Python', 'Hello\nPython', 'HelloPython', '"Hello"\n"Python"'],
@@ -26,38 +79,35 @@ const lesson1 = {
       hints: ['Every print() puts its message on its own line.', 'The quotes tell Python where the text starts and ends. They are not part of it.'],
     },
     {
-      type: 'example',
-      id: 'example',
-      title: 'Your First Python Program',
-      description: 'This is a real working Python program! Click Run and watch the computer say "Hello!"',
-      code: 'print("Hello!")',
-      successPattern: /Hello/i,
-      hint: 'Click the Run button below the code. You should see Hello! appear in the output box.',
-      xp: 10,
-    },
-    {
-      type: 'tryit',
-      id: 'tryit',
-      title: 'Make It Your Own',
-      description: 'Change "Hello!" to YOUR message. Like your name or something funny. Click Run to see YOUR message appear!',
-      code: 'print("Hello!")',
-      // Open-ended: the child writes their own message, so the check is that
-      // they still used print and that something was actually printed.
-      expectedDifferentOutput: 'Hello!',
-      expectedKeywords: ['print('],
-      wrongOutputHint: 'Keep the print( and the quote marks, then press Run.',
-      hint: 'Click inside the editor, change the text inside the quotes to anything you like, then click Run!',
-      xp: 15,
+      type: 'fillblank',
+      id: 'fix-pixel',
+      title: 'Pixel Lost a Word',
+      stage: 'say',
+      idle: 'I cannot talk! A word is missing.',
+      plays: ['Thank you!'],
+      question: 'Tap the word that makes Pixel talk again.',
+      template: '___("Thank you!")',
+      options: ['say', 'print', 'talk', 'Print'],
+      answers: ['print'],
+      explain: 'Yes. It is print, all in small letters.',
+      wrongHint: 'Python only knows one word for this. You used it on the first step.',
+      hints: ['It starts with p.', 'Small letters only. Python cares about capital letters.'],
     },
     {
       type: 'challenge',
       id: 'challenge',
-      title: 'Print Three Things',
-      description: 'Can you print THREE different messages? Each print() prints one line. Change all three messages to whatever you want!',
-      code: 'print("Hello!")\nprint("I love Python!")\nprint("Let\'s code!")',
+      title: 'Pixel Tells a Joke',
+      stage: 'say',
+      idle: 'Three lines make a joke. Press Run to hear mine, then write yours!',
+      description: 'Three prints, three lines. Run it, then change all three so the joke is yours.',
+      code: 'print("Knock knock!")\nprint("Who is there?")\nprint("Python!")',
+      // Three lines that are not the three we wrote: the child said three
+      // things of their own, one print each.
+      expectedDifferentOutput: 'Knock knock!\nWho is there?\nPython!',
+      expectedOutput: /^\s*\S.*\n+\s*\S.*\n+\s*\S/,
       expectedKeywords: ['print('],
-      wrongOutputHint: 'You need three print lines, each with its own message.',
-      hint: 'Each line is a separate print(). Change the text in each set of quotes to your own messages!',
+      wrongOutputHint: 'Pixel needs three lines to say. Use three prints, one under the other.',
+      hint: 'Change the words inside each pair of quote marks. Keep one print on each line.',
       xp: 20,
     },
   ]

@@ -20,6 +20,8 @@ import { TOTAL_LESSONS, builderPromptFor, getLessonEntry, seoFor } from '../../p
 import { hasQuiz, loadQuizIds } from '../../utils/quizAvailability';
 import { effectiveGuideLevel } from '../../utils/guideLevel';
 import { PredictOutput, FillBlank, OrderSteps } from './LessonInteractions';
+import LessonStage, { stageLines } from './LessonStage';
+import CodeParts from './CodeParts';
 import { firstUseStep, firstPracticeIndex } from './firstUse';
 import { trackActivityComplete, trackGuestLessonComplete } from '../../utils/activity';
 import {
@@ -244,6 +246,8 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const [stepHintCounts, setStepHintCounts] = useState({});  // { [idx]: number revealed }
   const [lastOutputs,    setLastOutputs]    = useState({});  // { [idx]: string }. output from last Run
   const [lastCode,       setLastCode]       = useState({});  // { [idx]: string }. code from last Run
+  const [runCounts,      setRunCounts]      = useState({});  // { [idx]: number }. so the stage replays a run that printed the same thing
+  const [busyStep,       setBusyStep]       = useState(null); // the step whose code is running right now
   const [feedback,       setFeedback]       = useState({});  // { [idx]: 'incorrect' | null }
   const [feedbackText,   setFeedbackText]   = useState({});  // { [idx]: string }. why it was wrong
   const [picks,          setPicks]          = useState(restored?.picks || {}); // non-typing answers
@@ -364,6 +368,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   // Stores the latest output so Submit can validate it.
   // Example steps (observational) auto-pass on any non-empty output.
   const handleCodeOutput = (idx, step, output, code, result) => {
+    setRunCounts(prev => ({ ...prev, [idx]: (prev[idx] || 0) + 1 }));
     if (result?.success === false) {
       setLastOutputs(prev => ({ ...prev, [idx]: '' }));
       return;
@@ -747,7 +752,9 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               and every teenager gets, does not need to be told to read the box
               and press the button. They keep the story, the lesson and the
               code. The younger levels keep all of it. */}
-          {guideLevel !== 'independent' && (
+          {/* A step with a stage has Pixel on it, and Pixel's bubble says the
+              one thing to do. A numbered panel above that is a second voice. */}
+          {guideLevel !== 'independent' && !currentStep?.stage && !currentStep?.parts && (
           <aside className="sl-now" aria-live="polite" aria-label="What to do now">
             <span className="sl-now__eyebrow">What to do now</span>
             <ol>
@@ -760,7 +767,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
 
           {/* A reason to care, before the code. Every step may set its own; the
               lesson's own story line opens step one. */}
-          {(currentStep?.story || (stepIdx === 0 && lessonData.story)) && (
+          {!currentStep?.stage && (currentStep?.story || (stepIdx === 0 && lessonData.story)) && (
             <p className="sl-story">
               <span className="sl-story__icon"><Icon name="chat" size={20} /></span>
               {currentStep?.story || lessonData.story}
@@ -771,6 +778,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
           {currentStep?.type === 'concept' && (
             <div className="sl-concept">
               <p className="sl-concept__body">{currentStep.body}</p>
+              {currentStep.parts && <CodeParts parts={currentStep.parts} />}
               {currentStep.highlight && (
                 <div className="sl-concept__highlight">
                   <span className="sl-concept__highlight-label">Key idea</span>
@@ -793,6 +801,16 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
           {/* ────── NON-TYPING steps (predict / fill blank / order) ── */}
           {isInteractionStep(currentStep) && (
             <div className="sl-code-step">
+              {/* Answered by tapping: the stage plays what the code prints once
+                  the answer is right, so a guess also ends in something moving. */}
+              {currentStep.stage && (
+                <LessonStage
+                  lines={isCurrentDone ? (currentStep.plays || []) : []}
+                  runKey={isCurrentDone ? 1 : 0}
+                  idle={currentStep.idle}
+                  mood={feedback[stepIdx] === 'incorrect' && !isCurrentDone ? 'hmm' : undefined}
+                />
+              )}
               {currentStep.description && (
                 <p className="sl-code-step__desc">{currentStep.description}</p>
               )}
@@ -859,7 +877,16 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
 
           {/* ────── CODE steps (example / tryit / challenge) ── */}
           {currentStep?.type !== 'concept' && !isInteractionStep(currentStep) && (
-            <div className="sl-code-step">
+            <div className={`sl-code-step${currentStep?.stage ? ' sl-code-step--stage' : ''}`}>
+              {currentStep?.stage && (
+                <LessonStage
+                  lines={stageLines(lastOutputs[stepIdx])}
+                  runKey={runCounts[stepIdx] || 0}
+                  idle={currentStep.idle}
+                  thinking={busyStep === stepIdx}
+                  mood={feedback[stepIdx] === 'incorrect' && !isCurrentDone ? 'hmm' : undefined}
+                />
+              )}
               <p className="sl-code-step__desc">{currentStep?.description}</p>
 
               {/* All code-step editors mounted; only current one shown */}
@@ -880,6 +907,9 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                         starterCode={step.code}
                         title={step.title}
                         onOutput={(out, ranCode, result) => handleCodeOutput(i, step, out, ranCode, result)}
+                        onBusy={(busy) => setBusyStep(busy ? i : null)}
+                        wrap={!!step.stage}
+                        {...(step.stage ? { height: `${(Math.max(2, String(step.code || '').split('\n').length) + 1) * 24 + 12}px` } : {})}
                       />
                     </div>
                   );
@@ -1040,6 +1070,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
         stepType={currentStep?.type}
         isCurrentDone={isCurrentDone}
         isLastStep={isLastStep}
+        say={!isCurrentDone ? currentStep?.idle : ''}
       />
     </div>
   );

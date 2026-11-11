@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import CodeMirror from '@uiw/react-codemirror';
+import CodeMirror, { EditorView } from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { getPyodideRuntime } from '../utils/pyodideLoader';
 import { trackActivityStart } from '../utils/activity';
@@ -48,6 +48,7 @@ function cleanPythonError(raw) {
  *   title       {string}  — panel title (default: "Python Playground")
  *   height      {string}  — CodeMirror editor height (default: "220px")
  *   onOutput    {fn}      — called with output string after each run
+ *   onBusy      {fn}      — called with true when Run is pressed, false when the run is over
  */
 const CodeRunnerPython = ({
   lessonId,
@@ -55,6 +56,9 @@ const CodeRunnerPython = ({
   title,
   height = '220px',
   onOutput,
+  onBusy,
+  // Long lines fold instead of sliding the start of the line off a phone.
+  wrap = false,
   // 'mount' downloads Python as soon as this editor appears, which is right on
   // a page the visitor opened in order to run Python. 'demand' waits for the
   // first Run, which is right for an editor embedded in a page somebody came
@@ -135,12 +139,13 @@ const CodeRunnerPython = ({
     // it (a lesson, the playground, the editor on the home page). Once per
     // session; the result of the run is a separate question.
     void trackActivityStart('python-run');
+    if (onBusy) onBusy(true);
     // A Run pressed before Python has arrived is not ignored: it starts the
     // download and then runs. The old code returned silently here, which is the
     // other half of why the button looked dead.
     if (!window.pyodide) {
       const py = await startPython(true);
-      if (!py || !mountedRef.current) return;
+      if (!py || !mountedRef.current) { if (onBusy) onBusy(false); return; }
     }
     setRunning(true);
     setOutput('');
@@ -165,9 +170,10 @@ const CodeRunnerPython = ({
       if (onOutput) onOutput(msg, code, { success: false });
     } finally {
       if (mountedRef.current) setRunning(false);
+      if (onBusy) onBusy(false);
       if (outputRef.current) outputRef.current.scrollTop = outputRef.current.scrollHeight;
     }
-  }, [code, running, starting, startPython, onOutput]);
+  }, [code, running, starting, startPython, onOutput, onBusy]);
 
   const handleShortcut = useCallback((event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
@@ -228,7 +234,7 @@ const CodeRunnerPython = ({
           value={code}
           height={height}
           theme={theme === 'dark' ? 'dark' : 'light'}
-          extensions={[python()]}
+          extensions={wrap ? [python(), EditorView.lineWrapping] : [python()]}
           onChange={(val) => setCode(val)}
           basicSetup={{
             lineNumbers: true,
