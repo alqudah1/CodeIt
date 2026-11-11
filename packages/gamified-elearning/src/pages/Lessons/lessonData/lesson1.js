@@ -104,6 +104,7 @@ const lesson1 = {
       // Three lines that are not the three we wrote: the child said three
       // things of their own, one print each.
       expectedDifferentOutput: 'Knock knock!\nWho is there?\nPython!',
+      unchangedHint: 'That is still Pixel\'s joke. Change the words in all three lines, then press Run.',
       expectedOutput: /^\s*\S.*\n+\s*\S.*\n+\s*\S/,
       expectedKeywords: ['print('],
       wrongOutputHint: 'Pixel needs three lines to say. Use three prints, one under the other.',

@@ -13,6 +13,9 @@
 // A step asks for it with `stage: 'say'`. Before the first run the bubble
 // holds the step's one instruction (`idle`), so the stage is also the only
 // voice telling a child what to do next.
+//
+// `stage: 'boxes'` adds a shelf under the scene: every variable the code made
+// is a labelled box with its value inside, read from Python after the run.
 
 import React from 'react';
 import Mascot from '../../arcade/Mascot';
@@ -26,44 +29,66 @@ export function stageLines(output) {
   return String(output || '').split('\n').map((line) => line.trimEnd()).filter((line) => line.trim() !== '');
 }
 
-export default function LessonStage({ lines = [], runKey = 0, idle = '', mood, thinking = false }) {
+export default function LessonStage({ lines = [], boxes = null, runKey = 0, idle = '', oops = '', mood, thinking = false }) {
   const said = lines.slice(0, MOST);
   const more = lines.length - said.length;
   const speaking = said.length > 0 && !thinking;
+  // A run that ended in a Python error: Pixel says what to look for, in the
+  // same place the words would have been.
+  const stuck = !!oops && !thinking && !speaking;
+  const shelf = Array.isArray(boxes);
+  const filled = shelf && !thinking ? boxes : [];
   return (
-    <div className={`ls${speaking ? ' ls--speaking' : ''}`} data-testid="lesson-stage">
-      <div className="ls__sky" aria-hidden="true">
-        <Sun className="ls__sun" size={64} />
-        <Cloud className="ls__cloud ls__cloud--a" width={70} />
-        <Cloud className="ls__cloud ls__cloud--b" width={48} />
+    <div className={`ls${speaking ? ' ls--speaking' : ''}${stuck ? ' ls--stuck' : ''}${shelf ? ' ls--shelf' : ''}`} data-testid="lesson-stage">
+      <div className="ls__scene">
+        <div className="ls__sky" aria-hidden="true">
+          <Sun className="ls__sun" size={64} />
+          <Cloud className="ls__cloud ls__cloud--a" width={70} />
+          <Cloud className="ls__cloud ls__cloud--b" width={48} />
+        </div>
+        <div className="ls__ground" aria-hidden="true">
+          <Bush className="ls__bush" size={44} />
+          <Flower className="ls__flower ls__flower--a" size={18} />
+          <Flower className="ls__flower ls__flower--b" size={16} petal="#FFC93C" />
+        </div>
+        <div className="ls__pixel">
+          <Mascot mood={stuck ? 'hmm' : (mood || (speaking ? 'happy' : thinking ? 'lean' : 'base'))} size={84} />
+        </div>
+        {/* The words. Polite, so a screen reader hears what Pixel said after the run. */}
+        <div className="ls__says" aria-live="polite" aria-label="Pixel says">
+          {speaking ? (
+            <>
+              {said.map((line, i) => (
+                <p key={`${runKey}-${i}`} className="ls__say" style={{ animationDelay: `${(filled.length ? 0.5 : 0) + i * 0.42}s` }}>{line}</p>
+              ))}
+              {more > 0 && (
+                <p key={`${runKey}-more`} className="ls__say ls__say--more" style={{ animationDelay: `${(filled.length ? 0.5 : 0) + said.length * 0.42}s` }}>
+                  and {more} more {more === 1 ? 'line' : 'lines'}
+                </p>
+              )}
+            </>
+          ) : stuck ? (
+            <p key={`${runKey}-oops`} className="ls__say ls__say--oops">{oops}</p>
+          ) : (
+            <p className={`ls__say ls__say--idle${thinking ? ' ls__say--thinking' : ''}`}>
+              {thinking ? <span className="ls__dots" aria-label="Thinking"><i /><i /><i /></span> : idle}
+            </p>
+          )}
+        </div>
       </div>
-      <div className="ls__ground" aria-hidden="true">
-        <Bush className="ls__bush" size={44} />
-        <Flower className="ls__flower ls__flower--a" size={18} />
-        <Flower className="ls__flower ls__flower--b" size={16} petal="#FFC93C" />
-      </div>
-      <div className="ls__pixel">
-        <Mascot mood={mood || (speaking ? 'happy' : thinking ? 'lean' : 'base')} size={84} />
-      </div>
-      {/* The words. Polite, so a screen reader hears what Pixel said after the run. */}
-      <div className="ls__says" aria-live="polite" aria-label="Pixel says">
-        {speaking ? (
-          <>
-            {said.map((line, i) => (
-              <p key={`${runKey}-${i}`} className="ls__say" style={{ animationDelay: `${i * 0.42}s` }}>{line}</p>
-            ))}
-            {more > 0 && (
-              <p key={`${runKey}-more`} className="ls__say ls__say--more" style={{ animationDelay: `${said.length * 0.42}s` }}>
-                and {more} more {more === 1 ? 'line' : 'lines'}
-              </p>
-            )}
-          </>
-        ) : (
-          <p className={`ls__say ls__say--idle${thinking ? ' ls__say--thinking' : ''}`}>
-            {thinking ? <span className="ls__dots" aria-label="Thinking"><i /><i /><i /></span> : idle}
-          </p>
-        )}
-      </div>
+      {/* The shelf: one box for every name the code made, holding what Python
+          says it holds. Before a run it is a shelf with nothing on it. */}
+      {shelf && (
+        <ul className="ls__shelf" aria-live="polite" aria-label="The boxes">
+          {filled.length === 0 && <li className="ls__box ls__box--empty" aria-label="No boxes yet"><span className="ls__box-name">?</span><span className="ls__box-val">empty</span></li>}
+          {filled.map((box, i) => (
+            <li key={`${runKey}-${box.name}`} className={`ls__box ls__box--${box.type === 'str' ? 'text' : 'number'}`} style={{ animationDelay: `${i * 0.18}s` }}>
+              <span className="ls__box-name">{box.name}</span>
+              <span className="ls__box-val">{box.text}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

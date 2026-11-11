@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import CodeMirror, { EditorView } from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { getPyodideRuntime } from '../utils/pyodideLoader';
+import { readVariables } from '../utils/pythonVariables';
+import { errorOutput, explainPythonError } from '../utils/pythonErrors';
 import { trackActivityStart } from '../utils/activity';
 import Icon from './Icon/Icon';
 import './CodeRunnerPython.css';
@@ -21,23 +23,6 @@ const LESSON_STARTER = {
 };
 
 const DEFAULT_CODE = `# Write your Python code here\nprint("Hello, Python!")`;
-
-// Strip internal Pyodide traceback lines; keep only the user-relevant error
-function cleanPythonError(raw) {
-  if (!raw) return raw;
-  const lines = raw.split('\n');
-  const kept = lines.filter(line => {
-    const t = line.trim();
-    if (!t) return false;
-    if (t.startsWith('File "/lib/')) return false;          // internal Pyodide paths
-    if (/^\.\.\.<\d+ lines>/.test(t)) return false;         // collapsed internal frames
-    if (t.startsWith('await CodeRunner(')) return false;
-    if (t.startsWith('.run_async(')) return false;
-    if (t.startsWith('coroutine = eval(')) return false;
-    return true;
-  });
-  return kept.join('\n').replace(/\n{2,}/g, '\n').trim() || raw;
-}
 
 /**
  * CodeRunnerPython
@@ -59,6 +44,9 @@ const CodeRunnerPython = ({
   onBusy,
   // Long lines fold instead of sliding the start of the line off a phone.
   wrap = false,
+  // A lesson that shows variables as boxes asks for what each name holds
+  // after the run; it arrives as `vars` beside `success`.
+  watchVariables = false,
   // 'mount' downloads Python as soon as this editor appears, which is right on
   // a page the visitor opened in order to run Python. 'demand' waits for the
   // first Run, which is right for an editor embedded in a page somebody came
@@ -74,6 +62,7 @@ const CodeRunnerPython = ({
   const [output, setOutput]   = useState('');
   const [pyReady, setPyReady] = useState(false);
   const [running, setRunning] = useState(false);
+  const [failed, setFailed]   = useState(false);   // the last run ended in a Python error
   // Separate from `running`. Python is roughly ten megabytes and on a phone on
   // cellular it is a real wait, so the wait has to be visible and it has to be
   // named: "Starting Python..." tells a child the machine heard them, and
@@ -149,6 +138,7 @@ const CodeRunnerPython = ({
     }
     setRunning(true);
     setOutput('');
+    setFailed(false);
 
     try {
       window.printOutput = '';
@@ -162,18 +152,21 @@ const CodeRunnerPython = ({
       // The student's code goes with the output: a lesson step needs to check
       // that the idea it taught is actually in there, not just that something
       // printed. Second argument, so existing callers keep working unchanged.
-      if (onOutput) onOutput(result || '', code, { success: true });
+      if (onOutput) onOutput(result || '', code, watchVariables ? { success: true, vars: readVariables(window.pyodide, code) } : { success: true });
     } catch (err) {
       const raw = err.message || 'An error occurred';
-      const msg = cleanPythonError(raw);
-      if (mountedRef.current) setOutput(msg);
-      if (onOutput) onOutput(msg, code, { success: false });
+      // The sentence a child can act on, then Python's own last line. The
+      // sentence alone also goes to whoever is listening, so a lesson's
+      // stage can say it.
+      const msg = errorOutput(raw);
+      if (mountedRef.current) { setOutput(msg); setFailed(true); }
+      if (onOutput) onOutput(msg, code, { success: false, say: explainPythonError(raw).say });
     } finally {
       if (mountedRef.current) setRunning(false);
       if (onBusy) onBusy(false);
       if (outputRef.current) outputRef.current.scrollTop = outputRef.current.scrollHeight;
     }
-  }, [code, running, starting, startPython, onOutput, onBusy]);
+  }, [code, running, starting, startPython, onOutput, onBusy, watchVariables]);
 
   const handleShortcut = useCallback((event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
@@ -185,6 +178,7 @@ const CodeRunnerPython = ({
   const resetCode = useCallback(() => {
     setCode(initialCode);
     setOutput('');
+    setFailed(false);
   }, [initialCode]);
 
   return (
@@ -251,7 +245,7 @@ const CodeRunnerPython = ({
       <div className="cr-output-wrap" ref={outputRef}>
         <span className="cr-output-label">Output</span>
         <pre
-          className={`cr-output${output.startsWith('❌') ? ' cr-output--error' : ''}`}
+          className={`cr-output${failed || output.startsWith('❌') ? ' cr-output--error' : ''}`}
         >
           {output || 'Press Run and the output appears here.'}
         </pre>

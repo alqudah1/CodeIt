@@ -10,6 +10,7 @@ import CodeParts from './CodeParts';
 import { checkCodeStep } from './interactionGrading';
 import { AuthContext } from '../../context/AuthContext';
 import lesson1 from '../../pages/Lessons/lessonData/lesson1';
+import lesson2 from '../../pages/Lessons/lessonData/lesson2';
 import { trackExerciseCompletion, trackStaticLessonCompletion } from '../../utils/progressTracker';
 
 let mockSearch = '';
@@ -27,7 +28,8 @@ jest.mock('../CodeRunnerPython', () => ({ onOutput, onBusy, title }) => (
     <button onClick={() => onBusy(true)}>Press Run {title}</button>
     <button onClick={() => { onBusy(false); onOutput('Hello!', 'print("Hello!")', { success: true }); }}>Run unchanged {title}</button>
     <button onClick={() => { onBusy(false); onOutput('I am Sam', 'print("I am Sam")', { success: true }); }}>Run changed {title}</button>
-    <button onClick={() => { onBusy(false); onOutput('SyntaxError', 'print(', { success: false }); }}>Run error {title}</button>
+    <button onClick={() => { onBusy(false); onOutput('SyntaxError', 'print(', { success: false, say: 'Line 1: a quote mark is missing.' }); }}>Run error {title}</button>
+    <button onClick={() => { onBusy(false); onOutput('Sam\n9', 'name = "Sam"\nage = 9\nprint(name)\nprint(age)', { success: true, vars: [{ name: 'name', type: 'str', text: '"Sam"' }, { name: 'age', type: 'int', text: '9' }] }); }}>Run boxes {title}</button>
   </div>
 ));
 jest.mock('../CharacterAvatar/CharacterAvatar', () => () => null);
@@ -53,9 +55,12 @@ jest.mock('../../utils/quizAvailability', () => ({
   loadQuizIds: () => Promise.resolve([]),
 }));
 
-function mount() {
-  return render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson1} /></AuthContext.Provider>);
+function mount(lesson = lesson1) {
+  return render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson} /></AuthContext.Provider>);
 }
+// The lessons rebuilt on the model so far. Add a lesson here when it is rebuilt.
+const REBUILT = [lesson1, lesson2];
+const boxesOnShelf = () => Array.from(document.querySelectorAll('.ls__box:not(.ls__box--empty)')).map((el) => [el.querySelector('.ls__box-name').textContent, el.querySelector('.ls__box-val').textContent]);
 const pixelSays = () => Array.from(document.querySelectorAll('.ls__say')).map((el) => el.textContent);
 beforeEach(() => {
   localStorage.clear();
@@ -69,28 +74,34 @@ beforeEach(() => {
 
 // ── The rules, read off the lesson itself ───────────────────────────────────
 
-test('do first: the lesson opens on a step that runs, and the explanation comes after it', () => {
-  const types = lesson1.steps.map((s) => s.type);
-  expect(types[0]).toBe('example');
-  expect(types.indexOf('concept')).toBe(1);
+test('do first: a rebuilt lesson opens on a step that runs, and the explanation comes after it', () => {
+  for (const lesson of REBUILT) {
+    const types = lesson.steps.map((s) => s.type);
+    expect({ id: lesson.id, first: types[0], explained: types.indexOf('concept') }).toEqual({ id: lesson.id, first: 'example', explained: 1 });
+    expect(types[types.length - 1]).toBe('challenge');
+  }
   // The two public activity links still find their steps by id.
   expect(lesson1.steps.map((s) => s.id)).toEqual(expect.arrayContaining(['example', 'tryit']));
 });
 
 test('every step that is not the explanation has Pixel on a stage, with one short thing to say', () => {
-  for (const step of lesson1.steps) {
+  for (const lesson of REBUILT) for (const step of lesson.steps) {
+    const at = `${lesson.id}:${step.id}`;
     if (step.type === 'concept') { expect(step.parts.pieces.length).toBeGreaterThan(0); continue; }
-    expect({ id: step.id, stage: step.stage }).toEqual({ id: step.id, stage: 'say' });
-    expect(step.idle.length).toBeLessThanOrEqual(70);
+    expect({ at, staged: ['say', 'boxes'].includes(step.stage) }).toEqual({ at, staged: true });
+    expect({ at, short: step.idle.length <= 70 }).toEqual({ at, short: true });
     // A step answered by tapping plays what its code prints once it is right.
     if (step.type === 'predict' || step.type === 'fillblank') expect(step.plays.length).toBeGreaterThan(0);
+    // The practice and the last step must be the child's own: the starter, run unchanged, does not pass.
+    if (step.type === 'tryit' || step.type === 'challenge') expect({ at, own: typeof step.expectedDifferentOutput }).toEqual({ at, own: 'string' });
   }
 });
 
 test('nothing a child has to read on a step is longer than a text message', () => {
-  for (const step of lesson1.steps) {
+  for (const lesson of REBUILT) for (const step of lesson.steps) {
     const text = step.description || step.body || step.question || '';
-    expect({ id: step.id, short: text.length <= 110 }).toEqual({ id: step.id, short: true });
+    const at = `${lesson.id}:${step.id}`;
+    expect({ at, short: text.length <= 110 }).toEqual({ at, short: true });
   }
 });
 
@@ -99,6 +110,14 @@ test('what a guess plays is what its code really prints', () => {
   expect(guess.plays.join('\n')).toBe(guess.choices[guess.correct]);
   const gap = lesson1.steps.find((s) => s.id === 'fix-pixel');
   expect(gap.template.replace('___', gap.answers[0])).toBe(`print("${gap.plays[0]}")`);
+  // Lesson 2: the box and the bubble agree with the code and with the right answer.
+  const box = lesson2.steps.find((s) => s.id === 'predict-variable');
+  expect(box.plays).toEqual([box.choices[box.correct]]);
+  expect(box.boxes).toEqual([{ name: 'score', type: 'int', text: box.choices[box.correct] }]);
+  const named = lesson2.steps.find((s) => s.id === 'name-the-box');
+  expect(named.template.replace('___', named.answers[0])).toBe('food = "pizza"\nprint(food)');
+  expect(named.boxes).toEqual([{ name: 'food', type: 'str', text: '"pizza"' }]);
+  expect(named.plays).toEqual(['pizza']);
 });
 
 test('the joke has to be three lines and has to be the child\'s own', () => {
@@ -155,14 +174,19 @@ test('the first screen is Pixel and a Run button, with no instructions panel and
   expect(document.querySelector('.sl-story')).toBeNull();
 });
 
-test('Run makes Pixel say the real output; an error says nothing', () => {
+test('Run makes Pixel say the real output; after an error Pixel says what to look for', () => {
   mount();
   fireEvent.click(screen.getByRole('button', { name: 'Press Run Your First Python Program' }));
   expect(screen.getByLabelText('Thinking')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Run unchanged Your First Python Program' }));
   expect(pixelSays()).toEqual(['Hello!']);
   fireEvent.click(screen.getByRole('button', { name: 'Run error Your First Python Program' }));
-  expect(pixelSays()).toEqual(['Hi, I am Pixel! Press the orange Run button and I will say it.']);
+  expect(pixelSays()).toEqual(['Line 1: a quote mark is missing.']);
+  expect(document.querySelector('.ls .mascot').dataset.mood).toBe('hmm');
+  // Fixed and run again: the error is gone and Pixel is talking.
+  fireEvent.click(screen.getByRole('button', { name: 'Run unchanged Your First Python Program' }));
+  expect(pixelSays()).toEqual(['Hello!']);
+  expect(document.querySelector('.ls .mascot').dataset.mood).toBe('happy');
 });
 
 test('the child\'s own words come out of Pixel\'s mouth', () => {
@@ -196,9 +220,39 @@ test('the explanation step has the tappable line and no instructions panel', () 
   expect(screen.queryByLabelText('What to do now')).toBeNull();
 });
 
+test('lesson 2: Run puts a box on the shelf for every variable, and an error clears it', () => {
+  mount(lesson2);
+  expect(screen.getByRole('heading', { name: 'Variables in Action' })).toBeInTheDocument();
+  expect(screen.getByLabelText('No boxes yet')).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Run boxes Variables in Action' }));
+  expect(boxesOnShelf()).toEqual([['name', '"Sam"'], ['age', '9']]);
+  expect(pixelSays()).toEqual(['Sam', '9']);
+  expect(document.querySelector('.ls__box--text .ls__box-name').textContent).toBe('name');
+  expect(document.querySelector('.ls__box--number .ls__box-name').textContent).toBe('age');
+  fireEvent.click(screen.getByRole('button', { name: 'Run error Variables in Action' }));
+  expect(boxesOnShelf()).toEqual([]);
+});
+
+test('lesson 2: a right guess shows the one box and what it holds at the end', () => {
+  const at = lesson2.steps.findIndex((s) => s.id === 'predict-variable');
+  localStorage.setItem('codeit.lesson.2.steps', JSON.stringify({ stepIdx: at, stepsDone: {} }));
+  mount(lesson2);
+  expect(boxesOnShelf()).toEqual([]);
+  const choices = within(screen.getByRole('group', { name: 'Choose the output' })).getAllByRole('button');
+  fireEvent.click(choices[1]);
+  fireEvent.click(screen.getByRole('button', { name: 'Check my answer' }));
+  expect(boxesOnShelf()).toEqual([['score', '25']]);
+  expect(pixelSays()).toEqual(['25']);
+});
+
+test('lesson 1 has no shelf: the stage only shows boxes when a step asks for them', () => {
+  mount();
+  expect(document.querySelector('.ls__shelf')).toBeNull();
+});
+
 test('a lesson that has not been rebuilt keeps its panel and has no stage', () => {
-  const lesson2 = require('../../pages/Lessons/lessonData/lesson2').default;
-  render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson2} /></AuthContext.Provider>);
+  const lesson3 = require('../../pages/Lessons/lessonData/lesson3').default;
+  render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson3} /></AuthContext.Provider>);
   expect(screen.getByLabelText('What to do now')).toBeInTheDocument();
   expect(document.querySelector('.ls')).toBeNull();
 });

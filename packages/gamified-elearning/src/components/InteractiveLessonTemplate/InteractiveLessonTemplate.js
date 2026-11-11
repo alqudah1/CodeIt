@@ -248,6 +248,8 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const [lastCode,       setLastCode]       = useState({});  // { [idx]: string }. code from last Run
   const [runCounts,      setRunCounts]      = useState({});  // { [idx]: number }. so the stage replays a run that printed the same thing
   const [busyStep,       setBusyStep]       = useState(null); // the step whose code is running right now
+  const [lastVars,       setLastVars]       = useState({});  // { [idx]: [{ name, type, text }] }. what the boxes hold after the last Run
+  const [lastOops,       setLastOops]       = useState({});  // { [idx]: string }. the sentence for a run that ended in a Python error
   const [feedback,       setFeedback]       = useState({});  // { [idx]: 'incorrect' | null }
   const [feedbackText,   setFeedbackText]   = useState({});  // { [idx]: string }. why it was wrong
   const [picks,          setPicks]          = useState(restored?.picks || {}); // non-typing answers
@@ -369,6 +371,8 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   // Example steps (observational) auto-pass on any non-empty output.
   const handleCodeOutput = (idx, step, output, code, result) => {
     setRunCounts(prev => ({ ...prev, [idx]: (prev[idx] || 0) + 1 }));
+    setLastVars(prev => ({ ...prev, [idx]: result?.success === false ? [] : (result?.vars || []) }));
+    setLastOops(prev => ({ ...prev, [idx]: result?.success === false ? (result?.say || 'Python stopped. Look at the Output box.') : '' }));
     if (result?.success === false) {
       setLastOutputs(prev => ({ ...prev, [idx]: '' }));
       return;
@@ -806,6 +810,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               {currentStep.stage && (
                 <LessonStage
                   lines={isCurrentDone ? (currentStep.plays || []) : []}
+                  boxes={currentStep.stage === 'boxes' ? (isCurrentDone ? (currentStep.boxes || []) : []) : null}
                   runKey={isCurrentDone ? 1 : 0}
                   idle={currentStep.idle}
                   mood={feedback[stepIdx] === 'incorrect' && !isCurrentDone ? 'hmm' : undefined}
@@ -881,6 +886,8 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               {currentStep?.stage && (
                 <LessonStage
                   lines={stageLines(lastOutputs[stepIdx])}
+                  boxes={currentStep.stage === 'boxes' ? (lastVars[stepIdx] || []) : null}
+                  oops={lastOops[stepIdx] || ''}
                   runKey={runCounts[stepIdx] || 0}
                   idle={currentStep.idle}
                   thinking={busyStep === stepIdx}
@@ -909,6 +916,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                         onOutput={(out, ranCode, result) => handleCodeOutput(i, step, out, ranCode, result)}
                         onBusy={(busy) => setBusyStep(busy ? i : null)}
                         wrap={!!step.stage}
+                        watchVariables={step.stage === 'boxes'}
                         {...(step.stage ? { height: `${(Math.max(2, String(step.code || '').split('\n').length) + 1) * 24 + 12}px` } : {})}
                       />
                     </div>

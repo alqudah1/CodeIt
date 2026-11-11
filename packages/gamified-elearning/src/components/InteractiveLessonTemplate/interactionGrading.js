@@ -95,7 +95,7 @@ function checkCodeStep(step, { code = '', output = '' } = {}) {
 /** What to say when a code step fails, in words a child can act on. */
 function codeFeedback(result, step) {
   if (!result || result.passed) return '';
-  if (result.reason === 'unchanged-output') return 'Change the words inside the quotes, then press Run again before submitting.';
+  if (result.reason === 'unchanged-output') return step?.unchangedHint || 'Change the words inside the quotes, then press Run again before submitting.';
   if (result.reason === 'no-output') return 'Nothing was printed yet. Press Run to see what your code does.';
   if (result.reason === 'missing-concept') {
     const missing = (result.missing || []).join(', ');
