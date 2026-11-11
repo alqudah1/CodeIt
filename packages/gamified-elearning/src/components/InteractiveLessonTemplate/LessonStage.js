@@ -23,6 +23,8 @@ import { Sun, Cloud, Bush, Flower } from '../../pages/Lessons/MapArt';
 import './LessonStage.css';
 
 const MOST = 4;          // bubbles shown at once: more than four is a wall again
+const MOST_SHORT = 12;   // unless every line is a few characters (a loop counting): then they sit side by side
+const SHORT = 14;
 
 /** Output text as the lines Pixel says. Blank lines are a pause, not a line. */
 export function stageLines(output) {
@@ -30,7 +32,10 @@ export function stageLines(output) {
 }
 
 export default function LessonStage({ lines = [], boxes = null, runKey = 0, idle = '', oops = '', mood, thinking = false }) {
-  const said = lines.slice(0, MOST);
+  // A loop that prints 0, 1, 2, 3, 4 is not five bubbles stacked to the ceiling:
+  // short lines flow in a row, the way you would count them out loud.
+  const row = lines.length > 3 && lines.every((line) => line.length <= SHORT);
+  const said = lines.slice(0, row ? MOST_SHORT : MOST);
   const more = lines.length - said.length;
   const speaking = said.length > 0 && !thinking;
   // A run that ended in a Python error: Pixel says what to look for, in the
@@ -55,14 +60,14 @@ export default function LessonStage({ lines = [], boxes = null, runKey = 0, idle
           <Mascot mood={stuck ? 'hmm' : (mood || (speaking ? 'happy' : thinking ? 'lean' : 'base'))} size={84} />
         </div>
         {/* The words. Polite, so a screen reader hears what Pixel said after the run. */}
-        <div className="ls__says" aria-live="polite" aria-label="Pixel says">
+        <div className={`ls__says${row && speaking ? ' ls__says--row' : ''}`} aria-live="polite" aria-label="Pixel says">
           {speaking ? (
             <>
               {said.map((line, i) => (
-                <p key={`${runKey}-${i}`} className="ls__say" style={{ animationDelay: `${(filled.length ? 0.5 : 0) + i * 0.42}s` }}>{line}</p>
+                <p key={`${runKey}-${i}`} className="ls__say" style={{ animationDelay: `${(filled.length ? 0.5 : 0) + i * (row ? 0.22 : 0.42)}s` }}>{line}</p>
               ))}
               {more > 0 && (
-                <p key={`${runKey}-more`} className="ls__say ls__say--more" style={{ animationDelay: `${(filled.length ? 0.5 : 0) + said.length * 0.42}s` }}>
+                <p key={`${runKey}-more`} className="ls__say ls__say--more" style={{ animationDelay: `${(filled.length ? 0.5 : 0) + said.length * (row ? 0.22 : 0.42)}s` }}>
                   and {more} more {more === 1 ? 'line' : 'lines'}
                 </p>
               )}

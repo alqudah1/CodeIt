@@ -44,6 +44,10 @@
 .ls__say--idle { background: #FFF4D6; font-weight: 800; font-size: .98rem; animation: none; }
 .ls__say--idle::before { background: #FFF4D6 !important; }
 .ls__say--more { font-size: .85rem; background: #FFE9A8; }
+/* Short lines, counted out in a row. No tail: they are a row of things said. */
+.ls__says--row { flex-direction: row; flex-wrap: wrap; align-items: flex-end; gap: 6px; }
+.ls__says--row .ls__say { padding: 6px 11px; border-radius: 13px; transform-origin: 50% 100%; }
+.ls__says--row .ls__say::before { display: none; }
 .ls__say--oops { background: #FFE1DC; font-size: .95rem; }
 .ls__say--oops::before { background: #FFE1DC !important; }
 .ls__dots { display: inline-flex; gap: 5px; padding: 4px 2px; }

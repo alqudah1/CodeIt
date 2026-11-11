@@ -11,6 +11,9 @@ import { checkCodeStep } from './interactionGrading';
 import { AuthContext } from '../../context/AuthContext';
 import lesson1 from '../../pages/Lessons/lessonData/lesson1';
 import lesson2 from '../../pages/Lessons/lessonData/lesson2';
+import lesson3 from '../../pages/Lessons/lessonData/lesson3';
+import lesson4 from '../../pages/Lessons/lessonData/lesson4';
+import lesson5 from '../../pages/Lessons/lessonData/lesson5';
 import { trackExerciseCompletion, trackStaticLessonCompletion } from '../../utils/progressTracker';
 
 let mockSearch = '';
@@ -59,7 +62,7 @@ function mount(lesson = lesson1) {
   return render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson} /></AuthContext.Provider>);
 }
 // The lessons rebuilt on the model so far. Add a lesson here when it is rebuilt.
-const REBUILT = [lesson1, lesson2];
+const REBUILT = [lesson1, lesson2, lesson3, lesson4, lesson5];
 const boxesOnShelf = () => Array.from(document.querySelectorAll('.ls__box:not(.ls__box--empty)')).map((el) => [el.querySelector('.ls__box-name').textContent, el.querySelector('.ls__box-val').textContent]);
 const pixelSays = () => Array.from(document.querySelectorAll('.ls__say')).map((el) => el.textContent);
 beforeEach(() => {
@@ -140,8 +143,9 @@ test('Pixel says up to four lines and counts the rest', () => {
   const { rerender } = render(<LessonStage lines={[]} idle="Press Run." />);
   expect(pixelSays()).toEqual(['Press Run.']);
   expect(document.querySelector('.mascot').dataset.mood).toBe('base');
-  rerender(<LessonStage lines={['a', 'b', 'c', 'd', 'e', 'f']} runKey={1} idle="Press Run." />);
-  expect(pixelSays()).toEqual(['a', 'b', 'c', 'd', 'and 2 more lines']);
+  const long = ['one long line of words', 'two long lines of words', 'c', 'd', 'e', 'f'];
+  rerender(<LessonStage lines={long} runKey={1} idle="Press Run." />);
+  expect(pixelSays()).toEqual([...long.slice(0, 4), 'and 2 more lines']);
   expect(document.querySelector('.mascot').dataset.mood).toBe('happy');
   // While the code is running the old words are gone and Pixel is thinking.
   rerender(<LessonStage lines={['a']} runKey={1} idle="Press Run." thinking />);
@@ -220,6 +224,30 @@ test('the explanation step has the tappable line and no instructions panel', () 
   expect(screen.queryByLabelText('What to do now')).toBeNull();
 });
 
+test('in every rebuilt lesson, a guess or a gap plays what the right answer really prints', () => {
+  for (const lesson of REBUILT) for (const step of lesson.steps) {
+    const at = `${lesson.id}:${step.id}`;
+    if (step.type === 'predict') expect({ at, plays: step.plays.join('\n') }).toEqual({ at, plays: step.choices[step.correct] });
+    if (step.type === 'fillblank') {
+      // The right answers are among the options, and exactly as many as there are gaps.
+      expect({ at, gaps: step.template.split('___').length - 1 }).toEqual({ at, gaps: step.answers.length });
+      for (const answer of step.answers) expect(step.options).toContain(answer);
+    }
+  }
+});
+
+test('a loop that counts is said in a row, not stacked to the ceiling', () => {
+  render(<LessonStage lines={['0', '1', '2', '3', '4']} runKey={1} />);
+  expect(document.querySelector('.ls__says--row')).not.toBeNull();
+  expect(pixelSays()).toEqual(['0', '1', '2', '3', '4']);
+});
+
+test('long lines stay stacked, four at most', () => {
+  render(<LessonStage lines={['Coding is fun, yes it is!', 'b', 'c', 'd', 'e']} runKey={1} />);
+  expect(document.querySelector('.ls__says--row')).toBeNull();
+  expect(pixelSays()).toHaveLength(5);
+});
+
 test('lesson 2: Run puts a box on the shelf for every variable, and an error clears it', () => {
   mount(lesson2);
   expect(screen.getByRole('heading', { name: 'Variables in Action' })).toBeInTheDocument();
@@ -251,8 +279,8 @@ test('lesson 1 has no shelf: the stage only shows boxes when a step asks for the
 });
 
 test('a lesson that has not been rebuilt keeps its panel and has no stage', () => {
-  const lesson3 = require('../../pages/Lessons/lessonData/lesson3').default;
-  render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson3} /></AuthContext.Provider>);
+  const lesson6 = require('../../pages/Lessons/lessonData/lesson6').default;
+  render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson6} /></AuthContext.Provider>);
   expect(screen.getByLabelText('What to do now')).toBeInTheDocument();
   expect(document.querySelector('.ls')).toBeNull();
 });
