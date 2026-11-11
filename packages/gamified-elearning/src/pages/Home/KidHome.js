@@ -13,6 +13,7 @@
 // no reminder, and it never tells a child to come back. progression.test.js
 // keeps it that way.
 
+import { useTheme, nightClass, setTheme } from '../../utils/theme';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
 import { useCharacterDisplay } from '../../context/CharacterContext';
@@ -47,6 +48,7 @@ function GoalIcon({ id }) {
 }
 
 export default function KidHome() {
+  const theme = useTheme();
   useSEO({ canonical: '/home', title: "Today's build | CodeIt", description: 'Your streak, your games, and the one thing to build today.', robots: 'noindex,nofollow' });
   const { user, token } = useContext(AuthContext);
   const [today, setToday] = useState(null);
@@ -127,7 +129,7 @@ export default function KidHome() {
   const [skyA, skyB] = SKY[scene.sky] || SKY.day;
 
   return (
-    <div className={`kh night kh--night${games.length ? ' kh--has-games' : ''}`}>
+    <div className={`kh${nightClass(theme, 'kh--night')}${games.length ? ' kh--has-games' : ''}`}>
       <Header />
       <main className="kh__main">
         <section className="kh__left">
@@ -157,6 +159,17 @@ export default function KidHome() {
                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z" fill="currentColor" /></svg>
                 {guest ? 0 : level.xp}
               </span>
+              <button
+                type="button"
+                className="kh__chip kh__chip--theme"
+                onClick={() => setTheme(theme === 'night' ? 'morning' : 'night')}
+                aria-label={theme === 'night' ? 'Switch to morning' : 'Switch to night'}
+                title={theme === 'night' ? 'Morning' : 'Night'}
+              >
+                {theme === 'night'
+                  ? <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
+                  : <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" /></svg>}
+              </button>
             </div>
           </header>
 

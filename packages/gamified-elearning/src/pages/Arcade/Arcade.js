@@ -6,6 +6,7 @@
 // public arcade (the explore feed) in the same shape. Rank is plays, which
 // are real; nothing is awarded for showing up.
 
+import { useTheme, nightClass } from '../../utils/theme';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
@@ -36,6 +37,7 @@ export function rankGames(games, tab) {
 }
 
 export default function Arcade() {
+  const theme = useTheme();
   useSEO({ canonical: '/arcade', title: 'Arcade | CodeIt', description: 'Every game in your class, ranked by plays. Tap one and play.', robots: 'noindex,nofollow' });
   const { user, token } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -87,7 +89,7 @@ export default function Arcade() {
   const surprise = () => { if (ranked.length) navigate(`/project/${ranked[Math.floor(Math.random() * ranked.length)].publicId}`); };
 
   return (
-    <div className="ar night">
+    <div className={`ar${nightClass(theme)}`}>
       <Header />
       <main className="ar__main">
         <div className="ar__head">

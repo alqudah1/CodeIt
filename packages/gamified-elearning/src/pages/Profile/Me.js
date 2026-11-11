@@ -7,6 +7,7 @@
 // two pages never disagree. The grown-up things (parent updates, password,
 // sign out) sit behind one Settings chip, on the page that already does them.
 
+import { useTheme, nightClass, setTheme } from '../../utils/theme';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
@@ -26,6 +27,7 @@ import '../../ds/night.css';
 import './Me.css';
 
 export default function Me({ user, token, trophies = [], projectCount = null, logout }) {
+  const theme = useTheme();
   useSEO({ canonical: '/profile', title: 'Me | CodeIt', description: 'Your powers, your games, your look.', robots: 'noindex,nofollow' });
   const { character } = useCharacterDisplay();
   const [today, setToday] = useState(null);
@@ -58,7 +60,7 @@ export default function Me({ user, token, trophies = [], projectCount = null, lo
   const firstName = (user?.name || user?.username || '').split(' ')[0];
 
   return (
-    <div className="me night">
+    <div className={`me${nightClass(theme)}`}>
       <Header />
       <main className="me__main">
         <section className="me__left">
@@ -71,7 +73,12 @@ export default function Me({ user, token, trophies = [], projectCount = null, lo
               <h1 className="ci-h1 me__name">{firstName || 'You'}</h1>
               <div className="me__level">Level {level.n} · {level.title}</div>
             </div>
-            <Link to="/profile?settings=1" className="ci-chip me__settings">Settings</Link>
+            <div className="me__chips">
+              <button type="button" className={`ci-chip me__theme${theme === 'night' ? ' is-on' : ''}`} onClick={() => setTheme(theme === 'night' ? 'morning' : 'night')} aria-pressed={theme === 'night'}>
+                {theme === 'night' ? 'Night on' : 'Night off'}
+              </button>
+              <Link to="/profile?settings=1" className="ci-chip me__settings">Settings</Link>
+            </div>
           </div>
 
           <div className="me__nums">

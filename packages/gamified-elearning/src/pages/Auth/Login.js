@@ -1,3 +1,4 @@
+import { useTheme, nightClass } from '../../utils/theme';
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -11,6 +12,7 @@ import '../../ds/night.css';
 import './Auth.css';
 
 export default function Login() {
+  const theme = useTheme();
   const location = useLocation();
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: { identifier: location.state?.managedUsername || '' },
@@ -77,7 +79,7 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-page night">
+    <div className={`auth-page${nightClass(theme)}`}>
       <div className="auth-card">
 
         {/* Brand mark */}

@@ -1,3 +1,4 @@
+import { useTheme, nightClass } from '../../utils/theme';
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ENDPOINTS } from '../../config/api';
@@ -163,6 +164,7 @@ const DECOR = {
 };
 
 const LessonMap = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const { token } = useAuth();
   const { character } = useCharacterDisplay();
@@ -270,7 +272,7 @@ const LessonMap = () => {
   const nextId = nextLesson ? nextLesson.id : null;
 
   return (
-    <div className="lm-page night lm-page--night">
+    <div className={`lm-page${nightClass(theme, 'lm-page--night')}`}>
       <Header />
 
       {asking && (

@@ -5,3 +5,13 @@
 .ci-tab.is-on svg { fill: var(--ci-sun); stroke-width: 2.4; animation: ci-popin .4s var(--ci-spring); }
 @media (min-width: 900px) { .ci-tabs { display: none; } }
 @media (max-width: 899px) { body:has(.ci-tabs) { padding-bottom: 84px; } }
+
+/* Build is the raised key in the middle, the way game apps put the thing you
+   do most. Orange on both looks; the ring around it is the bar's own colour. */
+.ci-tabs .ci-tab[href='/build'] { position: relative; color: var(--ci-ink); font-weight: 900; }
+.ci-tabs .ci-tab[href='/build'] svg { width: 26px; height: 26px; stroke: #1A1300; fill: none; position: relative; z-index: 1; margin-top: -22px; }
+.ci-tabs .ci-tab[href='/build']::before { content: ''; position: absolute; left: 50%; top: -24px; width: 60px; height: 60px; margin-left: -30px; border-radius: 50%; background: linear-gradient(160deg, #FFB020, #FF7A00); border: 3px solid var(--ci-ink); box-shadow: 0 5px 0 var(--ci-ink); }
+.ci-tabs .ci-tab[href='/build'].is-on::before { box-shadow: 0 2px 0 var(--ci-ink); }
+body:has(.night) .ci-tabs .ci-tab[href='/build'] { color: #1A1300; }
+body:has(.night) .ci-tabs .ci-tab[href='/build']::before { border-color: var(--n-bg, #131F24); box-shadow: 0 6px 0 #B85400, 0 10px 28px rgba(255, 122, 0, .55); }
+body:has(.night) .ci-tabs .ci-tab[href='/build'].is-on::before { box-shadow: 0 3px 0 #B85400, 0 10px 28px rgba(255, 122, 0, .7); }

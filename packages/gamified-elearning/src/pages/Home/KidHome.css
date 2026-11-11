@@ -228,3 +228,53 @@ a.kh__badge-disc:hover { transform: translateY(-3px); color: var(--n-text); bord
 .kh__badge--game .kh__badge-xp:not(.is-done) { color: var(--n-muted); }
 
 @media (prefers-reduced-motion: reduce) { .kh__badge, .kh__badge.is-done .kh__badge-disc { animation: none; } }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Morning: the same screen in the drawn world. Cream and sky, ink edges,
+   solid bases, the map's colours. The hero, the badges and the HUD were
+   first drawn for the night; these are their daylight clothes.
+   ══════════════════════════════════════════════════════════════════════════ */
+.kh:not(.night) .kh__hud-avatar { background: conic-gradient(#FFC93C var(--ring, 0%), rgba(53, 34, 14, .14) 0); box-shadow: 0 3px 0 var(--ci-ink); }
+.kh:not(.night) .kh__hud-avatar > :first-child { background: #FFF6E6; border: 2.5px solid var(--ci-ink); box-sizing: border-box; }
+.kh:not(.night) .kh__hud-lv { background: #FFC93C; color: var(--ci-ink); border-color: var(--ci-ink); }
+.kh:not(.night) .kh__hud-note { color: var(--ci-ink-soft); }
+.kh:not(.night) .kh__hud-note a { color: var(--ci-orange-text); }
+.kh:not(.night) .kh__chip { background: var(--ci-paper); color: var(--ci-ink); border: 2px solid var(--ci-ink); box-shadow: 0 2px 0 var(--ci-ink); }
+.kh:not(.night) .kh__chip--streak { color: var(--ci-ink-soft); }
+.kh:not(.night) .kh__chip--streak.is-lit { color: var(--ci-ink); background: #FFC93C; }
+.kh:not(.night) .kh__chip--xp { color: var(--ci-ink); background: #FFF6E6; }
+
+.kh:not(.night) .kh__goals { background: none; border: 0; box-shadow: none; padding: 4px 0 6px; margin-bottom: 14px; }
+.kh:not(.night) .kh__goals-head { align-items: center; margin-bottom: 10px; }
+.kh:not(.night) .kh__goals-title { font-size: 18px; }
+.kh:not(.night) .kh__goals-count { color: var(--ci-ink); }
+.kh:not(.night) .kh__goals-count small { color: var(--ci-ink-soft); }
+.kh:not(.night) .kh__badge-disc { background: var(--ci-paper); color: var(--ci-ink); border: 2.5px solid var(--ci-ink); box-shadow: 0 4px 0 var(--ci-ink); }
+.kh:not(.night) a.kh__badge-disc:hover { color: var(--ci-ink); border-color: var(--ci-ink); }
+.kh:not(.night) .kh__badge--game .kh__badge-disc { background: #FFE2C2; }
+.kh:not(.night) .kh__badge--python .kh__badge-disc { background: #FFF1BF; }
+.kh:not(.night) .kh__badge--lesson .kh__badge-disc { background: #D9F0FF; }
+.kh:not(.night) .kh__badge.is-done .kh__badge-disc { background: #4CC779; color: #fff; border-color: var(--ci-ink); box-shadow: 0 4px 0 var(--ci-ink); }
+.kh:not(.night) .kh__badge-tick { background: #FFC93C; color: var(--ci-ink); border-color: var(--ci-ink); }
+.kh:not(.night) .kh__badge-label { color: var(--ci-ink); }
+.kh:not(.night) .kh__badge-xp { color: var(--ci-orange-text); background: #FFF6E6; border-color: rgba(53, 34, 14, .25); }
+.kh:not(.night) .kh__badge-xp.is-done { color: #0E7A5A; background: #D9F8E8; border-color: rgba(14, 122, 90, .35); }
+.kh:not(.night) .kh__badge--game .kh__badge-xp:not(.is-done) { color: var(--ci-ink-soft); }
+
+.kh:not(.night) .kh__quest--scene { min-height: 300px; padding: 0; border-radius: 28px; overflow: hidden; color: #fff; border: 2.5px solid var(--ci-ink); box-shadow: 0 6px 0 var(--ci-ink); margin-top: 0; }
+.kh:not(.night) .kh__quest--scene.is-done { background: linear-gradient(160deg, #17C08B, #5FE3B6) !important; }
+.kh:not(.night) .kh__quest--scene .kh__qey { color: rgba(255, 255, 255, .78); }
+.kh:not(.night) .kh__quest--scene .kh__qtitle { color: #fff; font-size: 30px; margin: 0 0 8px; text-shadow: 0 2px 0 rgba(0, 0, 0, .35); }
+.kh:not(.night) .kh__quest-btn { background: var(--ci-orange); color: var(--ci-ink); border: 2.5px solid var(--ci-ink); box-shadow: 0 4px 0 var(--ci-ink); height: 54px; padding: 0 30px; font-size: 17px; }
+.kh:not(.night) .pq, .kh:not(.night) .pp-panel { margin-top: 14px; }
+.kh:not(.night) .pp-panel__top { display: none; }
+.kh:not(.night) .pp-panel__ey { margin-bottom: 12px; }
+.kh:not(.night) .ci-h1 { font-size: 28px; }
+@media (max-width: 899px) { .kh:not(.night) .site-header { display: none; } .kh:not(.night) .kh__main { padding-top: 16px; } }
+@media (max-width: 420px) { .kh:not(.night) .kh__quest .kh__qtitle { font-size: 25px; } }
+
+/* The sun and the moon: one tap switches the look, remembered on this device. */
+.kh__chip--theme { cursor: pointer; font: inherit; justify-content: center; width: 36px; padding: 0; }
+.kh:not(.night) .kh__chip--theme { color: var(--ci-ink); }
+.kh--night .kh__chip--theme { color: var(--n-sun); }
+@media (min-width: 900px) { .kh__hud-chips { flex-direction: row; } }

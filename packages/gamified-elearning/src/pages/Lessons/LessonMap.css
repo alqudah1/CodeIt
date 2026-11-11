@@ -504,3 +504,6 @@ svg.lm-decor { max-width: none; height: auto; }
 .lm-page--night .lm-ask__kicker { color: var(--n-sun); }
 .lm-page--night .lm-ask__start { background: var(--n-orange); color: #1A1300; border-color: rgba(0, 0, 0, .3); box-shadow: 0 4px 0 #B85400; }
 .lm-page--night .lm-ask__first { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 4px 0 #0A1114; }
+/* The stops, bubbles, gates and names live on the bright lands, so inside
+   the path the tokens stay the daylight ones whatever the page is. */
+.lm-page--night .lm-path { --ink: #35220E; --ink-soft: rgba(53, 34, 14, .55); --ink-line: rgba(53, 34, 14, .16); --paper: #FFFDFA; --ground: #FFF4E5; --arc-orange: #FF7A00; --arc-orange-text: #B25200; --pop-rest: 0 4px 0 #35220E; --pop-down: 0 1px 0 #35220E; }

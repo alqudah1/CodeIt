@@ -1,3 +1,4 @@
+import { useTheme, nightClass } from '../../utils/theme';
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
@@ -248,6 +249,7 @@ function Section({ title, projects, onLike, onRemix, remixingId, emptyMsg }) {
 
 // ── Main Explore Page ─────────────────────────────────────────────
 export default function Explore() {
+  const theme = useTheme();
   const { user, token } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -390,7 +392,7 @@ export default function Explore() {
   };
 
   return (
-    <div className="exp-page night exp-page--night">
+    <div className={`exp-page${nightClass(theme, 'exp-page--night')}`}>
       <Header />
 
       {/* One line, and the projects start. What "Explore" means is obvious

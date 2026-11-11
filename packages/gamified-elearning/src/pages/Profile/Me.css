@@ -64,3 +64,6 @@ a.me__power:hover { transform: translateY(-2px); }
 .me.night .me__power { background: var(--n-surface); border-color: var(--n-edge-strong); color: var(--n-text); }
 .me.night .me__power.is-next { background: var(--n-sun); color: #2A1500; }
 .me.night .me__power.is-done { background: rgba(46, 230, 166, .14); border-color: rgba(46, 230, 166, .5); }
+
+.me__chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.me__theme.is-on { background: var(--ci-sun); color: #2A1500; }

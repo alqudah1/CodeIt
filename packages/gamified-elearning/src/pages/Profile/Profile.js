@@ -1,3 +1,4 @@
+import { useTheme, nightClass } from '../../utils/theme';
 import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
@@ -44,6 +45,7 @@ export function childActivityLine(child) {
 }
 
 export default function Profile() {
+  const theme = useTheme();
   const plan = usePublicPlan();
   useSEO({
     canonical: '/profile',
@@ -451,7 +453,7 @@ export default function Profile() {
   return (
     <>
       <Header />
-      <div className={`profile-page night${isAdult ? ' profile-page--adult' : ''}`}>
+      <div className={`profile-page${nightClass(theme)}${isAdult ? ' profile-page--adult' : ''}`}>
 
         {/* ── Avatar hero ── */}
         <section className="profile-hero">
