@@ -144,7 +144,12 @@ const PAGE_META = {
     description: 'Everything needed to write accurately about CodeIt: what it is, what it costs, what it deliberately does not do, who built it, and how to use the logo.',
   },
   '/pricing': {
-    title: 'CodeIt Pricing: Free Coding & Family Pilot',
+    // The pilot left this page when Plus went on sale: the card is gone, its
+    // two FAQ answers are gone, and the status line reads "Free to start, no
+    // card. Plus is CA$12 a month, cancel any time." The title still sold the
+    // pilot, and the title is the one line a person reads in a search result,
+    // so the result promised a free spot and the page sold a subscription.
+    title: 'CodeIt Pricing: Free to Start, CA$12 a Month | CodeIt',
     description: 'Start free with no card. The CodeIt family plan is CA$12 a month, cancellable at any time, with guided setup, parent progress and learner profiles.',
   },
   '/privacy': {
