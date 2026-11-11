@@ -1038,7 +1038,7 @@
 "@csstools/selector-specificity@^2.0.0", "@csstools/selector-specificity@^2.0.2":
   version "2.2.0"
 
-"@e-learning/codeit-backend@file:/tmp/codeit/packages/codeit-backend":
+"@e-learning/codeit-backend@file:/root/CodeIt/packages/codeit-backend":
   version "1.0.0"
   resolved "file:packages/codeit-backend"
   dependencies:
@@ -1052,7 +1052,7 @@
     pg "^8.23.0"
     stripe "^22.5.0"
 
-"@e-learning/gamified-elearning@file:/tmp/codeit/packages/gamified-elearning":
+"@e-learning/gamified-elearning@file:/root/CodeIt/packages/gamified-elearning":
   version "0.1.0"
   resolved "file:packages/gamified-elearning"
   dependencies:
@@ -1060,6 +1060,7 @@
     "@codemirror/lang-python" "^6.1.7"
     "@e-learning/shared-auth" "1.0.0"
     "@fontsource/baloo-2" "^5.3.0"
+    "@fontsource/nunito" "^5.3.0"
     "@testing-library/dom" "^10.4.0"
     "@testing-library/jest-dom" "^6.6.3"
     "@testing-library/react" "^16.2.0"
@@ -1073,7 +1074,7 @@
     react-scripts "5.0.1"
     web-vitals "^2.1.4"
 
-"@e-learning/robot-puzzle@file:/tmp/codeit/packages/robot-puzzle":
+"@e-learning/robot-puzzle@file:/root/CodeIt/packages/robot-puzzle":
   version "0.1.0"
   resolved "file:packages/robot-puzzle"
   dependencies:
@@ -1088,11 +1089,11 @@
     react-scripts "5.0.1"
     web-vitals "^2.1.4"
 
-"@e-learning/shared-auth@1.0.0", "@e-learning/shared-auth@file:/tmp/codeit/packages/shared-auth":
+"@e-learning/shared-auth@1.0.0", "@e-learning/shared-auth@file:/root/CodeIt/packages/shared-auth":
   version "1.0.0"
   resolved "file:packages/shared-auth"
 
-"@e-learning/starter-game@file:/tmp/codeit/packages/vertical-platformer-main":
+"@e-learning/starter-game@file:/root/CodeIt/packages/vertical-platformer-main":
   version "1.0.0"
   resolved "file:packages/vertical-platformer-main"
   dependencies:
@@ -1126,6 +1127,11 @@
   version "5.3.0"
   resolved "https://registry.npmjs.org/@fontsource/baloo-2/-/baloo-2-5.3.0.tgz"
   integrity sha512-CBuxZ27jvMmD5+KaaPkMWv/yjdRNppVAd5/002yAyvyQyLNL3aZCbkx6gbAT/bjxPd1A0VMdDQjfcELI8chccQ==
+
+"@fontsource/nunito@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.npmjs.org/@fontsource/nunito/-/nunito-5.3.0.tgz"
+  integrity sha512-vw9TaTQJ/zpEpKrsODuPmOvaVjXgdda6B+xXA4YqjrdeJ62MLgVoDerdRXFQHyBnSCt2yQ2nHKCHPP/Pv7Xq4Q==
 
 "@humanwhocodes/config-array@^0.13.0":
   version "0.13.0"
@@ -2323,10 +2329,8 @@ available-typed-arrays@^1.0.7:
 aws-ssl-profiles@^1.1.2:
   version "1.1.2"
 
-axe-core@*, axe-core@^4.10.0:
-  version "4.13.0"
-  resolved "https://registry.npmjs.org/axe-core/-/axe-core-4.13.0.tgz"
-  integrity sha512-UzGt8zg7Ny8djbYMhxl2zuEevVa7r2gJjYY5Lwr1xM7+XU2nd6CkIWFTVcCIbAP63vSz71NaVyyuSk9lHKcy0A==
+axe-core@^4.10.0:
+  version "4.11.0"
 
 axios@^1.19.0:
   version "1.19.0"
