@@ -22,7 +22,7 @@ export const MORE_IDEAS = [
   'a penguin that eats fish under the sea',
 ];
 
-const SKY = { space: ['#2A1E5C', '#5B3FD6'], night: ['#1E1B3A', '#3B2A6B'], ocean: ['#042F4A', '#0E7490'], candy: ['#FF6B6B', '#FF9FB5'], day: ['#3EB7F8', '#8FD3FF'], sunset: ['#FF7A00', '#FFC93C'] };
+export const SKY = { space: ['#2A1E5C', '#5B3FD6'], night: ['#1E1B3A', '#3B2A6B'], ocean: ['#042F4A', '#0E7490'], candy: ['#FF6B6B', '#FF9FB5'], day: ['#3EB7F8', '#8FD3FF'], sunset: ['#FF7A00', '#FFC93C'] };
 const VERB = { shooter: 'Shoot', catch: 'Catch', dodge: 'Dodge', runner: 'Run', flyer: 'Fly', racer: 'Race', maze: 'Maze', pop: 'Pop', pet: 'Pet' };
 
 /** Every example, as the engine reads it. */
@@ -47,7 +47,7 @@ export function examplesFrom(from = 0, count = 4) {
   return Array.from({ length: n }, (_, k) => EXAMPLES[(from + k) % EXAMPLES.length]);
 }
 
-function Stage({ ex }) {
+export function Stage({ ex }) {
   return (
     <span className={`ex__stage is-${ex.kind}`} aria-hidden="true">
       <Look className="ex__enemy" look={ex.enemy} />

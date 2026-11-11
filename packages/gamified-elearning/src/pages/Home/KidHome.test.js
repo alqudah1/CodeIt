@@ -51,7 +51,7 @@ test('a guest sees today\'s quest, a streak from the shelf, 0 XP with the honest
   expect(document.querySelector('.pp-panel__tile--streak .ci-num').textContent).toBe('1');
   expect(document.querySelector('.kh__chip--streak').textContent.trim()).toBe('1');
   // The shelf game counts as today's game goal; the other two need an account.
-  expect(document.querySelectorAll('.kh__goal.is-done')).toHaveLength(1);
+  expect(document.querySelectorAll('.kh__badge.is-done')).toHaveLength(1);
   expect(screen.getByText('0 XP. Make an account to keep it.')).toBeInTheDocument();
   expect(screen.getByText('Star Dodge')).toBeInTheDocument();
   expect(screen.getByRole('link', { name: /Keep your games for good/ })).toHaveAttribute('href', '/register');

@@ -1,6 +1,7 @@
 /* The page is a sky over the meadow, like the map and the ads: pale blue at
    the top fading to cream, so every card sits in the same world. */
-.kh { min-height: 100vh; background: linear-gradient(180deg, #DCF0FF 0, #F3F9FF 260px, var(--ci-cream) 560px); color: var(--ci-ink); font-family: var(--ci-body); font-weight: 700; }
+.kh { min-height: 100vh; color: var(--ci-ink); font-family: var(--ci-body); font-weight: 700; }
+.kh:not(.night) { background: linear-gradient(180deg, #DCF0FF 0, #F3F9FF 260px, var(--ci-cream) 560px); }
 .kh__main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 110px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
 .kh__left, .kh__right { min-width: 0; }
 .kh__quest { margin-top: 20px; min-height: 184px; padding-right: 128px; background: var(--ci-sun); }
@@ -188,3 +189,48 @@ a.kh__goal-label:hover { color: #FFC93C; }
 .kh--night .pp-panel { animation-delay: .2s; }
 @media (prefers-reduced-motion: reduce) { .kh__spark, .kh__goal.is-done .kh__goal-check { animation: none; } }
 @media (max-width: 420px) { .kh--night .kh__quest { padding-right: 128px; } .kh--night .kh__pix { height: 128px; } .kh--night .kh__quest .kh__qtitle { font-size: 25px; } }
+
+/* ── Round 185: the hero is the game itself, the goals are badges ─────── */
+.kh--night .kh__quest--scene { min-height: 300px; padding: 0; border-radius: 28px; overflow: hidden; color: #fff; border: 1.5px solid rgba(255, 255, 255, .22); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 24px 60px rgba(0, 0, 0, .5); }
+.kh--night .kh__quest--scene.is-done { background: linear-gradient(160deg, #0E7A5A, #2EE6A6) !important; }
+.kh__scene { position: absolute; inset: 0; }
+.kh__scene .ex__stage img { width: 56px; height: 56px; }
+.kh__scene .ex__player { width: 84px !important; height: 84px !important; margin-left: -42px; bottom: 38%; }
+.kh__scene .ex__treasure { width: 44px !important; height: 44px !important; }
+.kh__scene .is-runner .ex__enemy { bottom: 38%; }
+.kh__scene .ex__shot { bottom: calc(38% + 84px); width: 7px; height: 26px; }
+.kh__scene .ex__stage .look--emoji { font-size: 48px; }
+.kh__scene .ex__stage .ex__player.look--emoji { font-size: 70px; }
+.kh__scene .ex__stage .ex__treasure.look--emoji { font-size: 38px; }
+.kh__scene .ex__enemy, .kh__scene .ex__treasure { animation-name: ex-fall-big; }
+.kh__scene .is-runner .ex__enemy, .kh__scene .is-runner .ex__treasure { animation-name: ex-slide; }
+.kh__quest-copy { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 70px 20px 20px; background: linear-gradient(180deg, transparent 0, rgba(8, 14, 17, .55) 40%, rgba(8, 14, 17, .88) 100%); display: grid; justify-items: start; gap: 6px; }
+.kh--night .kh__quest--scene .kh__qey { color: rgba(255, 255, 255, .72); }
+.kh--night .kh__quest--scene .kh__qtitle { color: #fff; font-size: 30px; margin: 0 0 8px; text-shadow: 0 2px 0 rgba(0, 0, 0, .35); }
+.kh--night .kh__quest-btn { background: var(--n-orange); color: #1A1300; border-color: rgba(0, 0, 0, .3); box-shadow: 0 4px 0 #B85400, 0 12px 30px rgba(255, 122, 0, .5); height: 54px; padding: 0 30px; font-size: 17px; }
+
+/* Goals as three badges on a row: lit when done. */
+.kh--night .kh__goals { background: none; border: 0; box-shadow: none; padding: 4px 0 6px; margin-bottom: 14px; }
+.kh--night .kh__goals-head { align-items: center; margin-bottom: 10px; }
+.kh--night .kh__goals-title { font-size: 18px; }
+.kh__badges { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.kh__badge { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; animation: ci-rise .45s var(--ci-ease) both; }
+.kh__badge-disc { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; position: relative; color: var(--n-muted); background: var(--n-surface); border: 1.5px solid var(--n-edge-strong); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 8px 20px rgba(0, 0, 0, .35); text-decoration: none; transition: transform .2s var(--ci-spring); }
+a.kh__badge-disc:hover { transform: translateY(-3px); color: var(--n-text); border-color: rgba(255, 255, 255, .4); }
+.kh__badge--game .kh__badge-disc { color: #FF8A1E; }
+.kh__badge--python .kh__badge-disc { color: #FFC93C; }
+.kh__badge--lesson .kh__badge-disc { color: #4FC3FF; }
+.kh__badge.is-done .kh__badge-disc { background: linear-gradient(160deg, #2EE6A6, #17C08B); color: #06251A; border-color: rgba(255, 255, 255, .35); box-shadow: 0 0 0 4px rgba(46, 230, 166, .18), 0 0 28px rgba(46, 230, 166, .45); animation: kh-pop .5s var(--ci-spring) both; }
+.kh__badge-tick { position: absolute; right: -4px; top: -4px; width: 24px; height: 24px; border-radius: 50%; background: #FFC93C; color: #2A1500; font: 800 13px var(--ci-body); font-style: normal; display: grid; place-items: center; border: 2px solid var(--n-bg); }
+.kh__badge-label { font: 800 12px var(--ci-body); color: var(--n-text); line-height: 1.2; }
+.kh__badge-xp { font: 800 11px var(--ci-display); color: var(--n-sun); }
+.kh__badge-xp.is-done { color: var(--n-mint); }
+.kh__badge--game .kh__badge-xp:not(.is-done) { color: var(--n-muted); }
+
+/* The tab bar: Build is the raised key in the middle. */
+body:has(.night) .ci-tabs .ci-tab[href='/build'] { position: relative; color: #1A1300; }
+body:has(.night) .ci-tabs .ci-tab[href='/build'] svg { width: 26px; height: 26px; stroke: #1A1300; fill: none; position: relative; z-index: 1; margin-top: -22px; }
+body:has(.night) .ci-tabs .ci-tab[href='/build']::before { content: ''; position: absolute; left: 50%; top: -24px; width: 60px; height: 60px; margin-left: -30px; border-radius: 50%; background: linear-gradient(160deg, #FFB020, #FF7A00); border: 3px solid var(--n-bg, #131F24); box-shadow: 0 6px 0 #B85400, 0 10px 28px rgba(255, 122, 0, .55); }
+body:has(.night) .ci-tabs .ci-tab[href='/build'] span, body:has(.night) .ci-tabs .ci-tab[href='/build'] { font-weight: 900; }
+body:has(.night) .ci-tabs .ci-tab[href='/build'].is-on::before { box-shadow: 0 3px 0 #B85400, 0 10px 28px rgba(255, 122, 0, .7); }
+@media (prefers-reduced-motion: reduce) { .kh__badge, .kh__badge.is-done .kh__badge-disc { animation: none; } }

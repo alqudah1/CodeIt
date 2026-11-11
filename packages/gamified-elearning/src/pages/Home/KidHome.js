@@ -19,7 +19,8 @@ import { useCharacterDisplay } from '../../context/CharacterContext';
 import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import TabBar from '../../ds/TabBar';
-import ExampleCards from '../../ds/Examples';
+import ExampleCards, { SKY, Stage } from '../../ds/Examples';
+import { localRecipe } from '../Build/recipeLocal';
 import { API_BASE_URL } from '../../config/api';
 import { AuthContext } from '../../context/AuthContext';
 import { useSEO } from '../../hooks/useSEO';
@@ -37,6 +38,13 @@ import '../../ds/night.css';
 import './KidHome.css';
 
 const SKY_OF = ['linear-gradient(160deg,#2A1E5C,#5B3FD6)', 'linear-gradient(160deg,#FF7A00,#FFC93C)', 'linear-gradient(160deg,#17C08B,#BFE6FF)', 'linear-gradient(160deg,#FF6B6B,#FFD6E0)'];
+
+function GoalIcon({ id }) {
+  const common = { viewBox: '0 0 24 24', width: 26, height: 26, fill: 'none', stroke: 'currentColor', strokeWidth: 2.2, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true };
+  if (id === 'game') return <svg {...common}><rect x="2" y="7" width="20" height="12" rx="5" /><path d="M7 11v4M5 13h4M15 12h.01M18 14h.01" /></svg>;
+  if (id === 'python') return <svg {...common}><path d="M12 3c-4 0-5 2-5 4v2h6v1H6c-2 0-3 1.5-3 4s1 4 3 4h2v-3c0-1.5 1-3 3-3h4c1.5 0 3-1 3-3V7c0-2-1-4-6-4Z" /><path d="M12 21c4 0 5-2 5-4v-2h-6" /><circle cx="9.5" cy="6.5" r=".8" fill="currentColor" /></svg>;
+  return <svg {...common}><path d="M4 21V5l7-2 6 2 3-1v15l-3 1-6-2-7 2Z" /><path d="M11 3v16M17 5v15" /></svg>;
+}
 
 export default function KidHome() {
   useSEO({ canonical: '/home', title: "Today's build | CodeIt", description: 'Your streak, your games, and the one thing to build today.', robots: 'noindex,nofollow' });
@@ -112,6 +120,11 @@ export default function KidHome() {
     { id: 'lesson', label: 'Finish a lesson on the map', done: Boolean(today?.lessonToday), xp: 50, to: '/lessons' },
   ];
   const goalsDone = goals.filter((g) => g.done).length;
+  // Today's build, drawn the way the engine will build it: its real sky and
+  // its real player, enemies and treasure, moving. The same art the example
+  // cards use, so the hero is never a picture of a game that does not exist.
+  const scene = useMemo(() => { const r = localRecipe(quest.prompt); return { kind: r.kind, sky: r.sky, player: r.player, enemy: r.enemy, treasure: r.treasure, sentence: quest.prompt }; }, [quest.prompt]);
+  const [skyA, skyB] = SKY[scene.sky] || SKY.day;
 
   return (
     <div className={`kh night kh--night${games.length ? ' kh--has-games' : ''}`}>
@@ -149,32 +162,32 @@ export default function KidHome() {
 
           {/* Today's goals: three things a day can hold, ticked as they are
               done. One of them keeps the streak; all three is a full day. */}
-          <section className="ci-blk kh__goals ci-rise" aria-labelledby="kh-goals-title">
+          <section className="kh__goals ci-rise" aria-labelledby="kh-goals-title">
             <div className="kh__goals-head">
-              <div>
-                <div className="ci-ey">Today's goals</div>
-                <h2 id="kh-goals-title" className="kh__goals-title">{goalsDone === 3 ? 'A full day. Nice.' : goalsDone > 0 ? 'Today counts.' : 'Do one and today counts.'}</h2>
-              </div>
+              <h2 id="kh-goals-title" className="kh__goals-title">{goalsDone === 3 ? 'A full day. Nice.' : goalsDone > 0 ? 'Today counts.' : 'Do one and today counts.'}</h2>
               <span className="kh__goals-count" aria-label={`${goalsDone} of 3 done`}>{goalsDone}<small>/3</small></span>
             </div>
-            <div className="kh__goals-bar" aria-hidden="true"><i style={{ width: `${(goalsDone / 3) * 100}%` }} /></div>
-            <ol className="kh__goal-list">
-              {goals.map((g) => (
-                <li key={g.id} className={`kh__goal${g.done ? ' is-done' : ''}`}>
-                  <span className="kh__goal-check" aria-hidden="true">{g.done ? '✓' : ''}</span>
-                  {g.done ? <span className="kh__goal-label">{g.label}</span> : <Link className="kh__goal-label" to={g.to}>{g.label}</Link>}
-                  {g.xp && !g.done && <span className="kh__goal-xp">+{g.xp} XP</span>}
-                  {g.done && <span className="kh__goal-xp is-done">Done</span>}
+            <ol className="kh__badges">
+              {goals.map((g, i) => (
+                <li key={g.id} className={`kh__badge kh__badge--${g.id}${g.done ? ' is-done' : ''}`} style={{ animationDelay: `${.1 + i * .06}s` }}>
+                  {g.done ? (
+                    <span className="kh__badge-disc" aria-hidden="true"><GoalIcon id={g.id} /><i className="kh__badge-tick">✓</i></span>
+                  ) : (
+                    <Link className="kh__badge-disc" to={g.to} aria-label={g.label}><GoalIcon id={g.id} /></Link>
+                  )}
+                  <span className="kh__badge-label">{g.label}</span>
+                  <span className={`kh__badge-xp${g.done ? ' is-done' : ''}`}>{g.done ? 'Done' : g.xp ? `+${g.xp} XP` : 'Streak'}</span>
                 </li>
               ))}
             </ol>
           </section>
-          <div className={`ci-blk kh__quest ci-rise${done ? ' is-done' : ' ci-blk--sun'}`} style={{ animationDelay: '.08s' }}>
-            <span className="kh__spark kh__spark--a" aria-hidden="true" /><span className="kh__spark kh__spark--b" aria-hidden="true" /><span className="kh__spark kh__spark--c" aria-hidden="true" />
-            <div className="ci-ey kh__qey">{done ? 'Done for today' : "Today's build"}</div>
-            <h2 className="kh__qtitle">{done ? 'Done. Build another?' : quest.text}</h2>
-            <Link className="ci-btn ci-btn--ink" to={done ? '/build' : `/build?prompt=${encodeURIComponent(quest.prompt)}`}>{done ? 'Build' : 'Build it'}</Link>
-            <img className="kh__pix" src="/brand/pixel-mascot-hero.png" alt="" />
+          <div className={`ci-blk kh__quest kh__quest--scene ci-rise${done ? ' is-done' : ''}`} style={{ animationDelay: '.08s', background: `linear-gradient(160deg, ${skyA}, ${skyB})` }}>
+            <div className="kh__scene" aria-hidden="true"><Stage ex={scene} /></div>
+            <div className="kh__quest-copy">
+              <div className="ci-ey kh__qey">{done ? 'Done for today' : "Today's build"}</div>
+              <h2 className="kh__qtitle">{done ? 'Done. Build another?' : quest.text}</h2>
+              <Link className="ci-btn kh__quest-btn" to={done ? '/build' : `/build?prompt=${encodeURIComponent(quest.prompt)}`}>{done ? 'Build' : 'Build it'}</Link>
+            </div>
           </div>
           {/* Two minutes of real Python, every day, under the game quest. The
               server's copy says whether it is done; before it answers, or for a
