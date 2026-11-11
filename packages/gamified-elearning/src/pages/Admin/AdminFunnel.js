@@ -675,9 +675,18 @@ export default function AdminFunnel() {
             <article><span>Verified managed profiles</span><strong>{fmt(ageAudit?.under_13_verified_managed)}</strong></article>
             <article><span>Parent review sent</span><strong>{fmt(ageAudit?.under_13_review_sent)}</strong></article>
             <article className="is-urgent"><span>Parent review needed</span><strong>{fmt(Math.max(0, Number(ageAudit?.under_13 || 0) - Number(ageAudit?.under_13_verified_managed || 0) - Number(ageAudit?.under_13_review_sent || 0)))}</strong></article>
+            {/* Both of these were already computed by the audit query and
+                neither was shown, and they are the two that decide what can
+                actually be done. A review is started by someone holding the
+                child's review token who types a parent's address: there is no
+                address on file to write to for an account that has none, so
+                those children can only be reached if they come back and the
+                product asks. Read on 11 November 2026: 75 with, 95 without. */}
+            <article><span>Under 13 with a parent email on file</span><strong>{fmt(ageAudit?.under_13_with_parent_email)}</strong></article>
+            <article className="is-urgent"><span>Under 13 with no parent email at all</span><strong>{fmt(ageAudit?.under_13_without_parent_email)}</strong></article>
             <article><span>Students ages 13 to 18</span><strong>{fmt(ageAudit?.age_13_18)}</strong></article>
           </div>
-          <p className="funnel-safety-note">Aggregate counts only. Historical under-13 accounts stay paused and private until a parent or guardian completes the review and connects a confirmed adult account.</p>
+          <p className="funnel-safety-note">Aggregate counts only. Historical under-13 accounts stay paused and private until a parent or guardian completes the review and connects a confirmed adult account. A review needs an address: an account with no parent email cannot be written to at all, and is reachable only when the learner returns.</p>
 
           <div className="adm-section-head">AI unit economics</div>
           <div className="funnel-cost-grid">

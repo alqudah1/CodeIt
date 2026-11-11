@@ -322,3 +322,27 @@ test('the upgrade rate is measured per person, like its neighbours', () => {
   expect(source).toMatch(/ratio\(counts\.checkout_start \|\| 0, counts\.upgrade_click \|\| 0\)/);
   expect(source).toMatch(/ratio\(counts\.checkout_complete \|\| 0, counts\.checkout_start \|\| 0\)/);
 });
+
+// ── The two numbers that decide what can be done about 121 paused accounts ──
+//
+// The audit query has computed under_13_with_parent_email and
+// under_13_without_parent_email all along and the page showed neither, while
+// showing "Parent review needed: 121" in red. Read on 11 November 2026: 75
+// with an address, 95 without.
+//
+// That difference is the whole decision. requestLegacyReview takes a review
+// token and an address someone types; there is nothing to write to for an
+// account that has no address, so those children are reachable only if they
+// come back. A red number with no way to act on it is not a to-do, and the
+// page was presenting it as one.
+test('the safety audit says how many of the paused accounts can be written to', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const source = fs.readFileSync(path.join(__dirname, 'AdminFunnel.js'), 'utf8');
+
+  expect(source).toMatch(/ageAudit\?\.under_13_with_parent_email/);
+  expect(source).toMatch(/ageAudit\?\.under_13_without_parent_email/);
+  expect(source).toMatch(/no parent email at all/);
+  // And the note says why it matters, so the number is not read as a backlog.
+  expect(source).toMatch(/reachable only when the learner returns/);
+});
