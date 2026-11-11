@@ -7,6 +7,7 @@ import { STAGES, STAGE_BAND, stageIndexOfLesson, stageProgress } from './lessonS
 import { GroundEdge, Peaks, Tree, Pine, Bush, Rock, Flower, Cloud, Sun, Castle, Hill, Gem, Flag } from './MapArt';
 import Icon from '../../components/Icon/Icon';
 import { lessonSummaries } from './lessonRegistry';
+import '../../ds/night.css';
 import './LessonMap.css';
 import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
 import { useCharacterDisplay } from '../../context/CharacterContext';
@@ -269,7 +270,7 @@ const LessonMap = () => {
   const nextId = nextLesson ? nextLesson.id : null;
 
   return (
-    <div className="lm-page">
+    <div className="lm-page night lm-page--night">
       <Header />
 
       {asking && (

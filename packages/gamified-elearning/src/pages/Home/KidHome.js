@@ -33,6 +33,7 @@ import { pythonQuestFor } from './pythonQuests';
 import { powerStates } from '../Powers/powers';
 import { readDone } from '../Powers/PowersMap';
 import '../../ds/ds.css';
+import '../../ds/night.css';
 import './KidHome.css';
 
 const SKY_OF = ['linear-gradient(160deg,#2A1E5C,#5B3FD6)', 'linear-gradient(160deg,#FF7A00,#FFC93C)', 'linear-gradient(160deg,#17C08B,#BFE6FF)', 'linear-gradient(160deg,#FF6B6B,#FFD6E0)'];
@@ -113,7 +114,7 @@ export default function KidHome() {
   const goalsDone = goals.filter((g) => g.done).length;
 
   return (
-    <div className={`kh kh--night${games.length ? ' kh--has-games' : ''}`}>
+    <div className={`kh night kh--night${games.length ? ' kh--has-games' : ''}`}>
       <Header />
       <main className="kh__main">
         <section className="kh__left">

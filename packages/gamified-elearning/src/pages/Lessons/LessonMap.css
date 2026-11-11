@@ -462,3 +462,45 @@ svg.lm-decor { max-width: none; height: auto; }
 @media (prefers-reduced-motion: reduce) {
   .lm-decor .ma-cloud, svg.lm-decor.ma-cloud, .lm-decor--sun, .lm-decor .ma-gem { animation: none; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Night: the bright world on the dark. The page is Ocean (ds/night.css);
+   the four lands stay their own daylight colours and sit on it as one
+   glowing board, like a game map on a console screen. The stops, gates,
+   trees and castle are unchanged: they live on the bright lands.
+   ══════════════════════════════════════════════════════════════════════════ */
+.lm-page--night { background: var(--n-bg); color: var(--n-text); }
+.lm-page--night .lm-container { position: relative; z-index: 1; }
+.lm-page--night .lm-title { color: var(--n-text); }
+.lm-page--night .lm-back-btn, .lm-page--night .lm-stat-chip { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 2px 0 #0A1114; }
+.lm-page--night .lm-back-btn:hover { box-shadow: 0 4px 0 #0A1114; }
+
+/* The stages track: lit discs on a dark rail. */
+.lm-page--night .lm-stages::before { background: rgba(255, 255, 255, .08); border-color: var(--n-edge-strong); }
+.lm-page--night .lm-stage__disc { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 4px 0 #0A1114; }
+.lm-page--night .lm-stage--done .lm-stage__disc, .lm-page--night .lm-stage--here .lm-stage__disc { color: #1A1300; border-color: rgba(0, 0, 0, .35); }
+.lm-page--night .lm-stage--ahead .lm-stage__disc { background: rgba(255, 255, 255, .04); color: var(--n-muted); border-style: dashed; border-color: var(--n-edge-strong); box-shadow: none; }
+.lm-page--night .lm-stage__name { color: var(--n-text); }
+.lm-page--night .lm-stage__count { color: var(--n-muted); }
+.lm-page--night .lm-stage--ahead .lm-stage__name, .lm-page--night .lm-stage--ahead .lm-stage__count { color: rgba(241, 247, 249, .45); }
+.lm-page--night .lm-stage--here .lm-stage__disc { outline-color: var(--n-sun); box-shadow: 0 4px 0 #0A1114, 0 0 24px rgba(255, 201, 60, .45); }
+
+/* The board: the lands keep their light, with a glow where they meet the dark. */
+.lm-page--night .lm-land { box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .16), 0 30px 80px rgba(0, 0, 0, .55), 0 0 60px rgba(127, 216, 106, .12); }
+.lm-page--night .lm-land--beginner { border-top-color: rgba(255, 255, 255, .25); }
+.lm-page--night .lm-land--expert { border-bottom-color: rgba(255, 255, 255, .25); }
+@media (min-width: 1000px) {
+  .lm-page--night .lm-land--beginner, .lm-page--night .lm-land--intermediate, .lm-page--night .lm-land--advanced, .lm-page--night .lm-land--expert { border-left-color: rgba(255, 255, 255, .18); border-right-color: rgba(255, 255, 255, .18); }
+}
+
+/* All done: the banner is a light too. */
+.lm-page--night .lm-all-done { background: linear-gradient(135deg, #17C08B, #5FE3B6); color: #06251A; border-color: rgba(255, 255, 255, .25); box-shadow: 0 16px 40px rgba(23, 192, 139, .35); }
+
+/* The ask, on the dark. */
+.lm-page--night .lm-ask { background: rgba(8, 14, 17, .7); }
+.lm-page--night .lm-ask__card { background: var(--n-surface); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 20px 50px rgba(0, 0, 0, .5); }
+.lm-page--night .lm-ask__card h2 { color: var(--n-text); }
+.lm-page--night .lm-ask__body, .lm-page--night .lm-ask__close { color: var(--n-muted); }
+.lm-page--night .lm-ask__kicker { color: var(--n-sun); }
+.lm-page--night .lm-ask__start { background: var(--n-orange); color: #1A1300; border-color: rgba(0, 0, 0, .3); box-shadow: 0 4px 0 #B85400; }
+.lm-page--night .lm-ask__first { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 4px 0 #0A1114; }
