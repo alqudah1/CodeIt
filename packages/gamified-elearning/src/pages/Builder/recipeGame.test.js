@@ -53,10 +53,11 @@ test('the avatar only stands in for a player the idea did not name', () => {
     const images = [];
     const fakeImage = function Image() { images.push(this); };
     const run = new Function('window', 'Image', `${script.slice(0, script.indexOf('// ── The drawn things'))}; return playerImg;`);
-    return run({ CODEIT_PLAYER_SPRITE: 'data:image/svg+xml;utf8,me' }, fakeImage);
+    run({ CODEIT_PLAYER_SPRITE: 'data:image/svg+xml;utf8,me' }, fakeImage);
+    return images.map((img) => img.src);
   };
-  expect(draws('hero')).not.toBeNull();
-  expect(draws('🐰')).toBeNull();
+  expect(draws('hero')).toEqual(['data:image/svg+xml;utf8,me']);
+  expect(draws('🐰')).toEqual([]);
 });
 
 test('a twist is one of three words and anything else becomes none', () => {

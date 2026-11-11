@@ -128,10 +128,19 @@ ${recipePowers(r)}
 
 // You, in the game: if CodeIt handed us your avatar and your idea did not
 // name a player, you are the player. A bunny you asked for stays a bunny.
+// The avatar is drawn once onto its own little canvas, so the game moves a
+// picture and never asks the browser to redraw a whole drawing every frame.
 let playerImg = null;
 if (window.CODEIT_PLAYER_SPRITE && playerLook === 'hero') {
-  playerImg = new Image();
-  playerImg.src = window.CODEIT_PLAYER_SPRITE;
+  const avatar = new Image();
+  avatar.onload = function() {
+    try {
+      const c = document.createElement('canvas'); c.width = 256; c.height = 256;
+      c.getContext('2d').drawImage(avatar, 0, 0, 256, 256);
+      playerImg = c;
+    } catch (e) { playerImg = null; }
+  };
+  avatar.src = window.CODEIT_PLAYER_SPRITE;
 }
 
 // ── The drawn things ──
@@ -162,9 +171,10 @@ function spriteFor(look, fallback) {
   return imageCache[name];
 }
 
-const canvas = document.getElementById('screen');
-const pen = canvas.getContext('2d');
+let canvas = document.getElementById('screen');
+let pen = canvas.getContext('2d');
 let width = 0, height = 0, dpr = 1;
+let frames = 0, faults = 0, lostFor = 0, swaps = 0;   // the screen looking after itself
 let score = 0, lives = 3, playing = false;
 let playerX = 0, playerY = 0, jumpSpeed = 0, squash = 1;
 let things = [], shots = [], parts = [], pops = [], clouds = [], ticks = 0, spawnClock = 0, shake = 0, flash = 0;
@@ -177,13 +187,19 @@ let food = 100, fun = 100, petHop = 0, buttons = [];   // pet
 let level = 1, bossCame = false, audio = null;
 const keys = {};
 
+// The screen is the size of the window. A window with no size yet (a frame
+// still being laid out) is not a size: keep what we have and ask again.
 function fitScreen() {
+  const w = window.innerWidth, h = window.innerHeight;
+  if (!w || !h) return false;
   dpr = Math.min(2, window.devicePixelRatio || 1);
-  width = window.innerWidth; height = window.innerHeight;
+  width = w; height = h;
   canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
   pen.imageSmoothingQuality = 'high';
+  return true;
 }
-window.addEventListener('resize', function() { fitScreen(); if (gameKind === 'maze' && playing) buildMaze(); });
+function refit() { if (fitScreen() && gameKind === 'maze' && playing) buildMaze(); }
+window.addEventListener('resize', refit);
 fitScreen();
 
 function tipText() {
@@ -260,7 +276,7 @@ function drawPlayer(x, y) {
   pen.fillStyle = 'rgba(0,0,0,.18)'; pen.beginPath(); pen.ellipse(x, height - 62, 30 - air * 0.05, 8 - air * 0.02, 0, 0, 7); pen.fill();
   const bob = (gameKind === 'runner' && y < height - 120) ? 0 : Math.sin(ticks / 9) * 2.5;
   pen.save(); pen.translate(x, y + bob); pen.scale(2 - squash, squash); pen.translate(-x, -(y + bob));
-  if (playerImg && playerImg.complete && playerImg.naturalWidth) {
+  if (playerImg) {
     pen.save(); pen.shadowColor = 'rgba(0,0,0,.25)'; pen.shadowBlur = 10; pen.shadowOffsetY = 6; pen.drawImage(playerImg, x - 32, y + bob - 32, 64, 64); pen.restore();
   } else {
     drawSprite(spriteFor(playerLook, 'hero'), x, y + bob, 72, 0);
@@ -692,11 +708,44 @@ function stepPet() {
 
 // ── The player in the newer kinds: your avatar if CodeIt gave one, else your look ──
 function drawLook(x, y, size) {
-  if (playerImg && playerImg.complete && playerImg.naturalWidth) { pen.save(); pen.shadowColor = 'rgba(0,0,0,.25)'; pen.shadowBlur = 10; pen.shadowOffsetY = 6; pen.drawImage(playerImg, x - size / 2, y - size / 2, size, size); pen.restore(); }
+  if (playerImg) { pen.save(); pen.shadowColor = 'rgba(0,0,0,.25)'; pen.shadowBlur = 10; pen.shadowOffsetY = 6; pen.drawImage(playerImg, x - size / 2, y - size / 2, size, size); pen.restore(); }
   else drawSprite(spriteFor(playerLook, 'hero'), x, y, size, 0);
 }
 
+// A screen that stopped taking paint (the browser dropped its drawing surface)
+// is swapped for a new one in the same place. The game itself carries on.
+function freshScreen() {
+  const next = canvas.cloneNode(false);
+  canvas.parentNode.replaceChild(next, canvas);
+  canvas = next; pen = canvas.getContext('2d');
+  wireScreen(); fitScreen();
+}
+function screenIsEmpty() {
+  try { return pen.getImageData(4, 4, 1, 1).data[3] === 0; } catch (e) { return false; }
+}
+
+// One frame, and the next one is asked for before anything is drawn: nothing
+// that goes wrong in a frame can stop the frames.
 function draw() {
+  requestAnimationFrame(draw);
+  frames += 1;
+  if (!width || !height) { if (fitScreen()) startGame(); else return; }
+  else if (window.innerWidth && window.innerHeight && (window.innerWidth !== width || window.innerHeight !== height)) refit();
+  try { drawFrame(); }
+  catch (e) {
+    for (let i = 0; i < 12; i += 1) pen.restore();
+    pen.globalAlpha = 1;
+    faults += 1;
+    if (faults === 1) setTimeout(function() { throw e; }, 0);   // said once, out loud, where an editor can hear it
+  }
+  if (pen.isContextLost && pen.isContextLost()) { lostFor += 1; if (lostFor > 90 && swaps < 3) { swaps += 1; lostFor = 0; freshScreen(); } }
+  else {
+    lostFor = 0;
+    if ((frames === 30 || frames === 240) && swaps < 3 && screenIsEmpty()) { swaps += 1; freshScreen(); }
+  }
+}
+
+function drawFrame() {
   ticks += 1;
   const sx = shake > 0 ? (Math.random() - 0.5) * shake * 2 : 0, sy = shake > 0 ? (Math.random() - 0.5) * shake * 2 : 0; shake = Math.max(0, shake - 1.2);
   pen.setTransform(dpr, 0, 0, dpr, sx * dpr, sy * dpr);
@@ -739,8 +788,6 @@ function draw() {
   for (const p of pops) { p.y -= 1.6; p.l -= 0.03; pen.globalAlpha = Math.max(0, Math.min(1, p.l)); pen.fillStyle = p.text ? SUN : '#fff'; pen.font = '800 ' + (p.text ? 44 : 26) + 'px "Baloo 2", Nunito, sans-serif'; pen.textAlign = 'center'; pen.fillText(p.text || ('+' + Math.max(1, pointsPer | 0)), p.x, p.y - 30); }
   pen.globalAlpha = 1;
   if (flash > 0) { flash -= 1; pen.fillStyle = 'rgba(255,107,107,' + (flash / 14) + ')'; pen.fillRect(-20, -20, width + 40, height + 40); }
-
-  requestAnimationFrame(draw);
 }
 
 window.addEventListener('keydown', function(e) {
@@ -755,6 +802,9 @@ window.addEventListener('keydown', function(e) {
   if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') e.preventDefault();
 });
 window.addEventListener('keyup', function(e) { keys[e.key] = false; });
+function wireScreen() {
+canvas.addEventListener('contextlost', function(e) { e.preventDefault(); });
+canvas.addEventListener('contextrestored', function() { fitScreen(); });
 canvas.addEventListener('pointermove', function(e) { pointerX = e.clientX; pointerY = e.clientY; });
 canvas.addEventListener('pointerdown', function(e) {
   pointerX = e.clientX; pointerY = e.clientY;
@@ -772,6 +822,8 @@ canvas.addEventListener('pointerup', function(e) {
   wantDir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 1 : 3) : (dy > 0 ? 2 : 0);
   swipe = null;
 });
+}
+wireScreen();
 
 startGame();
 draw();
