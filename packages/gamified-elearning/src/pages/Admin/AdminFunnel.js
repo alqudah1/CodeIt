@@ -224,7 +224,13 @@ export default function AdminFunnel() {
     ['Challenge → project', ratio(Number(challengeFunnel.generated_projects) || 0, Number(challengeFunnel.views) || 0)],
     ['Challenge → save', ratio(Number(challengeFunnel.saved_projects) || 0, Number(challengeFunnel.views) || 0)],
     ['Visit → learning', ratio(journeyMetric('learning_start'), journeyMetric('acquisition_visit'))],
-    ['Build completion', ratio(journeyMetric('generation_complete'), journeyMetric('builder_start'))],
+    // Was the only place the missing quarter of builds showed, as 76%. Every
+    // build that starts now records an outcome, including the abandoned ones,
+    // so this is a data-integrity reading rather than a product one: it should
+    // sit at or near 100%, and anything well below means events are being
+    // lost again. What fraction of children get a working project is the AI
+    // generation rate, further down.
+    ['Builds that recorded an outcome', ratio(journeyMetric('generation_complete'), journeyMetric('builder_start'))],
     // Generated → played → personalized, rather than a jump over the first
     // gate. 419 projects were generated and 36 saved in the window read on
     // 11 November; which of the three steps loses them was not answerable
@@ -243,7 +249,28 @@ export default function AdminFunnel() {
     ['Shared visitors → remixed', ratio(journeyMetric('project_remix'), acquisitionSources.project || 0)],
     ['New accounts → return days', ratio(journeyMetric('return_use'), journeyMetric('signup_complete'))],
     ['Pricing view → interest', ratio(journeyMetric('pricing_interest'), journeyMetric('pricing_view'))],
-    ['Upgrade offer → click', ratio(counts.upgrade_click || 0, counts.upgrade_prompt_shown || 0)],
+    // ── Per person, like every other rate above ───────────────────────────
+    //
+    // This was clicks ÷ impressions while every neighbour on this list is
+    // journeys ÷ journeys, and the two say different things. The header's Get
+    // Plus records an impression on every mount, so somebody who opens twenty
+    // pages produces twenty offers and can still only click once. Over the 90
+    // days to 11 November that was 2,719 impressions against 371 journeys:
+    // the denominator was about seven times the number of people who saw it.
+    //
+    // By impressions the button read as 0.29% and looked pathological. By
+    // person it is 2.2%, which is an ordinary number for an ambient upsell.
+    // The conclusion does not change — 371 people, 8 clicks, 1 sale, and
+    // nobody has ever hit the limit the plan exists to lift — but the rate
+    // should not overstate it either.
+    //
+    // Both are kept, because how often an offer is repeated is worth knowing
+    // on its own.
+    ['Upgrade offer → click, per person', ratio(journeyMetric('upgrade_click'), journeyMetric('upgrade_prompt_shown'))],
+    ['Upgrade offer → click, per impression', ratio(counts.upgrade_click || 0, counts.upgrade_prompt_shown || 0)],
+    // checkout_start and checkout_complete are recorded by routes/billing.js
+    // on the server, where there is no journey to attribute them to, so these
+    // two stay on event counts and would read 0 on journeys.
     ['Upgrade click → checkout', ratio(counts.checkout_start || 0, counts.upgrade_click || 0)],
     ['Checkout → paid', ratio(counts.checkout_complete || 0, counts.checkout_start || 0)],
     ['Pilot request → setup email', ratio(pilotConfirmations.sent || 0, counts.pilot_join || 0)],

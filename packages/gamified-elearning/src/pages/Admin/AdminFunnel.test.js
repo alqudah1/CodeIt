@@ -294,3 +294,31 @@ test('the AI generation rate counts builds that never arrived', () => {
   expect(source).toMatch(/Nothing arrived \(gave up or timed out\)/);
   expect(source).toMatch(/Answered, but not with a project/);
 });
+
+// ── One kind of denominator per list ───────────────────────────────────────
+//
+// Every conversion rate in `signals` is journeys ÷ journeys except the money
+// ones, which were clicks ÷ impressions. The header records an offer on every
+// mount, so over the 90 days to 11 November 2026 that was 2,719 impressions
+// against 371 journeys: a denominator about seven times the number of people
+// who saw it, and a rate that read 0.29% instead of 2.2%.
+//
+// Mixing the two in one column is how a reader draws a conclusion from a
+// number that was never comparable to the ones beside it.
+test('the upgrade rate is measured per person, like its neighbours', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const source = fs.readFileSync(path.join(__dirname, 'AdminFunnel.js'), 'utf8');
+
+  expect(source).toMatch(
+    /\['Upgrade offer → click, per person', ratio\(journeyMetric\('upgrade_click'\), journeyMetric\('upgrade_prompt_shown'\)\)\]/
+  );
+  // The per-impression rate stays, labelled, because how often an offer is
+  // repeated is worth knowing on its own.
+  expect(source).toMatch(/'Upgrade offer → click, per impression'/);
+
+  // checkout_start and checkout_complete are recorded server-side with no
+  // journey, so they must NOT be moved to journeyMetric: they would read 0.
+  expect(source).toMatch(/ratio\(counts\.checkout_start \|\| 0, counts\.upgrade_click \|\| 0\)/);
+  expect(source).toMatch(/ratio\(counts\.checkout_complete \|\| 0, counts\.checkout_start \|\| 0\)/);
+});
