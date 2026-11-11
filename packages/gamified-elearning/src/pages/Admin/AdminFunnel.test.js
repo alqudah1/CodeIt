@@ -239,3 +239,33 @@ describe('admin acquisition funnel', () => {
     expect(screen.getByText(/cannot say whether the same child came back another day/)).toBeInTheDocument();
   });
 });
+
+// ── The gate that decides who can save has to be on the page ───────────────
+//
+// The studio's checklist is five steps and Save does not save until three of
+// them are done: handleSaveOrGuide opens the edit panel when the project is
+// not personalised, and starts play when the latest change has not been
+// tested. Play is the first of those gates.
+//
+// This report went from "generated" straight to "personalized" and skipped
+// it, which is the thing analyticsEvents.js had already warned about in
+// writing: project_played "decided who could save and who could publish and
+// it was invisible in every report, so the drop between generated and saved
+// could not be attributed to anything". The rows were being written the whole
+// time. Only the display was missing, and 419 generated against 36 saved is
+// the number that could not be explained because of it.
+test('the funnel shows the play gate between generated and personalized', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const source = fs.readFileSync(path.join(__dirname, 'AdminFunnel.js'), 'utf8');
+
+  expect(source).toMatch(/\['project_played', 'Projects played'\]/);
+  expect(source).toMatch(/Generated → played/);
+  expect(source).toMatch(/Played → personalized/);
+
+  // In order, so the page reads as the child's path rather than a bag of
+  // rates: generated, then played, then personalized.
+  const at = (needle) => source.indexOf(needle);
+  expect(at("['project_played'")).toBeGreaterThan(at("['generation_complete'"));
+  expect(at("['project_personalize'")).toBeGreaterThan(at("['project_played'"));
+});

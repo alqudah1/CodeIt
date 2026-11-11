@@ -17,6 +17,22 @@ const STAGES = [
   ['builder_start', 'Builds started'],
   ['generation_complete', 'Projects generated'],
   ['guest_draft_recovered', 'Guest projects recovered'],
+  // ── The first gate, which was recorded and never shown ──────────────────
+  //
+  // The studio's checklist is five steps: open it, press Play, change one
+  // thing, play it again, save. Save does not save until steps 2 to 4 are
+  // done; handleSaveOrGuide opens the edit panel or starts play instead.
+  //
+  // So Play is the first gate a child has to pass, and this report went
+  // straight from "generated" to "personalized", skipping it. project_played
+  // has been recorded since the gate shipped, with a note in
+  // analyticsEvents.js saying it "decided who could save and who could
+  // publish and it was invisible in every report, so the drop between
+  // generated and saved could not be attributed to anything".
+  //
+  // It was still invisible. The rows are already in the database; this is
+  // only the display.
+  ['project_played', 'Projects played'],
   ['project_personalize', 'Projects personalized'],
   ['activation_account_gate', 'Account gates reached'],
   ['signup_complete', 'Accounts created'],
@@ -209,6 +225,12 @@ export default function AdminFunnel() {
     ['Challenge → save', ratio(Number(challengeFunnel.saved_projects) || 0, Number(challengeFunnel.views) || 0)],
     ['Visit → learning', ratio(journeyMetric('learning_start'), journeyMetric('acquisition_visit'))],
     ['Build completion', ratio(journeyMetric('generation_complete'), journeyMetric('builder_start'))],
+    // Generated → played → personalized, rather than a jump over the first
+    // gate. 419 projects were generated and 36 saved in the window read on
+    // 11 November; which of the three steps loses them was not answerable
+    // from this page.
+    ['Generated → played', ratio(journeyMetric('project_played'), journeyMetric('generation_complete'))],
+    ['Played → personalized', ratio(journeyMetric('project_personalize'), journeyMetric('project_played'))],
     ['Generated → personalized', ratio(journeyMetric('project_personalize'), journeyMetric('generation_complete'))],
     ['Recovered → saved', ratio(journeyMetric('project_save'), journeyMetric('guest_draft_recovered'))],
     ['Account gate → signup', ratio(journeyMetric('signup_complete'), journeyMetric('activation_account_gate'))],
