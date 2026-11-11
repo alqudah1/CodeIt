@@ -21,7 +21,12 @@
   --n-mint: #2EE6A6;
   --n-sun: #FFC93C;
   --n-sky: #4FC3FF;
-  --n-coral: #FF6B8A;
+  --n-coral: #FF708E; /* one percent lighter than #FF6B8A at the same hue
+                        and saturation. Coral is the streak and error colour,
+                        and on --n-surface-2 the old value read at 4.42:1,
+                        under the 4.5 line for normal text. An error message
+                        on a raised card is exactly the sentence that has to
+                        be readable. 4.56:1 now. night-contrast.test.js. */
 
   --ci-cream: var(--n-bg);
   --ci-paper: var(--n-surface);
