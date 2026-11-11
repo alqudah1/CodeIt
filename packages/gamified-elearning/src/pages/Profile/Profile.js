@@ -18,6 +18,7 @@ import { MEDALS, medalsFrom } from './medals';
 import Me from './Me';
 import ParentGate, { gateOpen } from './ParentGate';
 import { usePublicPlan } from '../../hooks/usePublicPlan';
+import '../../ds/night.css';
 import './Profile.css';
 
 // Levels come from data/unlocks.js, and only from there. This file used to
@@ -450,7 +451,7 @@ export default function Profile() {
   return (
     <>
       <Header />
-      <div className={`profile-page${isAdult ? ' profile-page--adult' : ''}`}>
+      <div className={`profile-page night${isAdult ? ' profile-page--adult' : ''}`}>
 
         {/* ── Avatar hero ── */}
         <section className="profile-hero">

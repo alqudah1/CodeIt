@@ -16,6 +16,7 @@ import TabBar from '../../ds/TabBar';
 import ExampleCards from '../../ds/Examples';
 import Offline, { Waiting, useRetry } from '../../ds/Offline';
 import '../../ds/ds.css';
+import '../../ds/night.css';
 import './Arcade.css';
 
 const DOTS = ['#7C5CFF', '#FF6B6B', '#FFC93C', '#17C08B', '#3EB7F8', '#FF7A00'];
@@ -86,7 +87,7 @@ export default function Arcade() {
   const surprise = () => { if (ranked.length) navigate(`/project/${ranked[Math.floor(Math.random() * ranked.length)].publicId}`); };
 
   return (
-    <div className="ar">
+    <div className="ar night">
       <Header />
       <main className="ar__main">
         <div className="ar__head">

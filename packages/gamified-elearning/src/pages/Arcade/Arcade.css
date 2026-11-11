@@ -26,3 +26,9 @@
 .ar__join small { font-size: 13px; }
 .ar__quiet { margin: 0 0 10px; }
 .ar__main { max-width: 900px; }
+
+/* ── Night ─────────────────────────────────────────────────────────────── */
+.ar.night { background: radial-gradient(900px 420px at 100% -10%, rgba(255, 201, 60, .14), transparent 60%), var(--n-bg); }
+.ar.night .ar__row { background: var(--n-surface); border-color: var(--n-edge-strong); color: var(--n-text); box-shadow: 0 6px 18px rgba(0, 0, 0, .32); }
+.ar.night .ar__rank { color: var(--n-sun); }
+.ar.night .ar__plays { color: var(--n-muted); }

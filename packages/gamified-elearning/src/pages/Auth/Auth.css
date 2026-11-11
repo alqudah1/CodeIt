@@ -668,3 +668,18 @@
   border: 2px solid var(--ink, #35220E);
   border-radius: 14px;
 }
+
+/* ── Night ─────────────────────────────────────────────────────────────── */
+.auth-page.night { background-color: var(--n-bg); background-image: radial-gradient(rgba(255, 255, 255, .06) 1.2px, transparent 1.2px); color: var(--n-text); }
+.auth-page.night .auth-card { background: var(--n-surface); border: 1.5px solid var(--n-edge-strong); box-shadow: 0 20px 50px rgba(0, 0, 0, .5); }
+.auth-page.night input, .auth-page.night select, .auth-page.night textarea { background: var(--n-deep, #0E171B); color: var(--n-text); border-color: var(--n-edge-strong); }
+.auth-page.night input::placeholder { color: rgba(241, 247, 249, .4); }
+.auth-page.night label, .auth-page.night .auth-label { color: var(--n-text); }
+.auth-page.night .auth-role-btn { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); }
+.auth-page.night .auth-role-btn--active { background: var(--n-sun); color: #2A1500; }
+.auth-page.night .auth-path-card { background: var(--n-surface); border-color: var(--n-edge-strong); }
+.auth-page.night .auth-path-card__title { color: var(--n-text); }
+.auth-page.night .auth-path-card__desc, .auth-page.night .auth-hint, .auth-page.night .auth-footer { color: var(--n-muted); }
+.auth-page.night .auth-educator-note, .auth-page.night .auth-draft { background: rgba(255, 201, 60, .12); border-color: rgba(255, 201, 60, .4); color: var(--n-text); }
+.auth-page.night .auth-header p { color: var(--n-muted); }
+.auth-page.night .auth-footer a, .auth-page.night .auth-back { color: var(--n-sun); }

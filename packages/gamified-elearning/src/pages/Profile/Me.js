@@ -22,6 +22,7 @@ import { POWERS, powerStates } from '../Powers/powers';
 import { readDone } from '../Powers/PowersMap';
 import { MEDALS, medalsFrom } from './medals';
 import '../../ds/ds.css';
+import '../../ds/night.css';
 import './Me.css';
 
 export default function Me({ user, token, trophies = [], projectCount = null, logout }) {
@@ -57,7 +58,7 @@ export default function Me({ user, token, trophies = [], projectCount = null, lo
   const firstName = (user?.name || user?.username || '').split(' ')[0];
 
   return (
-    <div className="me">
+    <div className="me night">
       <Header />
       <main className="me__main">
         <section className="me__left">

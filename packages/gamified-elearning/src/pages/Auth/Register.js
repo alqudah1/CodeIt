@@ -9,6 +9,7 @@ import { journeyHeaders } from '../../utils/journey';
 import BrandLogo from '../../components/BrandLogo/BrandLogo';
 import { resolveAuthDestination } from '../../utils/authDestination';
 import LiveFrame from '../Home/LiveFrame';
+import '../../ds/night.css';
 import './Auth.css';
 
 // ── The project they were making, at the top of the form ────────────────────
@@ -228,7 +229,7 @@ export default function Register() {
   // ═══════════════════════════════════════════════════════════════════════════
   if (step === 'choose') {
     return (
-      <div className="auth-page">
+      <div className="auth-page night">
         <div className="auth-card">
           <BrandMark />
           <header className="auth-header">
@@ -288,7 +289,7 @@ export default function Register() {
   // ═══════════════════════════════════════════════════════════════════════════
   if (step === 'student') {
     return (
-      <div className="auth-page">
+      <div className="auth-page night">
         <div className="auth-card">
           <BrandMark />
           <button type="button" className="auth-back" onClick={goBack}>Back</button>
@@ -417,7 +418,7 @@ export default function Register() {
   // ═══════════════════════════════════════════════════════════════════════════
   if (step === 'parent-optional') {
     return (
-      <div className="auth-page">
+      <div className="auth-page night">
         <div className="auth-card">
           <BrandMark />
           <header className="auth-header">
@@ -470,7 +471,7 @@ export default function Register() {
   // ═══════════════════════════════════════════════════════════════════════════
   if (step === 'educator') {
     return (
-      <div className="auth-page">
+      <div className="auth-page night">
         <div className="auth-card">
           <BrandMark />
           <button type="button" className="auth-back" onClick={goBack}>Back</button>

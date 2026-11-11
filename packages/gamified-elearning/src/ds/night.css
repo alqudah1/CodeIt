@@ -84,3 +84,41 @@ body:has(.night) .ci-tab.is-on svg { fill: rgba(255, 138, 30, .25); stroke: var(
 .night .ci-btn--paper, .night .ci-btn--ink { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 4px 0 #0A1114; }
 .night .ci-chip { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 2px 0 #0A1114; }
 .night .ci-chip.is-on { background: var(--n-sun); color: #2A1500; }
+
+/* ── The arcade tokens, re-pointed ─────────────────────────────────────────
+   Most pages are written in styles/arcade.css's tokens (ink, paper, ground,
+   the arc colours, the hard pop shadows). Inside a night page they mean the
+   night things: ink is the light type and the light edge, paper a surface,
+   ground the deep teal, the pops deep teal too, violet becomes sky. */
+.night {
+  --ink: #F1F7F9;
+  --ink-soft: rgba(241, 247, 249, .62);
+  --ink-mute: rgba(241, 247, 249, .74);
+  --ink-line: rgba(255, 255, 255, .12);
+  --ground: #131F24;
+  --paper: #202F36;
+  --arc-sun: #FFC93C;
+  --arc-orange: #FF8A1E;
+  --arc-orange-down: #D96E00;
+  --arc-orange-text: #FFB265;
+  --arc-violet: #4FC3FF;
+  --arc-violet-down: #2FA9EA;
+  --arc-violet-deep: #1E8ED0;
+  --arc-mint: #2EE6A6;
+  --arc-mint-down: #1FC98E;
+  --arc-sky: #4FC3FF;
+  --arc-coral: #FF6B8A;
+  --pop-rest: 0 4px 0 #0A1114;
+  --pop-lift: 0 7px 0 #0A1114;
+  --pop-down: 0 1px 0 #0A1114;
+  --pop-card: 0 12px 32px rgba(0, 0, 0, .4);
+}
+
+/* Example cards anywhere on a night page: the tag reads on its art. */
+.night .ex__tag { background: rgba(0, 0, 0, .5); color: #fff; }
+
+/* The tab bar: Build is the raised key in the middle, on every night page. */
+body:has(.night) .ci-tabs .ci-tab[href='/build'] { position: relative; color: #1A1300; font-weight: 900; }
+body:has(.night) .ci-tabs .ci-tab[href='/build'] svg { width: 26px; height: 26px; stroke: #1A1300; fill: none; position: relative; z-index: 1; margin-top: -22px; }
+body:has(.night) .ci-tabs .ci-tab[href='/build']::before { content: ''; position: absolute; left: 50%; top: -24px; width: 60px; height: 60px; margin-left: -30px; border-radius: 50%; background: linear-gradient(160deg, #FFB020, #FF7A00); border: 3px solid var(--n-bg, #131F24); box-shadow: 0 6px 0 #B85400, 0 10px 28px rgba(255, 122, 0, .55); }
+body:has(.night) .ci-tabs .ci-tab[href='/build'].is-on::before { box-shadow: 0 3px 0 #B85400, 0 10px 28px rgba(255, 122, 0, .7); }

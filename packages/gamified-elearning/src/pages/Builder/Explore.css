@@ -730,3 +730,22 @@
 .exp-card__title-row .exp-card__heart { position: static; flex: none; width: 34px; height: 34px; border: 2px solid var(--ink); border-radius: 999px; background: var(--paper); box-shadow: 0 2px 0 var(--ink); color: var(--ink); font-size: 1.05rem; backdrop-filter: none; }
 .exp-card__title-row .exp-card__heart--liked { color: #d6453d; background: #ffe3e0; }
 .exp-card__thumb-wrap .exp-card__heart { display: none; }
+
+/* ── Night ─────────────────────────────────────────────────────────────── */
+.exp-page--night { background: var(--n-bg); color: var(--n-text); }
+.exp-page--night .exp-hero { background: transparent; border-color: var(--n-edge); }
+.exp-page--night .exp-hero h1, .exp-page--night .exp-hero__title { color: var(--n-text); }
+.exp-page--night .exp-hero__cta { background: var(--n-orange); color: #1A1300; border-color: rgba(0, 0, 0, .3); box-shadow: 0 4px 0 #B85400, 0 10px 28px rgba(255, 122, 0, .4); }
+.exp-page--night .exp-filter, .exp-page--night .exp-tab { background: var(--n-surface); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 3px 0 #0A1114; }
+.exp-page--night .exp-filter.is-active, .exp-page--night .exp-filter--active, .exp-page--night .exp-tab.is-on { background: var(--n-sun); color: #2A1500; }
+.exp-page--night .exp-card { background: var(--n-surface); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 12px 32px rgba(0, 0, 0, .4); }
+.exp-page--night .exp-card__title { color: var(--n-text); }
+.exp-page--night .exp-card__creator-name, .exp-page--night .exp-stat { color: var(--n-muted); }
+.exp-page--night .exp-card__type-badge { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); }
+.exp-page--night .exp-card__heart { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 2px 0 #0A1114; }
+.exp-page--night .exp-card__heart--liked { color: #FF6B8A; background: rgba(255, 107, 138, .15); }
+.exp-page--night .exp-card__actions .exp-btn, .exp-page--night .exp-card__play { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 3px 0 #0A1114; }
+.exp-page--night .exp-card__remix, .exp-page--night .exp-btn--remix { background: var(--n-orange); color: #1A1300; border-color: rgba(0, 0, 0, .3); box-shadow: 0 3px 0 #B85400; }
+.exp-page--night .exp-today { background: var(--n-surface); color: var(--n-text); border-color: var(--n-edge-strong); }
+.exp-page--night .exp-today h2, .exp-page--night .exp-today__title { color: var(--n-text); }
+.exp-page--night .exp-empty, .exp-page--night .exp-loading { color: var(--n-muted); }

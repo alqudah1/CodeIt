@@ -4,6 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { play } from './kit/sound';
 import { haptic } from './kit/haptic';
 import World from './World';
+import '../ds/night.css';
 import './Arcade.css';
 
 // ── The child's shell ────────────────────────────────────────────────────────
@@ -24,7 +25,7 @@ export default function Arcade() {
   const { user } = useContext(AuthContext) || {};
   const { pathname } = useLocation();
   return (
-    <div className="arcade">
+    <div className="arcade night">
       <main className="arcade__stage">
         <World />
       </main>

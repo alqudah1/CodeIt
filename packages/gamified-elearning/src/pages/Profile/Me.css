@@ -55,3 +55,12 @@ a.me__power:hover { transform: translateY(-2px); }
 .me__hero { flex-wrap: wrap; }
 .me__hero > div { min-width: 0; }
 @media (max-width: 360px) { .me__avatar { width: 76px; height: 76px; border-radius: 22px; } }
+
+/* ── Night ─────────────────────────────────────────────────────────────── */
+.me.night { background: radial-gradient(900px 420px at 0% -10%, rgba(255, 122, 0, .22), transparent 60%), var(--n-bg); }
+.me.night .me__avatar, .me.night .me__hero > a { border-color: var(--n-edge-strong); box-shadow: 0 0 0 4px rgba(255, 201, 60, .18); }
+.me.night .me__medal { background: var(--n-surface); border-color: var(--n-edge); color: var(--n-muted); }
+.me.night .me__medal.is-won { background: var(--n-sun); color: #2A1500; }
+.me.night .me__power { background: var(--n-surface); border-color: var(--n-edge-strong); color: var(--n-text); }
+.me.night .me__power.is-next { background: var(--n-sun); color: #2A1500; }
+.me.night .me__power.is-done { background: rgba(46, 230, 166, .14); border-color: rgba(46, 230, 166, .5); }

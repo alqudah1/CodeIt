@@ -7,6 +7,7 @@ import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import BrandLogo from '../../components/BrandLogo/BrandLogo';
 import { resolveAuthDestination } from '../../utils/authDestination';
+import '../../ds/night.css';
 import './Auth.css';
 
 export default function Login() {
@@ -76,7 +77,7 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-page">
+    <div className="auth-page night">
       <div className="auth-card">
 
         {/* Brand mark */}

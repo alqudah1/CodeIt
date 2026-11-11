@@ -19,6 +19,7 @@ import { projectKindOf } from '../../utils/analyticsKind';
 import { trackEvent } from '../../utils/trackEvent';
 import { displayTitle } from '../../utils/displayTitle';
 import LiveCardArt from '../../components/LiveCardArt/LiveCardArt';
+import '../../ds/night.css';
 import './Explore.css';
 
 // ── helpers ──────────────────────────────────────────────────────
@@ -389,7 +390,7 @@ export default function Explore() {
   };
 
   return (
-    <div className="exp-page">
+    <div className="exp-page night exp-page--night">
       <Header />
 
       {/* One line, and the projects start. What "Explore" means is obvious

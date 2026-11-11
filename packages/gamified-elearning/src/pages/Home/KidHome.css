@@ -227,10 +227,4 @@ a.kh__badge-disc:hover { transform: translateY(-3px); color: var(--n-text); bord
 .kh__badge-xp.is-done { color: var(--n-mint); }
 .kh__badge--game .kh__badge-xp:not(.is-done) { color: var(--n-muted); }
 
-/* The tab bar: Build is the raised key in the middle. */
-body:has(.night) .ci-tabs .ci-tab[href='/build'] { position: relative; color: #1A1300; }
-body:has(.night) .ci-tabs .ci-tab[href='/build'] svg { width: 26px; height: 26px; stroke: #1A1300; fill: none; position: relative; z-index: 1; margin-top: -22px; }
-body:has(.night) .ci-tabs .ci-tab[href='/build']::before { content: ''; position: absolute; left: 50%; top: -24px; width: 60px; height: 60px; margin-left: -30px; border-radius: 50%; background: linear-gradient(160deg, #FFB020, #FF7A00); border: 3px solid var(--n-bg, #131F24); box-shadow: 0 6px 0 #B85400, 0 10px 28px rgba(255, 122, 0, .55); }
-body:has(.night) .ci-tabs .ci-tab[href='/build'] span, body:has(.night) .ci-tabs .ci-tab[href='/build'] { font-weight: 900; }
-body:has(.night) .ci-tabs .ci-tab[href='/build'].is-on::before { box-shadow: 0 3px 0 #B85400, 0 10px 28px rgba(255, 122, 0, .7); }
 @media (prefers-reduced-motion: reduce) { .kh__badge, .kh__badge.is-done .kh__badge-disc { animation: none; } }
