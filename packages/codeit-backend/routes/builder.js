@@ -2,6 +2,10 @@ const express      = require('express');
 const router       = express.Router();
 const Anthropic    = require('@anthropic-ai/sdk');
 const jwt          = require('jsonwebtoken');
+// The four build-failure classes, kept out of the route so they can be
+// tested without a database or a JWT secret, the same reason
+// billingReadiness.js and entitlements.js live outside their routes.
+const { buildFailureClass } = require('../buildFailure');
 const pool         = require('../db');
 const designEngine = require('../designEngine');
 const { JWT_SECRET } = require('../config');
@@ -1734,6 +1738,8 @@ const BUILD_BUDGET = {
 };
 
 // ── POST /api/builder ─────────────────────────────────────────────────────────
+
+
 router.post('/', optionalAuth, generationLimiter, async (req, res) => {
   // The budget below counts from here, because the child's wait does.
   const requestStarted = Date.now();
@@ -2059,7 +2065,7 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
           console.log(`Builder: retry still unusable — ${verdict.failReasons[0] || 'unknown'}`);
         }
       } catch (raceErr2) {
-        fallbackReason = raceErr2.message === 'BUILD_TIMEOUT' ? 'retry-timeout' : 'error';
+        fallbackReason = raceErr2.message === 'BUILD_TIMEOUT' ? 'retry-timeout' : buildFailureClass(raceErr2);
         console.log(`Builder: retry ${fallbackReason} on ${secondRoute.model} for type: ${designConfig.type}${describeStop(raceErr2)}`);
       }
 
@@ -2097,8 +2103,8 @@ Return the corrected complete HTML in the SAME <META>...</META><HTML>...</HTML> 
     generationMode = 'ai';
     reply({ code: html, html, title, type, summary, conceptsUsed });
   } catch (err) {
-    fallbackReason = 'error';
-    console.error('Builder AI error:', err.message);
+    fallbackReason = buildFailureClass(err);
+    console.error(`Builder AI error (${fallbackReason}):`, err.message);
     try {
       const fbHtml = getRichFallback(designConfig, prompt.trim());
       const fbTitle = derivePromptTitle(prompt.trim());
@@ -3040,3 +3046,5 @@ module.exports = router;
 module.exports.BUILD_BUDGET = BUILD_BUDGET;
 module.exports.EDIT_BUDGET = EDIT_BUDGET;
 module.exports.writingSoFar = writingSoFar;
+// Exported so the four classes can be asserted directly, rather than inferred
+// from a rate on a dashboard weeks later.

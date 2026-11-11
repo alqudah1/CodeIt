@@ -24,6 +24,12 @@ const EVENT_META = Object.freeze({
     // different fixes.
     'fallback-no-api-key', 'fallback-timeout', 'fallback-retry-timeout',
     'fallback-invalid-output', 'fallback-error', 'fallback-unknown',
+    // 'fallback-error' was the outer catch-all and it had swallowed the
+    // dominant failure: on 11 November, 42 of 52 fallbacks were 'error', so
+    // four in five failures arrived as one word with no way to tell an
+    // overloaded model from a bug in builder.js. These three split it. The
+    // message stays in the log; what the dashboard gets is the class.
+    'fallback-overloaded', 'fallback-rate-limit', 'fallback-api',
     // An instant game from /build: read by the model, or by the rules when
     // the model could not. These were sent and dropped as unknown, so every
     // instant game was a generation with no path (30 October 2026).

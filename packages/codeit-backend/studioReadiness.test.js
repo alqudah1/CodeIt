@@ -42,8 +42,18 @@ test('the not-ready message says what a child will actually get', () => {
 test('the builder route still records which fallback reason it used', () => {
   const route = fs.readFileSync(path.join(__dirname, 'routes/builder.js'), 'utf8');
   assert.match(route, /fallbackReason = 'no-api-key'/);
-  assert.match(route, /fallbackReason = 'error'/);
   assert.match(route, /generation_complete/);
+
+  // This asserted the literal `fallbackReason = 'error'`. That line is gone
+  // because 'error' was the outer catch-all and it had swallowed the dominant
+  // failure: 42 of 52 fallbacks on 11 November 2026 arrived as that one word.
+  // It is buildFailureClass(err) now, which returns overloaded, rate-limit,
+  // api or error, and buildFailure.test.js asserts each one.
+  //
+  // What this test is for is that the catch path still records a reason at
+  // all, so assert that and not one spelling of it.
+  assert.match(route, /catch \(err\) \{\s*\n\s*fallbackReason = buildFailureClass\(err\);/);
+  assert.match(route, /retry-timeout' : buildFailureClass\(raceErr2\)/);
 });
 
 test('email and the scheduled emails say which setting they wait for, and never its value', () => {
