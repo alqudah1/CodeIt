@@ -64,15 +64,15 @@
 body:has(.night) { background: #131F24; }
 
 /* The header and the tab bar belong to the screen. */
-.night .site-header { background: rgba(19, 31, 36, .9); border-bottom: 1px solid var(--n-edge); box-shadow: none; }
-.night .site-header__nav a, .night .site-header__nav button, .night .site-header__nav-list a { color: var(--n-text); }
-.night .site-header__login { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); }
-.night .site-header__cta { box-shadow: 0 3px 0 #B85400, 0 8px 22px rgba(255, 122, 0, .4); }
-.night .site-header__burger span { background: var(--n-text); }
-.night .ci-tabs { background: rgba(15, 26, 30, .97); border-top: 1px solid var(--n-edge); backdrop-filter: blur(16px); }
-.night .ci-tab { color: var(--n-muted); }
-.night .ci-tab.is-on { color: var(--n-orange); }
-.night .ci-tab.is-on svg { fill: rgba(255, 138, 30, .25); stroke: var(--n-orange); }
+body:has(.night) .site-header, .night .site-header { background: rgba(19, 31, 36, .9); border-bottom: 1px solid var(--n-edge); box-shadow: none; }
+body:has(.night) .site-header__nav a, body:has(.night) .site-header__nav button, body:has(.night) .site-header__nav-list a { color: var(--n-text); }
+body:has(.night) .site-header__login { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); }
+body:has(.night) .site-header__cta { box-shadow: 0 3px 0 #B85400, 0 8px 22px rgba(255, 122, 0, .4); }
+body:has(.night) .site-header__burger span { background: var(--n-text); }
+body:has(.night) .ci-tabs { background: rgba(15, 26, 30, .97); border-top: 1px solid var(--n-edge); backdrop-filter: blur(16px); }
+body:has(.night) .ci-tab { color: var(--n-muted); }
+body:has(.night) .ci-tab.is-on { color: var(--n-orange); }
+body:has(.night) .ci-tab.is-on svg { fill: rgba(255, 138, 30, .25); stroke: var(--n-orange); }
 
 /* Type and blocks in the shared language. */
 .night .ci-ey { color: var(--n-muted); letter-spacing: .14em; }

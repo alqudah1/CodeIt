@@ -35,6 +35,7 @@ import {
   readProjectHeading,
   setProjectHeading,
 } from './instantStyle';
+import '../../ds/night.css';
 import './Builder.css';
 import { changeIdeasFor } from './changeIdeas';
 import ChallengeCard from './ChallengeCard';
@@ -3411,7 +3412,7 @@ export default function Builder() {
   return (
     <>
       <Header />
-      <div className={`bldr-page${hasResult ? ' bldr-studio-mode' : ''}`}>
+      <div className={`bldr-page night bldr-page--night${hasResult ? ' bldr-studio-mode' : ''}`}>
         {paperBurst && (
           <div className="bldr-paper-burst" aria-hidden="true">
             {Array.from({ length: 14 }, (_, i) => <span key={i} className={`bldr-paper-burst__bit bldr-paper-burst__bit--${i}`} />)}

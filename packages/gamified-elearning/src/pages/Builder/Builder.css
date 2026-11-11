@@ -7377,3 +7377,88 @@ details.bldr-device-sizes .bldr-device-sizes__options {
   .bldr-success-banner__deck .bldr-device-sizes { display: none; }
   .bldr-success-banner__behind { display: none; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Night: the studio on Ocean. The arcade tokens this file is written in are
+   re-pointed inside the page: ink is the light type and the light edge,
+   paper is a surface, ground is the deep teal, the hard shadows are deep
+   teal too. The game itself is untouched; it is the brightest thing here.
+   ══════════════════════════════════════════════════════════════════════════ */
+.bldr-page--night {
+  --ink: #F1F7F9;
+  --ink-soft: rgba(241, 247, 249, .62);
+  --ink-mute: rgba(241, 247, 249, .74);
+  --ink-line: rgba(255, 255, 255, .12);
+  --ground: #131F24;
+  --paper: #202F36;
+  --arc-sun: #FFC93C;
+  --arc-orange: #FF8A1E;
+  --arc-orange-down: #D96E00;
+  --arc-orange-text: #FFB265;
+  --arc-violet: #4FC3FF;
+  --arc-violet-down: #2FA9EA;
+  --arc-violet-deep: #1E8ED0;
+  --arc-mint: #2EE6A6;
+  --arc-mint-down: #1FC98E;
+  --pop-rest: 0 4px 0 #0A1114;
+  --pop-lift: 0 7px 0 #0A1114;
+  --pop-down: 0 1px 0 #0A1114;
+  --pop-card: 0 12px 32px rgba(0, 0, 0, .4);
+  background: var(--n-bg);
+  color: var(--n-text);
+}
+.bldr-page--night::before {
+  background:
+    radial-gradient(ellipse 70% 45% at 10% 5%, rgba(255, 122, 0, .18), transparent 55%),
+    radial-gradient(ellipse 55% 40% at 90% 10%, rgba(46, 230, 166, .08), transparent 55%);
+}
+/* Surfaces that were written in plain colour. */
+.bldr-page--night .bldr-result, .bldr-page--night .bldr-cabinet { background: transparent; }
+.bldr-page--night .bldr-success-banner { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); }
+.bldr-page--night .bldr-success-banner__name { color: var(--n-text); }
+.bldr-page--night .bldr-success-banner__label { background: rgba(255, 201, 60, .14); color: var(--n-sun); border-color: rgba(255, 201, 60, .4); }
+.bldr-page--night .bldr-success-banner__check { background: var(--n-mint); color: #06251A; border-color: rgba(0, 0, 0, .3); }
+.bldr-page--night .bldr-browser { border-color: var(--n-edge-strong); box-shadow: 0 20px 50px rgba(0, 0, 0, .5); }
+.bldr-page--night .bldr-browser__play-btn { background: var(--n-orange); color: #1A1300; border-color: rgba(0, 0, 0, .3); box-shadow: 0 3px 0 #B85400; }
+.bldr-page--night .bldr-browser__fullscreen-btn, .bldr-page--night .bldr-device-sizes summary { background: var(--n-surface); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 3px 0 #0A1114; }
+.bldr-page--night .bldr-tabs { background: var(--n-surface); border-color: var(--n-edge-strong); box-shadow: 0 4px 0 #0A1114; }
+.bldr-page--night .bldr-tab { color: var(--n-muted); }
+.bldr-page--night .bldr-tab--active { background: var(--n-sun); color: #2A1500; }
+.bldr-page--night .bldr-tab-blurb, .bldr-page--night .bldr-steps li, .bldr-page--night .bldr-steps button { color: var(--n-muted); }
+.bldr-page--night .bldr-steps li.is-current, .bldr-page--night .bldr-steps li.is-current button { color: var(--n-text); }
+.bldr-page--night .bldr-next { background: var(--n-surface); border-color: var(--n-edge-strong); color: var(--n-text); box-shadow: 0 5px 0 #0A1114; }
+.bldr-page--night .bldr-next__title { color: var(--n-text); }
+.bldr-page--night .bldr-activation-card__primary { background: var(--n-orange); color: #1A1300; border-color: rgba(0, 0, 0, .3); box-shadow: 0 4px 0 #B85400, 0 10px 28px rgba(255, 122, 0, .4); }
+.bldr-page--night .bldr-action-btn { background: var(--n-surface); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 4px 0 #0A1114; }
+.bldr-page--night .bldr-action-btn--primary, .bldr-page--night .bldr-action-btn--friend { background: var(--n-orange); color: #1A1300; border-color: rgba(0, 0, 0, .3); box-shadow: 0 4px 0 #B85400; }
+.bldr-page--night .bldr-startover { color: var(--n-sun); }
+/* The start page: the hero, the picks, the prompt box. */
+.bldr-page--night .bldr-hero h1, .bldr-page--night .bldr-hero-title, .bldr-page--night h1, .bldr-page--night h2, .bldr-page--night h3 { color: var(--n-text); }
+.bldr-page--night .bldr-hero-pick, .bldr-page--night .bldr-type-card, .bldr-page--night .bldr-card, .bldr-page--night .bldr-example-card, .bldr-page--night .surface-card { background: var(--n-surface); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 5px 0 #0A1114; }
+.bldr-page--night .bldr-prompt-card, .bldr-page--night .bldr-input-card { background: var(--n-surface); border-color: var(--n-edge-strong); color: var(--n-text); }
+.bldr-page--night textarea, .bldr-page--night input[type='text'] { background: #0E171B; color: var(--n-text); border-color: var(--n-edge-strong); }
+.bldr-page--night textarea::placeholder { color: rgba(241, 247, 249, .4); }
+.bldr-page--night .bldr-pixel-card, .bldr-page--night .pixel-guide, .bldr-page--night .bldr-coach { background: var(--n-surface); color: var(--n-text); border-color: var(--n-edge-strong); }
+.bldr-page--night .bldr-limit-card { background: var(--n-surface); color: var(--n-text); border-color: var(--n-edge-strong); }
+.bldr-page--night .bldr-beat { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); }
+.bldr-page--night .bldr-footer-bar, .bldr-page--night .bldr-dock { background: rgba(15, 26, 30, .97); border-color: var(--n-edge); }
+.bldr-page--night.bldr-studio-mode { background: var(--n-bg); }
+.bldr-page--night.bldr-studio-mode::before {
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 20%, rgba(255, 122, 0, .16), transparent 55%),
+    radial-gradient(ellipse 50% 45% at 85% 15%, rgba(46, 230, 166, .08), transparent 55%),
+    linear-gradient(rgba(255, 255, 255, .025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px);
+  background-size: auto, auto, 52px 52px, 52px 52px;
+}
+.bldr-page--night .bldr-steps li { color: var(--n-text); opacity: .6; }
+.bldr-page--night .bldr-steps li.is-current { opacity: 1; }
+.bldr-page--night .bldr-steps li::before { border-color: var(--n-edge-strong); color: var(--n-text); }
+.bldr-page--night .bldr-steps li.is-current::before { background: var(--n-sun); color: #2A1500; border-color: transparent; }
+.bldr-page--night .bldr-steps li.is-done::before { background: var(--n-mint); color: #06251A; }
+.bldr-page--night .bldr-companion__bubble { background: var(--n-surface-2); color: var(--n-text); border-color: var(--n-edge-strong); box-shadow: 0 12px 32px rgba(0, 0, 0, .45); }
+.bldr-page--night .bldr-companion__text { color: var(--n-text); }
+.bldr-page--night .bldr-companion__close { color: var(--n-muted); }
+.bldr-page--night .bldr-success-banner__behind { background: var(--n-surface-2); color: var(--n-text); border: 1.5px solid var(--n-edge-strong); box-shadow: 0 4px 0 #0A1114; }
+.bldr-page--night .bldr-success-banner__behind small { color: var(--n-muted); }
+.bldr-page--night .bldr-success-banner__save:not(.bldr-success-banner__behind) { background: var(--n-orange); color: #1A1300; box-shadow: 0 4px 0 #B85400; }
