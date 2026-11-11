@@ -14,6 +14,11 @@ import lesson2 from '../../pages/Lessons/lessonData/lesson2';
 import lesson3 from '../../pages/Lessons/lessonData/lesson3';
 import lesson4 from '../../pages/Lessons/lessonData/lesson4';
 import lesson5 from '../../pages/Lessons/lessonData/lesson5';
+import lesson6 from '../../pages/Lessons/lessonData/lesson6';
+import lesson7 from '../../pages/Lessons/lessonData/lesson7';
+import lesson8 from '../../pages/Lessons/lessonData/lesson8';
+import lesson9 from '../../pages/Lessons/lessonData/lesson9';
+import lesson10 from '../../pages/Lessons/lessonData/lesson10';
 import { trackExerciseCompletion, trackStaticLessonCompletion } from '../../utils/progressTracker';
 
 let mockSearch = '';
@@ -62,7 +67,7 @@ function mount(lesson = lesson1) {
   return render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson} /></AuthContext.Provider>);
 }
 // The lessons rebuilt on the model so far. Add a lesson here when it is rebuilt.
-const REBUILT = [lesson1, lesson2, lesson3, lesson4, lesson5];
+const REBUILT = [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6, lesson7, lesson8, lesson9, lesson10];
 const boxesOnShelf = () => Array.from(document.querySelectorAll('.ls__box:not(.ls__box--empty)')).map((el) => [el.querySelector('.ls__box-name').textContent, el.querySelector('.ls__box-val').textContent]);
 const pixelSays = () => Array.from(document.querySelectorAll('.ls__say')).map((el) => el.textContent);
 beforeEach(() => {
@@ -273,14 +278,21 @@ test('lesson 2: a right guess shows the one box and what it holds at the end', (
   expect(pixelSays()).toEqual(['25']);
 });
 
+test('a list is one box with a slot for every item, numbered from 0', () => {
+  render(<LessonStage boxes={[{ name: 'pets', type: 'list', text: "['cat', 'dog']", items: ['"cat"', '"dog"'], more: 2 }]} runKey={1} />);
+  const slots = Array.from(document.querySelectorAll('.ls__box--list .ls__slot')).map((el) => el.textContent);
+  expect(slots).toEqual(['"cat"0', '"dog"1', '+2']);
+  expect(screen.getByLabelText("pets is a list: ['cat', 'dog']")).toBeInTheDocument();
+});
+
 test('lesson 1 has no shelf: the stage only shows boxes when a step asks for them', () => {
   mount();
   expect(document.querySelector('.ls__shelf')).toBeNull();
 });
 
 test('a lesson that has not been rebuilt keeps its panel and has no stage', () => {
-  const lesson6 = require('../../pages/Lessons/lessonData/lesson6').default;
-  render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson6} /></AuthContext.Provider>);
+  const lesson11 = require('../../pages/Lessons/lessonData/lesson11').default;
+  render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson11} /></AuthContext.Provider>);
   expect(screen.getByLabelText('What to do now')).toBeInTheDocument();
   expect(document.querySelector('.ls')).toBeNull();
 });

@@ -17,12 +17,19 @@ test('text keeps its quote marks on the box, numbers do not, long values are cut
 
 test('Python is asked for the values, only for the names the code assigns', () => {
   const asked = [];
-  const py = { runPython: (source) => { asked.push(source); return JSON.stringify([['name', 'str', 'Sam'], ['age', 'int', '9']]); } };
+  const py = { runPython: (source) => { asked.push(source); return JSON.stringify([{ name: 'name', type: 'str', value: 'Sam' }, { name: 'age', type: 'int', value: '9' }]); } };
   expect(readVariables(py, 'name = "Sam"\nage = 9\nprint(name)')).toEqual([
     { name: 'name', type: 'str', text: '"Sam"' },
     { name: 'age', type: 'int', text: '9' },
   ]);
   expect(asked[0]).toContain('["name","age"]');
+});
+
+test('a list comes back as slots, with the ones that do not fit counted', () => {
+  const py = { runPython: () => JSON.stringify([{ name: 'pets', type: 'list', value: "['cat', 7]", items: [['str', 'cat'], ['int', '7']], more: 3 }]) };
+  expect(readVariables(py, 'pets = ["cat", 7, 1, 2, 3]')).toEqual([
+    { name: 'pets', type: 'list', text: "['cat', 7]", items: ['"cat"', '7'], more: 3 },
+  ]);
 });
 
 test('a shelf that cannot be read is an empty shelf', () => {

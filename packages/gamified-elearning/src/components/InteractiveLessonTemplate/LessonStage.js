@@ -87,9 +87,21 @@ export default function LessonStage({ lines = [], boxes = null, runKey = 0, idle
         <ul className="ls__shelf" aria-live="polite" aria-label="The boxes">
           {filled.length === 0 && <li className="ls__box ls__box--empty" aria-label="No boxes yet"><span className="ls__box-name">?</span><span className="ls__box-val">empty</span></li>}
           {filled.map((box, i) => (
-            <li key={`${runKey}-${box.name}`} className={`ls__box ls__box--${box.type === 'str' ? 'text' : 'number'}`} style={{ animationDelay: `${i * 0.18}s` }}>
+            <li key={`${runKey}-${box.name}`} className={`ls__box ls__box--${box.type === 'str' ? 'text' : Array.isArray(box.items) ? 'list' : 'number'}`} style={{ animationDelay: `${i * 0.18}s` }}>
               <span className="ls__box-name">{box.name}</span>
-              <span className="ls__box-val">{box.text}</span>
+              {Array.isArray(box.items) ? (
+                /* A list is one box with slots, and every slot has its number
+                   under it, starting at 0: the thing a list lesson is about. */
+                <span className="ls__box-val ls__slots" aria-label={`${box.name} is a list: ${box.text}`}>
+                  {box.items.length === 0 && <span className="ls__slot ls__slot--none"><b>empty</b></span>}
+                  {box.items.map((item, k) => (
+                    <span key={k} className="ls__slot"><b>{item}</b><i>{k}</i></span>
+                  ))}
+                  {box.more > 0 && <span className="ls__slot ls__slot--more"><b>+{box.more}</b></span>}
+                </span>
+              ) : (
+                <span className="ls__box-val">{box.text}</span>
+              )}
             </li>
           ))}
         </ul>

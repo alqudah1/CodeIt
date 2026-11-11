@@ -11,6 +11,7 @@
 
 const ASSIGN = /^[ \t]*([A-Za-z_][A-Za-z0-9_]*)[ \t]*(?:[-+*/]|\/\/|%)?=(?!=)/gm;
 const MOST = 6;
+const SLOTS = 6;        // items of a list shown as slots; the rest are counted
 
 /** The names a piece of code assigns, in order, without repeats. */
 export function assignedNames(code) {
@@ -35,12 +36,27 @@ export function readVariables(py, code) {
   const names = assignedNames(code);
   if (!py || !names.length) return [];
   try {
+    // A list comes back with its first few items as well, so the stage can
+    // lay it out as slots with their numbers under them.
     const source = [
       'import json as __codeit_json',
-      `__codeit_json.dumps([[k, type(globals()[k]).__name__, globals()[k] if isinstance(globals()[k], str) else repr(globals()[k])] for k in ${JSON.stringify(names)} if k in globals()])`,
+      'def __codeit_show(v):',
+      '    return v if isinstance(v, str) else repr(v)',
+      'def __codeit_box(k):',
+      '    v = globals()[k]',
+      '    box = {"name": k, "type": type(v).__name__, "value": __codeit_show(v)}',
+      '    if isinstance(v, list):',
+      `        box["items"] = [[type(x).__name__, __codeit_show(x)] for x in v[:${SLOTS}]]`,
+      `        box["more"] = max(0, len(v) - ${SLOTS})`,
+      '    return box',
+      `__codeit_json.dumps([__codeit_box(k) for k in ${JSON.stringify(names)} if k in globals()])`,
     ].join('\n');
     const rows = JSON.parse(py.runPython(source));
-    return rows.map(([name, type, value]) => ({ name, type, text: boxText(type, value) }));
+    return rows.map((row) => {
+      const box = { name: row.name, type: row.type, text: boxText(row.type, row.value) };
+      if (Array.isArray(row.items)) { box.items = row.items.map(([type, value]) => boxText(type, value)); box.more = Number(row.more) || 0; }
+      return box;
+    });
   } catch (e) {
     return [];
   }
