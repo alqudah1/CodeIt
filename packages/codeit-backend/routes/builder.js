@@ -1766,13 +1766,41 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
   let fallbackReason = 'unknown';
 
   void recordEvent('builder_start', analyticsContext);
+
+  // ── Every build that starts has to end somewhere on this report ───────────
+  //
+  // 'finish' plus a 2xx was the only way a build got a row. Over 90 days to 11
+  // November that left 840 builder_start events against 639
+  // generation_complete: about one build in four started, cost a model call,
+  // and appeared in no outcome at all. Not 'ai', not any fallback, nothing.
+  //
+  // Three ways to land there, and the child experiences all of them as the
+  // same thing: a project that never came.
+  //   - they closed the tab or their phone slept while waiting. 'close' fires,
+  //     'finish' does not.
+  //   - the function ran out of time before answering. No response, so again
+  //     'close' alone.
+  //   - the response was not a 2xx, which the old guard dropped silently.
+  //
+  // Dropping them did not make the numbers neutral, it made them flattering:
+  // a build nobody waited for is exactly the build most likely to have been
+  // slow or broken, so the rate was computed over the survivors. The whole
+  // point of this report is to know what fraction of children get what they
+  // asked for.
+  let outcomeRecorded = false;
+  const recordOutcome = (meta) => {
+    if (outcomeRecorded) return;
+    outcomeRecorded = true;
+    void recordEvent('generation_complete', {
+      userId: analyticsContext.userId,
+      journeyId: analyticsContext.journeyId,
+      meta,
+    });
+  };
+
   res.once('finish', () => {
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      void recordEvent('generation_complete', {
-        userId: analyticsContext.userId,
-        journeyId: analyticsContext.journeyId,
-        meta: generationMode === 'ai' ? 'ai' : `fallback-${fallbackReason}`,
-      });
+      recordOutcome(generationMode === 'ai' ? 'ai' : `fallback-${fallbackReason}`);
       // Only a real AI generation costs a build. A student who received the
       // offline starter template has not spent one.
       if (generationMode === 'ai' && analyticsContext.userId) {
@@ -1780,6 +1808,16 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
           .catch(error => console.error('AI build usage error:', error.message));
       }
     }
+    // A non-2xx that already has its own event keeps it: the 402 allowance
+    // refusal is recorded as ai_limit_reached by the allowance check, and
+    // counting it here as well would say a build failed when the product
+    // worked exactly as designed.
+  });
+
+  // Fires on a normal response too, after 'finish', which the flag absorbs.
+  res.once('close', () => {
+    if (outcomeRecorded) return;
+    recordOutcome(res.writableEnded ? 'unreported' : 'abandoned');
   });
 
   // Which plan is paying for this build. Read from the subscription the

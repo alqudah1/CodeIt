@@ -269,3 +269,28 @@ test('the funnel shows the play gate between generated and personalized', () => 
   expect(at("['project_played'")).toBeGreaterThan(at("['generation_complete'"));
   expect(at("['project_personalize'")).toBeGreaterThan(at("['project_played'"));
 });
+
+// ── A build nobody waited for still happened ───────────────────────────────
+//
+// The AI generation rate was AI ÷ (AI + fallbacks), and a build that reached
+// no 2xx was in neither term. Over the 90 days to 11 November 2026 that was
+// about one build in four: 840 builder_start against 639 generation_complete.
+// Leaving them out did not make the rate neutral, it made it flattering,
+// because a build nobody waited for is the one most likely to have been slow
+// or broken.
+test('the AI generation rate counts builds that never arrived', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const source = fs.readFileSync(path.join(__dirname, 'AdminFunnel.js'), 'utf8');
+
+  expect(source).toMatch(/generationResults\.abandoned/);
+  expect(source).toMatch(/generationResults\.unreported/);
+  expect(source).toMatch(
+    /ratio\(aiGeneratedProjects, aiGeneratedProjects \+ fallbackProjects \+ unfinishedProjects\)/
+  );
+
+  // And they are shown, not only counted: a denominator that moves with no
+  // visible row is how a rate stops being explainable.
+  expect(source).toMatch(/Nothing arrived \(gave up or timed out\)/);
+  expect(source).toMatch(/Answered, but not with a project/);
+});

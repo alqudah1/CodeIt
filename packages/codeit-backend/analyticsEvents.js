@@ -30,6 +30,15 @@ const EVENT_META = Object.freeze({
     // overloaded model from a bug in builder.js. These three split it. The
     // message stays in the log; what the dashboard gets is the class.
     'fallback-overloaded', 'fallback-rate-limit', 'fallback-api',
+    // A build that started and reached no 2xx. 840 builder_start events
+    // against 639 generation_complete over the 90 days to 11 November: one
+    // build in four cost a model call and landed in no outcome at all.
+    // 'abandoned' is nothing sent before the connection closed, which is the
+    // child who gave up waiting and the function that ran out of time, and
+    // both are the same thing to them: the project never came. 'unreported'
+    // is a response that went out and was not a 2xx, kept separate so it
+    // cannot be read as somebody leaving.
+    'abandoned', 'unreported',
     // An instant game from /build: read by the model, or by the rules when
     // the model could not. These were sent and dropped as unknown, so every
     // instant game was a generation with no path (30 October 2026).

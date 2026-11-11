@@ -276,6 +276,20 @@ export default function AdminFunnel() {
     .filter(([meta]) => meta === 'fallback' || meta.startsWith('fallback-'))
     .map(([meta, count]) => [meta === 'fallback' ? 'untagged (older builds)' : meta.replace('fallback-', ''), count]);
   const fallbackProjects = fallbackReasons.reduce((sum, [, count]) => sum + count, 0);
+  // ── Builds that reached no outcome at all ─────────────────────────────────
+  //
+  // 840 builder_start events against 639 generation_complete over the 90 days
+  // to 11 November: one build in four cost a model call and appeared here as
+  // neither an AI project nor a fallback. The route only recorded on a 2xx,
+  // so a child who gave up waiting, and a function that ran out of time, both
+  // left nothing behind.
+  //
+  // They belong in the denominator. A build nobody waited for is exactly the
+  // build most likely to have been slow or broken, so leaving them out did
+  // not make the rate neutral, it made it flattering.
+  const abandonedProjects = generationResults.abandoned || 0;
+  const unreportedProjects = generationResults.unreported || 0;
+  const unfinishedProjects = abandonedProjects + unreportedProjects;
   // Instant games from /build, read by the model or by the rules. They cost
   // one Haiku call or nothing, so they are counted apart from studio builds
   // and never in the AI generation rate.
@@ -646,7 +660,9 @@ export default function AdminFunnel() {
             <article><span>Instant games</span><strong>{fmt(instantGames)}</strong></article>
             {instantByRules > 0 && <article><span>Instant games read by rules (model unreachable)</span><strong>{fmt(instantByRules)}</strong></article>}
             <article><span>Safe fallback projects</span><strong>{fmt(fallbackProjects)}</strong></article>
-            <article><span>AI generation rate</span><strong>{ratio(aiGeneratedProjects, aiGeneratedProjects + fallbackProjects)}</strong></article>
+            {abandonedProjects > 0 && <article><span>Nothing arrived (gave up or timed out)</span><strong>{fmt(abandonedProjects)}</strong></article>}
+            {unreportedProjects > 0 && <article><span>Answered, but not with a project</span><strong>{fmt(unreportedProjects)}</strong></article>}
+            <article><span>AI generation rate</span><strong>{ratio(aiGeneratedProjects, aiGeneratedProjects + fallbackProjects + unfinishedProjects)}</strong></article>
             {fallbackReasons.filter(([, count]) => count > 0).map(([reason, count]) => (
               <article key={reason}><span>Fallback: {reason}</span><strong>{fmt(count)}</strong></article>
             ))}
