@@ -69,6 +69,9 @@ export const TEACH_LANDING = {
   eyebrow: 'Teach with CodeIt',
   h1: 'Make a class. Read out the code. Watch the games appear.',
   intro: 'Sign in with your own account to make a class. Children join with the code and a first name, nothing else: no email, no password, no age screen.',
+  // True since 11 November 2026: Python and the fonts come from the site
+  // itself, so a school filter that allows codeitlearn.com allows all of it.
+  network: 'Works on school networks and Chromebooks. The site needs nothing but codeitlearn.com: if that one address is allowed, the lessons, the Python editor and the games all work. No firewall routes, no plug-ins, no install.',
 };
 
 export const TEACH_STEPS = [

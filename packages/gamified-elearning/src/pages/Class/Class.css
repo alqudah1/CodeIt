@@ -161,7 +161,8 @@ a.cl__tile.ci-blk--violet { color: #fff; }
 .tl__hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: stretch; }
 .tl__hero > * { min-width: 0; }
 .tl__intro { max-width: none; display: flex; flex-direction: column; justify-content: center; }
-.tl__btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+.tl__network { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(23, 192, 139, .12); border: 1.5px solid rgba(23, 192, 139, .45); font-size: 14px; }
+.tl__btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
 .tl__board { padding: 18px 18px 16px; color: #FFF6ED; }
 .tl__boardtop { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .tl__tag { position: static; align-self: center; }
