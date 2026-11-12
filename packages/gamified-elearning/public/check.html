@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Does CodeIt work on this computer? | CodeIt</title>
+<!--
+  One page a teacher or an IT technician can open on a school computer to see
+  exactly what the network lets through and what it stops.
+
+  It exists because of an email on 12 November 2026: a Head of Computing whose
+  pupils saw a page of plain text where the playground should be. The app's
+  own script had not run on his network, and nothing on the page said so. We
+  had already guessed once at what his filter was blocking, and guessed wrong.
+
+  It is a single file with nothing to load: no stylesheet, no script, no font,
+  no other host. If this page opens, everything below is being tested from the
+  computer it opened on.
+-->
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #FFF4E5; color: #35220E; font-family: Nunito, "Trebuchet MS", "Segoe UI", system-ui, sans-serif; line-height: 1.45; }
+  main { max-width: 760px; margin: 0 auto; padding: 28px 16px 64px; }
+  h1 { margin: 0 0 6px; font-size: clamp(1.6rem, 5vw, 2.2rem); line-height: 1.1; }
+  .lead { margin: 0 0 20px; font-size: 1.05rem; font-weight: 600; color: #5A3E2B; }
+  .sum { margin: 0 0 18px; padding: 16px 18px; border: 2.5px solid #35220E; border-radius: 18px; box-shadow: 0 5px 0 #35220E; background: #FFFDF7; font-weight: 800; font-size: 1.1rem; }
+  .sum.is-ok { background: #D7F5DF; }
+  .sum.is-bad { background: #FFE1DC; }
+  .sum small { display: block; margin-top: 6px; font-weight: 700; font-size: .95rem; }
+  ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  li { display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: start; padding: 12px 14px; border: 2.5px solid #35220E; border-radius: 16px; background: #FFFDF7; }
+  li i { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid #35220E; font-style: normal; font-weight: 900; background: #FFF4D6; }
+  li.is-ok i { background: #7BE39A; }
+  li.is-bad i { background: #FF8A7A; }
+  li.is-bad { background: #FFF1EE; }
+  li b { display: block; font-size: 1rem; }
+  li span { display: block; font-size: .92rem; font-weight: 600; color: #5A3E2B; overflow-wrap: anywhere; }
+  li.is-bad span { color: #7A1F12; font-weight: 700; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 0; }
+  button { font: inherit; font-weight: 800; padding: 12px 18px; border-radius: 999px; border: 2.5px solid #35220E; box-shadow: 0 4px 0 #35220E; background: #FF8A1E; color: #35220E; cursor: pointer; }
+  button.plain { background: #FFFDF7; }
+  button:active { transform: translateY(3px); box-shadow: 0 1px 0 #35220E; }
+  .it { margin: 26px 0 0; padding: 16px 18px; border-radius: 16px; background: #FFFDF7; border: 2px dashed #35220E; }
+  .it h2 { margin: 0 0 6px; font-size: 1.05rem; }
+  .it p { margin: 0 0 8px; font-size: .95rem; font-weight: 600; }
+  code { font-family: "JetBrains Mono", Menlo, Consolas, monospace; font-size: .9em; background: #FFF4D6; padding: 1px 5px; border-radius: 5px; }
+  textarea { width: 100%; height: 150px; margin-top: 12px; padding: 10px; font: .8rem/1.4 Menlo, Consolas, monospace; border: 2px solid #35220E; border-radius: 10px; background: #fff; display: none; }
+  #frame { position: absolute; left: -9999px; top: 0; width: 1024px; height: 600px; border: 0; visibility: hidden; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Does CodeIt work on this computer?</h1>
+  <p class="lead">This page tries everything CodeIt needs, from this computer, on this network. It takes about half a minute.</p>
+  <p class="sum" id="sum" role="status">Checking&hellip;</p>
+  <ol id="list"></ol>
+  <div class="row">
+    <button type="button" id="copy">Copy the results</button>
+    <button type="button" class="plain" id="again">Check again</button>
+  </div>
+  <textarea id="text" readonly aria-label="The results as text"></textarea>
+  <div class="it">
+    <h2>For whoever looks after the network</h2>
+    <p>CodeIt needs one address and nothing else: <code>https://codeitlearn.com</code>. Every page, script, font and picture comes from it, and so does Python (under <code>/pyodide/</code>).</p>
+    <p>If a line above is red, the filter is letting the page through but stopping a file the page needs. Allowing <code>codeitlearn.com</code> for all file types, including scripts and <code>.wasm</code>, fixes it.</p>
+  </div>
+</main>
+<iframe id="frame" title="CodeIt start test" tabindex="-1" aria-hidden="true"></iframe>
+<script>
+(function () {
+  var PY = '/pyodide/v0.29.0/full/';
+  var list = document.getElementById('list');
+  var sum = document.getElementById('sum');
+  var rows = [];
+
+  function row(name) {
+    var li = document.createElement('li');
+    var mark = document.createElement('i'); mark.textContent = '…';
+    var body = document.createElement('div');
+    var title = document.createElement('b'); title.textContent = name;
+    var detail = document.createElement('span'); detail.textContent = 'Checking';
+    body.appendChild(title); body.appendChild(detail); li.appendChild(mark); li.appendChild(body); list.appendChild(li);
+    var r = { name: name, state: 'wait', detail: '' };
+    r.set = function (ok, text) {
+      r.state = ok ? 'ok' : 'bad'; r.detail = text;
+      li.className = ok ? 'is-ok' : 'is-bad'; mark.textContent = ok ? '✓' : '✗'; detail.textContent = text;
+    };
+    rows.push(r);
+    return r;
+  }
+
+  function kb(n) { return n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
+  function isPage(text) { return /^\s*<(!doctype|html|head|body|title)/i.test(text); }
+  function pageTitle(text) { var m = /<title[^>]*>([^<]{1,120})/i.exec(text); return m ? m[1].replace(/\s+/g, ' ').trim() : ''; }
+  // What came back instead of the file, in words somebody can act on.
+  function whyNot(res, text) {
+    if (isPage(text)) {
+      var t = pageTitle(text);
+      return 'Something on the network sent back a web page instead of the file' + (t ? ', titled "' + t + '"' : '') + '. That is what a filter block looks like.';
+    }
+    return 'The server answered ' + res.status + '.';
+  }
+  function fail(err) { return 'It did not arrive (' + ((err && err.message) || 'no answer') + '). A filter or a security program stopped it before it reached this page.'; }
+
+  // A whole text file: a script, a stylesheet, a list.
+  function textFile(url) {
+    return fetch(url, { cache: 'no-store', credentials: 'same-origin' }).then(function (res) {
+      return res.text().then(function (text) {
+        var good = res.ok && !isPage(text) && text.length > 20;
+        return { ok: good, size: text.length, why: good ? '' : whyNot(res, text), text: text };
+      });
+    }, function (err) { return { ok: false, size: 0, why: fail(err), text: '' }; });
+  }
+  // Only the first bytes of a big file, to see that it is the file and not a block page.
+  function firstBytes(url) {
+    return fetch(url, { cache: 'no-store', credentials: 'same-origin' }).then(function (res) {
+      if (!res.body || !res.body.getReader) return res.arrayBuffer().then(function (buf) { return { res: res, bytes: new Uint8Array(buf).subarray(0, 64) }; });
+      var reader = res.body.getReader();
+      return reader.read().then(function (chunk) { try { reader.cancel(); } catch (e) {} return { res: res, bytes: (chunk.value || new Uint8Array(0)).subarray(0, 64) }; });
+    }).then(function (got) {
+      var head = ''; for (var i = 0; i < got.bytes.length; i += 1) head += String.fromCharCode(got.bytes[i]);
+      return { ok: got.res.ok, status: got.res.status, head: head, res: got.res };
+    }, function (err) { return { ok: false, status: 0, head: '', error: err }; });
+  }
+  function waitFor(test, ms) {
+    return new Promise(function (resolve) {
+      var began = Date.now();
+      (function again() { var v; try { v = test(); } catch (e) { v = false; } if (v) return resolve(v); if (Date.now() - began > ms) return resolve(false); setTimeout(again, 400); })();
+    });
+  }
+  function timeout(promise, ms, label) {
+    return new Promise(function (resolve, reject) {
+      var t = setTimeout(function () { reject(new Error(label + ' took more than ' + Math.round(ms / 1000) + ' seconds')); }, ms);
+      promise.then(function (v) { clearTimeout(t); resolve(v); }, function (e) { clearTimeout(t); reject(e); });
+    });
+  }
+
+  function browserLine() {
+    var ua = navigator.userAgent || '';
+    var m = /(Edg|OPR|Chrome|Firefox|Version)\/(\d+)/.exec(ua);
+    var names = { Edg: 'Edge', OPR: 'Opera', Chrome: 'Chrome', Firefox: 'Firefox', Version: 'Safari' };
+    var os = /Windows/.test(ua) ? 'Windows' : /CrOS/.test(ua) ? 'Chromebook' : /iPad|iPhone/.test(ua) ? 'iPad or iPhone' : /Mac OS X/.test(ua) ? 'Mac' : /Android/.test(ua) ? 'Android' : /Linux/.test(ua) ? 'Linux' : 'unknown system';
+    return (m ? names[m[1]] + ' ' + m[2] : 'Unknown browser') + ' on ' + os;
+  }
+
+  function run() {
+    list.innerHTML = ''; rows = []; sum.className = 'sum'; sum.textContent = 'Checking…';
+    var rBrowser = row('This browser');
+    var rScript = row('The app itself (its main script)');
+    var rStyle = row('The look of the pages (the stylesheet)');
+    var rParts = row('The rest of the app (lessons, studio, games)');
+    var rStart = row('CodeIt starts');
+    var rServer = row('The CodeIt server (accounts and saved work)');
+    var rSave = row('Saving on this computer');
+    var rPyFiles = row('The Python files');
+    var rPyRun = row('Python runs');
+
+    var modern = typeof fetch === 'function' && typeof Promise === 'function';
+    rBrowser.set(modern, browserLine() + (modern ? '' : '. This browser is too old to run CodeIt.'));
+    if (!modern) { finish(); return; }
+
+    var manifest = textFile('/asset-manifest.json').then(function (m) {
+      var files = [];
+      try { var all = JSON.parse(m.text).files; for (var k in all) if (/^\/static\/(js|css)\/.*\.(js|css)$/.test(all[k])) files.push(all[k]); } catch (e) {}
+      return files;
+    });
+
+    var appFiles = manifest.then(function (files) {
+      var main = null, css = null, rest = [];
+      for (var i = 0; i < files.length; i += 1) {
+        if (/\/static\/js\/main\./.test(files[i])) main = files[i];
+        else if (/\/static\/css\/main\./.test(files[i])) css = files[i];
+        else rest.push(files[i]);
+      }
+      if (!main) { rScript.set(false, 'The list of app files did not arrive, so the script could not be found.'); rStyle.set(false, 'Not checked.'); rParts.set(false, 'Not checked.'); return; }
+      var one = textFile(main).then(function (r) { rScript.set(r.ok, r.ok ? 'Arrived (' + kb(r.size) + ').' : main + ': ' + r.why); });
+      var two = css ? textFile(css).then(function (r) { rStyle.set(r.ok, r.ok ? 'Arrived (' + kb(r.size) + ').' : css + ': ' + r.why); }) : Promise.resolve(rStyle.set(false, 'Not found in the list of app files.'));
+      // The other pieces, four at a time: enough to be quick, not enough to look like an attack to a filter.
+      var bad = [], done = 0, next = 0;
+      function worker() {
+        if (next >= rest.length) return Promise.resolve();
+        var url = rest[next]; next += 1;
+        return textFile(url).then(function (r) { done += 1; if (!r.ok) bad.push(url + ': ' + r.why); return worker(); });
+      }
+      var three = Promise.all([worker(), worker(), worker(), worker()]).then(function () {
+        if (!bad.length) rParts.set(true, 'All ' + rest.length + ' pieces arrived.');
+        else rParts.set(false, bad.length + ' of ' + rest.length + ' pieces did not arrive. First: ' + bad[0]);
+      });
+      return Promise.all([one, two, three]);
+    });
+
+    // Does the app actually start? Open a real page out of sight and watch it.
+    var starts = appFiles.then(function () {
+      var frame = document.getElementById('frame');
+      frame.src = '/login?from=check';
+      var doc = function () { return frame.contentDocument; };
+      return waitFor(function () {
+        var root = doc() && doc().getElementById('root');
+        return root && root.children.length > 0 && !root.querySelector('.static-home-shell, .static-route-shell') && doc().querySelector('form, header, nav');
+      }, 20000).then(function (up) {
+        var seen = [];
+        try { seen = (frame.contentWindow.__codeitBoot && frame.contentWindow.__codeitBoot.seen) || []; } catch (e) {}
+        if (up) rStart.set(true, 'A real CodeIt page opened and ran.');
+        else rStart.set(false, 'A CodeIt page opened but the app in it never started.' + (seen.length ? ' The page reported: ' + seen.slice(0, 3).join('; ') : ' Nothing ran after the page loaded, which is what a blocked script looks like.'));
+        frame.src = 'about:blank';
+      });
+    });
+
+    var server = fetch('/api/health', { cache: 'no-store' }).then(function (res) {
+      rServer.set(res.ok, res.ok ? 'Answered.' : 'Answered ' + res.status + '. Signing in and saving will not work.');
+    }, function (err) { rServer.set(false, '/api/health: ' + fail(err) + ' Signing in and saving will not work.'); });
+
+    (function () {
+      try { var k = '__codeit_check__'; window.localStorage.setItem(k, '1'); window.localStorage.removeItem(k); rSave.set(true, 'This browser lets CodeIt remember a sign-in and unfinished work.'); }
+      catch (e) { rSave.set(false, 'This browser blocks site data (cookies) for CodeIt. Lessons still run, but a sign-in is forgotten when the tab closes.'); }
+    })();
+
+    // Python: three files, then the real thing.
+    var pyFiles = Promise.all([textFile(PY + 'pyodide.js'), firstBytes(PY + 'pyodide.asm.wasm'), firstBytes(PY + 'python_stdlib.zip'), textFile(PY + 'pyodide-lock.json')]).then(function (got) {
+      var problems = [];
+      if (!got[0].ok) problems.push('pyodide.js: ' + got[0].why);
+      if (!(got[1].ok && got[1].head.charCodeAt(0) === 0 && got[1].head.substr(1, 3) === 'asm')) problems.push('pyodide.asm.wasm: ' + (got[1].error ? fail(got[1].error) : isPage(got[1].head) ? 'a web page came back instead of the file.' : 'the server answered ' + got[1].status + ' and it is not a WebAssembly file.'));
+      if (!(got[2].ok && got[2].head.substr(0, 2) === 'PK')) problems.push('python_stdlib.zip: ' + (got[2].error ? fail(got[2].error) : isPage(got[2].head) ? 'a web page came back instead of the file.' : 'the server answered ' + got[2].status + ' and it is not a zip file.'));
+      if (!got[3].ok) problems.push('pyodide-lock.json: ' + got[3].why);
+      rPyFiles.set(!problems.length, problems.length ? problems.join(' ') : 'All four arrived.');
+      return !problems.length;
+    });
+
+    var pyRun = pyFiles.then(function (arrived) {
+      if (!arrived) { rPyRun.set(false, 'Not tried, because the Python files above did not all arrive.'); return; }
+      if (typeof WebAssembly !== 'object') { rPyRun.set(false, 'This browser has WebAssembly switched off, and Python needs it. It is usually a browser policy set by the school.'); return; }
+      var began = Date.now();
+      var loaded = new Promise(function (resolve, reject) {
+        var s = document.createElement('script'); s.src = PY + 'pyodide.js';
+        s.onload = resolve; s.onerror = function () { reject(new Error('pyodide.js was blocked')); };
+        document.head.appendChild(s);
+      }).then(function () { return window.loadPyodide({ indexURL: PY }); }).then(function (py) { return py.runPython('str(6 * 7)'); });
+      return timeout(loaded, 90000, 'Starting Python').then(function (answer) {
+        if (String(answer) === '42') rPyRun.set(true, 'Python started and worked out 6 times 7 in ' + ((Date.now() - began) / 1000).toFixed(1) + ' seconds.');
+        else rPyRun.set(false, 'Python started but gave an unexpected answer: ' + answer);
+      }, function (err) { rPyRun.set(false, 'Python did not start: ' + ((err && err.message) || err)); });
+    });
+
+    Promise.all([starts, server, pyRun]).then(finish, finish);
+  }
+
+  function finish() {
+    var bad = [];
+    for (var i = 0; i < rows.length; i += 1) { if (rows[i].state === 'wait') rows[i].set(false, 'Not checked.'); if (rows[i].state === 'bad') bad.push(rows[i].name); }
+    if (!bad.length) { sum.className = 'sum is-ok'; sum.innerHTML = 'Everything CodeIt needs works on this computer.<small>Lessons, the playground and the studio should all open and run here.</small>'; }
+    else { sum.className = 'sum is-bad'; sum.innerHTML = ''; sum.appendChild(document.createTextNode(bad.length === 1 ? 'One thing is being stopped on this computer.' : bad.length + ' things are being stopped on this computer.')); var s = document.createElement('small'); s.textContent = 'The red lines say which. Press Copy the results and send them to the person who looks after your network, or to us.'; sum.appendChild(s); }
+    document.getElementById('text').value = asText();
+  }
+
+  function asText() {
+    var out = ['CodeIt check, ' + new Date().toISOString(), location.href, ''];
+    for (var i = 0; i < rows.length; i += 1) out.push((rows[i].state === 'ok' ? 'OK      ' : rows[i].state === 'bad' ? 'STOPPED ' : '...     ') + rows[i].name + ': ' + rows[i].detail);
+    return out.join('\n');
+  }
+
+  document.getElementById('copy').onclick = function () {
+    var box = document.getElementById('text'); box.value = asText(); box.style.display = 'block'; box.focus(); box.select();
+    var btn = this;
+    function said() { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy the results'; }, 2000); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(box.value).then(said, function () { try { document.execCommand('copy'); said(); } catch (e) {} });
+    else { try { document.execCommand('copy'); said(); } catch (e) {} }
+  };
+  document.getElementById('again').onclick = run;
+  run();
+})();
+</script>
+</body>
+</html>

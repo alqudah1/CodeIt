@@ -175,6 +175,13 @@ const EVENT_META = Object.freeze({
   activity_start: new Set(['python-run', 'game-play']),
   activity_complete: new Set(['python-first-run', 'python-change-message', 'game-changed-tested']),
   guest_lesson_complete: new Set(),
+
+  // ── The app did not start (12 November 2026) ────────────────────────────
+  // Sent by the small watcher in index.html, from outside the app, when a
+  // page loaded and the app in it never ran: a school filter stopping the
+  // script, or an error before the first screen. Three reasons and nothing
+  // else. It carries no address, no page and no account.
+  boot_failed: new Set(['script-blocked', 'script-error', 'no-start']),
 });
 
 const CLIENT_REPORTED_EVENTS = new Set([
@@ -198,6 +205,7 @@ const CLIENT_REPORTED_EVENTS = new Set([
   // them.
   'upgrade_prompt_shown', 'upgrade_click', 'learn_the_code_behind', 'page_crash',
   'activity_start', 'activity_complete', 'guest_lesson_complete',
+  'boot_failed',
 ]);
 const JOURNEY_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const CAMPAIGN_PATTERN = /^[a-z0-9][a-z0-9-]{1,23}$/;

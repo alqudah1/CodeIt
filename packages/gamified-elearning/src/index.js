@@ -1,3 +1,5 @@
+// First, before anything that might read saved data: see utils/safeStorage.js.
+import './utils/safeStorage';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';

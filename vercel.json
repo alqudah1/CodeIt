@@ -27,6 +27,10 @@
       "destination": "https://cdn.jsdelivr.net/pyodide/:path*"
     },
     {
+      "source": "/check",
+      "destination": "/check.html"
+    },
+    {
       "source": "/project/:pub*",
       "destination": "/api/share?pub=:pub*"
     },

@@ -120,6 +120,82 @@
       .static-home-shell ul { max-width: 700px; padding-left: 1.25rem; font-size: 1.05rem; line-height: 1.7; }
     </style>
 
+    <!-- When the app does not start.
+
+         12 November 2026: a school's pupils saw the plain text below where
+         the playground should be. The app's script had not run on their
+         network and the page said nothing about it, so the teacher could only
+         write "it doesn't work". This watches from outside the app, so it
+         still runs when the app's own file is the thing that is blocked. If
+         the app has not started a few seconds after the page loaded, it says
+         so, says what it saw (a file that did not arrive, or an error), and
+         points at /check.html, which tests everything from that computer.
+
+         It is written in plain old JavaScript on purpose: it has to run in a
+         browser too old to run the app, to be able to say that. -->
+    <script id="codeit-boot-watch">
+      (function () {
+        var boot = window.__codeitBoot = { seen: [], told: false };
+        function note(text) { if (boot.seen.length < 6 && boot.seen.indexOf(text) < 0) boot.seen.push(text); }
+        window.addEventListener('error', function (e) {
+          var t = e && e.target;
+          if (t && t !== window && (t.src || t.href)) note('did not arrive: ' + String(t.src || t.href).replace(location.origin, ''));
+          // A script that begins with "<" is not a script: a web page came back in its place, which is how a filter blocks a file.
+          else if (e && e.message && /Unexpected token '?</.test(e.message) && /\.js(\?|$)/.test(String(e.filename || ''))) note('did not arrive: ' + String(e.filename).replace(location.origin, '') + ' (a web page came back in its place)');
+          else if (e && e.message) note('error: ' + e.message + (e.filename ? ' (' + String(e.filename).split('/').pop() + ', line ' + e.lineno + ')' : ''));
+        }, true);
+        window.addEventListener('unhandledrejection', function (e) {
+          var r = e && e.reason; note('error: ' + ((r && r.message) || r || 'a promise was rejected'));
+        });
+        function started() {
+          var root = document.getElementById('root');
+          return !!root && root.children.length > 0 && !root.querySelector('.static-home-shell, .static-route-shell');
+        }
+        function tell() {
+          if (boot.told || started()) return;
+          boot.told = true;
+          var blocked = false, i;
+          for (i = 0; i < boot.seen.length; i += 1) if (boot.seen[i].indexOf('did not arrive') === 0) blocked = true;
+          var why = blocked ? 'script-blocked' : boot.seen.length ? 'script-error' : 'no-start';
+          var bar = document.createElement('div');
+          bar.id = 'codeit-boot-note';
+          bar.setAttribute('role', 'alert');
+          bar.style.cssText = 'position:fixed;left:0;right:0;top:0;z-index:99999;padding:14px 16px;background:#FFE1DC;color:#35220E;border-bottom:3px solid #35220E;font:700 16px/1.4 Nunito,Trebuchet MS,Segoe UI,sans-serif';
+          var head = document.createElement('div');
+          head.style.cssText = 'font-size:18px;font-weight:900';
+          head.appendChild(document.createTextNode('CodeIt could not start on this computer.'));
+          var body = document.createElement('div');
+          body.appendChild(document.createTextNode(blocked
+            ? 'A file the page needs was stopped before it got here. On a school or work network that is usually the web filter. '
+            : boot.seen.length ? 'The page loaded but something stopped the app from running. ' : 'The page loaded but the app in it did not run. On a school or work network that is usually the web filter. '));
+          var link = document.createElement('a');
+          link.href = '/check.html';
+          link.style.cssText = 'color:#8A2A0E;font-weight:900;text-decoration:underline';
+          link.appendChild(document.createTextNode('Check what is being stopped'));
+          body.appendChild(link);
+          bar.appendChild(head); bar.appendChild(body);
+          if (boot.seen.length) {
+            var small = document.createElement('div');
+            small.style.cssText = 'margin-top:6px;font:600 13px/1.4 Menlo,Consolas,monospace;overflow-wrap:anywhere';
+            small.appendChild(document.createTextNode(boot.seen.slice(0, 3).join(' | ')));
+            bar.appendChild(small);
+          }
+          (document.body || document.documentElement).appendChild(bar);
+          // One count, with the reason and nothing else, so we learn that it
+          // happens without waiting for an email.
+          try {
+            var x = new XMLHttpRequest();
+            x.open('POST', '/api/analytics/event', true);
+            x.setRequestHeader('Content-Type', 'application/json');
+            x.send(JSON.stringify({ event_name: 'boot_failed', meta: why }));
+          } catch (err) {}
+        }
+        // The app's script is deferred, so it has run by the time "load" fires.
+        // A few seconds after that with nothing on screen is not slowness.
+        window.addEventListener('load', function () { setTimeout(tell, 5000); });
+        setTimeout(tell, 25000);
+      })();
+    </script>
   </head>
   <body>
     <noscript>CodeIt needs JavaScript to run the project builder, coding lessons, and playground.</noscript>

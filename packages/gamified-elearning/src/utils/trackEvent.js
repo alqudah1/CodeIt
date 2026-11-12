@@ -65,6 +65,9 @@ const CLIENT_EVENTS = new Set([
   "activity_start",
   "activity_complete",
   "guest_lesson_complete",
+  // Sent by the watcher in public/index.html, not from here: when this file
+  // is running, the app started.
+  "boot_failed",
 ]);
 
 export async function trackEvent(eventName, meta = null, explicitToken = null) {
