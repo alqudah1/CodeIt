@@ -1038,7 +1038,7 @@
 "@csstools/selector-specificity@^2.0.0", "@csstools/selector-specificity@^2.0.2":
   version "2.2.0"
 
-"@e-learning/codeit-backend@file:/root/CodeIt/packages/codeit-backend":
+"@e-learning/codeit-backend@file:/root/verify/packages/codeit-backend":
   version "1.0.0"
   resolved "file:packages/codeit-backend"
   dependencies:
@@ -1052,7 +1052,7 @@
     pg "^8.23.0"
     stripe "^22.5.0"
 
-"@e-learning/gamified-elearning@file:/root/CodeIt/packages/gamified-elearning":
+"@e-learning/gamified-elearning@file:/root/verify/packages/gamified-elearning":
   version "0.1.0"
   resolved "file:packages/gamified-elearning"
   dependencies:
@@ -1074,7 +1074,7 @@
     react-scripts "5.0.1"
     web-vitals "^2.1.4"
 
-"@e-learning/robot-puzzle@file:/root/CodeIt/packages/robot-puzzle":
+"@e-learning/robot-puzzle@file:/root/verify/packages/robot-puzzle":
   version "0.1.0"
   resolved "file:packages/robot-puzzle"
   dependencies:
@@ -1089,11 +1089,11 @@
     react-scripts "5.0.1"
     web-vitals "^2.1.4"
 
-"@e-learning/shared-auth@1.0.0", "@e-learning/shared-auth@file:/root/CodeIt/packages/shared-auth":
+"@e-learning/shared-auth@1.0.0", "@e-learning/shared-auth@file:/root/verify/packages/shared-auth":
   version "1.0.0"
   resolved "file:packages/shared-auth"
 
-"@e-learning/starter-game@file:/root/CodeIt/packages/vertical-platformer-main":
+"@e-learning/starter-game@file:/root/verify/packages/vertical-platformer-main":
   version "1.0.0"
   resolved "file:packages/vertical-platformer-main"
   dependencies:
