@@ -10,6 +10,8 @@ const lesson7 = {
       id: 'example',
       title: 'Access by Index',
       stage: 'boxes',
+      // Predict, then Run: a guess before the first run, checked against what Python really prints.
+      guess: ['red green', 'red blue', 'green blue'],
       idle: 'A list is one box with lots of slots. Press Run!',
       description: 'Every slot has a number, and the first slot is number 0. Press Run.',
       code: 'colors = ["red", "green", "blue"]\nprint(colors[0])\nprint(colors[2])',

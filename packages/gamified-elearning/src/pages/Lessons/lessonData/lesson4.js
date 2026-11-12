@@ -10,6 +10,8 @@ const lesson4 = {
       id: 'example',
       title: 'If and Else',
       stage: 'boxes',
+      // Predict, then Run: a guess before the first run, checked against what Python really prints.
+      guess: ['Kid!', 'Teen!', 'Teen! Kid!'],
       idle: 'I can choose what to say now. Press Run!',
       description: 'Python looks in the box and picks one path. Press Run. Then change 15 to 8 and run again.',
       code: 'age = 15\nif age >= 13:\n    print("Teen!")\nelse:\n    print("Kid!")',

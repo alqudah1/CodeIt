@@ -8,7 +8,10 @@
 //   1. Translated, not dressed up. Each sentence names the line and the thing
 //      to look for. When the error is not one we recognise we say Python
 //      stopped on that line and nothing more.
-//   2. Python's own last line is always kept and shown underneath. Reading
+//   2. Symbols are named in words as well as shown. Children asked to read
+//      an error aloud skip the punctuation in it (the Hedy study, 2022), so
+//      "a colon :" is read where ":" alone is not.
+//   3. Python's own last line is always kept and shown underneath. Reading
 //      "SyntaxError" next to the plain sentence is how a child learns to read
 //      the real thing.
 //
@@ -20,9 +23,9 @@ function sentenceFor(kind, message) {
   let m;
   if (kind === 'SyntaxError') {
     if (/unterminated (triple-quoted )?string literal/.test(message)) return 'a quote mark is missing. Text needs one " at the start and one " at the end.';
-    if ((m = message.match(/^'([([{])' was never closed/))) return `a bracket is missing. Every ${m[1]} needs a ${CLOSER[m[1]]} to close it.`;
-    if ((m = message.match(/^unmatched '([)\]}])'/))) return `there is a ${m[1]} with nothing to close. Take it out, or add the opening one.`;
-    if (/^expected ':'/.test(message)) return 'this line needs a : at the end.';
+    if ((m = message.match(/^'([([{])' was never closed/))) return `a bracket is missing. Every opening bracket ${m[1]} needs a closing bracket ${CLOSER[m[1]]}.`;
+    if ((m = message.match(/^unmatched '([)\]}])'/))) return `there is a closing bracket ${m[1]} with nothing to close. Take it out, or add the opening one.`;
+    if (/^expected ':'/.test(message)) return 'this line needs a colon : at the end.';
     if (/Perhaps you forgot a comma/.test(message)) return 'Python could not read this line. If those are words to say, put quote marks around them.';
     if (/Missing parentheses in call to 'print'/.test(message)) return 'print needs brackets. Write print( then your words, then ).';
     return 'Python could not read this line. Look for a missing quote mark, bracket or comma.';

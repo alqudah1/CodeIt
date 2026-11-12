@@ -10,6 +10,8 @@ const lesson5 = {
       id: 'example',
       title: 'Count with Range',
       stage: 'say',
+      // Predict, then Run: a guess before the first run, checked against what Python really prints.
+      guess: ['1 2 3 4 5', '0 1 2 3 4', '5'],
       idle: 'I can count! Press Run and count with me.',
       description: 'A loop runs the same line again and again. Press Run. Where does Pixel start?',
       code: 'for i in range(5):\n    print(i)',

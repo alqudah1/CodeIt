@@ -10,6 +10,8 @@ const lesson8 = {
       id: 'example',
       title: 'Print Every Item',
       stage: 'boxes',
+      // Predict, then Run: a guess before the first run, checked against what Python really prints.
+      guess: ['planets', 'Mercury Venus Earth Mars', '4'],
       idle: 'A loop can walk along a whole list. Press Run!',
       description: 'The loop visits every slot in the list, one after another. Press Run.',
       code: 'planets = ["Mercury", "Venus", "Earth", "Mars"]\nfor planet in planets:\n    print(planet)',

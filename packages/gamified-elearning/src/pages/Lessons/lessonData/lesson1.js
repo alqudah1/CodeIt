@@ -26,6 +26,8 @@ const lesson1 = {
       id: 'example',
       title: 'Your First Python Program',
       stage: 'say',
+      // Predict, then Run: a guess before the first run, checked against what Python really prints.
+      guess: ['print', 'Hello!', '"Hello!"'],
       idle: 'Hi, I am Pixel! Press the orange Run button and I will say it.',
       description: 'This is one line of real Python. Press Run and watch Pixel.',
       code: 'print("Hello!")',

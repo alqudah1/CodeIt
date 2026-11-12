@@ -10,6 +10,8 @@ const lesson10 = {
       id: 'example',
       title: 'Function + Loop + List',
       stage: 'boxes',
+      // Predict, then Run: a guess before the first run, checked against what Python really prints.
+      guess: ['fruits', 'apple banana mango', 'apple'],
       idle: 'A list, a loop and a command, all in one. Press Run!',
       description: 'The command print_all takes a whole list and walks along it. Press Run.',
       code: 'def print_all(items):\n    for item in items:\n        print(item)\n\nfruits = ["apple", "banana", "mango"]\nprint_all(fruits)',

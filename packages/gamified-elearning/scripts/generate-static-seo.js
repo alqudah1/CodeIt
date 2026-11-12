@@ -1162,7 +1162,7 @@ function teachPages() {
       `<ol>\n        ${planLinks}\n      </ol>`,
     ].join('\n      '),
     sectionTitle: 'What a class needs',
-    detail: `A projector and one device per child, or one per pair. Nothing to install, no student emails, no passwords. Classes are free. ${TEACH_LANDING.network}`,
+    detail: `A projector and one device per child, or one per pair. Nothing to install, no student emails, no passwords. Classes are free. ${TEACH_LANDING.network} ${TEACH_LANDING.method}`,
     primaryLinkLabel: 'Make a class',
     type: 'WebPage',
   };

@@ -19,6 +19,7 @@
 
 import React from 'react';
 import Mascot from '../../arcade/Mascot';
+import { speak } from '../../utils/voice';
 import { Sun, Cloud, Bush, Flower } from '../../pages/Lessons/MapArt';
 import './LessonStage.css';
 
@@ -56,6 +57,19 @@ export default function LessonStage({ lines = [], boxes = null, runKey = 0, idle
           <Flower className="ls__flower ls__flower--a" size={18} />
           <Flower className="ls__flower ls__flower--b" size={16} petal="#FFC93C" />
         </div>
+        {/* Read to me. On a phone the floating guide used to carry this and sat
+            on top of the code; it lives on the stage now, where the words are. */}
+        <button
+          type="button"
+          className="ls__read"
+          aria-label="Read to me"
+          onClick={() => { void speak(stuck ? oops : speaking ? said.join('. ') : idle); }}
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+            <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" />
+            <path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </button>
         <div className="ls__pixel">
           <Mascot mood={stuck ? 'hmm' : (mood || (speaking ? 'happy' : thinking ? 'lean' : 'base'))} size={84} />
         </div>

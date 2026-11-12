@@ -34,7 +34,7 @@ const CASES = [
     'Line 1: a quote mark is missing. Text needs one " at the start and one " at the end.'],
   // print("a") / print("b" / print("c")
   [compileError(2, 'print("b"', '     ^', "SyntaxError: '(' was never closed"),
-    'Line 2: a bracket is missing. Every ( needs a ) to close it.'],
+    'Line 2: a bracket is missing. Every opening bracket ( needs a closing bracket ).'],
   // print(Hello)
   [runError(1, "NameError: name 'Hello' is not defined"),
     'Line 1: Python does not know the word Hello. If it is text, put quote marks around it. If it is a name you made, check the spelling.'],
@@ -52,7 +52,7 @@ const CASES = [
     'Line 1: nothing can be divided by zero. Change the number under the divide sign.'],
   // if 3 > 2
   [compileError(1, 'if 3 > 2', '        ^', "SyntaxError: expected ':'"),
-    'Line 1: this line needs a : at the end.'],
+    'Line 1: this line needs a colon : at the end.'],
   // print(Hello there)
   [compileError(1, 'print(Hello there)', '      ^^^^^^^^^^^', 'SyntaxError: invalid syntax. Perhaps you forgot a comma?'),
     'Line 1: Python could not read this line. If those are words to say, put quote marks around them.'],

@@ -108,6 +108,7 @@ function SignIn() {
           <h1 className="ci-h1 cl__title">{TEACH_LANDING.h1}</h1>
           <p className="ci-sub">{TEACH_LANDING.intro}</p>
           <p className="ci-sub tl__network">{TEACH_LANDING.network}</p>
+          <p className="ci-sub tl__network">{TEACH_LANDING.method}</p>
           <div className="tl__btns">
             <Link className="ci-btn ci-btn--ink" to="/login" state={{ from: '/teach' }}>Sign in</Link>
             <Link className="ci-btn ci-btn--paper" to="/register?for=class" state={{ from: '/teach' }}>Make an account</Link>

@@ -10,6 +10,8 @@ const lesson9 = {
       id: 'example',
       title: 'Your First Function',
       stage: 'say',
+      // Predict, then Run: a guess before the first run, checked against what Python really prints.
+      guess: ['Hi, name!', 'Hi, Alex! Hi, Sam!', 'Hi, Alex!'],
       idle: 'You can teach me a brand new command. Press Run!',
       description: 'def makes a new command called say_hi. The last two lines use it. Press Run.',
       code: 'def say_hi(name):\n    print("Hi,", name + "!")\n\nsay_hi("Alex")\nsay_hi("Sam")',

@@ -13,6 +13,8 @@ const lesson2 = {
       id: 'example',
       title: 'Your First Variable',
       stage: 'boxes',
+      // Predict, then Run: a guess before the first run, checked against what Python really prints.
+      guess: ['name', 'Alex', '"Alex"'],
       idle: 'I can remember things now. Press Run and watch the shelf!',
       description: 'A variable is a box with a name on it. Press Run and see what goes in.',
       code: 'name = "Alex"\nprint(name)',

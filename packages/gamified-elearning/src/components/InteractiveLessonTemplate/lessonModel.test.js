@@ -296,3 +296,46 @@ test('a lesson that has not been rebuilt keeps its panel and has no stage', () =
   expect(screen.getByLabelText('What to do now')).toBeInTheDocument();
   expect(document.querySelector('.ls')).toBeNull();
 });
+
+// ── Predict, then Run (PRIMM) ───────────────────────────────────────────────
+describe('guess first', () => {
+  test('every rebuilt lesson asks for a guess before its first Run, with three different things to tap', () => {
+    for (const lesson of REBUILT) {
+      const first = lesson.steps[0];
+      expect({ id: lesson.id, guesses: Array.isArray(first.guess) ? new Set(first.guess).size : 0 }).toEqual({ id: lesson.id, guesses: 3 });
+    }
+  });
+
+  test('a right guess is told so after the real run, and Run was never waiting for it', () => {
+    mount();
+    const group = screen.getByRole('group', { name: 'Guess first: what will Pixel say?' });
+    fireEvent.click(within(group).getByRole('button', { name: 'Hello!' }));
+    expect(within(group).getByRole('button', { name: 'Hello!' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.queryByRole('status')).toBeNull();          // nothing is given away before the run
+    fireEvent.click(screen.getByRole('button', { name: 'Run unchanged Your First Python Program' }));
+    expect(screen.getByText('You guessed it!')).toBeInTheDocument();
+    expect(within(screen.getByRole('group', { name: 'Your guess' })).getByRole('button', { name: 'Hello!' })).toBeDisabled();
+  });
+
+  test('a wrong guess is a surprise, not a failure: the step is still done', () => {
+    mount();
+    fireEvent.click(screen.getByRole('button', { name: 'print' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Run unchanged Your First Python Program' }));
+    expect(screen.getByText('Surprise! Pixel said Hello!. Now you know.')).toBeInTheDocument();
+    expect(document.querySelector('.sl-tag--done')).not.toBeNull();
+  });
+
+  test('no guess, no verdict: Run alone works exactly as before', () => {
+    mount();
+    fireEvent.click(screen.getByRole('button', { name: 'Run unchanged Your First Python Program' }));
+    expect(pixelSays()).toEqual(['Hello!']);
+    expect(screen.queryByText(/You guessed it|Surprise/)).toBeNull();
+    expect(document.querySelector('.sl-tag--done')).not.toBeNull();
+  });
+
+  test('the stage can read its words aloud, so a phone needs no floating guide', () => {
+    mount();
+    expect(screen.getByRole('button', { name: 'Read to me' })).toBeInTheDocument();
+    expect(document.querySelector('.sl-lesson--staged')).not.toBeNull();
+  });
+});

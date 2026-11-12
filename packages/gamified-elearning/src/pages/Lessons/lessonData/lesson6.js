@@ -10,6 +10,8 @@ const lesson6 = {
       id: 'example',
       title: 'Loop Through Letters',
       stage: 'say',
+      // Predict, then Run: a guess before the first run, checked against what Python really prints.
+      guess: ['Python', 'P y t h o n', '6'],
       idle: 'I can spell! Press Run and watch.',
       description: 'This loop walks through a word, one letter at a time. Press Run.',
       code: 'for char in "Python":\n    print(char)',

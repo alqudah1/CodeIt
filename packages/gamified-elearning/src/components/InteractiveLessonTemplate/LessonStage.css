@@ -149,3 +149,54 @@
 .sl-code-step--stage .cr-header { justify-content: space-between; }
 .sl-code-step--stage .cr-actions { width: 100%; justify-content: space-between; }
 .sl-code-step--stage .cr-btn--run { min-width: 132px; min-height: 48px; font-size: 1.05rem; justify-content: center; }
+
+/* Read to me: a 44px key in the corner of the stage. */
+.ls__read {
+  position: absolute; left: 8px; top: 8px; z-index: 2; width: 44px; height: 44px; display: grid; place-items: center;
+  border-radius: 50%; border: 2.5px solid var(--ls-ink); box-shadow: 0 3px 0 var(--ls-ink); background: #FFFDF7; color: var(--ls-ink); cursor: pointer;
+}
+.ls__read:active { transform: translateY(3px); box-shadow: none; }
+.ls__read:focus-visible { outline: 3px solid #FF8A1E; outline-offset: 2px; }
+/* With the stage reading aloud, the floating guide has nothing left to do on
+   a phone except cover the code and the Run button. */
+@media (max-width: 600px) { .sl-lesson--staged .lg-wrap { display: none; } }
+
+/* Guess first: three chips under the stage, each big enough for a finger. */
+.gf { margin: 0 0 14px; }
+.gf__ask { margin: 0 0 8px; font-weight: 900; font-size: 1rem; color: var(--ink, #35220E); }
+.gf__options { display: flex; flex-wrap: wrap; gap: 8px; }
+.gf__option {
+  min-height: 48px; padding: 8px 16px; border-radius: 14px; cursor: pointer;
+  border: 2.5px solid var(--ink, #35220E); box-shadow: 0 3px 0 var(--ink, #35220E); background: var(--paper, #FFFDF7); color: var(--ink, #35220E);
+  font: 700 1rem 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace; overflow-wrap: anywhere; text-align: left;
+}
+.gf__option:active { transform: translateY(3px); box-shadow: none; }
+.gf__option.is-picked { background: #FFE9A8; }
+.gf__option:disabled { cursor: default; opacity: .6; box-shadow: none; }
+.gf__option.is-picked:disabled, .gf__option.is-said:disabled { opacity: 1; }
+.gf__option.is-said { background: #C8F2D4; }
+.gf__option.is-picked:not(.is-said):disabled { background: #FFE1DC; text-decoration: line-through; }
+.gf__verdict { margin: 10px 0 0; font-weight: 800; color: var(--ink, #35220E); }
+.gf__verdict.is-right { color: #146C3A; }
+
+/* A child's finger: nothing on a staged step is smaller than 44px. */
+.sl-lesson--staged .cr-btn--reset, .sl-lesson--staged .sl-hint-btn { min-height: 44px; }
+
+/* On a phone the first screen of a staged step has to hold Pixel, the guess
+   and the Run button. The Lesson, Quiz, Puzzle strip is the same on every
+   step and says nothing about this one, so it gives up its place. */
+@media (max-width: 600px) {
+  .sl-lesson--staged .sl-journey-path { display: none; }
+  .sl-lesson--staged .gf { margin-bottom: 10px; }
+  .sl-lesson--staged .gf__options { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; }
+  .sl-lesson--staged .gf__option { flex: none; white-space: nowrap; }
+  .sl-lesson--staged .sl-code-step__desc { margin-top: 0; margin-bottom: 10px; }
+}
+@media (max-width: 600px) {
+  /* Pixel's bubble and the guess already say what to do; the sentence under
+     them says it a third time and pushes Run off the screen. */
+  .sl-lesson--staged .gf + .sl-code-step__desc { display: none; }
+  /* An empty shelf is a thin board until something lands on it. */
+  .sl-lesson--staged .ls__shelf:has(.ls__box--empty) { min-height: 0; padding: 7px 12px; }
+  .sl-lesson--staged .ls__box--empty { display: none; }
+}

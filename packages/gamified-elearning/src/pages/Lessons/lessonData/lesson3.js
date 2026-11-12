@@ -10,6 +10,8 @@ const lesson3 = {
       id: 'example',
       title: 'Join Two Strings',
       stage: 'boxes',
+      // Predict, then Run: a guess before the first run, checked against what Python really prints.
+      guess: ['greeting', 'Hello, world!', 'Hello, + world!'],
       idle: 'I can glue words together. Press Run and watch the box!',
       description: 'With text, the + sign means glue. Press Run and see what lands in the box.',
       code: 'greeting = "Hello, " + "world!"\nprint(greeting)',

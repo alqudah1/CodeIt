@@ -24,6 +24,40 @@ const LESSON_STARTER = {
 
 const DEFAULT_CODE = `# Write your Python code here\nprint("Hello, Python!")`;
 
+// ── The symbols a phone keyboard hides ──────────────────────────────────────
+//
+// Python is mostly quote marks, brackets, colons and equals signs, and on a
+// phone every one of them is two or three taps away behind a "123" key.
+// Mismatched brackets are the most common mistake beginners make, and a
+// missing quote mark is the one children name as the hardest. So on a touch
+// screen the symbols sit in a row above the code, as keys big enough for a
+// child's finger. A key types at the cursor and does not close the keyboard.
+const SYMBOL_KEYS = [
+  ['"', 'quote mark'], ['(', 'open bracket'], [')', 'close bracket'], ['=', 'equals'], [':', 'colon'],
+  ['[', 'open square bracket'], [']', 'close square bracket'], [',', 'comma'], ['+', 'plus'], ['    ', 'indent, four spaces'],
+];
+export function SymbolKeys({ onKey }) {
+  return (
+    <div className="cr-keys" role="group" aria-label="Symbol keys">
+      {SYMBOL_KEYS.map(([text, name]) => (
+        <button
+          key={name}
+          type="button"
+          className={`cr-key${text.trim() ? '' : ' cr-key--wide'}`}
+          aria-label={name}
+          // Pressing a button takes focus from the editor, which closes the
+          // phone's keyboard. Stopping that here keeps the cursor where it is.
+          onPointerDown={(e) => e.preventDefault()}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => onKey(text)}
+        >
+          {text.trim() ? text : 'indent'}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 /**
  * CodeRunnerPython
  *
@@ -47,6 +81,9 @@ const CodeRunnerPython = ({
   // A lesson that shows variables as boxes asks for what each name holds
   // after the run; it arrives as `vars` beside `success`.
   watchVariables = false,
+  // The symbols Python needs and a phone keyboard hides (see SymbolKeys
+  // below). Shown on touch screens; `true` or `false` forces it either way.
+  symbolKeys = 'touch',
   // 'mount' downloads Python as soon as this editor appears, which is right on
   // a page the visitor opened in order to run Python. 'demand' waits for the
   // first Run, which is right for an editor embedded in a page somebody came
@@ -73,6 +110,31 @@ const CodeRunnerPython = ({
   const outputRef             = useRef(null);
   const mountedRef            = useRef(true);
   const editorRef             = useRef(null);
+  const mirrorRef             = useRef(null);   // the CodeMirror instance, for typing a symbol at the cursor
+  const [touch] = useState(() => {
+    try { return typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(pointer: coarse)').matches; } catch (e) { return false; }
+  });
+  const showKeys = symbolKeys === true || (symbolKeys === 'touch' && touch);
+  // Put text where the cursor is, and keep the keyboard up.
+  const typeAtCursor = useCallback((text) => {
+    const dom = editorRef.current && editorRef.current.querySelector('.cm-editor');
+    const view = (mirrorRef.current && mirrorRef.current.view) || (dom && EditorView.findFromDOM(dom));
+    if (!view) { setCode((current) => current + text); return; }
+    // Said in full: where the text goes, and that the cursor ends up after it.
+    const { from, to } = view.state.selection.main;
+    const after = from + text.length;
+    view.focus();
+    view.dispatch({ changes: { from, to, insert: text }, selection: { anchor: after }, scrollIntoView: true });
+    // Safari keeps its own idea of where the cursor is until the next frame.
+    // Saying it again then is what makes the next typed letter land after
+    // the symbol, not before it.
+    requestAnimationFrame(() => {
+      if (view.state.selection.main.head !== after || view.state.doc.length < after) return;
+      const node = view.domAtPos(after);
+      const selection = view.root.getSelection ? view.root.getSelection() : window.getSelection();
+      try { selection.collapse(node.node, node.offset); } catch (e) { /* the editor went away */ }
+    });
+  }, []);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -223,8 +285,10 @@ const CodeRunnerPython = ({
       {/* ── Editor ─────────────────────────────────── */}
       {/* Ctrl+Enter was printed as a tip on /playground and was never wired to
           anything. A promise the product does not keep is worse than no tip. */}
+      {showKeys && <SymbolKeys onKey={typeAtCursor} />}
       <div className="cr-editor" ref={editorRef} onKeyDown={handleShortcut}>
         <CodeMirror
+          ref={mirrorRef}
           value={code}
           height={height}
           theme={theme === 'dark' ? 'dark' : 'light'}

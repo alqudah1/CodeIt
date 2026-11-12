@@ -187,3 +187,16 @@
 .cr-starting--failed {
   background: var(--paper, #FFFDF7);
 }
+
+/* The symbol keys: a row above the code on touch screens. Each key is 44px,
+   the smallest thing a finger hits reliably; the row scrolls sideways rather
+   than shrinking them. */
+.cr-keys { display: flex; gap: 6px; padding: 8px 10px; overflow-x: auto; background: #fff4e6; border-top: 1px solid #f3e4d8; -webkit-overflow-scrolling: touch; }
+.cr-key {
+  flex: none; min-width: 44px; height: 44px; padding: 0 10px; border-radius: 10px;
+  border: 2px solid #35220E; box-shadow: 0 2px 0 #35220E; background: #FFFDF7; color: #35220E;
+  font: 700 1.15rem 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace; cursor: pointer;
+  touch-action: manipulation;
+}
+.cr-key--wide { font: 800 .85rem 'Nunito', sans-serif; }
+.cr-key:active { transform: translateY(2px); box-shadow: none; }

@@ -21,6 +21,7 @@ import { hasQuiz, loadQuizIds } from '../../utils/quizAvailability';
 import { effectiveGuideLevel } from '../../utils/guideLevel';
 import { PredictOutput, FillBlank, OrderSteps } from './LessonInteractions';
 import LessonStage, { stageLines } from './LessonStage';
+import GuessFirst from './GuessFirst';
 import CodeParts from './CodeParts';
 import { firstUseStep, firstPracticeIndex } from './firstUse';
 import { trackActivityComplete, trackGuestLessonComplete } from '../../utils/activity';
@@ -249,6 +250,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const [runCounts,      setRunCounts]      = useState({});  // { [idx]: number }. so the stage replays a run that printed the same thing
   const [busyStep,       setBusyStep]       = useState(null); // the step whose code is running right now
   const [lastVars,       setLastVars]       = useState({});  // { [idx]: [{ name, type, text }] }. what the boxes hold after the last Run
+  const [guesses,        setGuesses]        = useState({});  // { [idx]: string }. what the child said the code would print, before running it
   const [lastOops,       setLastOops]       = useState({});  // { [idx]: string }. the sentence for a run that ended in a Python error
   const [feedback,       setFeedback]       = useState({});  // { [idx]: 'incorrect' | null }
   const [feedbackText,   setFeedbackText]   = useState({});  // { [idx]: string }. why it was wrong
@@ -668,7 +670,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   }
 
   return (
-    <div className={`sl-lesson sl-lesson--${guideLevel}`}>
+    <div className={`sl-lesson sl-lesson--${guideLevel}${currentStep?.stage ? ' sl-lesson--staged' : ''}`}>
       {/* Confetti */}
       <canvas ref={confettiRef} className="sl-confetti" />
 
@@ -892,6 +894,17 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
                   idle={currentStep.idle}
                   thinking={busyStep === stepIdx}
                   mood={feedback[stepIdx] === 'incorrect' && !isCurrentDone ? 'hmm' : undefined}
+                />
+              )}
+              {/* Predict, then Run. One tap, never in the way: Run works without
+                  a guess. The answer is not stored in the lesson. It is whatever
+                  Python prints, so the guess is checked against the real run. */}
+              {Array.isArray(currentStep?.guess) && (
+                <GuessFirst
+                  options={currentStep.guess}
+                  picked={guesses[stepIdx]}
+                  output={lastOutputs[stepIdx]}
+                  onPick={(option) => setGuesses(prev => ({ ...prev, [stepIdx]: option }))}
                 />
               )}
               <p className="sl-code-step__desc">{currentStep?.description}</p>
