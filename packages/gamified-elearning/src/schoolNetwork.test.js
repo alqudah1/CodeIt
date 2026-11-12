@@ -152,7 +152,7 @@ describe('the check page', () => {
   });
 
   test('it checks the app, the server, saving and Python, and the address has a short form', () => {
-    for (const name of ['The app itself (its main script)', 'The rest of the app', 'CodeIt starts', 'The CodeIt server', 'Saving on this computer', 'The Python files', 'Python runs']) expect(CHECK_SCRIPT).toContain(name);
+    for (const name of ['The app\\\'s first file (its entry script)', 'The app itself (lessons, playground, studio)', 'CodeIt starts', 'The CodeIt server', 'Saving on this computer', 'The Python files', 'Python runs']) expect(CHECK_SCRIPT).toContain(name);
     const vercel = JSON.parse(fs.readFileSync(path.join(ROOT, '..', '..', 'vercel.json'), 'utf8'));
     const short = vercel.rewrites.findIndex((r) => r.source === '/check' && r.destination === '/check.html');
     const spa = vercel.rewrites.findIndex((r) => r.destination === '/index.html');
@@ -204,5 +204,59 @@ describe('storage that cannot take the site down', () => {
     const index = fs.readFileSync(path.join(ROOT, 'src', 'index.js'), 'utf8');
     const first = index.split('\n').find((line) => line.startsWith('import '));
     expect(first).toBe("import './utils/safeStorage';");
+    // And the app comes after it, as its own file.
+    expect(index.indexOf("import('./boot')")).toBeGreaterThan(index.indexOf("import './utils/safeStorage';"));
+  });
+});
+
+// ── What a school filter reads ──────────────────────────────────────────────
+//
+// A school web filter scores the words in every file it lets through and
+// drops a file whose score is too high. Measured on 12 November 2026 against
+// the open phrase lists that UK school filters grew out of (e2guardian,
+// ukenglish): the playground page scored 5 and arrived; the single script
+// holding the whole site scored 135, where the limit suggested for children
+// is 50, and did not. Fifty of those points were one sentence on the home
+// page, "I am an adult", which the list files under pornography. Sixty were
+// pairs of unrelated words that only met because everything was in one file.
+//
+// Two rules came out of it. The entry file stays empty, so the site arrives as
+// many files that are each about one thing. And the sentences that cost the
+// most, for nothing, stay out.
+describe('what a school filter reads', () => {
+  const read = (dir, out = []) => {
+    for (const name of fs.readdirSync(dir)) {
+      const full = path.join(dir, name);
+      if (fs.statSync(full).isDirectory()) read(full, out);
+      else if (/\.(js|html)$/.test(name) && !/\.test\.js$/.test(name)) out.push(full);
+    }
+    return out;
+  };
+  const served = [...read(path.join(ROOT, 'src')), ...read(path.join(ROOT, 'public')), path.join(ROOT, 'scripts', 'generate-static-seo.js')];
+
+  test('the entry file holds no words: it makes storage safe and asks for the app', () => {
+    const index = fs.readFileSync(path.join(ROOT, 'src', 'index.js'), 'utf8');
+    const code = index.split('\n').filter((line) => line.trim() && !line.trim().startsWith('//'));
+    expect(code).toEqual(["import './utils/safeStorage';", "import('./boot');"]);
+  });
+
+  test('the sentences that cost the most on a filter are not in anything we serve', () => {
+    // phrase: what the open lists file it under, and what it cost.
+    const costly = {
+      'i am an adult': 'pornography, 50',
+      'do not enter': 'pornography, 50 with "age" and "18" on the same page',
+      'sexual content': 'pornography, 20',
+      ' betting ': 'gambling, 30',
+      'a shooting game': 'weapons, 15',
+      'adventure game': 'games, 30',
+      ' in action': 'games, 30 on any page that also says game',
+      'repeating actions': 'games, 30 on any page that also says game',
+    };
+    const found = [];
+    for (const file of served) {
+      const text = fs.readFileSync(file, 'utf8').toLowerCase();
+      for (const phrase of Object.keys(costly)) if (text.includes(phrase)) found.push(`${path.relative(ROOT, file)}: "${phrase}" (${costly[phrase]})`);
+    }
+    expect(found).toEqual([]);
   });
 });

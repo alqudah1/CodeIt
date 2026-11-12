@@ -47,7 +47,7 @@ render () {
 
 echo "Rendering nine lines with the voice \"$VOICE\":"
 render hint-concept   "Read through this step. Press Got It when you are ready."
-render hint-example   "Press Run to see the example code in action."
+render hint-example   "Press Run to see the example code work."
 render hint-tryit     "Try writing the code yourself, then press Run."
 render hint-challenge "This is your challenge. Give it your best try!"
 render hint-predict   "Read the code and tap the answer you think is right."

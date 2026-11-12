@@ -147,9 +147,9 @@
   function run() {
     list.innerHTML = ''; rows = []; sum.className = 'sum'; sum.textContent = 'Checking…';
     var rBrowser = row('This browser');
-    var rScript = row('The app itself (its main script)');
-    var rStyle = row('The look of the pages (the stylesheet)');
-    var rParts = row('The rest of the app (lessons, studio, games)');
+    var rScript = row('The app\'s first file (its entry script)');
+    var rStyle = row('The look of the pages (the stylesheets)');
+    var rParts = row('The app itself (lessons, playground, studio)');
     var rStart = row('CodeIt starts');
     var rServer = row('The CodeIt server (accounts and saved work)');
     var rSave = row('Saving on this computer');
@@ -167,23 +167,30 @@
     });
 
     var appFiles = manifest.then(function (files) {
-      var main = null, css = null, rest = [];
+      var main = null, styles = [], rest = [];
       for (var i = 0; i < files.length; i += 1) {
         if (/\/static\/js\/main\./.test(files[i])) main = files[i];
-        else if (/\/static\/css\/main\./.test(files[i])) css = files[i];
+        else if (/\.css$/.test(files[i])) styles.push(files[i]);
         else rest.push(files[i]);
       }
       if (!main) { rScript.set(false, 'The list of app files did not arrive, so the script could not be found.'); rStyle.set(false, 'Not checked.'); rParts.set(false, 'Not checked.'); return; }
       var one = textFile(main).then(function (r) { rScript.set(r.ok, r.ok ? 'Arrived (' + kb(r.size) + ').' : main + ': ' + r.why); });
-      var two = css ? textFile(css).then(function (r) { rStyle.set(r.ok, r.ok ? 'Arrived (' + kb(r.size) + ').' : css + ': ' + r.why); }) : Promise.resolve(rStyle.set(false, 'Not found in the list of app files.'));
-      // The other pieces, four at a time: enough to be quick, not enough to look like an attack to a filter.
-      var bad = [], done = 0, next = 0;
-      function worker() {
-        if (next >= rest.length) return Promise.resolve();
-        var url = rest[next]; next += 1;
-        return textFile(url).then(function (r) { done += 1; if (!r.ok) bad.push(url + ': ' + r.why); return worker(); });
+      // Many files, four at a time: enough to be quick, not enough to look like an attack to a filter.
+      function all(list, done) {
+        var bad = [], next = 0;
+        function worker() {
+          if (next >= list.length) return Promise.resolve();
+          var url = list[next]; next += 1;
+          return textFile(url).then(function (r) { if (!r.ok) bad.push(url + ': ' + r.why); return worker(); });
+        }
+        return Promise.all([worker(), worker(), worker(), worker()]).then(function () { done(bad); });
       }
-      var three = Promise.all([worker(), worker(), worker(), worker()]).then(function () {
+      var two = all(styles, function (bad) {
+        if (!styles.length) rStyle.set(false, 'No stylesheets were found in the list of app files.');
+        else if (!bad.length) rStyle.set(true, 'All ' + styles.length + ' stylesheets arrived.');
+        else rStyle.set(false, bad.length + ' of ' + styles.length + ' stylesheets did not arrive. First: ' + bad[0]);
+      });
+      var three = all(rest, function (bad) {
         if (!bad.length) rParts.set(true, 'All ' + rest.length + ' pieces arrived.');
         else rParts.set(false, bad.length + ' of ' + rest.length + ' pieces did not arrive. First: ' + bad[0]);
       });

@@ -19,7 +19,7 @@ const getHint = (stepType, isCurrentDone, isLastStep) => {
     case 'concept':
       return 'Read through this step. Press Got It when you are ready.';
     case 'example':
-      return 'Press Run to see the example code in action.';
+      return 'Press Run to see the example code work.';
     case 'tryit':
       return 'Try writing the code yourself, then press Run.';
     case 'challenge':

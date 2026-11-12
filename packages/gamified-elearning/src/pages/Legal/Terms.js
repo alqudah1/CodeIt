@@ -69,7 +69,7 @@ export default function Terms() {
 
             <section id="acceptable">
               <h2>Acceptable use</h2>
-              <p>Do not use CodeIt to harm, threaten, bully, impersonate, exploit, or deceive anyone; create sexual content involving minors; distribute malware; evade security or usage limits; access another account; violate privacy or intellectual-property rights; or break the law.</p>
+              <p>Do not use CodeIt to harm, threaten, bully, impersonate, exploit, or deceive anyone; create sexual material involving minors; distribute malware; evade security or usage limits; access another account; violate privacy or intellectual-property rights; or break the law.</p>
               <p>We may remove public material or restrict an account when reasonably necessary to protect learners, other users, the service, or legal rights.</p>
             </section>
 

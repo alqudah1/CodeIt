@@ -57,7 +57,7 @@ const BLOG_POSTS = [
         heading: 'How to Start Learning Python Step by Step',
         body: [
           'The best way to learn is by doing. Here\'s a learning path that works for most kids:',
-          '1. Learn print and variables. Get comfortable putting data into the program.\n2. Learn if/else. Make the program make decisions.\n3. Learn loops. Repeat actions without repeating code.\n4. Learn functions. Organise code into reusable blocks.\n5. Build a small project that combines everything.',
+          '1. Learn print and variables. Get comfortable putting data into the program.\n2. Learn if/else. Make the program make decisions.\n3. Learn loops. Repeat steps without repeating code.\n4. Learn functions. Organise code into reusable blocks.\n5. Build a small project that combines everything.',
           'CodeIt follows exactly this path. Each lesson builds on the last, with interactive code editors so you can try every concept immediately.',
         ],
       },
@@ -113,9 +113,9 @@ const BLOG_POSTS = [
         ],
       },
       {
-        heading: 'The Journey Map: A Coding Adventure',
+        heading: 'The Journey Map: A Coding Journey',
         body: [
-          'CodeIt\'s Journey Map turns the learning path into a literal adventure. Each node on the map represents a lesson, quiz, or puzzle.',
+          'CodeIt\'s Journey Map turns the learning path into a literal journey. Each node on the map represents a lesson, quiz, or puzzle.',
           'Completing a lesson unlocks the quiz. In the first ten lessons it also opens that lesson\'s three puzzles, taken in order: the two practice puzzles, then the boss. Beating the boss earns XP and opens the next lesson on the map.',
           'Mini puzzles and boss challenges make each chapter feel like a game level. The boss for lesson 1, Mission Banner, asks for a three-line banner: a divider, a title of your own, then the divider again. Printing the divider three times does not pass it.',
         ],
@@ -168,7 +168,7 @@ const BLOG_POSTS = [
         heading: 'Step 2: Understand the Core Concepts',
         body: [
           'Every programming language is built on the same core ideas. Learn these and you can pick up any language later:',
-          '• Variables. Storing information (name = "Alex", score = 0)\n• Conditions. Making decisions (if score > 10: print("You win!"))\n• Loops. Repeating actions (for each item in a list, do something)\n• Functions. Packaging code to reuse (def greet(name): ...)\n• Data structures. Organising information (lists, dictionaries)',
+          '• Variables. Storing information (name = "Alex", score = 0)\n• Conditions. Making decisions (if score > 10: print("You win!"))\n• Loops. Repeating steps (for each item in a list, do something)\n• Functions. Packaging code to reuse (def greet(name): ...)\n• Data structures. Organising information (lists, dictionaries)',
           'You don\'t need to learn these all at once. Start with variables and print, then add one concept at a time. CodeIt\'s lesson sequence is designed exactly this way.',
         ],
       },
@@ -184,7 +184,7 @@ const BLOG_POSTS = [
         heading: 'Step 4: Build Something You Care About',
         body: [
           'The fastest way to move from beginner to intermediate is to build a project you actually want to exist. It doesn\'t have to be impressive. It has to be yours.',
-          'Good beginner projects: a quiz about your favourite topic, a simple text adventure game, a tool that picks a random activity when you can\'t decide what to do, a programme that counts how many words are in a piece of text.',
+          'Good beginner projects: a quiz about your favourite topic, a simple text story game, a tool that picks a random activity when you can\'t decide what to do, a programme that counts how many words are in a piece of text.',
           'When you\'re building something for yourself, you\'ll hit problems and figure them out because you want the result. That motivation drives more learning than any curriculum.',
         ],
       },
@@ -352,7 +352,7 @@ const BLOG_POSTS = [
           'Loops are how you tell Python to do something more than once without writing the same line repeatedly. The most common type for beginners is the for loop:',
           'for i in range(5):\n    print(i)',
           'This prints 0, 1, 2, 3, 4. The loop runs five times because range(5) produces five numbers. Change the 5 to 10 and it runs ten times. That\'s the power of loops. Write it once, run it as many times as needed.',
-          'Loops unlock a huge range of possibilities: processing lists, repeating actions in games, checking multiple conditions. Once you understand loops, your programmes can do real work.',
+          'Loops unlock a huge range of possibilities: processing lists, repeating steps in games, checking multiple conditions. Once you understand loops, your programmes can do real work.',
         ],
       },
       {
@@ -488,7 +488,7 @@ const BLOG_POSTS = [
         body: [
           'Coding is the process of writing instructions that a computer can follow. Every app, game, website, and digital tool was built with code. When a kid learns to code, they stop being just a user of technology and start becoming a creator.',
           'Beyond career opportunities, coding teaches skills that are valuable everywhere: logical thinking, problem decomposition, patience, and the ability to spot and fix errors. These skills show up in maths, science, writing, and everyday decision-making.',
-          'Learning to code young also builds confidence. There\'s a particular feeling that comes from writing a programme that does exactly what you wanted. A sense of control and capability that transfers to other challenges.',
+          'Learning to code young also builds confidence. There\'s a particular feeling that comes from writing a programme that does exactly what you wanted. A sense of capability that transfers to other challenges.',
         ],
       },
       {
@@ -513,7 +513,7 @@ const BLOG_POSTS = [
         heading: 'How CodeIt Makes Coding Fun for Kids',
         body: [
           'The biggest obstacle to learning to code isn\'t difficulty. It\'s motivation. CodeIt tackles this with a full gamification system:',
-          '• XP and levelling: Every completed lesson, quiz, and puzzle earns experience points\n• Journey Map: The learning path is a visual adventure. Each node is something to unlock\n• Leaderboard: Friendly competition with other learners\n• Avatar Lab: Kids build a personal coding character that evolves as they learn\n• Coding puzzles: Story-driven games where Python is the tool that solves the challenge',
+          '• XP and levelling: Every completed lesson, quiz, and puzzle earns experience points\n• Journey Map: The learning path is a visual journey. Each node is something to unlock\n• Leaderboard: Friendly competition with other learners\n• Avatar Lab: Kids build a personal coding character that evolves as they learn\n• Coding puzzles: Story-driven games where Python is the tool that solves the challenge',
           'This approach means coding feels like something kids choose to do, not something they\'re told to do. Motivation is the multiplier. Motivated kids learn far faster.',
         ],
       },

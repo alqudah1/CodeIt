@@ -820,7 +820,7 @@ export const PUZZLE_CONFIGS = {
     title: 'Function + Loop',
     story: 'Run the code to see a function loop through a list and print each item in UPPERCASE.',
     goals: [
-      'Click Run to see the function in action',
+      'Click Run to see the function work',
       'Try changing the words in the list and run again',
     ],
     hints: [

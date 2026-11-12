@@ -9,7 +9,7 @@ const lesson15 = {
       type: 'concept',
       id: 'concept',
       title: 'f-Strings. The Modern Way',
-      body: 'An f-string starts with the letter f before the opening quote: f"...". Inside the string you put variable names (or expressions) inside curly braces {}. Python replaces them with their values at runtime. You can also control formatting: {price:.2f} formats a float to 2 decimal places. F-strings are cleaner than joining strings with +.',
+      body: 'An f-string starts with the letter f before the opening quote: f"...". Inside the string you put variable names (or expressions) inside curly braces {}. Python replaces them with their values at runtime. You can also set the formatting: {price:.2f} formats a float to 2 decimal places. F-strings are cleaner than joining strings with +.',
       highlight: 'name = "Alex"\nage = 14\nprint(f"Hello, {name}! You are {age} years old.")',
       code: 'name = "Alex"\nage = 14\nprint(f"Hello, {name}! You are {age} years old.")',
     },

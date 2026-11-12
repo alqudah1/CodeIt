@@ -146,10 +146,10 @@ describe('admin acquisition funnel', () => {
     delete global.fetch;
   });
 
-  test('shows the privacy-safe parent actions separately', async () => {
+  test('shows the privacy-safe parent clicks separately', async () => {
     render(<AdminFunnel />);
 
-    await waitFor(() => expect(screen.getByText('Parent acquisition actions')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Parent acquisition clicks')).toBeInTheDocument());
     expect(screen.getByText('Measurement health')).toBeInTheDocument();
     expect(screen.getByText('14 attributable visitor journeys')).toBeInTheDocument();
     expect(screen.getByText('Builder events connected to a journey').parentElement).toHaveTextContent('83%');

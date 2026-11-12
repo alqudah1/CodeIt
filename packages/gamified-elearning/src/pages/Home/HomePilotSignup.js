@@ -131,7 +131,7 @@ export default function HomePilotSignup({ source = 'homepage', showHeading = tru
           }}
           disabled={status === 'saving'}
         />
-        <span>I am an adult and agree to receive updates only about this CodeIt pilot.</span>
+        <span>I am 18 or older and agree to receive updates only about this CodeIt pilot.</span>
       </label>
       <label className="founding-signup__trap" aria-hidden="true">
         Company

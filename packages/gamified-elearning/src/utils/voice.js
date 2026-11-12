@@ -122,7 +122,7 @@ export function resetVoiceChoice() { chosen = null; choosing = null; }
 
 export const HINT_LINES = Object.freeze({
   'hint-concept':   'Read through this step. Press Got It when you are ready.',
-  'hint-example':   'Press Run to see the example code in action.',
+  'hint-example':   'Press Run to see the example code work.',
   'hint-tryit':     'Try writing the code yourself, then press Run.',
   'hint-challenge': 'This is your challenge. Give it your best try!',
   'hint-predict':   'Read the code and tap the answer you think is right.',

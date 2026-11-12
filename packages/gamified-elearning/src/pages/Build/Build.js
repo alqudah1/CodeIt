@@ -70,7 +70,7 @@ const triesFor = (word) => [`a ${word} that catches stars`, `a ${word} that flie
 // they catch and what they avoid, in their own words. If no word said which
 // kind of game it is, it says so, and every kind is one tap away.
 const PART = { player: 'you', enemy: 'bad thing', treasure: 'treasure' };
-const KIND_NOUN = { catch: 'a catching game', dodge: 'a dodging game', shooter: 'a shooting game', runner: 'a running game', flyer: 'a flying game', racer: 'a racing game', maze: 'a maze', pop: 'a popping game', pet: 'a pet game' };
+const KIND_NOUN = { catch: 'a catching game', dodge: 'a dodging game', shooter: 'a blaster game', runner: 'a running game', flyer: 'a flying game', racer: 'a racing game', maze: 'a maze', pop: 'a popping game', pet: 'a pet game' };
 function Thing({ recipe, part }) {
   const word = recipe.words?.[part] || SPRITE_LABEL[recipe[part]] || wordFor(recipe[part]) || PART[part];
   return <><Look look={recipe[part]} /> <b>{String(word).toLowerCase()}</b></>;

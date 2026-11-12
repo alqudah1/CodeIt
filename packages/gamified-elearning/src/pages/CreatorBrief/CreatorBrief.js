@@ -37,7 +37,7 @@ const DEMO_STEPS = [
   ['01', 'Start with the finished result', 'Open a working quiz, game, or website before explaining features.'],
   ['02', 'Show where the idea began', 'Use one short prompt, then explain that the first version removes the intimidating blank screen.'],
   ['03', 'Change one visible thing', 'Edit a colour, rule, label, or animation so viewers see that the student controls the project.'],
-  ['04', 'Connect it to one concept', 'Show the code behind the score, button, loop, or condition, then end with one call to action.'],
+  ['04', 'Connect it to one concept', 'Show the code behind the score, button, loop, or condition, then end with one clear ask.'],
 ];
 
 const CONTENT_FORMATS = [
@@ -49,7 +49,7 @@ const CONTENT_FORMATS = [
   },
   {
     label: 'Change one thing',
-    hook: '“A beginner can actually control what this makes.”',
+    hook: '“A beginner can actually change what this makes.”',
     sequence: 'Before → colour or behaviour change → code connection',
     cta: 'Make your first project.',
   },
@@ -66,7 +66,7 @@ const VIDEO_SCRIPT = [
   ['2 to 9 sec', 'Play it', 'Click, score, answer, or trigger the part that makes the result feel real.'],
   ['9 to 18 sec', 'Change one thing', '“Now they can change the colour, rule, words, or behaviour instead of stopping at generation.”'],
   ['18 to 26 sec', 'Open the code', '“CodeIt connects what changed on screen to the code behind it.”'],
-  ['26 to 32 sec', 'Use one call to action', '“Parents can request a free family pilot spot at codeitlearn.com.”'],
+  ['26 to 32 sec', 'Use one clear ask', '“Parents can request a free family pilot spot at codeitlearn.com.”'],
 ];
 
 const LAUNCH_PLAN = [
@@ -170,7 +170,7 @@ export default function CreatorBrief() {
               autoComplete="off"
               spellCheck="false"
             />
-            <p>Give each creator or launch a different internal code, such as <strong>creator-01</strong> or <strong>summer-test</strong>. Do not enter an email, phone number, or visitor information.</p>
+            <p>Give each creator or launch a different internal code, such as <strong>creator-01</strong> or <strong>summer-test</strong>. Leave out any email, phone number, or visitor information.</p>
           </div>
           <div className="creator-brief__link-grid">
             {trackedLinks.map(([channel, label, url]) => (
@@ -223,7 +223,7 @@ export default function CreatorBrief() {
           <div className="creator-brief__section-heading">
             <p className="creator-brief__eyebrow">Seven-day creator test</p>
             <h2 id="launch-title">Four posts. One learning question at a time.</h2>
-            <p>This is a test, not a promise. Keep the same message and call to action long enough to learn what actually works.</p>
+            <p>This is a test, not a promise. Keep the same message and clear ask long enough to learn what actually works.</p>
           </div>
           <div className="creator-brief__launch-grid">
             {LAUNCH_PLAN.map(([day, title, copy]) => (
@@ -270,7 +270,7 @@ export default function CreatorBrief() {
           <div>
             <p className="creator-brief__eyebrow">First seven-day test</p>
             <h2>Views are not the finish line.</h2>
-            <p>Publish three project videos and one parent-value video. Use one call to action per post.</p>
+            <p>Publish three project videos and one parent-value video. Use one clear ask per post.</p>
           </div>
           <ol>
             <li><span>01</span><strong>Qualified visits</strong><small>Did the right audience reach CodeIt?</small></li>

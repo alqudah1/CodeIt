@@ -119,7 +119,7 @@ const LESSONS = [
   {
     data: lesson10, unit: 'Own commands',
     summary: 'Put it all together. Functions, loops, and lists in one program',
-    builderPrompt: 'a small adventure game with choices',
+    builderPrompt: 'a small story game with choices',
     seoTitle: 'Combining Python Concepts',
     seoDesc: 'Put it all together. Functions, loops, and lists in one Python project. Free beginner lesson on CodeIt.',
   },

@@ -25,7 +25,7 @@ export default function Privacy() {
         <section className="legal-summary" aria-label="Privacy summary">
           <article><strong>No advertising profiles</strong><p>CodeIt does not use third-party advertising trackers or sell personal information.</p></article>
           <article><strong>Projects are private by default</strong><p>A saved project becomes public only after its owner chooses Publish.</p></article>
-          <article><strong>Minimal product analytics</strong><p>We measure a fixed set of actions, not project prompts, generated code, email addresses, or stored IP addresses.</p></article>
+          <article><strong>Minimal product analytics</strong><p>We measure a fixed set of events, not project prompts, generated code, email addresses, or stored IP addresses.</p></article>
         </section>
 
         <div className="legal-layout">
@@ -57,13 +57,13 @@ export default function Privacy() {
 
             <section id="ai">
               <h2>AI-assisted project processing</h2>
-              <p>CodeIt uses Anthropic models to create, edit, explain, and improve projects. The relevant prompt, edit instruction, project code, or requested explanation is sent to Anthropic to produce the result. Do not enter a real name, email, school, address, password, or other sensitive information in a project prompt.</p>
+              <p>CodeIt uses Anthropic models to create, edit, explain, and improve projects. The relevant prompt, edit instruction, project code, or requested explanation is sent to Anthropic to produce the result. Leave out real names, emails, schools, addresses, passwords, or other sensitive information in a project prompt.</p>
               <p>CodeIt records model and token totals for cost measurement, but that usage table does not contain the prompt, generated code, email address, or user ID.</p>
             </section>
 
             <section id="analytics">
               <h2>Product analytics</h2>
-              <p>CodeIt records a short allowlisted set of actions such as landing-page clicks, builds started and completed, account creation, project saves and publishes, return days, pricing-page views, and plan-interest clicks. When someone is signed in, an action may be connected to the account ID.</p>
+              <p>CodeIt records a short allowlisted set of events such as landing-page clicks, builds started and completed, account creation, project saves and publishes, return days, pricing-page views, and plan-interest clicks. When someone is signed in, an event may be connected to the account ID.</p>
               <p>A random first-party journey number is kept only in the current browser session. It lets CodeIt understand whether a visit led to a build, signup, save, or publish. It is not used across other websites, contains no name or contact details, and disappears from the browser when that session ends.</p>
               <p>Analytics events do not store prompts, generated code, email addresses, browser user-agent strings, or IP addresses. An IP address may be held in server memory for about 60 seconds solely to rate-limit analytics requests; it is not written to the analytics table.</p>
             </section>
@@ -92,7 +92,7 @@ export default function Privacy() {
               <h2>Children, parents, and guardians</h2>
               <p>Anyone aged 13 or over may create their own learner account. For ages 5 to 12, an adult must use a Parent / Educator account, confirm its email, identify as the parent or legal guardian, review this notice, and explicitly create the managed profile. Managed younger profiles stay private and cannot publish projects publicly.</p>
               <p>The adult may separately choose progress emails for a managed profile. When enabled, CodeIt sends the confirmed adult email selected lesson, exercise, quiz, and project-creation milestones. The adult can pause these emails from the family controls, and each email also includes an unsubscribe link.</p>
-              <p>Email confirmation establishes control of the adult account email; CodeIt does not claim that email confirmation alone proves legal identity or satisfies every law in every location. A parent or guardian can view their linked profiles, delete a managed profile and its connected data, or contact us to ask for access, correction, or deletion.</p>
+              <p>Email confirmation confirms who holds the adult account email; CodeIt does not claim that email confirmation alone proves legal identity or satisfies every law in every location. A parent or guardian can view their linked profiles, delete a managed profile and its connected data, or contact us to ask for access, correction, or deletion.</p>
               <p>Some legacy accounts created before this flow may indicate that the learner is under 13. CodeIt does not treat an unverified parent email as consent. Those accounts are paused without deleting their saved work, and connected projects are kept private, until a parent or guardian completes the review and links the learner to a confirmed adult account.</p>
               <p>For a legacy review, CodeIt may collect a parent or guardian email only to send the review notice. If the review is not completed within 14 days, the pending review and that email address are deleted. The adult may approve the private managed account or contact the privacy address below to decline and request deletion.</p>
             </section>

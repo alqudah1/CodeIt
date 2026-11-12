@@ -11,7 +11,7 @@ const lesson2 = {
     {
       type: 'example',
       id: 'example',
-      title: 'Variables in Action',
+      title: 'Your First Variable',
       stage: 'boxes',
       idle: 'I can remember things now. Press Run and watch the shelf!',
       description: 'A variable is a box with a name on it. Press Run and see what goes in.',

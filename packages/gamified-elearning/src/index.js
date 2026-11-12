@@ -1,26 +1,16 @@
+// The entry file is deliberately almost empty.
+//
+// A school's web filter reads every file it lets through and scores the words
+// in it. One large file holding the whole site (every lesson, the studio, the
+// legal pages, and the libraries underneath) adds up words that have nothing
+// to do with each other, and on 12 November 2026 that sum was what stood
+// between a class and its first lesson: the page arrived, the stylesheet
+// arrived, and the one big script did not.
+//
+// So this file only makes storage safe and asks for the app. The app and the
+// libraries then arrive as separate files, each one about one thing.
+
 // First, before anything that might read saved data: see utils/safeStorage.js.
 import './utils/safeStorage';
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-// Loaded after App so it wins on equal specificity. Everything in it was put
-// there by the device sweep, not by taste — see the file for what and why.
-import './styles/reachable.css';
-// The design language. Loaded last on purpose: it owns colour, type, depth
-// and motion for the whole site, and must win the cascade over per-component
-// stylesheets. Layout stays in the component files. See styles/arcade.css.
-import './styles/arcade.css';
-import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+import('./boot');

@@ -255,14 +255,14 @@ test('long lines stay stacked, four at most', () => {
 
 test('lesson 2: Run puts a box on the shelf for every variable, and an error clears it', () => {
   mount(lesson2);
-  expect(screen.getByRole('heading', { name: 'Variables in Action' })).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: 'Your First Variable' })).toBeInTheDocument();
   expect(screen.getByLabelText('No boxes yet')).toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: 'Run boxes Variables in Action' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Run boxes Your First Variable' }));
   expect(boxesOnShelf()).toEqual([['name', '"Sam"'], ['age', '9']]);
   expect(pixelSays()).toEqual(['Sam', '9']);
   expect(document.querySelector('.ls__box--text .ls__box-name').textContent).toBe('name');
   expect(document.querySelector('.ls__box--number .ls__box-name').textContent).toBe('age');
-  fireEvent.click(screen.getByRole('button', { name: 'Run error Variables in Action' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Run error Your First Variable' }));
   expect(boxesOnShelf()).toEqual([]);
 });
 

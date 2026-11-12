@@ -13,7 +13,7 @@ const STAGES = [
   ['landing_cta_click', 'Landing clicks'],
   ['learning_start', 'Learning starts'],
   ['parent_guide_view', 'Parent guide views'],
-  ['parent_cta_click', 'Parent actions'],
+  ['parent_cta_click', 'Parent clicks'],
   ['builder_start', 'Builds started'],
   ['generation_complete', 'Projects generated'],
   ['guest_draft_recovered', 'Guest projects recovered'],
@@ -505,7 +505,7 @@ export default function AdminFunnel() {
               </tbody>
             </table>
           </div>
-          <p className="funnel-parent-note">A random number connects actions only inside one browser session. It contains no prompt, project content, name, email, IP address, or cross-site tracking data.</p>
+          <p className="funnel-parent-note">A random number connects events only inside one browser session. It contains no prompt, project content, name, email, IP address, or cross-site tracking data.</p>
 
           <div className="adm-section-head">Did families actually use it</div>
           <p className="funnel-parent-note">
@@ -609,9 +609,9 @@ export default function AdminFunnel() {
               </tbody>
             </table>
           </div>
-          <p className="funnel-parent-note">The campaign code identifies the promotion, not the visitor. Use internal codes only, never a visitor name, email address, phone number, or private message detail.</p>
+          <p className="funnel-parent-note">The campaign code identifies the promotion, not the visitor. Use internal labels only, never a visitor name, email address, phone number, or private message detail.</p>
 
-          <div className="adm-section-head">Parent acquisition actions</div>
+          <div className="adm-section-head">Parent acquisition clicks</div>
           <div className="funnel-parent-grid">
             {PARENT_ACTIONS.map(([key, label]) => (
               <article key={key}>

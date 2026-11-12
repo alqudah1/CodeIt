@@ -1,7 +1,7 @@
 const lesson18 = {
   id: 18,
   title: "Break and Continue. Stop or Skip",
-  subtitle: "Two words that let you take control of a loop mid-lap.",
+  subtitle: "Two words that let you take charge of a loop mid-lap.",
   emoji: "🛑",
   xp: 50,
   story: "You are searching a list of treasure chests. Once you find the gold, why keep opening chests? break gets you out.",

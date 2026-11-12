@@ -186,7 +186,7 @@ export default function LearnPythonForKids() {
                 <li><strong>Lesson 2:</strong> Variables. Storing and updating information</li>
                 <li><strong>Lesson 3:</strong> Strings. Working with text and basic string methods</li>
                 <li><strong>Lesson 4:</strong> If Statements. Making decisions in code</li>
-                <li><strong>Lesson 5:</strong> Simple Loops. Repeating actions with for and range()</li>
+                <li><strong>Lesson 5:</strong> Simple Loops. Repeating steps with for and range()</li>
                 <li><strong>Lesson 6:</strong> For Loops. Looping through strings and combining with if</li>
                 <li><strong>Lesson 7:</strong> Lists. Creating and manipulating collections of data</li>
                 <li><strong>Lesson 8:</strong> Loops with Lists. Combining loops and lists together</li>
@@ -339,7 +339,7 @@ export default function LearnPythonForKids() {
             <h2>Ready to Learn Python?</h2>
             <p>
               Free from the first line to the last, no downloads, no credit card. Start Lesson 1
-              in under a minute, or try the playground first to see Python in action.
+              in under a minute, or try the playground first to see Python run.
             </p>
             <Link
               to="/lesson/1"

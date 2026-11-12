@@ -390,7 +390,7 @@ The term came into wide use in 2025. It means roughly: describe what you want in
 | The durable skills shift to specification and judgment, saying precisely what you want, and telling whether you got it | Debugging generated code needs more understanding, not less; when it breaks, the kid is stranded in code they never wrote |
 | It keeps motivation alive, and motivation is the scarcest resource in kids' coding, most quitting happens before any concept lands | The fluency illusion is strong; kids badly over-rate what they know, and the correction arrives late and hard |
 | It lowers the barrier for kids who would never have survived setup and syntax, including kids with no parent who codes | Models produce plausible, subtly wrong code, and a beginner has no way to detect it. Confidence without accuracy is worse than neither |
-| Professionals already work this way, and pretending they do not is dishonest with older teens | The workflow is a moving target. Betting a child's decade of learning on the 2026 way of prompting is a genuine gamble |
+| Professionals already work this way, and pretending they do not is dishonest with older teens | The workflow is a moving target. Staking a child's decade of learning on the 2026 way of prompting is a genuine gamble |
 
 **Where the argument actually is.** Both sides are mostly arguing about sequence, not permission. Very few serious people think a 10-year-old should never touch AI, and very few think reading code is now optional. The disagreement is over how much foundation to install first and how much can be picked up alongside.
 
