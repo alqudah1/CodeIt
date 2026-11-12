@@ -23,6 +23,9 @@ const BASE = process.env.CHECK_BASE || 'http://localhost:4599';
 const LESSON_DIR = path.join(__dirname, '..', '..', 'packages', 'gamified-elearning', 'src', 'pages', 'Lessons', 'lessonData');
 const problems = [];
 const notes = [];
+// Set when lesson 1 could not be walked here at all, so the closing line
+// cannot claim taps carried a lesson that was never tapped.
+let skippedWalk = false;
 
 // ── Part A: the solo-reader audit ────────────────────────────────────────────
 
@@ -102,11 +105,63 @@ async function tapThroughLessonOne() {
     return;
   }
 
-  // Step 1 — concept. One tap on the big next button.
+  // ── Does this environment have Python at all ─────────────────────────────
+  //
+  // Lesson 1 was rebuilt on 12 November as "press Run first, and Pixel says
+  // it", so step 1 is now a code step. This walk assumed step 1 was a concept
+  // and tapped the Next button without looking at it, and in the new model
+  // that button reads "Run the code to continue" and is disabled until Python
+  // has run. The tap timed out after thirty seconds and the whole check died
+  // with an uncaught exception, which reads exactly like the lesson being
+  // broken.
+  //
+  // It was not broken. This container cannot reach the Python runtime, which
+  // the skip below has always known about, but the skip only covered steps 3
+  // to 5. Moving a code step to the front moved it outside the part that knew.
+  //
+  // So ask once, before walking anything: is Python here? If it is not, say so
+  // the way lesson-to-studio.js does and stop, rather than failing on a gate
+  // this environment cannot open. The reading audit above has already run and
+  // is the half that does not need a runtime.
+  const pythonHere = await page.waitForFunction(() => {
+    if (window.pyodide) return true;
+    return Boolean(document.querySelector('.cr-starting--failed')) ? 'failed' : false;
+  }, { timeout: 25000 }).then(h => h.jsonValue()).catch(() => 'failed');
+
+  if (pythonHere !== true) {
+    notes.push('lesson 1 tap-through: skipped — the Python runtime is unreachable from this environment, and lesson 1 now gates its first Next on a real Run');
+    // The structure still has to be tap-honest even with no runtime: a child
+    // must be able to SEE the way forward, whether or not it opens here.
+    if (!(await page.locator('.sl-editor-wrap .cr-btn--run').count())) {
+      problems.push('lesson 1 step 1 has no Run key, so a child has nothing to press');
+    }
+    skippedWalk = true;
+    await browser.close();
+    return;
+  }
+
+  // Step 1 — now a code step: Run, then the Next button opens.
+  const firstRun = page.locator('.sl-editor-wrap:not(.sl-editor-wrap--hidden) .cr-btn--run').first();
+  if (await firstRun.count()) {
+    await firstRun.tap();
+    await page.waitForFunction(() => {
+      const btn = document.querySelector('.sl-editor-wrap:not(.sl-editor-wrap--hidden) .cr-btn--run');
+      return btn && !/Running|Starting/.test(btn.textContent);
+    }, { timeout: 30000 }).catch(() => {});
+    await page.waitForTimeout(900);
+    const firstSubmit = page.locator('.sl-submit-btn').first();
+    if (await firstSubmit.count()) { await firstSubmit.tap(); await page.waitForTimeout(700); }
+  }
+
   const next = page.locator('.sl-nav__next, .sl-nav__continue').first();
+  if (await next.isDisabled().catch(() => false)) {
+    problems.push(`lesson 1 step 1 stayed shut after a Run: "${(await next.textContent().catch(() => '')).trim()}"`);
+    await browser.close();
+    return;
+  }
   await next.tap();
   await page.waitForTimeout(700);
-  notes.push('lesson tap 1: concept passed with Got It');
+  notes.push('lesson tap 1: first step passed by Run and tap, no typing');
 
   // Step 2 — predict. Tap choices until one is right; a child does the same.
   const choiceCount = await page.locator('.li-choice').count();
@@ -190,6 +245,12 @@ async function tapThroughLessonOne() {
     console.log(`\n${problems.length} problem(s):`);
     for (const p of problems) console.log(`  - ${p}`);
     process.exit(1);
+  }
+  if (skippedWalk) {
+    console.log('\nSKIPPED: a child alone can read every step. Whether taps carry lesson 1 was');
+    console.log('not answered here, because this environment has no Python runtime and the');
+    console.log('first step now gates on a real Run. CI answers it, where Python loads.');
+    process.exit(0);
   }
   console.log('\nA child alone can read every step, and taps alone carry lesson 1.');
   process.exit(0);
