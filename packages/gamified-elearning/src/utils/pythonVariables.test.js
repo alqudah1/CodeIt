@@ -7,6 +7,9 @@ test('the names a program assigns, in order, once each', () => {
   expect(assignedNames('if score == 10:\n    print("x", end="")')).toEqual([]);
   expect(assignedNames('a=1\nb=2\nc=3\nd=4\ne=5\nf=6\ng=7')).toHaveLength(6);
   expect(assignedNames(undefined)).toEqual([]);
+  // Several names filled in one line, in the order the code made them.
+  expect(assignedNames('screen = (800, 600)\nwidth, height = screen\ndepth = 3')).toEqual(['screen', 'width', 'height', 'depth']);
+  expect(assignedNames('print(a, b == c)')).toEqual([]);
 });
 
 test('text keeps its quote marks on the box, numbers do not, long values are cut', () => {

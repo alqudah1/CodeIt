@@ -29,6 +29,11 @@ import lesson17 from '../../pages/Lessons/lessonData/lesson17';
 import lesson18 from '../../pages/Lessons/lessonData/lesson18';
 import lesson19 from '../../pages/Lessons/lessonData/lesson19';
 import lesson20 from '../../pages/Lessons/lessonData/lesson20';
+import lesson21 from '../../pages/Lessons/lessonData/lesson21';
+import lesson22 from '../../pages/Lessons/lessonData/lesson22';
+import lesson23 from '../../pages/Lessons/lessonData/lesson23';
+import lesson24 from '../../pages/Lessons/lessonData/lesson24';
+import lesson25 from '../../pages/Lessons/lessonData/lesson25';
 import { trackExerciseCompletion, trackStaticLessonCompletion } from '../../utils/progressTracker';
 
 let mockSearch = '';
@@ -77,7 +82,7 @@ function mount(lesson = lesson1) {
   return render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson} /></AuthContext.Provider>);
 }
 // The lessons rebuilt on the model so far. Add a lesson here when it is rebuilt.
-const REBUILT = [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6, lesson7, lesson8, lesson9, lesson10, lesson11, lesson12, lesson13, lesson14, lesson15, lesson16, lesson17, lesson18, lesson19, lesson20];
+const REBUILT = [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6, lesson7, lesson8, lesson9, lesson10, lesson11, lesson12, lesson13, lesson14, lesson15, lesson16, lesson17, lesson18, lesson19, lesson20, lesson21, lesson22, lesson23, lesson24, lesson25];
 const boxesOnShelf = () => Array.from(document.querySelectorAll('.ls__box:not(.ls__box--empty)')).map((el) => [el.querySelector('.ls__box-name').textContent, el.querySelector('.ls__box-val').textContent]);
 const pixelSays = () => Array.from(document.querySelectorAll('.ls__say')).map((el) => el.textContent);
 beforeEach(() => {
@@ -315,8 +320,8 @@ test('lesson 1 has no shelf: the stage only shows boxes when a step asks for the
 });
 
 test('a lesson that has not been rebuilt keeps its panel and has no stage', () => {
-  const lesson21 = require('../../pages/Lessons/lessonData/lesson21').default;
-  render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson21} /></AuthContext.Provider>);
+  const lesson26 = require('../../pages/Lessons/lessonData/lesson26').default;
+  render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson26} /></AuthContext.Provider>);
   expect(screen.getByLabelText('What to do now')).toBeInTheDocument();
   expect(document.querySelector('.ls')).toBeNull();
 });

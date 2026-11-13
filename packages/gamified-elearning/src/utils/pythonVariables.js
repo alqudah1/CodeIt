@@ -10,13 +10,19 @@
 // order they first appear, and only a handful: a shelf, not a debugger.
 
 const ASSIGN = /^[ \t]*([A-Za-z_][A-Za-z0-9_]*)[ \t]*(?:[-+*/]|\/\/|%)?=(?!=)/gm;
+// Several names filled at once: width, height = screen
+const UNPACK = /^[ \t]*([A-Za-z_][A-Za-z0-9_]*(?:[ \t]*,[ \t]*[A-Za-z_][A-Za-z0-9_]*)+)[ \t]*=(?!=)/gm;
 const MOST = 6;
 const SLOTS = 6;        // items of a list shown as slots; the rest are counted
 
 /** The names a piece of code assigns, in order, without repeats. */
 export function assignedNames(code) {
   const names = [];
-  String(code || '').replace(ASSIGN, (_, name) => { if (!names.includes(name)) names.push(name); return _; });
+  const found = [];   // [where in the code, name], so the shelf keeps the order the code made them in
+  String(code || '').replace(ASSIGN, (whole, name, at) => { found.push([at, name]); return whole; });
+  String(code || '').replace(UNPACK, (whole, group, at) => { group.split(',').forEach((name, i) => found.push([at + i / 100, name.trim()])); return whole; });
+  found.sort((a, b) => a[0] - b[0]);
+  for (const [, name] of found) if (!names.includes(name)) names.push(name);
   return names.slice(0, MOST);
 }
 
