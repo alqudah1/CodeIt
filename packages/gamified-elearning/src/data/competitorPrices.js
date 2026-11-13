@@ -40,34 +40,44 @@
 const COMPETITOR_PRICES = {
   Tynker: {
     source: 'https://www.tynker.com/pricing/',
-    // Read again on 3 September 2026 for the coding-games comparison. Same
-    // five amounts, same 40% discount showing, same three-child limit.
-    checked: '2026-09-03',
+    // Read again on 13 November 2026. Same five amounts, same 40% discount
+    // showing, same three-child limit, same 30-day guarantee.
+    checked: '2026-11-13',
     note: 'Family plans, up to three children, 30-day money-back guarantee. A 40% discount was applied on the page at the time of checking.',
     prices: [18, 54, 15, 180, 468],
   },
   CodeMonkey: {
     source: 'https://app.codemonkey.com/home-plans',
-    checked: '2026-08-31',
-    note: 'US dollars. Billed yearly: individual 8, family 13 for three children, homeschool 20 for five. Billed quarterly: 11, 20, 27.',
-    prices: [8, 13, 20, 11, 27],
+    // Read again on 13 November 2026. CodeMonkey cut two plans: billed
+    // yearly, individual 8 to 7 and family 13 to 12; billed quarterly,
+    // individual 11 to 10 and family 20 to 18. Homeschool is unchanged. The
+    // header above records a guide being wrong for saying 7 and 12 in
+    // August. It was wrong then and would be right now, which is the whole
+    // case for re-reading the source instead of trusting the last read.
+    checked: '2026-11-13',
+    note: 'US dollars, per month. Billed yearly: individual 7, family 12 for three children, homeschool 20 for five. Billed quarterly: 10, 18, 27.',
+    prices: [7, 12, 20, 10, 18, 27],
   },
   Kodable: {
     source: 'https://www.kodable.com/parents',
-    checked: '2026-08-31',
+    // Re-read 13 November 2026, parent page and school plans page: unchanged.
+    checked: '2026-11-13',
     note: 'Families pay. Three guides said "free tier, 99.99 a year"; the parent page says a seven-day trial and then 24.99 a month, 119.99 a year, or 199.99 once, for up to four children. The free Kickstart plan people remember is on the school plans page (kodable.com/plans), where the paid tiers are 1750 Premium, 2500 Premium+ and 3500 All Access per site per year. A school free tier is not a family free tier.',
     prices: [24.99, 119.99, 199.99, 1750, 2500, 3500],
   },
   'Create & Learn': {
     source: 'https://www.create-learn.us/pricing',
-    checked: '2026-08-31',
+    // Re-read 13 November 2026: unchanged.
+    checked: '2026-11-13',
     note: 'A free one-hour intro class, then 94.50 for four 55-minute group sessions (down from 105) or 240.00 for four 1:1 sessions (down from 260). The homepage shows no prices; this is the pricing page.',
     prices: [94.50, 240.00],
   },
   Codecademy: {
-    source: 'https://www.codecademy.com/',
-    checked: '2026-08-23',
-    note: 'Monthly. Their terms require users to be 16 or older, which matters more than the price.',
+    source: 'https://www.codecademy.com/pricing',
+    // Re-read 13 November 2026 on the pricing page itself: Plus is 14.99 a
+    // month billed annually (29.99 billed monthly). Only 14.99 is quoted.
+    checked: '2026-11-13',
+    note: 'Plus, per month, billed annually. Their terms require users to be 16 or older, which matters more than the price.',
     prices: [14.99],
   },
 };

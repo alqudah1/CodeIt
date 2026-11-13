@@ -167,7 +167,7 @@ Steps 4 and 5 are what the Common Sense reviews were doing on your behalf. Rebui
 
 This page is published by **CodeIt** (codeitlearn.com), which makes a browser-based coding studio for families, built for ages 8 to 14.
 
-We are going to be direct: **CodeIt is not a relevant recommendation for the audience of this page.** If you arrived here, you are almost certainly evaluating software for a school or district. CodeIt has no school or district features, no rostering, no LMS integration, no teacher dashboards, no standards alignment. We are a consumer product bought by parents. Putting ourselves on your shortlist would waste your time.
+We are going to be direct: **for a district evaluation, CodeIt is probably not on your shortlist.** If you arrived here, you are likely evaluating software for a school or district. CodeIt has no rostering, no LMS integration, no standards alignment, no gradebook, no signed data processing agreement and nothing for a district to buy. What it does have is narrower: a teacher can make a class for free: children join at codeitlearn.com/join with a class code and a first name, with no emails and no passwords to hand out, and the teacher sees each child's games and the sentences they typed. That suits one teacher trying coding in one room, not a procurement decision.
 
 For school-facing coding curriculum specifically, the established options are [CodeAI](https://code.org/en-US/codeai) (formerly Code.org, free, K–12), [CodeHS](https://codehs.com/) (grades 6–12), [Kodable](https://www.kodable.com/) for K-5, and [Scratch](https://scratch.mit.edu/) (free, MIT). Evaluate those through the process above rather than taking our word for it.
 
@@ -252,11 +252,11 @@ The mistake to avoid is picking a tool that nails the first column and discoveri
 
 This page is published by **CodeIt** (codeitlearn.com), which makes a browser-based coding studio for kids, built for ages 8 to 14.
 
-**CodeIt is not a replacement for Replit Teams for Education, and we are not going to pretend otherwise.** We have no rostering, no LMS integration, no teacher dashboards, no assignment workflow, no standards alignment, and no school or district offering of any kind. We are a consumer product bought by families. A teacher who adopts us for a class will be missing the entire third column of the table above by the second week.
+**CodeIt is not a replacement for Replit Teams for Education, and we are not going to pretend otherwise.** We have no rostering, no LMS integration, no assignment workflow, no gradebook, no standards alignment and no district offering. A teacher can run a free class on CodeIt, with children joining on a class code and a first name and the teacher seeing each child's work, but a teacher who needs graded assignments will be missing the entire third column of the table above by the second week.
 
 For a classroom, the honest recommendations are the ones above: CodeHS for a full secondary CS course, CodeAI for free K–12, Codeanywhere or CodeSandbox if the IDE was the part you needed, GitHub Classroom for older students on professional tooling.
 
-The one place we might be worth a look is well outside a school: a **homeschooling parent or an after-school setting with one or two children**, where you want [kids building websites, games and quizzes](/builder) and then opening up the real HTML, CSS and JavaScript underneath. AI can help generate a project and the result stays editable rather than becoming a locked AI result. The free plan does not expire and needs no card: ten assisted project builds a month and one managed learner profile under a parent view. A paid family plan is available at CA$12 a month, cancellable at any time. There is also a 31-lesson beginner Python sequence. Ages 5–12 use parent-managed, email-verified profiles that cannot publish publicly; independent accounts start at 13.
+The one place we might be worth a look is well outside a school: a **homeschooling parent or an after-school setting with one or two children**, where you want [kids building websites, games and quizzes](/builder) and then opening up the real HTML, CSS and JavaScript underneath. AI can help generate a project and the result stays editable rather than becoming a locked AI result. The free plan does not expire and needs no card: ten assisted project builds a month and one managed learner profile under a parent view. A paid family plan is available at CA$12 a month, cancellable at any time. There is also a 31-lesson beginner Python sequence. Independent accounts start at 13; a younger child uses a parent-managed, email-verified profile that cannot publish publicly.
 
 If that is not your situation, take the list above and ignore us.`,
   },
@@ -318,11 +318,11 @@ CodeIt is a browser-based coding studio built for ages 8 to 14, in Toronto. A le
 
 Free plan: no card, ten AI-assisted builds a month, and the lessons and Python playground stay free. Paid family plan CA$12 a month, cancellable at any time. Note that is Canadian dollars against Tynker's US dollars, so compare the numbers in your own currency rather than taking the gap at face value.
 
-**Where CodeIt is genuinely the better fit:** a child roughly 8 to 16 who has outgrown blocks, wants to make things rather than take a course, and whose parent wants some evidence of understanding rather than a completion badge. The comprehension questions are generated from the learner's own file, so the right answer is whatever they actually wrote.
+**Where CodeIt is genuinely the better fit:** a child aged 8 to 14 who has outgrown blocks, wants to make things rather than take a course, and whose parent wants some evidence of understanding rather than a completion badge. The comprehension questions are generated from the learner's own file, so the right answer is whatever they actually wrote.
 
 **Where Tynker beats us, plainly:** it is older, larger, better supported, and has a proper curriculum. It works for pre-readers and we are weaker there. It has Minecraft and Roblox and we have neither. If those matter to your child, buy Tynker.
 
-**What we do not do at all:** no rostering, no LMS integration, no standards alignment, no teacher dashboards. CodeIt is not a schools product.
+**What we do not do at all:** no rostering, no LMS integration, no standards alignment, no gradebook and no district plan. A teacher can run a free class with a class code; a district cannot deploy it.
 
 ## The version of this page you should trust
 

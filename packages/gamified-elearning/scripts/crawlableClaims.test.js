@@ -103,3 +103,69 @@ test('only the free lesson course is marked accessible for free', () => {
   assert.match(lastType.text, /Course/,
     `isAccessibleForFree now sits under ${lastType.text.trim()}, not the Course.`);
 });
+
+test('the managed-profile range is never interpolated into crawlable copy', () => {
+  // The literal-range test above walked straight past four sentences that
+  // wrote the range through a constant: "managed profiles for ${MANAGED}".
+  // One of them sat in the sentence after "CodeIt is built for ages 8 to 14",
+  // which is the shape that had Google describing a 5-to-12 product.
+  const found = codeLines()
+    .filter(line => /MANAGED_RANGE|\$\{MANAGED\}/.test(line.text))
+    .map(line => `line ${line.number}: ${line.text.trim()}`);
+  assert.deepEqual(found, [], 'the managed range is written into crawlable copy again');
+});
+
+test('no content the generator renders states the managed range as a range', () => {
+  // The guides, the blog and the FAQ are rendered into the crawlable half
+  // too, and that is where "profiles for ages 5 to 12" survived the fix:
+  // fifteen pages, including the home page, /faq and /privacy. 5 to 12 is
+  // only ever the managed range, so it is matched exactly; other ranges in
+  // those files are facts about other products, such as ScratchJr's 5 to 7.
+  const dataDir = path.join(__dirname, '..', 'src', 'data');
+  const managed = /\b5\s*(?:to|-|\u2013|\u2014)\s*12\b/;
+  const found = [];
+  for (const file of fs.readdirSync(dataDir).filter(f => /\.js$/.test(f) && !/\.test\.js$/.test(f))) {
+    let inBlock = false;
+    fs.readFileSync(path.join(dataDir, file), 'utf8').split('\n').forEach((line, i) => {
+      const text = line.trim();
+      if (text.startsWith('/*')) inBlock = true;
+      if (inBlock) { if (text.includes('*/')) inBlock = false; return; }
+      if (text.startsWith('//') || text.startsWith('*')) return;
+      if (managed.test(line)) found.push(`${file}:${i + 1}: ${line.match(managed)[0]}`);
+    });
+  }
+  assert.deepEqual(found, [], 'the managed range is written as a range in rendered content');
+});
+
+test('nothing says CodeIt cannot run a class while it can', () => {
+  // Thirteen places told Google and every assistant that CodeIt was "not a
+  // schools product", had "no teacher dashboard", "no class management and
+  // no bulk account creation", and was "wrong for schools". One was the
+  // FAQ answer published as FAQPage schema on the home page, and one was the
+  // comparison table Google's AI Mode cites at position 1 to 3 when parents
+  // ask what to buy.
+  //
+  // All of it was true until October, when classes shipped: a teacher makes a
+  // class, children join with a code and a first name, and the teacher sees
+  // each child's games and sentences. What is still true (no rostering, no
+  // LMS, no standards alignment, no gradebook, no district plan) is still
+  // said. This fails on the false half for as long as the class routes exist.
+  const classRoutes = path.join(__dirname, '..', '..', 'codeit-backend', 'routes', 'class.js');
+  if (!fs.existsSync(classRoutes)) return;
+  const source = fs.readFileSync(classRoutes, 'utf8');
+  assert.match(source, /router\.post\('\/:code\/join'/, 'the class join route moved; re-check this test');
+
+  const stale = /no teacher dashboards?|not a schools product|no class management|no bulk account creation|not (currently )?a fit for a school|no school or district features|and schools \|/i;
+  const files = [path.join(__dirname, 'generate-static-seo.js')];
+  const dataDir = path.join(__dirname, '..', 'src', 'data');
+  for (const f of fs.readdirSync(dataDir)) if (/\.js$/.test(f) && !/\.test\.js$/.test(f)) files.push(path.join(dataDir, f));
+  const found = [];
+  for (const file of files) {
+    fs.readFileSync(file, 'utf8').split('\n').forEach((line, i) => {
+      if (/^\s*(\/\/|\*)/.test(line)) return;
+      const m = line.match(stale);
+      if (m) found.push(`${path.basename(file)}:${i + 1}: ${m[0]}`);
+    });
+  }
+  assert.deepEqual(found, [], 'a page says CodeIt cannot run a class, and it can');
+});

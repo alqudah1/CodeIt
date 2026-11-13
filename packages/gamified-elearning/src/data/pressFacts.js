@@ -96,7 +96,7 @@ export default function pressFacts({
     {
       heading: "What it does not do",
       paragraphs: [
-        "No rostering, no LMS integration, no standards alignment, no teacher dashboards. CodeIt is not built for school or district deployment and is not sold that way.",
+        "No rostering, no LMS integration, no standards alignment, no gradebook. CodeIt is not built for district deployment and is not sold that way. A single teacher can run a free class: children join with a class code and a first name, and the teacher sees each child's work.",
         "It is not right for a pre-reading child; Kodable and codeSpark are built for that and are better at it. It is not right for a learner who mainly wants to keep making games, where CodeCombat or Roblox Studio fit better.",
       ],
     },

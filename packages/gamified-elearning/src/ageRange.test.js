@@ -50,6 +50,39 @@ describe('the marketing age range', () => {
     expect(offenders).toEqual([]);
   });
 
+  test('wherever a sentence names CodeIt beside an age range, it is the one range', () => {
+    // Three guides said CodeIt suited a child "roughly 8 to 16", one of them
+    // in the comparison table that Google's AI Mode cites for parents asking
+    // what to buy. Every other page says 8 to 14. Two ranges for one product
+    // is how Google came to describe it as a product for children aged 5 to
+    // 12, so a second range about ourselves is not a wording choice.
+    //
+    // Read by sentence, not by line: a guide paragraph is one long line, and
+    // a sentence about Scratch covering 8 to 16 in a paragraph that also
+    // names CodeIt is a fact about Scratch.
+    const range = /\b(?:ages?|aged|roughly)\s+(\d{1,2})\s*(?:to|\u2013|-)\s*(\d{1,2})\b/gi;
+    // React strings in src/pages belong to the design session. These two
+    // still say "ages 5 to 12" and are handed over in message 89; delete each
+    // line here when its fix lands, and this test holds the rest of the site.
+    const handedOver = new Set([
+      'pages/Home/Home.js: "ages 5 to 12"',
+      'pages/Legal/Terms.js: "ages 5 to 12"',
+    ]);
+    const offenders = [];
+    for (const f of walk(SRC)) {
+      const rel = path.relative(SRC, f);
+      strip(read(f)).split(/(?<=[.!?])\s+|\n/).forEach((sentence) => {
+        if (!/CodeIt/.test(sentence)) return;
+        for (const m of sentence.matchAll(range)) {
+          if (Number(m[1]) === AGE_RANGE.from && Number(m[2]) === AGE_RANGE.to) continue;
+          const key = `${rel}: "${m[0]}"`;
+          if (!handedOver.has(key)) offenders.push(key);
+        }
+      });
+    }
+    expect(offenders).toEqual([]);
+  });
+
   test('the schema and the default description carry it', () => {
     const schema = COMPANY.organizationSchema();
     expect(schema.description).toContain(AGE_RANGE.short);

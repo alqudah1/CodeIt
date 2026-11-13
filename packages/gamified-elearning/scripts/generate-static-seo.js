@@ -224,7 +224,15 @@ const AGES = COMPANY.AGE_RANGE.short;
 // The parent-managed range, read from the same file for the same reason. Six
 // published strings spelled one of these two ranges by hand with an en-dash,
 // four of them in this file, while the sentence beside them read the constant.
-const MANAGED = COMPANY.MANAGED_RANGE.short;
+// The managed-profile range used to be interpolated here as MANAGED, into four
+// sentences on /builder, /explore, /privacy and /terms. One of them read "CodeIt
+// is built for ages 8 to 14. Only eligible independent accounts can publish;
+// managed profiles for ages 5 to 12 cannot publish projects publicly": the
+// audience and a second range in adjacent sentences, which is the exact shape
+// that had Google calling this a 5-to-12 product. crawlableClaims.test.js
+// looked for literal ranges, so an interpolated one walked past it. Both holes
+// are closed: the sentences say "a managed profile", and the test now fails on
+// the constant being interpolated at all.
 
 // ── Why the account rule is worded this way ─────────────────────────────────
 //
@@ -819,7 +827,7 @@ const IDENTITY_PAGES = [
         heading: 'Who it is for, and who it is not for',
         paragraphs: [
           'It suits a learner roughly between 8 and 16 who has outgrown block coding, or a beginner of any age who wants to build web projects and understand what they are made of. It also suits a parent who cannot code, because the activities use plain language and visible results.',
-          'It is not right for a pre-reading child — Kodable and codeSpark are built for that and are better at it. It is not right for a learner who mainly wants to keep making games, where CodeCombat or Roblox Studio fit better. And it is not a schools product: there is no rostering, no LMS integration, no standards alignment and no teacher dashboard.',
+          'It is not right for a pre-reading child; Kodable and codeSpark are built for that and are better at it. It is not right for a learner who mainly wants to keep making games, where CodeCombat or Roblox Studio fit better. And it is not a district product: there is no rostering, no LMS integration, no standards alignment and no gradebook, though a single teacher can run a free class with a class code.',
         ],
       },
       {
@@ -913,7 +921,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'Then make it yours',
       paragraphs: [
         'Play with the result, edit individual elements, inspect the underlying HTML, CSS, and JavaScript, and save versions as you go. The project remains editable instead of becoming a locked AI result.',
-        `The studio is built for ${AGES}. Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly, and managed profiles for ${MANAGED} cannot publish projects at all.`,
+        `The studio is built for ${AGES}. Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly, and a managed profile cannot publish projects at all.`,
       ],
     },
   ],
@@ -990,7 +998,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'Published projects, playable and remixable',
       paragraphs: [
         'Published CodeIt projects are playable in the browser. A learner can open one for inspiration and remix a copy into their own version without changing the original.',
-        `CodeIt is built for ${AGES}. Only eligible independent accounts can publish; managed profiles for ${MANAGED} cannot publish projects publicly.`,
+        `CodeIt is built for ${AGES}. Only eligible independent accounts can publish; a managed profile cannot publish projects publicly.`,
       ],
     },
   ],
@@ -1075,7 +1083,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'Projects and publishing',
       paragraphs: [
         'Saved projects are private until their owner chooses Publish. An unsaved guest project can remain only in that browser for up to seven days and is not uploaded as an account project without an explicit save.',
-        `Managed profiles for ${MANAGED} cannot publish projects publicly. Leaderboards use coder aliases rather than real names.`,
+        `A managed profile cannot publish projects publicly. Leaderboards use coder aliases rather than real names.`,
       ],
     },
   ],
@@ -1090,7 +1098,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'Sharing responsibly',
       paragraphs: [
         'Public projects must not include private or harmful information. AI-assisted results are a starting point that the learner is expected to review and change.',
-        `Saved projects stay private until their owner chooses Publish, and managed profiles for ${MANAGED} cannot publish at all.`,
+        `Saved projects stay private until their owner chooses Publish, and a managed profile cannot publish at all.`,
       ],
     },
     {
@@ -1145,7 +1153,7 @@ const HOME_PAGE = {
       heading: 'Who it is for',
       paragraphs: [
         `Built for ${AGES}. Younger children can use it alongside an adult. Older beginners are welcome. A learner aged 13 or over opens their own account. For anyone younger, ${MANAGED_FLOOR}, after confirming the adult account email. A managed profile cannot publish projects publicly.`,
-        'CodeIt suits a beginner who has outgrown block-based tools such as Scratch and wants to work with real HTML, CSS, and JavaScript. It is not a schools product: there is no rostering, LMS integration, or teacher dashboard.',
+        'CodeIt suits a beginner who has outgrown block-based tools such as Scratch and wants to work with real HTML, CSS, and JavaScript. It is not a district product: there is no rostering, LMS integration or gradebook, though a single teacher can run a free class with a class code.',
       ],
     },
     {

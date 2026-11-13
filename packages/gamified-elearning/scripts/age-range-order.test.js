@@ -68,31 +68,25 @@ function text(html) {
   return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
 }
 
-test('no crawlable page gives the managed-profile range without the real one', () => {
-  let checked = 0;
-
+test('no crawlable page states the managed-profile range at all', () => {
+  // This used to check that every page stating "5 to 12" stated "8 to 14"
+  // first, and it required at least six such pages. That was a mitigation:
+  // the managed range was in the crawlable text of fifteen pages, and the
+  // best that could be done was to make sure the real audience came first.
+  //
+  // It is now in none of them. The sentences say "a managed profile" or
+  // "under 13", which are true and are not an audience, so there is nothing
+  // for a summariser to quote as one. Rendered documents are checked, so
+  // this covers the generator, the guides, the blog and the FAQ at once,
+  // legal pages included.
+  const offenders = [];
   for (const page of PAGES) {
-    if (LEGAL.has(page.route)) continue;
-
     const body = text(renderRouteDocument(TEMPLATE, page));
-    const managed = body.search(MANAGED);
-    if (managed < 0) continue;
-
-    const real = body.search(REAL);
-    assert.ok(
-      real >= 0,
-      `${page.route} states a 5-to-12 range and never states ${AGE_RANGE.short}. `
-        + 'A summariser quoting this page will call CodeIt a product for five-year-olds.'
-    );
-    assert.ok(
-      real < managed,
-      `${page.route} states 5 to 12 before it states ${AGE_RANGE.short}. `
-        + 'The real range has to come first, or it is the sub-case that gets quoted.'
-    );
-    checked += 1;
+    const at = body.search(MANAGED);
+    if (at >= 0) offenders.push(`${page.route}: ...${body.slice(Math.max(0, at - 60), at + 40)}...`);
   }
-
-  assert.ok(checked >= 6, `expected pages stating both ranges, checked ${checked}`);
+  assert.deepEqual(offenders, [], 'a crawlable page states the managed-profile range again');
+  assert.ok(PAGES.length > 50, `only ${PAGES.length} pages were rendered`);
 });
 
 test('the Python landing page answers the age question with the real range', () => {

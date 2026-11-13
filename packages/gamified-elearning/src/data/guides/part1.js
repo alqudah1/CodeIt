@@ -81,9 +81,9 @@ If you did not export, check whether projects were ever pushed to GitHub, and ch
 
 ### Disclosure: about CodeIt
 
-**CodeIt is not a schools product, and this page would be dishonest if it implied otherwise.** There is no rostering, no LMS integration, no standards alignment, no teacher dashboard, no class management and no bulk account creation. A teacher with thirty students cannot run CodeIt the way they ran Glitch. If you are the teacher this page is written for, the recommendation above stands: CodeHS, Pickcode, Classroom 50 with GitHub Pages, Neocities or the p5.js editor.
+**CodeIt can run a class, but it is not a district product, and this page would be dishonest if it implied otherwise.** A teacher can make a class for free: children join at codeitlearn.com/join with a class code and a first name, with no emails and no passwords to hand out, and the teacher sees each child's games and the sentences they typed. There are twelve free 45-minute lesson plans. What it does not have: rostering through Clever, ClassLink or Google Classroom, LMS integration, standards alignment, a gradebook or assignments, and a district plan. A teacher replacing Glitch for a course with graded projects will miss those. If you are that teacher, the recommendation above stands: CodeHS, Pickcode, Classroom 50 with GitHub Pages, Neocities or the p5.js editor.
 
-CodeIt is a browser-based studio built for ages 8 to 14. A learner describes a website, game or quiz and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows what the project is made of and opens the lesson behind each idea it used. Profiles for ages 5 to 12 are parent-managed and email-verified, and **managed under-13 profiles cannot publish publicly**; independent accounts start at 13. The free plan does not expire, needs no card, and includes ten assisted project builds a month and one managed learner profile under a parent view. The family plan is CA$12/month, cancellable any time. There are 31 beginner Python lessons; there is no web curriculum, because the web side is the builder rather than a course. The honest fit is a homeschool parent, a small after-school club, or one or two children, not a class.
+CodeIt is a browser-based studio built for ages 8 to 14. A learner describes a website, game or quiz and gets a working version they can play. They change it by moving things on the page, picking colours and fonts, or asking for what they want. A tab then shows what the project is made of and opens the lesson behind each idea it used. A child under 13 uses a parent-managed, email-verified profile, and **managed under-13 profiles cannot publish publicly**; independent accounts start at 13. The free plan does not expire, needs no card, and includes ten assisted project builds a month and one managed learner profile under a parent view. The family plan is CA$12/month, cancellable any time. There are 31 beginner Python lessons; there is no web curriculum, because the web side is the builder rather than a course. The honest fit is a homeschool parent, a small after-school club, or one or two children, not a class.
 
 ---
 
@@ -103,12 +103,13 @@ CodeIt is a browser-based studio built for ages 8 to 14. A learner describes a w
     slug: "after-scratch",
     relatedLessons: [1, 2, 4],
     // CodeMonkey's own prices, from app.codemonkey.com/home-plans, re-read
-    // 31 August 2026. These were written as bare "$8" and "$13", which slipped
+    // 13 November 2026, when they had dropped from 8 and 13 to 7 and 12.
+    // They were once written as bare "$8" and "$13", which slipped
     // past the price guards entirely: an unmarked dollar amount is not read as
     // a second currency, so a competitor's US price could sit on the page
     // undeclared. Marking them US$ is what the rest of the site does and what
     // the guard is for.
-    quotedPrices: ["US$8", "US$13", "US$24.99", "US$119.99", "US$199.99"],
+    quotedPrices: ["US$7", "US$12", "US$24.99", "US$119.99", "US$199.99"],
     title: "What to Use After Scratch, Before Python",
     description: "Your kid outgrew Scratch but isn't ready for Python. Here's how to tell if they're actually ready, why the Python jump fails, and what to pick instead.",
     h1: "What to use after Scratch, before Python",
@@ -200,7 +201,7 @@ Start here: **Can they read fluently?** No → stay in blocks. Yes → **do they
 | 8–12, loved making **games** and wants to keep making games | Typed Python or JavaScript inside a game world | [CodeCombat](https://codecombat.com/): freemium, roughly 9+, the strongest "keep making games" answer |
 | 8–12, obsessed with **Minecraft or Roblox** | Modding path, the motivation is already there | [Tynker](https://www.tynker.com/) ($15/mo billed yearly, or $468 lifetime, up to 3 children) |
 | 9–13, loved the "look what I made" part; wants something others can open | HTML, CSS, JavaScript in a browser | Any browser-based web editor; see the disclosure below |
-| 9–13, loved the **puzzles and logic**, not the art | Structured typed-code puzzles | [CodeMonkey](https://www.codemonkey.com/) (US$8/mo individual, US$13/mo family, K–8), [CodeCombat](https://codecombat.com/) |
+| 9–13, loved the **puzzles and logic**, not the art | Structured typed-code puzzles | [CodeMonkey](https://www.codemonkey.com/) (US$7/mo individual, US$12/mo family, K–8), [CodeCombat](https://codecombat.com/) |
 | 10+, more curious about **AI** than about code | AI literacy alongside coding | [CodeAI](https://code.org/): this is Code.org, which rebranded in June 2026 and shifted emphasis toward AI literacy; free |
 | 11–13, asking for **Python by name** | Python, but inside something with visible output | [CodeCombat](https://codecombat.com/)'s Python path first; a beginner Python sequence second. Note Codecademy's 16+ age gate |
 | 13–15, self-directed, reads well | Real adult-track courses | [Codecademy](https://www.codecademy.com/) (free Basic, ~$14.99/mo Plus, and check the 16+ term), [freeCodeCamp](https://www.freecodecamp.org/) |

@@ -28,7 +28,7 @@ const FAQS = [
   },
   {
     q: 'Are projects public?',
-    a: 'Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly. Managed profiles for ages 5 to 12 cannot publish projects.',
+    a: 'Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly. A managed profile, for a child under 13, cannot publish projects.',
   },
   {
     q: 'Is CodeIt the same as Code.org, MIT CodeIt, or CodeIT in London?',
@@ -44,7 +44,7 @@ const FAQS = [
   },
   {
     q: 'What does CodeIt not do?',
-    a: 'There is no rostering, LMS integration, standards alignment or teacher dashboard, so it is not currently a fit for a school or district deployment. It needs an internet connection and cannot be used offline. The structured lesson sequence is Python only. There is no web curriculum, and the web side is the project builder itself. Games are browser projects in HTML, CSS and JavaScript, not Unity, Godot, Roblox or pygame.',
+    a: 'There is no rostering, LMS integration, standards alignment or gradebook, so it is not built for a district-wide deployment. A teacher can run a free class: children join with a class code and a first name, and the teacher sees what each child made. It needs an internet connection and cannot be used offline. The structured lesson sequence is Python only. There is no web curriculum, and the web side is the project builder itself. Games are browser projects in HTML, CSS and JavaScript, not Unity, Godot, Roblox or pygame.',
   },
   {
     q: 'Can my child just use AI to build the project for them?',
