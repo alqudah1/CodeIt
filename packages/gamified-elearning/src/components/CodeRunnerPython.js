@@ -116,6 +116,7 @@ const CodeRunnerPython = ({
   const outputRef             = useRef(null);
   const mountedRef            = useRef(true);
   const editorRef             = useRef(null);
+  const runWaiting            = useRef(false);  // a Run that is waiting for Python, or running
   const editorApi             = useRef(null);   // the editor on screen, for typing a symbol at the cursor
   // The coloured editor if it has arrived, null if it was stopped on the way
   // (then the plain one is used), undefined while it is still coming.
@@ -204,8 +205,7 @@ const CodeRunnerPython = ({
     return stop;
   }, [loadPython, startPython]);
 
-  const runCode = useCallback(async () => {
-    if (running || starting) return;
+  const runOnce = useCallback(async () => {
     // The engaged start for Python: a Run pressed, on any surface that runs
     // it (a lesson, the playground, the editor on the home page). Once per
     // session; the result of the run is a separate question.
@@ -248,7 +248,21 @@ const CodeRunnerPython = ({
       if (onBusy) onBusy(false);
       if (outputRef.current) outputRef.current.scrollTop = outputRef.current.scrollHeight;
     }
-  }, [code, running, starting, startPython, onOutput, onBusy, watchVariables]);
+  }, [code, startPython, onOutput, onBusy, watchVariables]);
+
+  const runCode = useCallback(async () => {
+    // One Run at a time. A Run pressed while Python is still on its way is
+    // kept, and runs when Python lands: it used to be dropped (the button was
+    // switched off while Python started), so a child whose first tap on the
+    // page was Run watched "Starting Python" finish and then nothing happen.
+    if (runWaiting.current) return;
+    runWaiting.current = true;
+    try {
+      await runOnce();
+    } finally {
+      runWaiting.current = false;
+    }
+  }, [runOnce]);
 
   const handleShortcut = useCallback((event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
@@ -279,7 +293,8 @@ const CodeRunnerPython = ({
           <button
             className={`cr-btn cr-btn--run${running || starting ? ' cr-btn--busy' : ''}`}
             onClick={runCode}
-            disabled={running || starting}
+            disabled={running}
+            aria-busy={running || starting}
             title={pyReady ? 'Run your Python code (Ctrl+Enter)' : 'Python starts the first time you press Run'}
           >
             {starting && <span className="cr-spinner" aria-hidden="true" />}

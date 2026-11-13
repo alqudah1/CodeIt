@@ -63,3 +63,24 @@ test('while it is on its way the page says so by name', () => {
   act(() => { fireEvent.pointerDown(document.body); });
   expect(screen.getAllByText(/Starting Python/).length).toBeGreaterThan(0);
 });
+
+test('a Run pressed while Python is on its way is kept, and runs when Python lands', async () => {
+  // The first tap on the page is the Run button itself: the tap starts
+  // Python, and the same tap is a Run. It must not be lost.
+  let land;
+  const python = { runPythonAsync: jest.fn(() => { window.printOutput = 'Hello!'; return Promise.resolve(); }) };
+  getPyodideRuntime.mockImplementation(() => new Promise((resolve) => { land = () => { window.pyodide = python; resolve(python); }; }));
+  const heard = [];
+  render(<CodeRunnerPython starterCode={'print("Hello!")'} onOutput={(out) => heard.push(out)} />);
+  const run = screen.getByTitle(/Python starts the first time you press Run|Run your Python code/);
+  act(() => { fireEvent.pointerDown(run); });
+  expect(run).not.toBeDisabled();                      // still pressable while Python starts
+  act(() => { fireEvent.click(run); });
+  act(() => { fireEvent.click(run); });                // an impatient second press does not queue a second run
+  expect(python.runPythonAsync).not.toHaveBeenCalled();
+  await act(async () => { land(); await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); });
+  expect(python.runPythonAsync).toHaveBeenCalledTimes(1);
+  expect(python.runPythonAsync).toHaveBeenCalledWith('print("Hello!")');
+  expect(heard).toEqual(['Hello!']);
+  delete window.pyodide;
+});

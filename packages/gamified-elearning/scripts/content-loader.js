@@ -97,6 +97,15 @@ function loadPressFacts() {
   return build;
 }
 
+/** The /schools content, as a function of the values that change. */
+function loadSchoolFacts() {
+  const build = loadEsmDefault(path.join(SRC, 'data/schoolFacts.js'));
+  if (typeof build !== 'function') {
+    throw new Error('content-loader: schoolFacts.js did not export a function');
+  }
+  return build;
+}
+
 /** All blog posts, in file order. */
 function loadBlogPosts() {
   const posts = loadEsmDefault(path.join(SRC, 'data/blogPosts.js'));
@@ -224,6 +233,7 @@ module.exports = {
   loadCompetitorPrices,
   loadStarterGames,
   loadPressFacts,
+  loadSchoolFacts,
   loadPageMeta,
   loadPricing,
   loadBlogPosts,

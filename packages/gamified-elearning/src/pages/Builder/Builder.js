@@ -3653,7 +3653,7 @@ export default function Builder() {
             <div className="bldr-shelf" key={shelf.kind}>
               <div className="bldr-shelf__head">
                 {(() => { const Art = SHELF_STICKERS[shelf.kind]; return Art ? <Art size={40} /> : null; })()}
-                <h3 className="bldr-shelf__title">{shelf.title}</h3>
+                <h2 className="bldr-shelf__title">{shelf.title}</h2>
               </div>
               <ul className="bldr-shelf__row">
                 {shelf.items.map(item => (

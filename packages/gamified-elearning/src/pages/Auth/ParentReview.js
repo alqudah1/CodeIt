@@ -112,11 +112,11 @@ export default function ParentReview() {
       <div className="auth-page" role="main">
         <main className="auth-card parent-review-card">
           <div className="auth-brand"><BrandLogo className="auth-logo" /></div>
-          <header className="auth-header">
+          <div className="auth-header">
             <span className="auth-pill">Connected safely</span>
             <h1>The learner account is ready</h1>
             <p>{status}</p>
-          </header>
+          </div>
           <Link className="auth-button parent-review-link" to="/profile">Open family controls</Link>
         </main>
       </div>
@@ -128,7 +128,7 @@ export default function ParentReview() {
       <div className="auth-page" role="main">
         <main className="auth-card parent-review-card">
           <div className="auth-brand"><BrandLogo className="auth-logo" /></div>
-          <header className="auth-header">
+          <div className="auth-header">
             <span className="auth-pill">For a parent or guardian</span>
             <h1>Review this learner account</h1>
             <p>
@@ -136,7 +136,7 @@ export default function ParentReview() {
                 ? `${preview.learnerLabel} is paused until an adult reviews how CodeIt uses its information.`
                 : 'We are checking this secure review link.'}
             </p>
-          </header>
+          </div>
 
           {!user && (
             <section className="parent-review-panel">
@@ -217,11 +217,11 @@ export default function ParentReview() {
     <div className="auth-page" role="main">
       <main className="auth-card parent-review-card">
         <div className="auth-brand"><BrandLogo className="auth-logo" /></div>
-        <header className="auth-header">
+        <div className="auth-header">
           <span className="auth-pill">Keep your work safe</span>
           <h1>Ask a parent to review your account</h1>
           <p>Your projects and progress are saved. CodeIt has paused this account until a parent or guardian reviews it.</p>
-        </header>
+        </div>
 
         {reviewToken ? (
           <form className="auth-form parent-review-panel" onSubmit={requestReview}>

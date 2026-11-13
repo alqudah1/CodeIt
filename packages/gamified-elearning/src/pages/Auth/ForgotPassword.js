@@ -36,11 +36,11 @@ export default function ForgotPassword() {
     <div className="auth-page" role="main">
       <div className="auth-card">
         <div className="auth-brand"><BrandLogo className="auth-logo" /></div>
-        <header className="auth-header">
+        <div className="auth-header">
           <span className="auth-pill">Account recovery</span>
           <h1>Reset your password</h1>
           <p>Enter the email used for your CodeIt account. We’ll send a secure link that works once.</p>
-        </header>
+        </div>
         <form className="auth-form" onSubmit={submit}>
           <div className="auth-field">
             <label htmlFor="reset-email" className="auth-label">Email</label>

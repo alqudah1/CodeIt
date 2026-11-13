@@ -234,7 +234,7 @@ export default function Register() {
       <div role="main" className={`auth-page${nightClass(theme)}`}>
         <div className="auth-card">
           <BrandMark />
-          <header className="auth-header">
+          <div className="auth-header">
             <span className="auth-pill">{hasBuilderDraft ? 'Project ready' : 'Get Started'}</span>
             <h1>
               {hasBuilderDraft
@@ -244,7 +244,7 @@ export default function Register() {
             {hasBuilderDraft && (
               <p>Your work is safe in this browser. Choose the right account, and we’ll bring you straight back to finish.</p>
             )}
-          </header>
+          </div>
 
           <div className="auth-path-list">
             <button className="auth-path-card auth-path-card--student" onClick={() => setStep('student')}>
@@ -301,7 +301,7 @@ export default function Register() {
               <LiveFrame className="auth-draft__frame" code={draft.code} title="Your project, running" />
             </div>
           )}
-          <header className="auth-header">
+          <div className="auth-header">
             <span className="auth-pill">Student</span>
             <h1>
               {hasBuilderDraft && draft
@@ -310,7 +310,7 @@ export default function Register() {
                   ? `Create an account to ${builderActionWord}`
                   : 'Pick a name. Everything you make is saved to it.'}
             </h1>
-          </header>
+          </div>
 
           {needsParent ? (
             <div className="auth-form auth-needs-parent" role="status">
@@ -423,14 +423,14 @@ export default function Register() {
       <div role="main" className={`auth-page${nightClass(theme)}`}>
         <div className="auth-card">
           <BrandMark />
-          <header className="auth-header">
+          <div className="auth-header">
             <span className="auth-pill">Account created</span>
             <h1>Add a parent or guardian email?</h1>
             <p>
               If you ever forget your password, a parent can help you get back in.
               You can skip this now and add it later from your account settings.
             </p>
-          </header>
+          </div>
 
           <form className="auth-form" onSubmit={submitP(onParentEmailSubmit)}>
             <div className="auth-field">
@@ -478,7 +478,7 @@ export default function Register() {
           <BrandMark />
           <button type="button" className="auth-back" onClick={goBack}>Back</button>
 
-          <header className="auth-header">
+          <div className="auth-header">
             <span className="auth-pill">{teacherEntry ? 'Teacher' : 'Parent / Educator'}</span>
             <h1>
               {hasBuilderDraft
@@ -496,7 +496,7 @@ export default function Register() {
                   ? 'Start with your adult account. After confirming your email, you can create a private profile for a learner ages 5 to 12.'
                   : 'Create an adult account for family or classroom use.'}
             </p>
-          </header>
+          </div>
 
           <div className="auth-educator-note">
             {teacherEntry

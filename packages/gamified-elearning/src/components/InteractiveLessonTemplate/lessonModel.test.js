@@ -34,6 +34,12 @@ import lesson22 from '../../pages/Lessons/lessonData/lesson22';
 import lesson23 from '../../pages/Lessons/lessonData/lesson23';
 import lesson24 from '../../pages/Lessons/lessonData/lesson24';
 import lesson25 from '../../pages/Lessons/lessonData/lesson25';
+import lesson26 from '../../pages/Lessons/lessonData/lesson26';
+import lesson27 from '../../pages/Lessons/lessonData/lesson27';
+import lesson28 from '../../pages/Lessons/lessonData/lesson28';
+import lesson29 from '../../pages/Lessons/lessonData/lesson29';
+import lesson30 from '../../pages/Lessons/lessonData/lesson30';
+import lesson31 from '../../pages/Lessons/lessonData/lesson31';
 import { trackExerciseCompletion, trackStaticLessonCompletion } from '../../utils/progressTracker';
 
 let mockSearch = '';
@@ -82,7 +88,7 @@ function mount(lesson = lesson1) {
   return render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson} /></AuthContext.Provider>);
 }
 // The lessons rebuilt on the model so far. Add a lesson here when it is rebuilt.
-const REBUILT = [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6, lesson7, lesson8, lesson9, lesson10, lesson11, lesson12, lesson13, lesson14, lesson15, lesson16, lesson17, lesson18, lesson19, lesson20, lesson21, lesson22, lesson23, lesson24, lesson25];
+const REBUILT = [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6, lesson7, lesson8, lesson9, lesson10, lesson11, lesson12, lesson13, lesson14, lesson15, lesson16, lesson17, lesson18, lesson19, lesson20, lesson21, lesson22, lesson23, lesson24, lesson25, lesson26, lesson27, lesson28, lesson29, lesson30, lesson31];
 const boxesOnShelf = () => Array.from(document.querySelectorAll('.ls__box:not(.ls__box--empty)')).map((el) => [el.querySelector('.ls__box-name').textContent, el.querySelector('.ls__box-val').textContent]);
 const pixelSays = () => Array.from(document.querySelectorAll('.ls__say')).map((el) => el.textContent);
 beforeEach(() => {
@@ -319,11 +325,13 @@ test('lesson 1 has no shelf: the stage only shows boxes when a step asks for the
   expect(document.querySelector('.ls__shelf')).toBeNull();
 });
 
-test('a lesson that has not been rebuilt keeps its panel and has no stage', () => {
-  const lesson26 = require('../../pages/Lessons/lessonData/lesson26').default;
+test('every lesson in the course is on the model now, the last six included', () => {
+  // Lessons 26 to 31 were the last in the old layout: a panel of instructions
+  // beside an editor, and no stage. They were rebuilt on 14 November 2026.
+  expect(REBUILT.map((lesson) => lesson.id)).toEqual(Array.from({ length: 31 }, (_, i) => i + 1));
   render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson26} /></AuthContext.Provider>);
-  expect(screen.getByLabelText('What to do now')).toBeInTheDocument();
-  expect(document.querySelector('.ls')).toBeNull();
+  expect(screen.queryByLabelText('What to do now')).toBeNull();
+  expect(document.querySelector('.ls')).not.toBeNull();
 });
 
 // ── Predict, then Run (PRIMM) ───────────────────────────────────────────────

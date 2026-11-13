@@ -220,32 +220,32 @@
     "date": "2026-11-13"
   },
   "/lesson/26": {
-    "hash": "99a6abe6ad9fa825",
-    "date": "2026-08-30"
+    "hash": "49bc2ae54a5bdf50",
+    "date": "2026-11-13"
   },
   "/lesson/27": {
-    "hash": "667b656880bf84bc",
-    "date": "2026-08-30"
+    "hash": "e863ab2bf2e42e23",
+    "date": "2026-11-13"
   },
   "/lesson/28": {
-    "hash": "18af2fcd4a037ece",
-    "date": "2026-09-02"
+    "hash": "d0c16bc1b3670b99",
+    "date": "2026-11-13"
   },
   "/lesson/29": {
-    "hash": "0c6a7708fcdb6fde",
-    "date": "2026-08-30"
+    "hash": "9f82748f8b114d83",
+    "date": "2026-11-13"
   },
   "/lesson/3": {
     "hash": "a075a39ecf4986a3",
     "date": "2026-11-12"
   },
   "/lesson/30": {
-    "hash": "7e1abfd67b2d4bd0",
-    "date": "2026-08-30"
+    "hash": "0fa00cdc9a8c8ac5",
+    "date": "2026-11-13"
   },
   "/lesson/31": {
-    "hash": "d5fd6e3ddaf03e95",
-    "date": "2026-08-30"
+    "hash": "28cef3e80084ef64",
+    "date": "2026-11-13"
   },
   "/lesson/4": {
     "hash": "94a1bd90bfcef1cd",
@@ -295,8 +295,12 @@
     "hash": "4c481cd7af14fdcf",
     "date": "2026-10-28"
   },
+  "/schools": {
+    "hash": "e37f45d42a76949c",
+    "date": "2026-11-13"
+  },
   "/teach": {
-    "hash": "edfa8c4151f70509",
+    "hash": "7b8b030a95104b5a",
     "date": "2026-11-13"
   },
   "/teach/plans": {

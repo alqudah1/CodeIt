@@ -690,7 +690,9 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               everywhere else; it survived only because Lessons was not always
               in the bar. It is now, on every page, signed in or out. */}
           <div className="sl-strip__center">
-            <span className="sl-strip__title">Lesson {id} &middot; {title}</span>
+            {/* The page's one top-level heading: a screen reader's list of
+                headings starts here. It looks exactly as the span did. */}
+            <h1 className="sl-strip__title">Lesson {id} &middot; {title}</h1>
             <div
               className="sl-strip__bar-track"
               role="progressbar"

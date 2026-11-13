@@ -109,6 +109,10 @@ function SignIn() {
           <p className="ci-sub">{TEACH_LANDING.intro}</p>
           <p className="ci-sub tl__network">{TEACH_LANDING.network}</p>
           <p className="ci-sub tl__network">{TEACH_LANDING.method}</p>
+          {/* The person who says yes or no at a school is rarely the teacher. */}
+          <p className="ci-sub tl__network">
+            For your IT or privacy reviewer: <Link to="/schools">what to allow, what is stored about a child, and what CodeIt does not have</Link>.
+          </p>
           <div className="tl__btns">
             <Link className="ci-btn ci-btn--ink" to="/login" state={{ from: '/teach' }}>Sign in</Link>
             <Link className="ci-btn ci-btn--paper" to="/register?for=class" state={{ from: '/teach' }}>Make an account</Link>

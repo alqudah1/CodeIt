@@ -7,6 +7,7 @@ const crypto = require('node:crypto');
 const {
   loadPageMeta,
   loadPricing,
+  loadSchoolFacts,
   loadBlogPosts,
   loadLessons,
   loadGuidePages,
@@ -497,6 +498,7 @@ function relatedLessonsHtml(ids) {
 
 
 const PRESS_FACTS = loadPressFacts();
+const SCHOOL_FACTS = loadSchoolFacts();
 
 // The front page's short list of ready-made games, counted rather than typed.
 //
@@ -763,6 +765,20 @@ const IDENTITY_PAGES = [
       freeMonthlyAiBuilds: PRICING.FREE_MONTHLY_AI_BUILDS,
       lessonCount: LESSON_COUNT,
       ages: AGES,
+    }),
+  },
+  {
+    // For the person at a school who says yes or no: their IT or privacy
+    // reviewer. A reviewer who searches finds this generated page, and an
+    // assistant asked "is CodeIt safe for schools" reads this, not the React
+    // one. Same words as the React route, from src/data/schoolFacts.js. It is
+    // a WebPage: it describes the product, it is not a second product.
+    route: '/schools',
+    type: 'WebPage',
+    ...SCHOOL_FACTS({
+      contactEmail: COMPANY.contactEmail,
+      pricePerInterval: PRICING.PRICE_PER_INTERVAL,
+      maxChildren: 4,
     }),
   },
   {
@@ -1574,6 +1590,7 @@ function staticContent(page) {
     ['/faq', 'Questions parents ask first'],
     ['/about', 'About CodeIt'],
     ['/press', 'Press and facts'],
+    ['/schools', 'For schools: network, privacy and data'],
     ['/privacy', 'Privacy'],
     ['/terms', 'Terms'],
   ]

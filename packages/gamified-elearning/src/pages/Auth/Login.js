@@ -106,7 +106,7 @@ export default function Login() {
         </div>
 
         {/* Header */}
-        <header className="auth-header">
+        <div className="auth-header">
           <span className="auth-pill">{hasBuilderDraft ? 'Project waiting' : 'Welcome back'}</span>
           <h1>
             {hasBuilderDraft
@@ -120,7 +120,7 @@ export default function Login() {
               ? 'Pick up where you left off. Your projects and your avatar are waiting.'
               : 'Access your account, projects, and available learning tools.'}
           </p>
-        </header>
+        </div>
 
         {/* Form */}
         <form className="auth-form" onSubmit={handleSubmit(onSubmit)}>

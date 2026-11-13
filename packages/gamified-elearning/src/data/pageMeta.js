@@ -139,6 +139,10 @@ const PAGE_META = {
     title: 'Free Online Python Playground for Beginners | CodeIt',
     description: 'Write and run beginner Python directly in your browser with no download or local setup.',
   },
+  '/schools': {
+    title: 'CodeIt for Schools: Network, Privacy and Data | CodeIt',
+    description: 'What a school has to allow, what a classroom account stores about a child, what the AI receives, and what CodeIt does not have. Written for IT and privacy reviewers.',
+  },
   '/press': {
     title: 'CodeIt Press Kit: Facts, Figures and Contact',
     description: 'Everything needed to write accurately about CodeIt: what it is, what it costs, what it deliberately does not do, who built it, and how to use the logo.',

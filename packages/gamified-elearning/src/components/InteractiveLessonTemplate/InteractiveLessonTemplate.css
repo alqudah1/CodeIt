@@ -74,6 +74,10 @@
 }
 
 .sl-strip__title {
+  margin: 0;
+  line-height: inherit;
+  font-family: inherit;
+  letter-spacing: inherit;
   font-size: 0.8125rem;
   font-weight: 800;
   color: #2B2D42;

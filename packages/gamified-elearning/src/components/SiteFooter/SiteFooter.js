@@ -71,6 +71,7 @@ export default function SiteFooter() {
         <span>&copy; {new Date().getFullYear()} CodeIt</span>
         <Link to="/privacy">Privacy &amp; safety</Link>
         <Link to="/terms">Terms</Link>
+        <Link to="/schools">For schools</Link>
         <a href="/sitemap.xml">Sitemap</a>
       </div>
     </footer>

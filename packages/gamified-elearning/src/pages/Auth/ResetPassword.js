@@ -47,11 +47,11 @@ export default function ResetPassword() {
     <div className="auth-page" role="main">
       <div className="auth-card">
         <div className="auth-brand"><BrandLogo className="auth-logo" /></div>
-        <header className="auth-header">
+        <div className="auth-header">
           <span className="auth-pill">Secure reset</span>
           <h1>Choose a new password</h1>
           <p>Use at least 10 characters. This reset link can only be used once.</p>
-        </header>
+        </div>
         {token ? (
           <form className="auth-form" onSubmit={submit}>
             <div className="auth-field">
