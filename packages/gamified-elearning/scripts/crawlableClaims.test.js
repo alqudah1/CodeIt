@@ -31,6 +31,17 @@ const assert = require('node:assert');
 const fs = require('node:fs');
 const path = require('node:path');
 
+/** Every content file the generator renders, guides/ included. */
+function contentFiles(dir) {
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...contentFiles(full));
+    else if (/\.js$/.test(entry.name) && !/\.test\.js$/.test(entry.name)) out.push(full);
+  }
+  return out;
+}
+
 const RAW = fs.readFileSync(path.join(__dirname, 'generate-static-seo.js'), 'utf8');
 
 /**
@@ -124,9 +135,10 @@ test('no content the generator renders states the managed range as a range', () 
   const dataDir = path.join(__dirname, '..', 'src', 'data');
   const managed = /\b5\s*(?:to|-|\u2013|\u2014)\s*12\b/;
   const found = [];
-  for (const file of fs.readdirSync(dataDir).filter(f => /\.js$/.test(f) && !/\.test\.js$/.test(f))) {
+  for (const full of contentFiles(dataDir)) {
+    const file = path.relative(dataDir, full);
     let inBlock = false;
-    fs.readFileSync(path.join(dataDir, file), 'utf8').split('\n').forEach((line, i) => {
+    fs.readFileSync(full, 'utf8').split('\n').forEach((line, i) => {
       const text = line.trim();
       if (text.startsWith('/*')) inBlock = true;
       if (inBlock) { if (text.includes('*/')) inBlock = false; return; }
@@ -158,7 +170,7 @@ test('nothing says CodeIt cannot run a class while it can', () => {
   const stale = /no teacher dashboards?|not a schools product|no class management|no bulk account creation|not (currently )?a fit for a school|no school or district features|and schools \|/i;
   const files = [path.join(__dirname, 'generate-static-seo.js')];
   const dataDir = path.join(__dirname, '..', 'src', 'data');
-  for (const f of fs.readdirSync(dataDir)) if (/\.js$/.test(f) && !/\.test\.js$/.test(f)) files.push(path.join(dataDir, f));
+  files.push(...contentFiles(dataDir));
   const found = [];
   for (const file of files) {
     fs.readFileSync(file, 'utf8').split('\n').forEach((line, i) => {

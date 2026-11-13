@@ -20,6 +20,17 @@ const assert = require('node:assert');
 const fs = require('node:fs');
 const path = require('node:path');
 
+/** Every content file the generator renders, guides/ included. */
+function contentFiles(dir) {
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...contentFiles(full));
+    else if (/\.js$/.test(entry.name) && !/\.test\.js$/.test(entry.name)) out.push(full);
+  }
+  return out;
+}
+
 const ROOT = path.join(__dirname, '..', '..', '..');
 
 test('Vercel redirects the trailing-slash form of every page', () => {
@@ -37,8 +48,9 @@ test('the generator never writes a link or canonical with a trailing slash', () 
 test('the content the generator renders never links with a trailing slash', () => {
   const dataDir = path.join(__dirname, '..', 'src', 'data');
   const found = [];
-  for (const file of fs.readdirSync(dataDir).filter(f => /\.js$/.test(f) && !/\.test\.js$/.test(f))) {
-    const text = fs.readFileSync(path.join(dataDir, file), 'utf8');
+  for (const full of contentFiles(dataDir)) {
+    const file = path.relative(dataDir, full);
+    const text = fs.readFileSync(full, 'utf8');
     for (const m of text.matchAll(/\]\((\/[a-z0-9][a-z0-9/-]*\/)\)/gi)) found.push(`${file}: ${m[1]}`);
   }
   assert.deepEqual(found, [], 'a markdown link points at the slash form of a page');
