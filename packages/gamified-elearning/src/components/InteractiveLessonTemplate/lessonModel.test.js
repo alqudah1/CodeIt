@@ -24,6 +24,11 @@ import lesson12 from '../../pages/Lessons/lessonData/lesson12';
 import lesson13 from '../../pages/Lessons/lessonData/lesson13';
 import lesson14 from '../../pages/Lessons/lessonData/lesson14';
 import lesson15 from '../../pages/Lessons/lessonData/lesson15';
+import lesson16 from '../../pages/Lessons/lessonData/lesson16';
+import lesson17 from '../../pages/Lessons/lessonData/lesson17';
+import lesson18 from '../../pages/Lessons/lessonData/lesson18';
+import lesson19 from '../../pages/Lessons/lessonData/lesson19';
+import lesson20 from '../../pages/Lessons/lessonData/lesson20';
 import { trackExerciseCompletion, trackStaticLessonCompletion } from '../../utils/progressTracker';
 
 let mockSearch = '';
@@ -72,7 +77,7 @@ function mount(lesson = lesson1) {
   return render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson} /></AuthContext.Provider>);
 }
 // The lessons rebuilt on the model so far. Add a lesson here when it is rebuilt.
-const REBUILT = [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6, lesson7, lesson8, lesson9, lesson10, lesson11, lesson12, lesson13, lesson14, lesson15];
+const REBUILT = [lesson1, lesson2, lesson3, lesson4, lesson5, lesson6, lesson7, lesson8, lesson9, lesson10, lesson11, lesson12, lesson13, lesson14, lesson15, lesson16, lesson17, lesson18, lesson19, lesson20];
 const boxesOnShelf = () => Array.from(document.querySelectorAll('.ls__box:not(.ls__box--empty)')).map((el) => [el.querySelector('.ls__box-name').textContent, el.querySelector('.ls__box-val').textContent]);
 const pixelSays = () => Array.from(document.querySelectorAll('.ls__say')).map((el) => el.textContent);
 beforeEach(() => {
@@ -106,7 +111,8 @@ test('every step that is not the explanation has Pixel on a stage, with one shor
     // A step answered by tapping plays what its code prints once it is right.
     if (step.type === 'predict' || step.type === 'fillblank') expect(step.plays.length).toBeGreaterThan(0);
     // The practice and the last step must be the child's own: the starter, run unchanged, does not pass.
-    if (step.type === 'tryit' || step.type === 'challenge') expect({ at, own: typeof step.expectedDifferentOutput }).toEqual({ at, own: 'string' });
+    // (A step that prints something random is checked on its code instead.)
+    if (step.type === 'tryit' || step.type === 'challenge') expect({ at, own: typeof step.expectedDifferentOutput === 'string' || step.mustChangeCode === true }).toEqual({ at, own: true });
   }
 });
 
@@ -290,14 +296,27 @@ test('a list is one box with a slot for every item, numbered from 0', () => {
   expect(screen.getByLabelText("pets is a list: ['cat', 'dog']")).toBeInTheDocument();
 });
 
+test('a dictionary is one box whose slots carry their labels, not numbers', () => {
+  render(<LessonStage boxes={[{ name: 'pet', type: 'dict', text: "{'name': 'Rex', 'legs': 3}", items: ['"Rex"', '3'], labels: ['name', 'legs'] }]} runKey={1} />);
+  expect(Array.from(document.querySelectorAll('.ls__slots--named .ls__slot')).map((el) => el.textContent)).toEqual(['"Rex"name', '3legs']);
+  expect(screen.getByLabelText("pet is a dictionary: {'name': 'Rex', 'legs': 3}")).toBeInTheDocument();
+});
+
+test('a step that prints something random is the pupil\'s own when its code is', () => {
+  const dice = lesson19.steps.find((s) => s.id === 'tryit');
+  expect(checkCodeStep(dice, { code: dice.code, output: '3\n1\n6\n2\n5' })).toEqual({ passed: false, reason: 'unchanged-output' });
+  expect(checkCodeStep(dice, { code: dice.code.replace(/\n/g, '\n '), output: '3' })).toEqual({ passed: false, reason: 'unchanged-output' });
+  expect(checkCodeStep(dice, { code: dice.code.replace('(1, 6)', '(1, 20)'), output: '17\n3\n9\n20\n1' })).toEqual({ passed: true });
+});
+
 test('lesson 1 has no shelf: the stage only shows boxes when a step asks for them', () => {
   mount();
   expect(document.querySelector('.ls__shelf')).toBeNull();
 });
 
 test('a lesson that has not been rebuilt keeps its panel and has no stage', () => {
-  const lesson16 = require('../../pages/Lessons/lessonData/lesson16').default;
-  render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson16} /></AuthContext.Provider>);
+  const lesson21 = require('../../pages/Lessons/lessonData/lesson21').default;
+  render(<AuthContext.Provider value={{ user: null, token: null }}><InteractiveLessonTemplate lessonData={lesson21} /></AuthContext.Provider>);
   expect(screen.getByLabelText('What to do now')).toBeInTheDocument();
   expect(document.querySelector('.ls')).toBeNull();
 });

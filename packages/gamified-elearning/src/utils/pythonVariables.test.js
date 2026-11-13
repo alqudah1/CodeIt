@@ -32,6 +32,13 @@ test('a list comes back as slots, with the ones that do not fit counted', () => 
   ]);
 });
 
+test('a dictionary comes back as slots with their labels', () => {
+  const py = { runPython: () => JSON.stringify([{ name: 'pet', type: 'dict', value: "{'name': 'Rex', 'legs': 3}", items: [['str', 'Rex'], ['int', '3']], labels: ['name', 'legs'], more: 0 }]) };
+  expect(readVariables(py, 'pet = {"name": "Rex", "legs": 3}')).toEqual([
+    { name: 'pet', type: 'dict', text: "{'name': 'Rex', 'legs': 3}", items: ['"Rex"', '3'], more: 0, labels: ['name', 'legs'] },
+  ]);
+});
+
 test('a shelf that cannot be read is an empty shelf', () => {
   expect(readVariables({ runPython: () => { throw new Error('boom'); } }, 'a = 1')).toEqual([]);
   expect(readVariables(null, 'a = 1')).toEqual([]);

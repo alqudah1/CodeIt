@@ -48,6 +48,10 @@ export function readVariables(py, code) {
       '    if isinstance(v, list):',
       `        box["items"] = [[type(x).__name__, __codeit_show(x)] for x in v[:${SLOTS}]]`,
       `        box["more"] = max(0, len(v) - ${SLOTS})`,
+      '    if isinstance(v, dict):',
+      `        box["items"] = [[type(x).__name__, __codeit_show(x)] for x in list(v.values())[:${SLOTS}]]`,
+      `        box["labels"] = [str(k) for k in list(v.keys())[:${SLOTS}]]`,
+      `        box["more"] = max(0, len(v) - ${SLOTS})`,
       '    return box',
       `__codeit_json.dumps([__codeit_box(k) for k in ${JSON.stringify(names)} if k in globals()])`,
     ].join('\n');
@@ -55,6 +59,8 @@ export function readVariables(py, code) {
     return rows.map((row) => {
       const box = { name: row.name, type: row.type, text: boxText(row.type, row.value) };
       if (Array.isArray(row.items)) { box.items = row.items.map(([type, value]) => boxText(type, value)); box.more = Number(row.more) || 0; }
+      // A dictionary's slots are named, not numbered.
+      if (Array.isArray(row.labels)) box.labels = row.labels.map(String);
       return box;
     });
   } catch (e) {

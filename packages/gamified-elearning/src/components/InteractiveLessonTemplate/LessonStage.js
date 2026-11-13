@@ -106,10 +106,10 @@ export default function LessonStage({ lines = [], boxes = null, runKey = 0, idle
               {Array.isArray(box.items) ? (
                 /* A list is one box with slots, and every slot has its number
                    under it, starting at 0: the thing a list lesson is about. */
-                <span className="ls__box-val ls__slots" aria-label={`${box.name} is a list: ${box.text}`}>
+                <span className={`ls__box-val ls__slots${box.labels ? ' ls__slots--named' : ''}`} aria-label={`${box.name} is a ${box.labels ? 'dictionary' : 'list'}: ${box.text}`}>
                   {box.items.length === 0 && <span className="ls__slot ls__slot--none"><b>empty</b></span>}
                   {box.items.map((item, k) => (
-                    <span key={k} className="ls__slot"><b>{item}</b><i>{k}</i></span>
+                    <span key={k} className="ls__slot"><b>{item}</b><i>{box.labels ? box.labels[k] : k}</i></span>
                   ))}
                   {box.more > 0 && <span className="ls__slot ls__slot--more"><b>+{box.more}</b></span>}
                 </span>

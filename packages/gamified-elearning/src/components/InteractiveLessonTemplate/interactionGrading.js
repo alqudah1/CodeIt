@@ -66,10 +66,21 @@ function checkOrder(step, arranged) {
  * lesson is teaching? Either can be omitted; a step with neither falls back to
  * "it ran and printed something", which is at least honest about being weak.
  */
+/** Code with its spacing ignored, so retyping a space is not a change. */
+function squash(code) {
+  return String(code).replace(/\s+/g, '');
+}
+
 function checkCodeStep(step, { code = '', output = '' } = {}) {
   const trimmedOutput = String(output).trim();
   if (!trimmedOutput) return { passed: false, reason: 'no-output' };
   if (step?.expectedDifferentOutput != null && trimmedOutput === String(step.expectedDifferentOutput).trim()) {
+    return { passed: false, reason: 'unchanged-output' };
+  }
+
+  // A step whose output is different on every run (a dice, a random pick)
+  // cannot be told from its starter by what it printed. The code can.
+  if (step?.mustChangeCode && typeof step.code === 'string' && squash(code) === squash(step.code)) {
     return { passed: false, reason: 'unchanged-output' };
   }
 

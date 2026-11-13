@@ -200,3 +200,12 @@
   .sl-lesson--staged .ls__shelf:has(.ls__box--empty) { min-height: 0; padding: 7px 12px; }
   .sl-lesson--staged .ls__box--empty { display: none; }
 }
+
+/* A dictionary: the same slots as a list, on a yellow box, with each slot's
+   label under it where a list has its number. */
+.ls__box--list:has(.ls__slots--named) .ls__box-val { background: #FFE08A; }
+.ls__slots--named .ls__slot i { font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace; font-size: .74rem; opacity: 1; }
+
+/* Spaces are part of a value: "  hello  " must look different from "hello",
+   or a lesson about stripping spaces has nothing to show. */
+.ls__box-val, .ls__slot b { white-space: pre-wrap; }
