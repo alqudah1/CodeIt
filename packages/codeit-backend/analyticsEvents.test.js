@@ -132,3 +132,20 @@ test('an instant game is a generation with a path, not one with no meta', () => 
   assert.equal(normalizeMeta('generation_complete', 'recipe-rules'), 'recipe-rules');
   assert.equal(normalizeMeta('builder_start', 'game'), 'game');
 });
+
+// ── Why a publish was refused ──────────────────────────────────────────────
+//
+// publish_refused carried an empty meta set, so normalizeMeta dropped the
+// reason and every refusal was recorded as a bare count. A parent who has to
+// upgrade and a younger child on a managed profile looked the same in the
+// data, and the first of those is the closest anyone gets to buying.
+test('every publish refusal code the server can send is recordable', () => {
+  const { checkPublishAllowance } = require('./entitlements');
+  const codes = [checkPublishAllowance(null, { studentAge: 9 }).code, 'PLAN_UPGRADE_REQUIRED'];
+  for (const code of codes) {
+    assert.strictEqual(
+      normalizeMeta('publish_refused', code), code.toLowerCase(),
+      `the server can refuse a publish with ${code}, and analytics throws the reason away`
+    );
+  }
+});

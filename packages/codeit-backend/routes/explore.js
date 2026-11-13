@@ -7,6 +7,7 @@ const jwt        = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
 const { SHOWCASE_PROJECTS, findShowcaseProject } = require('../showcaseProjects');
 const { questFor } = require('../today');
+const { isClassAccountSql } = require('../classAccounts');
 
 function optionalAuth(req, res, next) {
   const header = req.headers['authorization'];
@@ -58,6 +59,15 @@ function formatProject(row, likedSet) {
 }
 
 // ── GET /api/explore ──────────────────────────────────────────────
+//
+// The public gallery: anyone, signed in or not, sees every project here.
+// It listed everything published, which included every game a child made
+// in a classroom. In a lesson, Publish is how a game reaches the projector
+// and the class arcade, so all twelve lesson plans have every child press
+// it; and every one of those games then appeared in this gallery's "newest"
+// row, with its title and the first 800 characters of its code, for any
+// stranger browsing. A class account's work is for its class. It is shown
+// there, and never here.
 router.get('/', optionalAuth, async (req, res) => {
   const limit  = Math.min(parseInt(req.query.limit) || 12, 20);
   const userId = req.user?.user_id || null;
@@ -72,6 +82,7 @@ router.get('/', optionalAuth, async (req, res) => {
     FROM ai_projects p
     LEFT JOIN User_Character uc ON p.user_id = uc.user_id
     WHERE p.is_public = 1
+      AND NOT ${isClassAccountSql('p.user_id')}
   `;
 
   // ── Today's build ─────────────────────────────────────────────────────
@@ -96,7 +107,7 @@ router.get('/', optionalAuth, async (req, res) => {
       pool.query(base + ` ORDER BY p.remix_count DESC, p.view_count DESC LIMIT ?`,   [limit]),
       pool.query(base + ` AND LOWER(TRIM(p.prompt)) = ? AND p.created_at >= ? ORDER BY p.created_at DESC LIMIT 4`, [quest.prompt.toLowerCase(), dayStart]),
       // The count is its own query: "4 made today" must not mean "at least 4".
-      pool.query(`SELECT COUNT(*) AS made FROM ai_projects p WHERE p.is_public = 1 AND LOWER(TRIM(p.prompt)) = ? AND p.created_at >= ?`, [quest.prompt.toLowerCase(), dayStart]),
+      pool.query(`SELECT COUNT(*) AS made FROM ai_projects p WHERE p.is_public = 1 AND NOT ${isClassAccountSql('p.user_id')} AND LOWER(TRIM(p.prompt)) = ? AND p.created_at >= ?`, [quest.prompt.toLowerCase(), dayStart]),
     ]);
 
     // Collect liked project ids for the current user in one query

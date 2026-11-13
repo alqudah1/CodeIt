@@ -92,7 +92,12 @@ const EVENT_META = Object.freeze({
   python_quest: new Set(['guest', 'done', 'again']),
   project_explained: new Set(),
   builder_look_inside: new Set(),
-  publish_refused: new Set(),
+  // Why a publish was refused, which was never recorded: the set was empty,
+  // so normalizeMeta dropped the code and every refusal landed as a bare
+  // count with no cause. A parent who has to upgrade and a younger child on
+  // a managed profile looked identical, and the first of those is the
+  // closest anybody gets to buying.
+  publish_refused: new Set(['managed_profile_private', 'plan_upgrade_required']),
   publish_celebrate_share: new Set(),
   parent_evidence_open: new Set(),
   billing_portal_open: new Set(),

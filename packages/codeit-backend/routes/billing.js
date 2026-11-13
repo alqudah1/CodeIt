@@ -378,11 +378,18 @@ async function applyEvent(event) {
 // ── Shared helpers for other routers ─────────────────────────────────────────
 
 /**
- * Paid-plan gate for publishing. Falls open when billing is not configured, so
- * turning Stripe off can never strand a family that could publish yesterday.
+ * Gate for publishing. Falls open on the PAID rule when billing is not
+ * configured, so turning Stripe off can never strand a family that could
+ * publish yesterday.
+ *
+ * It used to return allowed straight away in that case, which quietly turned
+ * off the rule that is not about money: a managed profile stays private. That
+ * is a safety rule and must hold whether or not Stripe is configured, so an
+ * unconfigured deploy now runs it against the free plan instead of skipping
+ * it. The free plan can publish, so only the safety rule can refuse here.
  */
 async function assertCanPublish(userId, context) {
-  if (!isConfigured()) return { allowed: true };
+  if (!isConfigured()) return checkPublishAllowance(null, context);
   const subscription = await store.getSubscriptionByUserId(userId);
   return checkPublishAllowance(subscription, context);
 }

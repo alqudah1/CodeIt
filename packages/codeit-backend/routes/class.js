@@ -28,6 +28,7 @@ const { recordUserActivity } = require('../userActivity');
 const { cleanClassName, cleanFirstName, isCode, makeCode, normaliseCode, studentUsername } = require('../classes');
 const { LESSON_BASE, POWERS, powerByLessonId, powerStates } = require('../powers');
 const { eraseLearner } = require('./../learnerErasure');
+const { isClassAccountRow } = require('../classAccounts');
 
 const router = express.Router();
 
@@ -268,7 +269,7 @@ router.delete('/:code/student/:id', requireAuth, async (req, res) => {
     // A class account has no email of any kind. Anything else is somebody's
     // own account that happened to join, so it leaves the class and keeps
     // everything it owns.
-    const isClassAccount = !member.email && !member.parent_email;
+    const isClassAccount = isClassAccountRow(member);
     if (!isClassAccount) {
       await connection.query('DELETE FROM class_members WHERE class_id = ? AND user_id = ?', [klass.id, studentId]);
       await connection.commit();
