@@ -13,4 +13,8 @@
 // First, before anything that might read saved data: see utils/safeStorage.js.
 import './utils/safeStorage';
 
-import('./boot');
+// There are two builds of the app (see scripts/build.js). When a network has
+// stopped the main one's files, the watcher in public/index.html starts the
+// small-files one in its place and says so here. The main one then stands
+// aside, so the two are never both on the page.
+if (process.env.REACT_APP_LITE === '1' || !(window.__codeitBoot && window.__codeitBoot.small)) import('./boot');

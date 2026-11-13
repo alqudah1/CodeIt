@@ -73,7 +73,15 @@ function loadEsmDefault(filePath, provided = null) {
 
 /** The starter games, including the short list the front page shows. */
 function loadStarterGames() {
-  const module_ = loadEsmDefault(path.join(SRC, 'pages/Builder/starterGames.js'));
+  // Each game is a file of its own under starterGames/, so that no script the
+  // site ships is large. They are read first and handed to the list.
+  const dir = path.join(SRC, 'pages/Builder/starterGames');
+  const shared = loadEsmDefault(path.join(dir, 'shared.js'));
+  const games = {};
+  for (const file of fs.readdirSync(dir).filter((name) => name.endsWith('.js') && name !== 'shared.js').sort()) {
+    Object.assign(games, loadEsmDefault(path.join(dir, file), shared));
+  }
+  const module_ = loadEsmDefault(path.join(SRC, 'pages/Builder/starterGames.js'), games);
   if (!Array.isArray(module_.HOME_PICKS) || !Array.isArray(module_.STARTER_GAMES)) {
     throw new Error('content-loader: starterGames.js did not export HOME_PICKS and STARTER_GAMES');
   }

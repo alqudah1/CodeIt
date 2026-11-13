@@ -126,33 +126,98 @@
          the playground should be. The app's script had not run on their
          network and the page said nothing about it, so the teacher could only
          write "it doesn't work". This watches from outside the app, so it
-         still runs when the app's own file is the thing that is blocked. If
-         the app has not started a few seconds after the page loaded, it says
-         so, says what it saw (a file that did not arrive, or an error), and
+         still runs when the app's own file is the thing that is blocked.
+
+         13 November 2026: the same school's filter turned out to answer 403
+         to the app's large script files and let every small one through. So
+         there is a second build of the app made only of small files (see
+         scripts/build.js). When this sees one of the app's files fail to
+         arrive before the app has started, it starts that build in its
+         place, and remembers to for the rest of the visit.
+
+         If neither starts, a few seconds after the page loaded it says so,
+         says what it saw (a file that did not arrive, or an error), and
          points at /check.html, which tests everything from that computer.
 
          It is written in plain old JavaScript on purpose: it has to run in a
          browser too old to run the app, to be able to say that. -->
     <script id="codeit-boot-watch">
       (function () {
-        var boot = window.__codeitBoot = { seen: [], told: false };
+        var KEY = 'codeit.small-files';
+        var boot = window.__codeitBoot = { seen: [], told: false, small: false, app: false };
         function note(text) { if (boot.seen.length < 6 && boot.seen.indexOf(text) < 0) boot.seen.push(text); }
+        function started() {
+          var root = document.getElementById('root');
+          return !!root && root.children.length > 0 && !root.querySelector('.static-home-shell, .static-route-shell');
+        }
+        function count(why) {
+          // One count, with the reason and nothing else, so we learn that it
+          // happens without waiting for an email.
+          try {
+            var x = new XMLHttpRequest();
+            x.open('POST', '/api/analytics/event', true);
+            x.setRequestHeader('Content-Type', 'application/json');
+            x.send(JSON.stringify({ event_name: 'boot_failed', meta: why }));
+          } catch (err) {}
+        }
+        // The guides are whole articles in the page itself, and the app's copy
+        // of them is one large file. Where large files are stopped, the
+        // article that is already on screen is the better thing to leave.
+        function staysPlain() { return /^\/guide(\/|$)/.test(location.pathname); }
+        function startSmall() {
+          if (boot.small || boot.app || staysPlain()) return;
+          // No connection at all is not a filter: nothing would arrive.
+          if (navigator.onLine === false) return;
+          boot.small = true;
+          try { window.sessionStorage.setItem(KEY, '1'); } catch (err) {}
+          function failed(what) { boot.small = 'failed'; note('did not arrive: ' + what); tell(); }
+          try {
+            var x = new XMLHttpRequest();
+            x.open('GET', '/lite/asset-manifest.json', true);
+            x.onload = function () {
+              var files = null;
+              try { files = JSON.parse(x.responseText).files; } catch (err) {}
+              if (!files || !files['main.js']) { failed('/lite/asset-manifest.json'); return; }
+              if (files['main.css']) {
+                var link = document.createElement('link');
+                link.rel = 'stylesheet'; link.href = files['main.css'];
+                document.head.appendChild(link);
+              }
+              var script = document.createElement('script');
+              script.src = files['main.js'];
+              document.head.appendChild(script);
+              count('small-files');
+              setTimeout(tell, 15000);
+            };
+            x.onerror = function () { failed('/lite/asset-manifest.json'); };
+            x.send();
+          } catch (err) { failed('/lite/asset-manifest.json'); }
+        }
+        function appFile(url) { return url.indexOf('/static/js/') >= 0 && url.indexOf('/lite/') < 0; }
         window.addEventListener('error', function (e) {
-          var t = e && e.target;
-          if (t && t !== window && (t.src || t.href)) note('did not arrive: ' + String(t.src || t.href).replace(location.origin, ''));
+          var t = e && e.target, url;
+          if (t && t !== window && (t.src || t.href)) {
+            url = String(t.src || t.href).replace(location.origin, '');
+            note('did not arrive: ' + url);
+            if (appFile(url)) startSmall();
+            // The small-files version was stopped as well: say so now.
+            else if (url.indexOf('/lite/static/js/') >= 0 && !started()) { boot.small = 'failed'; tell(); }
+          }
           // A script that begins with "<" is not a script: a web page came back in its place, which is how a filter blocks a file.
-          else if (e && e.message && /Unexpected token '?</.test(e.message) && /\.js(\?|$)/.test(String(e.filename || ''))) note('did not arrive: ' + String(e.filename).replace(location.origin, '') + ' (a web page came back in its place)');
+          else if (e && e.message && /Unexpected token '?</.test(e.message) && /\.js(\?|$)/.test(String(e.filename || ''))) {
+            url = String(e.filename).replace(location.origin, '');
+            note('did not arrive: ' + url + ' (a web page came back in its place)');
+            if (appFile(url)) startSmall();
+          }
           else if (e && e.message) note('error: ' + e.message + (e.filename ? ' (' + String(e.filename).split('/').pop() + ', line ' + e.lineno + ')' : ''));
         }, true);
         window.addEventListener('unhandledrejection', function (e) {
           var r = e && e.reason; note('error: ' + ((r && r.message) || r || 'a promise was rejected'));
         });
-        function started() {
-          var root = document.getElementById('root');
-          return !!root && root.children.length > 0 && !root.querySelector('.static-home-shell, .static-route-shell');
-        }
         function tell() {
           if (boot.told || started()) return;
+          // The small-files version has been asked for and is still on its way.
+          if (boot.small === true && !boot.waited) { boot.waited = true; setTimeout(tell, 15000); return; }
           boot.told = true;
           var blocked = false, i;
           for (i = 0; i < boot.seen.length; i += 1) if (boot.seen[i].indexOf('did not arrive') === 0) blocked = true;
@@ -181,15 +246,11 @@
             bar.appendChild(small);
           }
           (document.body || document.documentElement).appendChild(bar);
-          // One count, with the reason and nothing else, so we learn that it
-          // happens without waiting for an email.
-          try {
-            var x = new XMLHttpRequest();
-            x.open('POST', '/api/analytics/event', true);
-            x.setRequestHeader('Content-Type', 'application/json');
-            x.send(JSON.stringify({ event_name: 'boot_failed', meta: why }));
-          } catch (err) {}
+          count(why);
         }
+        // Earlier in this visit the main version was stopped: go straight to
+        // the small-files one, without asking for the files that will not come.
+        try { if (window.sessionStorage.getItem(KEY) === '1') startSmall(); } catch (err) {}
         // The app's script is deferred, so it has run by the time "load" fires.
         // A few seconds after that with nothing on screen is not slowness.
         window.addEventListener('load', function () { setTimeout(tell, 5000); });

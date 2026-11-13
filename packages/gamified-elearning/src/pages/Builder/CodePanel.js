@@ -29,7 +29,11 @@ import { canRestore, costOfRestoring } from './codeSafety';
 import './CodePanel.css';
 import { whatIsHere, whereMyCodeStarts } from './yourOwnCode';
 
-const CodeEditor = lazy(() => import('./CodeEditor'));
+// The coloured editor if it arrives. If its file is stopped on the way (a
+// school filter that refuses large scripts), the plain one, which is small.
+const CodeEditor = lazy(() => (process.env.REACT_APP_LITE === '1'
+  ? import('./PlainCodeEditor')
+  : import('./CodeEditor').catch(() => import('./PlainCodeEditor'))));
 
 /** How long to wait after the last keystroke before running the project. */
 const RUN_DEBOUNCE_MS = 700;

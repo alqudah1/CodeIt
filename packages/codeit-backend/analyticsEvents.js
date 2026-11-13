@@ -195,8 +195,10 @@ const EVENT_META = Object.freeze({
   // Sent by the small watcher in index.html, from outside the app, when a
   // page loaded and the app in it never ran: a school filter stopping the
   // script, or an error before the first screen. Three reasons and nothing
-  // else. It carries no address, no page and no account.
-  boot_failed: new Set(['script-blocked', 'script-error', 'no-start']),
+  // else. It carries no address, no page and no account. 'small-files' is
+  // the fourth: the main build was stopped on the way and the page started
+  // the small-files build in its place, so the visit went ahead.
+  boot_failed: new Set(['script-blocked', 'script-error', 'no-start', 'small-files']),
 });
 
 const CLIENT_REPORTED_EVENTS = new Set([

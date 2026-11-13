@@ -14,6 +14,8 @@
     "@testing-library/user-event": "^13.5.0",
     "@uiw/react-codemirror": "^4.23.10",
     "axios": "^1.19.0",
+    "preact": "11.2.0",
+    "preact-render-to-string": "6.8.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.62.0",
@@ -23,7 +25,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "node scripts/build.js",
     "postbuild": "node scripts/generate-static-seo.js",
     "seo:notify": "node scripts/submit-indexnow.js",
     "test": "react-scripts test",

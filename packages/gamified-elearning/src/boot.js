@@ -12,7 +12,15 @@ import './styles/reachable.css';
 import './styles/arcade.css';
 import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+// Said before anything is drawn: from here on the app is running, and the
+// watcher in public/index.html must not start a second one beside it.
+if (window.__codeitBoot) window.__codeitBoot.app = true;
+
+const container = document.getElementById('root');
+// The small-files version is drawn by a different library, which would try to
+// reuse the plain page that is already there. It starts from an empty box.
+if (process.env.REACT_APP_LITE === '1') container.textContent = '';
+const root = ReactDOM.createRoot(container);
 root.render(
   <React.StrictMode>
     <App />

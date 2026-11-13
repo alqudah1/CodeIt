@@ -1,0 +1,68 @@
+/* The plain editor: line numbers beside a textarea, sized like the coloured one. */
+.plain-editor {
+  display: flex;
+  align-items: stretch;
+  min-height: 120px;
+  background: #ffffff;
+  color: #35220e;
+  font: 0.92rem/1.5 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Menlo, Consolas, monospace;
+}
+
+.plain-editor__numbers {
+  flex: 0 0 auto;
+  min-width: 2.6em;
+  padding: 8px 8px 8px 6px;
+  overflow: hidden;
+  text-align: right;
+  background: #f7f1ea;
+  color: #8a7768;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.plain-editor__numbers span {
+  display: block;
+}
+
+.plain-editor__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 10px;
+  border: 0;
+  outline: 0;
+  resize: none;
+  overflow: auto;
+  white-space: pre;
+  tab-size: 4;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.plain-editor:focus-within {
+  box-shadow: inset 0 0 0 2px #f87824;
+}
+
+.plain-editor--dark {
+  background: #1f2430;
+  color: #f4f1ea;
+}
+
+.plain-editor--dark .plain-editor__numbers {
+  background: #171b24;
+  color: #9aa3b5;
+}
+
+/* Where the coloured editor is about to be: the code, readable, the same size. */
+.cr-editor-wait {
+  margin: 0;
+  padding: 8px 10px 8px 3.4em;
+  overflow: auto;
+  background: #ffffff;
+  color: #35220e;
+  font: 0.92rem/1.5 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Menlo, Consolas, monospace;
+  white-space: pre;
+  box-sizing: border-box;
+}

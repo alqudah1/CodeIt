@@ -24,6 +24,7 @@ const CHECK_SCRIPT = scriptOf(CHECK, '<script>');
 
 describe('the watcher in index.html', () => {
   let sent;
+  let asked;
   let added;
   beforeEach(() => {
     jest.useFakeTimers();
@@ -34,11 +35,33 @@ describe('the watcher in index.html', () => {
     document.body.innerHTML = '<div id="root"><main class="static-home-shell"><h1>Plain text</h1></main></div>';
     delete window.__codeitBoot;
     sent = [];
-    window.XMLHttpRequest = function XHR() { this.open = (m, url) => { this.url = url; }; this.setRequestHeader = () => {}; this.send = (body) => sent.push([this.url, JSON.parse(body)]); };
-    // eslint-disable-next-line no-new-func
-    new Function(WATCH)();
+    asked = [];
+    window.sessionStorage.clear();
+    window.history.pushState({}, '', '/playground');
+    // What it posts is kept in `sent`; what it asks for (the small-files
+    // version's list of files) waits in `asked` for the test to answer.
+    window.XMLHttpRequest = function XHR() {
+      this.open = (method, url) => { this.method = method; this.url = url; };
+      this.setRequestHeader = () => {};
+      this.send = (body) => { if (this.method === 'GET') asked.push(this); else sent.push([this.url, JSON.parse(body)]); };
+    };
+    start();
   });
+  // eslint-disable-next-line no-new-func
+  const start = () => new Function(WATCH)();
+  const SMALL = { files: { 'main.js': '/lite/static/js/main.small1.js', 'main.css': '/lite/static/css/main.small1.css' } };
+  const answer = (request, body) => { request.responseText = JSON.stringify(body); request.onload(); };
+  const stopFile = (src) => {
+    const script = document.createElement('script');
+    script.src = src;
+    document.body.appendChild(script);
+    script.dispatchEvent(new Event('error'));          // load errors do not bubble: the watcher listens on capture
+    return script;
+  };
   afterEach(() => {
+    document.head.querySelectorAll('script[src*="/lite/"], link[href*="/lite/"]').forEach((node) => node.remove());
+    window.sessionStorage.clear();
+    window.history.pushState({}, '', '/');
     for (const [type, fn, opts] of added) window.removeEventListener(type, fn, opts);
     jest.restoreAllMocks();
     jest.useRealTimers();
@@ -76,18 +99,79 @@ describe('the watcher in index.html', () => {
     expect(sent).toHaveLength(1);
   });
 
-  test('a script that did not arrive is named, and counted as blocked', () => {
-    const script = document.createElement('script');
-    script.src = '/static/js/main.abc123.js';
-    document.body.appendChild(script);
-    const failed = new Event('error');
-    script.dispatchEvent(failed);                    // load errors do not bubble: the watcher listens on capture
+  test('the app\'s files are stopped: the small-files version is started in their place', () => {
+    stopFile('/static/js/2627.abc123.chunk.js');
+    expect(asked.map((request) => request.url)).toEqual(['/lite/asset-manifest.json']);
+    expect(window.__codeitBoot.small).toBe(true);     // the main entry file reads this and stands aside
+    answer(asked[0], SMALL);
+    expect(document.head.querySelector('script[src="/lite/static/js/main.small1.js"]')).not.toBeNull();
+    expect(document.head.querySelector('link[rel="stylesheet"][href="/lite/static/css/main.small1.css"]')).not.toBeNull();
+    expect(sent).toEqual([['/api/analytics/event', { event_name: 'boot_failed', meta: 'small-files' }]]);
+    // It starts, and nothing more is said.
+    document.getElementById('root').innerHTML = '<div class="app"><header>CodeIt</header></div>';
     window.dispatchEvent(new Event('load'));
-    jest.advanceTimersByTime(5500);
-    expect(note()).toHaveTextContent('did not arrive: ');
-    expect(note()).toHaveTextContent('/static/js/main.abc123.js');
+    jest.advanceTimersByTime(60000);
+    expect(note()).toBeNull();
+    expect(sent).toHaveLength(1);
+  });
+
+  test('it is asked for once, however many files are stopped', () => {
+    stopFile('/static/js/2627.abc123.chunk.js');
+    stopFile('/static/js/579.abc123.chunk.js');
+    stopFile('/static/js/9137.abc123.chunk.js');
+    expect(asked).toHaveLength(1);
+  });
+
+  test('it is remembered for the rest of the visit, so the next page does not wait for files that will not come', () => {
+    stopFile('/static/js/2627.abc123.chunk.js');
+    expect(window.sessionStorage.getItem('codeit.small-files')).toBe('1');
+    asked = [];
+    delete window.__codeitBoot;
+    start();                                           // the next page load in the same tab
+    expect(asked.map((request) => request.url)).toEqual(['/lite/asset-manifest.json']);
+    expect(window.__codeitBoot.small).toBe(true);
+  });
+
+  test('an app that is already running is never joined by a second one', () => {
+    window.__codeitBoot.app = true;                    // boot.js says this before it draws anything
+    stopFile('/static/js/6042.abc123.chunk.js');       // a later page's file is stopped
+    expect(asked).toEqual([]);
+    expect(window.__codeitBoot.small).toBe(false);
+  });
+
+  test('a guide is left as the article already on the page', () => {
+    window.history.pushState({}, '', '/guide/scratch-vs-python');
+    stopFile('/static/js/2627.abc123.chunk.js');
+    expect(asked).toEqual([]);
+  });
+
+  test('if the small-files version is stopped as well, it says so, names the file, and counts it as blocked', () => {
+    stopFile('/static/js/2627.abc123.chunk.js');
+    answer(asked[0], SMALL);
+    stopFile('/lite/static/js/main.small1.js');
+    expect(note()).toHaveTextContent('CodeIt could not start on this computer.');
+    expect(note()).toHaveTextContent('did not arrive: /static/js/2627.abc123.chunk.js');
+    expect(note()).toHaveTextContent('/lite/static/js/main.small1.js');
+    expect(note()).toHaveTextContent('usually the web filter');
+    expect(sent.map((one) => one[1].meta)).toEqual(['small-files', 'script-blocked']);
+  });
+
+  test('if its list of files does not arrive, that is said too', () => {
+    stopFile('/static/js/main.abc123.js');
+    asked[0].onerror();
+    expect(note()).toHaveTextContent('did not arrive: /static/js/main.abc123.js');
     expect(note()).toHaveTextContent('usually the web filter');
     expect(sent[0][1]).toEqual({ event_name: 'boot_failed', meta: 'script-blocked' });
+  });
+
+  test('a small-files version that never draws anything is not waited for for ever', () => {
+    stopFile('/static/js/2627.abc123.chunk.js');
+    answer(asked[0], SMALL);
+    window.dispatchEvent(new Event('load'));
+    jest.advanceTimersByTime(6000);
+    expect(note()).toBeNull();                         // it has been asked for: give it time
+    jest.advanceTimersByTime(30000);
+    expect(note()).toHaveTextContent('CodeIt could not start on this computer.');
   });
 
   test('an error before the first screen is shown in its own words', () => {
@@ -108,8 +192,8 @@ describe('the watcher in index.html', () => {
     boom.filename = `${window.location.origin}/static/js/main.abc123.js`;
     boom.lineno = 1;
     window.dispatchEvent(boom);
-    window.dispatchEvent(new Event('load'));
-    jest.advanceTimersByTime(5500);
+    expect(asked).toHaveLength(1);                     // the small-files version is tried for this too
+    asked[0].onerror();
     expect(note()).toHaveTextContent('did not arrive: /static/js/main.abc123.js (a web page came back in its place)');
     expect(note()).toHaveTextContent('usually the web filter');
     expect(sent[0][1].meta).toBe('script-blocked');
@@ -122,10 +206,10 @@ describe('the watcher in index.html', () => {
     expect(note()).not.toBeNull();
   });
 
-  test('the three reasons it can send are the three the server accepts', () => {
+  test('the reasons it can send are the ones the server accepts', () => {
     const server = fs.readFileSync(path.join(ROOT, '..', 'codeit-backend', 'analyticsEvents.js'), 'utf8');
     const allowed = /boot_failed: new Set\(\[([^\]]+)\]\)/.exec(server)[1].split(',').map((s) => s.trim().replace(/'/g, '')).sort();
-    const used = Array.from(new Set(WATCH.match(/'(script-blocked|script-error|no-start)'/g).map((s) => s.replace(/'/g, '')))).sort();
+    const used = Array.from(new Set(WATCH.match(/'(script-blocked|script-error|no-start|small-files)'/g).map((s) => s.replace(/'/g, '')))).sort();
     expect(used).toEqual(allowed);
   });
 });
@@ -152,12 +236,102 @@ describe('the check page', () => {
   });
 
   test('it checks the app, the server, saving and Python, and the address has a short form', () => {
-    for (const name of ['The app\\\'s first file (its entry script)', 'The app itself (lessons, playground, studio)', 'CodeIt starts', 'The CodeIt server', 'Saving on this computer', 'The Python files', 'Python runs']) expect(CHECK_SCRIPT).toContain(name);
+    for (const name of ['The app\\\'s first file (its entry script)', 'The app itself (lessons, playground, studio)', 'The small-files version', 'Test scripts with nothing in them but numbers', 'CodeIt starts', 'The CodeIt server', 'Saving on this computer', 'The Python files', 'Python runs']) expect(CHECK_SCRIPT).toContain(name);
     const vercel = JSON.parse(fs.readFileSync(path.join(ROOT, '..', '..', 'vercel.json'), 'utf8'));
     const short = vercel.rewrites.findIndex((r) => r.source === '/check' && r.destination === '/check.html');
     const spa = vercel.rewrites.findIndex((r) => r.destination === '/index.html');
     expect(short).toBeGreaterThanOrEqual(0);
     expect(short).toBeLessThan(spa);
+  });
+});
+
+// 13 November 2026: the first run of the check page at the school said "6 of
+// 73 pieces did not arrive. First: ...: The server answered 403." That named
+// one file of six and nothing about why, so the next fix was again partly a
+// guess. A run now has to settle it: every stopped file, its size, what the
+// network sent back in its place, and whether the answer came from us.
+describe('what one run of the check page settles', () => {
+  test('every stopped file is listed with its real size, and where the line falls', () => {
+    expect(CHECK_SCRIPT).toContain("'/check-files.json'");
+    expect(CHECK_SCRIPT).toContain('The largest that arrived is ');
+    expect(CHECK_SCRIPT).toContain('The smallest that was stopped is ');
+    expect(CHECK_SCRIPT).toContain("'stopped: '");
+  });
+
+  test('it reports what came back in place of a file, and who wrote it', () => {
+    expect(CHECK_SCRIPT).toContain("'x-vercel-id'");
+    expect(CHECK_SCRIPT).toContain('It says: "');
+    expect(CHECK_SCRIPT).toContain('something on the network wrote it');
+  });
+
+  test('it tests the small-files version, and scripts that are large but hold only numbers', () => {
+    expect(CHECK_SCRIPT).toContain("'/lite/asset-manifest.json'");
+    expect(CHECK_SCRIPT).toContain('the filter is judging what is inside');
+    expect(CHECK_SCRIPT).toContain('stops scripts by how big they are');
+    const build = fs.readFileSync(path.join(ROOT, 'scripts', 'build.js'), 'utf8');
+    expect(build).toContain('check-files.json');
+    expect(build).toContain('size-test-');
+  });
+});
+
+// ── Two builds ──────────────────────────────────────────────────────────────
+//
+// What the school's check run showed: every script up to 68 KB arrived and
+// six larger ones were answered 403. Three things in the app cannot be made
+// small by cutting: React (130 KB in one module), the coloured code editor
+// (185 KB) and the studio page. So the site is built twice. The second build
+// uses Preact in place of React and the plain editor in place of the coloured
+// one, and a page switches to it by itself when the first is stopped.
+describe('the small-files version', () => {
+  const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
+  // eslint-disable-next-line global-require
+  const build = require('../scripts/build');
+
+  test('the build command is the script that makes both versions', () => {
+    expect(pkg.scripts.build).toBe('node scripts/build.js');
+    expect(pkg.dependencies.preact).toBeDefined();
+    expect(pkg.dependencies['preact-render-to-string']).toBeDefined();
+  });
+
+  test('scripts are cut into parts no bigger than 50 KB, and stylesheets are left alone', () => {
+    const config = build.smallFiles({ optimization: {} });
+    const parts = config.optimization.splitChunks.cacheGroups.parts;
+    expect(parts.maxSize).toBe(50000);
+    expect(parts.chunks).toBe('async');
+    expect('x.css'.match(parts.type)).toBeNull();
+    expect(parts.type.test('javascript/auto')).toBe(true);
+    expect(parts.type.test('css/mini-extract')).toBe(false);
+  });
+
+  test('it swaps React for Preact everywhere React is asked for, and keeps its chunks apart from the main build\'s', () => {
+    const config = build.smallVersion({ resolve: { alias: { other: 'kept' } }, output: {} });
+    expect(config.resolve.alias).toMatchObject({ other: 'kept', react: 'preact/compat', 'react-dom': 'preact/compat', 'react-dom/client': 'preact/compat/client', 'react/jsx-runtime': 'preact/jsx-runtime' });
+    expect(config.output.chunkLoadingGlobal).not.toBe('webpackChunk_e_learning_gamified_elearning');
+    expect(config.output.chunkLoadingGlobal).toMatch(/small/);
+  });
+
+  test('the main entry stands aside when the small-files version has been started', () => {
+    const index = fs.readFileSync(path.join(ROOT, 'src', 'index.js'), 'utf8');
+    expect(index).toContain("if (process.env.REACT_APP_LITE === '1' || !(window.__codeitBoot && window.__codeitBoot.small)) import('./boot');");
+    const boot = fs.readFileSync(path.join(ROOT, 'src', 'boot.js'), 'utf8');
+    expect(boot.indexOf('window.__codeitBoot.app = true')).toBeGreaterThan(0);
+    expect(boot.indexOf('window.__codeitBoot.app = true')).toBeLessThan(boot.indexOf('createRoot('));
+  });
+
+  test('nothing every page asks for is one large file: each starter game is a file of its own', () => {
+    const dir = path.join(ROOT, 'src', 'pages', 'Builder', 'starterGames');
+    const games = fs.readdirSync(dir).filter((name) => name.endsWith('.js'));
+    expect(games.length).toBeGreaterThanOrEqual(12);   // eleven games and what they share
+    for (const name of games) expect({ name, small: fs.statSync(path.join(dir, name)).size < 20000 }).toEqual({ name, small: true });
+    expect(fs.statSync(path.join(ROOT, 'src', 'pages', 'Builder', 'starterGames.js')).size).toBeLessThan(20000);
+  });
+
+  test('the coloured editor is its own file, asked for separately, and not part of the small-files version', () => {
+    const runner = fs.readFileSync(path.join(ROOT, 'src', 'components', 'CodeRunnerPython.js'), 'utf8');
+    expect(runner).not.toMatch(/from '@uiw\/react-codemirror'|from '@codemirror/);
+    const loader = fs.readFileSync(path.join(ROOT, 'src', 'components', 'editorLoader.js'), 'utf8');
+    expect(loader).toContain("process.env.REACT_APP_LITE === '1'");
+    expect(loader).toContain("import('./PythonEditor')");
   });
 });
 
@@ -237,7 +411,7 @@ describe('what a school filter reads', () => {
   test('the entry file holds no words: it makes storage safe and asks for the app', () => {
     const index = fs.readFileSync(path.join(ROOT, 'src', 'index.js'), 'utf8');
     const code = index.split('\n').filter((line) => line.trim() && !line.trim().startsWith('//'));
-    expect(code).toEqual(["import './utils/safeStorage';", "import('./boot');"]);
+    expect(code).toEqual(["import './utils/safeStorage';", "if (process.env.REACT_APP_LITE === '1' || !(window.__codeitBoot && window.__codeitBoot.small)) import('./boot');"]);
   });
 
   test('the sentences that cost the most on a filter are not in anything we serve', () => {

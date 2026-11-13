@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import CodeMirror, { EditorView } from '@uiw/react-codemirror';
-import { python } from '@codemirror/lang-python';
+import PlainEditor from './PlainEditor';
+import { editorNow, fetchEditor } from './editorLoader';
 import { getPyodideRuntime } from '../utils/pyodideLoader';
 import { readVariables } from '../utils/pythonVariables';
 import { errorOutput, explainPythonError } from '../utils/pythonErrors';
 import { trackActivityStart } from '../utils/activity';
 import Icon from './Icon/Icon';
 import './CodeRunnerPython.css';
+
+// Ask for the coloured editor now, so it is here before the first step is drawn.
+fetchEditor();
 
 // Starter code per lesson id
 const LESSON_STARTER = {
@@ -110,31 +113,26 @@ const CodeRunnerPython = ({
   const outputRef             = useRef(null);
   const mountedRef            = useRef(true);
   const editorRef             = useRef(null);
-  const mirrorRef             = useRef(null);   // the CodeMirror instance, for typing a symbol at the cursor
+  const editorApi             = useRef(null);   // the editor on screen, for typing a symbol at the cursor
+  // The coloured editor if it has arrived, null if it was stopped on the way
+  // (then the plain one is used), undefined while it is still coming.
+  const [Editor, setEditor]   = useState(() => editorNow());
   const [touch] = useState(() => {
     try { return typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(pointer: coarse)').matches; } catch (e) { return false; }
   });
   const showKeys = symbolKeys === true || (symbolKeys === 'touch' && touch);
   // Put text where the cursor is, and keep the keyboard up.
   const typeAtCursor = useCallback((text) => {
-    const dom = editorRef.current && editorRef.current.querySelector('.cm-editor');
-    const view = (mirrorRef.current && mirrorRef.current.view) || (dom && EditorView.findFromDOM(dom));
-    if (!view) { setCode((current) => current + text); return; }
-    // Said in full: where the text goes, and that the cursor ends up after it.
-    const { from, to } = view.state.selection.main;
-    const after = from + text.length;
-    view.focus();
-    view.dispatch({ changes: { from, to, insert: text }, selection: { anchor: after }, scrollIntoView: true });
-    // Safari keeps its own idea of where the cursor is until the next frame.
-    // Saying it again then is what makes the next typed letter land after
-    // the symbol, not before it.
-    requestAnimationFrame(() => {
-      if (view.state.selection.main.head !== after || view.state.doc.length < after) return;
-      const node = view.domAtPos(after);
-      const selection = view.root.getSelection ? view.root.getSelection() : window.getSelection();
-      try { selection.collapse(node.node, node.offset); } catch (e) { /* the editor went away */ }
-    });
+    const editor = editorApi.current;
+    if (!editor || !editor.typeAtCursor(text)) setCode((current) => current + text);
   }, []);
+
+  useEffect(() => {
+    if (Editor !== undefined) return undefined;
+    let here = true;
+    fetchEditor().then((editor) => { if (here) setEditor(() => editor); });
+    return () => { here = false; };
+  }, [Editor]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -287,22 +285,13 @@ const CodeRunnerPython = ({
           anything. A promise the product does not keep is worse than no tip. */}
       {showKeys && <SymbolKeys onKey={typeAtCursor} />}
       <div className="cr-editor" ref={editorRef} onKeyDown={handleShortcut}>
-        <CodeMirror
-          ref={mirrorRef}
-          value={code}
-          height={height}
-          theme={theme === 'dark' ? 'dark' : 'light'}
-          extensions={wrap ? [python(), EditorView.lineWrapping] : [python()]}
-          onChange={(val) => setCode(val)}
-          basicSetup={{
-            lineNumbers: true,
-            highlightActiveLine: true,
-            tabSize: 4,
-            indentOnInput: true,
-            bracketMatching: true,
-            autocompletion: false,
-          }}
-        />
+        {Editor === undefined ? (
+          <pre className="cr-editor-wait" style={{ height }} aria-hidden="true">{code}</pre>
+        ) : Editor ? (
+          <Editor ref={editorApi} value={code} height={height} theme={theme} wrap={wrap} onChange={setCode} />
+        ) : (
+          <PlainEditor ref={editorApi} value={code} height={height} theme={theme} onChange={setCode} />
+        )}
       </div>
 
       {/* ── Output panel ───────────────────────────── */}

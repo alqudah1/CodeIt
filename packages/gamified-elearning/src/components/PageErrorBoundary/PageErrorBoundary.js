@@ -29,6 +29,25 @@ export function isChunkError(error) {
   return /ChunkLoadError|Loading (CSS )?chunk|dynamically imported module|Importing a module script failed/i.test(said);
 }
 
+// The same failure a second time, straight after a reload and with the
+// connection up, is neither of those. Something between us and this computer
+// is refusing the file, which on a school network is the web filter (13
+// November 2026: one answered 403 to every large script). There is a second
+// build of the app made only of small files, so the page switches to that
+// once, for the rest of the visit. If the file is refused there too, the card
+// says what is happening and where to check, not that the Wi-Fi dropped.
+const SMALL_FILES = process.env.REACT_APP_LITE === '1';
+const SMALL_KEY = 'codeit.small-files';
+function canSwitchToSmallFiles() {
+  if (SMALL_FILES) return false;
+  try { return sessionStorage.getItem(SMALL_KEY) !== '1'; } catch { return false; }
+}
+function switchToSmallFiles() {
+  try { sessionStorage.setItem(SMALL_KEY, '1'); } catch { return false; }
+  window.location.reload();
+  return true;
+}
+
 const RELOADED_KEY = 'codeit.chunk-reload';
 function reloadedJustNow(now = Date.now()) {
   try { return now - Number(sessionStorage.getItem(RELOADED_KEY) || 0) < 30000; } catch { return true; }
@@ -40,7 +59,7 @@ function markReload(now = Date.now()) {
 class PageErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { failed: false, chunk: false };
+    this.state = { failed: false, chunk: false, stopped: false };
     this.whenOnline = () => window.location.reload();
   }
 
@@ -53,7 +72,7 @@ class PageErrorBoundary extends React.Component {
     // chance rather than this one's error card.
     if (this.state.failed && prevProps.resetKey !== this.props.resetKey) {
       window.removeEventListener('online', this.whenOnline);
-      this.setState({ failed: false, chunk: false });
+      this.setState({ failed: false, chunk: false, stopped: false });
     }
   }
 
@@ -66,6 +85,8 @@ class PageErrorBoundary extends React.Component {
       console.error('Page code did not download:', error);
       const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
       if (!offline && !reloadedJustNow()) { markReload(); window.location.reload(); return; }
+      if (!offline && canSwitchToSmallFiles() && switchToSmallFiles()) return;
+      if (!offline) { this.setState({ stopped: true }); return; }
       window.addEventListener('online', this.whenOnline);
       return;
     }
@@ -83,6 +104,25 @@ class PageErrorBoundary extends React.Component {
 
   render() {
     if (!this.state.failed) return this.props.children;
+    if (this.state.chunk && this.state.stopped) {
+      return (
+        <div className="page-error" role="alert" data-page-stopped="1">
+          <div className="page-error__card">
+            <p className="page-error__title">This page is being stopped on the way here.</p>
+            <p className="page-error__body">
+              The connection is up, but a file this page needs did not arrive.
+              On a school or work network that is usually the web filter.
+              Nothing you have made is lost.
+            </p>
+            <div className="page-error__actions">
+              <a className="page-error__btn page-error__btn--primary" href="/lessons">Go to the lessons</a>
+              <a className="page-error__btn" href="/check.html">Check what is being stopped</a>
+              <button type="button" className="page-error__btn" onClick={() => window.location.reload()}>Try again</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
     if (this.state.chunk) {
       return (
         <div className="page-error" role="alert" data-page-offline="1">
