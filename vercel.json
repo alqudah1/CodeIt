@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": false,
   "installCommand": "npm ci",
   "buildCommand": "npm run build:learning",
   "outputDirectory": "packages/gamified-elearning/build",
