@@ -71,9 +71,9 @@ export const TEACH_LANDING = {
   intro: 'Sign in with your own account to make a class. Children join with the code and a first name, nothing else: no email, no password, no age screen.',
   // True since 11 November 2026: Python and the fonts come from the site
   // itself, so a school filter that allows codeitlearn.com allows all of it.
-  // True since 13 November 2026 for the first ten Python lessons: a guess, a
+  // True since 13 November 2026 for the first fifteen Python lessons: a guess, a
   // run, the line taken apart, a change, then the pupil's own.
-  method: 'The first ten Python lessons follow PRIMM: pupils predict what a line will print, run it, take it apart piece by piece, modify it, then make their own. PRIMM comes from research on teaching Python in secondary schools (Sentance, Waite and Kalia, 2019).',
+  method: 'The first fifteen Python lessons follow PRIMM: pupils predict what a line will print, run it, take it apart piece by piece, modify it, then make their own. PRIMM comes from research on teaching Python in secondary schools (Sentance, Waite and Kalia, 2019).',
   network: 'Works on school networks and Chromebooks. The site needs nothing but codeitlearn.com: if that one address is allowed, the lessons, the Python editor and the games all work. No firewall routes, no plug-ins, no install.',
 };
 
