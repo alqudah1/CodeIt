@@ -284,6 +284,7 @@ export default function AdminFunnel() {
   // recorded by the server, which has a user id and no journey id, so a
   // journey ratio would divide by something these events never carry.
   const buildDistribution = data?.ai_build_distribution || [];
+  const headroom = data?.plan_headroom || null;
   const accountsAtLimit = buildDistribution
     .filter((row) => Number(row.builds) >= 10)
     .reduce((sum, row) => sum + Number(row.accounts || 0), 0);
@@ -748,10 +749,68 @@ export default function AdminFunnel() {
             </table>
           </div>
           <p className="funnel-cost-note">
-            The paid plan sells more AI builds than the free ten. If nobody in this table
-            is near ten, the plan is priced on something families are not running out of,
-            and the offer needs to change rather than the checkout button.
+            This table counts every account that built something, children included, and
+            only this month. Children are who build and they can never buy, and a family
+            that hit the wall in September and went quiet reads here as a zero. The two
+            blocks below count adults only, and look back over every month.
           </p>
+
+          <div className="adm-section-head">How many adults are near a wall Plus removes</div>
+          {!headroom && <p className="adm-loading">Not measured in this report.</p>}
+          {headroom && (
+            <>
+              <div className="funnel-cost-grid">
+                <article><span>Adult accounts</span><strong>{fmt(headroom.aiBuilds.accounts)}</strong></article>
+                <article className={headroom.aiBuilds.everReachedTheLimit > 0 ? 'is-urgent' : undefined}>
+                  <span>Ever reached {headroom.aiBuilds.freeLimit} builds in a month</span>
+                  <strong>{fmt(headroom.aiBuilds.everReachedTheLimit)}</strong>
+                </article>
+                <article><span>Ever came within two of it</span><strong>{fmt(headroom.aiBuilds.everCameClose)}</strong></article>
+                <article><span>Most any adult has built in a month</span><strong>{fmt(headroom.aiBuilds.mostInAnyMonth)}</strong></article>
+                <article><span>Most this month</span><strong>{fmt(headroom.aiBuilds.mostThisMonth)}</strong></article>
+              </div>
+              <div className="adm-table-wrap">
+                <table className="adm-table">
+                  <thead><tr><th>AI builds this month, adults only</th><th>Accounts</th></tr></thead>
+                  <tbody>
+                    {headroom.aiBuilds.thisMonth.map((row) => (
+                      <tr key={row.label}>
+                        <td>{row.label}</td>
+                        <td><strong>{fmt(row.count)}</strong></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="funnel-cost-grid">
+                <article><span>Adults with children on the account</span><strong>{fmt(headroom.children.adults)}</strong></article>
+                <article><span>At the free limit of {headroom.children.freeLimit}</span><strong>{fmt(headroom.children.atTheLimit)}</strong></article>
+                <article><span>Most children on one account</span><strong>{fmt(headroom.children.most)}</strong></article>
+              </div>
+              <div className="adm-table-wrap">
+                <table className="adm-table">
+                  <thead><tr><th>Children on one adult account</th><th>Adults</th></tr></thead>
+                  <tbody>
+                    {headroom.children.distribution.map((row) => (
+                      <tr key={row.label}>
+                        <td>{row.label}</td>
+                        <td><strong>{fmt(row.count)}</strong></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="funnel-cost-note">
+                Plus sells two things: builds past {headroom.aiBuilds.freeLimit} a month, and a
+                second, third and fourth child. These are the only two numbers that say whether
+                either is worth selling. If nobody has ever reached {headroom.aiBuilds.freeLimit}
+                {' '}builds and nobody wants a second child, then the offer is not badly written,
+                it is offering to remove walls nobody has walked into, and what Plus is has to
+                change before what it says does.
+              </p>
+            </>
+          )}
 
           <div className="adm-section-head">Recent event activity</div>
           <div className="adm-table-wrap">

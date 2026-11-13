@@ -4,6 +4,7 @@ const pool = require('./db');
 const { normalizeEventName, normalizeMeta, normalizeJourneyId, normalizeCampaignCode } = require('./analyticsEvents');
 const { listFoundingFamilyLeads } = require('./foundingWaitlist');
 const { ready: legacyParentReviewReady } = require('./legacyParentReview');
+const { headroomFrom } = require('./planHeadroom');
 const ACTIVATION_ENTRY_TRACKING_SINCE = '2026-08-01';
 
 const tableReady = pool.dialect === 'postgres' ? Promise.resolve(true) : pool.query(`
@@ -292,6 +293,73 @@ async function getFunnelReport(requestedDays = 30) {
       console.error('AI build distribution failed:', err.message);
     }
 
+    // ── Is anybody near a limit Plus removes? ───────────────────────────
+    //
+    // The distribution above answers a narrower question than it looks
+    // like it answers, in the direction that feels reassuring:
+    //
+    //   · it counts only accounts that built something, so there is no
+    //     denominator — six accounts building is a different story out of
+    //     eight families than out of six hundred;
+    //   · it counts children, because children are who build. A managed
+    //     profile can never buy anything, so a distribution made mostly of
+    //     them describes the people who cannot pay;
+    //   · it is this month only, so a family that hit the wall in
+    //     September and went quiet reads as a zero.
+    //
+    // That matters because Plus sells exactly two things, and one of them
+    // is this limit. The funnel says 1,181 upgrade offers produced two
+    // clicks. Before anybody writes a better offer, the question is
+    // whether there is anything behind it: how many adults are close
+    // enough to either wall to feel it. The second wall — one child on a
+    // free account, four on Plus — had no number anywhere at all.
+    let planHeadroomReport = null;
+    try {
+      // An adult is a user who is not somebody's managed child profile,
+      // decided the same way the login decides it.
+      const [thisMonth] = await pool.query(
+        `SELECT u.user_id, COUNT(b.user_id) AS builds
+           FROM Users u
+           LEFT JOIN parent_child_links l ON l.child_user_id = u.user_id
+           LEFT JOIN ai_build_usage b
+                  ON b.user_id = u.user_id
+                 AND b.created_at >= date_trunc('month', now())
+          WHERE l.child_user_id IS NULL
+          GROUP BY u.user_id`
+      );
+      const [bestMonth] = await pool.query(
+        `SELECT user_id, MAX(builds) AS best
+           FROM (
+             SELECT b.user_id, date_trunc('month', b.created_at) AS month, COUNT(*) AS builds
+               FROM ai_build_usage b
+               LEFT JOIN parent_child_links l ON l.child_user_id = b.user_id
+              WHERE l.child_user_id IS NULL
+              GROUP BY b.user_id, date_trunc('month', b.created_at)
+           ) monthly
+          GROUP BY user_id`
+      );
+      const [childCounts] = await pool.query(
+        `SELECT u.user_id, COUNT(l.child_user_id) AS children
+           FROM Users u
+           LEFT JOIN parent_child_links mine ON mine.child_user_id = u.user_id
+           LEFT JOIN parent_child_links l ON l.adult_user_id = u.user_id
+          WHERE mine.child_user_id IS NULL
+          GROUP BY u.user_id`
+      );
+      const num = (row, key) => Number(row[key]) || 0;
+      // bestMonth only has rows for adults who ever built anything. The
+      // rest are zeros and have to be added back, or "nobody is close" is
+      // measured on the wrong people.
+      const best = new Map(bestMonth.map(row => [row.user_id, num(row, 'best')]));
+      planHeadroomReport = headroomFrom({
+        buildsThisMonth: thisMonth.map(row => num(row, 'builds')),
+        bestMonthEver: thisMonth.map(row => best.get(row.user_id) || 0),
+        childrenPerAdult: childCounts.map(row => num(row, 'children')),
+      });
+    } catch (err) {
+      console.error('Plan headroom failed:', err.message);
+    }
+
     // ── Did a family actually use it ────────────────────────────────────
     //
     // One row per campaign plus one for every visit, tagged or not. Every
@@ -367,6 +435,7 @@ async function getFunnelReport(requestedDays = 30) {
       progress_email_delivery: progressDeliveries,
       founding_leads: foundingLeads,
       ai_build_distribution: aiBuildDistribution,
+      plan_headroom: planHeadroomReport,
     };
   } catch (err) {
     console.error('Analytics report failed:', err.message);
