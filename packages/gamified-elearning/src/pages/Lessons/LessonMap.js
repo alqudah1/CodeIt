@@ -37,7 +37,10 @@ const GROUND = { beginner: '#7FD86A', intermediate: '#A99BE3', advanced: '#9ED6F
 
 // Where each stop sits across the path, as a percentage of the width. A slow
 // wave, so the path bends left and right and the eye follows it down.
-export const ROW_HEIGHT = 128;
+// 128 fitted a two-line name plate set in 11px. At the 13px floor the plate
+// is 46px tall and the row was 1.5px short of holding it, so the names ran
+// into the stop below. 140 holds it with air to spare.
+export const ROW_HEIGHT = 140;
 export function stopX(index) {
   return 50 + 30 * Math.sin(index * (Math.PI / 2.6) + Math.PI / 5);
 }
@@ -438,8 +441,15 @@ const LessonMap = () => {
                     </span>
                     {isHere && <span className="lm-you__flag" aria-hidden="true">YOU</span>}
                     <span className={`lm-xp lm-xp--${status}`}>{lesson.xp} XP</span>
+                    {/* The plate carries the name alone. It used to be
+                        prefixed "Boss: ", which at a readable size pushed the
+                        longest boss title out of its box, and which the
+                        diamond, the star and the red flag already say. The
+                        link's own label still says "Boss puzzle" for a screen
+                        reader, so nothing is lost by taking the word off the
+                        picture. */}
                     {!titled && (
-                      <span className={`lm-name lm-name--${status}`}><span className="lm-name__t">{boss ? `Boss: ${shortTitle(stopTitle(lesson))}` : shortTitle(stopTitle(lesson))}</span></span>
+                      <span className={`lm-name lm-name--${status}`}><span className="lm-name__t">{shortTitle(stopTitle(lesson))}</span></span>
                     )}
 
                     {titled && (
