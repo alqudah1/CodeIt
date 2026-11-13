@@ -321,7 +321,7 @@ const BASE_PAGES = [
     h1: 'An AI website builder for kids that teaches the code.',
     intro: 'CodeIt helps a young creator turn an idea into a website, game, or quiz, then change the design, inspect the real code, and understand how the project works.',
     detail: 'The first version stays editable. Learners can change the content, colors, layout, and behavior, compare the preview with the HTML, CSS, and JavaScript, save their work, and keep improving it.',
-    type: 'SoftwareApplication',
+    type: 'WebPage',
   },
   {
     route: '/build',
@@ -329,7 +329,7 @@ const BASE_PAGES = [
     h1: 'Say the game you want to play. Then play it.',
     intro: 'Type a game idea in your own words, or make one choice at a time, and CodeIt turns it into a playable browser game in about two seconds. Change who you are, what comes at you and the twist with four taps, then publish it to your arcade.',
     detail: 'No account is needed to build the first game. Every game is real JavaScript on a canvas, and the lines at the top of its code are the knobs a learner changes first.',
-    type: 'SoftwareApplication',
+    type: 'WebPage',
   },
   {
     route: '/builder',
@@ -337,11 +337,11 @@ const BASE_PAGES = [
     h1: 'Build a website. Then learn how it works.',
     intro: 'CodeIt turns an idea into a working browser project, but the finished result is only the beginning. Students can play with it, edit individual elements, inspect the code, save versions, and publish a link.',
     detail: 'Start with a fan page, portfolio, quiz, game, or school project. No setup is required, and the project remains editable instead of becoming a locked AI result.',
-    type: 'SoftwareApplication',
+    type: 'WebPage',
   },
   {
     route: '/first-game-challenge',
-    eyebrow: 'Free first-game challenge · Ages 5–18',
+    eyebrow: 'Free first-game challenge',
     h1: 'Build your first game. Make it yours.',
     intro: 'Choose a reaction game, football penalty game, or pet-catching game. CodeIt creates a playable starting point, then the learner changes it, tests it, and saves it.',
     detail: 'The complete mission is to build, personalize, test, and save. Student accounts earn 25 XP for a first saved project and compete through privacy-safe coder aliases instead of real names.',
@@ -377,7 +377,7 @@ const BASE_PAGES = [
     h1: 'Run Python in your browser.',
     intro: 'Use the CodeIt playground to test a small idea, change an example, or practice a lesson without installing Python.',
     detail: 'The editor and output stay together, making the connection between code and result easier to understand.',
-    type: 'SoftwareApplication',
+    type: 'WebPage',
   },
   {
     route: '/explore',
@@ -826,7 +826,7 @@ const IDENTITY_PAGES = [
         heading: 'Accounts, ages and safety',
         paragraphs: [
           `A learner aged 13 or over opens their own account. For anyone younger, ${MANAGED_FLOOR}, after confirming the adult account email address.`,
-          'Saved projects are private by default, and eligible independent accounts must actively choose Publish before a project appears publicly. Managed profiles for ages 5 to 12 cannot publish projects at all. Leaderboards use coder aliases rather than real names.',
+          'Saved projects are private by default, and eligible independent accounts must actively choose Publish before a project appears publicly. A managed profile cannot publish projects at all. Leaderboards use coder aliases rather than real names.',
         ],
       },
       {
@@ -1083,7 +1083,7 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'Accounts and ages',
       paragraphs: [
-        'Independent student accounts are for ages 13–18. Younger learners aged 5–12 need parent-managed access, created after the adult account email is confirmed.',
+        `A learner aged 13 or over opens their own account. For anyone younger, ${MANAGED_FLOOR}, created after the adult account email is confirmed.`,
       ],
     },
     {
@@ -1117,7 +1117,7 @@ const HOME_PAGE = {
     'Start with a free Python lesson: run a program and change its message. Separately, the studio lets learners play and customize browser games made with HTML, CSS and JavaScript, with optional AI project building.',
   detail:
     `Students ${AGES} can build, edit, save, and learn from real browser projects. For a child under 13 a parent creates a private managed learner profile, ${MANAGED_FLOOR_SHORT}, and receives progress updates.`,
-  type: 'SoftwareApplication',
+  type: 'WebPage',
   faqs: FAQS,
   sections: [
     {
@@ -1676,10 +1676,28 @@ function pageSchema(page) {
     }
   }
 
-  if (page.type === 'SoftwareApplication') {
-    primary.applicationCategory = 'EducationalApplication';
-    primary.operatingSystem = 'Web';
-    primary.isAccessibleForFree = true;
+  // ── Why these are WebPages and not applications ───────────────────────
+  //
+  // Five routes were typed SoftwareApplication: the home page, /builder,
+  // /build, /playground and /ai-website-builder-for-kids. Each page already
+  // inherits the real one from the template, so those five told a machine
+  // that two different applications live at that URL. The second one's name
+  // was the page's heading, so on the home page the products on offer were
+  // "CodeIt Coding Studio" and "Write your first Python program. Run it.
+  // Make the message yours."
+  //
+  // And it carried isAccessibleForFree: true with no offers of its own, on
+  // the home page, beside the real application that costs CA$12 a month. A
+  // product whose problem is that assistants call it free and never mention
+  // that it sells anything should not be publishing a second, free copy of
+  // itself on its own front page.
+  //
+  // A page about a tool is a page, so they are WebPages with the heading in
+  // the place a heading goes. Nothing is lost: the application, its category
+  // and its two offers are in the template on all 89 pages.
+  if (page.type === 'WebPage') {
+    primary.isPartOf = { '@id': `${SITE}/#website` };
+    primary.about = { '@id': `${SITE}/#app` };
   }
 
   // Articles previously carried no headline, author or datePublished at all.
