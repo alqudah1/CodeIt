@@ -425,10 +425,17 @@ const BASE_PAGES = [
   },
   {
     route: '/pricing',
-    eyebrow: 'Free family pilot',
-    h1: 'Start free. Join the family pilot when you want more support.',
-    intro: 'CodeIt keeps a useful free option for beginners, and a paid family plan for households that want more.',
-    detail: 'The family plan adds guided setup, more assisted project building, learner profiles, parent visibility, and a direct feedback channel. Nothing starts charging on its own.',
+    // This is the crawlable half of the one page that sells, and it was still
+    // selling the Founding Family pilot: its name in the eyebrow and heading,
+    // and its feature list in the detail. The pilot closed when paid plans
+    // opened, and that list is not what CodeIt Plus is. Plus is two things,
+    // named here in the same words planFeatures.js uses, and staticPricing
+    // .test.js checks the two against each other so this page cannot drift
+    // away from the plan again.
+    eyebrow: 'Pricing',
+    h1: 'Start free. CodeIt Plus is CA$12 a month when you want more.',
+    intro: 'CodeIt keeps a useful free option for beginners, and a paid plan for families who want more.',
+    detail: 'The free plan does not expire and needs no card: every lesson, the Python playground, the coding games, and building, saving and publishing projects. CodeIt Plus is CA$12 a month and adds as many AI-built projects and changes as you want instead of ten a month, and up to four children on one adult account instead of one. It can be cancelled at any time, and nothing starts charging on its own.',
     type: 'WebPage',
   },
   {
@@ -447,7 +454,12 @@ const BASE_PAGES = [
     h1: 'Build freely. Learn responsibly. Keep people safe.',
     intro: 'These terms explain the current rules for using CodeIt accounts, lessons, project tools, AI-assisted results, and public sharing.',
     sectionTitle: 'Using CodeIt responsibly',
-    detail: 'Student accounts are for ages 13–18, younger learners need parent-managed access, and public projects must not include private or harmful information.',
+    // This said "Student accounts are for ages 13-18", which stopped being
+    // true when an adult became able to hold a learner account, and which
+    // wrote an age range into crawlable text beside an audience claim: the
+    // exact shape that had Google describing CodeIt as a 5-to-12 product.
+    // The rule is a floor, so it is written as one.
+    detail: 'A learner aged 13 or over opens their own account, younger learners need parent-managed access, and public projects must not include private or harmful information.',
     primaryLinkLabel: 'Read the Terms of Use',
     type: 'WebPage',
   },

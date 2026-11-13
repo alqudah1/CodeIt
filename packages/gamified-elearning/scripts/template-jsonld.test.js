@@ -130,6 +130,54 @@ test('a recurring price says what period it recurs over', () => {
   }
 });
 
+test('every offer carries a top-level price, which is what Google requires', () => {
+  // This test used to accept the price in either place: on the offer, or
+  // inside its priceSpecification. That is how the paid plan shipped on all
+  // 89 pages with no offers.price at all — the price lived only inside a
+  // UnitPriceSpecification, which I had put there in the same change.
+  //
+  // Google's Software App reference lists offers.price as required and does
+  // not mention priceSpecification as an alternative:
+  //   developers.google.com/search/docs/appearance/structured-data/software-app
+  //
+  // So the only price a machine could read on this site was the free plan's
+  // zero. For a product whose whole problem is that assistants describe it as
+  // free and never mention that it sells anything, that is not a detail.
+  //
+  // priceSpecification stays: it is what says the 12 recurs monthly. It is an
+  // addition to the price, not a place to keep it.
+  const offers = graph()
+    .filter((node) => node['@type'] === 'SoftwareApplication')
+    .flatMap(offersOf);
+
+  assert.ok(offers.length > 0, 'the application declares no offers at all');
+  for (const offer of offers) {
+    assert.ok(
+      offer.price !== undefined,
+      `the offer "${offer.name || 'unnamed'}" has no price of its own. `
+      + 'A price only inside priceSpecification is a price Google does not read.'
+    );
+    assert.ok(
+      offer.priceCurrency,
+      `the offer "${offer.name || 'unnamed'}" has a price with no currency`
+    );
+  }
+});
+
+test('nothing in the structured data still sells the closed pilot', () => {
+  // The Founding Family pilot closed when paid plans opened. The pricing
+  // page's title and og:title were corrected then; its h1 was not, and the h1
+  // is what becomes the WebPage name in the structured data. So the one page
+  // that sells was telling every machine that read it to join a pilot that
+  // does not exist.
+  const offending = graph().flatMap((node) =>
+    Object.entries(node)
+      .filter(([, value]) => typeof value === 'string' && /pilot/i.test(value))
+      .map(([key, value]) => `${node['@type']}.${key} = "${value}"`));
+
+  assert.deepEqual(offending, [], 'the structured data still mentions the pilot');
+});
+
 test('the age range is written the way the rest of the site writes it', () => {
   // Being straight about this one: it is consistency, not a factual error.
   // audienceType read "Young creators ages 8\u201314 and beginner coders" while
