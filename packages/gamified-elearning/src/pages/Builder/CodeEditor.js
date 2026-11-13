@@ -41,7 +41,7 @@ export default function CodeEditor({ value, onChange, openAtLine = 1 }) {
       // Wrapping, because most of these children are on a phone. Generated code
       // has long lines, and a nine-year-old who has to scroll sideways to read
       // the end of a line will not read the end of the line.
-      extensions={[html(), EditorView.lineWrapping]}
+      extensions={[html(), EditorView.lineWrapping, EditorView.contentAttributes.of({ 'aria-label': "Your project's code" })]}
       onChange={onChange}
       basicSetup={{
         lineNumbers: true,

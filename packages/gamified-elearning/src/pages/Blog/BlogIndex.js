@@ -29,7 +29,7 @@ export default function BlogIndex() {
   return (
     <>
       <Header />
-      <div className="blog-page">
+      <div className="blog-page" role="main">
         <div className="bi-container">
 
           {/* ── Page header ─────────────────────────────────── */}

@@ -27,7 +27,7 @@ const Playground = () => {
     <div className="pg-page">
       <Header />
 
-      <div className="pg-body">
+      <div className="pg-body" role="main">
         {/* ── Back nav ─────────────────────────────────── */}
         <nav className="pg-breadcrumb" aria-label="Page navigation">
           <button className="pg-back-btn" onClick={() => navigate(-1)}>

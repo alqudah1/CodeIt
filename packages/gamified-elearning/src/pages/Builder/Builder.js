@@ -3414,7 +3414,7 @@ export default function Builder() {
   return (
     <>
       <Header />
-      <div className={`bldr-page${nightClass(theme, 'bldr-page--night')}${hasResult ? ' bldr-studio-mode' : ''}`}>
+      <div role="main" className={`bldr-page${nightClass(theme, 'bldr-page--night')}${hasResult ? ' bldr-studio-mode' : ''}`}>
         {paperBurst && (
           <div className="bldr-paper-burst" aria-hidden="true">
             {Array.from({ length: 14 }, (_, i) => <span key={i} className={`bldr-paper-burst__bit bldr-paper-burst__bit--${i}`} />)}

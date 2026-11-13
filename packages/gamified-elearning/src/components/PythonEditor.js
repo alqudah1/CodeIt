@@ -8,6 +8,9 @@ import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import CodeMirror, { EditorView } from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 
+// A screen reader lands on the editor and has to be told what it is.
+const NAMED = EditorView.contentAttributes.of({ 'aria-label': 'Your code' });
+
 const SETUP = {
   lineNumbers: true,
   highlightActiveLine: true,
@@ -51,7 +54,7 @@ const PythonEditor = forwardRef(function PythonEditor({ value, onChange, height,
       value={value}
       height={height}
       theme={theme === 'dark' ? 'dark' : 'light'}
-      extensions={wrap ? [python(), EditorView.lineWrapping] : [python()]}
+      extensions={wrap ? [python(), NAMED, EditorView.lineWrapping] : [python(), NAMED]}
       onChange={(text) => onChange(text)}
       basicSetup={SETUP}
     />

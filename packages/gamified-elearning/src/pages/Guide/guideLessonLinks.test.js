@@ -53,7 +53,9 @@ describe('every guide points at the lessons behind it', () => {
   // Borrowing Superpowers" and lesson 20 is "Dictionaries. Labels, Not
   // Numbers". A stored label would have shipped both wrong.
   test('titles are read from the registry, never stored beside the id', () => {
-    const src = fs.readFileSync(path.join(__dirname, '../../data/guidePages.js'), 'utf8');
+    // The guides are in parts under data/guides/ (see data/guidePages.js).
+    const parts = path.join(__dirname, '../../data/guides');
+    const src = fs.readdirSync(parts).filter((name) => name.endsWith('.js')).map((name) => fs.readFileSync(path.join(parts, name), 'utf8')).join('\n');
     const decls = src.match(/relatedLessons:\s*\[[^\]]*\]/g) || [];
     expect(decls.length).toBe(16);
     for (const d of decls) {

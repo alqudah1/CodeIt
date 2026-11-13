@@ -244,7 +244,7 @@
         if (!bad.length) rSmall.set(true, 'All ' + scripts.length + ' of its pieces arrived.');
         else {
           stoppedReport(rSmall, bad, good, scripts.length, sizes, 'of its pieces');
-          if (!needed) { rSmall.state = 'ok'; rSmall.set(true, 'Its lessons, playground and sign-in pieces all arrived. ' + bad.length + ' large piece' + (bad.length === 1 ? ' was' : 's were') + ' stopped (the studio and the guides), listed in the copied results.'); }
+          if (!needed) { rSmall.state = 'ok'; rSmall.set(true, 'Its lessons, playground and sign-in pieces all arrived. ' + bad.length + ' large piece' + (bad.length === 1 ? ' was' : 's were') + ' stopped (the studio), listed in the copied results.'); }
         }
       });
     });

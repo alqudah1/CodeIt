@@ -130,7 +130,14 @@ function loadLessons() {
 
 /** Long-form guide pages, shared with the React GuidePage component. */
 function loadGuidePages() {
-  const guides = loadEsmDefault(path.join(SRC, 'data/guidePages.js'));
+  // The articles are in files of about 40 KB under data/guides/, so that no
+  // script the site ships is large. They are read first and handed to the list.
+  const dir = path.join(SRC, 'data/guides');
+  const parts = {};
+  for (const file of fs.readdirSync(dir).filter((name) => name.endsWith('.js')).sort()) {
+    Object.assign(parts, loadEsmDefault(path.join(dir, file)));
+  }
+  const guides = loadEsmDefault(path.join(SRC, 'data/guidePages.js'), parts);
   if (!Array.isArray(guides) || guides.length === 0) {
     throw new Error('content-loader: guidePages.js did not export a non-empty array');
   }

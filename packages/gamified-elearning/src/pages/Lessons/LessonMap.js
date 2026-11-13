@@ -300,7 +300,7 @@ const LessonMap = () => {
         </div>
       )}
 
-      <div className="lm-container">
+      <div className="lm-container" role="main">
         <div className="lm-header">
           <div className="lm-header__top">
             <button className="lm-back-btn" onClick={() => navigate('/home')}>

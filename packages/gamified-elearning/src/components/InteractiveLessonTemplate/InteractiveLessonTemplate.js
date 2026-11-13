@@ -711,7 +711,8 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
         </div>
       </div>
 
-      <div className="sl-body">
+      {/* The page's main landmark: what "Skip to content" jumps to. */}
+      <div className="sl-body" role="main" id="main">
 
         {/* ── Journey path: Lesson → Quiz → Puzzle ─────── */}
         <div className="sl-journey-path" aria-label="Your learning path">

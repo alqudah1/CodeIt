@@ -60,7 +60,7 @@ export default function LearnPythonForKids() {
   return (
     <>
       <Header />
-      <div className="seo-page">
+      <div className="seo-page" role="main">
         <div className="seo-container">
 
           <Link to="/" className="seo-back">&larr; Back to Home</Link>

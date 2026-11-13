@@ -139,10 +139,10 @@ describe('the watcher in index.html', () => {
     expect(window.__codeitBoot.small).toBe(false);
   });
 
-  test('a guide is left as the article already on the page', () => {
+  test('a guide gets it too: the articles are in small files now', () => {
     window.history.pushState({}, '', '/guide/scratch-vs-python');
     stopFile('/static/js/2627.abc123.chunk.js');
-    expect(asked).toEqual([]);
+    expect(asked.map((request) => request.url)).toEqual(['/lite/asset-manifest.json']);
   });
 
   test('if the small-files version is stopped as well, it says so, names the file, and counts it as blocked', () => {
@@ -332,6 +332,43 @@ describe('the small-files version', () => {
     const loader = fs.readFileSync(path.join(ROOT, 'src', 'components', 'editorLoader.js'), 'utf8');
     expect(loader).toContain("process.env.REACT_APP_LITE === '1'");
     expect(loader).toContain("import('./PythonEditor')");
+  });
+});
+
+// ── So that it cannot come back unnoticed ───────────────────────────────────
+describe('what stops a large file from coming back', () => {
+  // eslint-disable-next-line global-require
+  const build = require('../scripts/build');
+  const os = require('os');
+
+  test('the build stops if anything but the studio is over the limit in the small-files version', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'codeit-small-'));
+    fs.mkdirSync(path.join(dir, 'static', 'js'), { recursive: true });
+    const write = (name, text) => fs.writeFileSync(path.join(dir, 'static', 'js', name), text);
+    write('1.chunk.js', 'x'.repeat(40000));                                  // a normal part
+    write('2.chunk.js', build.STUDIO_MARK + 'x'.repeat(150000));             // the studio page
+    expect(build.tooBig(dir)).toEqual([]);
+    write('3.chunk.js', 'y'.repeat(build.SMALL_LIMIT + 1));                  // something that grew
+    expect(build.tooBig(dir).map((file) => file.name)).toEqual(['3.chunk.js']);
+    expect(build.SMALL_LIMIT).toBeLessThan(68000);                           // under the largest script seen to arrive
+    const source = fs.readFileSync(path.join(ROOT, 'scripts', 'build.js'), 'utf8');
+    expect(source).toMatch(/const bad = tooBig\([^)]*\)\);\s*if \(bad\.length\) \{[\s\S]*?process\.exit\(1\);/);
+  });
+
+  test('the guides are in parts, none of them large', () => {
+    const dir = path.join(ROOT, 'src', 'data', 'guides');
+    const parts = fs.readdirSync(dir).filter((name) => name.endsWith('.js'));
+    expect(parts.length).toBeGreaterThanOrEqual(4);
+    for (const name of parts) expect({ name, small: fs.statSync(path.join(dir, name)).size < 45000 }).toEqual({ name, small: true });
+    expect(fs.statSync(path.join(ROOT, 'src', 'data', 'guidePages.js')).size).toBeLessThan(5000);
+  });
+
+  test('there is a check that plays the school\'s filter against the real build, and it is one of the checks that are run', () => {
+    const checks = path.join(ROOT, '..', '..', 'ops', 'checks');
+    const check = fs.readFileSync(path.join(checks, 'school-filter.js'), 'utf8');
+    expect(check).toContain('const LIMIT = 68 * 1000;');
+    expect(check).toContain("res.writeHead(403");
+    expect(fs.readFileSync(path.join(checks, 'run-all.sh'), 'utf8')).toContain('run school-filter.js');
   });
 });
 

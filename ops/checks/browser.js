@@ -39,6 +39,7 @@ function fromPlaywrightFolder() {
     .reverse()
     .flatMap(name => [
       path.join(root, name, 'chrome-linux', 'chrome'),
+      path.join(root, name, 'chrome-linux64', 'chrome'),
       path.join(root, name, 'chrome-mac', 'Chromium.app', 'Contents', 'MacOS', 'Chromium'),
       path.join(root, name),
     ]);

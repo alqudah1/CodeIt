@@ -299,7 +299,7 @@ svg.lm-decor { max-width: none; height: auto; }
 .lm-you__flag {
   position: absolute; top: 2px; left: 50%; transform: translateX(-50%); z-index: 3;
   padding: 3px 10px; border-radius: 999px; border: 2.5px solid var(--ink, #35220E);
-  background: #FF7A00; color: #fff; font-size: .68rem; font-weight: 900; letter-spacing: .08em;
+  background: #FF7A00; color: var(--ink, #35220E); font-size: .68rem; font-weight: 900; letter-spacing: .08em;
   box-shadow: 0 2px 0 var(--ink, #35220E);
 }
 .lm-stop--boss .lm-you__flag { top: -6px; }
@@ -342,7 +342,7 @@ svg.lm-decor { max-width: none; height: auto; }
 }
 .lm-stop--right .lm-label::before { left: -11px; transform: rotate(45deg); }
 .lm-stop--left .lm-label::before { right: -11px; transform: rotate(-135deg); }
-.lm-label__num { font-size: .66rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; color: var(--arc-orange, #F87824); }
+.lm-label__num { font-size: .66rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; color: #A84808; }
 .lm-label__title { font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; line-height: 1.15; color: var(--ink, #35220E); }
 .lm-label__next { font-size: .74rem; font-weight: 800; color: #7A6552; }
 .lm-badge {

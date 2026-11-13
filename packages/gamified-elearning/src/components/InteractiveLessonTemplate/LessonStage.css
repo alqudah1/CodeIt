@@ -160,6 +160,14 @@
 /* With the stage reading aloud, the floating guide has nothing left to do on
    a phone except cover the code and the Run button. */
 @media (max-width: 600px) { .sl-lesson--staged .lg-wrap { display: none; } }
+/* A phone on its side is wide and very short (750 by 342). The guide sat on
+   top of the Run button there, and the header that stays put took a third of
+   the screen. On a short screen the guide goes, and the header scrolls away
+   with the page. */
+@media (max-height: 480px) {
+  .sl-lesson--staged .lg-wrap { display: none; }
+  .sl-lesson .sl-fixed-header { position: absolute; }
+}
 
 /* Guess first: three chips under the stage, each big enough for a finger. */
 .gf { margin: 0 0 14px; }

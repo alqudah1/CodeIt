@@ -11,7 +11,7 @@ const GameHub = () => {
   return (
     <div className="game-hub">
       <Header />
-      <div className="game-hub__inner">
+      <div className="game-hub__inner" role="main">
       <button type="button" className="game-back" onClick={() => window.history.back()}>
         ← Back
       </button>

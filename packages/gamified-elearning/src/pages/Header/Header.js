@@ -190,6 +190,21 @@ export default function Header() {
   // The skip link every audit looks for first. Pages own their <main>, so the
   // link finds the current page's main landmark at click time rather than
   // hard-coding an id into eighteen files.
+  // The link's own address (#main) has to exist too: a browser, a screen
+  // reader's list of links and an audit all follow the address, not the
+  // click handler. Pages arrive after the header does, so this looks again
+  // shortly after each move.
+  useEffect(() => {
+    const name = () => {
+      if (document.getElementById('main')) return;
+      const main = document.querySelector('main') || document.querySelector('[role="main"]');
+      if (main && !main.id) main.id = 'main';
+    };
+    name();
+    const timers = [setTimeout(name, 400), setTimeout(name, 2000)];
+    return () => timers.forEach(clearTimeout);
+  }, [location.pathname]);
+
   const skipToContent = (event) => {
     event.preventDefault();
     const main = document.querySelector('main') || document.querySelector('[role="main"]');

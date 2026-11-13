@@ -141,6 +141,18 @@ function writeCheckFiles(build) {
   fs.writeFileSync(path.join(build, 'check-files.json'), JSON.stringify({ sizes, probes }));
 }
 
+// The one file in the small-files version that is allowed to be large: the
+// studio page, which is a single 260 KB component nobody has cut up yet. It
+// is told apart by a line only it contains.
+const STUDIO_MARK = 'if(window.self===window.top)return;';
+
+/** Scripts in the small-files version that are too big to be sure of passing a school filter. */
+function tooBig(dir) {
+  return scriptsIn(dir)
+    .filter((file) => file.size > SMALL_LIMIT)
+    .filter((file) => !fs.readFileSync(path.join(dir, 'static', 'js', file.name), 'utf8').includes(STUDIO_MARK));
+}
+
 function report(build) {
   const main = scriptsIn(build);
   const small = scriptsIn(path.join(build, 'lite'));
@@ -149,9 +161,22 @@ function report(build) {
   console.log(`Small-files version: ${small.length} script files, largest ${small.slice(0, 3).map((f) => kb(f.size)).join(', ')}.`);
   const over = small.filter((f) => f.size > SMALL_LIMIT);
   if (over.length) console.log(`Over ${kb(SMALL_LIMIT)} in the small-files version: ${over.map((f) => `${f.name} (${kb(f.size)})`).join(', ')}.`);
+  // The build stops here if anything but the studio has grown large. That is
+  // the whole point of the second version: on 13 November 2026 a school
+  // could not open a lesson because three files were over what its filter let
+  // through, and nothing had said so before a teacher did.
+  const bad = tooBig(path.join(build, 'lite'));
+  if (bad.length) {
+    console.error(`\nBUILD STOPPED. The small-files version has ${bad.length === 1 ? 'a script' : 'scripts'} over ${kb(SMALL_LIMIT)}: ${bad.map((f) => `${f.name} (${kb(f.size)})`).join(', ')}.`);
+    console.error('A school web filter stopped every script over 68 KB (13 November 2026). Scripts are cut at module');
+    console.error('boundaries, so one of these is a single source file, or a single library, that is too big.');
+    console.error('Cut the source file into smaller modules, or keep the library out of the small-files version');
+    console.error('(see scripts/build.js, and src/components/editorLoader.js for how the code editor is kept out).');
+    process.exit(1);
+  }
 }
 
-module.exports = { smallFiles, smallVersion, scriptsIn, MAX_PART, SMALL_LIMIT };
+module.exports = { smallFiles, smallVersion, scriptsIn, tooBig, MAX_PART, SMALL_LIMIT, STUDIO_MARK };
 
 if (require.main === module) {
   if (process.argv.includes('--one')) {

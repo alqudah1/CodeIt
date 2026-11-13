@@ -104,7 +104,7 @@
     }
     </script>
 
-    <link rel="preload" as="image" href="%PUBLIC_URL%/brand/codeit-logo-trimmed.png" fetchpriority="high" />
+    <link rel="preload" as="image" href="%PUBLIC_URL%/brand/codeit-logo-512.png" fetchpriority="high" />
     <!-- Fonts (Baloo 2, Nunito) ship with the app from the @fontsource
          packages, so the site needs no host but its own: a school filter
          that allows codeitlearn.com and nothing else gets every file. -->
@@ -160,12 +160,8 @@
             x.send(JSON.stringify({ event_name: 'boot_failed', meta: why }));
           } catch (err) {}
         }
-        // The guides are whole articles in the page itself, and the app's copy
-        // of them is one large file. Where large files are stopped, the
-        // article that is already on screen is the better thing to leave.
-        function staysPlain() { return /^\/guide(\/|$)/.test(location.pathname); }
         function startSmall() {
-          if (boot.small || boot.app || staysPlain()) return;
+          if (boot.small || boot.app) return;
           // No connection at all is not a filter: nothing would arrive.
           if (navigator.onLine === false) return;
           boot.small = true;

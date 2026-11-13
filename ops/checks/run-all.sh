@@ -93,6 +93,7 @@ run() {
 # Ordered cheapest first, so a broken build is obvious before ten minutes of
 # browser work.
 run quizzes-check.js
+run school-filter.js
 run starters-run.js
 run editable-worlds.js
 run maze-drag.js

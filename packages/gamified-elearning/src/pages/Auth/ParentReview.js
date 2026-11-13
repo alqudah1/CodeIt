@@ -109,7 +109,7 @@ export default function ParentReview() {
 
   if (completed) {
     return (
-      <div className="auth-page">
+      <div className="auth-page" role="main">
         <main className="auth-card parent-review-card">
           <div className="auth-brand"><BrandLogo className="auth-logo" /></div>
           <header className="auth-header">
@@ -125,7 +125,7 @@ export default function ParentReview() {
 
   if (claimToken) {
     return (
-      <div className="auth-page">
+      <div className="auth-page" role="main">
         <main className="auth-card parent-review-card">
           <div className="auth-brand"><BrandLogo className="auth-logo" /></div>
           <header className="auth-header">
@@ -214,7 +214,7 @@ export default function ParentReview() {
   }
 
   return (
-    <div className="auth-page">
+    <div className="auth-page" role="main">
       <main className="auth-card parent-review-card">
         <div className="auth-brand"><BrandLogo className="auth-logo" /></div>
         <header className="auth-header">

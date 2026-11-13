@@ -108,6 +108,8 @@ describe('published copy', () => {
   test('the scan reads real files, so an empty result means something', () => {
     expect(files.length).toBeGreaterThan(100);
     expect(files.some(f => f.endsWith('data/guidePages.js'))).toBe(true);
+    // The guides themselves are in parts beside it, and are read too.
+    expect(files.filter(f => /data\/guides\/part\d\.js$/.test(f)).length).toBeGreaterThanOrEqual(4);
   });
 
   test('the scan can tell a comment from a link', () => {
@@ -133,7 +135,7 @@ describe('published copy', () => {
     }
     expect(byFile).toEqual({
       // Google's published wording for CS First, quoted twice.
-      'data/guidePages.js': 2,
+      'data/guides/part5.js': 2,
       // A regex that has to match the dashes children type.
       'utils/projectName.js': 1,
     });

@@ -71,7 +71,9 @@
   gap: 6px;
   background: #ff7624;
   border-color: #ff7624;
-  color: #fff;
+  /* Dark ink, not white: white on this orange is 2.7 to 1, and the button a
+     child has to find has to be the easiest thing on the page to read. */
+  color: #2b1a08;
   box-shadow: 0 8px 20px rgba(255, 159, 28, 0.3);
 }
 
@@ -116,7 +118,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: #c94c0a;
+  color: #a83f08;
   margin-bottom: 0.45rem;
   font-family: 'Nunito', 'Trebuchet MS', sans-serif;
 }
@@ -200,3 +202,13 @@
 }
 .cr-key--wide { font: 800 .85rem 'Nunito', sans-serif; }
 .cr-key:active { transform: translateY(2px); box-shadow: none; }
+
+/* A folded phone is 280 wide. Reset and Run side by side are wider than the
+   card there, and what does not fit was cut off. They share the row if they
+   can and stack if they cannot. */
+@media (max-width: 340px) {
+  .cr-header { padding: 0.6rem 0.7rem; }
+  .cr-actions { flex-wrap: wrap; justify-content: flex-end; gap: 0.4rem; width: 100%; }
+  .cr-actions .cr-btn { flex: 1 1 auto; justify-content: center; }
+  .sl-code-step--stage .cr-btn--run { min-width: 0; }
+}

@@ -1872,7 +1872,9 @@ function writeLlmsTxt(buildDir) {
 
   const guides = GUIDE_CONTENT.map(
     (guide) =>
-      `- ${guide.h1}\n  ${SITE}/guide/${guide.slug}\n  ${guide.description}\n  Last checked ${guide.lastVerified}.`
+      // A Markdown link, which is what the llms.txt format asks for and what
+      // a checker looks for ("File does not appear to contain any links").
+      `- [${guide.h1}](${SITE}/guide/${guide.slug})\n  ${guide.description}\n  Last checked ${guide.lastVerified}.`
   ).join('\n\n');
 
   const body =

@@ -231,7 +231,7 @@ export default function Register() {
   // ═══════════════════════════════════════════════════════════════════════════
   if (step === 'choose') {
     return (
-      <div className={`auth-page${nightClass(theme)}`}>
+      <div role="main" className={`auth-page${nightClass(theme)}`}>
         <div className="auth-card">
           <BrandMark />
           <header className="auth-header">
@@ -291,7 +291,7 @@ export default function Register() {
   // ═══════════════════════════════════════════════════════════════════════════
   if (step === 'student') {
     return (
-      <div className={`auth-page${nightClass(theme)}`}>
+      <div role="main" className={`auth-page${nightClass(theme)}`}>
         <div className="auth-card">
           <BrandMark />
           <button type="button" className="auth-back" onClick={goBack}>Back</button>
@@ -420,7 +420,7 @@ export default function Register() {
   // ═══════════════════════════════════════════════════════════════════════════
   if (step === 'parent-optional') {
     return (
-      <div className={`auth-page${nightClass(theme)}`}>
+      <div role="main" className={`auth-page${nightClass(theme)}`}>
         <div className="auth-card">
           <BrandMark />
           <header className="auth-header">
@@ -473,7 +473,7 @@ export default function Register() {
   // ═══════════════════════════════════════════════════════════════════════════
   if (step === 'educator') {
     return (
-      <div className={`auth-page${nightClass(theme)}`}>
+      <div role="main" className={`auth-page${nightClass(theme)}`}>
         <div className="auth-card">
           <BrandMark />
           <button type="button" className="auth-back" onClick={goBack}>Back</button>

@@ -483,7 +483,7 @@ export default function Explore() {
       </div>
 
       {/* Content */}
-      <div className="exp-content">
+      <div className="exp-content" role="main">
         {loading && (
           <div className="exp-loader">
             <div className="exp-loader__spinner" />

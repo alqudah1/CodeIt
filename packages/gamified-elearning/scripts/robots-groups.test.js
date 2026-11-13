@@ -122,5 +122,9 @@ test('the assistant crawlers this site means to allow are all named', () => {
 
 test('the sitemap and the llms.txt pointer survive', () => {
   assert.match(ROBOTS, /^Sitemap:\s*https:\/\/codeitlearn\.com\/sitemap\.xml$/m);
-  assert.match(ROBOTS, /^LLM-Content:\s*https:\/\/codeitlearn\.com\/llms\.txt$/m);
+  // The pointer is a comment now. "LLM-Content:" is not in the robots.txt
+  // standard, and PageSpeed Insights (13 November 2026) reported the whole
+  // file as invalid because of that one line.
+  assert.match(ROBOTS, /^# .*https:\/\/codeitlearn\.com\/llms\.txt/m);
+  assert.doesNotMatch(ROBOTS, /^LLM-Content:/m);
 });

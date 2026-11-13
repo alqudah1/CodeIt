@@ -45,6 +45,11 @@ const COPY = [
   '../src/pages/SEO/LearnPythonForKids.js',
   '../src/data/blogPosts.js',
   '../src/data/guidePages.js',
+  '../src/data/guides/part1.js',
+  '../src/data/guides/part2.js',
+  '../src/data/guides/part3.js',
+  '../src/data/guides/part4.js',
+  '../src/data/guides/part5.js',
   '../src/pages/Games/gameCatalog.js',
   './generate-static-seo.js',
 ].map(file => {
@@ -217,6 +222,11 @@ test('no page claims the wrong answers are only real values from the project', (
   for (const file of [
     '../src/data/pressFacts.js',
     '../src/data/guidePages.js',
+    '../src/data/guides/part1.js',
+    '../src/data/guides/part2.js',
+    '../src/data/guides/part3.js',
+    '../src/data/guides/part4.js',
+    '../src/data/guides/part5.js',
     '../src/data/blogPosts.js',
     '../src/pages/SEO/LearnPythonForKids.js',
     '../src/pages/SEO/PythonGamesForKids.js',

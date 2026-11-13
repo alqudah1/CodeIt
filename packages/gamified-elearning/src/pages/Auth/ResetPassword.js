@@ -44,7 +44,7 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="auth-page">
+    <div className="auth-page" role="main">
       <div className="auth-card">
         <div className="auth-brand"><BrandLogo className="auth-logo" /></div>
         <header className="auth-header">

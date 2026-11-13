@@ -25,6 +25,9 @@ const LESSON_STARTER = {
   10: `# 🧩 Modules\nimport math\nimport random\n\nprint("Pi =", round(math.pi, 4))\nprint("Sqrt of 16 =", math.sqrt(16))\nprint("Random 1-10:", random.randint(1, 10))`,
 };
 
+// How long a lesson waits, untouched, before it fetches Python by itself.
+export const PYTHON_AFTER_MS = 6000;
+
 const DEFAULT_CODE = `# Write your Python code here\nprint("Hello, Python!")`;
 
 // ── The symbols a phone keyboard hides ──────────────────────────────────────
@@ -176,10 +179,29 @@ const CodeRunnerPython = ({
       });
   }, []);
 
+  // ── When Python is fetched ────────────────────────────────────────────────
+  //
+  // It used to start the moment a lesson opened. Measured on 13 November 2026
+  // (PageSpeed Insights, a mid-range phone on slow 4G): starting Python kept
+  // the page busy for seven seconds while it was still drawing itself, six
+  // megabytes on a page nobody had touched yet. So it now starts at the first
+  // sign of a person (a tap, a key) or after a few quiet seconds, whichever
+  // comes first. A Run pressed before then starts it and says so, as it
+  // always has.
   useEffect(() => {
     if (loadPython !== 'mount') return undefined;
-    startPython();
-    return undefined;
+    if (typeof window === 'undefined') return undefined;
+    if (window.pyodide) { startPython(); return undefined; }
+    const signs = ['pointerdown', 'keydown', 'touchstart'];
+    let timer = null;
+    const stop = () => {
+      clearTimeout(timer);
+      signs.forEach((name) => window.removeEventListener(name, begin, true));
+    };
+    function begin() { stop(); startPython(); }
+    signs.forEach((name) => window.addEventListener(name, begin, { capture: true, passive: true }));
+    timer = setTimeout(begin, PYTHON_AFTER_MS);
+    return stop;
   }, [loadPython, startPython]);
 
   const runCode = useCallback(async () => {

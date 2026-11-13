@@ -79,7 +79,7 @@ export default function Login() {
   };
 
   return (
-    <div className={`auth-page${nightClass(theme)}`}>
+    <div role="main" className={`auth-page${nightClass(theme)}`}>
       <div className="auth-card">
 
         {/* Brand mark */}

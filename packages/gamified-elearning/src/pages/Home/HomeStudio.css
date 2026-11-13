@@ -477,7 +477,7 @@
 .studio-footer__top strong { margin-bottom: 0.35rem; color: var(--studio-ink); font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .studio-footer a { color: var(--studio-muted); font-size: 0.84rem; text-decoration: none; }
 .studio-footer a:hover { color: var(--studio-orange-dark); }
-.studio-footer__bottom { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: 1.2rem 0 2rem; display: flex; gap: 1rem; color: #8a746a; border-top: 1px solid #ead3c2; font-size: 0.8125rem; }
+.studio-footer__bottom { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: 1.2rem 0 2rem; display: flex; gap: 1rem; color: #7d685e; border-top: 1px solid #ead3c2; font-size: 0.8125rem; }
 .studio-footer__bottom a:first-of-type { margin-left: auto; }
 
 @media (prefers-reduced-motion: reduce) {
