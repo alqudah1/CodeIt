@@ -27,6 +27,7 @@ const pool = require('../db');
 const { recordUserActivity } = require('../userActivity');
 const { cleanClassName, cleanFirstName, isCode, makeCode, normaliseCode, studentUsername } = require('../classes');
 const { LESSON_BASE, POWERS, powerByLessonId, powerStates } = require('../powers');
+const { eraseLearner } = require('./../learnerErasure');
 
 const router = express.Router();
 
@@ -216,6 +217,73 @@ router.get('/:code/student/:id', requireAuth, async (req, res) => {
     if (notSetUp(err)) return notReady(res);
     console.error('class/student:', err.message);
     return res.status(500).json({ error: 'Could not load this child\'s work.' });
+  }
+});
+
+// ── DELETE /api/class/:code/student/:id ─────────────────────────────────────
+//
+// A class account is the lightest record this product keeps: a first name, a
+// password the child never sees, no email, no date of birth, no surname. But
+// "we hold almost nothing" is not an answer to "a parent has asked you to
+// delete their child's data", and until this route there was no way for a
+// teacher to do it. A parent could delete a managed profile; a teacher could
+// not delete anything, and the teacher is the adult on record for every child
+// who joined with a code.
+//
+// Only the teacher who made the class, only a child who is in it, and only a
+// class account: a child who joined with their own existing account keeps it,
+// and is removed from the class instead. Deleting someone else's real account
+// is not a thing a class code should be able to do.
+//
+// What it erases is in learnerErasure.js, and learnerErasure.pgtest.js proves
+// against the schema that nothing is left behind.
+router.delete('/:code/student/:id', requireAuth, async (req, res) => {
+  const code = normaliseCode(req.params.code);
+  const studentId = Number(req.params.id);
+  if (!isCode(code) || !Number.isInteger(studentId)) return res.status(404).json({ error: 'That is not a child in a class.' });
+
+  let connection;
+  try {
+    const klass = await findClass(code);
+    if (!klass) return res.status(404).json({ error: 'No class has that code.' });
+    if (klass.owner_id !== req.user.user_id) {
+      return res.status(403).json({ error: 'Only the teacher who made this class can remove a child from it.' });
+    }
+
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+    const [rows] = await connection.query(
+      `SELECT m.user_id, u.name, u.email, u.parent_email
+         FROM class_members m JOIN Users u ON u.user_id = m.user_id
+        WHERE m.class_id = ? AND m.user_id = ?
+        FOR UPDATE`,
+      [klass.id, studentId]
+    );
+    const member = rows[0];
+    if (!member) {
+      await connection.rollback();
+      return res.status(404).json({ error: 'That child is not in this class.' });
+    }
+
+    // A class account has no email of any kind. Anything else is somebody's
+    // own account that happened to join, so it leaves the class and keeps
+    // everything it owns.
+    const isClassAccount = !member.email && !member.parent_email;
+    if (!isClassAccount) {
+      await connection.query('DELETE FROM class_members WHERE class_id = ? AND user_id = ?', [klass.id, studentId]);
+      await connection.commit();
+      return res.json({ success: true, removed: 'membership', name: member.name });
+    }
+
+    await eraseLearner(connection, studentId);
+    await connection.commit();
+    return res.json({ success: true, removed: 'account', name: member.name });
+  } catch (error) {
+    if (connection) await connection.rollback().catch(() => {});
+    console.error('class delete student:', error.message);
+    return res.status(500).json({ error: 'Could not remove that child.' });
+  } finally {
+    if (connection) connection.release();
   }
 });
 

@@ -7,6 +7,7 @@ const db = require('./db');
 const { ready: progressReady } = require('./progressNotifications');
 const { planForSubscription, PLANS } = require('./entitlements');
 const { billingReadiness } = require('./billingReadiness');
+const { eraseLearner } = require('./learnerErasure');
 const {
   FAMILY_NOTICE_VERSION,
   validManagedPassword,
@@ -424,14 +425,10 @@ async function deleteManagedChild(adultUserId, childUserId) {
       await connection.rollback();
       throw Object.assign(new Error('Managed profile not found.'), { statusCode: 404 });
     }
-    await connection.query('DELETE FROM Student_Lesson_Progress WHERE user_id = ?', [childUserId]);
-    await connection.query('DELETE FROM Student_Puzzle_Progress WHERE user_id = ?', [childUserId]);
-    await connection.query('DELETE FROM Student_Quiz_Attempt WHERE student_id = ?', [childUserId]);
-    await connection.query('DELETE FROM rewards WHERE student_id = ?', [childUserId]);
-    await connection.query('DELETE FROM ai_project_likes WHERE user_id = ?', [childUserId]);
-    await connection.query('DELETE FROM analytics_events WHERE user_id = ?', [childUserId]);
-    await connection.query('DELETE FROM founding_family_leads WHERE user_id = ?', [childUserId]);
-    await connection.query('DELETE FROM Users WHERE user_id = ?', [childUserId]);
+    // The list this used to hold inline missed two tables that have no
+    // foreign key to Users, so a per-day record of when the child was
+    // active survived the delete. See learnerErasure.js.
+    await eraseLearner(connection, childUserId);
     await connection.commit();
     return true;
   } catch (error) {

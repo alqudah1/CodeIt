@@ -82,6 +82,21 @@ echo
 echo "── One child in the database ─────────────────────────────────────────────"
 node "$ROOT/ops/checks/seed.js"
 
+# ── Tests that need a real database ──────────────────────────────────────────
+#
+# These cannot run in the unit suite: they read this repository's own schema
+# and insist that deleting a learner leaves nothing behind, which is a claim
+# only a migrated Postgres can settle. The database is already standing up
+# here, so this is where they belong.
+echo
+echo "── Database-backed tests ─────────────────────────────────────────────────"
+if ( cd "$BACKEND" && npm run --silent test:pg ); then
+  echo "  every learner-erasure guard passed"
+else
+  echo "  ↑ FAILED" >&2
+  exit 1
+fi
+
 failed=0
 run() {
   echo
