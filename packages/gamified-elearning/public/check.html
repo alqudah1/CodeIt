@@ -163,6 +163,7 @@
     var rParts = row('The app itself (lessons, playground, studio)');
     var rSmall = row('The small-files version (what CodeIt uses when the files above are stopped)');
     var rSize = row('Test scripts with nothing in them but numbers');
+    var rMedia = row('Pictures and fonts');
     var rStart = row('CodeIt starts');
     var rServer = row('The CodeIt server (accounts and saved work)');
     var rSave = row('Saving on this computer');
@@ -238,14 +239,9 @@
       for (var i = 0; i < files.length; i += 1) if (/\.js$/.test(files[i])) scripts.push(files[i]);
       if (!scripts.length) { rSmall.set(false, 'Its list of files did not arrive.'); return; }
       return all(scripts, function (bad, good) {
-        var needed = 0, i;
-        // The studio page is one large file in both versions. Everything else in this one is small.
-        for (i = 0; i < bad.length; i += 1) if ((sizes[bad[i].url] || 0) < 100000) needed += 1;
+        // Every piece of this version is small, the studio included, so every one is needed.
         if (!bad.length) rSmall.set(true, 'All ' + scripts.length + ' of its pieces arrived.');
-        else {
-          stoppedReport(rSmall, bad, good, scripts.length, sizes, 'of its pieces');
-          if (!needed) { rSmall.state = 'ok'; rSmall.set(true, 'Its lessons, playground and sign-in pieces all arrived. ' + bad.length + ' large piece' + (bad.length === 1 ? ' was' : 's were') + ' stopped (the studio), listed in the copied results.'); }
-        }
+        else stoppedReport(rSmall, bad, good, scripts.length, sizes, 'of its pieces');
       });
     });
 
@@ -265,6 +261,19 @@
         rSize.info(parts.join(', ') + '. ' + (bad.length
           ? 'So this network stops scripts by how big they are. ' + bad[0].why
           : appStopped ? 'So it is not size alone: the filter is judging what is inside the app\'s files.' : 'Nothing here stops a script for its size.'));
+      });
+    });
+
+    // The logo, a picture a lesson uses, and the fonts the pages are set in.
+    var media = textFile('/asset-manifest.json').then(function (m) {
+      var fonts = [], k;
+      try { var all = JSON.parse(m.text).files; for (k in all) if (/\.woff2$/.test(all[k]) && fonts.length < 3) fonts.push(all[k]); } catch (e) {}
+      var wanted = ['/brand/codeit-logo-512.png', '/brand/pixel-guide.png'].concat(fonts);
+      return Promise.all(wanted.map(function (url) { return firstBytes(url).then(function (got) { return { url: url, ok: got.ok && !isPage(got.head), why: got.error ? fail(got.error) : 'The answer was ' + got.status + (isPage(got.head) ? ', and a web page came back instead of the file' : '') + '.' }; }); })).then(function (results) {
+        var bad = [], i;
+        for (i = 0; i < results.length; i += 1) if (!results[i].ok) bad.push(results[i].url + ': ' + results[i].why);
+        if (!bad.length) rMedia.set(true, 'The logo, a lesson picture and ' + fonts.length + ' font' + (fonts.length === 1 ? '' : 's') + ' arrived.');
+        else { rMedia.set(false, bad.length + ' of ' + results.length + ' did not arrive. First: ' + bad[0]); rMedia.more = bad.slice(1); }
       });
     });
 
@@ -322,7 +331,7 @@
       }, function (err) { rPyRun.set(false, 'Python did not start: ' + ((err && err.message) || err)); });
     });
 
-    Promise.all([starts, server, pyRun]).then(finish, finish);
+    Promise.all([starts, server, pyRun, media]).then(finish, finish);
   }
 
   function finish() {
@@ -333,8 +342,8 @@
     else if (bad.length === 1 && state['The app itself'] === 'bad' && state['The small-files version'] === 'ok' && state['CodeIt starts'] === 'ok') {
       // The main version is stopped, the small-files one gets through and starts.
       sum.className = 'sum is-warn'; sum.innerHTML = '';
-      sum.appendChild(document.createTextNode('Lessons and the playground work on this computer, using CodeIt\'s small-files version.'));
-      small = document.createElement('small'); small.textContent = 'This network is stopping the app\'s larger files, so the studio and the coloured code editor will not open here. Allowing codeitlearn.com on the filter brings them back. Press Copy the results to send the details.'; sum.appendChild(small);
+      sum.appendChild(document.createTextNode('CodeIt works on this computer, using its small-files version.'));
+      small = document.createElement('small'); small.textContent = 'This network is stopping the app\'s larger files. Lessons, the playground and the studio all open in the small-files version; the code editor in it is plain, without colours. Allowing codeitlearn.com on the filter brings the full version back. Press Copy the results to send the details.'; sum.appendChild(small);
     }
     else { sum.className = 'sum is-bad'; sum.innerHTML = ''; sum.appendChild(document.createTextNode(bad.length === 1 ? 'One thing is being stopped on this computer.' : bad.length + ' things are being stopped on this computer.')); small = document.createElement('small'); small.textContent = 'The red lines say which. Press Copy the results and send them to the person who looks after your network, or to us.'; sum.appendChild(small); }
     document.getElementById('text').value = asText();

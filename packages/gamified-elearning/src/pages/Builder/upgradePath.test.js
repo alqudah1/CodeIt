@@ -21,7 +21,8 @@ const read = f => fs.readFileSync(path.join(__dirname, f), 'utf8')
   .replace(/\/\*[\s\S]*?\*\//g, '')
   .split('\n').filter(l => !l.trim().startsWith('//')).join('\n');
 
-const BUILDER = read('Builder.js');
+// The studio is in parts now; this reads all of them. See studioSource.js.
+const BUILDER = require('./studioSource').readStudioSource();
 const HEADER = read('../Header/Header.js');
 const PRICING = read('../Pricing/Pricing.js');
 

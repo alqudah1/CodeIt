@@ -60,7 +60,7 @@ describe('fallback templates cannot be used as evidence', () => {
   test('the browser s own starter templates carry the marker too', () => {
     // The browser substitutes its own copies on a fallback, so marking only the
     // server's would have left the real path unguarded.
-    const builder = fs.readFileSync(path.join(__dirname, 'Builder.js'), 'utf8');
+    const builder = require('./studioSource').readStudioSource();
     const block = builder.slice(builder.indexOf('const STARTER_TEMPLATES'),
       builder.indexOf('const STARTER_TEMPLATES') + 20000);
     const templates = (block.match(/<!DOCTYPE html>/g) || []).length;
@@ -77,7 +77,7 @@ describe('fallback templates cannot be used as evidence', () => {
   test('the panel refuses a starter build outright', () => {
     const panel = fs.readFileSync(path.join(__dirname, 'ProveItPanel.js'), 'utf8');
     expect(panel).toMatch(/if \(isStarter\) return null;/);
-    const builder = fs.readFileSync(path.join(__dirname, 'Builder.js'), 'utf8');
+    const builder = require('./studioSource').readStudioSource();
     expect(builder).toMatch(/isStarter=\{isStarter\}/);
   });
 });

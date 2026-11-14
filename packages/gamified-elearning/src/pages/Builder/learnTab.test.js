@@ -21,11 +21,15 @@ import path from 'path';
 //
 // The whole product claim is that a child learns the code behind what they
 // built. This is the tab where that happens.
-const SRC = fs.readFileSync(path.join(__dirname, 'Builder.js'), 'utf8');
+// The studio is in parts now; this reads all of them. See studioSource.js.
+const SRC = require('./studioSource').readStudioSource();
 
 // The concepts block, from its condition to the end of its list.
-const conceptsStart = SRC.indexOf("{onTab('learn') && conceptsFound.length > 0 && (");
-const conceptsEnd = SRC.indexOf("{onTab('learn') && code && conceptsFound.length === 0", conceptsStart);
+// It is a piece of the screen of its own now (see the note at the top of
+// Builder.js), so it runs from its condition to the end of the function it
+// was moved into.
+const conceptsStart = SRC.indexOf("onTab('learn') && conceptsFound.length > 0 && (");
+const conceptsEnd = SRC.indexOf('\n  );\n}', conceptsStart);
 const conceptsBlock = SRC.slice(conceptsStart, conceptsEnd);
 
 describe('the code tab', () => {

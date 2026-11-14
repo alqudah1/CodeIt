@@ -129,7 +129,7 @@ describe('the header agrees with the pages it links to', () => {
     // It used to lead to one headed "My Creations". One click, two words, and a
     // child left wondering whether they had gone to the right place.
     expect(header).toMatch(/My projects/);
-    const builder = fs.readFileSync(path.join(SRC, 'pages/Builder/Builder.js'), 'utf8');
+    const builder = require('./pages/Builder/studioSource').readStudioSource();
     expect(builder).toMatch(/My projects/);
   });
 

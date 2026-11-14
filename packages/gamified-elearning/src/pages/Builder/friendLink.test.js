@@ -15,7 +15,8 @@ import path from 'path';
 // whole "u-<id>" string to an endpoint that only knows published ids.
 //
 // So the feature existed, was tested, was deployed, and was unreachable.
-const BUILDER = fs.readFileSync(path.join(__dirname, 'Builder.js'), 'utf8');
+// The studio is in parts now; this reads all of them. See studioSource.js.
+const BUILDER = require('./studioSource').readStudioSource();
 const PUBLIC = fs.readFileSync(path.join(__dirname, 'PublicProject.js'), 'utf8');
 const code = src => src
   .replace(/\/\*[\s\S]*?\*\//g, '')

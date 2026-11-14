@@ -13,10 +13,11 @@
  * hold. Where the answer is "no", it says no. Do not soften a sentence into
  * something vaguer: the specifics are the whole value.
  *
- * Three sections are written and NOT shown yet (see NOT_YET below). Each one
- * says something that is not true on the live site until other work lands,
- * and a page for reviewers that says one untrue thing is worth less than no
- * page.
+ * Three sections were written and held back until 14 November 2026, because
+ * each said something that was not yet true on the live site: class games were
+ * still listed in the public gallery, a teacher could not delete a child, and
+ * the axe sweep still reported a serious violation on the lesson map. All
+ * three were fixed that day and checked here before the sections went in.
  *
  * No imports: scripts/content-loader.js evaluates this file in a vm sandbox
  * that refuses require, so each side supplies its own configuration.
@@ -38,8 +39,8 @@ export default function schoolFacts({ contactEmail, pricePerInterval, maxChildre
       {
         heading: 'Web filters that read inside files',
         paragraphs: [
-          'Some school filters do more than allow or block an address: they inspect each file and can stop a script on a site they do not know. When that happens CodeIt notices that its files did not arrive and switches by itself to a version made only of small files, so lessons, quizzes and the Python playground still open.',
-          'The game studio is one large file and cannot be delivered that way. If the studio does not open on your network, allow codeitlearn.com for all file types and leave it out of content inspection.',
+          'Some school filters do more than allow or block an address: they inspect each file and can stop a script on a site they do not know. When that happens CodeIt notices that its files did not arrive and switches by itself to a version made only of small files, so the lessons, the quizzes, the Python playground and the game studio still open.',
+          'In that version the code editor is plain, without colours. To get the full version back, allow codeitlearn.com for all file types and leave it out of content inspection.',
         ],
       },
       {
@@ -62,10 +63,24 @@ export default function schoolFacts({ contactEmail, pricePerInterval, maxChildre
         ],
       },
       {
+        heading: 'What leaves the classroom',
+        paragraphs: [
+          'Work made in a class is for the class. When a child publishes, the game appears on the class board and in the class arcade, where the room can play it. It is never listed in CodeIt\'s public gallery, and the page it opens on is hidden from search engines.',
+          'Each game has a private link made of random characters, shown only inside the class. Anyone the link is given to can open it, the same way anyone given the class code can join the class.',
+        ],
+      },
+      {
+        heading: 'Deleting a child\'s data',
+        paragraphs: [
+          'A teacher can delete any child in their own class, and it removes everything: their projects, their lesson progress, their quiz answers, their comprehension records, their XP, their activity and the account itself. Nothing is kept as an archive.',
+          'A parent who created a managed profile at home can do the same from the family account.',
+        ],
+      },
+      {
         heading: 'Publishing',
         paragraphs: [
-          'Saved work is private until someone chooses Publish. A managed profile for a child under 13 cannot publish at all.',
-          'A published project has a link made of random characters that anyone given it can open, and it can appear in CodeIt\'s gallery of projects. Wherever a project is published, the page credits "CodeIt creator" and never shows the child\'s name. Project pages are hidden from search engines.',
+          'Saved work is private until someone chooses Publish. A managed profile for a child under 13 cannot publish at all. A classroom account publishes to its class, as described above, and never to the public gallery.',
+          'Wherever a project is published, the page credits "CodeIt creator" and never shows the child\'s name.',
         ],
       },
       {
@@ -73,6 +88,13 @@ export default function schoolFacts({ contactEmail, pricePerInterval, maxChildre
         paragraphs: [
           'When a child asks CodeIt to build something, what goes to the AI provider is the sentence the child typed and the project\'s own code. No name, no username, no account number and no identifier for the child is sent with it.',
           'The lessons and the Python playground use no AI at all. A child types Python and Python answers.',
+        ],
+      },
+      {
+        heading: 'Accessibility',
+        paragraphs: [
+          'Every main screen is checked against WCAG 2.1 AA with axe-core, the same engine behind Lighthouse, on every change. When it was last run, on 14 November 2026, it reported no serious or critical violations across the nine screens it covers.',
+          'Text has a 13px floor, checked at phone, tablet and laptop widths. Every screen can be completed with taps alone.',
         ],
       },
       {
@@ -98,45 +120,3 @@ export default function schoolFacts({ contactEmail, pricePerInterval, maxChildre
     detail: 'This page states what was checked, not a grade. If something here stops being true, the page changes.',
   };
 }
-
-/**
- * Written, and held back until they are true on the live site.
- *
- * Checked on 14 November 2026 against main:
- *
- * - "What leaves the classroom": games published from a class account still
- *   appear in the public gallery's newest row. The change that leaves them out
- *   is in another session's commits, not yet on main.
- * - "Deleting a child's data": there is no route on main for a teacher to
- *   delete a child in their class, and no test that every table is cleared.
- * - "Accessibility": the axe sweep (ops/checks/a11y-sweep.js) reports one
- *   serious violation on main, the XP tag on a lesson map stop that is still
- *   ahead (.lm-xp--ahead, contrast). The same commits fix it.
- *
- * When those commits are on main and the sweep is clean, move each section
- * into the list above, in the order the reviewer's form asks: classroom after
- * "Who the adult is", deletion after it, accessibility before "Ages".
- */
-export const NOT_YET = [
-  {
-    heading: 'What leaves the classroom',
-    paragraphs: [
-      'Work made in a class is for the class. When a child publishes, the game appears on the class board and in the class arcade, where the room can play it. It is never listed in CodeIt\'s public gallery, and the page it opens on is hidden from search engines.',
-      'Each game has a private link made of random characters, shown only inside the class. Anyone the link is given to can open it, the same way anyone given the class code can join the class.',
-    ],
-  },
-  {
-    heading: 'Deleting a child\'s data',
-    paragraphs: [
-      'A teacher can delete any child in their own class, and it removes everything: their projects, their lesson progress, their quiz answers, their comprehension records, their XP, their activity and the account itself. Nothing is kept as an archive.',
-      'A parent who created a managed profile at home can do the same from the family account.',
-    ],
-  },
-  {
-    heading: 'Accessibility',
-    paragraphs: [
-      'Every main screen is checked against WCAG 2.1 AA with axe-core, the same engine behind Lighthouse, on every change. There are currently no serious or critical violations across the nine screens it covers.',
-      'Text has a 13px floor, checked at phone, tablet and laptop widths. Every screen can be completed with taps alone.',
-    ],
-  },
-];

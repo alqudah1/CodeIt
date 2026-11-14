@@ -236,7 +236,7 @@ describe('the check page', () => {
   });
 
   test('it checks the app, the server, saving and Python, and the address has a short form', () => {
-    for (const name of ['The app\\\'s first file (its entry script)', 'The app itself (lessons, playground, studio)', 'The small-files version', 'Test scripts with nothing in them but numbers', 'CodeIt starts', 'The CodeIt server', 'Saving on this computer', 'The Python files', 'Python runs']) expect(CHECK_SCRIPT).toContain(name);
+    for (const name of ['The app\\\'s first file (its entry script)', 'The app itself (lessons, playground, studio)', 'The small-files version', 'Test scripts with nothing in them but numbers', 'Pictures and fonts', 'CodeIt starts', 'The CodeIt server', 'Saving on this computer', 'The Python files', 'Python runs']) expect(CHECK_SCRIPT).toContain(name);
     const vercel = JSON.parse(fs.readFileSync(path.join(ROOT, '..', '..', 'vercel.json'), 'utf8'));
     const short = vercel.rewrites.findIndex((r) => r.source === '/check' && r.destination === '/check.html');
     const spa = vercel.rewrites.findIndex((r) => r.destination === '/index.html');
@@ -341,18 +341,35 @@ describe('what stops a large file from coming back', () => {
   const build = require('../scripts/build');
   const os = require('os');
 
-  test('the build stops if anything but the studio is over the limit in the small-files version', () => {
+  test('the build stops if anything at all is over the limit in the small-files version', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'codeit-small-'));
     fs.mkdirSync(path.join(dir, 'static', 'js'), { recursive: true });
     const write = (name, text) => fs.writeFileSync(path.join(dir, 'static', 'js', name), text);
     write('1.chunk.js', 'x'.repeat(40000));                                  // a normal part
-    write('2.chunk.js', build.STUDIO_MARK + 'x'.repeat(150000));             // the studio page
+    write('2.chunk.js', 'x'.repeat(build.SMALL_LIMIT));                      // right at the limit
     expect(build.tooBig(dir)).toEqual([]);
     write('3.chunk.js', 'y'.repeat(build.SMALL_LIMIT + 1));                  // something that grew
     expect(build.tooBig(dir).map((file) => file.name)).toEqual(['3.chunk.js']);
     expect(build.SMALL_LIMIT).toBeLessThan(68000);                           // under the largest script seen to arrive
     const source = fs.readFileSync(path.join(ROOT, 'scripts', 'build.js'), 'utf8');
     expect(source).toMatch(/const bad = tooBig\([^)]*\)\);\s*if \(bad\.length\) \{[\s\S]*?process\.exit\(1\);/);
+  });
+
+  test('the studio is in parts, none of them large', () => {
+    // It was one 330 KB file that reached the browser as one 156 KB script,
+    // the last page of the site a strict filter could not let through. The
+    // build is what really enforces the limit; this says so sooner.
+    // eslint-disable-next-line global-require
+    const { studioFiles } = require('./pages/Builder/studioSource');
+    const dir = path.join(ROOT, 'src', 'pages', 'Builder');
+    const files = studioFiles();
+    expect(files.filter((name) => name.startsWith('studioKit')).length).toBeGreaterThanOrEqual(2);
+    expect(files.filter((name) => name.startsWith('studioScreen')).length).toBeGreaterThanOrEqual(3);
+    expect(files.filter((name) => name.startsWith('studioActions')).length).toBeGreaterThanOrEqual(2);
+    for (const name of files) {
+      const limit = name === 'Builder.js' ? 125000 : 46000;
+      expect({ name, small: fs.statSync(path.join(dir, name)).size < limit }).toEqual({ name, small: true });
+    }
   });
 
   test('the guides are in parts, none of them large', () => {

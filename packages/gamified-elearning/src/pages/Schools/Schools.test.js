@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { render, screen } from '@testing-library/react';
 import Schools, { FAMILY_PLAN_CHILDREN } from './Schools';
-import schoolFacts, { NOT_YET } from '../../data/schoolFacts';
+import schoolFacts from '../../data/schoolFacts';
 import COMPANY from '../../config/company';
 import { PRICE_PER_INTERVAL } from '../../config/pricing';
 
@@ -28,8 +28,8 @@ describe('the schools page', () => {
     const headings = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
     expect(headings).toEqual([
       'One address to allow', 'Web filters that read inside files', 'No third-party tracking',
-      'What a classroom account holds', 'Who the adult is', 'Publishing', 'What the AI receives',
-      'Ages', 'What CodeIt does not have', 'Questions',
+      'What a classroom account holds', 'Who the adult is', 'What leaves the classroom', 'Deleting a child\'s data',
+      'Publishing', 'What the AI receives', 'Accessibility', 'Ages', 'What CodeIt does not have', 'Questions',
     ]);
     expect(screen.getByText(new RegExp(COMPANY.contactEmail.replace('.', '\\.')))).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Test this computer' })).toHaveAttribute('href', '/check');
@@ -89,17 +89,36 @@ describe('the schools page', () => {
     expect(everything).not.toMatch(/[—–]/);
   });
 
-  test('what is not true on the live site yet is written, and is not on the page', () => {
-    // See NOT_YET in schoolFacts.js for what each one waits for.
-    expect(NOT_YET.map((s) => s.heading)).toEqual(['What leaves the classroom', 'Deleting a child\'s data', 'Accessibility']);
-    render(<Schools />);
-    for (const section of NOT_YET) {
-      expect(screen.queryByRole('heading', { name: section.heading })).toBeNull();
-      for (const paragraph of section.paragraphs) expect(everything).not.toContain(paragraph);
-    }
-    // The one sentence a reviewer would test first is not claimed yet.
-    expect(everything).not.toMatch(/never listed in CodeIt's public gallery/);
-    expect(everything).not.toMatch(/no serious\s+or critical violations/);
+  test('work made in a class is kept out of the public gallery', () => {
+    // "It is never listed in CodeIt's public gallery." The gallery's own
+    // query leaves class accounts out.
+    const explore = read(BACKEND, 'routes', 'explore.js');
+    expect(explore).toContain("require('../classAccounts')");
+    expect(explore).toMatch(/isClassAccountSql/);
+    expect(fs.existsSync(path.join(BACKEND, 'classAccounts.js'))).toBe(true);
+  });
+
+  test('a teacher and a parent can each delete a child, and both use the one erasure that clears every table', () => {
+    const klass = read(BACKEND, 'routes', 'class.js');
+    expect(klass).toMatch(/router\.delete\('\/:code\/student\/:id', requireAuth/);
+    expect(klass).toMatch(/eraseLearner\(connection, studentId\)/);
+    expect(read(BACKEND, 'routes', 'family.js')).toMatch(/router\.delete\('\/children\/:id'/);
+    expect(read(BACKEND, 'familyAccounts.js')).toMatch(/eraseLearner\(connection, childUserId\)/);
+    // "Nothing is kept as an archive": the test that reads the database's own
+    // list of tables, puts a row in each and insists none survives.
+    const erasure = read(BACKEND, 'learnerErasure.pgtest.js');
+    expect(erasure).toContain('information_schema');
+    expect(erasure).toContain('nothing about a learner survives their erasure');
+  });
+
+  test('the accessibility sentence names its method and its date, and the checks it rests on exist', () => {
+    expect(everything).toContain('checked against WCAG 2.1 AA with axe-core');
+    expect(everything).toMatch(/last run, on \d{1,2} \w+ 20\d\d/);
+    expect(everything).not.toMatch(/fully accessible|WCAG compliant|certified/i);
+    const sweep = read(ROOT, '..', '..', 'ops', 'checks', 'a11y-sweep.js');
+    expect((sweep.match(/\{ name: '[^']+', url: '[^']+' \}/g) || []).length).toBe(9);   // "the nine screens it covers"
+    expect(fs.existsSync(path.join(ROOT, '..', '..', 'ops', 'checks', 'readable-check.js'))).toBe(true);
+    expect(fs.existsSync(path.join(ROOT, 'src', 'pages', 'Lessons', 'lessonMapReadable.test.js'))).toBe(true);
   });
 
   test('it is reachable: a route, a footer link, a link from the teacher page, and a crawlable copy typed as a page', () => {

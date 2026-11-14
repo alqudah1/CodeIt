@@ -94,7 +94,9 @@ describe('the rewards say what we value', () => {
       'pages/Quizzes/Quiz.js',
       'pages/Journey/JourneyPuzzle.js',
     ]) {
-      expect(read(path.join(SRC, f))).toMatch(/awardXP\(/);
+      // The studio is in parts now; all of them are read. See pages/Builder/studioSource.js.
+      const text = f === 'pages/Builder/Builder.js' ? require('./pages/Builder/studioSource').readStudioSource() : read(path.join(SRC, f));
+      expect(text).toMatch(/awardXP\(/);
     }
   });
 });

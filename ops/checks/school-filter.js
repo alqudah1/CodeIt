@@ -13,8 +13,9 @@
 // and answers 403 to every script over 68 KB, the way his network did. Then
 // it opens the site as a pupil would and requires:
 //
-//   1. the home page, the lessons list, a lesson and the playground all start
-//      (in the small-files version, by themselves, with nothing said);
+//   1. the home page, the lessons list, a lesson, the playground, the studio
+//      and the other public pages all start (in the small-files version, by
+//      themselves, with nothing said);
 //   2. no file those pages needed was one of the refused ones;
 //   3. the lesson has an editor a pupil can type in, and a Run button;
 //   4. if Python can be reached from here, lesson 1 really runs and says Hello.
@@ -83,7 +84,7 @@ function serve() {
       };
     });
 
-    for (const where of ['/', '/lessons', '/lesson/1', '/playground', '/login', '/guide']) {
+    for (const where of ['/', '/lessons', '/lesson/1', '/playground', '/login', '/guide', '/builder', '/explore', '/arcade', '/pricing', '/teach', '/schools']) {
       refused.clear();
       await page.goto(BASE + where, { waitUntil: 'load' });
       await page.waitForFunction(() => { const r = document.getElementById('root'); return r && r.children.length && !r.querySelector('.static-home-shell, .static-route-shell'); }, null, { timeout: 15000 }).catch(() => {});
@@ -98,6 +99,19 @@ function serve() {
       if (now.bar) problems.push(`${where} shows "CodeIt could not start on this computer".`);
       if (now.card) problems.push(`${where} shows an error card.`);
       if (needed.length) problems.push(`${where} needs a file the filter refuses: ${needed.join(', ')}. Something on this page has grown past ${Math.round(LIMIT / 1000)} KB.`);
+    }
+
+    // The studio a pupil can actually use: it was the one page that could not
+    // open behind this filter until it was cut into parts (14 November 2026).
+    await page.goto(BASE + '/builder', { waitUntil: 'load' });
+    const starter = page.locator('button', { hasText: 'Catch the falling stars' }).first();
+    const offered = await starter.waitFor({ timeout: 15000 }).then(() => true, () => false);
+    if (!offered) problems.push('The studio does not offer its starter games behind the filter.');
+    else {
+      await starter.click();
+      const playing = await page.waitForFunction(() => Array.from(document.querySelectorAll('iframe')).some((frame) => frame.offsetParent && (frame.srcdoc || '').length > 1000), null, { timeout: 15000 }).then(() => true, () => false);
+      console.log(`  studio       ${playing ? 'opened a starter game and it is on screen' : 'THE GAME DID NOT OPEN'}`);
+      if (!playing) problems.push('The studio opened but a starter game did not load behind the filter.');
     }
 
     // A lesson a pupil can actually use.
@@ -126,5 +140,5 @@ function serve() {
     for (const problem of problems) console.error('  - ' + problem);
     process.exit(1);
   }
-  console.log(`\nBehind a filter that refuses every script over ${Math.round(LIMIT / 1000)} KB, the site starts, and a lesson and the playground open.`);
+  console.log(`\nBehind a filter that refuses every script over ${Math.round(LIMIT / 1000)} KB, the site starts, and a lesson, the playground and the studio open.`);
 })().catch((error) => { console.error(error); process.exit(1); });

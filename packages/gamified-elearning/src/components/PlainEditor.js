@@ -8,12 +8,50 @@
 //
 // It keeps the things a child would miss: line numbers (error messages say
 // "line 3"), Tab for four spaces, Enter keeping the indent and adding one
-// after a colon, and the symbol keys putting text where the cursor is. It does
-// not colour the code. Working plainly beats not working.
+// after a colon, and the symbol keys putting text where the cursor is.
+//
+// Python is coloured too, in the simplest way there is: the same text is
+// painted, in colour, exactly underneath a textarea whose own letters are
+// see-through. A whole school behind a filter types into this editor every
+// lesson, and code that is all one colour is harder for a beginner to read:
+// a quote mark left open stops looking like a mistake.
 import React, { forwardRef, useCallback, useImperativeHandle, useLayoutEffect, useRef } from 'react';
 import './PlainEditor.css';
 
 const INDENT = '    ';
+
+// ── Colouring Python ────────────────────────────────────────────────────────
+//
+// Five kinds of thing, found with one pattern: a comment, a string (finished
+// or not), a number, a word Python owns, and a built-in being called. Not a
+// parser, and it does not need to be: it only decides what colour a letter is.
+const PYTHON = new RegExp([
+  '(#[^\\n]*)',
+  '("""[\\s\\S]*?(?:"""|$)|\'\'\'[\\s\\S]*?(?:\'\'\'|$)|"(?:\\\\.|[^"\\\\\\n])*"?|\'(?:\\\\.|[^\'\\\\\\n])*\'?)',
+  '\\b(\\d+(?:\\.\\d+)?)\\b',
+  '\\b(def|return|if|elif|else|for|while|in|not|and|or|import|from|as|class|try|except|finally|with|pass|break|continue|global|lambda|is|True|False|None)\\b',
+  '\\b(print|len|range|int|str|float|input|list|dict|set|tuple|enumerate|zip|sum|min|max|sorted|round|abs|type)(?=\\()',
+].join('|'), 'g');
+const KINDS = [null, 'comment', 'string', 'number', 'keyword', 'builtin'];
+
+/** The text as a list of [kind, text] pieces. Joined back together it is the text, letter for letter. */
+export function paintPython(text) {
+  const pieces = [];
+  let at = 0;
+  PYTHON.lastIndex = 0;
+  let found = PYTHON.exec(text);
+  while (found) {
+    if (found[0] === '') { PYTHON.lastIndex += 1; found = PYTHON.exec(text); continue; }
+    if (found.index > at) pieces.push(['plain', text.slice(at, found.index)]);
+    let kind = 'plain';
+    for (let group = 1; group < KINDS.length; group += 1) if (found[group] !== undefined) kind = KINDS[group];
+    pieces.push([kind, found[0]]);
+    at = found.index + found[0].length;
+    found = PYTHON.exec(text);
+  }
+  if (at < text.length) pieces.push(['plain', text.slice(at)]);
+  return pieces;
+}
 
 /** What Enter should type: a new line, the same indent, one more after a colon. */
 export function newlineFor(before) {
@@ -24,11 +62,13 @@ export function newlineFor(before) {
 }
 
 const PlainEditor = forwardRef(function PlainEditor(
-  { value = '', onChange, height = '220px', theme = 'light', label = 'Your code', indent = INDENT },
+  { value = '', onChange, height = '220px', theme = 'light', label = 'Your code', indent = INDENT, language = 'python' },
   ref,
 ) {
   const area = useRef(null);
   const gutter = useRef(null);
+  const paint = useRef(null);
+  const coloured = language === 'python';
   const caret = useRef(null);   // where the cursor belongs once the new text is on screen
 
   // The textarea shows what it is given, so after a change that this file
@@ -86,24 +126,40 @@ const PlainEditor = forwardRef(function PlainEditor(
   for (let n = 1; n <= lines; n += 1) numbers.push(n);
 
   return (
-    <div className={`plain-editor${theme === 'dark' ? ' plain-editor--dark' : ''}`} style={{ height }} data-plain-editor="1">
+    <div className={`plain-editor${theme === 'dark' ? ' plain-editor--dark' : ''}${coloured ? ' plain-editor--coloured' : ''}`} style={{ height }} data-plain-editor="1">
       <div className="plain-editor__numbers" ref={gutter} aria-hidden="true">
         {numbers.map((n) => <span key={n}>{n}</span>)}
       </div>
-      <textarea
-        ref={area}
-        className="plain-editor__text"
-        value={value}
-        aria-label={label}
-        spellCheck={false}
-        autoCapitalize="off"
-        autoCorrect="off"
-        autoComplete="off"
-        wrap="off"
-        onChange={(event) => onChange && onChange(event.target.value)}
-        onKeyDown={onKeyDown}
-        onScroll={(event) => { if (gutter.current) gutter.current.scrollTop = event.target.scrollTop; }}
-      />
+      <div className="plain-editor__code">
+        {coloured && (
+          // The same text, in colour, exactly under the textarea. One more
+          // line is added so the copy is never shorter than what it sits under.
+          <pre className="plain-editor__paint" ref={paint} aria-hidden="true">
+            {paintPython(value).map(([kind, piece], index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              kind === 'plain' ? piece : <span key={index} className={`pe-${kind}`}>{piece}</span>
+            ))}
+            {'\n '}
+          </pre>
+        )}
+        <textarea
+          ref={area}
+          className="plain-editor__text"
+          value={value}
+          aria-label={label}
+          spellCheck={false}
+          autoCapitalize="off"
+          autoCorrect="off"
+          autoComplete="off"
+          wrap="off"
+          onChange={(event) => onChange && onChange(event.target.value)}
+          onKeyDown={onKeyDown}
+          onScroll={(event) => {
+            if (gutter.current) gutter.current.scrollTop = event.target.scrollTop;
+            if (paint.current) { paint.current.scrollTop = event.target.scrollTop; paint.current.scrollLeft = event.target.scrollLeft; }
+          }}
+        />
+      </div>
     </div>
   );
 });

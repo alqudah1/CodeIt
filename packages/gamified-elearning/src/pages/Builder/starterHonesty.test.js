@@ -16,7 +16,8 @@ const path = require('path');
 // the child's own words in the heading above it and called it ready.
 //
 // This test guards the honesty, not the wording.
-const SRC = fs.readFileSync(path.join(__dirname, 'Builder.js'), 'utf8');
+// The studio is in parts now; this reads all of them. See studioSource.js.
+const SRC = require('./studioSource').readStudioSource();
 const CODE = SRC
   .replace(/\/\*[\s\S]*?\*\//g, '')
   .split('\n').filter(l => !l.trim().startsWith('//')).join('\n');

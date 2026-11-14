@@ -6,7 +6,8 @@ const path = require('path');
 // project type has five hand-written, checkable rungs. This guard fails the
 // day someone flips the flag without doing that work.
 
-const src = fs.readFileSync(path.join(__dirname, 'Builder.js'), 'utf8');
+// The studio is in parts now; this reads all of them. See studioSource.js.
+const src = require('./studioSource').readStudioSource();
 
 describe('Upgrade missions are off', () => {
   test('the flag is false', () => {
@@ -15,6 +16,6 @@ describe('Upgrade missions are off', () => {
 
   test('both the fetch and the render sit behind the flag', () => {
     expect(src).toMatch(/if \(MISSIONS_ENABLED\) \{\s*setMissions\(getMissions/);
-    expect(src).toMatch(/\{MISSIONS_ENABLED && onTab\('play'\) && missions\.length > 0/);
+    expect(src).toMatch(/MISSIONS_ENABLED && onTab\('play'\) && missions\.length > 0/);
   });
 });

@@ -4,5 +4,5 @@
 import PlainEditor from '../../components/PlainEditor';
 
 export default function PlainCodeEditor({ value, onChange }) {
-  return <PlainEditor value={value} onChange={onChange} height="380px" indent="  " label="Your project's code" />;
+  return <PlainEditor value={value} onChange={onChange} height="380px" indent="  " label="Your project's code" language="html" />;
 }

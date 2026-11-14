@@ -51,7 +51,8 @@ describe('error copy', () => {
   test('the places that used to do it go through the helper', () => {
     for (const file of ['pages/Builder/Explore.js', 'pages/Builder/PublicProject.js',
       'pages/Builder/Builder.js', 'pages/Admin/AdminFunnel.js']) {
-      const text = fs.readFileSync(path.join(SRC, file), 'utf8');
+      // The studio is in parts now; all of them are read. See pages/Builder/studioSource.js.
+      const text = file === 'pages/Builder/Builder.js' ? require('./pages/Builder/studioSource').readStudioSource() : fs.readFileSync(path.join(SRC, file), 'utf8');
       expect(text).toMatch(/reportFailure\(/);
     }
   });

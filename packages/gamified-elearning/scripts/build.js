@@ -141,16 +141,9 @@ function writeCheckFiles(build) {
   fs.writeFileSync(path.join(build, 'check-files.json'), JSON.stringify({ sizes, probes }));
 }
 
-// The one file in the small-files version that is allowed to be large: the
-// studio page, which is a single 260 KB component nobody has cut up yet. It
-// is told apart by a line only it contains.
-const STUDIO_MARK = 'if(window.self===window.top)return;';
-
 /** Scripts in the small-files version that are too big to be sure of passing a school filter. */
 function tooBig(dir) {
-  return scriptsIn(dir)
-    .filter((file) => file.size > SMALL_LIMIT)
-    .filter((file) => !fs.readFileSync(path.join(dir, 'static', 'js', file.name), 'utf8').includes(STUDIO_MARK));
+  return scriptsIn(dir).filter((file) => file.size > SMALL_LIMIT);
 }
 
 function report(build) {
@@ -161,7 +154,9 @@ function report(build) {
   console.log(`Small-files version: ${small.length} script files, largest ${small.slice(0, 3).map((f) => kb(f.size)).join(', ')}.`);
   const over = small.filter((f) => f.size > SMALL_LIMIT);
   if (over.length) console.log(`Over ${kb(SMALL_LIMIT)} in the small-files version: ${over.map((f) => `${f.name} (${kb(f.size)})`).join(', ')}.`);
-  // The build stops here if anything but the studio has grown large. That is
+  // The build stops here if anything has grown large. There are no exceptions:
+  // the studio page was the last one, and it was cut into parts on 14 November
+  // 2026 (see the note at the top of src/pages/Builder/Builder.js). That is
   // the whole point of the second version: on 13 November 2026 a school
   // could not open a lesson because three files were over what its filter let
   // through, and nothing had said so before a teacher did.
@@ -176,7 +171,7 @@ function report(build) {
   }
 }
 
-module.exports = { smallFiles, smallVersion, scriptsIn, tooBig, MAX_PART, SMALL_LIMIT, STUDIO_MARK };
+module.exports = { smallFiles, smallVersion, scriptsIn, tooBig, MAX_PART, SMALL_LIMIT };
 
 if (require.main === module) {
   if (process.argv.includes('--one')) {

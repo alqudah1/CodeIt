@@ -6,7 +6,8 @@ const path = require('path');
 // pop, the companion tip) live in ONE fixed column, top right, each below the
 // last, and nothing else pins itself to that column's corner.
 
-const js = fs.readFileSync(path.join(__dirname, 'Builder.js'), 'utf8');
+// The studio is in parts now; this reads all of them. See studioSource.js.
+const js = require('./studioSource').readStudioSource();
 const css = fs.readFileSync(path.join(__dirname, 'Builder.css'), 'utf8');
 
 function rule(selector) {
@@ -16,7 +17,10 @@ function rule(selector) {
 }
 
 test('the XP pop and the companion tip render inside the one notice stack', () => {
-  const stack = js.slice(js.indexOf('className="bldr-toasts"'), js.indexOf('Wow moment overlay'));
+  // The stack is a piece of the screen of its own now: it runs to the end of
+  // the function it was moved into.
+  const from = js.indexOf('className="bldr-toasts"');
+  const stack = js.slice(from, js.indexOf('\n  );\n}', from));
   expect(stack).toContain('className="bldr-xp-popup"');
   expect(stack).toContain('className="bldr-companion"');
 });

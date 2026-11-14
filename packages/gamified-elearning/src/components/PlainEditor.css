@@ -24,6 +24,53 @@
   display: block;
 }
 
+/* The textarea and the coloured copy of its text share this box, one exactly
+   on top of the other. Everything that decides where a letter lands (font,
+   padding, line height, tab width, no wrapping) is the same for both. */
+.plain-editor__code {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+}
+
+.plain-editor__paint {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 8px 10px;
+  border: 0;
+  overflow: hidden;
+  white-space: pre;
+  tab-size: 4;
+  font: inherit;
+  color: inherit;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+/* Letters see-through, so the coloured ones underneath show; the cursor and
+   the selection stay the textarea's own. */
+.plain-editor--coloured .plain-editor__text {
+  position: relative;
+  color: transparent;
+  caret-color: #35220e;
+}
+
+.plain-editor--dark.plain-editor--coloured .plain-editor__text { caret-color: #f4f1ea; }
+
+.pe-keyword { color: #770088; }
+.pe-string { color: #a31515; }
+.pe-number { color: #116644; }
+.pe-comment { color: #7a5200; font-style: italic; }
+.pe-builtin { color: #0055aa; }
+
+.plain-editor--dark .pe-keyword { color: #d6a3ff; }
+.plain-editor--dark .pe-string { color: #ffb38a; }
+.plain-editor--dark .pe-number { color: #9be8b0; }
+.plain-editor--dark .pe-comment { color: #d8c48a; }
+.plain-editor--dark .pe-builtin { color: #9cc8ff; }
+
 .plain-editor__text {
   flex: 1 1 auto;
   min-width: 0;

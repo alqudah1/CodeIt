@@ -4,7 +4,7 @@
 // the coloured editor is 185 KB in one piece. A lesson has to work without it.
 import React, { useState } from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import PlainEditor, { newlineFor } from './PlainEditor';
+import PlainEditor, { newlineFor, paintPython } from './PlainEditor';
 
 function Held({ start, onApi }) {
   const [code, setCode] = useState(start);
@@ -82,4 +82,44 @@ test('it does not correct or capitalise what a child types', () => {
   expect(box()).toHaveAttribute('spellcheck', 'false');
   expect(box()).toHaveAttribute('autocapitalize', 'off');
   expect(box()).toHaveAttribute('autocorrect', 'off');
+});
+
+describe('colour', () => {
+  const kinds = (text) => paintPython(text).filter(([kind]) => kind !== 'plain').map(([kind, piece]) => `${kind}:${piece}`);
+
+  test('every letter is still there, in order: the paint is the text', () => {
+    for (const text of ['', 'print("Hello!")', 'for i in range(3):\n    print(i)  # count\n', 'name = "Sam\nprint(name)', "x = 'it''s'\n\n\n", 'a = """two\nlines"""\nb = 2.5', 'c = """never closed\nprint(1)']) {
+      expect(paintPython(text).map(([, piece]) => piece).join('')).toBe(text);
+    }
+  });
+
+  test('words Python owns, built-ins being called, strings, numbers and comments each get their colour', () => {
+    expect(kinds('for i in range(3):\n    print("frog", i)  # jump')).toEqual(['keyword:for', 'keyword:in', 'builtin:range', 'number:3', 'builtin:print', 'string:"frog"', 'comment:# jump']);
+    expect(kinds('score = 10\nif score > 5 and True:\n    return None')).toEqual(['number:10', 'keyword:if', 'number:5', 'keyword:and', 'keyword:True', 'keyword:return', 'keyword:None']);
+  });
+
+  test('a name that only contains one of those words is left alone', () => {
+    expect(kinds('printer = information\nformat = define')).toEqual([]);
+    expect(kinds('print = 3')).toEqual(['number:3']);            // print with no bracket is just a name here
+  });
+
+  test('a quote left open colours to the end of its line and no further, so the mistake shows', () => {
+    expect(kinds('print("Hello)\nprint(1)')).toEqual(['builtin:print', 'string:"Hello)', 'builtin:print', 'number:1']);
+  });
+
+  test('a # inside a string is part of the string', () => {
+    expect(kinds('print("# not a comment")')).toEqual(['builtin:print', 'string:"# not a comment"']);
+  });
+
+  test('the coloured copy sits under the textarea, hidden from a screen reader; the studio HTML is not coloured as Python', () => {
+    const first = render(<PlainEditor value={'print("Hi")'} onChange={() => {}} />);
+    const paint = first.container.querySelector('.plain-editor__paint');
+    expect(paint).toHaveAttribute('aria-hidden', 'true');
+    expect(paint.textContent.startsWith('print("Hi")')).toBe(true);
+    expect(paint.querySelector('.pe-string').textContent).toBe('"Hi"');
+    expect(screen.getByRole('textbox', { name: 'Your code' }).value).toBe('print("Hi")');
+    first.unmount();
+    const html = render(<PlainEditor value="<h1>Hi</h1>" onChange={() => {}} language="html" />);
+    expect(html.container.querySelector('.plain-editor__paint')).toBeNull();
+  });
 });
