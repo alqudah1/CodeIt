@@ -61,13 +61,10 @@ describe('the marketing age range', () => {
     // a sentence about Scratch covering 8 to 16 in a paragraph that also
     // names CodeIt is a fact about Scratch.
     const range = /\b(?:ages?|aged|roughly)\s+(\d{1,2})\s*(?:to|\u2013|-)\s*(\d{1,2})\b/gi;
-    // React strings in src/pages belong to the design session. These two
-    // still say "ages 5 to 12" and are handed over in message 89; delete each
-    // line here when its fix lands, and this test holds the rest of the site.
-    const handedOver = new Set([
-      'pages/Home/Home.js: "ages 5 to 12"',
-      'pages/Legal/Terms.js: "ages 5 to 12"',
-    ]);
+    // Two React strings (the home page and the terms) said "ages 5 to 12"
+    // and were excused here until they were fixed on 14 November 2026. The
+    // list is empty now, so this test holds the whole site.
+    const handedOver = new Set([]);
     const offenders = [];
     for (const f of walk(SRC)) {
       const rel = path.relative(SRC, f);

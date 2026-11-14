@@ -268,3 +268,84 @@ test('a teacher with no class yet sees how the first lesson goes and the plans, 
   expect(document.querySelectorAll('.tl__step')).toHaveLength(4);
   expect(screen.getAllByRole('link').filter((a) => /^\/teach\/plans\//.test(a.getAttribute('href')))).toHaveLength(6);
 });
+
+// ── A teacher deletes a child ───────────────────────────────────────────────
+//
+// The teacher is the adult on record for every child who joined with a code.
+// When a parent asks for their child's data to be deleted, the teacher is who
+// they ask, and until 14 November 2026 no screen let the teacher do it.
+describe('a teacher deletes a child', () => {
+  const page = { ready: true, class: { code: 'ROCKET42', name: 'Year 5' }, student: { id: 1, name: 'Sam', joinedAt: new Date().toISOString() }, games: [], newestCode: null, done: [], powers: [{ n: 1, slug: 'numbers', name: 'Numbers', does: 'change how fast', state: 'next' }] };
+  const server = (answer) => jest.fn((url, init = {}) => {
+    if (init.method === 'DELETE') return Promise.resolve(answer);
+    return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(page) });
+  });
+  const open = async () => {
+    mockParams = { code: 'ROCKET42', kid: '1' };
+    mount(<Teach />, { user: { name: 'Mr Q' }, token: 't', login });
+    await screen.findByText('Sam');
+  };
+
+  test('it is on the one child\'s page, and nothing is deleted by one press', async () => {
+    global.fetch = server({ ok: true, status: 200, json: () => Promise.resolve({ success: true, removed: 'account', name: 'Sam' }) });
+    await open();
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Sam from CodeIt' }));
+    // The question says, in a teacher's words, what will happen.
+    const question = screen.getByRole('alertdialog');
+    expect(question).toHaveTextContent('Delete Sam\'s account?');
+    expect(question).toHaveTextContent('This removes Sam\'s games, lessons and everything CodeIt holds about them. It cannot be undone.');
+    expect(global.fetch.mock.calls.filter((call) => call[1] && call[1].method === 'DELETE')).toHaveLength(0);
+    // Changing your mind costs nothing.
+    fireEvent.click(screen.getByRole('button', { name: 'Keep Sam' }));
+    expect(screen.queryByRole('alertdialog')).toBeNull();
+    expect(global.fetch.mock.calls.filter((call) => call[1] && call[1].method === 'DELETE')).toHaveLength(0);
+  });
+
+  test('yes sends the delete as the teacher, and says the account is gone', async () => {
+    global.fetch = server({ ok: true, status: 200, json: () => Promise.resolve({ success: true, removed: 'account', name: 'Sam' }) });
+    await open();
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Sam from CodeIt' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Yes, delete Sam' }));
+    expect(await screen.findByText('Sam\'s account is deleted.')).toBeInTheDocument();
+    expect(screen.getByText(/games, lessons and everything CodeIt held about them are gone/)).toBeInTheDocument();
+    const sent = global.fetch.mock.calls.find((call) => call[1] && call[1].method === 'DELETE');
+    expect(sent[0]).toBe('http://codeit.test/api/class/ROCKET42/student/1');
+    expect(sent[1].headers.Authorization).toBe('Bearer t');
+    expect(screen.getByRole('link', { name: 'Back to the board' })).toHaveAttribute('href', '/teach/ROCKET42');
+  });
+
+  test('a child with an account of their own keeps it, and the page says so', async () => {
+    global.fetch = server({ ok: true, status: 200, json: () => Promise.resolve({ success: true, removed: 'membership', name: 'Sam' }) });
+    await open();
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Sam from CodeIt' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Yes, delete Sam' }));
+    expect(await screen.findByText('Sam has their own CodeIt account, so it stays theirs. They have left this class.')).toBeInTheDocument();
+    expect(screen.queryByText(/account is deleted/)).toBeNull();
+  });
+
+  test('when it does not work, the page says nothing was deleted and the question stays open', async () => {
+    global.fetch = server({ ok: false, status: 500, json: () => Promise.resolve({ error: 'Could not remove that child.' }) });
+    await open();
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Sam from CodeIt' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Yes, delete Sam' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('nothing was deleted');
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    expect(screen.queryByText(/account is deleted/)).toBeNull();
+  });
+
+  test('somebody who is not the class\'s teacher is told so, and nothing is deleted', async () => {
+    global.fetch = server({ ok: false, status: 403, json: () => Promise.resolve({}) });
+    await open();
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Sam from CodeIt' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Yes, delete Sam' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Only the teacher who made this class can do this. Nothing was deleted.');
+  });
+
+  test('the board the room sees has no delete on it', async () => {
+    mockParams = { code: 'ROCKET42' };
+    global.fetch = jest.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ready: true, owner: true, class: { code: 'ROCKET42', name: 'Year 5' }, students: [{ id: 1, name: 'Sam', games: 0, joinedAt: new Date().toISOString() }] }) }));
+    mount(<Teach />, { user: { name: 'Mr Q' }, token: 't', login });
+    await screen.findAllByText(/ROCKET/);
+    expect(screen.queryByRole('button', { name: /Delete/ })).toBeNull();
+  });
+});

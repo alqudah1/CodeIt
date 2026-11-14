@@ -453,7 +453,7 @@ export default function Home() {
               <small>Available from a student profile. Emails begin only after a parent confirms and chooses the updates they receive.</small>
               <div className="studio-family__setup">
                 <div>
-                  <strong>Using CodeIt with a learner ages 5 to 12?</strong>
+                  <strong>Setting up CodeIt for a child under 13?</strong>
                   <span>Create a free adult account, confirm your email, and make their private profile.</span>
                 </div>
                 <Link

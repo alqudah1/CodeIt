@@ -47,7 +47,7 @@ export default function Terms() {
           <div className="legal-content">
             <section id="eligibility">
               <h2>Eligibility and younger learners</h2>
-              <p>Independent learner accounts are for ages 13 and up, including adults. For a learner ages 5 to 12, a parent or legal guardian must use the Parent / Educator path, confirm the adult account email, review the family privacy notice, and explicitly create a managed profile. Managed younger profiles cannot publish projects publicly.</p>
+              <p>Independent learner accounts are for ages 13 and up, including adults. For a learner under 13, a parent or legal guardian must use the Parent / Educator path, confirm the adult account email, review the family privacy notice, and explicitly create a managed profile. Managed younger profiles cannot publish projects publicly.</p>
             </section>
 
             <section id="accounts">
@@ -63,7 +63,7 @@ export default function Terms() {
 
             <section id="public">
               <h2>Publishing and remixing</h2>
-              <p>Saved projects are private by default. For eligible accounts, selecting Publish makes the project and a generic creator label available to anyone with the link and may list it in Explore. Publishing gives other CodeIt users permission to view, play, and remix a separate copy inside CodeIt. You can unpublish your original project. Managed profiles ages 5 to 12 cannot publish.</p>
+              <p>Saved projects are private by default. For eligible accounts, selecting Publish makes the project and a generic creator label available to anyone with the link and may list it in Explore. Publishing gives other CodeIt users permission to view, play, and remix a separate copy inside CodeIt. You can unpublish your original project. A managed profile cannot publish.</p>
               <p>Do not publish personal contact information, school details, precise location, private images, passwords, or information about another person without permission.</p>
             </section>
 

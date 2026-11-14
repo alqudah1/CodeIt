@@ -445,6 +445,58 @@ function Student({ code, kid, token }) {
   useEffect(() => { load(); }, [load]);
   useRetry(load, status === 'error');
 
+  // ── Deleting a child ───────────────────────────────────────────────────────
+  //
+  // The teacher is the adult on record for every child who joined with a code,
+  // so when a parent asks for their child's data to be deleted, the teacher is
+  // who they ask. Until 14 November 2026 the server could do it and no screen
+  // offered it. It is here, on the one child's page and not on the board the
+  // room sees, behind a question that says in a teacher's words what happens.
+  //
+  // The server decides what "delete" means. A class account (a first name and
+  // nothing else) is erased whole. A person who joined with their own CodeIt
+  // account keeps it and only leaves the class, and the page says which.
+  const [asking, setAsking] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  const [removed, setRemoved] = useState(null);       // { kind: 'account' | 'membership', name }
+  const [removeError, setRemoveError] = useState('');
+  const remove = useCallback(async () => {
+    setRemoving(true); setRemoveError('');
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/class/${encodeURIComponent(code)}/student/${encodeURIComponent(kid)}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+      const body = await res.json().catch(() => ({}));
+      if (!alive.current) return;
+      if (res.ok && body.success) { setRemoved({ kind: body.removed === 'membership' ? 'membership' : 'account', name: body.name }); return; }
+      if (res.status === 403) setRemoveError('Only the teacher who made this class can do this. Nothing was deleted.');
+      else if (res.status === 404) setRemoveError('That child is no longer in this class. Nothing was deleted.');
+      else setRemoveError('That did not work, and nothing was deleted. Try again in a moment.');
+    } catch (err) {
+      console.error('class/student delete:', err);
+      if (alive.current) setRemoveError('CodeIt could not be reached, so nothing was deleted. Try again in a moment.');
+    } finally {
+      if (alive.current) setRemoving(false);
+    }
+  }, [code, kid, token]);
+
+  if (removed) {
+    return (
+      <div className="ci-blk ci-blk--paper cl__card" role="status">
+        {removed.kind === 'account' ? (
+          <>
+            <h1 className="ci-h1 cl__title">{removed.name}'s account is deleted.</h1>
+            <p className="ci-sub">{removed.name}'s games, lessons and everything CodeIt held about them are gone. This cannot be undone.</p>
+          </>
+        ) : (
+          <>
+            <h1 className="ci-h1 cl__title">{removed.name} has left this class.</h1>
+            <p className="ci-sub">{removed.name} has their own CodeIt account, so it stays theirs. They have left this class.</p>
+          </>
+        )}
+        <p className="ci-sub"><Link to={`/teach/${code}`}>Back to the board</Link></p>
+      </div>
+    );
+  }
+
   if (status === 'notready') return <NotSetUp />;
   if (status === 'forbidden') return <div className="ci-blk ci-blk--paper cl__card"><h1 className="ci-h1 cl__title">This is the teacher's page.</h1><p className="ci-sub">Only the adult who made the class sees a child's sentences.</p></div>;
   if (status === 'missing') return <div className="ci-blk ci-blk--paper cl__card"><h1 className="ci-h1 cl__title">That child is not in this class.</h1><p className="ci-sub"><Link to={`/teach/${code}`}>Back to the board</Link></p></div>;
@@ -513,6 +565,30 @@ function Student({ code, kid, token }) {
           {next && <p className="ci-sub st__next">Next for {student.name}: <b>{next.name}</b>, {next.does}. <Link to={`/teach/plans/${next.slug}`}>The lesson plan</Link>.</p>}
         </section>
         <ExampleCards from={Number(kid) % EXAMPLES.length} count={4} link={false} title="Ideas to suggest" note={`Examples to read out if ${student.name} is stuck for an idea.`} />
+
+        {/* Last on the page and quiet: it is for the day a parent asks, not for every day. */}
+        <section className="st__sec st__remove">
+          {!asking ? (
+            <button type="button" className="st__remove-open" onClick={() => { setAsking(true); setRemoveError(''); }}>
+              Delete {student.name} from CodeIt
+            </button>
+          ) : (
+            <div className="ci-blk ci-blk--paper st__confirm" role="alertdialog" aria-labelledby="st-confirm-title" aria-describedby="st-confirm-what">
+              <h2 className="ci-h2" id="st-confirm-title">Delete {student.name}'s account?</h2>
+              <p id="st-confirm-what">
+                This removes {student.name}'s games, lessons and everything CodeIt holds about them. It cannot be undone.
+                {' '}If {student.name} joined with a CodeIt account of their own, that account stays theirs and they only leave this class.
+              </p>
+              {removeError && <p className="st__remove-error" role="alert">{removeError}</p>}
+              <div className="st__confirm-actions">
+                <button type="button" className="st__remove-yes" onClick={remove} disabled={removing}>
+                  {removing ? 'Deleting…' : `Yes, delete ${student.name}`}
+                </button>
+                <button type="button" className="ci-chip" onClick={() => setAsking(false)} disabled={removing}>Keep {student.name}</button>
+              </div>
+            </div>
+          )}
+        </section>
       </section>
 
       <aside className="st__right">

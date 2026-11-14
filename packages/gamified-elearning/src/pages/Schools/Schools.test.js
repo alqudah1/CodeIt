@@ -104,6 +104,13 @@ describe('the schools page', () => {
     expect(klass).toMatch(/eraseLearner\(connection, studentId\)/);
     expect(read(BACKEND, 'routes', 'family.js')).toMatch(/router\.delete\('\/children\/:id'/);
     expect(read(BACKEND, 'familyAccounts.js')).toMatch(/eraseLearner\(connection, childUserId\)/);
+    // And the teacher can actually reach it: a button on the one child's page,
+    // behind a question that says what will happen. A route nobody can press
+    // is not something a school can be told it has.
+    const teach = read(ROOT, 'src', 'pages', 'Class', 'Teach.js');
+    expect(teach).toMatch(/\/student\/\$\{encodeURIComponent\(kid\)\}`, \{ method: 'DELETE'/);
+    expect(teach).toContain("Delete {student.name}'s account?");
+    expect(teach).toContain("This removes {student.name}'s games, lessons and everything CodeIt holds about them. It cannot be undone.");
     // "Nothing is kept as an archive": the test that reads the database's own
     // list of tables, puts a row in each and insists none survives.
     const erasure = read(BACKEND, 'learnerErasure.pgtest.js');
@@ -111,13 +118,22 @@ describe('the schools page', () => {
     expect(erasure).toContain('nothing about a learner survives their erasure');
   });
 
-  test('the accessibility sentence names its method and its date, and the checks it rests on exist', () => {
+  test('the accessibility section says only what is measured, with its method and its date', () => {
     expect(everything).toContain('checked against WCAG 2.1 AA with axe-core');
     expect(everything).toMatch(/last run, on \d{1,2} \w+ 20\d\d/);
     expect(everything).not.toMatch(/fully accessible|WCAG compliant|certified/i);
-    const sweep = read(ROOT, '..', '..', 'ops', 'checks', 'a11y-sweep.js');
-    expect((sweep.match(/\{ name: '[^']+', url: '[^']+' \}/g) || []).length).toBe(9);   // "the nine screens it covers"
-    expect(fs.existsSync(path.join(ROOT, '..', '..', 'ops', 'checks', 'readable-check.js'))).toBe(true);
+    // Two things an earlier draft claimed and nobody measures.
+    expect(everything).not.toMatch(/on every change, it|checked[^.]*on every change\./);
+    expect(everything).toContain('not automatically on every change');
+    expect(everything).not.toMatch(/Every screen can be completed with taps alone/);
+    const checks = path.join(ROOT, '..', '..', 'ops', 'checks');
+    const sweep = read(checks, 'a11y-sweep.js');
+    expect((sweep.match(/\{ name: '[^']+', url: '[^']+' \}/g) || []).length).toBe(9);     // "the nine screens it covers"
+    const readable = read(checks, 'readable-check.js');
+    expect((readable.match(/\{ name: '[^']+', url: '[^']+' \}/g) || []).length).toBe(8);  // "eight screens"
+    expect((readable.match(/\{ name: '(phone|tablet|laptop)', width/g) || []).length).toBe(3);
+    // "One journey ... with taps alone": the studio, on a phone, with no keyboard event sent.
+    expect(read(checks, 'kid-alone.js')).toContain('No keyboard');
     expect(fs.existsSync(path.join(ROOT, 'src', 'pages', 'Lessons', 'lessonMapReadable.test.js'))).toBe(true);
   });
 

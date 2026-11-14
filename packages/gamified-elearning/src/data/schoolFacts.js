@@ -19,6 +19,12 @@
  * the axe sweep still reported a serious violation on the lesson map. All
  * three were fixed that day and checked here before the sections went in.
  *
+ * The accessibility section says only what is measured. An earlier draft said
+ * the checks ran "on every change" and that "every screen can be completed
+ * with taps alone". They are run by hand, and taps alone is checked for one
+ * journey in the studio; the lessons need typing. Keep it to what a reviewer
+ * could repeat.
+ *
  * No imports: scripts/content-loader.js evaluates this file in a vm sandbox
  * that refuses require, so each side supplies its own configuration.
  */
@@ -93,8 +99,8 @@ export default function schoolFacts({ contactEmail, pricePerInterval, maxChildre
       {
         heading: 'Accessibility',
         paragraphs: [
-          'Every main screen is checked against WCAG 2.1 AA with axe-core, the same engine behind Lighthouse, on every change. When it was last run, on 14 November 2026, it reported no serious or critical violations across the nine screens it covers.',
-          'Text has a 13px floor, checked at phone, tablet and laptop widths. Every screen can be completed with taps alone.',
+          'The main screens are checked against WCAG 2.1 AA with axe-core, the same engine behind Lighthouse. When it was last run, on 14 November 2026, it reported no serious or critical violations across the nine screens it covers. The check is run by hand before changes go out, not automatically on every change.',
+          'Text has a 13px floor, measured on eight screens at phone, tablet and laptop widths. One journey is checked from start to finish with taps alone and no keyboard: a first session in the studio on a phone, playing a game, changing it and playing it again. The Python lessons ask a child to type.',
         ],
       },
       {

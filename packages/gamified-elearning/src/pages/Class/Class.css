@@ -189,3 +189,21 @@ a.cl__tile.ci-blk--violet { color: #fff; }
 .cl__main > .tl__stepshead { margin: 26px 0 10px; }
 .cl__main > .tl__plans { margin-top: 26px; }
 .cl__none { margin-top: 14px; }
+
+/* Deleting a child: last on the teacher's page for that child, and quiet until asked for. */
+.st__remove { margin-top: 34px; padding-top: 18px; border-top: 2px dashed var(--ci-edge, rgba(53, 34, 14, .25)); }
+.st__remove-open {
+  min-height: 44px; padding: 8px 4px; border: 0; background: none; cursor: pointer;
+  font: 800 14px var(--ci-body); color: #8A1F12; text-decoration: underline; text-underline-offset: 3px;
+}
+.st__confirm p { margin: 8px 0 0; font-size: 15px; line-height: 1.5; }
+.st__confirm-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; align-items: center; }
+.st__confirm-actions .ci-chip { cursor: pointer; }
+.st__remove-yes {
+  min-height: 44px; padding: 10px 18px; border-radius: 999px; cursor: pointer;
+  border: 2.5px solid #35220E; box-shadow: 0 3px 0 #35220E; background: #B3261E; color: #fff;
+  font: 800 15px var(--ci-body);
+}
+.st__remove-yes:disabled { opacity: .6; cursor: wait; }
+.st__remove-yes:active { transform: translateY(3px); box-shadow: none; }
+.st__remove-error { color: #8A1F12; font-weight: 800; }

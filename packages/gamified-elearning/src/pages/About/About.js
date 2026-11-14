@@ -71,8 +71,9 @@ export default function About() {
             are built for that and are better at it. It is not right for a learner who mainly wants
             to keep making games, where{' '}
             <a href="https://codecombat.com/" target="_blank" rel="noopener noreferrer">CodeCombat</a>{' '}
-            or Roblox Studio fit better. And it is not a schools product: there is no rostering, no
-            LMS integration, no standards alignment and no teacher dashboard.
+            or Roblox Studio fit better. And it is not a district product: there is no rostering, no
+            LMS integration, no standards alignment and no gradebook, though a single teacher can
+            run a free class with a class code.
           </p>
 
           <h2>Accounts, ages and safety</h2>
