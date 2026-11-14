@@ -664,20 +664,105 @@ function blogSections(post) {
 }
 
 /** Lesson -> [{heading, paragraphs:[string], code:string}] for every step. */
+// ── A lesson page a reader can learn from ────────────────────────────────────
+//
+// Google crawled lessons 9 and 11 and declined to index them, and never
+// crawled 5, 8 and 14. Read as a crawler reads them, they were about 300
+// words of step titles, code and "Press Run": "What Just Happened? You made
+// your own command, then used it twice. Here is the line that made it. Tap
+// each piece." and then nothing, because the pieces and what each one means
+// were only in the interactive app. So were the answers to every question
+// the lesson asks, and the explanation behind each answer.
+//
+// Everything below comes from the lesson's own data, word for word. Nothing
+// is written for search. The story that opens the lesson, the meaning of each
+// part of the line it takes apart, each question with its choices, its answer
+// and the explanation the app shows after a right answer, and what the
+// starting code prints. A parent reading this page, or an assistant asked how
+// to explain functions to a child, now finds the lesson's actual teaching.
+//
+// The app hides each answer until the child has tried. This page is what a
+// reader without JavaScript gets; a child in the app never sees it.
+
+/** "Press Run." and its variants are instructions to a tap, not prose. */
+function withoutTapInstructions(text) {
+  return String(text || '')
+    .replace(/(?:^|\s)(?:Press|Tap) Run(?: again)?[.!]?(?=\s|$)/g, ' ')
+    .replace(/(?:^|\s)Tap each piece[.!]?(?=\s|$)/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** The explanation shown after a right answer, without the "Yes." in front. */
+function explanationOf(explain) {
+  return String(explain || '').replace(/^(?:Yes|Right|Correct|Exactly)[.!,]\s*/, '').trim();
+}
+
+function lessonStepSection(step, i) {
+  const heading = step.title || `Step ${i + 1}`;
+  const paragraphs = [];
+  const after = [];
+  let code = step.code || '';
+  let output = '';
+
+  switch (step.type) {
+    case 'concept': {
+      const body = withoutTapInstructions(step.body);
+      if (body) paragraphs.push(body);
+      const pieces = (step.parts && step.parts.pieces) || [];
+      const notes = (step.parts && step.parts.notes) || {};
+      for (const [piece, key] of pieces) {
+        if (notes[key]) paragraphs.push(`"${piece}": ${notes[key]}`);
+      }
+      break;
+    }
+    case 'predict': {
+      if (step.question) paragraphs.push(step.question);
+      const choices = Array.isArray(step.choices) ? step.choices : [];
+      if (choices.length) after.push(`The choices: ${choices.join(', ')}.`);
+      const answer = choices[step.correct];
+      if (answer !== undefined) {
+        after.push(`The answer: ${answer}. ${explanationOf(step.explain)}`.trim());
+      }
+      break;
+    }
+    case 'fillblank': {
+      if (step.question) paragraphs.push(step.question);
+      code = step.template || '';
+      if (Array.isArray(step.options) && step.options.length) after.push(`The choices: ${step.options.join(', ')}.`);
+      if (Array.isArray(step.answers) && step.answers.length) {
+        after.push(`The answer: ${step.answers.join(', ')}. ${explanationOf(step.explain)}`.trim());
+      }
+      break;
+    }
+    case 'order': {
+      if (step.question) paragraphs.push(step.question);
+      code = Array.isArray(step.correctOrder) ? step.correctOrder.join('\n') : '';
+      if (step.explain) after.push(`In order: ${explanationOf(step.explain)}`);
+      break;
+    }
+    default: {
+      // example, tryit, challenge: what to do, the code, and what it prints
+      // as written, where the lesson records that.
+      const description = withoutTapInstructions(step.description || step.body);
+      if (description) paragraphs.push(description);
+      const hint = withoutTapInstructions(step.hint);
+      if (hint) after.push(hint);
+      if (typeof step.expectedDifferentOutput === 'string' && step.expectedDifferentOutput) {
+        output = step.expectedDifferentOutput;
+      }
+    }
+  }
+  return { heading, paragraphs, code, output, after };
+}
+
 function lessonSections(lesson) {
   if (!lesson || !Array.isArray(lesson.steps)) return [];
-  return lesson.steps.map((step, i) => {
-    const paragraphs = [];
-    if (step.body) paragraphs.push(step.body);
-    if (step.description) paragraphs.push(step.description);
-    if (step.highlight) paragraphs.push(step.highlight);
-    if (step.hint) paragraphs.push(`Hint: ${step.hint}`);
-    return {
-      heading: step.title || `Step ${i + 1}`,
-      paragraphs,
-      code: step.code || '',
-    };
-  });
+  const sections = [];
+  if (lesson.story) {
+    sections.push({ heading: 'Why this lesson', paragraphs: [lesson.story] });
+  }
+  return sections.concat(lesson.steps.map(lessonStepSection));
 }
 
 /** Full plain-text body of a page, for schema articleBody / word counts. */
@@ -690,7 +775,7 @@ function bodyTextOf(page) {
 
 function sectionsToText(sections) {
   return sections
-    .flatMap((section) => [section.heading, ...(section.paragraphs || []), section.code || ''])
+    .flatMap((section) => [section.heading, ...(section.paragraphs || []), section.code || '', section.output || '', ...(section.after || [])])
     .filter(Boolean)
     .join('\n\n')
     .trim();
@@ -1440,6 +1525,14 @@ function sectionsHtml(sections) {
       if (section.code) {
         parts.push(`<pre><code>${escapeHtml(section.code)}</code></pre>`);
       }
+      if (section.output) {
+        parts.push('<p>As written, it prints:</p>');
+        parts.push(`<pre><samp>${escapeHtml(section.output)}</samp></pre>`);
+      }
+      for (const paragraph of section.after || []) {
+        if (!paragraph) continue;
+        parts.push(`<p>${paragraphHtml(paragraph)}</p>`);
+      }
       return parts.join('\n      ');
     })
     .join('\n      ');
@@ -1604,7 +1697,11 @@ function staticContent(page) {
     ['/teach', 'Teach a class'],
     ['/teach/plans', 'Twelve coding lesson plans'],
     ['/explore', 'Projects to play and remix'],
-    ['/pricing', 'Free access and family pilot'],
+    // This said "Free access and family pilot" on every crawlable page, long
+    // after the pilot closed and paid plans opened. Anchor text is one of the
+    // things a search engine reads to decide what a page is about, so ninety
+    // pages were telling it /pricing was about a pilot.
+    ['/pricing', `Pricing: free, or ${PRICING.PRICE_PER_INTERVAL}`],
     ['/blog', 'Coding guides'],
     ['/guide', 'Straight answers about learning to code'],
     ['/faq', 'Questions parents ask first'],

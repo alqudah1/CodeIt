@@ -181,3 +181,14 @@ test('nothing says CodeIt cannot run a class while it can', () => {
   }
   assert.deepEqual(found, [], 'a page says CodeIt cannot run a class, and it can');
 });
+
+test('no generated copy, link text included, still offers the closed pilot', () => {
+  // The structured-data test caught "Join the family pilot" in a WebPage
+  // name. It did not read link text, and every crawlable page carried a link
+  // to /pricing labelled "Free access and family pilot". Anchor text is one
+  // of the things a search engine reads to decide what a page is about.
+  const found = codeLines()
+    .filter(line => /pilot/i.test(line.text))
+    .map(line => `line ${line.number}: ${line.text.trim()}`);
+  assert.deepEqual(found, [], 'the generator still writes "pilot" into a page');
+});
