@@ -1010,12 +1010,45 @@ const SECTIONS_BY_ROUTE = {
       ],
     },
   ],
+  // The crawlable copy of this page was its first paragraph and nothing
+  // else, 241 words, and Google found it and never crawled it. The page a
+  // person sees has the three games, the four steps of the mission and the
+  // three questions for a parent; this is that same text, so the two halves
+  // say the same thing. firstGameChallenge.test.js holds them together.
   '/first-game-challenge': [
     {
-      heading: 'The challenge',
+      heading: 'Which game sounds fun?',
       paragraphs: [
-        'Choose a reaction game, a football penalty game, or a pet-catching game. CodeIt creates a playable starting point, and the learner changes it, tests it, and saves it.',
-        'The complete mission is four steps: build, personalise, test, and save.',
+        'We provide the starting idea. You decide what it becomes.',
+        'Reaction Rush: Tap the target as quickly as you can across five rounds.',
+        'Penalty Hero: Choose a corner, beat the goalkeeper, and track your score.',
+        'Pet Catch: Catch friendly pets before the timer reaches zero.',
+      ],
+    },
+    {
+      heading: 'A finished game is only the beginning.',
+      paragraphs: [
+        'The challenge is complete when the project feels like your work, not when the first version appears.',
+        'Build it. Start with one of the three game ideas.',
+        'Change it. Edit a colour, title, rule, timer, or animation.',
+        'Test it. Play a complete round and check every button.',
+        'Save it. Keep the project and earn 25 XP the first time you save it with a student account.',
+      ],
+    },
+    {
+      heading: 'What the challenge promises',
+      paragraphs: [
+        'Free to try: build before creating an account.',
+        'Playable result: buttons, score, and restart must work.',
+        'Private first: your saved project starts private.',
+      ],
+    },
+    {
+      heading: 'Ask three questions after they build.',
+      paragraphs: [
+        'What did you change from the first version?',
+        'Which piece of code controls the score or timer?',
+        'What would you improve next?',
       ],
     },
     {

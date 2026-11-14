@@ -497,7 +497,7 @@ const BLOG_POSTS = [
           'The short answer: Python. Here\'s why:',
           '• Python syntax is clean and readable. It looks like English, not symbols\n• It gives immediate results. One line of code, one visible output\n• It\'s used professionally at Google, Netflix, and NASA\n• It has the largest beginner learning community online\n• Skills learned in Python carry over to almost every other language',
           'Other options exist. JavaScript, Scratch, Lua. But Python gives kids the best combination of simplicity now and power later.',
-          'CodeIt is built entirely around Python, so every lesson, quiz, and puzzle reinforces the same language and vocabulary.',
+          'Every CodeIt lesson is in Python, so each one reinforces the same language and vocabulary. The studio is the other half: what a child makes there is a browser game or website in HTML, CSS and JavaScript, which they can open and read.',
         ],
       },
       {
