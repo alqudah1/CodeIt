@@ -199,6 +199,17 @@ function useLessonJsonLd(lessonData, seoTitle, seoDesc) {
   }, [lessonData, seoTitle, seoDesc]);
 }
 
+// ── A lesson's topic in a few words ─────────────────────────────────────────
+//
+// Titles are written for the lesson map: "Scope. Where a Variable Lives",
+// "Hello Python!". The end-of-lesson card puts the title inside a sentence,
+// and it used to read "Strings. finished." and "You just learned Scope. Where
+// a Variable Lives. Here is something that uses it". This is the part before
+// the first full stop, with no punctuation of its own.
+export function lessonTopic(title) {
+  return String(title || '').split('. ')[0].replace(/[.!?]+$/, '').trim();
+}
+
 const InteractiveLessonTemplate = ({ lessonData }) => {
   // Extract id before hooks so useState / useEffect can reference it correctly
   const lessonId = lessonData?.id ?? null;
@@ -572,6 +583,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
 
 
   // ── Completion screen ─────────────────────────────────────────
+  const nextLessonTitle = getLessonEntry(Number(id) + 1)?.data?.title || '';
   if (completionData) {
     return (
       <div className="sl-lesson">
@@ -588,7 +600,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               Lesson {id} done, {firstName}!
             </h2>
             <p className="sl-completion-card__sub">
-              {title}. finished.
+              {Number(id) >= TOTAL_LESSONS ? 'You finished the last lesson. That is the whole course.' : `You finished ${lessonTopic(title)}.`}
             </p>
             {completionData.xpEarned > 0 && (
               <div className="sl-completion-card__xp">
@@ -629,11 +641,21 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
               {completionData.fromJourney
                 ? 'Head back to the Journey Map to continue your path.'
                 : studioPrompt
-                  ? `You just learned ${title}. Here is something that uses it: ${studioPrompt}. Go and change it until it is yours.`
+                  ? (Number(id) >= TOTAL_LESSONS
+                    ? `That was every lesson. Here is something that uses all of it: ${studioPrompt}. Go and change it until it is yours.`
+                    : `You just learned ${lessonTopic(title)}. Here is something that uses it: ${studioPrompt}. Go and change it until it is yours.`)
                   : completionData.quizExists
                     ? `Quiz ${completionData.quizId} is now unlocked. Test what you just learned.`
                     : 'Nice work. Carry straight on to the next lesson.'}
             </p>
+            {/* Something to come back for: what the next lesson is, by name.
+                Not a button. There are already three, and this is for
+                tomorrow, not for now. */}
+            {!completionData.fromJourney && nextLessonTitle && (
+              <p className="sl-completion-card__next">
+                Next time: Lesson {Number(id) + 1}, {lessonTopic(nextLessonTitle)}.
+              </p>
+            )}
             <div className="sl-completion-card__actions">
               {studioPrompt && (
                 <button

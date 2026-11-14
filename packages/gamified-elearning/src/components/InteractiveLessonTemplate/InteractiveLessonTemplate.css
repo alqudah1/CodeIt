@@ -1073,6 +1073,14 @@
 }
 .sl-completion-card__level-hint--urgent { color: #c85a00; }
 
+/* What the next lesson is, for tomorrow. Quiet, under the reward line. */
+.sl-completion-card__next {
+  margin: 0 0 14px;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #4a3a2c;
+}
+
 .sl-completion-card__cta-hint {
   margin: 0;
   font-size: 0.95rem;

@@ -45,7 +45,7 @@ export default function Privacy() {
             <section id="accounts">
               <h2>Account information</h2>
               <p>Independent student accounts collect a username, password, and birthday, plus an optional parent or guardian email. Student passwords are stored as one-way password hashes, not readable passwords. Parent and educator accounts collect a name, email address, and hashed password.</p>
-              <p>After confirming the adult account email and accepting the current family notice, a parent or legal guardian may create a private profile for a learner ages 5 to 12. The managed profile uses a non-identifying username, birthday, hashed password, the adult account email, relationship type, consent date, and notice version. It does not collect a child email address.</p>
+              <p>After confirming the adult account email and accepting the current family notice, a parent or legal guardian may create a private profile for a learner under 13, which CodeIt supports from age 5. The managed profile uses a non-identifying username, birthday, hashed password, the adult account email, relationship type, consent date, and notice version. It does not collect a child email address.</p>
               <p>The browser keeps the signed-in session token and basic account display information in local storage so the account remains signed in. Signing out removes that local session information.</p>
             </section>
 
@@ -90,7 +90,7 @@ export default function Privacy() {
 
             <section id="children">
               <h2>Children, parents, and guardians</h2>
-              <p>Anyone aged 13 or over may create their own learner account. For ages 5 to 12, an adult must use a Parent / Educator account, confirm its email, identify as the parent or legal guardian, review this notice, and explicitly create the managed profile. Managed younger profiles stay private and cannot publish projects publicly.</p>
+              <p>Anyone aged 13 or over may create their own learner account. For anyone younger, from age 5, an adult must use a Parent / Educator account, confirm its email, identify as the parent or legal guardian, review this notice, and explicitly create the managed profile. Managed younger profiles stay private and cannot publish projects publicly.</p>
               <p>The adult may separately choose progress emails for a managed profile. When enabled, CodeIt sends the confirmed adult email selected lesson, exercise, quiz, and project-creation milestones. The adult can pause these emails from the family controls, and each email also includes an unsubscribe link.</p>
               <p>Email confirmation confirms who holds the adult account email; CodeIt does not claim that email confirmation alone proves legal identity or satisfies every law in every location. A parent or guardian can view their linked profiles, delete a managed profile and its connected data, or contact us to ask for access, correction, or deletion.</p>
               <p>Some legacy accounts created before this flow may indicate that the learner is under 13. CodeIt does not treat an unverified parent email as consent. Those accounts are paused without deleting their saved work, and connected projects are kept private, until a parent or guardian completes the review and links the learner to a confirmed adult account.</p>

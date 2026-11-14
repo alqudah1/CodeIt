@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
-import InteractiveLessonTemplate from './InteractiveLessonTemplate';
+import InteractiveLessonTemplate, { lessonTopic } from './InteractiveLessonTemplate';
 import LessonStage, { stageLines } from './LessonStage';
 import CodeParts from './CodeParts';
 import { checkCodeStep } from './interactionGrading';
@@ -375,4 +375,25 @@ describe('guess first', () => {
     expect(screen.getByRole('button', { name: 'Read to me' })).toBeInTheDocument();
     expect(document.querySelector('.sl-lesson--staged')).not.toBeNull();
   });
+});
+
+// ── The end of a lesson ─────────────────────────────────────────────────────
+test('the end-of-lesson card names the topic in a few words, inside a sentence that reads', () => {
+  // It used to print the whole title and a full stop: "Strings. finished."
+  expect(lessonTopic('Strings')).toBe('Strings');
+  expect(lessonTopic('Hello Python!')).toBe('Hello Python');
+  expect(lessonTopic('Scope. Where a Variable Lives')).toBe('Scope');
+  expect(lessonTopic('Import and Random. Borrowing Superpowers')).toBe('Import and Random');
+  expect(lessonTopic(undefined)).toBe('');
+  for (const lesson of REBUILT) {
+    const topic = lessonTopic(lesson.title);
+    expect({ id: lesson.id, named: topic.length > 2, clean: !/[.!?]/.test(topic) }).toEqual({ id: lesson.id, named: true, clean: true });
+  }
+  const source = require('fs').readFileSync(require('path').join(__dirname, 'InteractiveLessonTemplate.js'), 'utf8');
+  expect(source).not.toContain('{title}. finished.');
+  expect(source).toContain('`You finished ${lessonTopic(title)}.`'); // eslint-disable-line no-template-curly-in-string
+  // The last lesson is not "Capstone": it is the end of the course, and says so.
+  expect(source).toContain("'You finished the last lesson. That is the whole course.'");
+  // And something to come back for: the next lesson, by name.
+  expect(source).toContain('Next time: Lesson {Number(id) + 1}, {lessonTopic(nextLessonTitle)}.');
 });

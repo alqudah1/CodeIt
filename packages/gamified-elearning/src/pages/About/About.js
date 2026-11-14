@@ -85,7 +85,7 @@ export default function About() {
           <p>
             Saved projects are private by default, and eligible independent accounts must actively
             choose Publish before a project appears publicly.{' '}
-            <strong>Managed profiles for ages 5 to 12 cannot publish projects at all.</strong>{' '}
+            <strong>A managed profile cannot publish projects at all.</strong>{' '}
             Leaderboards use coder aliases rather than real names.
           </p>
 

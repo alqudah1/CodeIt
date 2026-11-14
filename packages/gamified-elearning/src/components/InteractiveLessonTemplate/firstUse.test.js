@@ -104,7 +104,7 @@ test('unchanged message cannot finish, but a changed successful run can', async 
   fireEvent.click(screen.getByRole('button', { name: 'Run changed Make It Your Own' }));
   fireEvent.click(screen.getByRole('button', { name: 'Submit Answer' }));
   fireEvent.click(screen.getByRole('button', { name: /Finish lesson and go/ }));
-  expect(await screen.findByText(/Hello Python!.*finished/)).toBeInTheDocument();
+  expect(await screen.findByText('You finished Hello Python.')).toBeInTheDocument();
   expect(trackStaticLessonCompletion).toHaveBeenCalledTimes(1);
 });
 test('Python errors cannot complete the example or be submitted as a message', () => {
@@ -154,7 +154,10 @@ describe('activity completions', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Run changed Make It Your Own' }));
     fireEvent.click(screen.getByRole('button', { name: 'Submit Answer' }));
     fireEvent.click(screen.getByRole('button', { name: /Finish lesson and go/ }));
-    expect(await screen.findByText(/Hello Python!.*finished/)).toBeInTheDocument();
+    // The card says what was finished as a sentence (it used to read "Hello
+    // Python!. finished."), and names the next lesson as something to come back for.
+    expect(await screen.findByText('You finished Hello Python.')).toBeInTheDocument();
+    expect(screen.getByText('Next time: Lesson 2, Storing Info with Variables.')).toBeInTheDocument();
     expect(trackEvent.mock.calls.filter((c) => c[0] === 'guest_lesson_complete')).toEqual([['guest_lesson_complete', null, null]]);
   });
 });

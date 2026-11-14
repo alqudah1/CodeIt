@@ -16,11 +16,11 @@ const FAQS = [
   },
   {
     q: 'What ages can use the CodeIt studio?',
-    a: 'Parents and legal guardians can create private managed profiles for learners ages 5 to 12. Independent learner accounts are for ages 13 and up. Anyone can try the studio without creating an account.',
+    a: 'Parents and legal guardians can create private managed profiles for learners under 13, which CodeIt supports from age 5. Independent learner accounts are for ages 13 and up. Anyone can try the studio without creating an account.',
   },
   {
     q: 'Can a child publish a website publicly?',
-    a: 'Managed profiles ages 5 to 12 stay private and cannot publish. Eligible independent accounts save privately by default and must choose Publish before a project receives a public link.',
+    a: 'Managed profiles stay private and cannot publish. Eligible independent accounts save privately by default and must choose Publish before a project receives a public link.',
   },
   {
     q: 'Is the AI website builder free?',
@@ -120,7 +120,7 @@ export default function AIWebsiteBuilderForKids() {
               <h2 className="seo-h2">Private by default, with clear age rules</h2>
               <p className="seo-p">
                 Anyone can try the studio without an account. Parents and legal guardians can
-                create private managed profiles for learners ages 5 to 12. Those profiles cannot
+                create private managed profiles for learners under 13, from age 5. Those profiles cannot
                 publish projects publicly. Independent student accounts begin at age 13, and saved
                 projects remain private unless an eligible owner deliberately chooses Publish.
               </p>
