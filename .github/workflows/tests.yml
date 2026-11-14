@@ -69,3 +69,55 @@ jobs:
         run: npm run build:learning
         env:
           CI: true
+
+  # ── The tests that need a database ────────────────────────────────────────
+  #
+  # Some promises are about rows, and only a real Postgres can check them:
+  # that deleting a child leaves nothing behind, that a classroom account is
+  # told apart from a person's own account. Those tests lived only in
+  # ops/checks/run-all.sh, inside the browser workflow, which has been
+  # run-by-hand since 16 October. So they ran when someone remembered.
+  #
+  # That is how a deletion fix shipped without the fix in it: the list of
+  # tables to clear was missing the two it was written to add, and nothing
+  # that runs on a push could see it. This job runs them on every push,
+  # against a database that exists for two minutes and is thrown away. It
+  # never sees production, which stays a thing a person migrates on purpose.
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: check
+          POSTGRES_DB: codeit_check
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+
+    env:
+      DATABASE_URL: postgresql://postgres:check@localhost:5432/codeit_check
+      # A throwaway key for a throwaway database.
+      JWT_SECRET: check-runner-signing-key-not-a-real-secret
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build the schema from this repository's migrations
+        run: node ops/db/migrate.js --fresh --apply
+
+      - name: Database-backed tests
+        run: npm run test:pg --workspace=@e-learning/codeit-backend

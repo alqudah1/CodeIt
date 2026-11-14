@@ -43,6 +43,16 @@ const ERASE_BY_NAME = [
   ['ai_project_likes', 'user_id'],
   ['analytics_events', 'user_id'],
   ['founding_family_leads', 'user_id'],
+  // The two this file was written to add. They were missing from the list
+  // that shipped: the commit that introduced this file tested the guard by
+  // removing them, and the edit that put them back checked whether the name
+  // appeared anywhere in the file, found it in the comment at the top, and
+  // did nothing. The test then passed because, on that database, neither
+  // table could be seeded and an unseeded table was skipped. Both holes are
+  // closed: the entries are here, and the test now refuses to skip any table
+  // that no foreign key would clear.
+  ['ai_project_xp_awards', 'user_id'],
+  ['user_activity_daily', 'user_id'],
 ];
 
 /**
