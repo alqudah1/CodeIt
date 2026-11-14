@@ -25,6 +25,7 @@ import GuessFirst from './GuessFirst';
 import CodeParts from './CodeParts';
 import { firstUseStep, firstPracticeIndex } from './firstUse';
 import { trackActivityComplete, trackGuestLessonComplete } from '../../utils/activity';
+import { rememberGuestLesson } from '../../utils/guestLessons';
 import {
   blankCount,
   checkCodeStep,
@@ -506,6 +507,8 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
       // below needs an account and fails quietly. The session journey is
       // enough to count it, and nothing else about them is sent.
       void trackGuestLessonComplete(id, token);
+      // And kept on this device, so it goes with them if they make an account.
+      if (!token) rememberGuestLesson(id);
       try {
         const result = await trackStaticLessonCompletion(id);
         xpEarned = result?.alreadyCompleted ? 0 : (result?.xpEarned ?? 0);

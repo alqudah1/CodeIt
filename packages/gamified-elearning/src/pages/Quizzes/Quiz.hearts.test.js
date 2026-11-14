@@ -6,6 +6,8 @@ import axios from 'axios';
 import Quiz, { Hearts } from './Quiz';
 
 jest.mock('axios');
+// The quiz asks this to hand over lessons finished as a guest; it has its own tests.
+jest.mock('../../utils/progressTracker', () => ({ trackLessonCompletion: jest.fn(() => Promise.resolve({})) }));
 jest.mock('react-router-dom', () => ({
   useNavigate: () => jest.fn(),
   useParams: () => ({ quizId: '12' }), // past the lesson gate (lessons 1 to 10 check progress first)

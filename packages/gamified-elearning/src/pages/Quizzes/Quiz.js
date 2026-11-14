@@ -12,6 +12,8 @@ import { usePlayerProgress } from "../../hooks/usePlayerProgress";
 import { getXpProgress, getNextUnlock, getNextUnlockLabel } from "../../data/unlocks";
 import { setVoiceState, shouldAutoRead, speak } from "../../utils/voice";
 import { effectiveGuideLevel } from "../../utils/guideLevel";
+import { bankGuestLessons } from "../../utils/guestLessons";
+import { trackLessonCompletion } from "../../utils/progressTracker";
 import DeadEnd from "../../components/DeadEnd/DeadEnd";
 import useCountUp from "../../hooks/useCountUp";
 import { builderPromptFor } from "../Lessons/lessonRegistry";
@@ -117,6 +119,11 @@ export default function Quiz() {
     if (lessonNum > 10) { setGateChecking(false); return; }
     const checkGate = async () => {
       try {
+        // A lesson finished on this device before there was an account counts.
+        // Signing in hands those to the account; if that is still on its way,
+        // wait for it, or the gate below would say "Complete Lesson 3 first"
+        // to someone who just did.
+        await bankGuestLessons(trackLessonCompletion).catch(() => {});
         const res = await fetch(`${API_BASE_URL}/api/lessons/progress`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -338,12 +345,34 @@ export default function Quiz() {
     // Sign-in problems and missing questions are different rooms; neither
     // ever shows a raw error string.
     const needsSignIn = /log ?in|token|session/i.test(loadErr);
+    // Where signing in or signing up brings them back to: this quiz.
+    const backHere = { from: `/quiz/${quizId}` };
+    // Somebody who has never signed in on this device is not somebody whose
+    // sign-in "fell asleep". A guest who finished a lesson and pressed "Start
+    // Quiz" was told exactly that, with a Log in button and no way to make an
+    // account: the moment a child wants more, and the page read as an error
+    // about something they never had. A guest is told what a quiz needs and
+    // why, and can make an account or keep learning without one.
+    if (needsSignIn && !user && !token) {
+      return (
+        <DeadEnd
+          title={`Quiz ${quizId} needs an account`}
+          line="A quiz keeps your score and opens the next step, so it needs somewhere to save them. An account is free, and you come straight back to this quiz."
+          doors={[
+            { label: 'Make a free account', to: '/register', state: backHere, primary: true },
+            { label: 'Log in', to: '/login', state: backHere },
+            { label: 'Keep learning without one', to: '/lessons' },
+          ]}
+        />
+      );
+    }
     return needsSignIn ? (
       <DeadEnd
         title="Time to sign in again"
         line="Your sign-in fell asleep. Log back in and this quiz will be right here waiting."
         doors={[
-          { label: 'Log in', to: '/login', primary: true },
+          // "Right here waiting" has to be true: the door carries the way back.
+          { label: 'Log in', to: '/login', state: backHere, primary: true },
           { label: 'Go home', to: '/' },
         ]}
       />

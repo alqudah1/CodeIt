@@ -25,7 +25,7 @@ const DeadEnd = ({ title, line, doors }) => (
               {door.label}
             </button>
           ) : (
-            <Link key={door.label} className={`deadend__door${door.primary ? ' deadend__door--primary' : ''}`} to={door.to}>
+            <Link key={door.label} className={`deadend__door${door.primary ? ' deadend__door--primary' : ''}`} to={door.to} state={door.state}>
               {door.label}
             </Link>
           )

@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { trackEvent } from "../utils/trackEvent";
 import { API_BASE_URL } from "../config/api";
 import { syncUnderstandingToAccount } from "../utils/understanding";
+import { bankGuestLessons } from "../utils/guestLessons";
+import { trackLessonCompletion } from "../utils/progressTracker";
 
 import { isTokenExpired } from "../utils/tokenExpiry";
 
@@ -70,6 +72,15 @@ export const AuthProvider = ({ children }) => {
       userId: user.id || user.user_id || user.userId,
       apiBaseUrl: API_BASE_URL,
     });
+  }, [token, user]);
+
+  // Lessons finished on this device as a guest go to the account the first
+  // time a learner is signed in here (see utils/guestLessons.js). Learners
+  // only, for the same reason as above.
+  useEffect(() => {
+    if (!token || !user) return;
+    if (String(user.role || "").toLowerCase() !== "student") return;
+    void bankGuestLessons(trackLessonCompletion).catch(() => {});
   }, [token, user]);
 
   const login = (userData) => {
