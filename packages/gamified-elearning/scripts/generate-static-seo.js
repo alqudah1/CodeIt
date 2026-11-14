@@ -1299,7 +1299,38 @@ const HOME_PAGE = {
 const LESSON_PLANS = loadLessonPlans();
 
 function teachPages() {
-  const { PLANS, TEACH_LANDING, TEACH_STEPS, PLANS_INDEX, planMeta } = LESSON_PLANS;
+  const { PLANS, TEACH_LANDING, TEACH_STEPS, PLANS_INDEX, planMeta, POWERS } = LESSON_PLANS;
+
+  // ── What the children actually change ────────────────────────────────────
+  //
+  // Each plan page said "the power: Loops" and what to read aloud, and not
+  // what a child does for those minutes. A teacher deciding whether to use a
+  // plan cannot see the line of code in question, the two changes, or the
+  // check that tells them the child got it. Search Console has the plan
+  // pages on the first page of results (positions 4 to 7) with almost no
+  // clicks; a teacher looking at one had little to go on.
+  //
+  // This is the power's own data: the box in the game, the line the game
+  // runs with it, the value each step sets, and the check the child has to
+  // pass, which is the same rule the server marks.
+  const powerSection = (plan) => {
+    const power = (POWERS || []).find((p) => p.slug === plan.slug);
+    if (!power) return '';
+    const shown = (v) => (typeof v === 'string' ? `'${v}'` : String(v));
+    const steps = (power.steps || []).map((step, i) => `<li>${escapeHtml(
+      `${i === 0 ? 'First' : 'Then'} ${power.key} is set to ${shown(step.value)}, and the game runs again with it.`
+    )}</li>`).join('\n        ');
+    return [
+      `<h2>${escapeHtml(`What the children change: ${power.name}`)}</h2>`,
+      `<p>${escapeHtml(power.intro)}</p>`,
+      `<p>${escapeHtml(`The game keeps it in a box called ${power.key}, and this is the line the game runs with it:`)}</p>`,
+      `<pre><code>${escapeHtml(power.engine)}</code></pre>`,
+      steps ? `<ol>\n        ${steps}\n      </ol>` : '',
+      power.check && power.check.say
+        ? `<p>${escapeHtml(`The check, which the child passes on their own with the highlight gone: ${power.check.say}`)}</p>`
+        : '',
+    ].filter(Boolean).join('\n      ');
+  };
   const planLinks = PLANS.map((plan) =>
     `<li><a href="/teach/plans/${escapeHtml(plan.slug)}">${escapeHtml(plan.title)}</a> On the board: ${escapeHtml(plan.sentence)}</li>`
   ).join('\n        ');
@@ -1349,6 +1380,7 @@ function teachPages() {
       intro: `On the board: "${plan.sentence}". ${plan.say}`,
       bodyHtml: [
         ...plan.steps.map((step) => `<h2>${escapeHtml(`${step.min} min: ${step.head}`)}</h2>\n      <p>${escapeHtml(step.text)}</p>`),
+        powerSection(plan),
         `<h2>What to look for</h2>\n      <p>${escapeHtml(plan.lookFor)}</p>`,
         `<p>${[
           prev ? `<a href="/teach/plans/${escapeHtml(prev.slug)}">Previous: ${escapeHtml(prev.title)}</a>` : '',

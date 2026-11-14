@@ -225,7 +225,8 @@ function loadLessonPlans() {
   if (!Array.isArray(plans.PLANS) || plans.PLANS.length !== powers.POWERS.length) {
     throw new Error('content-loader: lessonPlans.js did not export one plan per power');
   }
-  return plans;
+  // The powers ride along so a plan page can show what the children change.
+  return { ...plans, POWERS: powers.POWERS };
 }
 
 module.exports = {
