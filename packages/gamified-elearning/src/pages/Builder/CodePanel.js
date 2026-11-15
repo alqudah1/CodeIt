@@ -19,6 +19,16 @@
 //   * Typing is debounced, so the preview reloads when they pause rather than
 //     flickering on every keystroke.
 //
+// And one thing makes it worth doing: the project runs, small, right above
+// the code. "Change anything and it runs straight away" was true and nobody
+// could see it: the game is at the top of the page and the editor is 800
+// pixels further down, on a phone and on a desktop alike, so a child who
+// changed speed from 2 to 3 was looking at a line of text while the fish
+// fell faster off the top of the screen. The small screen is a second copy
+// of the same preview. It cannot be played (the big one is one press away)
+// and the studio does not listen to it: every message from a frame that is
+// not the main preview is dropped (see handleIframeMessage).
+//
 // The editor itself is loaded only when this tab is opened. CodeMirror is not
 // small, and a seven-year-old who never leaves the Play tab should not pay for
 // it.
@@ -85,6 +95,9 @@ export default function CodePanel({
   safety,
   onRestore,
   guideLevel = 'independent',
+  liveDoc = '',
+  isGame = false,
+  onPlay,
 }) {
   const [draft, setDraft] = useState(code);
   const [dirty, setDirty] = useState(false);
@@ -101,6 +114,40 @@ export default function CodePanel({
   }, [code, dirty]);
 
   useEffect(() => () => clearTimeout(timer.current), []);
+
+  // ── The line being typed on stays where it is ──────────────────────────────
+  //
+  // Measured on 15 November 2026: the first change a child types marks the
+  // project as theirs, and the "what next" card far above the editor grows to
+  // say so, by 153 pixels on a desktop and 257 on a phone. Everything under it
+  // moved down by that much, including the line under the child's cursor,
+  // which on a phone went behind the keyboard. The page had not been scrolled;
+  // the code had been moved out from under them.
+  //
+  // So while the cursor is in the code, this panel is kept where it was on the
+  // screen: when the page above it changes height, the page is scrolled by the
+  // same amount, before the browser paints.
+  const section = useRef(null);
+  useEffect(() => {
+    const el = section.current;
+    if (!el || !el.parentElement || typeof ResizeObserver === 'undefined') return undefined;
+    let top = el.getBoundingClientRect().top;
+    const note = () => { top = el.getBoundingClientRect().top; };
+    const settle = () => {
+      const moved = Math.round(el.getBoundingClientRect().top - top);
+      if (moved && el.contains(document.activeElement)) window.scrollBy(0, moved);
+      note();
+    };
+    const watcher = new ResizeObserver(settle);
+    watcher.observe(el.parentElement);
+    window.addEventListener('scroll', note, { passive: true });
+    window.addEventListener('resize', note);
+    return () => {
+      watcher.disconnect();
+      window.removeEventListener('scroll', note);
+      window.removeEventListener('resize', note);
+    };
+  }, []);
 
   function handleChange(next) {
     setDraft(next);
@@ -130,7 +177,7 @@ export default function CodePanel({
   const here = whatIsHere(code);
 
   return (
-    <section className="cp" aria-labelledby="cp-title">
+    <section className="cp" aria-labelledby="cp-title" ref={section}>
       <header className="cp__head">
         <div>
           <h3 id="cp-title" className="cp__title">Your code</h3>
@@ -147,6 +194,27 @@ export default function CodePanel({
           without a word is disorienting — a child scrolls up looking for line 1
           and cannot work out why it was not there. */}
       {here && <p className="cp__here">{here}</p>}
+
+      {liveDoc && (
+        <div className="cp__live">
+          {/* For the eyes only: no keys, no taps, nothing for a screen reader
+              to land in. The real one is on the Play tab. */}
+          <div className="cp__live-screen" aria-hidden="true">
+            <iframe
+              className="cp__live-frame"
+              title="Your project, running"
+              srcDoc={liveDoc}
+              sandbox="allow-scripts"
+              tabIndex={-1}
+            />
+          </div>
+          <div className="cp__live-words">
+            <strong>{isGame ? 'Your game, live' : 'Your project, live'}</strong>
+            <span>It starts again each time your code changes. Change a number and watch.</span>
+            {onPlay && <button type="button" className="cp__live-play" onClick={onPlay}>{isGame ? 'Play it' : 'Open it'}</button>}
+          </div>
+        </div>
+      )}
 
       <div className="cp__editor">
         <Suspense fallback={<div className="cp__loading">Opening your code…</div>}>

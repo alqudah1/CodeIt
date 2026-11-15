@@ -1818,6 +1818,13 @@ export default function Builder() {
                 safety={safety}
                 onRestore={restoreLastWorking}
                 guideLevel={guideLevel}
+                liveDoc={previewDoc}
+                isGame={(projectType || '').toLowerCase() === 'game'}
+                onPlay={() => {
+                  setWorkspaceTab('play');
+                  const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+                  iframeRef.current?.scrollIntoView?.({ block: 'center', behavior: still ? 'auto' : 'smooth' });
+                }}
               />
             )}
 

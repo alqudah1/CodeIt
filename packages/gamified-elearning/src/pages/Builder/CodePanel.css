@@ -257,6 +257,77 @@
   .cp-error__raw { margin-left: 0; }
 }
 
+/* The project, running, right above the code. A 640 by 400 screen drawn at
+   half size on a desktop, and smaller on a phone so the code under it is
+   still on the screen with it. */
+.cp__live {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 10px;
+  padding: 10px;
+  border: 2px solid #35220e;
+  border-radius: 14px;
+  background: #fff7ee;
+}
+.cp__live-screen {
+  flex: none;
+  width: 320px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 9px;
+  background: #1b1b2a;
+}
+.cp__live-frame {
+  display: block;
+  width: 640px;
+  height: 400px;
+  border: 0;
+  transform: scale(0.5);
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+.cp__live-words {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  color: #3d302b;
+}
+.cp__live-words strong { font-size: 1rem; font-weight: 800; }
+.cp__live-words span { font-size: 0.875rem; line-height: 1.45; color: #5d4d43; max-width: 34ch; }
+.cp__live-play {
+  margin-top: 4px;
+  min-height: 44px;
+  padding: 8px 18px;
+  border: 2px solid #35220e;
+  border-radius: 999px;
+  background: #ffc93c;
+  color: #35220e;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #35220e;
+}
+.cp__live-play:hover { background: #ffd65c; }
+.cp__live-play:active { transform: translateY(2px); box-shadow: none; }
+.cp__live-play:focus-visible { outline: 3px solid #7c3aed; outline-offset: 2px; }
+
+@media (max-width: 640px) {
+  .cp__live { gap: 10px; padding: 8px; align-items: flex-start; }
+  .cp__live-screen { width: 160px; height: 100px; }
+  /* A smaller screen, not a smaller picture of the big one: the cat and the
+     fish stay big enough to see. */
+  .cp__live-frame { width: 400px; height: 250px; transform: scale(0.4); }
+  .cp__live-words span { font-size: 0.8125rem; }
+  .cp__live-play { margin-top: 0; }
+}
+@media (max-width: 340px) {
+  .cp__live { flex-direction: column; }
+}
+
 /* Saying where the editor jumped to, so it is not a mystery. */
 .cp__here {
   margin: 0 0 8px;
