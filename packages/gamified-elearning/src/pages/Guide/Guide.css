@@ -5,7 +5,10 @@
   --guide-ink: #38291f;
   --guide-soft: #6b5b4e;
   --guide-rule: #e4d9cd;
-  --guide-accent: #c95f16;
+  /* The site's orange for words (ds.css --ci-orange-text). The lighter
+     #c95f16 that was here measured 3.8 to 1 on this page, under the 4.5 a
+     link and a 13px kicker need. */
+  --guide-accent: #a84e00;
   max-width: 44rem;
   margin: 0 auto;
   padding: 2.5rem 1.25rem 5rem;
@@ -49,7 +52,10 @@
 .guide-body ol { margin: 0 0 1.2rem; padding-left: 1.3rem; }
 .guide-body li { margin-bottom: 0.4rem; }
 
-.guide-body a { color: var(--guide-accent); text-underline-offset: 2px; }
+/* Underlined, said out loud: styles/arcade.css takes the underline off every
+   link on the site, and a link in a paragraph that is only a different
+   colour is not a link to someone who cannot tell the colours apart. */
+.guide-body a { color: var(--guide-accent); text-decoration: underline; text-underline-offset: 2px; }
 .guide-body a:focus-visible {
   outline: 2px solid var(--guide-accent);
   outline-offset: 3px;

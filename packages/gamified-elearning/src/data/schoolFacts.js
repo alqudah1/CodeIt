@@ -25,6 +25,14 @@
  * journey in the studio; the lessons need typing. Keep it to what a reviewer
  * could repeat.
  *
+ * guideLinks are the guides written for teachers, one line each: `lead` is
+ * plain words (it may be empty), `text` is the words inside the link, `href`
+ * is where it goes. The first is the same line /teach and /teach/plans show
+ * (TEACH_LANDING.guideLinks in src/pages/Class/lessonPlans.js); it is typed
+ * again here because this file cannot import, and lessonPlans.test.js fails
+ * if the two differ. CS Education Week 2026 is 7 to 11 December: take that
+ * line down or reword it once the week is over.
+ *
  * No imports: scripts/content-loader.js evaluates this file in a vm sandbox
  * that refuses require, so each side supplies its own configuration.
  */
@@ -124,5 +132,17 @@ export default function schoolFacts({ contactEmail, pricePerInterval, maxChildre
       },
     ],
     detail: 'This page states what was checked, not a grade. If something here stops being true, the page changes.',
+    guideLinks: [
+      {
+        lead: 'Planning a coding hour for CS Education Week?',
+        text: 'Read the hour minute by minute',
+        href: '/guide/cs-education-week-coding-hour',
+      },
+      {
+        lead: '',
+        text: 'Moving a class off Glitch?',
+        href: '/guide/glitch-for-classrooms',
+      },
+    ],
   };
 }

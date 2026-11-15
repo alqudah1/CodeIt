@@ -51,6 +51,11 @@ export default function Schools() {
           ))}
 
           <p>{facts.detail}</p>
+          {facts.guideLinks.map((guide) => (
+            <p key={guide.href}>
+              {guide.lead ? `${guide.lead} ` : ''}<a href={guide.href}>{guide.text}</a>{guide.lead ? '.' : ''}
+            </p>
+          ))}
           <p>
             <a href="/check">Test this computer</a>
             {' · '}

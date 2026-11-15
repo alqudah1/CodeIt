@@ -62,6 +62,25 @@ export function planFor(power) {
 
 export const PLANS = POWERS.map(planFor);
 
+// Guides written for teachers, linked from the teacher pages.
+//
+// 15 November 2026: /guide/cs-education-week-coding-hour and
+// /guide/glitch-for-classrooms were linked from one page on the whole site,
+// the /guide index, so a search engine had no reason to think they mattered
+// and a teacher on /teach had no way to find them. Each entry is one line:
+// `lead` is plain words, `text` is the words inside the link, `href` is where
+// it goes. The same words are in src/data/schoolFacts.js (that file cannot
+// import), and lessonPlans.test.js fails if the two ever differ.
+//
+// CS Education Week 2026 is 7 to 11 December. The line names the week, not
+// the dates, so it reads true before and during it; take it down or reword
+// it once the week is over.
+const CS_WEEK_GUIDE = {
+  lead: 'Planning a coding hour for CS Education Week?',
+  text: 'Read the hour minute by minute',
+  href: '/guide/cs-education-week-coding-hour',
+};
+
 // The words on the teacher landing and the plans index. The pages render
 // them and the static generator writes the crawlable copy from them, so a
 // search engine and a teacher read the same sentences.
@@ -75,6 +94,7 @@ export const TEACH_LANDING = {
   // line taken apart, a change, then the pupil's own.
   method: 'Every Python lesson follows PRIMM: pupils predict what a line will print, run it, take it apart piece by piece, modify it, then make their own. PRIMM comes from research on teaching Python in secondary schools (Sentance, Waite and Kalia, 2019).',
   network: 'Works on school networks and Chromebooks. The site needs nothing but codeitlearn.com: if that one address is allowed, the lessons, the Python editor and the games all work. No firewall routes, no plug-ins, no install.',
+  guideLinks: [CS_WEEK_GUIDE],
 };
 
 export const TEACH_STEPS = [
@@ -88,6 +108,7 @@ export const PLANS_INDEX = {
   eyebrow: 'Teach',
   h1: 'Twelve classes, one per power.',
   intro: 'Each is 45 minutes you read aloud: the sentence for the board, when to open the projector, the power, and what to look for walking the room.',
+  guideLinks: [CS_WEEK_GUIDE],
 };
 
 /**

@@ -23,6 +23,11 @@ export default function Plans() {
           <div className="ci-ey">{PLANS_INDEX.eyebrow}</div>
           <h1 className="ci-h1">{PLANS_INDEX.h1}</h1>
           <p className="ci-sub">{PLANS_INDEX.intro}</p>
+          {PLANS_INDEX.guideLinks.map((guide) => (
+            <p className="ci-sub pl__guide" key={guide.href}>
+              {guide.lead ? `${guide.lead} ` : ''}<Link to={guide.href}>{guide.text}</Link>{guide.lead ? '.' : ''}
+            </p>
+          ))}
           <div className="cl__list pl__list">
             {PLANS.map((p, i) => (
               <Link key={p.slug} to={`/teach/plans/${p.slug}`} className="ci-blk ci-blk--paper cl__item ci-rise" style={{ animationDelay: `${0.03 * i}s` }}>

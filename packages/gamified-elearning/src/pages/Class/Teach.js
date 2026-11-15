@@ -113,6 +113,11 @@ function SignIn() {
           <p className="ci-sub tl__network">
             For your IT or privacy reviewer: <Link to="/schools">what to allow, what is stored about a child, and what CodeIt does not have</Link>.
           </p>
+          {TEACH_LANDING.guideLinks.map((guide) => (
+            <p className="ci-sub tl__network" key={guide.href}>
+              {guide.lead ? `${guide.lead} ` : ''}<Link to={guide.href}>{guide.text}</Link>{guide.lead ? '.' : ''}
+            </p>
+          ))}
           <div className="tl__btns">
             <Link className="ci-btn ci-btn--ink" to="/login" state={{ from: '/teach' }}>Sign in</Link>
             <Link className="ci-btn ci-btn--paper" to="/register?for=class" state={{ from: '/teach' }}>Make an account</Link>
