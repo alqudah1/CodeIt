@@ -17,8 +17,8 @@ import path from 'path';
 // This does not fix indexing on its own. Authority comes from citations on
 // sites we do not own. It is the half we control.
 describe('every guide points at the lessons behind it', () => {
-  test('all sixteen guides declare related lessons', () => {
-    expect(GUIDE_PAGES.length).toBe(16);
+  test('all seventeen guides declare related lessons', () => {
+    expect(GUIDE_PAGES.length).toBe(17);
     const without = GUIDE_PAGES.filter(g => !Array.isArray(g.relatedLessons) || !g.relatedLessons.length);
     expect(without.map(g => g.slug)).toEqual([]);
   });
@@ -57,7 +57,7 @@ describe('every guide points at the lessons behind it', () => {
     const parts = path.join(__dirname, '../../data/guides');
     const src = fs.readdirSync(parts).filter((name) => name.endsWith('.js')).map((name) => fs.readFileSync(path.join(parts, name), 'utf8')).join('\n');
     const decls = src.match(/relatedLessons:\s*\[[^\]]*\]/g) || [];
-    expect(decls.length).toBe(16);
+    expect(decls.length).toBe(17);
     for (const d of decls) {
       expect(d).not.toMatch(/['"`]/);
     }

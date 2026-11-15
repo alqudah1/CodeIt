@@ -109,11 +109,11 @@ CodeIt is a browser-based studio built for ages 8 to 14. A learner describes a w
     // a second currency, so a competitor's US price could sit on the page
     // undeclared. Marking them US$ is what the rest of the site does and what
     // the guard is for.
-    quotedPrices: ["US$7", "US$12", "US$24.99", "US$119.99", "US$199.99"],
+    quotedPrices: ["US$7", "US$12", "US$14.99", "US$15", "US$468", "US$24.99", "US$119.99", "US$199.99"],
     title: "What to Use After Scratch, Before Python",
     description: "Your kid outgrew Scratch but isn't ready for Python. Here's how to tell if they're actually ready, why the Python jump fails, and what to pick instead.",
     h1: "What to use after Scratch, before Python",
-    lastVerified: "2026-08-21",
+    lastVerified: "2026-11-15",
     targetQueries: [
       "what to use after scratch",
       "what comes after scratch for kids",
@@ -199,12 +199,12 @@ Start here: **Can they read fluently?** No → stay in blocks. Yes → **do they
 |---|---|---|
 | Under 8, or still reading slowly | Stay in blocks; add harder projects | [codeSpark](https://www.beginlearning.com/codespark/pdp) (word-free, now sold through Begin), [Kodable](https://www.kodable.com/parents) (paid for families, US$119.99/yr) |
 | 8–12, loved making **games** and wants to keep making games | Typed Python or JavaScript inside a game world | [CodeCombat](https://codecombat.com/): freemium, roughly 9+, the strongest "keep making games" answer |
-| 8–12, obsessed with **Minecraft or Roblox** | Modding path, the motivation is already there | [Tynker](https://www.tynker.com/) ($15/mo billed yearly, or $468 lifetime, up to 3 children) |
+| 8–12, obsessed with **Minecraft or Roblox** | Modding path, the motivation is already there | [Tynker](https://www.tynker.com/) (US$15 a month billed yearly, or US$468 once, up to 3 children) |
 | 9–13, loved the "look what I made" part; wants something others can open | HTML, CSS, JavaScript in a browser | Any browser-based web editor; see the disclosure below |
 | 9–13, loved the **puzzles and logic**, not the art | Structured typed-code puzzles | [CodeMonkey](https://www.codemonkey.com/) (US$7/mo individual, US$12/mo family, K–8), [CodeCombat](https://codecombat.com/) |
 | 10+, more curious about **AI** than about code | AI literacy alongside coding | [CodeAI](https://code.org/): this is Code.org, which rebranded in June 2026 and shifted emphasis toward AI literacy; free |
 | 11–13, asking for **Python by name** | Python, but inside something with visible output | [CodeCombat](https://codecombat.com/)'s Python path first; a beginner Python sequence second. Note Codecademy's 16+ age gate |
-| 13–15, self-directed, reads well | Real adult-track courses | [Codecademy](https://www.codecademy.com/) (free Basic, ~$14.99/mo Plus, and check the 16+ term), [freeCodeCamp](https://www.freecodecamp.org/) |
+| 13–15, self-directed, reads well | Real adult-track courses | [Codecademy](https://www.codecademy.com/) (free Basic, Plus from US$14.99 a month billed yearly, and check the 16+ term), [freeCodeCamp](https://www.freecodecamp.org/) |
 | 15–18, wants a portfolio or a job someday | Full certification tracks | [freeCodeCamp](https://www.freecodecamp.org/), free, with real projects |
 
 ## What the first three months actually look like
@@ -255,7 +255,7 @@ Common and usually recoverable. The cause is normally the visible-reward drop de
 
 ---
 
-*Last verified: 21 August 2026. Competitor pricing, age ratings and terms were checked on this date and change often, confirm on the vendor's own site before paying.*
+*Last verified: 15 November 2026. Competitor pricing, age ratings and terms were checked on this date and change often, confirm on the vendor's own site before paying.*
 
 ## Try the translation, not just the theory
 
@@ -263,6 +263,81 @@ CodeIt's studio has a starter written for exactly this crossing: **Cat and mouse
 
 [Open Cat and mouse chase in the studio](/builder?start=cat-chase), it loads instantly, free, no account needed.
 `,
+  },
+  {
+    slug: "cs-education-week-coding-hour",
+    relatedLessons: [1, 2],
+    title: "A Coding Hour for CS Education Week, No Student Logins",
+    description: "One class period for CS Education Week on school Chromebooks: no student emails, no passwords, a game each child changes in code. What it is, what it is not, and the official alternatives.",
+    h1: "A coding hour for CS Education Week, with no student logins",
+    lastVerified: "2026-11-15",
+    targetQueries: [
+      "hour of code activity no login",
+      "hour of code activities chromebook",
+      "cs education week activity ideas",
+      "hour of ai activities for kids",
+      "one hour coding lesson for kids",
+      "coding lesson no student accounts"
+    ],
+    markdown: `**Short answer:** if you want an official activity for Computer Science Education Week, start at the [Hour of AI activity catalog](https://hourofai.org/en-US/activities), run by CodeAI and its partners. CodeAI is the organisation that used to be called Code.org. The catalog is free, and the Hour of Code activities are listed there too. If what you need is one class period where every child makes a game and then changes it in code, on school Chromebooks, with no student emails and no passwords to hand out, that is what the CodeIt class below is for.
+
+CodeIt is not an official Hour of Code or Hour of AI activity and is not affiliated with CodeAI or CSforALL. The Hour of AI site says its window for activity submissions is closed. This page is published by CodeIt, so weigh it accordingly.
+
+## When CS Education Week is
+
+The Hour of AI site gives CS Education Week as 7 to 11 December, and says new activities launch on 16 November. Activities there are free and, in its words, "available year-round", so nothing stops you running an hour in January.
+
+## Why the login is usually the hard part
+
+Most of a lost coding hour goes on accounts. Thirty children typing an email they do not remember, a password policy, an age screen, a consent form for a site the school has not reviewed. By the time the last child is in, the first has finished.
+
+A CodeIt class has none of that. You sign in with your own account and make a class. The class code appears on the projector in letters the back row can read. Children open codeitlearn.com/join, type the code and a first name, and they are in. There is no email, no password and no age screen, and the class account holds no email address, no date of birth and no surname.
+
+The site needs one address allowed on the school network: codeitlearn.com. The lessons, the Python editor and the games all come from there, with no plug-ins and nothing to install. The [schools page](/schools) answers the rest of what an IT reviewer usually asks.
+
+## The hour, minute by minute
+
+The [first lesson plan](/teach/plans/numbers) is written for 45 minutes and read aloud. It stretches to an hour with more time on the projector.
+
+1. **Minute 0, the code on the board.** Children join with the class code and a first name. Five minutes, no accounts.
+2. **Minute 5, say a game.** On the board: "a rocket that dodges comets and goes really fast". Everyone types it, or their own version, and presses Build it. By minute ten every child has a game playing.
+3. **Minute 12, the projector fills.** Each game a child publishes becomes a tile on the projector. Press one and it plays on the big screen.
+4. **Minute 15, the power.** Everyone opens Numbers. The game keeps its speed in a box called speed, and the child changes the number in that line of code, runs it, and changes it again. The check is writing it themselves with the highlight gone.
+5. **Minute 30, build with it.** Back to Build with the power switched on. Each child asks for a new game that uses it, and publishes it.
+6. **Minute 40, show two.** Press two tiles. Ask each child what they changed. The sentence they say back is the assessment.
+
+There are [twelve plans](/teach/plans), one per idea: numbers, words, looks, lives, score, winning, if-then, loops, timers, sound, levels and a boss. Any of them works as a single hour.
+
+## Where the AI fits, said plainly
+
+The first version of each game is built by AI from the sentence the child types. That makes this a coding hour that starts from an AI result, not a lesson about how AI models work. If your school wants AI literacy itself, the Hour of AI catalog is the better choice.
+
+What the hour does show is the difference between a child who got a result from AI and a child who can open that result, find the line that matters and change it on purpose. What goes to the AI provider is the sentence and the game's own code, with no name and no identifier for the child. Each child has ten AI builds a month on the free plan, and one plan uses two of them. The Python lessons and the [Python playground](/playground) use no AI at all.
+
+## What it does not do
+
+- No rostering, no LMS integration, no gradebook and no standards alignment. It is one teacher, one class code.
+- No offline mode. Every child needs a working connection.
+- The structured lessons are in Python. The games are HTML, CSS and JavaScript, changed one line at a time, not a web course.
+- It needs children who can read a short sentence and type it. For pre-readers, an unplugged activity from the Hour of AI catalog is a better hour.
+
+## Other good options for the same hour
+
+- **[Hour of AI activities](https://hourofai.org/en-US/activities)**: the official catalog, free, for every age, including Hour of Code activities and activities that need no device.
+- **[Scratch](https://scratch.mit.edu/)**: free, block-based, and the strongest open-ended option for ages 8 to 16. Teacher accounts can create student accounts without student emails.
+- **[CodeHS](https://help.codehs.com/en/articles/4612859-hour-of-code-and-hour-of-ai-resources)**: publishes its own Hour of Code and Hour of AI resources.
+
+## Common questions
+
+**Does it cost anything?** No. Classes are free, and there is no school or district plan to buy.
+
+**Do I need to know how to code?** No. The plan tells you what to say at each minute, and the power walks each child through its one line.
+
+**Do class games go public?** No. A published class game reaches the class projector and is kept out of the public gallery.
+
+**What do I need on the day?** A projector, a device per child or per pair, and codeitlearn.com allowed on the network. Try it on one Chromebook the day before.
+
+*Last verified: 15 November 2026 against hourofai.org and CodeIt's own class and lesson plan code.*`,
   },
 ];
 

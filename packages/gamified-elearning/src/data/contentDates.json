@@ -72,11 +72,11 @@
     "date": "2026-08-29"
   },
   "/guide": {
-    "hash": "358f4b0094eb2268",
-    "date": "2026-11-13"
+    "hash": "02348e51237fcae9",
+    "date": "2026-11-15"
   },
   "/guide/after-scratch": {
-    "hash": "2d3eea5f9759965a",
+    "hash": "2ce947bf19fbd640",
     "date": "2026-11-15"
   },
   "/guide/ai-builder-you-can-edit": {
@@ -102,6 +102,10 @@
   "/guide/common-sense-education-paused-edtech-reviews": {
     "hash": "693a67b30800c35a",
     "date": "2026-11-13"
+  },
+  "/guide/cs-education-week-coding-hour": {
+    "hash": "1bf4d0e70d5fb11c",
+    "date": "2026-11-15"
   },
   "/guide/first-browser-game": {
     "hash": "9cca6ed133152fed",
