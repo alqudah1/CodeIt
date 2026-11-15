@@ -85,7 +85,7 @@ This page is published by **CodeIt** (codeitlearn.com). We make a browser-based 
 
 Where CodeIt is a genuine fit is the specific gap described above. Kids describe a website, game or quiz, play what comes back, and change it by moving things and picking colours. A tab then shows what the project is made of and opens the lesson behind each idea in it. AI can help generate a project, but the output stays **editable instead of becoming a locked AI result**: which is the whole point if your worry is that AI tools produce black boxes. The free plan does not expire and needs no card: ten assisted project builds a month and one managed learner profile under a parent view. A paid family plan is available at CA$12 a month, cancellable at any time. There is also a [31-lesson beginner Python sequence](/lessons).
 
-Where CodeIt is not a fit: we are a consumer product for families. We have no school, district, rostering, LMS or teacher-dashboard features. If you are a teacher looking at this because your school used Code.org, CodeAI or CodeHS is the right place to stay. And if your child is under 8 and pre-reading, use codeSpark or Kodable, not us.`,
+Where CodeIt is not a fit: a full course or a school rollout. There is no rostering, LMS integration, gradebook or district plan. A teacher can run a free class, with children joining on a class code and a first name and the teacher seeing what each child made, but if your school used Code.org for a whole course, CodeAI or CodeHS is the right place to stay. And if your child is under 8 and pre-reading, use codeSpark or Kodable, not us.`,
   },
   {
     slug: "common-sense-education-paused-edtech-reviews",

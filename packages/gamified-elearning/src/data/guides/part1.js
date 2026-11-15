@@ -232,7 +232,7 @@ Two things we will not blur:
 - **Our structured lesson sequence is Python, not web.** It is 31 beginner lessons, [starting with print](/lesson/1), then variables, strings, conditionals, loops, lists and functions. The HTML/CSS/JS side is learn-by-editing-your-own-project, not a graded course. If you want a sequenced web curriculum with lessons and checkpoints, we do not have one.
 - **Under-13 managed profiles cannot publish publicly.** Sharing happens inside the parent-managed account. If your child's main motivation is a public link, wait until 13 or choose something else.
 
-**CodeIt is not for you if:** your kid wants Minecraft or Roblox mods (go to Tynker), wants to keep making games above all (go to CodeCombat), cannot read yet (go to codeSpark), wants deep Python (go to Codecademy at 16+, or CodeCombat now), needs offline access, or you are buying for a school, we have no school, district, rostering or teacher-dashboard product.
+**CodeIt is not for you if:** your kid wants Minecraft or Roblox mods (go to Tynker), wants to keep making games above all (go to CodeCombat), cannot read yet (go to codeSpark), wants deep Python (go to Codecademy at 16+, or CodeCombat now), needs offline access, or you are buying for a whole school or district: there is no rostering, gradebook or district plan. A single teacher can run a free class, with children joining on a class code and a first name.
 
 ---
 

@@ -167,7 +167,7 @@ test('nothing says CodeIt cannot run a class while it can', () => {
   const source = fs.readFileSync(classRoutes, 'utf8');
   assert.match(source, /router\.post\('\/:code\/join'/, 'the class join route moved; re-check this test');
 
-  const stale = /no teacher dashboards?|not a schools product|no class management|no bulk account creation|not (currently )?a fit for a school|no school or district features|and schools \|/i;
+  const stale = /no teacher[- ]dashboards?|teacher-dashboard (features|product)|no school, district|consumer product for families|not a schools product|no class management|no bulk account creation|not (currently )?a fit for a school|no school or district features|and schools \|/i;
   const files = [path.join(__dirname, 'generate-static-seo.js')];
   const dataDir = path.join(__dirname, '..', 'src', 'data');
   files.push(...contentFiles(dataDir));
