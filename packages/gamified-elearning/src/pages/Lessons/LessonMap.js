@@ -12,6 +12,8 @@ import '../../ds/night.css';
 import './LessonMap.css';
 import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
 import { useCharacterDisplay } from '../../context/CharacterContext';
+import { bankGuestLessons, guestLessonsDone } from '../../utils/guestLessons';
+import { trackLessonCompletion } from '../../utils/progressTracker';
 
 // ── A map, not a list ────────────────────────────────────────────────────────
 //
@@ -199,11 +201,18 @@ const LessonMap = () => {
 
   useEffect(() => {
     if (!token) {
+      // A guest's finished lessons are on this device and nowhere else. The
+      // map used to say "0 / 31 done" to a child who did three yesterday and
+      // stand them back on Lesson 1.
+      setCompletedIds(guestLessonsDone());
       setLoading(false);
       return;
     }
     const load = async () => {
       try {
+        // Lessons finished here before signing in are handed to the account
+        // first, so the progress read next already has them.
+        await bankGuestLessons(trackLessonCompletion).catch(() => {});
         const [lRes, pRes] = await Promise.all([
           fetch(ENDPOINTS.lessons.list, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(ENDPOINTS.lessons.progress, { headers: { Authorization: `Bearer ${token}` } }),
@@ -315,6 +324,11 @@ const LessonMap = () => {
             <span className="lm-stat-chip">
               {loading ? '…' : `${completedIds.length} / ${lessons.length} done`}
             </span>
+            {!token && completedIds.length > 0 && (
+              <span className="lm-kept">
+                Kept on this device. <Link to="/register" state={{ from: '/lessons' }}>A free account</Link> keeps them for good.
+              </span>
+            )}
           </div>
           {/* The whole journey in one row, like a level select: four lands
               and the castle, joined by a track, with where you are. */}

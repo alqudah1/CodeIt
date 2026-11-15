@@ -23,6 +23,8 @@ import Evidence from "./Evidence";
 import TryPython from "./TryPython";
 import AvatarInGame from "./AvatarInGame";
 import { listProjects, migrateLegacyDraft } from "../../utils/projectShelf";
+import { nextGuestLesson } from "../../utils/guestLessons";
+import { STAGES } from "../Lessons/lessonStages";
 import "../../ds/ds.css";
 import "./Home.css";
 import "./HomeStudio.css";
@@ -55,6 +57,11 @@ export default function Home() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const ideaInputRef = useRef(null);
+  // A guest who finished lessons on this device is not starting their first
+  // one. Read after the page is drawn, so what a crawler and a new visitor
+  // get is unchanged.
+  const [carryOn, setCarryOn] = useState(null);
+  useEffect(() => { setCarryOn(nextGuestLesson(STAGES[STAGES.length - 1].to)); }, []);
   const [heroIdea, setHeroIdea] = useState("");
   const kidIdeaRef = useRef(null);
   // A child who arrived by playing a friend's game (PublicProject marks this
@@ -246,12 +253,12 @@ export default function Home() {
                 )}
                 {!latestProject && (
                   <Link
-                    to="/lesson/1"
+                    to={carryOn ? `/lesson/${carryOn}` : "/lesson/1"}
                     className="studio-button studio-button--primary"
-                    data-cta="hero-lesson-one"
-                    onClick={() => trackEvent("landing_cta_click", "hero-lesson-one")}
+                    data-cta={carryOn ? "hero-carry-on" : "hero-lesson-one"}
+                    onClick={() => trackEvent("landing_cta_click", carryOn ? "hero-carry-on" : "hero-lesson-one")}
                   >
-                    Start your first Python lesson <span aria-hidden="true">→</span>
+                    {carryOn ? `Carry on with Lesson ${carryOn}` : "Start your first Python lesson"} <span aria-hidden="true">→</span>
                   </Link>
                 )}
                 <Link

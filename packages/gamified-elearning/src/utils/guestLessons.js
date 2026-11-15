@@ -69,4 +69,16 @@ export function bankGuestLessons(complete, storage = window.localStorage) {
   return banking;
 }
 
+/**
+ * The lesson a guest should do next: the first one they have not finished.
+ * Nothing if they have finished none (a new visitor is not "carrying on"),
+ * and nothing if they have finished all of them.
+ */
+export function nextGuestLesson(total, storage = window.localStorage) {
+  const done = guestLessonsDone(storage);
+  if (!done.length) return null;
+  for (let id = 1; id <= total; id += 1) if (!done.includes(id)) return id;
+  return null;
+}
+
 export const GUEST_LESSONS_KEY = KEY;

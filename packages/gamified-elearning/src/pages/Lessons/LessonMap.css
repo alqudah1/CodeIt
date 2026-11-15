@@ -82,6 +82,19 @@
   color: var(--ink, #35220E);
 }
 
+/* Under the count, for a guest with lessons done: where they are kept. Ink,
+   not orange: this is a sentence to read. */
+.lm-kept {
+  flex-basis: 100%;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink, #35220E);
+}
+.lm-kept a { color: inherit; font-weight: 800; text-decoration: underline; text-underline-offset: 2px; }
+.lm-page--night .lm-kept { color: var(--n-text); }
+
 /* ── Toast ─────────────────────────────────────────── */
 .lm-toast {
   position: fixed;

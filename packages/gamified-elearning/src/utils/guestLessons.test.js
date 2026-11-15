@@ -1,5 +1,5 @@
 // Lessons a guest finished go with them when they make an account.
-import { GUEST_LESSONS_KEY, bankGuestLessons, guestLessonsDone, rememberGuestLesson } from './guestLessons';
+import { GUEST_LESSONS_KEY, bankGuestLessons, guestLessonsDone, nextGuestLesson, rememberGuestLesson } from './guestLessons';
 
 beforeEach(() => localStorage.clear());
 
@@ -41,4 +41,19 @@ test('two pages asking at the same moment send each lesson once', async () => {
   expect(complete).toHaveBeenCalledTimes(1);
   expect(a).toEqual([4]);
   expect(b).toEqual([4]);
+});
+
+test('the next lesson for a guest is the first one not finished', () => {
+  // A new visitor is not carrying on with anything.
+  expect(nextGuestLesson(31)).toBe(null);
+  rememberGuestLesson(1); rememberGuestLesson(2);
+  expect(nextGuestLesson(31)).toBe(3);
+  // One done out of order does not move them past the gap.
+  rememberGuestLesson(5);
+  expect(nextGuestLesson(31)).toBe(3);
+});
+
+test('a guest who has finished every lesson has no next one', () => {
+  for (let id = 1; id <= 4; id += 1) rememberGuestLesson(id);
+  expect(nextGuestLesson(4)).toBe(null);
 });
