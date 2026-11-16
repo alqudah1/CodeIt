@@ -131,3 +131,18 @@ test('an indexable page does not spend its title on the brand name alone', () =>
     'these titles say nothing a search for the brand would not already find:\n  ' +
       offenders.join('\n  '));
 });
+
+test('no title or description gives CodeIt an age range other than 8 to 14', () => {
+  // The /about title said "A Toronto Coding Studio for Ages 5–18" until
+  // 15 November 2026, a week after every other page stopped saying so. A
+  // title is the line an assistant quotes when asked who a product is for,
+  // and the body guards never read it.
+  const found = [];
+  for (const [route, meta] of Object.entries(META)) {
+    for (const text of [meta.title, meta.description]) {
+      const m = /ages?\s+(\d+)\s*(?:to|-|–)\s*(\d+)/i.exec(text || '');
+      if (m && !(m[1] === '8' && m[2] === '14')) found.push(`${route}: ${m[0]}`);
+    }
+  }
+  assert.deepEqual(found, [], 'a title or description states an age range that is not 8 to 14');
+});

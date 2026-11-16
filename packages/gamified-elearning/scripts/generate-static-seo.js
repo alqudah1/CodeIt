@@ -8,6 +8,7 @@ const {
   loadPageMeta,
   loadPricing,
   loadSchoolFacts,
+  loadWebsiteBuilderPage,
   loadBlogPosts,
   loadLessons,
   loadGuidePages,
@@ -209,6 +210,11 @@ function writeContentDates(targetPath = CONTENT_DATES_PATH) {
 // the pricing page reads. This script used to keep its own copy, which is how
 // the site ended up stating the price four different ways.
 const PRICING = loadPricing();
+// Same words as the React route, from src/data/websiteBuilderPage.js.
+const WEBSITE_BUILDER = loadWebsiteBuilderPage()({
+  pricePerInterval: PRICING.PRICE_PER_INTERVAL,
+  freeBuilds: PRICING.FREE_MONTHLY_AI_BUILDS,
+});
 
 // One source of truth, shared with the /faq page and the parent guide.
 const FAQS = loadFaqs();
@@ -325,11 +331,11 @@ const BLOG_POSTS = [
 const BASE_PAGES = [
   {
     route: '/ai-website-builder-for-kids',
-    eyebrow: `Creative coding for ${AGES}`,
-    h1: 'An AI website builder for kids that teaches the code.',
-    intro: 'CodeIt helps a young creator turn an idea into a website, game, or quiz, then change the design, inspect the real code, and understand how the project works.',
-    detail: 'The first version stays editable. Learners can change the content, colors, layout, and behavior, compare the preview with the HTML, CSS, and JavaScript, save their work, and keep improving it.',
+    eyebrow: WEBSITE_BUILDER.eyebrow,
+    h1: WEBSITE_BUILDER.h1,
+    intro: WEBSITE_BUILDER.intro,
     type: 'WebPage',
+    faqs: WEBSITE_BUILDER.faqs,
   },
   {
     route: '/build',
@@ -959,28 +965,7 @@ const IDENTITY_PAGES = [
 ];
 
 const SECTIONS_BY_ROUTE = {
-  '/ai-website-builder-for-kids': [
-    {
-      heading: 'How it works',
-      paragraphs: [
-        'A learner describes what they want — a fan page, a portfolio, a quiz, a small game — and CodeIt builds a working first version in the browser. Nothing is installed.',
-        'That first version is a starting point, not a finished answer. The learner can change the content, colours, layout, and behaviour, compare the live preview with the HTML, CSS, and JavaScript behind it, save versions, and keep improving it.',
-      ],
-    },
-    {
-      heading: 'Why the project stays editable',
-      paragraphs: [
-        'Most AI tools hand back a finished result. The problem for a learner is that the interesting part — finding out why something works, breaking it, and fixing it — never happens.',
-        'CodeIt keeps the generated project open. Change one line, run it, and see what moved. That loop is where the understanding comes from.',
-      ],
-    },
-    {
-      heading: 'What a learner can see',
-      paragraphs: [
-        'The preview and the code sit side by side. A learner can select an element on the page and find the code that produced it, which makes real HTML, CSS, and JavaScript approachable well before a text-only course would be.',
-      ],
-    },
-  ],
+  '/ai-website-builder-for-kids': WEBSITE_BUILDER.sections,
   '/build': [
     {
       heading: 'Two ways in',

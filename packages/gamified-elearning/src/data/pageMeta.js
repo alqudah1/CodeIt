@@ -40,12 +40,12 @@ const PAGE_META = {
     // sixty characters on a page an assistant reads when it is asked who makes
     // this and where, and said nothing but the brand name. page-meta.test.js
     // now refuses a title that is the brand plus one word.
-    title: 'About CodeIt: A Toronto Coding Studio for Ages 5\u201318',
+    title: 'About CodeIt: A Toronto Coding Studio for Ages 8 to 14',
     description: 'CodeIt is a browser-based coding studio built for ages 8 to 14, in Toronto. Learners describe a website, game or quiz, change it by moving things and picking colours, then see the code behind it.',
   },
   '/ai-website-builder-for-kids': {
-    title: 'AI Website Builder for Kids: Build & Learn the Code | CodeIt',
-    description: 'Kids can turn an idea into a website, game, or quiz, change it by moving things and picking colours, then see the HTML, CSS, and JavaScript behind it.',
+    title: 'Free AI Website Builder for Kids That Shows the Code | CodeIt',
+    description: 'Kids describe a website, game or quiz, get a working version, make it their own, and see the HTML, CSS and JavaScript behind it. Free plan, no card. Built for ages 8 to 14.',
   },
   '/blog': {
     title: 'Coding Guides for Kids, Parents & Beginners | CodeIt',

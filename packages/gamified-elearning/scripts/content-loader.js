@@ -106,6 +106,15 @@ function loadSchoolFacts() {
   return build;
 }
 
+/** /ai-website-builder-for-kids, as a function of the values that change. */
+function loadWebsiteBuilderPage() {
+  const build = loadEsmDefault(path.join(SRC, 'data/websiteBuilderPage.js'));
+  if (typeof build !== 'function') {
+    throw new Error('content-loader: websiteBuilderPage.js did not export a function');
+  }
+  return build;
+}
+
 /** All blog posts, in file order. */
 function loadBlogPosts() {
   const posts = loadEsmDefault(path.join(SRC, 'data/blogPosts.js'));
@@ -235,6 +244,7 @@ module.exports = {
   loadStarterGames,
   loadPressFacts,
   loadSchoolFacts,
+  loadWebsiteBuilderPage,
   loadPageMeta,
   loadPricing,
   loadBlogPosts,
