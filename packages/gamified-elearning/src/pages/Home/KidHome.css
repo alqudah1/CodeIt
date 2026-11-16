@@ -222,8 +222,9 @@ a.kh__badge-disc:hover { transform: translateY(-3px); color: var(--n-text); bord
 .kh__badge--lesson .kh__badge-disc { color: #4FC3FF; }
 .kh__badge.is-done .kh__badge-disc { background: linear-gradient(160deg, #2EE6A6, #17C08B); color: #06251A; border-color: rgba(255, 255, 255, .35); box-shadow: 0 0 0 4px rgba(46, 230, 166, .18), 0 0 28px rgba(46, 230, 166, .45); animation: kh-pop .5s var(--ci-spring) both; }
 .kh__badge-tick { position: absolute; right: -4px; top: -4px; width: 24px; height: 24px; border-radius: 50%; background: #FFC93C; color: #2A1500; font: 800 13px var(--ci-body); font-style: normal; display: grid; place-items: center; border: 2px solid var(--n-bg); }
-.kh__badge-label { font: 800 12px var(--ci-body); color: var(--n-text); line-height: 1.2; }
-.kh__badge-xp { font: 800 11px var(--ci-display); color: var(--n-sun); }
+/* 13px, the floor the site keeps for words a child reads. These were 12 and 11. */
+.kh__badge-label { font: 800 13px var(--ci-body); color: var(--n-text); line-height: 1.2; }
+.kh__badge-xp { font: 800 13px var(--ci-display); color: var(--n-sun); }
 .kh__badge-xp.is-done { color: var(--n-mint); }
 .kh__badge--game .kh__badge-xp:not(.is-done) { color: var(--n-muted); }
 

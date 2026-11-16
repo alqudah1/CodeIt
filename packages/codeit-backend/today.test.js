@@ -1,7 +1,9 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { streakFrom, questFor, levelFor, QUESTS, LEVELS } = require('./today');
+const fs = require('node:fs');
+const path = require('node:path');
+const { streakFrom, streakMoments, nextLessonFrom, questFor, levelFor, QUESTS, LEVELS } = require('./today');
 
 // 2026-10-21 is a Wednesday.
 const WED = '2026-10-21T15:00:00Z';
@@ -55,4 +57,45 @@ test('the today route is mounted and asks for nothing that does not exist', () =
   const route = require('fs').readFileSync(`${__dirname}/routes/today.js`, 'utf8');
   assert.match(route, /FROM ai_projects/);
   assert.doesNotMatch(route, /CREATE TABLE|ALTER TABLE/i);
+});
+
+// ── "Do one and today counts" ───────────────────────────────────────────────
+//
+// Home offers three things a day: a game, the Python quest, a lesson. Until
+// 16 November 2026 the lesson was ticked and the streak did not move.
+
+test('a finished lesson keeps the streak, like a game or a Python quest', () => {
+  const lessons = [{ completed_at: '2026-10-21T09:00:00Z' }];
+  assert.deepEqual(streakFrom(streakMoments({ lessons }), WED), { streak: 1, builtToday: true, lastDay: '2026-10-21' });
+});
+
+test('a game on Monday, a quest on Tuesday and a lesson on Wednesday are three days in a row', () => {
+  const moments = streakMoments({
+    made: [{ created_at: '2026-10-19T10:00:00Z' }],
+    questDays: ['2026-10-20'],
+    lessons: [{ completed_at: new Date('2026-10-21T09:00:00Z') }],
+  });
+  assert.equal(streakFrom(moments, WED).streak, 3);
+});
+
+test('a lesson row with no time on it is not a day in 1970', () => {
+  const moments = streakMoments({ lessons: [{ completed_at: null }, { completed_at: undefined }] });
+  assert.deepEqual(moments, []);
+  assert.deepEqual(streakFrom(moments, WED), { streak: 0, builtToday: false, lastDay: null });
+});
+
+test('both places that work out a streak count lessons', () => {
+  const route = fs.readFileSync(path.join(__dirname, 'routes', 'today.js'), 'utf8');
+  assert.equal((route.match(/streakFrom\(streakMoments\(\{ made, questDays, lessons: await lessonMoments\(userId\) \}\)\)/g) || []).length, 2);
+  assert.match(route, /SELECT completed_at FROM Student_Lesson_Progress WHERE user_id = \? AND completed_at IS NOT NULL/);
+});
+
+test('the next lesson is the first one not finished, with its real title and XP', () => {
+  const course = [{ id: 1, title: 'Hello Python!', xp: 50 }, { id: 2, title: 'Variables', xp: 50 }, { id: 3, title: 'Strings', xp: 60 }];
+  assert.deepEqual(nextLessonFrom(course, []), { id: 1, title: 'Hello Python!', xp: 50 });
+  assert.deepEqual(nextLessonFrom(course, [1, '2']), { id: 3, title: 'Strings', xp: 60 });
+  // One done out of order does not move a child past the gap.
+  assert.deepEqual(nextLessonFrom(course, [1, 3]), { id: 2, title: 'Variables', xp: 50 });
+  // The whole course done: nothing is next.
+  assert.equal(nextLessonFrom(course, [1, 2, 3]), null);
 });

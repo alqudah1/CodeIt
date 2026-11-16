@@ -28,6 +28,8 @@ import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
 import { listProjects as listShelf, migrateLegacyDraft } from '../../utils/projectShelf';
 import { LEVELS, levelFor, questFor, streakFrom } from './today';
+import { guestLessonsDone, nextGuestLesson } from '../../utils/guestLessons';
+import { STAGES } from '../Lessons/lessonStages';
 import PythonQuest from './PythonQuest';
 import ProgressPanel, { levelPercent } from './ProgressPanel';
 import { minutesToday } from '../../utils/minutesToday';
@@ -111,15 +113,33 @@ export default function KidHome() {
     : (today?.games || []).map((g) => ({ id: g.id, title: g.title, code: codes[g.id], plays: g.plays, href: `/builder?project=${g.id}` }));
   const firstName = (user?.name || '').split(' ')[0];
   const weekday = new Date().toLocaleDateString(undefined, { weekday: 'long' });
-  const done = streakInfo.builtToday;
+  // The build card is about today's game. The streak is about doing any one
+  // of the three, so a lesson or the Python quest must not turn this card to
+  // "Done for today" with no game made.
+  const done = guest ? streakInfo.builtToday : (today?.gameToday ?? streakInfo.builtToday);
   const { character } = useCharacterDisplay();
   // Today's three goals, each its own fact from the server. A guest's game
   // goal is the shelf's; the other two need an account to be known.
   const pyDone = Boolean(today?.pythonQuest?.done);
+  // The lesson goal names the lesson and opens it. It used to say "Finish a
+  // lesson on the map", go to the map, and promise 50 XP whatever the lesson
+  // paid. The server says which lesson is next for an account and what every
+  // lesson is worth; a guest's finished lessons are on this device.
+  const lastLesson = STAGES[STAGES.length - 1].to;
+  const guestNext = guest ? (guestLessonsDone().length ? nextGuestLesson(lastLesson) : 1) : null;
+  const nextId = guest ? guestNext : (today?.nextLesson?.id || null);
+  const nextXp = guest ? (today?.lessonXp?.[(nextId || 0) - 1] || null) : (today?.nextLesson?.xp || null);
+  // Ticked, it says what was done. Naming the next lesson beside a tick
+  // would say a child had finished one they have not opened.
+  const lessonGoal = today?.lessonToday
+    ? { id: 'lesson', label: 'A lesson finished today', done: true, xp: null, to: '/lessons' }
+    : nextId
+    ? { id: 'lesson', label: `Finish Lesson ${nextId}`, say: today?.nextLesson?.title ? `Finish Lesson ${nextId}, ${today.nextLesson.title}` : `Finish Lesson ${nextId}`, done: Boolean(today?.lessonToday), xp: nextXp, to: `/lesson/${nextId}` }
+    : { id: 'lesson', label: 'Finish a lesson on the map', done: Boolean(today?.lessonToday), xp: null, to: '/lessons' };
   const goals = [
     { id: 'game', label: "Build today's game", done: guest ? streakInfo.builtToday : Boolean(today?.gameToday), xp: null, to: done ? '/build' : `/build?prompt=${encodeURIComponent(quest.prompt)}` },
     { id: 'python', label: "Today's Python quest", done: pyDone, xp: today?.pythonQuest?.xp || 15, to: '#today-python' },
-    { id: 'lesson', label: 'Finish a lesson on the map', done: Boolean(today?.lessonToday), xp: 50, to: '/lessons' },
+    lessonGoal,
   ];
   const goalsDone = goals.filter((g) => g.done).length;
   // Today's build, drawn the way the engine will build it: its real sky and
@@ -186,7 +206,7 @@ export default function KidHome() {
                   {g.done ? (
                     <span className="kh__badge-disc" aria-hidden="true"><GoalIcon id={g.id} /><i className="kh__badge-tick">✓</i></span>
                   ) : (
-                    <Link className="kh__badge-disc" to={g.to} aria-label={g.label}><GoalIcon id={g.id} /></Link>
+                    <Link className="kh__badge-disc" to={g.to} aria-label={g.say || g.label}><GoalIcon id={g.id} /></Link>
                   )}
                   <span className="kh__badge-label">{g.label}</span>
                   <span className={`kh__badge-xp${g.done ? ' is-done' : ''}`}>{g.done ? 'Done' : g.xp ? `+${g.xp} XP` : 'Streak'}</span>
@@ -217,7 +237,7 @@ export default function KidHome() {
             level={level}
             streak={streakInfo.streak}
             minutes={minutesToday()}
-            lessonsDone={guest ? 0 : (today?.lessonsDone || 0)}
+            lessonsDone={guest ? guestLessonsDone().length : (today?.lessonsDone || 0)}
             guest={guest}
           />
           {games.length < 3 && <ExampleCards className="kh__examples" from={0} count={4} title={games.length ? 'More to try' : 'Ideas to build'} note="Examples. Tap one and it is playing in two seconds." />}

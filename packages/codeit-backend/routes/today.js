@@ -14,7 +14,7 @@ const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
 const pool = require('../db');
 const { totalXpFor } = require('../xpTotals');
-const { streakFrom, questFor, levelFor, LEVELS } = require('../today');
+const { streakFrom, streakMoments, nextLessonFrom, questFor, levelFor, LEVELS } = require('../today');
 const { pythonQuestFor, checkPythonQuest, dayNumber } = require('../pythonQuests');
 const { recordMilestoneAndNotify } = require('../progressNotifications');
 
@@ -33,6 +33,27 @@ async function pythonQuestDays(userId) {
     [userId]
   );
   return rows.map((r) => r.event_key);
+}
+
+/** The days a lesson was finished. Each one keeps the streak, like a game or a quest. */
+async function lessonMoments(userId) {
+  const [rows] = await pool.query(
+    'SELECT completed_at FROM Student_Lesson_Progress WHERE user_id = ? AND completed_at IS NOT NULL ORDER BY completed_at DESC LIMIT 400',
+    [userId]
+  );
+  return rows;
+}
+
+// The course, in order, with what each lesson pays. It changes when a lesson
+// is added, so it is read at most once every ten minutes rather than on every
+// visit to Home.
+const COURSE_FRESH_MS = 10 * 60 * 1000;
+let course = { at: 0, lessons: [] };
+async function courseLessons() {
+  if (course.lessons.length && Date.now() - course.at < COURSE_FRESH_MS) return course.lessons;
+  const [rows] = await pool.query('SELECT id, title, xp FROM lessons ORDER BY id');
+  course = { at: Date.now(), lessons: rows };
+  return rows;
 }
 
 function requireAuth(req, res, next) {
@@ -54,8 +75,13 @@ function optionalAuth(req, _res, next) {
 router.get('/', optionalAuth, async (req, res) => {
   const quest = questFor();
   const pythonQuest = pythonQuestFor();
+  // What each lesson pays, in order, so Home can name a child's next lesson
+  // with its real XP. A guest's finished lessons are only on their device, so
+  // the page picks which one; the server only says what it is worth.
+  const lessons = await courseLessons().catch(() => []);
+  const lessonXp = lessons.map((lesson) => Number(lesson.xp) || 0);
   if (!req.user?.user_id) {
-    return res.json({ signedIn: false, quest, pythonQuest: { ...pythonQuest, done: false }, levels: LEVELS });
+    return res.json({ signedIn: false, quest, pythonQuest: { ...pythonQuest, done: false }, levels: LEVELS, lessonXp });
   }
   const userId = req.user.user_id;
   try {
@@ -74,11 +100,12 @@ router.get('/', optionalAuth, async (req, res) => {
       [userId]
     );
     const totalXP = await totalXpFor(pool, userId);
-    const [[lessonsRow]] = await pool.query('SELECT COUNT(DISTINCT lesson_id) AS done FROM Student_Lesson_Progress WHERE user_id = ?', [userId]);
-    // A day with a Python quest done counts for the streak like a day with a
-    // game made: the streak is "did something today", not "built a game".
+    const [doneRows] = await pool.query('SELECT DISTINCT lesson_id FROM Student_Lesson_Progress WHERE user_id = ?', [userId]);
+    // A day with a Python quest done or a lesson finished counts for the
+    // streak like a day with a game made: the streak is "did something
+    // today", not "built a game". See streakMoments in today.js.
     const questDays = await pythonQuestDays(userId);
-    const { streak, builtToday } = streakFrom([...made.map((row) => row.created_at), ...questDays.map((d) => `${d}T12:00:00Z`)]);
+    const { streak, builtToday } = streakFrom(streakMoments({ made, questDays, lessons: await lessonMoments(userId) }));
     // The three things a day can hold, each on its own, for the goals strip:
     // a game made, the Python quest, a lesson finished. builtToday stays
     // "did something today", which is what the streak and the build card use.
@@ -96,7 +123,10 @@ router.get('/', optionalAuth, async (req, res) => {
       gameToday,
       lessonToday: Number(lessonTodayRow?.n) > 0,
       level: levelFor(totalXP),
-      lessonsDone: Number(lessonsRow?.done) || 0,
+      lessonsDone: doneRows.length,
+      // The first lesson not finished, so Home can open it in one press.
+      nextLesson: nextLessonFrom(lessons, doneRows.map((row) => row.lesson_id)),
+      lessonXp,
       levels: LEVELS,
       games: games.map((g) => ({ id: g.id, title: g.title, type: g.project_type, publicId: g.is_public ? g.public_id : null, plays: Number(g.view_count) || 0, createdAt: g.created_at })),
       plays: Number(plays?.plays) || 0,
@@ -140,7 +170,7 @@ router.post('/python-quest', requireAuth, async (req, res) => {
     }
     const questDays = await pythonQuestDays(userId);
     const [made] = await pool.query('SELECT created_at FROM ai_projects WHERE user_id = ? ORDER BY created_at DESC LIMIT 400', [userId]);
-    const { streak } = streakFrom([...made.map((row) => row.created_at), ...questDays.map((d) => `${d}T12:00:00Z`)]);
+    const { streak } = streakFrom(streakMoments({ made, questDays, lessons: await lessonMoments(userId) }));
     const totalXP = await totalXpFor(pool, userId);
     return res.json({ ok: true, alreadyDone: !milestone.recorded, xpEarned, streak, level: levelFor(totalXP) });
   } catch (err) {

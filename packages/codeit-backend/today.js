@@ -92,6 +92,40 @@ function questFor(now = Date.now()) {
   return { ...QUESTS[index], day: key };
 }
 
+/**
+ * Every moment that keeps a streak going: a game made, a Python quest done, a
+ * lesson finished.
+ *
+ * Until 16 November 2026 a finished lesson was left out. The home screen
+ * offers three things, says "Do one and today counts", and after a lesson it
+ * said "Today counts." with the lesson ticked, while the streak beside it
+ * stayed at 0 and was gone the next morning. A child who came every day for
+ * the Python course, which is the course, never had a streak at all.
+ *
+ * @param {{ made?: Array<{created_at: any}>, questDays?: string[], lessons?: Array<{completed_at: any}> }} parts
+ * @returns {Array<string|number|Date>} timestamps for streakFrom
+ */
+function streakMoments({ made = [], questDays = [], lessons = [] } = {}) {
+  return [
+    ...made.map((row) => row.created_at),
+    ...questDays.map((day) => `${day}T12:00:00Z`),
+    ...lessons.map((row) => row.completed_at),
+  ].filter((moment) => moment !== null && moment !== undefined && moment !== '');
+}
+
+/**
+ * The first lesson not finished yet, with its title and what it pays, or null
+ * when every lesson is done.
+ *
+ * @param {Array<{id: number, title: string, xp: number}>} lessons  the course, in order
+ * @param {Array<number|string>} doneIds
+ */
+function nextLessonFrom(lessons, doneIds) {
+  const done = new Set((doneIds || []).map(Number));
+  const next = (lessons || []).find((lesson) => !done.has(Number(lesson.id)));
+  return next ? { id: Number(next.id), title: String(next.title || ''), xp: Number(next.xp) || 0 } : null;
+}
+
 /** Levels: a cut of total XP. The titles are the ones a child sees.
  *
  * The same table as src/data/unlocks.js on the frontend, which the header,
@@ -120,4 +154,4 @@ function levelFor(totalXp) {
   return { n: current.n, title: current.title, xp, next: next ? next.at : null, toNext: next ? next.at - xp : 0 };
 }
 
-module.exports = { dayKey, streakFrom, questFor, levelFor, QUESTS, LEVELS, isWeekend, previousWorkingDay };
+module.exports = { dayKey, streakFrom, streakMoments, nextLessonFrom, questFor, levelFor, QUESTS, LEVELS, isWeekend, previousWorkingDay };
