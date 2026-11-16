@@ -20,7 +20,7 @@
 .ar__who { flex: 1; min-width: 0; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ar__who b { font-weight: 800; }
 .ar__plays { font: 800 18px var(--ci-display); line-height: 1; text-align: right; flex: none; }
-.ar__plays small { display: block; font: 700 10px var(--ci-body); color: var(--ci-ink-soft); letter-spacing: .08em; text-transform: uppercase; }
+.ar__plays small { display: block; font: 700 13px var(--ci-body); color: var(--ci-ink-soft); letter-spacing: .04em; text-transform: uppercase; }
 .ar__join { display: block; margin-top: 16px; padding: 16px 18px; text-decoration: none; color: inherit; }
 .ar__join b { display: block; font: 800 18px var(--ci-display); }
 .ar__join small { font-size: 13px; }

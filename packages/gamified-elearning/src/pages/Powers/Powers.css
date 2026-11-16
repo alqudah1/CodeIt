@@ -10,10 +10,10 @@
 .pw__blk.is-next { min-height: 128px; }
 a.pw__blk:hover { transform: translateY(-2px); }
 a.pw__blk:active { transform: scale(.98); }
-.pw__n { font: 800 12px var(--ci-body); letter-spacing: .12em; }
+.pw__n { font: 800 13px var(--ci-body); letter-spacing: .12em; }
 .pw__name { font: 800 22px var(--ci-display); line-height: 1.05; }
 .pw__does { font-size: 13px; opacity: .8; }
-.pw__go { position: absolute; right: 14px; bottom: 12px; background: var(--ci-ink); color: #fff; border-radius: 999px; padding: 6px 12px; font: 800 12px var(--ci-body); }
+.pw__go { position: absolute; right: 14px; bottom: 12px; background: var(--ci-ink); color: #fff; border-radius: 999px; padding: 6px 12px; font: 800 13px var(--ci-body); }
 .pw__tick { position: absolute; right: 14px; top: 12px; font: 800 18px var(--ci-display); }
 .pw__cta { margin-top: 18px; }
 

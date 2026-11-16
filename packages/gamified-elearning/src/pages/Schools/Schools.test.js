@@ -130,7 +130,7 @@ describe('the schools page', () => {
     const sweep = read(checks, 'a11y-sweep.js');
     expect((sweep.match(/\{ name: '[^']+', url: '[^']+' \}/g) || []).length).toBe(9);     // "the nine screens it covers"
     const readable = read(checks, 'readable-check.js');
-    expect((readable.match(/\{ name: '[^']+', url: '[^']+' \}/g) || []).length).toBe(8);  // "eight screens"
+    expect((readable.match(/\{ name: '[^']+', url: '[^']+' \}/g) || []).length).toBe(16);  // "sixteen screens"
     expect((readable.match(/\{ name: '(phone|tablet|laptop)', width/g) || []).length).toBe(3);
     // "One journey ... with taps alone": the studio, on a phone, with no keyboard event sent.
     expect(read(checks, 'kid-alone.js')).toContain('No keyboard');

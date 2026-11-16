@@ -18,7 +18,7 @@
 @keyframes kh-flick { from { transform: scale(1) rotate(-3deg); } to { transform: scale(1.12) rotate(3deg); } }
 .kh__track { height: 6px; border-radius: 3px; background: rgba(0, 0, 0, .14); overflow: hidden; margin-top: 14px; }
 .kh__track i { display: block; height: 100%; background: #fff; border-radius: 3px; transition: width .8s cubic-bezier(.3, 1, .4, 1); }
-.kh__plays { font: 800 11px var(--ci-body); letter-spacing: .12em; text-transform: uppercase; color: var(--ci-ink-soft); }
+.kh__plays { font: 800 13px var(--ci-body); letter-spacing: .06em; text-transform: uppercase; color: var(--ci-ink-soft); }
 .kh__shelf { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 /* A game on the shelf: the game itself, live, in a little screen, and its
    name on a solid card below it, so the game's own text and ours never
@@ -32,9 +32,9 @@
 .kh__tile:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--ci-ink); }
 .kh__screen { position: relative; aspect-ratio: 1; overflow: hidden; background: #1B1B2F; }
 .kh__screen iframe { position: absolute; left: 0; top: 0; width: 200%; height: 200%; transform: scale(.5); transform-origin: 0 0; border: 0; pointer-events: none; }
-.kh__cap { display: flex; flex-direction: column; gap: 1px; padding: 8px 10px 9px; border-top: 2.5px solid var(--ci-ink); font: 800 12px var(--ci-body); line-height: 1.2; color: var(--ci-ink); background: var(--ci-paper); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.kh__cap small { font-size: 10px; font-weight: 800; color: var(--ci-ink-soft); }
-.kh__tile--new { background: #FFF6E6; border-style: dashed; box-shadow: none; display: grid; place-items: center; align-content: center; color: var(--ci-orange-text); font: 800 11px var(--ci-body); text-align: center; aspect-ratio: auto; }
+.kh__cap { display: flex; flex-direction: column; gap: 1px; padding: 8px 10px 9px; border-top: 2.5px solid var(--ci-ink); font: 800 13px var(--ci-body); line-height: 1.2; color: var(--ci-ink); background: var(--ci-paper); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kh__cap small { font-size: 13px; font-weight: 800; color: var(--ci-ink-soft); }
+.kh__tile--new { background: #FFF6E6; border-style: dashed; box-shadow: none; display: grid; place-items: center; align-content: center; color: var(--ci-orange-text); font: 800 13px var(--ci-body); text-align: center; aspect-ratio: auto; }
 .kh__tile--new:hover, .kh__tile--new:active { transform: none; box-shadow: none; }
 .kh__tile--new span { display: block; font: 800 28px var(--ci-display); line-height: 1; }
 .kh__row-link { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--ci-r); background: var(--ci-paper); border: var(--ci-line); box-shadow: var(--ci-base-sm); margin-top: 14px; text-decoration: none; color: var(--ci-ink); min-height: 72px; }
@@ -152,7 +152,7 @@
 .kh__goal-label { flex: 1 1 auto; font: 800 15px var(--ci-body); color: var(--n-text, var(--ci-ink)); text-decoration: none; }
 a.kh__goal-label:hover { color: #FFC93C; }
 .kh__goal.is-done .kh__goal-label { color: var(--n-muted, var(--ci-ink-soft)); text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, .35); }
-.kh__goal-xp { flex: none; font: 800 12px var(--ci-display); color: var(--n-sun, var(--ci-sun)); background: rgba(255, 201, 60, .12); border: 1px solid rgba(255, 201, 60, .35); border-radius: 999px; padding: 3px 9px; }
+.kh__goal-xp { flex: none; font: 800 13px var(--ci-display); color: var(--n-sun, var(--ci-sun)); background: rgba(255, 201, 60, .12); border: 1px solid rgba(255, 201, 60, .35); border-radius: 999px; padding: 3px 9px; }
 .kh__goal-xp.is-done { color: var(--n-mint, var(--ci-mint)); background: rgba(46, 230, 166, .1); border-color: rgba(46, 230, 166, .35); }
 
 /* More air between the big blocks. */
@@ -163,7 +163,7 @@ a.kh__goal-label:hover { color: #FFC93C; }
 /* The avatar wears its XP as a ring: how far to the next level, in sun. */
 .kh__hud-avatar { border: 0; background: conic-gradient(var(--n-sun, #FFC93C) var(--ring, 0%), rgba(255, 255, 255, .12) 0); padding: 4px; box-shadow: var(--ci-base-sm); }
 .kh__hud-avatar > :first-child { border-radius: 50%; background: var(--n-surface-2, #FFF6E6); width: 52px; height: 52px; display: grid; place-items: center; overflow: hidden; }
-.kh__hud-note { margin-top: 3px; font: 800 12px var(--ci-body); color: var(--n-muted, var(--ci-ink-soft)); }
+.kh__hud-note { margin-top: 3px; font: 800 13px var(--ci-body); color: var(--n-muted, var(--ci-ink-soft)); }
 .kh__hud-note a { color: var(--n-sun, var(--ci-orange-text)); text-decoration: none; }
 /* The HUD already says level and XP; the panel keeps its three tiles. */
 .kh--night .pp-panel__top { display: none; }

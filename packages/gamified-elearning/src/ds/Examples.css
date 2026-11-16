@@ -9,7 +9,7 @@ div.ex__card { cursor: default; }
 .ex__card::after, .ex__hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, .42)); pointer-events: none; }
 /* The two labels share a row that wraps on a narrow card instead of colliding. */
 .ex__top { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 4px; pointer-events: none; }
-.ex__tag, .ex__verb { font: 800 10px var(--ci-body); letter-spacing: .1em; text-transform: uppercase; border-radius: 999px; padding: 3px 8px; white-space: nowrap; }
+.ex__tag, .ex__verb { font: 800 13px var(--ci-body); letter-spacing: .03em; text-transform: uppercase; border-radius: 999px; padding: 2px 7px; white-space: nowrap; }
 .ex__tag { background: rgba(255, 255, 255, .9); color: var(--ci-ink); }
 .ex__verb { background: rgba(25, 15, 5, .6); color: #fff; }
 /* In the flow, at the bottom, on its own dark strip: a long sentence makes the
@@ -43,13 +43,13 @@ div.ex__card { cursor: default; }
 .ex__hero .is-runner .ex__enemy { bottom: 30%; }
 .ex__hero .ex__shot { bottom: calc(30% + 80px); width: 7px; height: 26px; }
 .ex__hero .ex__top { position: absolute; top: 14px; left: 14px; right: 14px; }
-.ex__hero .ex__tag, .ex__hero .ex__verb { font-size: 11px; padding: 4px 10px; }
+.ex__hero .ex__tag, .ex__hero .ex__verb { font-size: 13px; padding: 4px 10px; }
 .ex__hero .ex__enemy, .ex__hero .ex__treasure { animation-name: ex-fall-big; }
 .ex__hero .is-runner .ex__enemy, .ex__hero .is-runner .ex__treasure { animation-name: ex-slide; }
 @keyframes ex-fall-big { from { transform: translateY(0) rotate(0); } to { transform: translateY(560px) rotate(200deg); } }
 .ex__herofoot { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 40px 20px 26px; display: grid; justify-items: start; gap: 8px; background: linear-gradient(180deg, transparent, rgba(25, 15, 5, .72) 42%); }
 .ex__herofoot .ex__say { margin-top: 0; padding: 0; background: none; font-size: clamp(18px, 2.2vw, 26px); animation: ci-rise .45s var(--ci-ease) both; }
-.ex__herofoot small { font: 700 12px var(--ci-body); color: rgba(255, 255, 255, .92); }
+.ex__herofoot small { font: 700 13px var(--ci-body); color: rgba(255, 255, 255, .92); }
 .ex__dots { position: absolute; right: 16px; bottom: 14px; z-index: 2; display: flex; gap: 4px; }
 .ex__dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, .4); transition: background .3s, transform .3s; }
 .ex__dots i.is-on { background: #fff; transform: scale(1.3); }

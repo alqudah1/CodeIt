@@ -16,14 +16,14 @@
 .me__how { margin: 2px 0 10px; font-size: 13px; }
 .me__powers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .me__power { position: relative; display: grid; gap: 2px; padding: 10px 10px 9px; border-radius: 14px; font: 800 13px var(--ci-body); text-decoration: none; color: inherit; min-height: 52px; transition: transform .2s var(--ci-spring); }
-.me__power b { font: 800 10px var(--ci-body); letter-spacing: .1em; }
+.me__power b { font: 800 13px var(--ci-body); letter-spacing: .04em; }
 .me__power.is-done { background: var(--ci-mint); color: var(--ci-ink); }
 .me__power.is-next { background: var(--ci-sun); box-shadow: var(--ci-card); }
 .me__power.is-next span { position: absolute; right: 10px; bottom: 6px; font: 800 20px var(--ci-display); line-height: 1; }
 .me__power.is-later { background: var(--ci-quiet); color: var(--ci-ink-soft); }
 a.me__power:hover { transform: translateY(-2px); }
 .me__medals { display: flex; gap: 8px; flex-wrap: wrap; }
-.me__medal { display: grid; justify-items: center; gap: 4px; width: 86px; font: 800 11px var(--ci-body); text-align: center; color: var(--ci-ink-soft); }
+.me__medal { display: grid; justify-items: center; gap: 4px; width: 86px; font: 800 13px var(--ci-body); text-align: center; color: var(--ci-ink-soft); }
 .me__disc { width: 46px; height: 46px; border-radius: 50%; background: var(--ci-quiet); border: 2px dashed rgba(53, 34, 14, .22); display: grid; place-items: center; font: 800 18px var(--ci-display); color: rgba(53, 34, 14, .35); }
 .me__medal.is-won { color: var(--ci-ink); }
 .me__medal.is-won .me__disc { background: var(--ci-sun); border: 0; color: var(--ci-ink); box-shadow: var(--ci-card); animation: ci-popin .5s var(--ci-spring); }
@@ -31,7 +31,7 @@ a.me__power:hover { transform: translateY(-2px); }
 .me__game { display: grid; gap: 2px; padding: 14px 16px; text-decoration: none; color: inherit; transition: transform .2s var(--ci-spring); }
 .me__game:hover { transform: translateY(-2px); }
 .me__game b { font: 800 16px var(--ci-display); }
-.me__game small { font-size: 12px; color: var(--ci-ink-soft); }
+.me__game small { font-size: 13px; color: var(--ci-ink-soft); }
 .me__build { margin-bottom: 14px; }
 .me__row { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: var(--ci-r); background: var(--ci-paper); border: 1px solid var(--ci-ink-line); margin-top: 10px; text-decoration: none; color: var(--ci-ink); min-height: 68px; }
 .me__row b { display: block; font-size: 15px; font-weight: 800; }

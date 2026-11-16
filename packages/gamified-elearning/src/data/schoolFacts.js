@@ -108,7 +108,7 @@ export default function schoolFacts({ contactEmail, pricePerInterval, maxChildre
         heading: 'Accessibility',
         paragraphs: [
           'The main screens are checked against WCAG 2.1 AA with axe-core, the same engine behind Lighthouse. When it was last run, on 14 November 2026, it reported no serious or critical violations across the nine screens it covers. The check is run by hand before changes go out, not automatically on every change.',
-          'Text has a 13px floor, measured on eight screens at phone, tablet and laptop widths. One journey is checked from start to finish with taps alone and no keyboard: a first session in the studio on a phone, playing a game, changing it and playing it again. The Python lessons ask a child to type.',
+          'Text has a 13px floor, measured on sixteen screens at phone, tablet and laptop widths. One journey is checked from start to finish with taps alone and no keyboard: a first session in the studio on a phone, playing a game, changing it and playing it again. The Python lessons ask a child to type.',
         ],
       },
       {

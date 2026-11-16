@@ -1,6 +1,6 @@
 .cert-page { min-height: 100vh; background: var(--ci-cream, #FFF4E5); color: var(--ci-ink, #35220E); padding-bottom: 110px; }
 .cert-main { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
-.cert-wait, .cert__ey { font: 800 12px 'Nunito', sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #6B4F3A; margin: 0 0 8px; }
+.cert-wait, .cert__ey { font: 800 13px 'Nunito', sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #6B4F3A; margin: 0 0 8px; }
 
 /* The award: a scene from the map on top (sky, the castle on its hill),
    the words on cream below, a gold frame around all of it. */
@@ -46,8 +46,8 @@
 /* The four lands, ticked as they are finished. */
 .cert__lands { list-style: none; margin: 0 auto 14px; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; max-width: 520px; }
 .cert__land { display: flex; flex-direction: column; align-items: center; gap: 3px; font-family: 'Nunito', sans-serif; }
-.cert__land b { font-size: .68rem; font-weight: 900; line-height: 1.1; }
-.cert__land small { font-size: .7rem; font-weight: 800; color: #6B4F3A; }
+.cert__land b { font-size: .8125rem; font-weight: 900; line-height: 1.1; text-align: center; }
+.cert__land small { font-size: .8125rem; font-weight: 800; color: #6B4F3A; }
 .cert__land-disc { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; border: 3px solid #35220E; background: #FFFDF7; box-shadow: 0 3px 0 #35220E; }
 .cert__land--beginner.cert__land--done .cert__land-disc, .cert__land--beginner.cert__land--here .cert__land-disc { background: #7FD86A; }
 .cert__land--intermediate.cert__land--done .cert__land-disc, .cert__land--intermediate.cert__land--here .cert__land-disc { background: #B9ADEB; }
@@ -74,7 +74,7 @@
   .cert__tree--a { left: 2%; }
   .cert__tree--b { right: 3%; }
   .cert__lands { gap: 4px; }
-  .cert__land b { font-size: .6rem; }
+  .cert__land b { font-size: .8125rem; }
   .cert__land-disc { width: 38px; height: 38px; }
   .cert__foot { margin: 0; }
 }

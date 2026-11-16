@@ -32,6 +32,19 @@ const SCREENS = [
   { name: 'lesson map', url: '/lessons' },
   { name: 'lesson 1', url: '/lesson/1' },
   { name: 'pricing', url: '/pricing' },
+  // The screens a child lives on, added 16 November 2026. They were not in
+  // this list, and nine kinds of words on them were 10 to 12px: the tab bar
+  // under every one of them, the tags on the example cards, the captions
+  // under a child's own games. A check that does not open a screen cannot
+  // say anything about it.
+  { name: 'home, for a child', url: '/home' },
+  { name: 'build', url: '/build' },
+  { name: 'arcade', url: '/arcade' },
+  { name: 'powers', url: '/powers' },
+  { name: 'me', url: '/profile' },
+  { name: 'explore', url: '/explore' },
+  { name: 'join a class', url: '/join' },
+  { name: 'certificate', url: '/certificate' },
 ];
 
 const SIZES = [

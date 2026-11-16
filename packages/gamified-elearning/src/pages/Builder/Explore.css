@@ -636,9 +636,11 @@
 .exp-card__heart--liked { color: #d6453d; background: #ffe3e0; }
 
 /* The title, once. Whole words, two lines at most, no slicing. */
+/* 1.4, not 1.25: the display font's letters are 22px tall at this size, so a
+   20px line cut two pixels off the tails of g and y under the two-line clamp. */
 .exp-card__title {
   font-size: 1rem;
-  line-height: 1.25;
+  line-height: 1.4;
   overflow-wrap: anywhere;
 }
 
@@ -713,7 +715,7 @@
   background: #FFC93C; color: #35220E;
   box-shadow: 0 4px 0 #35220E;
 }
-.exp-today__eyebrow { margin: 0; font-size: 12px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+.exp-today__eyebrow { margin: 0; font-size: 13px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
 .exp-today__title { margin: 2px 0 4px; font-size: clamp(1.4rem, 4.5vw, 2rem); line-height: 1.1; font-weight: 800; }
 .exp-today__line { margin: 0; font-weight: 700; color: rgba(53, 34, 14, .85); }
 .exp-today__go {
@@ -726,7 +728,7 @@
 /* ── The title row: name, kind, heart. The art is only the art. ────────── */
 .exp-card__title-row { display: flex; align-items: flex-start; gap: 8px; min-width: 0; }
 .exp-card__title-row .exp-card__title { flex: 1 1 auto; min-width: 0; margin: 0; overflow-wrap: normal; word-break: normal; }
-.exp-card__creator .exp-card__type-badge { position: static; max-width: none; flex: none; margin-left: auto; font-size: .68rem; padding: 2px 8px; }
+.exp-card__creator .exp-card__type-badge { position: static; max-width: none; flex: none; margin-left: auto; font-size: .8125rem; padding: 2px 8px; }
 .exp-card__title-row .exp-card__heart { position: static; flex: none; width: 34px; height: 34px; border: 2px solid var(--ink); border-radius: 999px; background: var(--paper); box-shadow: 0 2px 0 var(--ink); color: var(--ink); font-size: 1.05rem; backdrop-filter: none; }
 .exp-card__title-row .exp-card__heart--liked { color: #d6453d; background: #ffe3e0; }
 .exp-card__thumb-wrap .exp-card__heart { display: none; }

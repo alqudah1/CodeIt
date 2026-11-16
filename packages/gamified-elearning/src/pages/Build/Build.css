@@ -5,8 +5,8 @@
    row of idea chips is meant to scroll inside itself, not widen the page. */
 .bd__left, .bd__right { min-width: 0; }
 .bd__seg { margin-top: 14px; max-width: 420px; }
-.bd__keys { display: flex; gap: 6px; margin: 14px 0 0; font-size: 12px; color: var(--ci-ink-soft); align-items: center; flex-wrap: wrap; }
-.bd__keys b { display: inline-block; border: 1px solid var(--ci-ink-line); border-radius: 6px; padding: 1px 7px; background: var(--ci-paper); font-size: 11px; }
+.bd__keys { display: flex; gap: 6px; margin: 14px 0 0; font-size: 13px; color: var(--ci-ink-soft); align-items: center; flex-wrap: wrap; }
+.bd__keys b { display: inline-block; border: 1px solid var(--ci-ink-line); border-radius: 6px; padding: 1px 7px; background: var(--ci-paper); font-size: 13px; }
 
 /* say it */
 .bd__say { margin-top: 16px; }
