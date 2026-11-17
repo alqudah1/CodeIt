@@ -97,11 +97,22 @@ const BLOG_POSTS = [
       'Games and coding go together naturally. When kids are solving a puzzle they genuinely want to beat, they learn Python without even noticing.',
     sections: [
       {
-        heading: 'Why Games Are the Best Way to Learn Python',
+        heading: 'The short answer',
         body: [
-          'Traditional coding tutorials can feel dry. A wall of syntax explanations rarely sticks. Games fix this by giving every concept a purpose.',
-          'When a kid is trying to make a robot walk through a maze, they need loops. When they want the robot to turn left only if there\'s a wall, they need conditionals. The concept isn\'t abstract. It\'s the solution to a problem they care about.',
-          'Research consistently shows that play-based learning improves retention. Kids who learn through games remember what they learned. And want to learn more.',
+          // 17 November 2026. Google shows this post for "web-based coding
+          // game that teaches python to kids" (167 times in 28 days, position
+          // 7, no clicks), and the post never said plainly what CodeIt has.
+          // It also claimed "research consistently shows" with no research
+          // behind it, and described a robot in a maze that CodeIt does not
+          // have. Both are gone.
+          'CodeIt is web-based and has two kinds of game, and only one of them is Python. The Python puzzles are tied to lessons 1 to 10 and run real Python in the browser, with nothing to install. The games a child makes from a sentence are HTML and JavaScript: a child changes them one line at a time, which is a different skill.',
+        ],
+      },
+      {
+        heading: 'Why games help a child learn Python',
+        body: [
+          'A wall of syntax rarely sticks. A game gives each idea a job: a loop is how the stars keep falling, an if is how the game knows you caught one, and a number in a variable is how fast the ship goes.',
+          'The honest limit is that a child can win a game without understanding the code behind it. So the puzzles below are judged on what the code does, and the boss for each lesson needs the whole idea, not a lucky guess.',
         ],
       },
       {
@@ -138,7 +149,7 @@ const BLOG_POSTS = [
       { text: 'Python coding puzzles for kids', link: '/games' },
       { text: 'Start the Python coding journey for kids', link: '/journey' },
       { text: 'Coding for kids. Learn Python free', link: '/coding-for-kids' },
-      { text: 'Learn Python: Lesson 3. Loops', link: '/lesson/3' },
+      { text: 'Learn Python: Lesson 5. Simple repetition', link: '/lesson/5' },
           { text: 'Make a small browser game you can read', link: '/guide/first-browser-game' },
       { text: 'The coding platforms compared', link: '/guide/best-coding-platforms-for-kids' },
 ],
