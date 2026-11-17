@@ -418,7 +418,8 @@ const BASE_PAGES = [
     eyebrow: 'Beginner Python, in the browser',
     h1: 'Python for kids: learn by making something work.',
     intro: `Python coding for kids, free and in the browser. Write a line, run it, and see what changed. Then CodeIt asks about the code your child wrote, so finishing is not the same as understanding.`,
-    detail: `Built for ${AGES}. Younger children can use it alongside an adult and the lessons also work for older beginners. A learner aged 13 or over opens their own account. For anyone younger, ${MANAGED_FLOOR}.`,
+    // This repeated the "Who it suits" section word for word.
+    detail: 'Lesson 1 and the Python playground open without an account. There is no AI in the lessons or the playground: a child types Python and Python answers.',
     type: 'LearningResource',
   },
   {
@@ -692,9 +693,13 @@ function blogSections(post) {
 
 /** "Press Run." and its variants are instructions to a tap, not prose. */
 function withoutTapInstructions(text) {
+  // Whole sentences only. Cutting the words "Press Run" out of "Press Run and
+  // watch Pixel." left lesson 1 reading "real Python. and watch Pixel." to
+  // every crawler, on the lesson most likely to be a parent's first look.
   return String(text || '')
-    .replace(/(?:^|\s)(?:Press|Tap) Run(?: again)?[.!]?(?=\s|$)/g, ' ')
-    .replace(/(?:^|\s)Tap each piece[.!]?(?=\s|$)/g, ' ')
+    .split(/(?<=[.!?])\s+/)
+    .filter((sentence) => !/^(?:Press|Tap)(?: the orange)? Run\b|^Tap each piece\b/.test(sentence.trim()))
+    .join(' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -964,6 +969,33 @@ const IDENTITY_PAGES = [
   },
 ];
 
+// What lesson 1 actually is, for /learn-python-for-kids. That page answers
+// "python for kids online" (282 searches in 28 days, position 6, 2% clicked)
+// and "python for kids" (177, position 16) and, until 17 November 2026, did
+// not show a single line of Python. Everything here is read from lesson 1's
+// own data, so it cannot describe a lesson the site does not have.
+function firstLessonSection() {
+  const lesson = LESSON_CONTENT.get(1);
+  if (!lesson || !Array.isArray(lesson.steps)) return null;
+  const example = lesson.steps.find((step) => step.type === 'example');
+  const tryit = lesson.steps.find((step) => step.type === 'tryit');
+  const predict = lesson.steps.find((step) => step.type === 'predict');
+  if (!example || !tryit) return null;
+  return {
+    heading: 'What the first lesson looks like',
+    paragraphs: [
+      'Lesson 1 starts with one line of real Python, and a character called Pixel who says whatever the code tells it to. This is the first line a child runs:',
+    ],
+    code: example.code,
+    output: tryit.expectedDifferentOutput || '',
+    after: [
+      `Then the lesson hands it over: "${tryit.description}"`,
+      predict ? `Before the next run, the child predicts what two print lines will show. ${explanationOf(predict.explain)}` : '',
+      'Every lesson after it works the same way: predict what a line will print, run it, take it apart piece by piece, change it, then write their own.',
+    ].filter(Boolean),
+  };
+}
+
 const SECTIONS_BY_ROUTE = {
   '/ai-website-builder-for-kids': WEBSITE_BUILDER.sections,
   '/build': [
@@ -1106,6 +1138,7 @@ const SECTIONS_BY_ROUTE = {
     },
   ],
   '/learn-python-for-kids': [
+    firstLessonSection(),
     {
       // Added 16 October 2026. Google's AI Overview for "python for kids
       // online" named CodeIt first and wrote the entry out of this page:
@@ -1405,7 +1438,7 @@ const PAGES = [
 
   ...BASE_PAGES.map((page) => {
     if (page.route === '/coding-for-kids') return { ...page, faqs: FAQS, sections: SECTIONS_BY_ROUTE[page.route] };
-    if (SECTIONS_BY_ROUTE[page.route]) return { ...page, sections: SECTIONS_BY_ROUTE[page.route] };
+    if (SECTIONS_BY_ROUTE[page.route]) return { ...page, sections: SECTIONS_BY_ROUTE[page.route].filter(Boolean) };
     if (page.route === '/pricing') return { ...page, sections: pricingSections() };
     if (page.route === '/lessons') return { ...page, sections: lessonsIndexSections() };
     if (page.route === '/blog') return { ...page, sections: blogIndexSections() };

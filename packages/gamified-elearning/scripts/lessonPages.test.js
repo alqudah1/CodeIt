@@ -89,3 +89,18 @@ test('tap instructions are not written into a page for readers', () => {
     assert.ok(!/Press Run[.!]/.test(lessonPage(number)), `lesson ${number} still says "Press Run."`);
   }
 });
+
+test('removing a tap instruction never leaves half a sentence behind', () => {
+  // "Press Run and watch Pixel." used to lose its first three words, so
+  // lesson 1 read "This is one line of real Python. and watch Pixel." A
+  // sentence that starts in lower case with "and" or "then" followed by a
+  // verb is what that cut leaves; "and needs both" about the and operator
+  // is a sentence about Python and is fine.
+  const broken = [];
+  for (const page of PAGES.filter((p) => /^\/lesson\/\d+$/.test(p.route))) {
+    const text = (page.sections || []).flatMap((s) => [...(s.paragraphs || []), ...(s.after || [])]).join(' ');
+    const m = text.match(/[.!?] (?:and|then) (?:see|watch|look|press|tap|run)\b[^.]*/);
+    if (m) broken.push(`${page.route}: ${m[0]}`);
+  }
+  assert.deepEqual(broken, []);
+});
