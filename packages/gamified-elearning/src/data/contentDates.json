@@ -4,8 +4,8 @@
     "date": "2026-11-13"
   },
   "/about": {
-    "hash": "ee2ed0b10475d3a0",
-    "date": "2026-11-16"
+    "hash": "af3510ad330d98f7",
+    "date": "2026-11-17"
   },
   "/ai-website-builder-for-kids": {
     "hash": "482d6edc4e87cf09",
@@ -56,8 +56,8 @@
     "date": "2026-11-13"
   },
   "/explore": {
-    "hash": "f5d89aa76f0af0ff",
-    "date": "2026-11-13"
+    "hash": "0a04006ecd521649",
+    "date": "2026-11-17"
   },
   "/faq": {
     "hash": "6f8621b6b3be0fdf",
@@ -68,8 +68,8 @@
     "date": "2026-11-14"
   },
   "/games": {
-    "hash": "8e46bc8a5b310c1c",
-    "date": "2026-08-29"
+    "hash": "8a42b3b3edc0b8b9",
+    "date": "2026-11-17"
   },
   "/guide": {
     "hash": "02348e51237fcae9",
@@ -148,8 +148,8 @@
     "date": "2026-10-24"
   },
   "/learn-python-for-kids": {
-    "hash": "d88d95186d71de85",
-    "date": "2026-11-07"
+    "hash": "91c6d51a0e789a2e",
+    "date": "2026-11-17"
   },
   "/lesson/1": {
     "hash": "24b3fb70b6fdb040",
@@ -280,36 +280,36 @@
     "date": "2026-11-12"
   },
   "/playground": {
-    "hash": "7f02e77c3ca37038",
-    "date": "2026-08-29"
+    "hash": "ad244df87995b53d",
+    "date": "2026-11-17"
   },
   "/press": {
     "hash": "5f957b49678adf1a",
     "date": "2026-11-13"
   },
   "/pricing": {
-    "hash": "c05dccf88ac639bf",
-    "date": "2026-11-13"
+    "hash": "f060ec6b0f3bb680",
+    "date": "2026-11-17"
   },
   "/privacy": {
-    "hash": "a1308eb64653e5f4",
-    "date": "2026-11-13"
+    "hash": "3c821621bdd7517d",
+    "date": "2026-11-17"
   },
   "/python-games-for-kids": {
     "hash": "4c481cd7af14fdcf",
     "date": "2026-10-28"
   },
   "/schools": {
-    "hash": "a381429b64bd17c7",
-    "date": "2026-11-16"
+    "hash": "5b6cd645e392028d",
+    "date": "2026-11-17"
   },
   "/teach": {
-    "hash": "7b8b030a95104b5a",
-    "date": "2026-11-13"
+    "hash": "bbd04b52d255474a",
+    "date": "2026-11-17"
   },
   "/teach/plans": {
-    "hash": "ec4f650f66d961a5",
-    "date": "2026-10-24"
+    "hash": "04b35c1674dccdd1",
+    "date": "2026-11-17"
   },
   "/teach/plans/boss": {
     "hash": "3552efff75d42033",
@@ -360,7 +360,7 @@
     "date": "2026-11-14"
   },
   "/terms": {
-    "hash": "1f189009aa8ae993",
-    "date": "2026-11-13"
+    "hash": "c6b0d12615e2da22",
+    "date": "2026-11-17"
   }
 }

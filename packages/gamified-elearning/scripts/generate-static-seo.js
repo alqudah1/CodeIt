@@ -455,7 +455,7 @@ const BASE_PAGES = [
   {
     route: '/privacy',
     eyebrow: 'Privacy & safety',
-    h1: 'Clear information about what CodeIt collects—and why.',
+    h1: 'Clear information about what CodeIt collects, and why.',
     intro: 'CodeIt collects information needed to run accounts, save learning progress, and build projects. It does not sell personal information or run behavioural advertising.',
     sectionTitle: 'Privacy choices and controls',
     detail: 'Saved projects are private until their owner chooses Publish. An unsaved guest project can remain only in that browser for up to seven days and is not uploaded as an account project without an explicit save.',
@@ -828,7 +828,7 @@ function pricingSections() {
       paragraphs: [
         `The family plan costs ${PRICING.PRICE_PER_INTERVAL} in ${PRICING.CURRENCY} and can be cancelled at any time. Tax is shown before card details are entered.`,
         'It adds guided setup, more assisted project building, learner profiles, parent visibility, and a direct feedback channel.',
-        'The free plan does not expire and no card is needed to use it. Nothing starts charging on its own — a subscription begins only when someone chooses to start one.',
+        'The free plan does not expire and no card is needed to use it. Nothing starts charging on its own: a subscription begins only when someone chooses to start one.',
       ],
     },
     {
@@ -903,7 +903,7 @@ const IDENTITY_PAGES = [
       {
         heading: 'Why it exists',
         paragraphs: [
-          'Most tools for young coders are block-based, and blocks are a good on-ramp — Scratch in particular has taught an enormous number of children to think in loops and conditionals. The gap is on the other side of it.',
+          'Most tools for young coders are block-based, and blocks are a good on-ramp: Scratch in particular has taught an enormous number of children to think in loops and conditionals. The gap is on the other side of it.',
           'A ten-year-old who has outgrown blocks is stuck. Block tools keep the real code hidden for good, and text editors ask a child to type code before they have made anything worth caring about. Codecademy\u2019s terms of service require users to be sixteen. freeCodeCamp is free and excellent but was not designed for children. The platforms built for kids are, with few exceptions, blocks-first by design. CodeIt exists for that gap.',
         ],
       },
@@ -1070,7 +1070,7 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'Practice that reinforces a specific skill',
       paragraphs: [
-        'Each challenge is tied to a real programming idea — print statements, variables, strings, decisions, or loops. Learners write or change code, see the result immediately, and earn progress for solving it.',
+        'Each challenge is tied to a real programming idea: print statements, variables, strings, decisions, or loops. Learners write or change code, see the result immediately, and earn progress for solving it.',
         'The challenges pair with the beginner Python lessons, so a learner can move between explanation and practice on the same concept.',
       ],
     },
@@ -1085,7 +1085,7 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'Run Python without installing anything',
       paragraphs: [
-        'The playground runs beginner Python in the browser. There is no download, no environment setup, and no local configuration — the usual place where a beginner gives up before writing a line of code.',
+        'The playground runs beginner Python in the browser. There is no download, no environment setup, and no local configuration, which is the usual place where a beginner gives up before writing a line of code.',
         'The editor and the output stay together on screen, which makes the connection between a change in the code and a change in the result easier to follow.',
       ],
     },
@@ -1094,7 +1094,7 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'Learning from finished work',
       paragraphs: [
-        'Seeing what another beginner built — and being able to open the code behind it — is often more motivating than a lesson brief. Remixing starts a learner from something that already works, which is a lower barrier than an empty page.',
+        'Seeing what another beginner built, and being able to open the code behind it, is often more motivating than a lesson brief. Remixing starts a learner from something that already works, which is a lower barrier than an empty page.',
       ],
     },
     {
@@ -1140,7 +1140,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'Who it suits',
       paragraphs: [
         `Built for ${AGES}. The lessons also work for younger children alongside an adult, and for older beginners meeting Python for the first time. A learner aged 13 or over opens their own account. For anyone younger, ${MANAGED_FLOOR}.`,
-        'Lesson 1 opens without a download. The structured lesson sequence is currently Python only — the project studio is where learners work with HTML, CSS, and JavaScript.',
+        'Lesson 1 opens without a download. The structured lesson sequence is currently Python only. The studio is where learners work with HTML, CSS, and JavaScript.',
       ],
     },
   ],
@@ -1207,7 +1207,7 @@ const SECTIONS_BY_ROUTE = {
     {
       heading: 'Paid features',
       paragraphs: [
-        `A paid family plan is available at ${PRICING.PRICE_PER_INTERVAL}, cancellable at any time, with tax shown before card details are entered. The free plan does not expire and needs no card, and no subscription starts on its own — one begins only when someone chooses to start it.`,
+        `A paid family plan is available at ${PRICING.PRICE_PER_INTERVAL}, cancellable at any time, with tax shown before card details are entered. The free plan does not expire and needs no card, and no subscription starts on its own: one begins only when someone chooses to start it.`,
       ],
     },
   ],
@@ -1283,6 +1283,17 @@ const HOME_PAGE = {
 // src/pages/Class/lessonPlans.js, the same module the pages render.
 const LESSON_PLANS = loadLessonPlans();
 
+// Guides written for teachers, one line each, in the same words the React
+// pages show (TEACH_LANDING.guideLinks, PLANS_INDEX.guideLinks and
+// schoolFacts().guideLinks). The two guides were linked from one page on the
+// whole site; these lines are how a crawler finds them from the pages
+// teachers land on.
+function guideLinksHtml(links) {
+  return (links || []).map((guide) =>
+    `<p>${guide.lead ? `${escapeHtml(guide.lead)} ` : ''}<a href="${escapeHtml(guide.href)}">${escapeHtml(guide.text)}</a>${guide.lead ? '.' : ''}</p>`
+  ).join('\n      ');
+}
+
 function teachPages() {
   const { PLANS, TEACH_LANDING, TEACH_STEPS, PLANS_INDEX, planMeta, POWERS } = LESSON_PLANS;
 
@@ -1330,7 +1341,8 @@ function teachPages() {
       `<h2>Twelve lesson plans, ready to read aloud</h2>`,
       `<p>${escapeHtml(PLANS_INDEX.intro)} <a href="/teach/plans">All twelve lesson plans</a>.</p>`,
       `<ol>\n        ${planLinks}\n      </ol>`,
-    ].join('\n      '),
+      guideLinksHtml(TEACH_LANDING.guideLinks),
+    ].filter(Boolean).join('\n      '),
     sectionTitle: 'What a class needs',
     detail: `A projector and one device per child, or one per pair. Nothing to install, no student emails, no passwords. Classes are free. ${TEACH_LANDING.network} ${TEACH_LANDING.method}`,
     primaryLinkLabel: 'Make a class',
@@ -1341,10 +1353,13 @@ function teachPages() {
     eyebrow: PLANS_INDEX.eyebrow,
     h1: PLANS_INDEX.h1,
     intro: PLANS_INDEX.intro,
-    bodyHtml: PLANS.map((plan) => [
-      `<h2><a href="/teach/plans/${escapeHtml(plan.slug)}">${escapeHtml(`${plan.n}. ${plan.title}`)}</a></h2>`,
-      `<p>On the board: "${escapeHtml(plan.sentence)}". ${escapeHtml(plan.say)}</p>`,
-    ].join('\n      ')).join('\n      '),
+    bodyHtml: [
+      ...PLANS.map((plan) => [
+        `<h2><a href="/teach/plans/${escapeHtml(plan.slug)}">${escapeHtml(`${plan.n}. ${plan.title}`)}</a></h2>`,
+        `<p>On the board: "${escapeHtml(plan.sentence)}". ${escapeHtml(plan.say)}</p>`,
+      ].join('\n      ')),
+      guideLinksHtml(PLANS_INDEX.guideLinks),
+    ].filter(Boolean).join('\n      '),
     sectionTitle: 'How the plans fit together',
     detail: 'Each plan teaches one power, and each power changes one line in the game a child just made from a sentence. Children join a class with a code and a first name. Classes are free.',
     primaryLinkLabel: 'Open the lesson plans',
@@ -1789,6 +1804,7 @@ function staticContent(page) {
       ${dateLine}
       <p>${paragraphHtml(page.intro)}</p>
       ${page.bodyHtml || sectionsHtml(page.sections)}
+      ${page.bodyHtml ? '' : guideLinksHtml(page.guideLinks)}
       ${faqHtml(page.faqs)}
       <h2>${escapeHtml(page.sectionTitle || 'What you can do on CodeIt')}</h2>
       <p>${paragraphHtml(page.detail)}</p>
