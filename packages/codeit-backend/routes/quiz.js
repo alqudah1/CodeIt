@@ -4,6 +4,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
 const { recordMilestoneAndNotify } = require('../progressNotifications');
+const { correctText, checkAnswer } = require('../quizAnswers');
 
 // Middleware to verify JWT and set req.user
 const authenticateToken = (req, res, next) => {
@@ -55,16 +56,6 @@ router.get('/available', async (req, res) => {
 
 router.use(authenticateToken);
 
-// Helper: map correct_option letter to text value
-function correctText(row) {
-  const map = {
-    A: row.option_a,
-    B: row.option_b,
-    C: row.option_c,
-    D: row.option_d,
-  };
-  return map[(row.correct_option || '').toUpperCase()] || null;
-}
 
 // GET /:quizId/questions — does NOT expose correct answer to client
 router.get('/:quizId/questions', async (req, res) => {
@@ -94,22 +85,43 @@ router.get('/:quizId/questions', async (req, res) => {
 
 // POST /check — validate a single answer; returns correct + correctAnswerText
 // Called after the user picks an option, so the answer is only revealed post-selection.
+//
+// And why. Every question was written with an explanation ("total grows each
+// lap: 10, then 30, then 60."), the quiz page has had a place to show it since
+// the page was made, and after a low score it tells the child to "read the
+// explanations below". Until 17 November 2026 this route never read the
+// column, so no child ever saw one: a wrong answer said only what the right
+// one was. It is sent with the verdict, never before, like the answer itself.
+async function questionForCheck(questionId) {
+  try {
+    const [rows] = await pool.query(
+      'SELECT option_a, option_b, option_c, option_d, correct_option, explanation FROM Quiz_Questions WHERE question_id = ?',
+      [questionId]
+    );
+    return rows;
+  } catch (err) {
+    // A database without the column must not stop every quiz: check the
+    // answer as before and send no explanation.
+    if (!/explanation/i.test(String(err && err.message))) throw err;
+    const [rows] = await pool.query(
+      'SELECT option_a, option_b, option_c, option_d, correct_option FROM Quiz_Questions WHERE question_id = ?',
+      [questionId]
+    );
+    return rows;
+  }
+}
+
 router.post('/check', async (req, res) => {
   const { questionId, answer } = req.body;
   if (!questionId || answer === undefined) {
     return res.status(400).json({ error: 'Missing questionId or answer' });
   }
   try {
-    const [rows] = await pool.query(
-      'SELECT option_a, option_b, option_c, option_d, correct_option FROM Quiz_Questions WHERE question_id = ?',
-      [questionId]
-    );
+    const rows = await questionForCheck(questionId);
     if (!rows.length) {
       return res.status(404).json({ error: 'Question not found' });
     }
-    const row = rows[0];
-    const ct = correctText(row);
-    res.json({ correct: answer === ct, correctAnswerText: ct });
+    res.json(checkAnswer(rows[0], answer));
   } catch (err) {
     console.error('❌ Error checking answer:', err);
     res.status(500).json({ error: err.message });

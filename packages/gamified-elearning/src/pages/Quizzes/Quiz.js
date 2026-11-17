@@ -76,6 +76,9 @@ export default function Quiz() {
   // Check result from backend: { correct, correctAnswerText, explanation }
   const [checkResult, setCheckResult] = useState(null);
   const [checking, setChecking] = useState(false);
+  // The answer never reached the server. Nothing was checked, so nothing is
+  // marked: the child is told, and presses again.
+  const [checkFailed, setCheckFailed] = useState(false);
 
   // Accumulated per-question results for missed-question review
   const [questionResults, setQuestionResults] = useState({});
@@ -216,6 +219,7 @@ export default function Quiz() {
   // ── Select answer ─────────────────────────────────────────────────────────
   const handleSelect = async (optVal) => {
     if (revealed || checking) return;
+    setCheckFailed(false);
     setSelected(optVal);
     setRevealed(true);
     setAllAnswers((prev) => ({ ...prev, [String(qId)]: optVal }));
@@ -241,8 +245,25 @@ export default function Quiz() {
           selectedAnswer: optVal,
         },
       }));
-    } catch {
-      setCheckResult({ correct: false, correctAnswerText: null, explanation: null });
+    } catch (err) {
+      // This used to mark the answer wrong and say: Not quite. The correct
+      // answer is "null". The child had not been wrong; the question had not
+      // been asked. So nothing is marked and no heart is lost. A sign-in that
+      // ran out goes to the room that says so; anything else is the internet.
+      const status = err?.response?.status;
+      if (status === 401 || status === 403) {
+        setLoadErr("Your session ran out. Log in again and the quiz will be here.");
+      } else {
+        setCheckFailed(true);
+      }
+      setSelected(null);
+      setRevealed(false);
+      setCheckResult(null);
+      setAllAnswers((prev) => {
+        const next = { ...prev };
+        delete next[String(qId)];
+        return next;
+      });
     } finally {
       setChecking(false);
     }
@@ -256,6 +277,7 @@ export default function Quiz() {
       setSelected(null);
       setRevealed(false);
       setCheckResult(null);
+      setCheckFailed(false);
     } else {
       const finalAnswers = { ...allAnswers, [String(qId)]: selected };
       try {
@@ -267,9 +289,14 @@ export default function Quiz() {
         setResults(res.data);
         if (res.data?.xpEarned > 0) awardXP(res.data.xpEarned);
       } catch (err) {
-        const msg = err?.response?.data?.error || err?.message || "Submit failed";
-        setSubmitErr(msg);
-        setResults({ correctCount: 0, totalQuestions: total, percentage: 0, xpEarned: 0 });
+        // The score could not be saved. It used to be shown as 0 out of 4
+        // under the browser's own words ("Network Error"), to a child who had
+        // just watched four answers turn green. Every answer was already
+        // checked by the server one at a time, so the score shown is the real
+        // one; only the saving, and the XP, are missing, and the page says so.
+        const right = Object.values(questionResults).filter((r) => r.correct).length;
+        setSubmitErr("Your score could not be saved, so no XP was added. Check the internet and press Try again to take the quiz once more.");
+        setResults({ correctCount: right, totalQuestions: total, percentage: total > 0 ? Math.round((right / total) * 100) : 0, xpEarned: 0 });
       }
       setDone(true);
     }
@@ -284,6 +311,7 @@ export default function Quiz() {
     setSelected(null);
     setRevealed(false);
     setCheckResult(null);
+    setCheckFailed(false);
     setAllAnswers({});
     setQuestionResults({});
     setDone(false);
@@ -405,7 +433,7 @@ export default function Quiz() {
       pct === 100 ? "You know this topic inside out. Ready for the challenge?"
       : pct >= 75 ? "Solid understanding. You are ready to move on."
       : pct >= 50 ? "Good effort. Review any missed questions below, then try again."
-      : "Go back to the lesson, read the explanations below, then retry.";
+      : "Go back to the lesson, read the explanations below, then try again.";
 
     const missedEntries = Object.values(questionResults).filter((r) => !r.correct);
 
@@ -474,9 +502,23 @@ export default function Quiz() {
           )}
 
           <div className="qz-results-actions">
-            {!fromJourney && (
+            {/* Under half right, the words above say go back to the lesson and
+                try again, so those are the two big buttons. They used to be a
+                small grey "Retry" and nothing at all for the lesson, above a
+                large yellow button to go and build something else. */}
+            {!fromJourney && pct < 50 && (
+              <>
+                <button className="qz-btn-forward" onClick={handleRetry}>
+                  Try again
+                </button>
+                <button className="qz-btn-forward qz-btn-forward--quiet" onClick={() => navigate(`/lesson/${quizId}`)}>
+                  Back to Lesson {quizId}
+                </button>
+              </>
+            )}
+            {!fromJourney && pct >= 50 && (
               <button className="qz-btn-retry" onClick={handleRetry}>
-                Retry
+                Try again
               </button>
             )}
 
@@ -635,6 +677,14 @@ export default function Quiz() {
             <button className="qz-btn-next" onClick={handleNext}>
               {currentIdx < total - 1 ? "Next Question" : "See Results"}
             </button>
+          </div>
+        )}
+        {checkFailed && !revealed && !checking && (
+          <div className="qz-bottom">
+            <div className="qz-feedback qz-feedback--retry" role="status">
+              <span className="qz-feedback-verdict">That did not get through, so it was not counted.</span>
+              <p className="qz-feedback-explanation">Check the internet, then press your answer again.</p>
+            </div>
           </div>
         )}
         {checking && (

@@ -617,3 +617,43 @@
 .qz-hearts-out__title { font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif; font-size: 1.9rem; margin: 0 0 8px; color: var(--ink, #35220E); }
 .qz-hearts-out__body { max-width: 380px; margin: 0 auto 18px; font-weight: 700; color: #6B4F3A; line-height: 1.45; }
 .qz-hearts-out__actions { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+
+/* ── Words a child can read on the quiz's buttons ─────────────────────────────
+   Next Question, the forward buttons and "Try again with 3 hearts" were white
+   words on a pink to orange fade: 2.0 to 2.3 to 1, measured, where 4.5 is the
+   least a reader needs. They are the site's own key now: orange, ink words,
+   an ink edge. The wrong answer's words were white on coral (2.8 to 1); ink. */
+.qz-btn-next,
+.qz-btn-forward {
+  background: var(--arc-orange, #FF7A00);
+  color: var(--ink, #35220E);
+  border: 2.5px solid var(--ink, #35220E);
+  box-shadow: var(--pop-rest, 0 4px 0 #35220E);
+  font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif;
+  font-weight: 800;
+  min-height: 48px;
+}
+.qz-btn-next:hover,
+.qz-btn-forward:hover { transform: translateY(-2px); box-shadow: var(--pop-lift, 0 7px 0 #35220E); }
+.qz-btn-next:active,
+.qz-btn-forward:active { transform: translateY(3px); box-shadow: var(--pop-down, 0 1px 0 #35220E); }
+.qz-btn-next:focus-visible,
+.qz-btn-forward:focus-visible,
+.qz-btn-retry:focus-visible { outline: 3px solid var(--arc-violet-deep, #5F41E5); outline-offset: 3px; }
+.qz-btn-forward--studio { background: var(--arc-sun, #FFC93C); }
+.qz-btn-forward--quiet { background: var(--paper, #FFFDF7); }
+.qz-opt--wrong { color: var(--ink, #35220E); }
+.qz-btn-retry { border: 2.5px solid var(--ink, #35220E); color: var(--ink, #35220E); background: var(--paper, #FFFDF7); min-height: 44px; font-family: var(--font-display, 'Baloo 2'), 'Nunito', sans-serif; font-weight: 800; }
+
+/* Why, under the verdict: the sentence a child most needs at that moment, so
+   it is as easy to read as the verdict above it. */
+.qz-feedback-explanation { font-size: 1rem; font-weight: 700; opacity: 1; }
+.qz-missed-explanation { font-size: 0.9375rem; font-weight: 600; }
+.qz-submit-err { color: #991b1b; font-size: 0.9375rem; font-weight: 700; line-height: 1.45; text-align: center; }
+
+/* The answer did not reach the server: not right, not wrong. */
+.qz-feedback--retry {
+  background: #FFF6E6;
+  border: 2px solid var(--ink, #35220E);
+  color: var(--ink, #35220E);
+}
