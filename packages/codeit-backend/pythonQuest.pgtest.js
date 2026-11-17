@@ -82,7 +82,16 @@ test("today's three goals each come back on their own", { skip: !HAS_PG && 'no l
     assert.deepEqual([t.gameToday, t.pythonQuest.done, t.lessonToday, t.builtToday], [false, false, false, false]);
     await pool.query('INSERT INTO Student_Lesson_Progress (user_id, lesson_id, xp_earned) VALUES (?, 1, 50)', [userId]);
     t = await (await fetch(base, { headers })).json();
-    assert.deepEqual([t.gameToday, t.lessonToday, t.builtToday], [false, true, false]);
+    // A finished lesson is its own goal, and it keeps the streak: Home says
+    // "Do one and today counts", and since 16 November 2026 the server agrees
+    // (streakMoments in today.js). gameToday stays false, which is what the
+    // build card reads, so a lesson does not mark today's game as done.
+    //
+    // Until 17 November this line expected builtToday to be false, as it was
+    // before lessons counted. The change was made without running this file,
+    // and the database job went red on every push until it was.
+    assert.deepEqual([t.gameToday, t.lessonToday, t.builtToday, t.streak], [false, true, true, 1]);
+    assert.deepEqual(t.nextLesson && t.nextLesson.id, 2, 'the next lesson is the first one not finished');
   } finally {
     server.close();
     await pool.query('DELETE FROM Student_Lesson_Progress WHERE user_id = ?', [userId]).catch(() => {});
