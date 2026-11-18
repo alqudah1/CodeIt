@@ -5,13 +5,18 @@ const GUIDES_E = [
   {
     slug: "free-coding-for-kids",
     relatedLessons: [1, 3, 6],
-    comparesOptions: ["Scratch", "Code.org, now CodeAI", "Google CS First", "freeCodeCamp", "The p5.js Web Editor"],
+    comparesOptions: ["Scratch", "Code.org, now CodeAI", "Experience CS", "freeCodeCamp", "The p5.js Web Editor"],
     title: "Free Coding for Kids: What Is Actually Free in 2026",
     description: "Six platforms that cost nothing, what each is genuinely good at, and which one to pick by what your child wants to make. Every claim checked against the source.",
     h1: "What is actually free, and which one should we use?",
-    lastVerified: "2026-08-29",
+    // Re-read 18 November 2026. Google CS First was recommended here, with a
+    // quote, "checked on 29 August 2026"; Google had shut it down on 30 June
+    // 2025. The quote had never been read from a live page. Experience CS,
+    // which Google points to, replaces it, and every other quote was read
+    // again from its own page.
+    lastVerified: "2026-11-18",
     targetQueries: ["free coding for kids", "free coding websites for kids", "best free coding platform for children", "free programming for kids no subscription", "coding for kids without paying", "free alternative to tynker", "free kids coding 2026", "is scratch free"],
-    markdown: `**Short answer:** [Scratch](https://scratch.mit.edu/) if your child is new or under about 9. [Code.org](https://code.org/) if you want structured lessons with no account overhead. [freeCodeCamp](https://www.freecodecamp.org/) if they are a teenager who wants to write real code. Everything below is checked against each product's own words, quoted, on 29 August 2026.
+    markdown: `**Short answer:** [Scratch](https://scratch.mit.edu/) if your child is new or under about 9. [Code.org](https://code.org/) if you want structured lessons with no account overhead. [freeCodeCamp](https://www.freecodecamp.org/) if they are a teenager who wants to write real code. Everything below is checked against each product's own words, quoted, on 18 November 2026.
 
 There is a lot of "free" in this category that means a free trial, or a free tier that ends at lesson three. These do not: no subscription, no card, and nothing that stops working after a month. All of them are coding websites you open in a browser, and all of them teach real programming rather than a toy version of it.
 
@@ -21,7 +26,7 @@ If you are here because you want your child learning to code without paying, the
 |---|---|---|---|
 | Scratch | All of it, permanently | A first experience, dragging blocks rather than typing | Under about 9, and up |
 | Code.org, now CodeAI | Curriculum, tools and teacher resources | Structured lessons with no account overhead | Primary and secondary |
-| Google CS First | Every lesson, any number of students | A teacher or parent who wants a ready-made unit | Primary and lower secondary |
+| Experience CS | Every unit, for teachers and students | A teacher who wants ready-made units that fit into other subjects | Ages 8 to 14 |
 | freeCodeCamp | Courses, projects and certifications | A teenager who has decided they want to write real code | Teenagers |
 | The p5.js Web Editor | The editor and the library, open source | Visual and generative work in real JavaScript | Teenagers |
 
@@ -31,7 +36,7 @@ Every claim in that column is quoted from the product's own words further down t
 
 **Free, permanently.** The Scratch Foundation [states plainly](https://www.scratchfoundation.org/home): *"Scratch is free for everyone. Supporters make that possible."*
 
-Block-based, from MIT, and still the best on-ramp that exists. A child drags blocks together rather than typing, which removes the entire category of problem where a missing semicolon ends the session in tears.
+Block-based, begun at MIT and now run by the Scratch Foundation, and still the best on-ramp that exists. A child drags blocks together rather than typing, which removes the entire category of problem where a missing semicolon ends the session in tears.
 
 **Best for:** a first ever coding experience, and for children who want to make animations and games and share them.
 
@@ -45,13 +50,11 @@ Block-based, from MIT, and still the best on-ramp that exists. A child drags blo
 
 **Where it stops:** it is closed-ended by design. A child who wants to build their own thing and send someone a link will find the walls quickly.
 
-## Google CS First
+## Experience CS
 
-**Free, unambiguously.** Google's own wording: *"CS First is totally free of charge — any number of students, all materials, as many lessons as you want."*
+**Free.** If an older article sent you to Google CS First, it is gone: [Google turned it down on 30 June 2025](https://support.google.com/csfirst/answer/15848549) and deleted the work saved in it. Google points teachers to [Experience CS](https://experience-cs.org/) from the Raspberry Pi Foundation, which [describes it](https://www.raspberrypi.org/blog/experience-cs-the-complete-set-of-units-is-live/) as *"a collection of free, standards-aligned units"* for students aged 8 to 14, three units per grade from grades 3 to 8, built on a school-safe version of Scratch.
 
-Video tutorials with block coding built on Scratch, organised into themed units like sports, art and game design.
-
-**Best for:** a teacher or a parent who wants a ready-made unit with videos, rather than assembling one.
+**Best for:** a teacher, or a parent running a small group, who wants a ready-made unit that sits inside science, maths or art rather than a separate coding hour.
 
 **Where it stops:** it is Scratch underneath, so it inherits both the strengths and the ceiling.
 
@@ -96,13 +99,13 @@ Pick by what the child wants to make, not by what the platform claims to teach. 
 Yes, permanently. The Scratch Foundation says it plainly on its own site: "Scratch is free for everyone. Supporters make that possible." There is no paid tier, no trial, and nothing that stops working.
 
 **What are the best free coding websites for kids?**
-Checked on 29 August 2026: Scratch for a first experience, Code.org for structured lessons, Google CS First if you want ready-made video units, freeCodeCamp for a teenager who wants to write real code, and the p5.js Web Editor for visual work in real JavaScript. All five are free without a card, and each entry on this page quotes the product's own wording.
+Checked on 18 November 2026: Scratch for a first experience, Code.org for structured lessons, Experience CS if you want ready-made units (it replaced Google CS First, which closed in June 2025), freeCodeCamp for a teenager who wants to write real code, and the p5.js Web Editor for visual work in real JavaScript. All five are free without a card, and each entry on this page quotes the product's own wording.
 
 **Can my child learn to code without paying anything?**
 Yes, indefinitely. Most families never need to spend anything. The free tools above cover a first experience through to real JavaScript, and the only gaps worth paying for are icon coding for pre-readers and Minecraft or Roblox modding.
 
 **Is there a free alternative to Tynker?**
-For most of what Tynker does, yes. Scratch covers the block years, Code.org covers structured courses, and Google CS First covers ready-made units. The two things the free tools do not replace are icon coding for children who cannot read fluently and the Minecraft and Roblox integrations. If neither of those describes your child, start free and see whether you ever run out.
+For most of what Tynker does, yes. Scratch covers the block years, Code.org covers structured courses, and Experience CS covers ready-made units. The two things the free tools do not replace are icon coding for children who cannot read fluently and the Minecraft and Roblox integrations. If neither of those describes your child, start free and see whether you ever run out.
 
 **Is freeCodeCamp suitable for children?**
 It is free, including the certifications, and it is excellent, but it was not designed for children. There is no hand-holding and the tone assumes an adult changing careers. A 10-year-old will usually bounce off it. A motivated teenager will not.
@@ -151,7 +154,7 @@ This is the sweet spot for block coding and where most children start and stay f
 
 **[Scratch](https://scratch.mit.edu/).** *"Scratch is free for everyone"* (Scratch Foundation). Still the best on-ramp that exists, and the community is a large part of why. If your child is happy here, there is no reason to pay anyone anything.
 
-**[Google CS First](https://csfirst.withgoogle.com/).** *"totally free of charge — any number of students, all materials, as many lessons as you want."* Video-led units built on Scratch. Best if you want structure rather than a blank canvas.
+**[Experience CS](https://experience-cs.org/).** Free units from the Raspberry Pi Foundation for ages 8 to 14, built on a school-safe Scratch. It replaced Google CS First, which closed on 30 June 2025 (checked 18 November 2026). Best if you want structure rather than a blank canvas.
 
 **[Code.org](https://code.org/).** Now CodeAI since 2 June 2026, still free, still at the same address. Courses with a path through them.
 
@@ -210,7 +213,7 @@ Almost certainly not, but the tool matters more than the age. If they cannot rea
 ScratchJr, which is free and built for exactly this window. Kodable is worth a look but is paid for families, with a seven-day trial rather than a free tier. Tynker's icon coding for pre-readers is genuinely well built and one of the few paid things at this age worth the money. CodeIt is not the answer here: it asks a child to describe what they want in words.
 
 **What should an 8 or 10 year old use?**
-Scratch, almost always, and there is no reason to pay anyone if they are happy there. Google CS First adds video-led structure on top of Scratch, and Code.org gives a path through courses. Around 10 or 11 a child who wants to make a thing and share it rather than complete a course starts to outgrow this band.
+Scratch, almost always, and there is no reason to pay anyone if they are happy there. Experience CS adds ready-made units on top of Scratch, and Code.org gives a path through courses. Around 10 or 11 a child who wants to make a thing and share it rather than complete a course starts to outgrow this band.
 
 **When should we move from Scratch to Python?**
 Not on a date. Blocks start feeling babyish around 11 or 12, and the wrong move at that point is the usual reason a child quits. Python suits children around 12 and up who asked for it, or who are heading toward school computer science. Below that, setup friction and text-only output cause more quitting than the language is worth.

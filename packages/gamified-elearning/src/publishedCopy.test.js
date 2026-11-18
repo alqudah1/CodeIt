@@ -134,8 +134,6 @@ describe('published copy', () => {
       byFile[file] = (byFile[file] || 0) + 1;
     }
     expect(byFile).toEqual({
-      // Google's published wording for CS First, quoted twice.
-      'data/guides/part5.js': 2,
       // A regex that has to match the dashes children type.
       'utils/projectName.js': 1,
     });

@@ -262,15 +262,17 @@ If that is not your situation, take the list above and ignore us.`,
   },
   {
     slug: "tynker-alternative",
+    // Tynker's own prices as Canadians see them, read 15 November 2026.
+    quotedPrices: ["CA$15", "CA$18"],
     relatedLessons: [1, 4, 6],
     title: "Tynker Alternatives: What to Use, and When Tynker Is Still the Answer",
     description: "Tynker costs $15 to $18 a month for up to three children. What the alternatives actually are, what each one is better at, and the cases where you should stay.",
     h1: "Is Tynker worth it, and what else is there?",
-    lastVerified: "2026-08-26",
+    lastVerified: "2026-11-18",
     targetQueries: ["tynker alternative", "is tynker worth it", "tynker vs scratch", "cheaper alternative to tynker", "tynker pricing family plan", "coding subscription for kids worth the money", "tynker vs code.org", "best paid coding platform for kids"],
     markdown: `**Short answer:** if your child is under 8, or wants Minecraft and Roblox modding specifically, Tynker is still the best-supported option and the alternatives are worse. If your child is past blocks and you mostly want them building things they can share, you are paying for a course library you will not finish.
 
-This page names prices as they were checked on 26 August 2026, from each product's own pricing page.
+This page names prices as they were checked on 26 August 2026 and again on 15 November 2026, unchanged, from each product's own pricing page.
 
 ## What Tynker actually costs
 
@@ -306,7 +308,7 @@ At that point you are paying a monthly fee for a library, and the child is not o
 
 **[Code.org](https://code.org/).** Free, and it stays free. Rebranded to CodeAI on 2 June 2026, with the Hour of Code now the Hour of AI, and it [continues to provide free curriculum, tools and professional learning resources](https://code.org/en-US/codeorg-is-now-codeai). Best for structured courses at no cost. Weakest at open-ended making: a child who wants to build their own thing and share a link will find it closed-ended.
 
-**Scratch**: free, from MIT, block-based, and still the best on-ramp there is. It is not an alternative to Tynker so much as the thing Tynker's early levels are competing with. If your child is happy in Scratch, there is no reason to pay anyone.
+**Scratch**: free, begun at MIT and now run by the Scratch Foundation, block-based, and still the best on-ramp there is. It is not an alternative to Tynker so much as the thing Tynker's early levels are competing with. If your child is happy in Scratch, there is no reason to pay anyone.
 
 **The p5.js Web Editor**: free, text-based JavaScript, no account needed to start. Best for a teenager who already wants to write code. Nothing about it is designed for children, and that is the point.
 
@@ -314,9 +316,9 @@ At that point you are paying a monthly fee for a library, and the child is not o
 
 ## Disclosure: we make one of these
 
-CodeIt is a browser-based coding studio built for ages 8 to 14, in Toronto. A learner describes a website, game or quiz, plays what comes back, and changes it by moving things and picking colours or asking in plain language. A separate view shows what the finished project is made of and opens the lesson behind each idea in it. There are [31 beginner Python lessons](/lessons).
+CodeIt is a browser-based coding studio built for ages 8 to 14, in Toronto. A learner describes a website, game or quiz, plays what comes back, and changes it by moving things and picking colours or asking in plain language. A separate view shows what the finished project is made of and opens the lesson behind each idea in it. There is a [beginner Python course](/lessons), from a first print statement to classes and recursion.
 
-Free plan: no card, ten AI-assisted builds a month, and the lessons and Python playground stay free. Paid family plan CA$12 a month, cancellable at any time. Note that is Canadian dollars against Tynker's US dollars, so compare the numbers in your own currency rather than taking the gap at face value.
+Free plan: no card, ten AI-assisted builds a month, and the lessons and Python playground stay free. Paid family plan CA$12 a month, cancellable at any time. Tynker shows its prices in US dollars in the US and the same numbers in Canadian dollars in Canada (checked 15 November 2026), so in Canada the comparison is CA$12 against CA$15 to CA$18.
 
 **Where CodeIt is genuinely the better fit:** a child aged 8 to 14 who has outgrown blocks, wants to make things rather than take a course, and whose parent wants some evidence of understanding rather than a completion badge. The comprehension questions are generated from the learner's own file, so the right answer is whatever they actually wrote.
 
@@ -333,16 +335,16 @@ Any comparison page written by one of the products is worth reading sceptically,
 It depends on three things. If your child is under 8, or wants Minecraft and Roblox modding, or you want a curriculum to hand over rather than a tool, then yes, and the alternatives are worse. If your child is past blocks and mostly wants to build things they can share, you are paying monthly for a course library nobody is opening.
 
 **How much does Tynker cost?**
-From Tynker's own pricing page, checked 26 August 2026, with the 40% discount that was showing: $18 a month billed quarterly at $54, $15 a month billed yearly at $180, or $468 once for lifetime. All three cover up to three children and carry a 30-day money-back guarantee.
+From Tynker's own pricing page, checked 26 August and again 15 November 2026, with the same 40% discount showing both times: $18 a month billed quarterly at $54, $15 a month billed yearly at $180, or $468 once for lifetime. All three cover up to three children and carry a 30-day money-back guarantee.
 
 **Tynker vs Scratch: what is the difference?**
-Scratch is free, from MIT, and is what Tynker's early levels compete against rather than an alternative to them. Tynker adds icon coding for pre-readers, Minecraft and Roblox integrations, and a structured path. If your child is happy in Scratch, there is no reason to pay anyone.
+Scratch is free, from the Scratch Foundation, and is what Tynker's early levels compete against rather than an alternative to them. Tynker adds icon coding for pre-readers, Minecraft and Roblox integrations, and a structured path. If your child is happy in Scratch, there is no reason to pay anyone.
 
 **Tynker vs Code.org: which is better?**
 Code.org, now CodeAI since 2 June 2026, is free and stays free, and is stronger if you want structured courses at no cost. Tynker is better for pre-readers and for game modding. Both are closed-ended: a child who wants to build their own thing and send someone a link will find the walls in either.
 
 **What is a cheaper alternative to Tynker?**
-Free ones first: Scratch, Code.org and Google CS First cover most of what a Tynker subscription buys for a child aged 8 to 11. The p5.js Web Editor is free and suits a teenager who already wants to write code. CodeIt has a free plan with no card and a CA$12 family plan, which is Canadian dollars against Tynker's US dollars, so convert before comparing.
+Free ones first: Scratch, Code.org and Experience CS cover most of what a Tynker subscription buys for a child aged 8 to 11. The p5.js Web Editor is free and suits a teenager who already wants to write code. CodeIt has a free plan with no card and a CA$12 family plan, and in Canada Tynker charges the same numbers in Canadian dollars, so the comparison there is CA$12 against CA$15 to CA$18.
 
 **When should I cancel a kids coding subscription?**
 When the child has stopped opening it. The common pattern is a plan bought for a 7-year-old still being paid at 11, once blocks feel babyish and the text courses feel like homework. The library is not the problem at that point, the fit is.
