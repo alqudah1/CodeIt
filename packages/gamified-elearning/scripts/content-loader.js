@@ -115,6 +115,16 @@ function loadWebsiteBuilderPage() {
   return build;
 }
 
+/** The journey puzzles for lessons 1 to 10, as the app defines them. */
+function loadPuzzleConfigs() {
+  const mod = loadEsmDefault(path.join(SRC, 'pages/Journey/puzzleConfigs.js'));
+  const configs = mod && mod.PUZZLE_CONFIGS;
+  if (!configs || typeof configs !== 'object') {
+    throw new Error('content-loader: puzzleConfigs.js did not export PUZZLE_CONFIGS');
+  }
+  return configs;
+}
+
 /** All blog posts, in file order. */
 function loadBlogPosts() {
   const posts = loadEsmDefault(path.join(SRC, 'data/blogPosts.js'));
@@ -244,6 +254,7 @@ module.exports = {
   loadStarterGames,
   loadPressFacts,
   loadSchoolFacts,
+  loadPuzzleConfigs,
   loadWebsiteBuilderPage,
   loadPageMeta,
   loadPricing,

@@ -8,6 +8,7 @@ const {
   loadPageMeta,
   loadPricing,
   loadSchoolFacts,
+  loadPuzzleConfigs,
   loadWebsiteBuilderPage,
   loadBlogPosts,
   loadLessons,
@@ -996,6 +997,48 @@ function firstLessonSection() {
   };
 }
 
+// One real puzzle on /python-games-for-kids. The page described the puzzles
+// in 422 words and never showed one; Google has it at position 13 for
+// "python coding games" and 16 for its head terms. This is lesson 1's boss as
+// the app defines it, and the replies are what the puzzle's own check says
+// when it is run here on the two answers, so the page cannot quote a message
+// the puzzle does not give.
+function puzzleExampleSections() {
+  const configs = loadPuzzleConfigs();
+  const boss = configs['1-boss'];
+  if (!boss || typeof boss.validator !== 'function') return [];
+  const printed = (code) => {
+    const lines = String(code).split('\n').filter((line) => line.trim() && !line.trim().startsWith('#'));
+    const out = lines.map((line) => (/^print\("([^"]*)"\)$/.exec(line.trim()) || [])[1]);
+    return out.every((x) => x !== undefined) ? out.join('\n') : null;
+  };
+  const answer = printed(boss.hintCode);
+  if (!answer) return [];
+  const wrong = answer.split('\n').map(() => answer.split('\n')[0]).join('\n');
+  const right = boss.validator(answer);
+  const nope = boss.validator(wrong);
+  if (!right.pass || nope.pass) return [];
+  return [
+    {
+      heading: `One puzzle, start to finish: ${boss.title}`,
+      paragraphs: [
+        `The boss for lesson 1. The task, as the child reads it: "${boss.story}" The puzzle opens with this code:`,
+      ],
+      code: boss.starterCode.replace(/\n+$/, ''),
+    },
+    {
+      heading: 'What the puzzle says back',
+      paragraphs: ['One finished answer:'],
+      code: boss.hintCode,
+      output: answer,
+      after: [
+        `The puzzle replies: ${right.message} The title is the child's own; the shape is what is checked.`,
+        `A child who prints the divider three times is told: ${nope.message}`,
+      ],
+    },
+  ];
+}
+
 const SECTIONS_BY_ROUTE = {
   '/ai-website-builder-for-kids': WEBSITE_BUILDER.sections,
   '/build': [
@@ -1178,6 +1221,7 @@ const SECTIONS_BY_ROUTE = {
     },
   ],
   '/python-games-for-kids': [
+    ...puzzleExampleSections(),
     {
       heading: 'What makes a coding game useful',
       paragraphs: [

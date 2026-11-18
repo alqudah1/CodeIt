@@ -236,8 +236,15 @@ Watch what happens when they get stuck. A child in the right tool gets annoyed a
     // cites this page at position 1 to 3 for parents asking what to buy and
     // what it costs a month, so a stale price here is repeated to them.
     quotedPrices: ["US$7", "US$12", "US$20", "US$10", "US$18", "US$27"],
-    title: "The Best Coding Platforms for Kids, Compared Honestly (2026)",
-    description: "Scratch, Code.org, Tynker and CodeMonkey, with what each is actually best at, what it costs, and the child each one is wrong for. Prices checked 13 November 2026.",
+    // Title rewritten 18 November 2026. Search Console, 28 days: 1,492
+    // impressions at position 4.8 and 23 clicks. The searches it is shown for
+    // name a product: "codemonkey alternatives" (position 2.9), "tynker vs
+    // scratch" (8), "codakid alternatives" (2.6), "scratch vs tynker" (5.9).
+    // The old title named none of them, so a parent looking for an
+    // alternative to one did not see it in the result. Same page, same
+    // content; the title now says what is on it.
+    title: "Kids Coding Platforms Compared: Scratch, Tynker, CodeMonkey",
+    description: "Looking for a Tynker, CodeMonkey or Scratch alternative? What each is best at, what it costs a month, and the child it is wrong for. Prices checked 13 November 2026.",
     h1: "Which coding platform should my child use?",
     lastVerified: "2026-11-13",
     targetQueries: ["best coding platform for kids", "best coding app for kids", "best coding website for kids 2026", "tynker vs code.org vs scratch", "codemonkey vs tynker", "scratch vs tynker", "which coding platform for my child", "best coding program for kids", "kids coding platform comparison"],
