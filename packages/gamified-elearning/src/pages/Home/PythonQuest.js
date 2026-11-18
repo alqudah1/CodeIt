@@ -5,6 +5,11 @@
 // which pays the XP once and counts the day for the streak. A guest can do it
 // and is told, once it passes, that an account would keep the XP.
 //
+// The code that arrives is close to the task and stops short of it: a quest
+// is one small change the child makes (see pythonQuests.js). So a run that is
+// not there yet is the normal first thing, not a failure: it says what is
+// still missing, and from the second one it gives the quest's clue.
+//
 // Python is a ten megabyte download, so the editor only fetches it on the
 // first Run (loadPython 'demand'), not when Home opens.
 
@@ -20,11 +25,12 @@ export default function PythonQuest({ quest, token, onDone }) {
   const [state, setState] = useState('idle'); // idle | wrong | saving | done | keep
   const [reason, setReason] = useState('');
   const [earned, setEarned] = useState(0);
+  const [tries, setTries] = useState(0);   // runs that were not there yet
 
   const handleOutput = useCallback(async (output, code) => {
     if (!quest || quest.done || state === 'done' || state === 'keep') return;
     const verdict = checkPythonQuest(quest, code, output);
-    if (!verdict.ok) { setState('wrong'); setReason(verdict.reason); return; }
+    if (!verdict.ok) { setState('wrong'); setReason(verdict.reason); setTries((n) => n + 1); return; }
     setReason('');
     if (!token) {
       // Passed, with nobody to pay. Said plainly, and the streak on this page
@@ -76,7 +82,12 @@ export default function PythonQuest({ quest, token, onDone }) {
           onOutput={handleOutput}
         />
       )}
-      {state === 'wrong' && <p className="pq__note pq__note--wrong" role="status">{reason}</p>}
+      {state === 'wrong' && (
+        <p className="pq__note pq__note--wrong" role="status">
+          {reason}
+          {tries >= 2 && quest.hint && <span className="pq__clue"> A clue: {quest.hint}</span>}
+        </p>
+      )}
       {state === 'saving' && <p className="pq__note" role="status">Checking...</p>}
       {state === 'keep' && (
         <p className="pq__note pq__note--keep" role="status">

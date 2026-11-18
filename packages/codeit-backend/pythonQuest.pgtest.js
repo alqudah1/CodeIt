@@ -15,7 +15,7 @@ const HAS_PG = /@(localhost|127\.0\.0\.1)[:/]/.test(DB_URL);
 
 test('done once, paid once, streak counts it, parent summary lists it', { skip: !HAS_PG && 'no local Postgres' }, async () => {
   const pool = require('./db');
-  const { pythonQuestFor } = require('./pythonQuests');
+  const { pythonQuestFor, PYTHON_QUESTS } = require('./pythonQuests');
   const { getProgressSummary } = require('./progressNotifications');
   const stamp = Date.now().toString(36);
   const [user] = await pool.query(`INSERT INTO Users (username, name, password, role) VALUES (?, ?, 'x', 'Student')`, [`pq_${stamp}`, 'PQ']);
@@ -40,16 +40,30 @@ test('done once, paid once, streak counts it, parent summary lists it', { skip: 
     const wrong = await fetch(`${base}/python-quest`, { method: 'POST', headers, body: JSON.stringify({ code: 'print(1)', output: '1' }) });
     assert.equal(wrong.status, 422);
 
-    // The honest answer, by hand for this quest.
+    // The code as it came, with what it prints: refused. A quest is one change
+    // the child makes, not a button (17 November 2026).
+    const asItCame = {
+      'hello-name': 'Hello, your name!', 'three-movies': 'Inception\nDune', 'count-to-ten': '1\n2\n3\n4\n5',
+      'times-table': '2\n4\n6\n8\n10\n12\n14\n16\n18\n20', 'big-or-small': 'big', 'sum-list': '3', 'stars': '*\n**',
+      'even-numbers': '2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20', 'shout': 'pizza', 'countdown': '5\n4\n3\n2\n1',
+      'password': 'No way', 'length': 'Alexandra', 'squares': '1\n2\n3\n4\n5\n6', 'greet-all': 'Maya\nLeo\nSam',
+    };
+    const untouched = await fetch(`${base}/python-quest`, { method: 'POST', headers, body: JSON.stringify({ code: quest.starter, output: asItCame[quest.id] }) });
+    assert.equal(untouched.status, 422);
+    assert.match((await untouched.json()).reason, /That is the code as it came/);
+
+    // The honest answer, by hand for this quest: one way to finish it.
     const outputs = {
       'hello-name': 'Hello, Sam!', 'three-movies': 'Inception\nDune\nInterstellar', 'count-to-ten': '1\n2\n3\n4\n5\n6\n7\n8\n9\n10',
-      'times-table': '5\n10\n15\n20\n25\n30\n35\n40\n45\n50', 'big-or-small': 'big', 'sum-list': '50', 'stars': '*\n**\n***\n****',
+      'times-table': '5\n10\n15\n20\n25\n30\n35\n40\n45\n50', 'big-or-small': 'small', 'sum-list': '50', 'stars': '*\n**\n***\n****',
       'even-numbers': '2\n4\n6\n8\n10\n12\n14\n16\n18\n20', 'shout': 'PIZZA', 'countdown': '5\n4\n3\n2\n1\nGo!', 'password': 'Welcome',
       'length': '9', 'squares': '1\n4\n9\n16\n25\n36', 'greet-all': 'Hi Maya\nHi Leo\nHi Sam',
     };
-    const first = await (await fetch(`${base}/python-quest`, { method: 'POST', headers, body: JSON.stringify({ code: quest.starter, output: outputs[quest.id] }) })).json();
+    const solution = PYTHON_QUESTS.find((q) => q.id === quest.id).solution;
+    assert.equal(before.pythonQuest.solution, undefined, 'the answer is not sent to the page');
+    const first = await (await fetch(`${base}/python-quest`, { method: 'POST', headers, body: JSON.stringify({ code: solution, output: outputs[quest.id] }) })).json();
     assert.deepEqual([first.ok, first.xpEarned, first.alreadyDone, first.streak], [true, 15, false, 1]);
-    const again = await (await fetch(`${base}/python-quest`, { method: 'POST', headers, body: JSON.stringify({ code: quest.starter, output: outputs[quest.id] }) })).json();
+    const again = await (await fetch(`${base}/python-quest`, { method: 'POST', headers, body: JSON.stringify({ code: solution, output: outputs[quest.id] }) })).json();
     assert.deepEqual([again.ok, again.xpEarned, again.alreadyDone], [true, 0, true]);
 
     const after = await (await fetch(base, { headers })).json();

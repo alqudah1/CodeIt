@@ -12,3 +12,6 @@
 .pq__note--wrong { color: #8A2D12; }
 .pq__note a { color: inherit; text-decoration: underline; }
 @media (min-width: 900px) { .pq__title { font-size: 26px; } }
+
+/* The clue, after a second run that is not there yet: on its own line, in ink. */
+.pq__clue { display: block; margin-top: 6px; color: var(--ci-ink); }

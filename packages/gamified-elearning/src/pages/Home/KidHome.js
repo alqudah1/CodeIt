@@ -206,7 +206,23 @@ export default function KidHome() {
                   {g.done ? (
                     <span className="kh__badge-disc" aria-hidden="true"><GoalIcon id={g.id} /><i className="kh__badge-tick">✓</i></span>
                   ) : (
-                    <Link className="kh__badge-disc" to={g.to} aria-label={g.say || g.label}><GoalIcon id={g.id} /></Link>
+                    <Link
+                      className="kh__badge-disc"
+                      to={g.to}
+                      aria-label={g.say || g.label}
+                      // A link to a place on this page: the address changed to
+                      // /home#today-python and nothing moved, so a child
+                      // tapped the Python goal and nothing happened. The quest
+                      // is brought onto the screen by hand.
+                      onClick={g.to.startsWith('#') ? (event) => {
+                        const target = document.getElementById(g.to.slice(1));
+                        if (!target) return;
+                        event.preventDefault();
+                        const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+                        target.scrollIntoView?.({ block: 'start', behavior: still ? 'auto' : 'smooth' });
+                        target.focus?.({ preventScroll: true });
+                      } : undefined}
+                    ><GoalIcon id={g.id} /></Link>
                   )}
                   <span className="kh__badge-label">{g.label}</span>
                   <span className={`kh__badge-xp${g.done ? ' is-done' : ''}`}>{g.done ? 'Done' : g.xp ? `+${g.xp} XP` : 'Streak'}</span>
@@ -225,7 +241,7 @@ export default function KidHome() {
           {/* Two minutes of real Python, every day, under the game quest. The
               server's copy says whether it is done; before it answers, or for a
               guest, the bank's quest for today. */}
-          <div id="today-python" />
+          <div id="today-python" className="kh__anchor" tabIndex={-1} />
           <PythonQuest
             quest={today?.pythonQuest || { ...pythonQuestFor(), done: false }}
             token={token}

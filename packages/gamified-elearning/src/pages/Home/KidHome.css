@@ -279,3 +279,7 @@ a.kh__badge-disc:hover { transform: translateY(-3px); color: var(--n-text); bord
 .kh:not(.night) .kh__chip--theme { color: var(--ci-ink); }
 .kh--night .kh__chip--theme { color: var(--n-sun); }
 @media (min-width: 900px) { .kh__hud-chips { flex-direction: row; } }
+
+/* Where the Python goal lands: far enough down that the header does not sit on
+   the quest's heading, and no ring round an empty div. */
+.kh__anchor { scroll-margin-top: 84px; outline: none; }

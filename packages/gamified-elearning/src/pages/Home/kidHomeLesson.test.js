@@ -107,3 +107,14 @@ test('an older answer with no next lesson in it still draws the goal', async () 
   // With no gameToday in the answer, the card falls back to what it did before.
   expect(screen.getByText('Done. Build another?')).toBeInTheDocument();
 });
+
+test('tapping the Python goal brings the quest onto the screen', async () => {
+  serves({ signedIn: true, quest: QUEST, streak: 0, builtToday: false, gameToday: false, lessonToday: false, level: LEVEL, lessonsDone: 8, nextLesson: { id: 9, title: 'Basic Functions', xp: 75 }, games: [] });
+  mount({ user: { name: 'sam' }, token: 't' });
+  const goal = await screen.findByRole('link', { name: "Today's Python quest" });
+  const anchor = document.getElementById('today-python');
+  anchor.scrollIntoView = jest.fn();
+  // The address changing to /home#today-python moved nothing: this does.
+  goal.click();
+  expect(anchor.scrollIntoView).toHaveBeenCalledWith({ block: 'start', behavior: 'smooth' });
+});

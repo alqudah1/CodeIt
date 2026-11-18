@@ -20,8 +20,14 @@ jest.mock('../../components/CodeRunnerPython', () => (props) => (
   </div>
 ));
 
-const QUEST = { id: 'count-to-ten', title: 'Count to ten', task: 'Print 1 to 10.', starter: 'for n in range(1, 11):\n    print(n)\n', mustPrint: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], mustUse: ['for', 'range'], day: '2026-11-02', xp: 15, done: false };
-const run = (output) => { fireEvent.change(screen.getByLabelText('output'), { target: { value: output } }); fireEvent.click(screen.getByRole('button', { name: 'Run' })); };
+const QUEST = { id: 'count-to-ten', title: 'Count to ten', task: 'This counts to 5. Make it count to 10.', starter: 'for n in range(1, 6):\n    print(n)\n', hint: 'range(1, 6) stops just before 6. Which number should it stop before, to reach 10?', mustPrint: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], mustUse: ['for', 'range'], xp: 15 };
+const DONE = 'for n in range(1, 11):\n    print(n)\n';
+// The child's code (the finished loop unless a test says otherwise) and what it printed.
+const run = (output, code = DONE) => {
+  fireEvent.change(screen.getByLabelText('code'), { target: { value: code } });
+  fireEvent.change(screen.getByLabelText('output'), { target: { value: output } });
+  fireEvent.click(screen.getByRole('button', { name: 'Run' }));
+};
 
 beforeEach(() => { trackEvent.mockClear(); });
 
@@ -56,4 +62,36 @@ test('already done today: no editor, a plain line, tomorrow has a new one', () =
   render(<PythonQuest quest={{ ...QUEST, done: true }} token="t" />);
   expect(screen.queryByRole('button', { name: 'Run' })).toBeNull();
   expect(screen.getByText(/Already done today/)).toBeInTheDocument();
+});
+
+// ── A quest is one change the child makes ───────────────────────────────────
+// Until 17 November 2026 the code that arrived was the finished answer, and
+// pressing Run on it paid 15 XP and a day on the streak.
+
+test('the code as it came is not the quest done: it says so, and nothing is sent', () => {
+  global.fetch = jest.fn();
+  render(<PythonQuest quest={QUEST} token="t" />);
+  run('1\n2\n3\n4\n5', QUEST.starter);
+  expect(screen.getByRole('status')).toHaveTextContent('That is the code as it came, and it runs. Now make the change the task asks for.');
+  expect(global.fetch).not.toHaveBeenCalled();
+  expect(screen.queryByText(/XP banked/)).toBeNull();
+});
+
+test('the clue comes with the second run that is not there yet, not the first', () => {
+  global.fetch = jest.fn();
+  render(<PythonQuest quest={QUEST} token="t" />);
+  run('1\n2\n3\n4\n5', QUEST.starter);
+  expect(screen.queryByText(/A clue:/)).toBeNull();
+  run('1\n2\n3\n4\n5\n6\n7', 'for n in range(1, 8):\n    print(n)\n');
+  expect(screen.getByRole('status')).toHaveTextContent('The output should include "8".');
+  expect(screen.getByRole('status')).toHaveTextContent('A clue: range(1, 6) stops just before 6. Which number should it stop before, to reach 10?');
+});
+
+test('the bank the page falls back to has no finished starters either', () => {
+  const { PYTHON_QUESTS, checkPythonQuest, pythonQuestFor } = require('./pythonQuests');
+  for (const quest of PYTHON_QUESTS) {
+    expect(quest.starter).not.toBe(quest.solution);
+    expect(checkPythonQuest(quest, quest.starter, 'anything').ok).toBe(false);
+  }
+  expect(pythonQuestFor('2026-11-17T10:00:00Z').solution).toBeUndefined();
 });
