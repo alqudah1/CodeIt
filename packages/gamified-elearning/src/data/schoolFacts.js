@@ -74,6 +74,7 @@ export default function schoolFacts({ contactEmail, pricePerInterval, maxChildre
         heading: 'Who the adult is',
         paragraphs: [
           'The teacher who created the class is the adult on record for every child in it. The code is the secret, and the first name is how the room knows who made what. A child typing the same name into the same class signs back into the same work, which is how a child on a shared laptop gets back to yesterday\'s project without a password to lose.',
+          'The teacher who created the class, and nobody else, can open each child\'s work: the games they made, the sentences they typed to make them, the Python lessons they have finished and the one they are on, and their quiz scores. The board the room sees shows first names and games only.',
         ],
       },
       {

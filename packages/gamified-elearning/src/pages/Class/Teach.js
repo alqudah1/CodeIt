@@ -32,13 +32,31 @@ export function spaceCode(code) {
   return m ? `${m[1]} ${m[2]}` : String(code || '');
 }
 
-/** Three numbers for the room: who has a game, who is still at it, who has been at it too long. */
+/** Has this child finished a Python lesson, or started one? Only the teacher's board is told. */
+export function inLessons(member) {
+  return Boolean(member?.lessons && (member.lessons.lessons > 0 || member.lessons.now));
+}
+
+/**
+ * The numbers for the room: who has a game, who is still at it, who has been
+ * at it too long, and (for the teacher) who is in the Python lessons.
+ *
+ * A child working through the lessons is not stuck. Until 18 November 2026
+ * the board knew only about games, so a class that spent the hour on Python
+ * read as thirty children stuck, by name.
+ */
 export const STUCK_AFTER_MS = 10 * 60 * 1000;
 export function roomNumbers(members, now = Date.now()) {
   const made = members.filter((m) => m.games > 0);
-  const notYet = members.filter((m) => m.games === 0);
+  const learning = members.filter(inLessons);
+  const notYet = members.filter((m) => m.games === 0 && !inLessons(m));
   const stuck = notYet.filter((m) => m.joinedAt && now - new Date(m.joinedAt).getTime() >= STUCK_AFTER_MS);
-  return { made: made.length, building: notYet.length - stuck.length, stuck };
+  return { made: made.length, building: notYet.length - stuck.length, stuck, learning: learning.length };
+}
+
+/** "Lesson 3, Strings": the number always, the name when the server sent one. */
+export function lessonName(lesson) {
+  return lesson?.title ? `Lesson ${lesson.id}, ${lesson.title}` : `Lesson ${lesson?.id}`;
 }
 
 /** How long ago, in classroom words. */
@@ -318,6 +336,9 @@ function Board({ code, token }) {
   const members = useMemo(() => board?.members || [], [board]);
   const totalGames = useMemo(() => members.reduce((a, m) => a + m.games, 0), [members]);
   const numbers = useMemo(() => roomNumbers(members), [members]);
+  // The Python lessons are shown to the teacher who made the class, at their
+  // own desk. Never on the projector, and the server sends them to nobody else.
+  const showLessons = Boolean(board?.owner) && !projector && members.some((m) => m.lessons);
 
   if (status === 'notready') return <NotSetUp />;
   if (status === 'missing') return <div className="ci-blk ci-blk--paper cl__card"><h1 className="ci-h1 cl__title">No class has that code.</h1><p className="ci-sub">Check it against <Link to="/teach">your classes</Link>.</p></div>;
@@ -377,9 +398,11 @@ function Board({ code, token }) {
 
       <div className="cl__count"><span className={`ci-livedot${lostSince ? ' is-off' : ''}`} />{members.length} {members.length === 1 ? 'child' : 'children'} in. {totalGames} {totalGames === 1 ? 'game' : 'games'} made.</div>
       {members.length > 0 && (
-        <div className="cl__nums">
+        <div className={`cl__nums${showLessons ? ' cl__nums--four' : ''}`}>
           <div className="ci-blk ci-blk--sun"><div className="ci-num">{numbers.building}</div><div className="ci-cap">building</div></div>
           <div className="ci-blk ci-blk--mint"><div className="ci-num">{numbers.made}</div><div className="ci-cap">with a game</div></div>
+          {/* Only at the teacher's own desk: how far each child has got is not for the room. */}
+          {showLessons && <div className="ci-blk ci-blk--sky"><div className="ci-num">{numbers.learning}</div><div className="ci-cap">in the Python lessons</div></div>}
           <div className={`ci-blk ${numbers.stuck.length ? 'ci-blk--coral' : 'ci-blk--paper'}`}>
             <div className="ci-num">{numbers.stuck.length}</div>
             <div className="ci-cap">{numbers.stuck.length ? `stuck: ${numbers.stuck.map((m) => m.name).join(', ')}` : 'stuck'}</div>
@@ -401,12 +424,23 @@ function Board({ code, token }) {
             <Tile
               key={m.id}
               {...tileProps}
-              className={`cl__tile ci-blk ${m.games ? 'ci-blk--violet' : 'ci-blk--paper'}${fresh.has(m.id) ? ' ci-popin' : ''}${playable || opens ? ' is-playable' : ''}`}
+              className={`cl__tile ci-blk ${m.games ? 'ci-blk--violet' : showLessons && inLessons(m) ? 'ci-blk--sky' : 'ci-blk--paper'}${fresh.has(m.id) ? ' ci-popin' : ''}${playable || opens ? ' is-playable' : ''}`}
               style={{ animationDelay: `${Math.min(i, 12) * 0.03}s` }}
             >
               <span className="cl__tilename">{m.name}</span>
-              <span className="cl__tilegames">{m.games === 0 ? 'Joined' : `${m.games} ${m.games === 1 ? 'game' : 'games'}`}</span>
+              <span className="cl__tilegames">
+                {[
+                  m.games > 0 ? `${m.games} ${m.games === 1 ? 'game' : 'games'}` : null,
+                  showLessons && m.lessons?.lessons > 0 ? `${m.lessons.lessons} ${m.lessons.lessons === 1 ? 'lesson' : 'lessons'}` : null,
+                ].filter(Boolean).join(' · ') || 'Joined'}
+              </span>
               {m.newest && <span className="cl__tilenew">{m.newest.title}<small>{ago(m.newest.createdAt)}{opens ? ' · open' : playable ? ' · play' : ''}</small></span>}
+              {showLessons && m.lessons?.now && (
+                <span className="cl__tilenew cl__tilelesson">On {lessonName(m.lessons.now)}<small>step {m.lessons.now.step} · {ago(m.lessons.now.at)}</small></span>
+              )}
+              {showLessons && !m.lessons?.now && m.lessons?.lastLessonAt && (
+                <span className="cl__tilenew cl__tilelesson">Last lesson finished<small>{ago(m.lessons.lastLessonAt)}</small></span>
+              )}
             </Tile>
           );
         })}
@@ -523,7 +557,14 @@ function Student({ code, kid, token }) {
   const { student, games, powers, done } = data;
   const plays = games.reduce((a, g) => a + g.plays, 0);
   const next = powers.find((p) => p.state === 'next');
-  const quiet = games.length === 0;
+  // The Python lessons: null when the server could not read them, or is an
+  // older one that does not send them. Said as that, never as "none".
+  const lessons = data.lessons || null;
+  const finished = lessons?.finished || [];
+  const startedPython = finished.length > 0 || Boolean(lessons?.now);
+  // No game is only something to act on for a child who is not doing
+  // anything else: one working through the lessons is not waiting for help.
+  const quiet = games.length === 0 && !startedPython;
   const nextSentence = BOARD_SENTENCE[next?.slug || 'numbers'];
   return (
     <div className="st">
@@ -534,11 +575,46 @@ function Student({ code, kid, token }) {
       </header>
 
       <section className="st__left">
-        <div className="cl__nums">
+        <div className={`cl__nums${lessons ? ' cl__nums--four' : ''}`}>
           <div className="ci-blk ci-blk--violet"><div className="ci-num">{games.length}</div><div className="ci-cap">{games.length === 1 ? 'game' : 'games'}</div></div>
           <div className="ci-blk ci-blk--ink"><div className="ci-num">{plays}</div><div className="ci-cap">{plays === 1 ? 'play' : 'plays'}</div></div>
           <div className="ci-blk ci-blk--mint"><div className="ci-num">{done.length}</div><div className="ci-cap">of {POWERS.length} powers</div></div>
+          {lessons && <div className="ci-blk ci-blk--sun"><div className="ci-num">{finished.length}</div><div className="ci-cap">of {lessons.total} Python lessons</div></div>}
         </div>
+
+        {/* The Python lessons. A teacher asked where they were (18 November
+            2026): the class page showed games and powers and nothing of the
+            course his class had just spent an hour on. */}
+        <section className="st__sec st__python" aria-labelledby="st-python-title">
+          <h2 className="ci-h2" id="st-python-title">Python lessons {lessons && <small>{finished.length} of {lessons.total}</small>}</h2>
+          {!lessons && <p className="ci-sub">The Python lessons could not be read just now. Open this page again in a moment.</p>}
+          {lessons && lessons.now && (
+            <p className="ci-blk ci-blk--sun st__now">
+              <b>Working on {lessonName(lessons.now)}.</b> Up to step {lessons.now.step}, {ago(lessons.now.at)}.
+            </p>
+          )}
+          {lessons && !startedPython && (
+            <p className="ci-sub">
+              No Python lesson started yet. Lessons are counted here when {student.name} does them signed in to this class: at {SITE}/join, with the code {spaceCode(code)} and the same first name.
+            </p>
+          )}
+          {finished.length > 0 && (
+            <ol className="st__lessons">
+              {finished.map((lesson) => {
+                const quiz = lessons.quizzes.find((q) => q.quizId === lesson.id);
+                return (
+                  <li key={lesson.id} className="ci-blk ci-blk--paper">
+                    <span className="st__lessonname"><b>{lesson.id}</b>{lesson.title || `Lesson ${lesson.id}`}</span>
+                    <span className="st__meta">
+                      Finished{lesson.completedAt ? ` ${ago(lesson.completedAt)}` : ''}
+                      {quiz ? ` · quiz ${quiz.right} of ${quiz.total}${quiz.tries > 1 ? `, best of ${quiz.tries} goes` : ''}` : ' · quiz not taken'}
+                    </span>
+                  </li>
+                );
+              })}
+            </ol>
+          )}
+        </section>
 
         {quiet && (
           <div className="ci-blk ci-blk--sun st__nudge ci-rise">
@@ -547,7 +623,7 @@ function Student({ code, kid, token }) {
           </div>
         )}
 
-        {!quiet && (
+        {games.length > 0 && (
           <section className="st__sec">
             <h2 className="ci-h2">What {student.name} typed</h2>
             <ol className="st__said">

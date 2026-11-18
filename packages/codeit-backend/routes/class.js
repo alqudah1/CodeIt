@@ -29,6 +29,7 @@ const { cleanClassName, cleanFirstName, isCode, makeCode, normaliseCode, student
 const { LESSON_BASE, POWERS, powerByLessonId, powerStates } = require('../powers');
 const { eraseLearner } = require('./../learnerErasure');
 const { isClassAccountRow } = require('../classAccounts');
+const { FIRST_LESSON, LAST_LESSON, NOTHING, lessonsByChild, lessonsForChild } = require('../classProgress');
 
 const router = express.Router();
 
@@ -75,6 +76,32 @@ async function findClass(code) {
 
 function publicClass(row) {
   return { id: row.id, code: row.code, name: row.name, createdAt: row.created_at };
+}
+
+// ── The Python lessons, for the teacher ─────────────────────────────────────
+//
+// Read from the tables every learner's lessons already go into; nothing new
+// is stored. See classProgress.js for what is made of the rows, and why.
+async function lessonTitles() {
+  const [rows] = await pool.query('SELECT id, title FROM lessons WHERE id >= ? AND id <= ? ORDER BY id', [FIRST_LESSON, LAST_LESSON]);
+  return new Map(rows.map((row) => [Number(row.id), String(row.title || '')]));
+}
+
+async function lessonRowsFor(ids) {
+  if (!ids.length) return { done: [], steps: [] };
+  const marks = ids.map(() => '?').join(',');
+  const [done] = await pool.query(
+    `SELECT user_id, lesson_id, completed_at FROM Student_Lesson_Progress
+      WHERE user_id IN (${marks}) AND lesson_id >= ? AND lesson_id <= ?`,
+    [...ids, FIRST_LESSON, LAST_LESSON]
+  );
+  const [steps] = await pool.query(
+    `SELECT user_id, lesson_id, MAX(step_index) AS furthest, MAX(completed_at) AS at FROM lesson_step_xp
+      WHERE user_id IN (${marks}) AND lesson_id >= ? AND lesson_id <= ?
+      GROUP BY user_id, lesson_id`,
+    [...ids, FIRST_LESSON, LAST_LESSON]
+  );
+  return { done, steps };
 }
 
 // ── POST /api/class { name } ────────────────────────────────────────────────
@@ -202,6 +229,21 @@ router.get('/:code/student/:id', requireAuth, async (req, res) => {
       [studentId, LESSON_BASE, LESSON_BASE + POWERS.length]
     );
     const done = powerRows.map((r) => powerByLessonId(r.lesson_id)).filter(Boolean).map((p) => p.slug);
+    // The Python lessons: finished, in hand, and the quizzes. If this read
+    // fails the page still shows the games and the powers, and says the
+    // lessons could not be read rather than that there are none.
+    let lessons = null;
+    try {
+      const titles = await lessonTitles();
+      const rows = await lessonRowsFor([studentId]);
+      const [quizRows] = await pool.query(
+        'SELECT quiz_id, correct_count, total_questions, completed_at FROM Student_Quiz_Attempt WHERE student_id = ? ORDER BY completed_at ASC',
+        [studentId]
+      );
+      lessons = { total: titles.size, ...lessonsForChild(rows.done, rows.steps, quizRows, titles) };
+    } catch (err) {
+      console.error('class/student lessons:', err.message);
+    }
     return res.json({
       ready: true,
       class: publicClass(klass),
@@ -213,6 +255,7 @@ router.get('/:code/student/:id', requireAuth, async (req, res) => {
       newestCode: newestRows[0]?.generated_code || null,
       done,
       powers: powerStates(done),
+      lessons,
     });
   } catch (err) {
     if (notSetUp(err)) return notReady(res);
@@ -318,10 +361,26 @@ router.get('/:code', optionalAuth, async (req, res) => {
       for (const g of games) if (!newest.has(g.user_id)) newest.set(g.user_id, g);
     }
     const owner = req.user?.user_id === klass.owner_id;
+    // The lessons are for the teacher who made the class and nobody else: the
+    // board is also what the room sees, and how far each child has got is not
+    // for the room. Anyone else gets the board exactly as it was.
+    let lessons = null;
+    let lessonsTotal = null;
+    if (owner) {
+      try {
+        const titles = await lessonTitles();
+        const rows = await lessonRowsFor(ids);
+        lessons = lessonsByChild(rows.done, rows.steps, titles);
+        lessonsTotal = titles.size;
+      } catch (err) {
+        console.error('class/board lessons:', err.message);
+      }
+    }
     return res.json({
       ready: true,
       class: publicClass(klass),
       owner,
+      ...(lessons ? { lessonsTotal } : {}),
       members: members.map((m) => {
         const g = newest.get(m.user_id);
         return {
@@ -331,6 +390,7 @@ router.get('/:code', optionalAuth, async (req, res) => {
           games: Number(m.games) || 0,
           plays: Number(m.plays) || 0,
           newest: g ? { id: g.id, title: g.title, type: g.project_type, publicId: g.is_public ? g.public_id : null, createdAt: g.created_at } : null,
+          ...(lessons ? { lessons: lessons.get(Number(m.user_id)) || NOTHING } : {}),
         };
       }),
     });

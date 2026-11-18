@@ -137,6 +137,20 @@ describe('the schools page', () => {
     expect(fs.existsSync(path.join(ROOT, 'src', 'pages', 'Lessons', 'lessonMapReadable.test.js'))).toBe(true);
   });
 
+  test('only the teacher who made the class is sent how far each child has got in the lessons', () => {
+    expect(everything).toContain('The teacher who created the class, and nobody else, can open each child\'s work: the games they made, the sentences they typed to make them, the Python lessons they have finished and the one they are on, and their quiz scores. The board the room sees shows first names and games only.');
+    const route = read(BACKEND, 'routes', 'class.js');
+    // The board: lessons are read only for the owner, and added to the answer only when they were.
+    expect(route).toMatch(/let lessons = null;\s*let lessonsTotal = null;\s*if \(owner\) \{/);
+    expect(route).toContain("...(lessons ? { lessons: lessons.get(Number(m.user_id)) || NOTHING } : {}),");
+    // A child's page: refused to anyone but the owner before anything is read.
+    expect(route).toContain("if (klass.owner_id !== req.user.user_id) return res.status(403).json({ error: 'Only the teacher who made this class can see a child\\'s work.' });");
+    // And a real Postgres agrees: classLessons.pgtest.js asks as the teacher, as a child in the class and as nobody.
+    const proof = read(BACKEND, 'classLessons.pgtest.js');
+    expect(proof).toContain("assert.equal('lessons' in m, false, 'how far a child has got is not for the room');");
+    expect(proof).toContain('assert.equal((await fetch(`${base}/student/${ada}`, { headers: as(ben) })).status, 403);');
+  });
+
   test('it is reachable: a route, a footer link, a link from the teacher page, and a crawlable copy typed as a page', () => {
     expect(read(ROOT, 'src', 'App.js')).toContain('<Route path="/schools" element={<Schools />} />');
     expect(read(ROOT, 'src', 'components', 'SiteFooter', 'SiteFooter.js')).toContain('<Link to="/schools">For schools</Link>');

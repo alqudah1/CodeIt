@@ -49,9 +49,14 @@
 .cl__tile.is-playable:hover { transform: translateY(-2px) scale(1.01); }
 .cl__tile.is-playable:active { transform: scale(.98); }
 .cl__tilename { font: 800 20px var(--ci-display); line-height: 1.1; }
-.cl__tilegames { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; opacity: .75; }
+/* 13px: these were 12 and 11, on the screen a teacher reads across a desk. */
+.cl__tilegames { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; opacity: .8; }
 .cl__tilenew { font-size: 14px; margin-top: 6px; line-height: 1.25; }
-.cl__tilenew small { display: block; font-size: 11px; opacity: .75; margin-top: 2px; }
+.cl__tilenew small { display: block; font-size: 13px; opacity: .8; margin-top: 2px; }
+/* Four numbers when the teacher's board has the Python lessons: two by two on
+   a phone, in one row from a tablet up. */
+.cl__nums--four { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 700px) { .cl__nums--four { grid-template-columns: repeat(4, 1fr); } }
 .cl__empty { grid-column: 1 / -1; }
 .cl__stage { margin: 0 0 18px; }
 .cl__stagebar { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
@@ -151,6 +156,14 @@ body.cl-projector { padding-bottom: 0 !important; }
 .st__power.is-next { background: var(--ci-sun); }
 .st__power.is-later { background: var(--ci-quiet); color: var(--ci-ink-soft); }
 .st__next { margin-top: 10px; }
+/* The Python lessons on a child's page: one row a lesson, its number in a
+   sun die like a quiz answer's letter, and under it when and the quiz. */
+.st__now { margin: 8px 0 0; padding: 12px 16px; font-size: 15px; line-height: 1.4; }
+.st__lessons { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
+.st__lessons li { padding: 10px 14px; display: grid; gap: 2px; }
+.st__lessonname { display: flex; align-items: baseline; gap: 10px; font: 800 16px var(--ci-display); line-height: 1.25; }
+.st__lessonname b { flex: none; min-width: 26px; text-align: center; padding: 1px 6px; border-radius: 7px; background: var(--ci-sun); border: 2px solid var(--ci-ink); font: 800 13px var(--ci-body); }
+.st__lessons .st__meta { padding-left: 36px; }
 .st__next a { color: var(--ci-orange-text); text-decoration: underline; text-underline-offset: 2px; }
 a.cl__tile { text-decoration: none; color: inherit; }
 a.cl__tile.ci-blk--violet { color: #fff; }
