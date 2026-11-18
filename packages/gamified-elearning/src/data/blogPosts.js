@@ -229,11 +229,11 @@ const BLOG_POSTS = [
     description:
       'Six coding games for kids compared: Scratch, Blockly Games, CodeAI, Tynker, CodeIt and CodeCombat. Ages, prices and what each one is weakest at, checked on each product\'s own site.',
     date: '2026-03-27',
-    updated: '2026-09-03',
+    updated: '2026-11-18',
     readTime: '8 min read',
     category: 'Games & Puzzles',
     excerpt:
-      'Six coding games, one section each: what it is, who it fits, what it costs, and where it is weakest. Every price and age read from the product\'s own site on 3 September 2026.',
+      'Six coding games, one section each: what it is, who it fits, what it costs, and where it is weakest. Every price, age and quote was read from the product\'s own site on 3 September 2026 and checked again in November 2026.',
     sections: [
       {
         heading: 'How to judge a coding game',
@@ -274,7 +274,7 @@ const BLOG_POSTS = [
         heading: 'Tynker',
         body: [
           'Paid, with a free tier, and the largest library here: block coding, Minecraft and Roblox modding, and typed languages later. Tynker says kids can start "as early as 5-6 years old" and that it is "for ages 5 to 18."',
-          'Prices read from tynker.com/pricing on 3 September 2026, with a 40% discount showing at the time: $18 a month billed quarterly at $54, $15 a month billed yearly at $180, or $468 once for lifetime access. All plans covered up to three children and carried a 30-day money-back guarantee.',
+          'Prices read from tynker.com/pricing on 3 September 2026 and unchanged on 15 November 2026, with a 40% discount showing both times: $18 a month billed quarterly at $54, $15 a month billed yearly at $180, or $468 once for lifetime access. All plans covered up to three children and carried a 30-day money-back guarantee.',
           'Best for: a child who is already deep in Minecraft or Roblox. The modding integrations are the real reason to pay, and nothing free replaces them.',
           'Weakest at: value if your child does not use those integrations. The same block-coding foundation is free elsewhere, and a discounted price on a page is not the same as a stable price.',
         ],
@@ -283,8 +283,8 @@ const BLOG_POSTS = [
         heading: 'CodeIt',
         body: [
           'This is us, so weigh it accordingly. Free plan with no card, and CodeIt Plus at CA$12 a month.',
-          'Typed Python from the first lesson: 31 beginner lessons, each with a quiz, and 30 coding puzzles tied to specific lessons. Separately, a studio where a child describes a game or website, gets a working first version, and then opens the code and changes it.',
-          'Best for: a child who has outgrown blocks and wants to type, and for one who wants to build a thing and share a link to it rather than work through a course.',
+          'Typed Python from the first lesson, from a first print statement to classes and recursion, each lesson with a quiz, and coding puzzles for lessons 1 to 10. Separately, a studio where a child describes a game or website, gets a working first version, and then opens the code and changes it.',
+          'Best for: a child who has outgrown blocks and wants to type, and for one who wants to build a thing rather than work through a course. A child aged 13 or over can share it with a public link; a younger child\'s profile stays private.',
           'Weakest at: everything a large product has and a small one does not. There is no school rostering, no gradebook, no offline mode, no Minecraft or Roblox integration, and the structured lesson sequence is Python only. If your child is five and cannot read fluently, start with Scratch and come back.',
         ],
       },
@@ -300,7 +300,7 @@ const BLOG_POSTS = [
       {
         heading: 'The comparison, in one table',
         body: [
-          'Ages, prices and features below were read from each product\'s own site on 3 September 2026. Prices change, discounts appear and vanish, and terms are updated: check before paying.',
+          'Ages, prices and features below were read from each product\'s own site on 3 September 2026 and checked again in November 2026. Prices change, discounts appear and vanish, and terms are updated: check before paying.',
           '• Scratch. Ages 8+ (younger with help). Free. Blocks. Free tier: it is entirely free.\n• Blockly Games. Ages 8+. Free and open source, Apache 2.0. Blocks, with the JavaScript shown. Free tier: entirely free.\n• CodeAI (Code.org). K to 12. Free. Blocks and typed code by course. Free tier: entirely free.\n• Tynker. Ages 5 to 18. $15 a month billed yearly at $180, $18 a month billed quarterly at $54, or $468 once. Blocks, then typed. Free tier: yes.\n• CodeIt. Built for ages 8 to 14, younger with an adult, managed profiles under 13. Free plan, CA$12 a month for Plus. Typed Python, plus the studio. Free tier: yes.\n• CodeCombat. Roughly 9+. Free levels, paid subscription, price not published in the page source. Typed Python, JavaScript and HTML. Free tier: yes.',
         ],
       },
