@@ -33,7 +33,8 @@
 // small, and a seven-year-old who never leaves the Play tab should not pay for
 // it.
 
-import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useKeepPlaying } from '../../utils/keepPlaying';
 import { lineContext } from './previewErrors';
 import { canRestore, costOfRestoring } from './codeSafety';
 import './CodePanel.css';
@@ -127,6 +128,13 @@ export default function CodePanel({
   // So while the cursor is in the code, this panel is kept where it was on the
   // screen: when the page above it changes height, the page is scrolled by the
   // same amount, before the browser paints.
+  // The small screen cannot be played, so its game ends within seconds. It
+  // starts again by itself: it is there to be watched (utils/keepPlaying).
+  const liveFrame = useRef(null);
+  const [replays, setReplays] = useState(0);
+  const replay = useCallback(() => setReplays((n) => n + 1), []);
+  useKeepPlaying(liveFrame, replay);
+
   const section = useRef(null);
   useEffect(() => {
     const el = section.current;
@@ -201,6 +209,8 @@ export default function CodePanel({
               to land in. The real one is on the Play tab. */}
           <div className="cp__live-screen" aria-hidden="true">
             <iframe
+              ref={liveFrame}
+              key={replays}
               className="cp__live-frame"
               title="Your project, running"
               srcDoc={liveDoc}

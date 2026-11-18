@@ -65,3 +65,34 @@ a.pw__blk:active { transform: scale(.98); }
   .pw__h1 { font-size: 38px; }
 }
 @media (prefers-reduced-motion: reduce) { .pw__val { animation: none; } }
+
+/* ── One screen on a phone ────────────────────────────────────────────────────
+   Under 900 wide there is one column, and the game with its buttons comes
+   straight after the step, above the code: the sentence that says what to do,
+   the game, Run it and the lit line are then on one screen. The two halves of
+   the page stop being boxes (display: contents) so their pieces can be put in
+   that order; nothing is moved in the page itself, so wider screens and a
+   screen reader get the order it was written in. */
+@media (max-width: 899px) {
+  .pw__lesson { gap: 0; }
+  .pw__left, .pw__right { display: contents; }
+  .pw__top { order: 1; }
+  .pw__h1 { order: 2; }
+  .pw__intro { order: 3; }
+  .pw__step { order: 4; }
+  .pw__gamehead { order: 5; }
+  .pw__frame { order: 6; }
+  .pw__actions { order: 7; margin-bottom: 14px; }
+  .pw__hint { order: 8; margin: 0 0 14px; }
+  .pw__code { order: 9; }
+  .pw__engine { order: 10; }
+}
+
+/* A finger, not a mouse: the lit value was 35 by 23 pixels with 13px letters.
+   16px is also the size under which an iPhone zooms the whole page in when a
+   box is tapped, and does not zoom back. */
+@media (pointer: coarse) {
+  .pw__line.is-lit { padding-top: 6px; padding-bottom: 6px; }
+  .pw__val { font-size: 16px; min-height: 34px; padding: 4px 10px; border-radius: 8px; vertical-align: middle; }
+  .pw__editor { font-size: 16px; }
+}

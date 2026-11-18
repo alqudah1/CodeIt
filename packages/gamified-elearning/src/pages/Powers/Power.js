@@ -8,6 +8,17 @@
 // line stays on in the game you take to Build.
 //
 // Nothing here is a quiz question. Every step is the game changing.
+//
+// On a phone the three things a step needs were on three different screens:
+// the sentence saying what to do at the top, the lit value 150 pixels under
+// it, and the game and Run it 700 pixels further down, past the whole
+// settings block and "Where the game reads it". Change the number, scroll to
+// the bottom, run, scroll to the top to read step two, scroll down to the
+// value, scroll to the bottom. Measured 18 November 2026 at 390 by 844: Run
+// it was at 1,162 pixels on a screen 844 tall. Under 900 wide the game and
+// its buttons now come straight after the step, above the code, so the step,
+// the game, Run it and the lit line are on one screen (Powers.css). Wider
+// than that it is two columns, as it was.
 
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -22,6 +33,7 @@ import Header from '../Header/Header';
 import TabBar from '../../ds/TabBar';
 import { POWERS, POWER_XP, passes, powerBySlug, powerStates, readSettings, stepFor, writeSetting } from './powers';
 import { rememberDone } from './PowersMap';
+import { useKeepPlaying } from '../../utils/keepPlaying';
 import '../../ds/ds.css';
 import './Powers.css';
 
@@ -59,6 +71,12 @@ export default function Power() {
   const [gameTitle, setGameTitle] = useState('');
   const [busy, setBusy] = useState(false);
   const frameRef = useRef(null);
+  const frameBoxRef = useRef(null);
+  // The game runs from the moment the page opens, with nobody playing it. It
+  // starts again when it ends, until the child is in it (utils/keepPlaying).
+  const [replays, setReplays] = useState(0);
+  const replay = useCallback(() => setReplays((n) => n + 1), []);
+  useKeepPlaying(frameRef, replay);
   const codeRef = useRef('');
   codeRef.current = code;
 
@@ -108,6 +126,17 @@ export default function Power() {
 
   const run = useCallback(() => {
     setRuns((r) => r + 1);
+    // The game is what Run is for: if it is not all on the screen (the
+    // keyboard has just closed, or the child ran it from the lit line with
+    // the Go key), bring it there, moving as little as possible.
+    const box = frameBoxRef.current;
+    if (box?.getBoundingClientRect) {
+      const at = box.getBoundingClientRect();
+      if (at.top < 0 || at.bottom > window.innerHeight) {
+        const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        box.scrollIntoView?.({ block: 'nearest', behavior: still ? 'auto' : 'smooth' });
+      }
+    }
     if (step < 2 && power) {
       const now = readSettings(code)[power.key], before = readSettings(stepStart)[power.key];
       if (now !== before) {
@@ -180,7 +209,7 @@ export default function Power() {
           <h1 className="ci-h1 pw__h1">{title}</h1>
           <p className="ci-sub pw__intro">{power.intro}</p>
 
-          <div className={`ci-blk ci-blk--sun pw__step${step === 2 ? ' is-check' : ''}`}>
+          <div className={`ci-blk ci-blk--sun pw__step${step === 2 ? ' is-check' : ''}`} aria-live="polite">
             <div className="ci-ey">{step === 2 ? 'The check' : `Step ${step + 1} of 3`}</div>
             <p className="pw__say">{step === 2 ? power.check.say : current.say}</p>
           </div>
@@ -196,7 +225,22 @@ export default function Power() {
               return (
                 <div key={i} className="pw__line is-lit">
                   <span>{m[1]}{quoted ? "'" : ''}</span>
-                  <input className="pw__val" value={shown} onChange={(e) => setValue(e.target.value)} size={Math.max(2, shown.length + 1)} aria-label={`Value of ${m[2]}`} spellCheck={false} autoComplete="off" />
+                  <input
+                    className="pw__val"
+                    value={shown}
+                    onChange={(e) => setValue(e.target.value)}
+                    size={Math.max(2, shown.length + 1)}
+                    aria-label={`Value of ${m[2]}`}
+                    spellCheck={false}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    // A number gets the number pad, and the key that ends the
+                    // typing says Go and runs the game: change it, press Go.
+                    inputMode={quoted || raw === 'true' || raw === 'false' ? 'text' : 'numeric'}
+                    enterKeyHint="go"
+                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.currentTarget.blur(); run(); } }}
+                  />
                   <span>{quoted ? "'" : ''}{m[4]}</span>
                 </div>
               );
@@ -213,8 +257,8 @@ export default function Power() {
 
         <section className="pw__right">
           <div className="pw__gamehead"><span className="ci-livedot" />{gameTitle || 'Your game'}</div>
-          <div className={`ci-frame pw__frame${runs > 0 ? ' is-lit' : ''}`}>
-            {gameHtml && <iframe ref={frameRef} key={runs} title={gameTitle} srcDoc={gameHtml} sandbox="allow-scripts" />}
+          <div className={`ci-frame pw__frame${runs > 0 ? ' is-lit' : ''}`} ref={frameBoxRef}>
+            {gameHtml && <iframe ref={frameRef} key={`${runs}-${replays}`} title={gameTitle} srcDoc={gameHtml} sandbox="allow-scripts" />}
           </div>
           <div className="pw__actions">
             {step < 2 ? (

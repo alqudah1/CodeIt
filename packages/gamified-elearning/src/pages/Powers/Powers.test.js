@@ -121,3 +121,63 @@ test('the helpers round trip a game\'s settings into a recipe and back', () => {
   expect(recipe).toMatchObject({ kind: 'dodge', title: 'Star Dodge', speed: 3, lives: 2, winAt: 20, twist: 'waves', bossAt: 9, soundOn: false });
   expect(POWERS.every((p) => p.key in readSettings(codeFor(recipe)))).toBe(true);
 });
+
+// ── A power on a phone ───────────────────────────────────────────────────────
+//
+// 18 November 2026, at 390 by 844: the sentence saying what to do was at the
+// top, the lit value under it, and the game and Run it 700 pixels further
+// down. The lit value was a box 35 by 23 pixels that brought up the whole
+// letter keyboard to type one digit.
+
+test('a number is typed on the number pad, and the Go key runs the game', async () => {
+  mockParams = { slug: 'numbers' };
+  mount(<Power />);
+  const input = await screen.findByLabelText('Value of speed');
+  expect(input).toHaveAttribute('inputmode', 'numeric');
+  expect(input).toHaveAttribute('enterkeyhint', 'go');
+  fireEvent.change(input, { target: { value: '3' } });
+  fireEvent.keyDown(screen.getByLabelText('Value of speed'), { key: 'Enter' });
+  expect(screen.getByText('Step 2 of 3')).toBeInTheDocument();
+  // Go on a value that was not changed says so, as the button does.
+  fireEvent.keyDown(screen.getByLabelText('Value of speed'), { key: 'Enter' });
+  expect(screen.getByRole('status')).toHaveTextContent('Change the lit number first.');
+});
+
+test('words are typed on the letter keyboard, with nothing correcting them', async () => {
+  mockParams = { slug: 'words' };
+  mount(<Power />);
+  const input = await screen.findByLabelText('Value of gameTitle');
+  expect(input).toHaveAttribute('inputmode', 'text');
+  expect(input).toHaveAttribute('autocorrect', 'off');
+  expect(input).toHaveAttribute('autocapitalize', 'off');
+});
+
+test('Run brings the game onto the screen when it is not all there', async () => {
+  mockParams = { slug: 'numbers' };
+  mount(<Power />);
+  const input = await screen.findByLabelText('Value of speed');
+  const box = document.querySelector('.pw__frame');
+  box.scrollIntoView = jest.fn();
+  box.getBoundingClientRect = () => ({ top: 900, bottom: 1160 });   // under a 768 tall window
+  fireEvent.change(input, { target: { value: '3' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Run it' }));
+  expect(box.scrollIntoView).toHaveBeenCalledWith({ block: 'nearest', behavior: 'smooth' });
+  // Already all on the screen: the page is left where it is.
+  box.scrollIntoView.mockClear();
+  box.getBoundingClientRect = () => ({ top: 100, bottom: 360 });
+  fireEvent.click(screen.getByRole('button', { name: 'Run again' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Run it' }));
+  expect(box.scrollIntoView).not.toHaveBeenCalled();
+});
+
+test('under 900 wide the game and its buttons come after the step and before the code', () => {
+  const css = require('fs').readFileSync(require('path').join(__dirname, 'Powers.css'), 'utf8');
+  const phone = css.slice(css.indexOf('@media (max-width: 899px)'));
+  const order = (name) => Number((phone.match(new RegExp(`\\.${name} \\{ order: (\\d+);`)) || [])[1]);
+  expect(order('pw__step')).toBeLessThan(order('pw__frame'));
+  expect(order('pw__frame')).toBeLessThan(order('pw__actions'));
+  expect(order('pw__actions')).toBeLessThan(order('pw__code'));
+  expect(phone).toMatch(/\.pw__left, \.pw__right \{ display: contents; \}/);
+  // A finger gets a box it can hit, with letters big enough that an iPhone does not zoom the page.
+  expect(css).toMatch(/@media \(pointer: coarse\) \{[^@]*\.pw__val \{ font-size: 16px; min-height: 34px;/);
+});
