@@ -125,6 +125,16 @@ function loadPuzzleConfigs() {
   return configs;
 }
 
+/** The playground's starter templates, as the playground shows them. */
+function loadPlaygroundPresets() {
+  const mod = loadEsmDefault(path.join(SRC, 'pages/Playground/presets.js'));
+  const presets = mod && mod.PRESETS;
+  if (!Array.isArray(presets) || presets.length === 0) {
+    throw new Error('content-loader: presets.js did not export PRESETS');
+  }
+  return presets;
+}
+
 /** All blog posts, in file order. */
 function loadBlogPosts() {
   const posts = loadEsmDefault(path.join(SRC, 'data/blogPosts.js'));
@@ -255,6 +265,7 @@ module.exports = {
   loadPressFacts,
   loadSchoolFacts,
   loadPuzzleConfigs,
+  loadPlaygroundPresets,
   loadWebsiteBuilderPage,
   loadPageMeta,
   loadPricing,

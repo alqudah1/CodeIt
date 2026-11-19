@@ -9,6 +9,7 @@ const {
   loadPricing,
   loadSchoolFacts,
   loadPuzzleConfigs,
+  loadPlaygroundPresets,
   loadWebsiteBuilderPage,
   loadBlogPosts,
   loadLessons,
@@ -391,7 +392,7 @@ const BASE_PAGES = [
     eyebrow: 'Python playground',
     h1: 'Run Python in your browser.',
     intro: 'Use the CodeIt playground to test a small idea, change an example, or practice a lesson without installing Python.',
-    detail: 'The editor and output stay together, making the connection between code and result easier to understand.',
+    detail: 'No account and no AI. The editor and the output sit side by side, so a change in the code and a change in the result are on screen together.',
     type: 'WebPage',
   },
   {
@@ -1039,6 +1040,53 @@ function puzzleExampleSections() {
   ];
 }
 
+// /playground is shown for "python playground" and its variants at
+// positions 9 to 16, and said 180 words: no example, nothing about what runs
+// or what does not. The templates are read from the playground itself, and
+// what the first one prints is worked out from its print lines, so the page
+// cannot show a template or an output the playground does not have.
+function printedBy(code) {
+  const lines = String(code).split('\n').map((line) => line.trim()).filter((line) => line && !line.startsWith('#'));
+  const out = lines.map((line) => (/^print\("([^"]*)"\)$/.exec(line) || [])[1]);
+  return out.length && out.every((x) => x !== undefined) ? out.join('\n') : null;
+}
+
+function playgroundSections() {
+  const presets = loadPlaygroundPresets();
+  const first = presets[0];
+  const names = presets.map((p) => p.label);
+  return [
+    {
+      heading: 'What the playground is for',
+      paragraphs: [
+        'The playground is a blank space to test a small idea, change an example from a lesson, or check what a line of Python actually does. It is not a structured course, there is no account, and there is no AI in it: a child types Python and Python answers.',
+      ],
+    },
+    {
+      heading: 'It opens with this',
+      paragraphs: [`The first of ${presets.length} starter templates, ${first.label}:`],
+      code: first.code,
+      output: printedBy(first.code) || '',
+      after: [
+        `Change a word between the quote marks and run it again. The other templates are ${names.slice(1, -1).join(', ')} and ${names[names.length - 1]}, each a few lines to change rather than read.`,
+      ],
+    },
+    {
+      heading: 'It is real Python',
+      paragraphs: [
+        'The playground runs Pyodide, the standard Python interpreter compiled to run inside a web browser, so the standard library is there: the Math template starts with import math. There is no download, no environment setup and no local configuration, which is the usual place where a beginner gives up before writing a line of code.',
+        'Python is served from codeitlearn.com itself, so a school network that allows that one address allows the playground.',
+      ],
+    },
+    {
+      heading: 'What it does not do',
+      paragraphs: [
+        'Nothing is saved. Close the tab and the code is gone, so copy anything worth keeping. It is a place to try things, not to keep them; the lessons are where progress is kept.',
+      ],
+    },
+  ];
+}
+
 const SECTIONS_BY_ROUTE = {
   '/ai-website-builder-for-kids': WEBSITE_BUILDER.sections,
   '/build': [
@@ -1150,21 +1198,7 @@ const SECTIONS_BY_ROUTE = {
       ],
     },
   ],
-  '/playground': [
-    {
-      heading: 'What the playground is for',
-      paragraphs: [
-        'The playground is a blank space to test a small idea, change an example from a lesson, or check what a line of Python actually does. It is not a structured course and there is no progress to lose.',
-      ],
-    },
-    {
-      heading: 'Run Python without installing anything',
-      paragraphs: [
-        'The playground runs beginner Python in the browser. There is no download, no environment setup, and no local configuration, which is the usual place where a beginner gives up before writing a line of code.',
-        'The editor and the output stay together on screen, which makes the connection between a change in the code and a change in the result easier to follow.',
-      ],
-    },
-  ],
+  '/playground': playgroundSections(),
   '/explore': [
     {
       heading: 'Learning from finished work',
