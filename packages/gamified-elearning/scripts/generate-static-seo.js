@@ -725,7 +725,10 @@ function lessonStepSection(step, i) {
       const pieces = (step.parts && step.parts.pieces) || [];
       const notes = (step.parts && step.parts.notes) || {};
       for (const [piece, key] of pieces) {
-        if (notes[key]) paragraphs.push(`"${piece}": ${notes[key]}`);
+        // A piece that is already a string ("Hello, ") keeps its own quote
+        // marks; wrapping it again printed ""Hello, "" on ten lessons.
+        const shown = /["']/.test(piece) ? piece.trim().replace(/^[,\s]+/, '') : `"${piece}"`;
+        if (notes[key]) paragraphs.push(`${shown}: ${notes[key]}`);
       }
       break;
     }

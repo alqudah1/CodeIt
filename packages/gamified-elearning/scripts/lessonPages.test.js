@@ -104,3 +104,17 @@ test('removing a tap instruction never leaves half a sentence behind', () => {
   }
   assert.deepEqual(broken, []);
 });
+
+test('a string piece of a line is not wrapped in a second pair of quote marks', () => {
+  // Lesson 3 explained its line as '""Hello, "": A string.' to every crawler,
+  // and nine other lessons did the same.
+  const doubled = [];
+  for (const page of PAGES.filter((p) => /^\/lesson\/\d+$/.test(p.route))) {
+    for (const s of page.sections || []) {
+      for (const para of s.paragraphs || []) {
+        if (/^""|^''/.test(para)) doubled.push(`${page.route}: ${para.slice(0, 40)}`);
+      }
+    }
+  }
+  assert.deepEqual(doubled, []);
+});
