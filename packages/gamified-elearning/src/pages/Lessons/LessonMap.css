@@ -337,6 +337,12 @@ svg.lm-decor { max-width: none; height: auto; }
 .lm-xp--ahead { background: #FFF6E6; color: #6F5542; } /* #8A6E55 was 4.41:1 */
 .lm-xp--completed { background: #4CC779; color: #fff; }
 .lm-stop--here .lm-xp { display: none; }
+/* On the narrowest phones (320 wide) the tag on the stops nearest the right
+   edge hung 4 to 7px off the screen. Ten pixels nearer the stop. */
+@media (max-width: 360px) {
+  .lm-xp { left: calc(50% + 12px); }
+  .lm-stop--boss .lm-xp { left: calc(50% + 20px); }
+}
 
 /* The lesson's name under its stop. */
 .lm-name {

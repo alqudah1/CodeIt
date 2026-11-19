@@ -42,7 +42,8 @@ describe('the schools page', () => {
     expect(join).toContain("'INSERT INTO Users (username, name, password, role, dob, parent_email) VALUES (?, ?, ?, ?, ?, ?)'");
     expect(join).toContain("[username, firstName, password, 'student', null, null]");
     // "a password the child never sees and never types"
-    expect(join).toMatch(/bcrypt\.hashSync\(crypto\.randomBytes\(24\)/);
+    // (random bytes, hashed; made without holding the server still, since 19 November 2026)
+    expect(join).toMatch(/await bcrypt\.hash\(crypto\.randomBytes\(24\)/);
     // "A child typing the same name into the same class signs back into the same work"
     expect(join).toContain('LOWER(u.name) = LOWER(?)');
   });

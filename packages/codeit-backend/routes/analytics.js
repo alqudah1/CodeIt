@@ -14,10 +14,16 @@ const {
   normalizeCampaignCode,
 } = require('../analyticsEvents');
 
+const { createAddressLimiter } = require('../addressLimiter');
+
 const router = express.Router();
+// A minute's allowance for one browser, and for one address. A school is one
+// address: see addressLimiter.js for what the old limit (30 a minute for the
+// whole address) did to a class of thirty.
 const RATE_WINDOW_MS = 60 * 1000;
-const RATE_LIMIT = 30;
-const buckets = new Map();
+const EVENTS_PER_BROWSER = 60;
+const EVENTS_PER_ADDRESS = 1200;
+const events = createAddressLimiter({ perBrowser: EVENTS_PER_BROWSER, perAddress: EVENTS_PER_ADDRESS, windowMs: RATE_WINDOW_MS });
 
 function optionalAuth(req, res, next) {
   const header = req.headers.authorization;
@@ -45,30 +51,16 @@ function requireAdmin(req, res, next) {
 }
 
 function rateLimit(req, res, next) {
-  const now = Date.now();
-  const key = req.ip || req.socket.remoteAddress || 'unknown';
-  const current = buckets.get(key);
-
-  if (!current || current.resetAt <= now) {
-    const bucket = { count: 1, resetAt: now + RATE_WINDOW_MS };
-    buckets.set(key, bucket);
-    const cleanup = setTimeout(() => {
-      if (buckets.get(key) === bucket) buckets.delete(key);
-    }, RATE_WINDOW_MS);
-    cleanup.unref?.();
-  } else if (current.count >= RATE_LIMIT) {
-    return res.status(429).json({ error: 'Too many analytics requests.' });
-  } else {
-    current.count += 1;
-  }
-
-  if (buckets.size > 1000) {
-    for (const [bucketKey, bucket] of buckets) {
-      if (bucket.resetAt <= now) buckets.delete(bucketKey);
-    }
-  }
-
-  next();
+  // The journey id names the browser. A browser that cannot keep one (storage
+  // switched off, as some school machines have it) is named by who is signed
+  // in, so a class of those is still thirty and not one.
+  const journey = normalizeJourneyId(req.get('X-CodeIt-Journey'));
+  const allowed = events.allow({
+    address: req.ip || req.socket?.remoteAddress || 'unknown',
+    browser: journey || (req.user?.user_id ? `user:${req.user.user_id}` : null),
+  });
+  if (!allowed) return res.status(429).json({ error: 'Too many analytics requests.' });
+  return next();
 }
 
 router.get('/funnel', requireAdmin, async (req, res) => {
@@ -83,7 +75,7 @@ router.get('/costs', requireAdmin, async (req, res) => {
   return res.json(report);
 });
 
-router.post('/event', rateLimit, optionalAuth, async (req, res) => {
+router.post('/event', optionalAuth, rateLimit, async (req, res) => {
   const eventName = normalizeEventName(req.body?.event_name);
   if (!eventName || !CLIENT_REPORTED_EVENTS.has(eventName)) {
     return res.status(400).json({ error: 'Unsupported analytics event.' });

@@ -671,7 +671,10 @@ export function makeHandleSendToFriend(studio) {
     try {
       const res = await fetch(`${API_BASE_URL}/api/builder/unlisted`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        // Which browser this is, and who is signed in if anyone: the server
+        // allows so many links an hour, and without these it could only count
+        // by address, so a class of thirty shared one child's allowance.
+        headers: { 'Content-Type': 'application/json', ...journeyHeaders(), ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         body: JSON.stringify({
           code,
           title: projectName || 'My project',

@@ -40,27 +40,40 @@ const MAX_LABEL = 40;
 const PUBLIC_ID_RE = /^[a-f0-9]{12}$/;
 const SITE_URL = (process.env.PUBLIC_SITE_URL || 'https://codeitlearn.com').replace(/\/+$/, '');
 
-// Same shape as the limiter in foundingWaitlist.js: per-IP, in-memory, self
-// cleaning. Anonymous writes need a ceiling that a signed-in write does not.
+// Anonymous writes need a ceiling that a signed-in write does not.
+//
+// Making a link ("Send it to a friend", "Challenge a friend to beat 3") was
+// limited to 20 an hour from an address, in one bucket with reporting a link
+// and the grown-up email. A school is one address: in a class of thirty, the
+// twenty-first child to press the button was told "That is a lot of saving".
+// So a link is counted by browser (20 an hour each, named by the journey id
+// or by who is signed in) with a ceiling for the address a school fits under.
+// Reporting and the email stay at 20 an hour for the whole address, as they
+// were, in a bucket of their own: one of them sends mail.
+const { createAddressLimiter } = require('../addressLimiter');
+const { normalizeJourneyId } = require('../analyticsEvents');
+
 const RATE_WINDOW_MS = 60 * 60 * 1000;
 const RATE_LIMIT = 20;
-const buckets = new Map();
+const LINKS_PER_ADDRESS = 400;
+const links = createAddressLimiter({ perBrowser: RATE_LIMIT, perAddress: LINKS_PER_ADDRESS, windowMs: RATE_WINDOW_MS });
+const careful = createAddressLimiter({ perBrowser: RATE_LIMIT, perAddress: RATE_LIMIT, windowMs: RATE_WINDOW_MS });
+const addressOf = (req) => req.ip || req.socket?.remoteAddress || 'unknown';
 
-function rateLimit(req, res, next) {
-  const now = Date.now();
-  const key = req.ip || req.socket.remoteAddress || 'unknown';
-  const current = buckets.get(key);
-  if (!current || current.resetAt <= now) {
-    const bucket = { count: 1, resetAt: now + RATE_WINDOW_MS };
-    buckets.set(key, bucket);
-    const cleanup = setTimeout(() => {
-      if (buckets.get(key) === bucket) buckets.delete(key);
-    }, RATE_WINDOW_MS);
-    cleanup.unref?.();
-  } else if (current.count >= RATE_LIMIT) {
+/** For making a link: one allowance per browser. Runs after optionalAuth. */
+function linkLimit(req, res, next) {
+  const journey = normalizeJourneyId(req.get('X-CodeIt-Journey'));
+  const browser = journey || (req.user?.user_id ? `user:${req.user.user_id}` : null);
+  if (!links.allow({ address: addressOf(req), browser })) {
     return res.status(429).json({ error: 'That is a lot of saving. Try again in a little while.' });
-  } else {
-    current.count += 1;
+  }
+  return next();
+}
+
+/** For reporting and the email: one allowance for the whole address. */
+function rateLimit(req, res, next) {
+  if (!careful.allow({ address: addressOf(req), browser: null })) {
+    return res.status(429).json({ error: 'That is a lot of saving. Try again in a little while.' });
   }
   return next();
 }
@@ -85,7 +98,7 @@ async function mintPublicId() {
 
 // POST /api/builder/unlisted — keep this project behind a secret URL.
 // No auth, no email, no personal data.
-router.post('/', rateLimit, optionalAuth, async (req, res) => {
+router.post('/', optionalAuth, linkLimit, async (req, res) => {
   const code = typeof req.body?.code === 'string' ? req.body.code : '';
   if (!code.trim()) return res.status(400).json({ error: 'There is nothing to save yet.' });
   if (Buffer.byteLength(code, 'utf8') > MAX_CODE_BYTES) {

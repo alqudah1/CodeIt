@@ -56,8 +56,14 @@ function notReady(res) {
 }
 
 // Joins create accounts, so the number a single address can make in an hour
-// is bounded: a classroom of thirty, with room for typos, not a script.
-const JOIN_LIMIT = 80;
+// is bounded. A school is one address: this was 80, "a classroom of thirty,
+// with room for typos", and three classes in the same hour ran out of it. On
+// 19 November 2026, three classes of thirty joining from one address, ten
+// pupils in the third were refused. 600 is a school with every computing
+// room in use and every pupil coming back in once; it is still not a script
+// left running. Coming back in under the same name counts like a first join,
+// because the request cannot be told apart until the class has been read.
+const JOIN_LIMIT = 600;
 const joins = new Map();
 function joinLimiter(req, res, next) {
   const now = Date.now();
@@ -432,7 +438,9 @@ router.post('/:code/join', joinLimiter, optionalAuth, async (req, res) => {
 
     connection = await pool.getConnection();
     await connection.beginTransaction();
-    const password = bcrypt.hashSync(crypto.randomBytes(24).toString('base64url'), 10);
+    // Not hashSync: thirty children joining together would each hold the
+    // server still for the tenth of a second a password takes to make.
+    const password = await bcrypt.hash(crypto.randomBytes(24).toString('base64url'), 10);
     let userId = null;
     for (let n = 0; n < 20 && userId === null; n += 1) {
       const username = studentUsername(firstName, code, n);

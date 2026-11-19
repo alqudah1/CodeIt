@@ -8,11 +8,12 @@
 //      later lessons get a looser one. A step nobody can read alone fails.
 //
 //   B. Lesson 1 driven on a phone by taps, with the same keydown tripwire as
-//      kid-alone.js. Lesson 1's tryit and challenge deliberately pass with
-//      their starter code untouched (expectedKeywords: ['print('] is already
-//      in the starter), so the FIRST lesson must be completable end to end
-//      without one keyboard event. Code steps are skipped with a note when the
-//      Python runtime's CDN is unreachable from this environment.
+//      kid-alone.js, as far as taps go: the example is run, the line is taken
+//      apart piece by piece, and the first step that asks for a change must
+//      refuse the code as it came and say what to change. Since 14 November
+//      2026 no lesson can be finished without typing, on purpose, and /schools
+//      says so; this part used to assert the opposite and failed on its own
+//      assumptions once Python could start here (19 November 2026).
 //
 //   node ops/checks/lesson-alone.js   (stack on 4599/5000, see run-all.sh)
 const fs = require('fs');
@@ -163,74 +164,71 @@ async function tapThroughLessonOne() {
   await page.waitForTimeout(700);
   notes.push('lesson tap 1: first step passed by Run and tap, no typing');
 
-  // Step 2 — predict. Tap choices until one is right; a child does the same.
-  const choiceCount = await page.locator('.li-choice').count();
-  if (!choiceCount) problems.push('predict step has nothing to tap');
-  let solved = false;
-  for (let i = 0; i < choiceCount && !solved; i += 1) {
-    await page.locator('.li-choice').nth(i).tap();
-    await page.waitForTimeout(250);
-    const submit = page.locator('.sl-submit-btn').first();
-    if (!(await submit.count())) break;
-    await submit.tap();
-    await page.waitForTimeout(600);
-    solved = (await page.locator('.sl-success').count()) > 0;
-  }
-  if (!solved) problems.push('predict step could not be completed by taps');
-  else {
-    notes.push('lesson tap 2: predict answered by taps');
-    await page.locator('.sl-nav__next, .sl-nav__continue').first().tap();
-    await page.waitForTimeout(700);
+  // ── From here the lesson is the one rebuilt on 14 November 2026 ──────────
+  //
+  // This walk used to go on: step 2 a prediction, steps 3 to 5 passed by
+  // pressing Run on the code as it came. Neither is the lesson any more.
+  // Every Python lesson now opens with an example to run, then takes one line
+  // apart piece by piece, and from the third step asks the child to change
+  // the code: the code as it came is refused, on purpose, with a sentence
+  // saying what to change. /schools says so in as many words ("The Python
+  // lessons ask a child to type").
+  //
+  // Run with a Python that could start (it is served from this site now, so
+  // it can), the old walk reported three problems that were its own: "predict
+  // step has nothing to tap", on a step that is not a prediction. So it walks
+  // what is there: the pieces are tapped, and the first step that needs
+  // typing must say what it wants. Taps carry a child to that point and no
+  // further, and the check says that rather than pretending otherwise.
+
+  // Step 2 — the line taken apart. Every piece is a tap; then the way on opens.
+  const pieces = page.locator('.ls-parts__piece');
+  const pieceCount = await pieces.count();
+  if (!pieceCount) {
+    problems.push('step 2 has no pieces to tap: the line is not taken apart');
+  } else {
+    for (let i = 0; i < pieceCount; i += 1) { await pieces.nth(i).tap(); await page.waitForTimeout(150); }
+    await page.waitForTimeout(400);
+    const on = page.locator('.sl-nav__next, .sl-nav__continue').first();
+    if (await on.isDisabled().catch(() => false)) {
+      problems.push(`step 2 stayed shut after every piece was tapped: "${(await on.textContent().catch(() => '')).trim()}"`);
+    } else {
+      notes.push(`lesson tap 2: all ${pieceCount} pieces of the line tapped, and the way on opened`);
+      await on.tap();
+      await page.waitForTimeout(800);
+    }
   }
 
-  // Steps 3–5 — example / tryit / challenge. All pass with starter code:
-  // tap Run, tap Submit. Needs the Python runtime, which needs its CDN.
+  // Step 3 — the first one that asks for a change. Run and Submit on the code
+  // as it came must be refused, and the refusal must say what to do.
   const run = page.locator('.sl-editor-wrap:not(.sl-editor-wrap--hidden) .cr-btn--run').first();
-  let pyReady = false;
-  try {
-    // Two ways this settles, and only one of them means Python is here. The
-    // button now offers "Run" whether or not the runtime arrived, because a
-    // Run pressed before Python has downloaded starts the download instead of
-    // being silently ignored — so a readable Run key is no longer proof. The
-    // banner is: it appears only when the CDN could not be reached, which in
-    // this container is the normal case and is not a bug in the page.
+  if (!(await run.count())) {
+    // A lesson whose third step is tapped (a prediction, blanks, an order) has
+    // no editor here, and is not this check's business yet.
+    notes.push('lesson step 3: not a typing step in this lesson; nothing to refuse');
+  } else {
+    await run.tap();
     await page.waitForFunction(() => {
       const btn = document.querySelector('.sl-editor-wrap:not(.sl-editor-wrap--hidden) .cr-btn--run');
-      const failed = document.querySelector('.cr-starting--failed');
-      return failed || (btn && /Run/.test(btn.textContent) && !btn.disabled && window.pyodide);
-    }, { timeout: 25000 });
-    pyReady = Boolean(await page.evaluate(() => Boolean(window.pyodide)));
-  } catch { pyReady = false; }
-
-  if (!pyReady) {
-    notes.push('lesson taps 3–5: skipped — Python runtime CDN unreachable from this environment (structure checked instead)');
-    // The structure still has to be tap-honest: an editor, a Run key, a
-    // Submit that explains itself, and a hint on the current step.
-    if (!(await run.count())) problems.push('example step has no Run key');
-  } else {
-    for (let stepNo = 3; stepNo <= 5; stepNo += 1) {
-      const runBtn = page.locator('.sl-editor-wrap:not(.sl-editor-wrap--hidden) .cr-btn--run').first();
-      await runBtn.tap();
-      await page.waitForFunction(() => {
-        const btn = document.querySelector('.sl-editor-wrap:not(.sl-editor-wrap--hidden) .cr-btn--run');
-        return btn && !/Running|Starting/.test(btn.textContent);
-      }, { timeout: 30000 }).catch(() => {});
-      await page.waitForTimeout(900);
-      const submit = page.locator('.sl-submit-btn').first();
-      if (await submit.count()) { await submit.tap(); await page.waitForTimeout(700); }
-      if (!(await page.locator('.sl-success').count())) {
-        problems.push(`code step ${stepNo} did not pass with starter code and taps alone`);
-        break;
-      }
-      notes.push(`lesson tap ${stepNo}: code step passed with starter code, no typing`);
-      await page.locator('.sl-nav__next, .sl-nav__continue').first().tap();
-      await page.waitForTimeout(900);
+      return btn && !/Running|Starting/.test(btn.textContent);
+    }, { timeout: 30000 }).catch(() => {});
+    await page.waitForTimeout(900);
+    const submit = page.locator('button', { hasText: /Submit Answer/ }).first();
+    if (await submit.count()) { await submit.tap(); await page.waitForTimeout(700); }
+    const refusal = ((await page.locator('.sl-feedback--incorrect').first().textContent().catch(() => '')) || '').trim();
+    if (await page.locator('.sl-tag--done').count()) {
+      problems.push('step 3 passed with the code as it came: a child can finish it without changing anything');
+    } else if (refusal.length < 20) {
+      problems.push(`step 3 refused the code as it came without saying what to change: "${refusal}"`);
+    } else {
+      notes.push(`lesson step 3: the code as it came is refused, and says why ("${refusal.slice(0, 60)}...")`);
+      notes.push('from step 3 the lesson asks a child to type, as /schools says; taps alone end here');
     }
   }
 
   const typed = await page.evaluate(() => window.__typed);
   if (typed > 0) problems.push(`${typed} keyboard event(s) were needed in lesson 1 — a non-typing child is stuck`);
-  else notes.push('keyboard tripwire: zero keydown events for the whole visit');
+  else notes.push('keyboard tripwire: zero keydown events up to the first step that asks for typing');
 
   await browser.close();
 }
@@ -252,6 +250,6 @@ async function tapThroughLessonOne() {
     console.log('first step now gates on a real Run. CI answers it, where Python loads.');
     process.exit(0);
   }
-  console.log('\nA child alone can read every step, and taps alone carry lesson 1.');
+  console.log('\nA child alone can read every step. Taps carry lesson 1 to the first step that asks for a change, and that step says what to change.');
   process.exit(0);
 })();

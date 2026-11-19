@@ -1708,6 +1708,10 @@
 .studio-home .say__chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
 .studio-home .say__chips .ci-chip { background: rgba(255, 246, 237, .1); border-color: rgba(255, 246, 237, .22); color: #FFF6ED; height: 34px; }
 .studio-home .say__chips .ci-chip:hover { background: rgba(255, 246, 237, .18); }
+/* On a phone 320 wide the three ideas were one line each and wider than the
+   card: "a ship that shoots asteroids and they" and then the edge (52px cut
+   off, 19 November 2026). An idea too long for its row now takes two. */
+.studio-home .say__chips .ci-chip { max-width: 100%; height: auto; min-height: 34px; padding-top: 6px; padding-bottom: 6px; white-space: normal; text-align: left; line-height: 1.25; }
 .studio-home .say__fine { margin: 12px 0 0; font: 700 13px var(--ci-body); color: rgba(255, 246, 237, .68); }
 @media (max-width: 640px) {
   .studio-home .say__row { flex-direction: column; }
