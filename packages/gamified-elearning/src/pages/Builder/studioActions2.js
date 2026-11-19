@@ -184,7 +184,11 @@ export function makeCallBuilder(studio) {
       setCode(html);
       setBuiltPrompt(text);
       setIsStarter(Boolean(data.isFallback));
-      setStarterRetry(data.isFallback && data.retry ? data.retry : null);
+      // rest: the whole site has built all it can today. Said as that, with
+      // the hours, and not as "I tried your idea twice", which did not happen.
+      setStarterRetry(data.isFallback && data.rest?.hours
+        ? { rest: Number(data.rest.hours) || 1 }
+        : (data.isFallback && data.retry ? data.retry : null));
       // The first build finished is the single best moment this product has,
       // and it passed quietly. A chest, with fixed contents, that waits in the
       // corner until the child wants it. A canned starter is not a build.
@@ -218,7 +222,12 @@ export function makeCallBuilder(studio) {
       // see that for themselves, and being congratulated by a cartoon is the
       // fastest way to make an adult close the tab.
       setCompanionVisible(!quietStudio);
-      if (!wowShownRef.current && !quietStudio) {
+      // Not for a starter. "YOU BUILT A REAL WEBSITE" and confetti over a
+      // page with none of the child's words in it was the loudest thing on
+      // the screen, directly above a notice saying the idea was not built
+      // (seen 19 November 2026). And a starter must not use up the one time
+      // this is shown: the real build that follows is the one that earns it.
+      if (!data.isFallback && !wowShownRef.current && !quietStudio) {
         wowShownRef.current = true;
         setWowType(builtType);
         setTimeout(() => {

@@ -72,6 +72,9 @@ function friendlyWait(seconds) {
   const safeSeconds = Math.max(0, Number(seconds) || 0);
   if (safeSeconds < 60) return `${safeSeconds} second${safeSeconds === 1 ? '' : 's'}`;
   const minutes = Math.ceil(safeSeconds / 60);
+  // The site's daily ceiling can ask for most of a day. "437 minutes" is a
+  // sum for the child to do; "about 8 hours" is an answer.
+  if (minutes >= 90) return `about ${Math.ceil(minutes / 60)} hours`;
   return `${minutes} minute${minutes === 1 ? '' : 's'}`;
 }
 

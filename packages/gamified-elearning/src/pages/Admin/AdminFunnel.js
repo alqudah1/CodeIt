@@ -692,6 +692,16 @@ export default function AdminFunnel() {
           <div className="adm-section-head">AI unit economics</div>
           <div className="funnel-cost-grid">
             <article><span>Estimated API cost</span><strong>{usd(costs?.totals?.estimated_usd)}</strong></article>
+            {costs?.today && (
+              <article className={costs.today.reached ? 'is-urgent' : undefined}>
+                <span>{costs.today.ceiling_usd == null
+                  ? 'Spent today (no daily ceiling set)'
+                  : costs.today.reached
+                    ? `Spent today: the $${costs.today.ceiling_usd} ceiling is reached, free builds are starters until midnight UTC`
+                    : `Spent today, of a $${costs.today.ceiling_usd} daily ceiling`}</span>
+                <strong>{usd(costs.today.spent_usd)}</strong>
+              </article>
+            )}
             <article><span>AI calls</span><strong>{fmt(costs?.totals?.calls)}</strong></article>
             <article><span>AI-built projects</span><strong>{fmt(aiGeneratedProjects)}</strong></article>
             <article><span>Instant games</span><strong>{fmt(instantGames)}</strong></article>
@@ -706,7 +716,7 @@ export default function AdminFunnel() {
             <article><span>Cost / AI-built project</span><strong>{usd(costPerAiGenerated)}</strong></article>
             <article><span>Input / output tokens</span><strong>{fmt(costs?.totals?.input_tokens)} / {fmt(costs?.totals?.output_tokens)}</strong></article>
           </div>
-          <p className="funnel-cost-note">AI-built projects and safe fallbacks are shown separately so the cost per working AI result is not understated. The estimate uses each model's standard list price (Haiku 4.5, Sonnet 5, Opus 5); a stopped call is counted for what it wrote before it was stopped. Instant games are a Haiku call of about 200 tokens, or none.</p>
+          <p className="funnel-cost-note">AI-built projects and safe fallbacks are shown separately so the cost per working AI result is not understated. The estimate uses each model's standard list price (Haiku 4.5, Sonnet 5, Opus 5); a stopped call is counted for what it wrote before it was stopped. Instant games are a Haiku call of about 200 tokens, or none, and are counted here from 19 November 2026. The daily ceiling is the AI_DAILY_CEILING_USD setting: when the day's spend reaches it, people who do not pay get instant games and starters until midnight UTC, and people who pay are not held.</p>
 
           <div className="adm-section-head">The money path</div>
           <div className="funnel-cost-grid">

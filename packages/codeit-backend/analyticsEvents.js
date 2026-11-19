@@ -23,6 +23,8 @@ const EVENT_META = Object.freeze({
     // fallback-<reason>: the cause, not just the rate. Five causes, five
     // different fixes.
     'fallback-no-api-key', 'fallback-timeout', 'fallback-retry-timeout',
+    // The whole site reached its ceiling for the day (aiBudget.js).
+    'fallback-site-ceiling',
     'fallback-invalid-output', 'fallback-error', 'fallback-unknown',
     // 'fallback-error' was the outer catch-all and it had swallowed the
     // dominant failure: on 11 November, 42 of 52 fallbacks were 'error', so

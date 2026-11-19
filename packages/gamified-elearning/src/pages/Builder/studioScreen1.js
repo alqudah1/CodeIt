@@ -533,7 +533,16 @@ export function studioView11(studio) {
                 </span>
                 {isSaved && <span className="bldr-success-banner__saved">Saved</span>}
               </div>
-              {isStarter && (
+              {isStarter && starterRetry?.rest && (
+                <div className="bldr-starter-notice" role="status">
+                  <strong>Pixel has built all the new ideas it can for today.</strong>
+                  <p>
+                    This is a starter you can play and change yourself.
+                    {' '}Pixel can build your idea in about {starterRetry.rest} hour{starterRetry.rest === 1 ? '' : 's'}.
+                  </p>
+                </div>
+              )}
+              {isStarter && !starterRetry?.rest && (
                 <div className="bldr-starter-notice" role="status">
                   <strong>
                     {starterRetry?.attempts === 1

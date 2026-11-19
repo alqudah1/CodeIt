@@ -2,6 +2,7 @@
 
 const pool = require('./db');
 const { estimateCostUSD } = require('./aiUsagePricing');
+const aiBudget = require('./aiBudget');
 
 const OPERATIONS = new Set([
   'build_initial',
@@ -12,6 +13,11 @@ const OPERATIONS = new Set([
   'explain',
   'element_patch',
   'missions',
+  // The instant game on /build. It was called through the same tracked
+  // function as everything else and then dropped here, because its name was
+  // not on this list: the most-used model call on the site left no row, so
+  // the cost report and the daily ceiling could not see it.
+  'recipe',
 ]);
 
 const tableReady = pool.dialect === 'postgres' ? Promise.resolve(true) : pool.query(`
@@ -55,6 +61,10 @@ async function recordAIUsage(operation, message) {
     cache_creation_input_tokens: tokenCount(message.usage.cache_creation_input_tokens),
     cache_read_input_tokens: tokenCount(message.usage.cache_read_input_tokens),
   };
+
+  // Counted towards today's ceiling whether or not the row is written: the
+  // money was spent either way.
+  aiBudget.note(message.model, usage);
 
   try {
     if (!await tableReady) return false;
@@ -120,7 +130,21 @@ async function getAIUsageReport(requestedDays = 30) {
         : sum.estimated_usd + row.estimated_usd,
     }), { calls: 0, input_tokens: 0, output_tokens: 0, estimated_usd: 0 });
 
-    return { days, totals, operations };
+    // Today against the ceiling, so the person who pays the bill can see how
+    // close the day is without reading a log.
+    let today = null;
+    try {
+      const budget = await aiBudget.state();
+      today = {
+        spent_usd: budget.spent,
+        ceiling_usd: budget.on ? budget.ceiling : null,
+        reached: budget.reached,
+      };
+    } catch (err) {
+      console.error('AI ceiling state failed:', err.message);
+    }
+
+    return { days, totals, operations, today };
   } catch (err) {
     console.error('AI usage report failed:', err.message);
     return null;

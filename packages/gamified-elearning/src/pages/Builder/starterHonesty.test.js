@@ -39,6 +39,32 @@ describe('a starter is never dressed up as the child s project', () => {
     expect(CODE).toMatch(/Your idea took longer to build than the time I had/);
   });
 
+  // 19 November 2026: the whole site has a ceiling for the day. A starter
+  // served because of it is not a build that was tried twice, and trying
+  // again in a minute gives the same starter, so there is no button for it.
+  test('a starter from the day s ceiling says that, with the hours, and offers no retry', () => {
+    expect(CODE).toMatch(/data\.isFallback && data\.rest\?\.hours/);
+    expect(CODE).toMatch(/Pixel has built all the new ideas it can for today/);
+    expect(CODE).toMatch(/Pixel can build your idea in about \{starterRetry\.rest\} hour/);
+    const restNotice = CODE.slice(CODE.indexOf('isStarter && starterRetry?.rest &&'), CODE.indexOf('isStarter && !starterRetry?.rest &&'));
+    expect(restNotice.length).toBeGreaterThan(100);
+    expect(restNotice).not.toMatch(/<button/);
+    expect(restNotice).not.toMatch(/tried your idea/);
+  });
+
+  test('a starter is not celebrated as something the child built', () => {
+    expect(CODE).toMatch(/if \(!data\.isFallback && !wowShownRef\.current && !quietStudio\)/);
+    expect(CODE).not.toMatch(/if \(!wowShownRef\.current && !quietStudio\)/);
+  });
+
+  test('a wait of hours is said in hours', () => {
+    const { friendlyWait } = require('./studioKit2');
+    expect(friendlyWait(45)).toBe('45 seconds');
+    expect(friendlyWait(600)).toBe('10 minutes');
+    expect(friendlyWait(26220)).toBe('about 8 hours');
+    expect(friendlyWait(86400)).toBe('about 24 hours');
+  });
+
   test('the retry button says what it will do differently, and does it', () => {
     // Rounds 66 and 67: not "press Build again yourself". The server has
     // already tried twice; a third go starts on the next model up and gets

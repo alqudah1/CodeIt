@@ -13,6 +13,7 @@ const { recordEvent } = require('../analytics');
 const { projectCategory, normalizeJourneyId } = require('../analyticsEvents');
 const { projectKind } = require('../projectKind');
 const { recordAIUsage } = require('../aiUsage');
+const aiBudget = require('../aiBudget');
 const { recordMilestoneAndNotify } = require('../progressNotifications');
 const { findShowcaseProject } = require('../showcaseProjects');
 const { initializeProjectRewards, awardProjectXp: persistProjectXp } = require('../projectRewards');
@@ -118,6 +119,35 @@ function tooMany(res, retryAfter) {
 
 const generationLimiter = createRequestLimiter({ anonymous: 5, authenticated: 20 });
 const helperLimiter = createRequestLimiter({ anonymous: 15, authenticated: 60 });
+
+// ── The whole site's day (aiBudget.js) ───────────────────────────────────────
+//
+// Answers null when this request may use the model, and the ceiling's state
+// when it may not. Someone who pays is never held: the subscription is only
+// looked up once the ceiling has been reached, so an ordinary day costs no
+// extra query. Any fault in here answers null.
+async function siteRestFor(req, knownPlanId) {
+  try {
+    const budget = await aiBudget.state();
+    if (!budget.reached) return null;
+    let planId = knownPlanId;
+    if (!planId && req.user?.user_id && isBillingConfigured()) {
+      planId = planForSubscription(await billingStore.getSubscriptionByUserId(req.user.user_id))?.id;
+    }
+    return planId && planId !== 'free' ? null : budget;
+  } catch (err) {
+    console.error('AI ceiling check failed, allowing:', err.message);
+    return null;
+  }
+}
+
+// For the helpers (edit, explain, one element, missions): the same answer a
+// child gets when they have asked too often, with the real wait in it.
+const siteCeiling = async (req, res, next) => {
+  const rest = await siteRestFor(req);
+  if (!rest) return next();
+  return tooMany(res, rest.resetsInSeconds);
+};
 
 async function createTrackedMessage(operation, params, requestOptions) {
   const message = await client.messages.create(params, requestOptions);
@@ -1861,6 +1891,19 @@ router.post('/', optionalAuth, generationLimiter, async (req, res) => {
     }
   }
 
+  // The whole site's ceiling for today. A starter, and the truth about when
+  // the idea can be built, not an error.
+  const siteRest = await siteRestFor(req, isBillingConfigured() && req.user?.user_id ? planId : undefined);
+  if (siteRest) {
+    fallbackReason = 'site-ceiling';
+    const fbHtml = getRichFallback(designConfig, prompt.trim());
+    return res.json({
+      code: fbHtml, html: fbHtml, title: derivePromptTitle(prompt.trim()), type: designConfig.type,
+      summary: 'A starter to change.', isFallback: true, conceptsUsed: [],
+      rest: { hours: Math.max(1, Math.ceil(siteRest.resetsInSeconds / 3600)) },
+    });
+  }
+
   if (!process.env.ANTHROPIC_API_KEY) {
     fallbackReason = 'no-api-key';
     console.log('Builder: ANTHROPIC_API_KEY missing, serving fallback for type:', designConfig.type);
@@ -2186,6 +2229,9 @@ router.post('/recipe', optionalAuth, recipeLimiter, async (req, res) => {
   let recipe = null, source = 'rules';
   let ai = process.env.ANTHROPIC_API_KEY ? 'up' : 'down';
   if (ai === 'up' && Date.now() < modelRestUntil) ai = 'down';
+  // Over the day's ceiling the rules answer, and the page is told the model
+  // is down so it does not offer a full build that can only be a starter.
+  if (ai === 'up' && await siteRestFor(req)) ai = 'down';
   if (ai === 'up') {
     try {
       const message = await Promise.race([
@@ -2271,7 +2317,7 @@ RULES
 After the edits, exactly one line:
 <SUMMARY>one sentence under 20 words starting with "We" describing what changed</SUMMARY>`;
 
-router.post('/edit', optionalAuth, helperLimiter, async (req, res) => {
+router.post('/edit', optionalAuth, helperLimiter, siteCeiling, async (req, res) => {
   const requestStarted = Date.now();
   const { currentCode, currentTitle, promptHistory, newInstruction } = req.body;
 
@@ -2367,7 +2413,7 @@ router.post('/edit', optionalAuth, helperLimiter, async (req, res) => {
 });
 
 // ── POST /api/builder/explain ─────────────────────────────────────────────────
-router.post('/explain', optionalAuth, helperLimiter, async (req, res) => {
+router.post('/explain', optionalAuth, helperLimiter, siteCeiling, async (req, res) => {
   const { code } = req.body;
 
   if (!code || typeof code !== 'string' || !code.trim()) {
@@ -2699,7 +2745,7 @@ router.post('/projects/:id/versions/:vid/restore', requireAuth, async (req, res)
 });
 
 // POST /api/builder/patch — AI patches a single selected element (no full regeneration)
-router.post('/patch', optionalAuth, helperLimiter, async (req, res) => {
+router.post('/patch', optionalAuth, helperLimiter, siteCeiling, async (req, res) => {
   const { elementId, tag, elementHtml, instruction } = req.body;
 
   if (typeof elementHtml !== 'string' || typeof instruction !== 'string' || !elementHtml || !instruction.trim()) {
@@ -2812,7 +2858,7 @@ router.post('/projects/:id/fork', requireAuth, async (req, res) => {
 });
 
 // ── AI-generated context-aware missions ──────────────────────────────────────
-router.post('/missions', optionalAuth, helperLimiter, async (req, res) => {
+router.post('/missions', optionalAuth, helperLimiter, siteCeiling, async (req, res) => {
   const { html, type, title } = req.body || {};
   if (typeof html !== 'string' || html.length < 100) return res.status(400).json({ error: 'No code provided.' });
   if (html.length > MAX_CODE_LENGTH) return res.status(413).json({ error: 'This project is too large for missions.' });
