@@ -8,6 +8,9 @@
   border-radius: 18px;
   padding: 16px;
   margin: 12px 0;
+  /* When the studio opens on this panel (?tab=code) it is scrolled to, and
+     should not sit hard against the top edge of the screen. */
+  scroll-margin-top: 12px;
 }
 
 .cp__head {

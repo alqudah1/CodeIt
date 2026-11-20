@@ -116,7 +116,9 @@ test('a knob changes the live game, and See the code hands the same game to the 
   fireEvent.click(screen.getByRole('button', { name: /Lives: 3/ }));
   await waitFor(() => expect(frameDoc()).toContain('let startLives = 5;'));
   fireEvent.click(screen.getByRole('button', { name: 'See the code' }));
-  expect(mockNavigate).toHaveBeenCalledWith(expect.stringMatching(/^\/builder\?shelf=p/));
+  // On the code, because that is what the button said (20 November 2026: it
+  // opened the studio on Play, under a card reading "Play it first").
+  expect(mockNavigate).toHaveBeenCalledWith(expect.stringMatching(/^\/builder\?shelf=p[a-z0-9]+&tab=code$/));
   const shelf = JSON.parse(localStorage.getItem('codeit.shelf.v1'));
   expect(shelf[0].code).toContain('let startLives = 5;');
 });

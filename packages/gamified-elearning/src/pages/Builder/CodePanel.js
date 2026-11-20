@@ -99,6 +99,8 @@ export default function CodePanel({
   liveDoc = '',
   isGame = false,
   onPlay,
+  arriveHere = false,
+  onArrived,
 }) {
   const [draft, setDraft] = useState(code);
   const [dirty, setDirty] = useState(false);
@@ -136,6 +138,17 @@ export default function CodePanel({
   useKeepPlaying(liveFrame, replay);
 
   const section = useRef(null);
+  // Sent here by a button that said "See the code": the studio opens with the
+  // game at the top and this panel a screen and a half below it on a phone.
+  // Bring it up once, after the page above has taken its shape.
+  useEffect(() => {
+    if (!arriveHere) return undefined;
+    const timer = setTimeout(() => {
+      onArrived?.();
+      section.current?.scrollIntoView?.({ block: 'start', behavior: 'auto' });
+    }, 350);
+    return () => clearTimeout(timer);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     const el = section.current;
     if (!el || !el.parentElement || typeof ResizeObserver === 'undefined') return undefined;

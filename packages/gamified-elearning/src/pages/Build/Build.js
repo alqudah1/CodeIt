@@ -423,7 +423,9 @@ export default function Build() {
   const seeCode = () => {
     if (!recipe) return;
     const entry = saveShelfProject(localStorage, { title: recipe.title, prompt: idea.trim() || `Make it: ${recipe.title}`, projectType: 'game', code: gameHtml });
-    navigate(entry ? `/builder?shelf=${entry.id}` : '/builder');
+    // tab=code: the button says "See the code", so the studio opens on the
+    // code, not on Play with the code two taps and a scroll away.
+    navigate(entry ? `/builder?shelf=${entry.id}&tab=code` : '/builder');
   };
 
   // ?prompt=a%20ship%20game from the front page: build it on arrival.
@@ -590,7 +592,10 @@ export default function Build() {
                 <button type="button" className="ci-btn ci-btn--ink bd__publish" onClick={publish} disabled={publishing}>{publishing ? 'Publishing' : published && !published.offline ? (published.kept ? 'In your arcade' : 'Kept on this device') : 'Publish to my arcade'}</button>
                 <button type="button" className="ci-btn ci-btn--paper" onClick={shakeUp}>Shake it up</button>
               </div>
-              <button type="button" className="bd__seecode" onClick={seeCode}>See the code</button>
+              <button type="button" className="bd__seecode" onClick={seeCode}>
+                <span className="bd__seecode-mark" aria-hidden="true">{'</>'}</span>
+                See the code
+              </button>
             </>
           )}
         </section>

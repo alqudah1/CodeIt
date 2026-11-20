@@ -60,14 +60,27 @@ function isTabId(id) {
 }
 
 /**
- * Where a child should land when a project finishes building.
+ * Where a child should land when the studio opens.
  *
- * Always Play. The first thing anyone wants after asking for a game is to see
- * whether it is any good, and the old studio opened on a screen where the
- * preview competed with nine other panels for attention.
+ * Play, unless the way in asked for something else. The first thing anyone
+ * wants after asking for a game is to see whether it is any good, and the old
+ * studio opened on a screen where the preview competed with nine other panels
+ * for attention.
+ *
+ * The exception is a door that names a page. "See the code" under a game on
+ * /build opened the studio on Play, with a card reading "Play it first" and
+ * three Play buttons on the screen: the child had just played it, had asked
+ * for the code, and had to find a tab called "The code" to get what the
+ * button promised (20 November 2026). So the address can say which page:
+ * ?tab=code, or a tab's own id. Anything else is Play.
  */
-function initialTab() {
-  return DEFAULT_TAB;
+const TAB_WORDS = { code: 'learn', save: 'keep' };
+function initialTab(search) {
+  if (typeof search !== 'string' || !search) return DEFAULT_TAB;
+  let asked = '';
+  try { asked = (new URLSearchParams(search).get('tab') || '').trim().toLowerCase(); } catch { return DEFAULT_TAB; }
+  const id = TAB_WORDS[asked] || asked;
+  return isTabId(id) ? id : DEFAULT_TAB;
 }
 
 /**

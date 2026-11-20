@@ -299,7 +299,13 @@ export default function Builder() {
   }, [token, couldBePayer]);
   const [buildKey, setBuildKey]         = useState(0);
   const [hasPersonalized, setHasPersonalized] = useState(false);
-  const [hasPlayedOnce, setHasPlayedOnce] = useState(false);
+  // Sent here by "See the code" under a game on /build (?shelf=…&tab=code): the
+  // child was playing this game a moment ago. Telling them "Press Play. Try
+  // every button." beside the code they asked for was the guide not listening
+  // (20 November 2026), so the guide starts at the next step, changing a thing.
+  const [hasPlayedOnce, setHasPlayedOnce] = useState(() => (
+    initialTab(location.search) === 'learn' && Boolean(new URLSearchParams(location.search).get('shelf'))
+  ));
   const [hasTestedLatest, setHasTestedLatest] = useState(false);
   // The message listener below is registered once, so it cannot read state.
   // These refs carry the two values it needs. playedReportedRef resets with
@@ -349,7 +355,10 @@ export default function Builder() {
 
   // Which page of the studio is showing. Karam, a real child using it, asked
   // for pages because sixteen panels stacked down one phone screen is a wall.
-  const [workspaceTab, setWorkspaceTab] = useState(initialTab);
+  const [workspaceTab, setWorkspaceTab] = useState(() => initialTab(location.search));
+  // Arrived asking for the code (?tab=code): the code is brought onto the
+  // screen once, when it first appears, and never again after that.
+  const arriveAtCodeRef = useRef(initialTab(location.search) === 'learn');
 
   /** Is this panel on the page the child is looking at? */
   const onTab = (id) => workspaceTab === id;
@@ -1819,6 +1828,8 @@ export default function Builder() {
                 onRestore={restoreLastWorking}
                 guideLevel={guideLevel}
                 liveDoc={previewDoc}
+                arriveHere={arriveAtCodeRef.current}
+                onArrived={() => { arriveAtCodeRef.current = false; }}
                 isGame={(projectType || '').toLowerCase() === 'game'}
                 onPlay={() => {
                   setWorkspaceTab('play');

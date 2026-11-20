@@ -47,6 +47,33 @@ describe('where a child starts', () => {
     expect(DEFAULT_TAB).toBe('play');
   });
 
+  test('a door that names a page opens on that page, and anything else is Play', () => {
+    // "See the code" on /build sends ?tab=code.
+    expect(initialTab('?shelf=p123&tab=code')).toBe('learn');
+    expect(initialTab('?tab=learn')).toBe('learn');
+    expect(initialTab('?tab=change')).toBe('change');
+    expect(initialTab('?tab=save')).toBe('keep');
+    expect(initialTab('?tab=CODE')).toBe('learn');
+    expect(initialTab('?shelf=p123')).toBe('play');
+    expect(initialTab('?tab=')).toBe('play');
+    expect(initialTab('?tab=admin')).toBe('play');
+    expect(initialTab('')).toBe('play');
+    expect(initialTab({})).toBe('play');
+  });
+
+  test('the studio reads the page from its address, and the code is brought onto the screen once', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const read = (file) => fs.readFileSync(path.join(__dirname, file), 'utf8');
+    expect(read('Builder.js')).toMatch(/useState\(\(\) => initialTab\(location\.search\)\)/);
+    expect(read('Builder.js')).toMatch(/arriveHere=\{arriveAtCodeRef\.current\}/);
+    expect(read('Builder.js')).toMatch(/onArrived=\{\(\) => \{ arriveAtCodeRef\.current = false; \}\}/);
+    expect(read('CodePanel.js')).toMatch(/if \(!arriveHere\) return undefined;/);
+    // And the guide does not ask them to play a game they came from playing.
+    expect(read('Builder.js')).toMatch(/useState\(\(\) => \(\s*initialTab\(location\.search\) === 'learn' && Boolean\(new URLSearchParams\(location\.search\)\.get\('shelf'\)\)\s*\)\)/);
+    expect(read('../Build/Build.js')).toMatch(/\/builder\?shelf=\$\{entry\.id\}&tab=code/);
+  });
+
   test('a freshly built project sends them to Play', () => {
     expect(tabAfter('built', 'keep')).toBe('play');
   });

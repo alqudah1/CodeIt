@@ -81,8 +81,13 @@
 .bd__publish { position: relative; overflow: hidden; }
 .bd__publish::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .35), transparent); transform: skewX(-20deg); animation: bd-sweep 2.6s ease-in-out infinite; }
 @keyframes bd-sweep { 0%, 60% { left: -60%; } 100% { left: 130%; } }
-.bd__seecode { display: block; width: 100%; appearance: none; background: none; border: 0; text-align: center; margin-top: 14px; font: 800 13px var(--ci-body); color: var(--ci-ink-soft); cursor: pointer; }
-.bd__seecode:hover { color: var(--ci-ink); }
+/* "See the code" was 13px of grey text 17px tall under two big buttons: the
+   one door from a game to the code that makes it, and the smallest thing to
+   hit on the page (20 November 2026). A third block would shout over Publish;
+   this is a full-width key a thumb can find, quieter than the two above. */
+.bd__seecode { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 48px; appearance: none; background: none; border: 2px dashed var(--ci-ink-soft); border-radius: 16px; margin-top: 12px; font: 800 15px var(--ci-body); color: var(--ci-ink); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.bd__seecode:hover, .bd__seecode:focus-visible { border-style: solid; border-color: var(--ci-ink); background: var(--ci-paper); }
+.bd__seecode-mark { display: inline-grid; place-items: center; height: 26px; padding: 0 8px; border-radius: 8px; background: var(--ci-sun); border: 2px solid var(--ci-ink); font: 800 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--ci-ink); }
 
 /* the moment */
 .bd__ov { position: fixed; inset: 0; z-index: 1100; display: flex; align-items: center; justify-content: center; background: rgba(53, 34, 14, .6); backdrop-filter: blur(8px); padding: 20px; }
