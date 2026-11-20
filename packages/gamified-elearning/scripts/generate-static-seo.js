@@ -805,9 +805,12 @@ function lessonsIndexSections() {
         `CodeIt has ${LESSONS.length} sequenced beginner Python lessons. Each one introduces a single idea, gives a runnable example, and ends with a challenge that changes the code.`,
       ],
     },
+    // The headings named every lesson and linked none of them, so in the copy
+    // a crawler reads, lessons 5 and 14 had no link from any page at all.
     ...LESSONS.map(([, title, topic], index) => ({
       heading: `Lesson ${index + 1}: ${lessonName(index + 1, title).full}`,
       paragraphs: [`Covers ${topic}.`],
+      links: [[`/lesson/${index + 1}`, `Open lesson ${index + 1}: ${lessonName(index + 1, title).short}`]],
     })),
   ];
 }
@@ -818,9 +821,12 @@ function blogIndexSections() {
       heading: 'All CodeIt guides',
       paragraphs: ['Practical guides for beginners and the adults supporting them.'],
     },
+    // Same fault as the lessons index: every post named, none linked, so all
+    // seven posts had no inbound link in the copy a crawler reads.
     ...BLOG_CONTENT.map((post) => ({
       heading: post.title,
       paragraphs: [post.description || post.excerpt || ''].filter(Boolean),
+      links: [[`/blog/${post.slug}`, `Read: ${post.title}`]],
     })),
   ];
 }
@@ -1578,7 +1584,13 @@ const PAGES = [
   ...LESSONS.map(([slug, title, topic], index) => {
     const number = index + 1;
     const lesson = LESSON_CONTENT.get(number);
-    const sections = lessonSections(lesson);
+    // Previous and next, as the lesson itself offers them. Without these a
+    // crawler could not walk from one lesson to the next.
+    const around = [];
+    if (number > 1) around.push([`/lesson/${number - 1}`, `Previous: lesson ${number - 1}, ${lessonName(number - 1, LESSONS[index - 1][1]).short}`]);
+    if (number < LESSONS.length) around.push([`/lesson/${number + 1}`, `Next: lesson ${number + 1}, ${lessonName(number + 1, LESSONS[index + 1][1]).short}`]);
+    around.push(['/lessons', 'All the lessons']);
+    const sections = lessonSections(lesson).concat([{ heading: 'Where this lesson sits', paragraphs: [], links: around }]);
     return {
       route: `/lesson/${number}`,
       // Use the lesson's own title so the static <title>/<h1> match what the
@@ -1760,6 +1772,9 @@ function sectionsHtml(sections) {
       for (const paragraph of section.after || []) {
         if (!paragraph) continue;
         parts.push(`<p>${paragraphHtml(paragraph)}</p>`);
+      }
+      if (Array.isArray(section.links) && section.links.length) {
+        parts.push(`<p>${section.links.map(([href, label]) => `<a href="${escapeHtml(href)}">${escapeHtml(label)}</a>`).join(' · ')}</p>`);
       }
       return parts.join('\n      ');
     })
