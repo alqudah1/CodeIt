@@ -32,6 +32,21 @@ function recipeFromRules(text) {
   return { kind: r.kind, fits: r.fits, title: r.title, player: r.player, enemy: r.enemy, treasure: r.treasure, sky: r.sky, speed: r.speed, lives: r.lives, winAt: r.winAt, ...(r.ownRules ? { ownRules: true } : {}) };
 }
 
+/**
+ * A model's recipe for this sentence, with the things the child named put back
+ * if the model left them out (gameWords.keepNamed), and the rules' name for
+ * the game when that happened: a model that wrote about something else does
+ * not get to name it either.
+ */
+function keepTheirThings(recipe, text) {
+  if (!recipe) return recipe;
+  // Read for the kind of game the model chose, so a name put back says the
+  // kind that is on the screen ("Samosa Catch" over a catch game, not "Dodge").
+  const rules = words.recipeFromIdea(text, KINDS.includes(recipe.kind) ? recipe.kind : undefined);
+  const cast = words.keepNamed(recipe, rules);
+  return { ...recipe, player: cast.player, enemy: cast.enemy, treasure: cast.treasure, title: cast.kept ? recipe.title : rules.title };
+}
+
 /** Accept a model's recipe only if every field is sane; otherwise null. */
 function validRecipe(r) {
   if (!r || typeof r !== 'object') return null;
@@ -63,4 +78,4 @@ sky: one of "space", "night", "ocean", "candy", "day", "sunset".
 speed: 1, 2 or 3. lives: 1 to 5. winAt: 5 to 50.
 Keep everything kind and age-appropriate for a 10-year-old; no weapons other than the game's "shoot", no gore.`;
 
-module.exports = { KINDS, SKIES, looksLikeGame, recipeFromRules, validRecipe, titleFor, RECIPE_PROMPT };
+module.exports = { KINDS, SKIES, keepTheirThings, looksLikeGame, recipeFromRules, validRecipe, titleFor, RECIPE_PROMPT };

@@ -395,5 +395,53 @@ function isEmojiLook(look) {
   return typeof look === 'string' && Array.from(look).some((ch) => ch.codePointAt(0) > 127);
 }
 
+/**
+ * The model's three pictures, with the things the child named put back if the
+ * model left them out, and each word kept under the picture it belongs to.
+ *
+ * The model is asked to use the child's own things. Nothing made it. Its
+ * picture was taken for every part while the words printed beside the
+ * pictures were taken from the sentence, so a model that answered with a bunny
+ * for "a cat that catches falling fish" gave a game about a bunny under the
+ * line "You are the 🐰 cat. Catch the 🥕 fish" (seen 20 November 2026 with a
+ * stand-in model that always says bunny; a real one can do it on any day).
+ *
+ * `model` is { player, enemy, treasure }. `rules` is what recipeFromIdea made
+ * of the same sentence: its pictures, `named` and `words`.
+ *   - If every named thing is somewhere in the model's recipe, the model's
+ *     casting stands, even if it gave them different parts ("you are the dog"
+ *     is the kind of thing a model reads better than the rules do). The
+ *     child's word moves with its picture.
+ *   - If any is missing, the model was not writing about this sentence. The
+ *     named things go back where the rules put them, and `kept` is false so
+ *     the caller knows not to trust the model's name for the game either.
+ * A part the child did not name is the model's to invent, unless its choice
+ * is a picture already used for a named thing.
+ */
+function keepNamed(model, rules) {
+  const parts = ['player', 'enemy', 'treasure'];
+  const named = (rules && rules.named) || {};
+  // The same picture with and without the "draw it as a picture" mark is the same picture.
+  const same = (a, b) => String(a).replace(/️/g, '') === String(b).replace(/️/g, '');
+  const out = { player: model.player, enemy: model.enemy, treasure: model.treasure };
+  const kept = parts.every((part) => !named[part] || parts.some((at) => same(out[at], rules[part])));
+  if (!kept) {
+    const theirs = parts.filter((part) => named[part]).map((part) => rules[part]);
+    for (const part of parts) {
+      if (named[part] || theirs.some((look) => same(look, out[part]))) out[part] = rules[part];
+    }
+  }
+  const words = { player: null, enemy: null, treasure: null };
+  const isTheirs = { player: false, enemy: false, treasure: false };
+  for (const part of parts) {
+    if (!named[part]) continue;
+    const where = parts.find((at) => same(out[at], rules[part]) && !isTheirs[at]);
+    if (!where) continue;
+    words[where] = (rules.words && rules.words[part]) || null;
+    isTheirs[where] = true;
+  }
+  return { player: out.player, enemy: out.enemy, treasure: out.treasure, words, named: isTheirs, kept };
+}
+
 // ── exports ──
-export { DEFAULTS, KINDS, KIND_SAY, KIND_TITLE, WORDS, emojiForWord, isEmojiLook, kindOf, looksLikeGame, namedGame, nounsIn, recipeFromIdea, rolesIn, titleFromIdea, wordFor };
+export { DEFAULTS, KINDS, KIND_SAY, KIND_TITLE, WORDS, emojiForWord, isEmojiLook, keepNamed, kindOf, looksLikeGame, namedGame, nounsIn, recipeFromIdea, rolesIn, titleFromIdea, wordFor };

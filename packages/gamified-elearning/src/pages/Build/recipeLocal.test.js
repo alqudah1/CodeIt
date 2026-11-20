@@ -1,4 +1,4 @@
-import { localRecipe, normaliseRecipe, looksLikeGame, keepTheirWord, titleFor, rollIdea, nameFor, IDEAS } from './recipeLocal';
+import { keepNamed, localRecipe, normaliseRecipe, looksLikeGame, keepTheirWord, titleFor, rollIdea, nameFor, IDEAS } from './recipeLocal';
 
 test('a classroom sentence becomes a shooter in space with a ship, without a server', () => {
   const r = localRecipe('I want a ship game where you shoot at enemy ships with the button');
@@ -33,6 +33,72 @@ test('whatever the server says is kept as the child said it, with sane numbers',
   expect(normaliseRecipe(null, 'a bunny that catches carrots').player).toBe('🐰');
   // The new kinds come through, and a server title of "Game Game" never does.
   expect(normaliseRecipe({ kind: 'flyer', title: 'Game Game' }, 'a dragon that flies through the clouds')).toMatchObject({ kind: 'flyer', title: 'Dragon Flight', player: '🐉', enemy: '☁️' });
+});
+
+// 20 November 2026: "a cat that catches falling fish" came back as a bunny
+// catching carrots, under the line "You are the 🐰 cat. Catch the 🥕 fish".
+describe('the things a child names are the things in the game', () => {
+  const CAT = 'a cat that catches falling fish';
+  const bunny = { kind: 'catch', title: 'Bunny Catch', player: '🐰', enemy: '🦊', treasure: '🥕', sky: 'night', speed: 2, lives: 3, winAt: 15 };
+
+  test('a model that leaves them out is overruled, and its name for the game goes with it', () => {
+    const r = normaliseRecipe(bunny, CAT);
+    expect(r).toMatchObject({ player: '🐱', treasure: '🐟', title: localRecipe(CAT).title });
+    expect(r.title).not.toMatch(/bunny/i);
+    expect(r.words).toMatchObject({ player: 'cat', treasure: 'fish' });
+    // What the child did not name is still the model's to invent.
+    expect(r.enemy).toBe('🦊');
+    expect(r.words.enemy).toBeNull();
+    expect(r.sky).toBe('night');
+  });
+
+  test('a model that keeps them is believed, name and all', () => {
+    const r = normaliseRecipe({ ...bunny, title: 'Fishy Feast', player: '🐱', treasure: '🐟', enemy: '🐙' }, CAT);
+    expect(r).toMatchObject({ player: '🐱', treasure: '🐟', enemy: '🐙', title: 'Fishy Feast' });
+    expect(r.words).toMatchObject({ player: 'cat', treasure: 'fish', enemy: null });
+  });
+
+  test('a model may give the named things different parts, and each word moves with its picture', () => {
+    const swapped = keepNamed({ player: '🐟', enemy: '🦈', treasure: '🐱' }, { ...localRecipe(CAT) });
+    expect(swapped).toMatchObject({ player: '🐟', treasure: '🐱', enemy: '🦈', kept: true });
+    expect(swapped.words).toEqual({ player: 'fish', enemy: null, treasure: 'cat' });
+    expect(swapped.named).toEqual({ player: true, enemy: false, treasure: true });
+  });
+
+  test('one named thing kept and one dropped: both go back where the rules put them', () => {
+    // The fish was moved to the player and the cat was dropped.
+    const r = keepNamed({ player: '🐟', enemy: '🦊', treasure: '🥕' }, localRecipe(CAT));
+    expect(r).toMatchObject({ player: '🐱', treasure: '🐟', enemy: '🦊', kept: false });
+    expect(r.words).toEqual({ player: 'cat', enemy: null, treasure: 'fish' });
+  });
+
+  test('an invented part never shows the same picture as a named one', () => {
+    // The model used the fish as the enemy and dropped the cat.
+    const rules = localRecipe(CAT);
+    const r = keepNamed({ player: '🐰', enemy: '🐟', treasure: '🥕' }, rules);
+    expect(r.player).toBe('🐱');
+    expect(r.treasure).toBe('🐟');
+    expect(r.enemy).toBe(rules.enemy);
+    expect(new Set([r.player, r.enemy, r.treasure]).size).toBe(3);
+  });
+
+  test('a sentence that names nothing leaves the whole cast to the model', () => {
+    const r = normaliseRecipe(bunny, 'a fun catching game');
+    // (A carrot is one of our drawn sprites, so the picture becomes its name.)
+    expect(r).toMatchObject({ player: '🐰', enemy: '🦊', treasure: 'carrot', title: 'Bunny Catch' });
+    expect(r.words).toEqual({ player: null, enemy: null, treasure: null });
+  });
+
+  test('every example sentence on the page survives a model that answers with something else', () => {
+    for (const idea of IDEAS) {
+      const rules = localRecipe(idea);
+      const r = normaliseRecipe({ ...bunny, kind: rules.kind, player: '🦄', enemy: '🧟', treasure: '🍩', title: 'Unicorn Party' }, idea);
+      for (const part of ['player', 'enemy', 'treasure']) {
+        if (rules.named[part]) expect([idea, part, r[part]]).toEqual([idea, part, rules[part]]);
+      }
+      if (Object.values(rules.named).some(Boolean)) expect(r.title).toBe(rules.title);
+    }
+  });
 });
 
 test('titles are short and end in Game; names come from the choices', () => {

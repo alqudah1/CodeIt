@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import Build from './Build';
+import { localRecipe } from './recipeLocal';
 
 // ── Say a game, get a game ───────────────────────────────────────────────────
 //
@@ -39,7 +40,11 @@ test('the sentence from the classroom becomes a shooter in the frame when the se
   fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
   await waitFor(() => expect(frameDoc()).toContain("let gameKind   = 'shooter';"), { timeout: 5000 });
   expect(frameDoc()).toContain("let playerLook = 'ship';");
-  expect(frameDoc()).toContain("let enemyLook  = 'alien';");
+  // The child said "enemy ships". The server's answer here says aliens, and
+  // until 20 November 2026 the page took its word; a thing the child named is
+  // now put back when the server leaves it out (recipeLocal.keepNamed).
+  expect(frameDoc()).toContain(`let enemyLook  = '${localRecipe(SENTENCE).enemy}';`);
+  expect(frameDoc()).not.toContain("let enemyLook  = 'alien';");
   expect(global.fetch).toHaveBeenCalledWith('http://codeit.test/api/builder/recipe', expect.objectContaining({ method: 'POST' }));
   expect(screen.getByRole('button', { name: 'Publish to my arcade' })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: /You: ship/ })).toBeInTheDocument();

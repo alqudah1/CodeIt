@@ -7,8 +7,11 @@
 // with the same rules (gameWords.js), so the page and the server agree about
 // what a child asked for.
 
-import { KINDS, emojiForWord, isEmojiLook, looksLikeGame as soundsLikeGame, nounsIn, recipeFromIdea } from './gameWords';
+import { KINDS, emojiForWord, isEmojiLook, keepNamed, looksLikeGame as soundsLikeGame, nounsIn, recipeFromIdea } from './gameWords';
 import { EMOJI_TO_SPRITE, SPRITE_NAMES, spriteNameFor } from './sprites';
+
+// Shared with the server, word for word (gameWords.js), and handed on from here.
+export { keepNamed };
 
 export const SKY_NAMES = ['space', 'night', 'ocean', 'candy', 'day', 'sunset'];
 export const TWISTS = ['none', 'faster', 'waves'];
@@ -67,15 +70,26 @@ export function normaliseRecipe(r, text = '') {
   const base = localRecipe(text, KINDS.includes(r?.kind) ? r.kind : undefined);
   const kind = KINDS.includes(r?.kind) ? r.kind : base.kind;
   const title = typeof r?.title === 'string' ? r.title.replace(/[<>"'&]/g, '').trim().slice(0, 24) : '';
+  // The things the child named are put back if the server's answer left them
+  // out (gameWords.keepNamed). Both casts are compared as the page will draw
+  // them, so a rocket and our drawn ship are the same thing.
+  const cast = keepNamed({
+    player: lookFor(r?.player, base.player),
+    enemy: lookFor(r?.enemy, base.enemy),
+    treasure: lookFor(r?.treasure, base.treasure),
+  }, base);
   return {
     ...base,
     kind,
     fits: typeof r?.fits === 'boolean' ? r.fits : base.fits,
-    // The server's own fallback title ("Game Game") never beats ours.
-    title: title.length > 2 && !/^(game\s*)+$/i.test(title) ? title : base.title,
-    player: lookFor(r?.player, base.player),
-    enemy: lookFor(r?.enemy, base.enemy),
-    treasure: lookFor(r?.treasure, base.treasure),
+    // The server's own fallback title ("Game Game") never beats ours, and
+    // neither does the name of a game that left the child's things out.
+    title: cast.kept && title.length > 2 && !/^(game\s*)+$/i.test(title) ? title : base.title,
+    player: cast.player,
+    enemy: cast.enemy,
+    treasure: cast.treasure,
+    named: cast.named,
+    words: cast.words,
     sky: SKY_NAMES.includes(r?.sky) ? r.sky : base.sky,
     speed: Math.max(1, Math.min(3, Number(r?.speed) || base.speed)),
     lives: [1, 3, 5].includes(Number(r?.lives)) ? Number(r.lives) : base.lives,

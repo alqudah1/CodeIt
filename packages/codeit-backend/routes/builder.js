@@ -20,7 +20,7 @@ const { initializeProjectRewards, awardProjectXp: persistProjectXp } = require('
 const { checkAiBuildAllowance, planForSubscription } = require('../entitlements');
 const { modelForBuild } = require('../modelRouting');
 const { projectName } = require('../projectName');
-const { looksLikeGame, recipeFromRules, validRecipe, RECIPE_PROMPT } = require('../recipeRules');
+const { keepTheirThings, looksLikeGame, recipeFromRules, validRecipe, RECIPE_PROMPT } = require('../recipeRules');
 const billingStore = require('../billingStore');
 const { assertCanPublish, isBillingConfigured } = require('./billing');
 
@@ -2252,8 +2252,12 @@ router.post('/recipe', optionalAuth, recipeLimiter, async (req, res) => {
   }
   if (!recipe) recipe = rules;
   // The model's guess at the kind is kept, but the child's own named things
-  // are never replaced by an invented one: a samosa stays a samosa.
+  // are never replaced by an invented one: a samosa stays a samosa. That
+  // sentence stood here for a month above code that only carried `fits`
+  // across; the prompt asked the model to keep them and nothing checked that
+  // it had. keepTheirThings checks, and puts them back.
   if (source === 'model') {
+    recipe = keepTheirThings(recipe, prompt);
     if (rules.fits === false && typeof recipe.fits !== 'boolean') recipe.fits = false;
   }
   // Tic tac toe, chess, hangman: a game with its own rules is none of the

@@ -88,3 +88,53 @@ test('a game the child names by name is a game; one with its own rules goes to t
   assert.equal(recipeFromRules('a snake that eats apples').ownRules, undefined);
   assert.equal(recipeFromRules('a bunny that catches carrots').ownRules, undefined);
 });
+
+// 20 November 2026: "a cat that catches falling fish" came back as a bunny
+// catching carrots. The prompt asks the model to use the child's own things;
+// until now nothing checked that it had.
+const { keepTheirThings } = require('./recipeRules');
+const CAT = 'a cat that catches falling fish';
+const bunny = { kind: 'catch', title: 'Bunny Catch', player: '🐰', enemy: '🦊', treasure: '🥕', sky: 'night', speed: 2, lives: 3, winAt: 15 };
+
+test('a model that leaves out the things a child named is overruled, name and all', () => {
+  const r = keepTheirThings(bunny, CAT);
+  assert.equal(r.player, '🐱');
+  assert.equal(r.treasure, '🐟');
+  assert.equal(r.enemy, '🦊', 'what the child did not name is still the model\'s to invent');
+  assert.equal(r.title, titleFor(CAT));
+  // The name put back says the kind of game the model chose, which is the one on the screen.
+  const samosa = keepTheirThings(bunny, 'a samosa that has to dodge the fork');
+  assert.deepEqual([samosa.player, samosa.enemy, samosa.kind], ['🥟', '🍴', 'catch']);
+  assert.match(samosa.title, /Samosa/);
+  assert.doesNotMatch(samosa.title, /Dodge/);
+  assert.doesNotMatch(r.title, /bunny/i);
+  assert.equal(r.sky, 'night');
+  assert.deepEqual(validRecipe(r), r, 'and it is still a recipe the engine accepts');
+});
+
+test('a model that keeps them is believed, including where it put them and what it called the game', () => {
+  const faithful = { ...bunny, title: 'Fishy Feast', player: '🐱', treasure: '🐟', enemy: '🐙' };
+  assert.deepEqual(keepTheirThings(faithful, CAT), faithful);
+  // Different parts for the same things: the model's reading stands.
+  const recast = { ...bunny, title: 'Fish Escape', player: '🐟', enemy: '🐱', treasure: '🪱' };
+  assert.deepEqual(keepTheirThings(recast, CAT), recast);
+});
+
+test('the same picture with and without the picture mark is the same picture', () => {
+  const asteroids = 'a ship that shoots asteroids and they get faster';
+  const rules = recipeFromRules(asteroids);
+  const bare = rules.enemy.replace(/️/g, '');
+  const said = { ...bunny, kind: 'shooter', title: 'Rock Blaster', player: rules.player, enemy: bare, treasure: '💎', sky: 'space' };
+  assert.equal(keepTheirThings(said, asteroids).title, 'Rock Blaster');
+});
+
+test('a sentence that names nothing leaves the whole cast and the name to the model', () => {
+  assert.deepEqual(keepTheirThings(bunny, 'a fun catching game'), bunny);
+});
+
+test('an invented part never shows the same picture as a named one', () => {
+  const r = keepTheirThings({ ...bunny, player: '🐰', enemy: '🐟', treasure: '🥕' }, CAT);
+  assert.equal(new Set([r.player, r.enemy, r.treasure]).size, 3);
+  assert.equal(r.player, '🐱');
+  assert.equal(r.treasure, '🐟');
+});
