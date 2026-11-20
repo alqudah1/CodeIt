@@ -50,3 +50,39 @@ test('an older server without it: nothing shown, nothing broken', async () => {
   await screen.findByRole('heading', { level: 1 });
   expect(screen.queryByText("Today's build")).toBeNull();
 });
+
+// 19 November 2026: on a day with nothing published the card stood 190px tall
+// in front of every project on a phone. With nothing to show it is one slim
+// row; with entries it leads, because its cards are projects to play.
+test('with nothing published today it is the quiet row, and with entries it is not', async () => {
+  feed({ quest: QUEST, count: 0, entries: [] });
+  const empty = render(<Explore />);
+  await screen.findByRole('heading', { name: 'Shoot the asteroids.' });
+  expect(empty.container.querySelector('.exp-today__head--quiet')).not.toBeNull();
+  expect(empty.container.querySelector('.exp-bar--quiet')).not.toBeNull();
+  // The filters are in the same wrapper, so a wide screen can put them on one row.
+  expect(empty.container.querySelector('.exp-bar .exp-tabs')).not.toBeNull();
+  expect(empty.container.querySelector('.exp-bar .exp-today')).not.toBeNull();
+  empty.unmount();
+
+  feed({ quest: QUEST, count: 2, entries: [card()] });
+  const full = render(<Explore />);
+  await screen.findByRole('heading', { name: 'Shoot the asteroids.' });
+  expect(full.container.querySelector('.exp-today__head--quiet')).toBeNull();
+  expect(full.container.querySelector('.exp-bar--quiet')).toBeNull();
+});
+
+test('the sentence stays in the page when a narrow screen does not show it', () => {
+  const css = require('fs').readFileSync(require('path').join(__dirname, 'Explore.css'), 'utf8');
+  const narrow = css.slice(css.lastIndexOf('@media (max-width: 700px)'));
+  // Clipped, not display:none, so a screen reader still reads it.
+  expect(narrow).toMatch(/\.exp-today__head--quiet \.exp-today__line \{[^}]*clip-path: inset\(50%\)/);
+  expect(narrow.slice(0, narrow.indexOf('}'))).not.toMatch(/display:\s*none/);
+});
+
+test('on the narrowest phones Play and Remix stand one above the other, so neither is cut off', () => {
+  const css = require('fs').readFileSync(require('path').join(__dirname, 'Explore.css'), 'utf8');
+  const narrow = css.slice(css.lastIndexOf('@media (max-width: 360px)'));
+  expect(narrow).toMatch(/\.exp-card__actions \{ flex-direction: column;/);
+  expect(narrow).toMatch(/\.exp-btn--remix \{[^}]*width: 100%/);
+});

@@ -319,17 +319,21 @@ const LessonMap = () => {
               ← Back
             </button>
             <h1 className="lm-title">Lessons</h1>
-          </div>
-          <div className="lm-stats-row">
+            {/* Beside the title, not on a row of its own under it: the count
+                is six characters, and its row was 46px between the child and
+                the map (the first lesson began 43% of the way down a laptop
+                screen, 19 November 2026). */}
             <span className="lm-stat-chip">
               {loading ? '…' : `${completedIds.length} / ${lessons.length} done`}
             </span>
-            {!token && completedIds.length > 0 && (
+          </div>
+          {!token && completedIds.length > 0 && (
+            <div className="lm-stats-row">
               <span className="lm-kept">
                 Kept on this device. <Link to="/register" state={{ from: '/lessons' }}>A free account</Link> keeps them for good.
               </span>
-            )}
-          </div>
+            </div>
+          )}
           {/* The whole journey in one row, like a level select: four lands
               and the castle, joined by a track, with where you are. */}
           <ol className="lm-stages" aria-label="Stages">

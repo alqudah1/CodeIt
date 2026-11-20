@@ -440,9 +440,19 @@ export default function Explore() {
           The quest every child's Home shows today, and the games children
           published from it today. Real entries only: on a day with none,
           it says so and asks for the first. */}
+      {/* Today's build and the filters share a wrapper so that, on a screen
+          wide enough and a day with nothing published, they can share a row
+          (Explore.css, .exp-bar--quiet). */}
+      <div className={`exp-bar${!loading && !error && data?.today?.quest && (data.today.entries || []).length === 0 ? ' exp-bar--quiet' : ''}`}>
       {!loading && !error && data?.today?.quest && (
         <section className="exp-today" aria-labelledby="exp-today-title">
-          <div className="exp-today__head">
+          {/* On a day nobody has published one, this is an invitation to
+              make something on a page a child came to to play something, and
+              it stood 190px tall in front of every project on a phone (the
+              first project began 57% of the way down the screen, 19 November
+              2026). With nothing to show it is one slim row and the projects
+              start; with entries it leads, because its cards are projects. */}
+          <div className={`exp-today__head${(data.today.entries || []).length === 0 ? ' exp-today__head--quiet' : ''}`}>
             <div>
               <p className="exp-today__eyebrow">Today's build</p>
               <h2 id="exp-today-title" className="exp-today__title">{data.today.quest.text}</h2>
@@ -480,6 +490,7 @@ export default function Explore() {
             {tab.label}
           </button>
         ))}
+      </div>
       </div>
 
       {/* Content */}

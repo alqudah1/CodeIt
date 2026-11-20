@@ -117,3 +117,15 @@ test('a grown-up year is 18 to 100 years ago, nothing else', () => {
   expect(isGrownUpYear('abcd')).toBe(false);
   expect(isGrownUpYear('')).toBe(false);
 });
+
+// 19 November 2026: on two columns the Settings chip and the Grown-ups row are
+// on the same screen and go to the same place.
+test('on two columns the Settings chip steps aside for the Grown-ups row, and both go to settings', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const css = fs.readFileSync(path.join(__dirname, 'Me.css'), 'utf8');
+  const wide = css.slice(css.indexOf('@media (min-width: 900px)'));
+  expect(wide.slice(0, wide.indexOf('\n}'))).toMatch(/\.me__settings \{ display: none; \}/);
+  const src = fs.readFileSync(path.join(__dirname, 'Me.js'), 'utf8');
+  expect((src.match(/to="\/profile\?settings=1"/g) || []).length).toBe(2);
+});

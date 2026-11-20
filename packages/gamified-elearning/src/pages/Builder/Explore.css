@@ -751,3 +751,69 @@
 .exp-page--night .exp-today { background: var(--n-surface); color: var(--n-text); border-color: var(--n-edge-strong); }
 .exp-page--night .exp-today h2, .exp-page--night .exp-today__title { color: var(--n-text); }
 .exp-page--night .exp-empty, .exp-page--night .exp-loading { color: var(--n-muted); }
+
+/* ── The projects start in the first third of the screen (19 November 2026) ──
+   Measured by ops/checks/screen-share.js: the first project began 480px down
+   a phone (57%), 378px down a tablet and 376px down a laptop. What stood in
+   front of it was a heading with a button under it, then Today's build at
+   full height on a day with nothing in it, then the filters. Nothing is
+   taken away here. It is the same things in less room. */
+.exp-hero { padding: 8px 16px; }
+.exp-today { margin: 8px auto 6px; }
+.exp-tabs { padding: 6px 12px 2px; }
+.exp-content { padding-top: 12px; }
+.exp-today__head { flex-wrap: nowrap; padding: 8px 14px; }
+/* With entries too: its cards are projects, and they began 36% of the way
+   down a phone with the heading at its old size. */
+.exp-today__title { margin: 0 0 2px; font-size: clamp(1.15rem, 3.4vw, 1.5rem); }
+.exp-today__line { font-size: 0.9375rem; line-height: 1.3; }
+.exp-today .exp-grid { margin-top: 10px; }
+.exp-today__head > div { min-width: 0; }
+.exp-today__go { flex: 0 0 auto; }
+/* Nothing published today: one row. The sentence is for a screen with room
+   for it; the heading and the button say the same thing without it. */
+.exp-today__head--quiet { padding: 8px 14px; }
+.exp-today__head--quiet .exp-today__title { margin: 0; font-size: clamp(1.15rem, 3.4vw, 1.5rem); }
+.exp-today__head--quiet .exp-today__go { min-height: 44px; padding: 8px 18px; }
+.exp-today__head--quiet .exp-today__line { font-size: 0.875rem; }
+@media (max-width: 700px) {
+  .exp-today__head--quiet .exp-today__line {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+}
+@media (min-width: 900px) {
+  /* Room for both on one row: the filters on the left, over the projects
+     they filter, and the day's invitation on the right. */
+  .exp-bar--quiet {
+    display: flex; align-items: center; gap: 20px;
+    max-width: 1300px; margin: 6px auto 0; padding: 0 32px;
+  }
+  .exp-bar--quiet .exp-tabs { order: 1; flex: 0 0 auto; padding: 0; justify-content: flex-start; }
+  .exp-bar--quiet .exp-today { order: 2; flex: 0 1 640px; min-width: 0; margin: 0 0 4px auto; padding: 0; }
+  .exp-bar--quiet .exp-today__head > div { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 12px; }
+  .exp-bar--quiet .exp-today__eyebrow { flex-basis: 100%; }
+}
+@media (min-width: 900px) and (max-width: 1150px) {
+  .exp-bar--quiet .exp-today__line {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+}
+@media (max-width: 540px) {
+  .exp-hero { padding: 6px 16px; }
+  .exp-today { margin: 6px auto 4px; }
+  /* The heading on the left, the button on the right, one row. */
+  .exp-hero__inner { flex-wrap: nowrap; justify-content: space-between; gap: 10px; }
+  .exp-hero__title { text-align: left; font-size: 1.0625rem; }
+  .exp-hero__keys { flex: 0 0 auto; }
+  .exp-hero__cta--surprise { min-height: 44px; padding: 8px 14px; white-space: nowrap; }
+  .exp-content { padding-top: 10px; }
+}
+/* On a phone 320 wide a card is 142px, and Play and Remix side by side need
+   145: Remix, the button this page leads with, was cut off at "Remi" (seen 19
+   November 2026). There they stand one above the other, each the card's width. */
+@media (max-width: 360px) {
+  .exp-card__actions { flex-direction: column; padding: 8px 10px 12px; }
+  .exp-card__actions .exp-btn--play, .exp-card__actions .exp-btn--remix { flex: 0 0 auto; width: 100%; min-height: 40px; }
+}

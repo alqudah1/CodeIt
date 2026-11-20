@@ -68,7 +68,11 @@ const SCREENS = [
   // A check that cries wolf is how a real failure gets waved through, and
   // this project has four of those in its history. Both sets of selectors are
   // listed so the row is honest whichever profile the seeded account gets.
-  { name: 'profile',          url: '/profile',  want: '.me__nums, .me__level, .profile-card--xp, .profile-stats', came: 'their progress', signedIn: true, union: true },
+  // Powers and medals are progress, and the games they made are their own
+  // work, the same thing the returning home is measured for. Counting a
+  // child's own games as competition for their progress was this row
+  // calling half the page clutter.
+  { name: 'profile',          url: '/profile',  want: '.me__nums, .me__level, .me__powers, .me__medals, .me__games, .profile-card--xp, .profile-stats', came: 'their progress and their games', signedIn: true, union: true },
   { name: 'pricing',          url: '/pricing',  want: '.pricing-plans', came: 'the plans' },
 ];
 
@@ -121,6 +125,7 @@ async function measure(page, wantSelector, union) {
     // not competing with it — a lesson card on /lessons IS the point — so those
     // are counted separately.
     let competing = 0;
+    let navigation = 0;
     let inside = 0;
     const seen = new Set();
     document.querySelectorAll('a[href], button, [role="button"], summary, input, select').forEach(el => {
@@ -134,7 +139,9 @@ async function measure(page, wantSelector, union) {
       const key = `${Math.round(r.top)}:${Math.round(r.left)}:${Math.round(r.width)}`;
       if (seen.has(key)) return;
       seen.add(key);
-      if (contains(el)) inside += 1; else competing += 1;
+      if (contains(el)) inside += 1;
+      else if (el.closest('header.site-header, nav.ci-tabs')) navigation += 1;
+      else competing += 1;
     });
 
     // Words of interface text sitting above the thing they came for. This is
@@ -164,6 +171,7 @@ async function measure(page, wantSelector, union) {
       couldHaveFilled: fullHeight >= (vh - wr.top),
       share: Math.round(share * 100),
       competing,
+      navigation,
       inside,
       wordsAbove,
       pageHeight: Math.round(document.documentElement.scrollHeight),
@@ -232,7 +240,7 @@ const ALLOWED = [];
   let failures = 0;
   for (const size of SIZES) {
     console.log(`\n══ ${size.name} (${size.width}x${size.height}) ${'═'.repeat(Math.max(0, 34 - size.name.length))}`);
-    console.log(`  ${pad('screen', 20)} ${pad('scroll past', 15)} ${pad('of 1st screen', 15)} ${pad('competing', 11)} words above`);
+    console.log(`  ${pad('screen', 20)} ${pad('scroll past', 15)} ${pad('of 1st screen', 15)} ${pad('its own', 9)} ${pad('site nav', 10)} words above`);
     for (const r of rows.filter(x => x.size === size.name)) {
       if (r.noSession) {
         console.log(`  ${pad(r.screen, 20)} — skipped, no signed-in session available`);
@@ -259,13 +267,27 @@ const ALLOWED = [];
       const bad = [];
       if (r.scrollPast > 33) bad.push('starts too low');
       if (r.couldHaveFilled && r.share < (size.name === 'phone' ? 60 : 50)) bad.push('share');
-      if (r.competing > 10) bad.push('controls');
+      // Two counts where there was one (19 November 2026). The bar was "ten
+      // controls on the first screen, the site's own navigation included",
+      // set when the header was a logo and a few links. The header a visitor
+      // sees on a laptop is nine controls now (six places, two buttons and
+      // the logo) and a phone has a four-key tab bar, both on purpose. With
+      // one count, lesson 1 on a laptop failed "too many controls" while
+      // owning two: the way back and Read to me. A check that fails a page
+      // for the header it shares with every other page says nothing about
+      // the page.
+      //
+      // So the page is held for what it adds, six at most, and the
+      // navigation is held to what it is today, so neither can grow without
+      // this going red.
+      if (r.competing > 6) bad.push('controls');
+      if (r.navigation > 9) bad.push('navigation');
       const allowance = ALLOWED.find(a => a.size === size.name && a.screen === r.screen);
       if (bad.length && !allowance) failures += 1;
       if (bad.length && allowance) allowance.used = true;
       const shareCell = r.couldHaveFilled ? `${r.share}%` : `${r.share}% (short)`;
       console.log(
-        `  ${pad(r.screen, 20)} ${pad(r.startsAt + 'px (' + r.scrollPast + '%)', 15)} ${pad(shareCell, 15)} ${pad(r.competing, 11)} ${pad(r.wordsAbove, 6)} ${bad.length ? (allowance ? '· allowed: ' : '⚠ ') + bad.join(', ') : ''}`
+        `  ${pad(r.screen, 20)} ${pad(r.startsAt + 'px (' + r.scrollPast + '%)', 15)} ${pad(shareCell, 15)} ${pad(r.competing, 9)} ${pad(r.navigation, 10)} ${pad(r.wordsAbove, 6)} ${bad.length ? (allowance ? '· allowed: ' : '⚠ ') + bad.join(', ') : ''}`
       );
     }
   }
@@ -285,6 +307,6 @@ const ALLOWED = [];
     console.log(`\n${failures} screen/size pair(s) below the bar that should not be.`);
     process.exit(1);
   }
-  console.log('\nEvery screen passes the bar A set, but the one written down.');
+  console.log(ALLOWED.length ? '\nEvery screen passes the bar, but the ones written down.' : '\nEvery screen passes the bar.');
   process.exit(0);
 })();

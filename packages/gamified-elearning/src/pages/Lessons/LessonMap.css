@@ -535,3 +535,29 @@ svg.lm-decor { max-width: none; height: auto; }
 /* The stops, bubbles, gates and names live on the bright lands, so inside
    the path the tokens stay the daylight ones whatever the page is. */
 .lm-page--night .lm-path { --ink: #35220E; --ink-soft: rgba(53, 34, 14, .55); --ink-line: rgba(53, 34, 14, .16); --paper: #FFFDFA; --ground: #FFF4E5; --arc-orange: #FF7A00; --arc-orange-text: #B25200; --pop-rest: 0 4px 0 #35220E; --pop-down: 0 1px 0 #35220E; }
+
+/* ── The map starts in the first third of the screen (19 November 2026) ──
+   Measured by ops/checks/screen-share.js: lesson 1 began 292px down a phone
+   (35%) and 341px down a laptop (43%). The count sits beside the title now,
+   and the rows above the map stand closer together. */
+.lm-container { padding-top: 0.75rem; }
+.lm-header { gap: 0.375rem; margin-bottom: 0; }
+.lm-header__top { gap: 0.625rem; }
+.lm-title { margin: 0; }
+.lm-stages { margin-top: 0.375rem; }
+.lm-path { margin-top: 0.875rem; }
+@media (max-width: 420px) {
+  .lm-back-btn { padding: 0.45rem 0.9rem; }
+  .lm-stat-chip { padding: 0.35rem 0.8rem; font-size: 0.875rem; white-space: nowrap; }
+}
+@media (min-width: 900px) {
+  .lm-container { padding-top: 0.375rem; }
+  .lm-path { margin-top: 0.5rem; }
+  /* A guest with lessons done has one more line, where they are kept. On a
+     wide screen it goes beside the title and the count, not under them, so
+     the child who came back does not find the map lower than it was. */
+  .lm-header { flex-direction: row; flex-wrap: wrap; justify-content: center; column-gap: 1rem; }
+  .lm-stats-row { flex: 0 1 auto; }
+  .lm-kept { flex-basis: auto; }
+  .lm-stages { flex: 0 0 100%; margin-left: auto; margin-right: auto; }
+}

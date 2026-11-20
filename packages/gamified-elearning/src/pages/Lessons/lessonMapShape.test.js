@@ -121,3 +121,16 @@ test('the name under a stop is the short title, from the registry', () => {
   expect(stopTitle({ id: 17, title: 'While Loops — Keep Going Until' })).toBe('While Loops. Keep Going Until');
   expect(stopTitle({ id: 999, title: 'Unknown' })).toBe('Unknown');
 });
+
+// 19 November 2026: the count had a row of its own between the title and the
+// map, and lesson 1 began 43% of the way down a laptop screen.
+test('the count sits in the title row, and the row under it exists only when there is a line to put in it', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const src = fs.readFileSync(path.join(__dirname, 'LessonMap.js'), 'utf8');
+  const top = src.slice(src.indexOf('className="lm-header__top"'), src.indexOf('className="lm-stages"'));
+  const titleRow = top.slice(0, top.indexOf('</div>'));
+  expect(titleRow).toMatch(/className="lm-title"/);
+  expect(titleRow).toMatch(/className="lm-stat-chip"/);
+  expect(top).toMatch(/\{!token && completedIds\.length > 0 && \(\s*<div className="lm-stats-row">/);
+});
