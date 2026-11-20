@@ -1090,6 +1090,52 @@ function playgroundSections() {
   ];
 }
 
+// /build, /builder and /games were the thinnest pages on the site (172 to
+// 190 words), each describing a thing without naming any of it. These read
+// the real lists from the app, so the pages cannot name a power, a starter
+// or a puzzle that does not exist.
+function powersSection() {
+  const { POWERS } = loadLessonPlans();
+  if (!Array.isArray(POWERS) || POWERS.length === 0) return null;
+  const numbers = POWERS[0];
+  return {
+    heading: `${POWERS.length} powers, one line of code each`,
+    paragraphs: [
+      `After the game is made, each power is one line of real JavaScript in it, and the child sets its value: ${POWERS.map((p) => `${p.name} (${p.does})`).join(', ')}.`,
+      `The first, ${numbers.name}, says: "${numbers.intro}" This is the line it changes:`,
+    ],
+    code: numbers.engine,
+  };
+}
+
+function startersSection() {
+  const { STARTER_GAMES } = loadStarterGames();
+  if (!Array.isArray(STARTER_GAMES) || STARTER_GAMES.length === 0) return null;
+  return {
+    heading: `${STARTER_GAMES.length} games to start from`,
+    paragraphs: [
+      `Instead of describing something, a learner can open a ready-made game and change it: ${STARTER_GAMES.map((g) => g.label).join(', ')}. Each opens in the studio, where its code is one tab away.`,
+    ],
+  };
+}
+
+function puzzlesSection() {
+  const configs = loadPuzzleConfigs();
+  const lessons = [];
+  for (let n = 1; n <= 10; n += 1) {
+    const set = ['a', 'b', 'boss'].map((k) => configs[`${n}-${k}`]).filter(Boolean);
+    if (set.length === 3) lessons.push(`Lesson ${n}: ${set[0].title}, ${set[1].title}, and the boss ${set[2].title}`);
+  }
+  if (lessons.length === 0) return null;
+  return {
+    heading: `The ${lessons.length * 3} Python challenges, by lesson`,
+    paragraphs: [
+      'Each of the first ten lessons opens three challenges: two that practise the new idea and a boss that needs all of it. A challenge is judged on what the code prints, so printing a lucky guess does not pass.',
+      `${lessons.join('. ')}.`,
+    ],
+  };
+}
+
 const SECTIONS_BY_ROUTE = {
   '/ai-website-builder-for-kids': WEBSITE_BUILDER.sections,
   '/build': [
@@ -1105,6 +1151,7 @@ const SECTIONS_BY_ROUTE = {
         'Four knobs under the game change the hero, the enemy, the twist and the lives while it plays. See the code opens the same game in the studio, where the settings at the top of the file are the first lines a learner edits.',
       ],
     },
+    powersSection(),
   ],
   '/builder': [
     {
@@ -1120,6 +1167,7 @@ const SECTIONS_BY_ROUTE = {
         `The studio is built for ${AGES}. Saved projects are private by default. Eligible independent accounts must choose Publish before a project can appear publicly, and a managed profile cannot publish projects at all.`,
       ],
     },
+    startersSection(),
   ],
   // The crawlable copy of this page was its first paragraph and nothing
   // else, 241 words, and Google found it and never crawled it. The page a
@@ -1186,6 +1234,7 @@ const SECTIONS_BY_ROUTE = {
     },
   ],
   '/games': [
+    puzzlesSection(),
     {
       heading: 'Why practice is separate from lessons',
       paragraphs: [

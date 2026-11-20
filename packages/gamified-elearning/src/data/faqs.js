@@ -20,7 +20,7 @@ const FAQS = [
   },
   {
     q: 'What can a learner make?',
-    a: 'Learners can create and edit websites, small games, and quizzes in the studio. They can also follow step-by-step Python lessons or experiment in the browser playground.',
+    a: 'Games first: a child says a game in a sentence, plays it within seconds, then changes it with twelve powers, each one a line of real code in that game. The studio also makes websites and quizzes. Alongside it are step-by-step Python lessons and a Python playground in the browser.',
   },
   {
     q: 'Is CodeIt free?',
@@ -39,8 +39,12 @@ const FAQS = [
     a: 'Not for a younger child who is still enjoying it. Scratch is excellent, free, and has a far larger community. CodeIt is aimed at the point after blocks, for a learner who wants to work in real HTML, CSS and JavaScript. If your child is still building happily in Scratch, staying there is the right call.',
   },
   {
+    q: 'Can a teacher use CodeIt with a class?',
+    a: 'Yes, for free. The teacher makes a class, and children join at codeitlearn.com/join with the class code and a first name: no email and no password. There are twelve free 45-minute lesson plans, published work appears on the class projector, and it works on school Chromebooks as long as codeitlearn.com is allowed.',
+  },
+  {
     q: 'Does my child need to install anything?',
-    a: 'No. CodeIt runs in a browser. There is no download and no local Python setup, which is where a large share of beginners give up before writing a line of code.',
+    a: 'No. CodeIt runs in a browser. There is no download and no local Python setup, which is where many beginners get stuck before writing a line of code.',
   },
   {
     q: 'What does CodeIt not do?',
