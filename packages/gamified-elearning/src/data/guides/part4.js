@@ -11,7 +11,7 @@ const GUIDES_D = [
     title: "Code.org Is Now CodeAI: What Changed",
     description: "Code.org rebranded org-wide as CodeAI in June 2026. The domain is still live, CS curriculum still exists, and the emphasis moved to AI literacy.",
     h1: "Code.org Is Now CodeAI: What Changed",
-    lastVerified: "2026-08-21",
+    lastVerified: "2026-11-20",
     targetQueries: [
       "is code.org still around",
       "code.org rebrand codeai",
@@ -23,7 +23,7 @@ const GUIDES_D = [
 
 What did change is the organisation's stated emphasis. CodeAI now describes its mission in terms of **digital fluency** spanning AI science, computer science and data science, rather than computer science alone. The December Hour of Code event is now the **Hour of AI**. Whether that shift is good for your child is a real question with a real answer, and it depends on what you wanted out of the site. This page lays out the evidence and then answers it directly.
 
-**Last verified: 21 August 2026.**
+**Last verified: 21 August 2026, and again on 20 November 2026: the rebrand page, the CodeAI branding on the Terms of Service and the newsroom, and the CEO all hold.**
 
 ## How we know this is a real rebrand, not a sub-brand
 
@@ -53,7 +53,7 @@ Both of those sentences are true at once. Anyone telling you only the first ("no
 | Your child to understand how AI works and how to use it critically | Now a core strength | This is the direction the organisation has chosen; expect the newest material here |
 | Deep, typed programming practice | Was never CodeAI's centre of gravity | Look at [CodeCombat](https://codecombat.com/), [CodeMonkey](https://www.codemonkey.com/), or [Codecademy](https://www.codecademy.com/), and note Codecademy's Terms of Service §1.A require users to be 16 or older |
 | Open-ended creative building | Limited | [Scratch](https://scratch.mit.edu/) remains the strongest free option here |
-| A classroom platform for a school | Still a schools platform | CodeAI and [CodeHS](https://codehs.com/) (grades 6–12) remain the main free/low-cost school-facing options |
+| A classroom platform for a school | Still a schools platform | CodeAI and [CodeHS](https://codehs.com/) (K–12, checked 20 November 2026) remain the main free/low-cost school-facing options |
 
 ### Free alternatives if you want CS without the AI framing
 
@@ -91,9 +91,9 @@ Where CodeIt is not a fit: a full course or a school rollout. There is no roster
     slug: "common-sense-education-paused-edtech-reviews",
     relatedLessons: [1, 10],
     title: "Common Sense Paused Edtech Reviews",
-    description: "Common Sense Education paused all edtech product reviews from February 2026. Its privacy ratings still run. What schools should use instead.",
+    description: "Common Sense Education stopped its edtech reviews in early 2026 and has since taken the review pages down. Its privacy ratings still run. What schools use instead.",
     h1: "Common Sense Paused Edtech Reviews",
-    lastVerified: "2026-08-21",
+    lastVerified: "2026-11-20",
     targetQueries: [
       "common sense education reviews discontinued",
       "why is common sense not updating edtech reviews",
@@ -101,25 +101,25 @@ Where CodeIt is not a fit: a full course or a school rollout. There is no roster
       "iste edtech index vs common sense",
       "are common sense privacy ratings still active"
     ],
-    markdown: `Common Sense Education **paused all edtech product reviews beginning February 2026**. The existing review pages are still online but frozen. They carry notices saying they are no longer being updated. Separately and importantly, Common Sense's **Privacy Program is still fully operating**, which is a distinction most secondhand summaries have blurred into "Common Sense stopped rating edtech." That is not what happened.
+    markdown: `Common Sense Education **paused all edtech product reviews beginning February 2026**. The review pages have since been taken down: Common Sense's own FAQ says the review content "will be removed from our site entirely in February", and on 20 November 2026 an old review address opened that FAQ instead of the review. Separately and importantly, Common Sense's **Privacy Program is still fully operating**, which is a distinction most secondhand summaries have blurred into "Common Sense stopped rating edtech." That is not what happened.
 
 If you are a teacher, coach, or district buyer who used those reviews as a filter, the practical consequence is this: you have lost your single best free source of *learning-quality* ratings, you have not lost your privacy ratings, and no direct replacement with the same methodology exists. This page covers what is verified, what the real alternatives are, and how to run an evaluation yourself now that the shortcut is gone.
 
-**Last verified: 21 August 2026.**
+**Last verified: 21 August 2026, and again on 20 November 2026, when the review pages were gone and the Privacy Program was still running.**
 
 ## What is verified
 
 **The pause.** [Tech & Learning reported on 30 January 2026](https://www.techlearning.com/technology/apps/common-sense-education-will-pause-edtech-reviews-beginning-february-2026-what-it-means-for-schools-and-where-to-look-next) that Common Sense Education would pause edtech reviews starting in February 2026. EdTech Institute covered it on 11 February 2026.
 
-**The pages are frozen, not deleted.** Review pages remain reachable and readable. They carry a notice indicating they are no longer being updated. Nothing has been taken down as of this page's verification date.
+**The pages were frozen in August, and are gone now.** In August 2026 the review pages were still online with a notice that they were no longer being updated. By 20 November 2026 an old review address (Kodable's) opened Common Sense's reviews FAQ, which says the content "will be removed from our site entirely in February". If you saved a review, it is now the only copy you have.
 
 **Privacy ratings continue.** The Common Sense Privacy Program is a separate operation from the learning-quality reviews and it is still running. The clearest proof is a fresh evaluation issued **26 March 2026**, well after the review pause took effect, for the product Yourway, which received a **93% privacy rating**, announced via PR Newswire. A dormant program does not issue new evaluations with new scores.
 
 This is the split to hold in your head:
 
-| Common Sense program | Status as of August 2026 | What it told you |
+| Common Sense program | Status as of November 2026 | What it told you |
 |---|---|---|
-| Edtech product reviews (learning quality) | **Paused since February 2026**; pages frozen but online | Whether a tool was pedagogically good, with an age rating and a teacher-facing score |
+| Edtech product reviews (learning quality) | **Stopped in early 2026**; review pages taken down | Whether a tool was pedagogically good, with an age rating and a teacher-facing score |
 | Privacy Program / privacy ratings | **Active**, issuing new evaluations | How a product handles student data, tracking, ads, and third-party sharing |
 | Family-facing media reviews (movies, games, apps) | Outside the scope of this pause | Age-appropriateness of consumer media |
 
@@ -153,7 +153,7 @@ Steps 4 and 5 are what the Common Sense reviews were doing on your behalf. Rebui
 
 ## Follow-up questions
 
-**"Can I still trust the frozen reviews?"** Partly. A review's description of *what a tool is and how it teaches* ages slowly and is still useful context. Its description of pricing, tiers, features and privacy behaviour ages fast and should be treated as of-its-date only. Always check the review's date, then verify pricing and privacy against the vendor's live site.
+**"Can I still trust a review I saved?"** Partly. A review's description of *what a tool is and how it teaches* ages slowly and is still useful context. Its description of pricing, tiers, features and privacy behaviour ages fast and should be treated as of-its-date only. Always check the review's date, then verify pricing and privacy against the vendor's live site.
 
 **"Is this permanent?"** It was announced as a pause, not a shutdown. Nothing in the coverage commits to a restart date, so plan as if it is indefinite and be pleasantly surprised if it is not.
 
@@ -169,7 +169,7 @@ This page is published by **CodeIt** (codeitlearn.com), which makes a browser-ba
 
 We are going to be direct: **for a district evaluation, CodeIt is probably not on your shortlist.** If you arrived here, you are likely evaluating software for a school or district. CodeIt has no rostering, no LMS integration, no standards alignment, no gradebook, no signed data processing agreement and nothing for a district to buy. What it does have is narrower: a teacher can make a class for free: children join at codeitlearn.com/join with a class code and a first name, with no emails and no passwords to hand out, and the teacher sees each child's games and the sentences they typed. That suits one teacher trying coding in one room, not a procurement decision.
 
-For school-facing coding curriculum specifically, the established options are [CodeAI](https://code.org/en-US/codeai) (formerly Code.org, free, K–12), [CodeHS](https://codehs.com/) (grades 6–12), [Kodable](https://www.kodable.com/) for K-5, and [Scratch](https://scratch.mit.edu/) (free, MIT). Evaluate those through the process above rather than taking our word for it.
+For school-facing coding curriculum specifically, the established options are [CodeAI](https://code.org/en-US/codeai) (formerly Code.org, free, K–12), [CodeHS](https://codehs.com/) (K–12, checked 20 November 2026), [Kodable](https://www.kodable.com/) for K-5, and [Scratch](https://scratch.mit.edu/) (free, MIT). Evaluate those through the process above rather than taking our word for it.
 
 We wrote this page because the facts were being reported wrongly, specifically the widespread claim that Common Sense stopped rating edtech entirely, when its privacy program demonstrably still issues new ratings.`,
   },
@@ -177,9 +177,9 @@ We wrote this page because the facts were being reported wrongly, specifically t
     slug: "replit-teams-for-education-shut-down",
     relatedLessons: [1, 9],
     title: "Replit Teams for Education Shut Down",
-    description: "Replit discontinued Teams for Education on 1 August 2024. Replit itself still operates but has exited education. Where teachers moved next.",
+    description: "Replit discontinued Teams for Education on 1 August 2024 and it has not come back. Replit itself still operates. Where teachers moved next.",
     h1: "Replit Teams for Education Shut Down",
-    lastVerified: "2026-08-21",
+    lastVerified: "2026-11-20",
     targetQueries: [
       "replit teams for education discontinued",
       "replit education alternative for teachers",
@@ -187,11 +187,11 @@ We wrote this page because the facts were being reported wrongly, specifically t
       "replit classroom replacement 2026",
       "what to use instead of replit in class"
     ],
-    markdown: `Replit discontinued **Teams for Education on 1 August 2024**. Replit the company is still very much operating, it did not go out of business, but it has exited the education market, and there is no sign of it coming back. Two years on, that combination still confuses people: the product you are searching for is gone, the brand you associate with it is thriving, and most search results predate the change.
+    markdown: `Replit discontinued **Teams for Education on 1 August 2024**. Replit the company is still very much operating, it did not go out of business, but the classroom product has not come back. Its education work since has been deals with governments, such as [an AI learning assistant for Jordan's Ministry of Education](https://tools.prnewswire.com/en-us/live/20823/release/20251023EN99033) in October 2025, not something a teacher can sign a class up to: replit.com/education returned a not-found page on 20 November 2026. Two years on, that combination still confuses people: the product you are searching for is gone, the brand you associate with it is thriving, and most search results predate the change.
 
 If you are a teacher who ran a class on Replit, the honest state of the world is that **no single product replaced it**. Teams for Education combined a zero-install browser IDE, real multiplayer collaboration, and a class management layer in one free package. The successors split those functions apart. This page explains what was lost, what the actual options are, and how to choose between them without wasting a term on the wrong one.
 
-**Last verified: 21 August 2026.**
+**Last verified: 21 August 2026, and again on 20 November 2026.**
 
 ## What actually happened, and what didn't
 
@@ -219,7 +219,7 @@ The mistake to avoid is picking a tool that nails the first column and discoveri
 
 | Option | Best for | What it gives you | Watch out for |
 |---|---|---|---|
-| [CodeHS](https://codehs.com/) | Grades 6–12, whole-course replacement | The closest thing to a complete teacher-facing platform: curriculum, assignments, student visibility | It is a curriculum platform, not a free-form IDE. If you taught your own syllabus in Replit, this is a bigger change than it looks |
+| [CodeHS](https://codehs.com/) | K–12, whole-course replacement | The closest thing to a complete teacher-facing platform: curriculum, assignments, student visibility | It is a curriculum platform, not a free-form IDE. If you taught your own syllabus in Replit, this is a bigger change than it looks |
 | [CodeAI](https://code.org/en-US/codeai) (ex-Code.org) | K–12, free | Free, large, established, with a real classroom layer. Note the organisation rebranded in June 2026 and its emphasis has shifted toward AI literacy; the CS curriculum still exists | Emphasis has moved; check the current course catalogue matches what you teach |
 | [Codeanywhere](https://codeanywhere.com/) | Teachers who mainly needed the cloud IDE | Browser-based development environment; published a Replit migration guide | Developer tool first. Thin on class management |
 | [Pickcode](https://pickcode.io/) | Younger or beginner classes | Purpose-built for teaching, published a Replit migration guide | Newer and smaller than what you are leaving; evaluate longevity |
@@ -231,7 +231,7 @@ The mistake to avoid is picking a tool that nails the first column and discoveri
 
 ### If you only have ten minutes to decide
 
-- **Teaching a full CS course, grades 6–12, need student visibility:** CodeHS.
+- **Teaching a full CS course and need student visibility:** CodeHS.
 - **Zero budget, need free and stable:** CodeAI or Scratch, depending on age.
 - **You mostly needed the IDE and already handle assignments elsewhere:** Codeanywhere or CodeSandbox.
 - **Older students, want them on real professional tooling:** GitHub Codespaces with Classroom.
