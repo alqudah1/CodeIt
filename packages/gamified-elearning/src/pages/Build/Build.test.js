@@ -230,3 +230,39 @@ test('"Have the studio write it from scratch" starts a from-scratch build, not t
   const link = await screen.findByRole('link', { name: /Have the studio write it from scratch/ }, { timeout: 5000 });
   expect(link).toHaveAttribute('href', '/builder?prompt=a%20bunny%20that%20catches%20carrots&go=1&scratch=1');
 });
+
+// An outside audit on 20 November 2026: on a phone the game arrived with only
+// its top strip on the screen, under the box the child had typed in.
+test('on a phone the built game is brought onto the screen; on a wide screen nothing moves', async () => {
+  const realWidth = window.innerWidth;
+  const realRect = Element.prototype.getBoundingClientRect;
+  const realScrollTo = window.scrollTo;
+  try {
+    for (const [width, moves] of [[390, true], [1280, false]]) {
+      window.innerWidth = width;
+      window.innerHeight = 844;
+      window.scrollTo = jest.fn();
+      // The frame sits 575px down, as it did on a 390 by 844 phone.
+      Element.prototype.getBoundingClientRect = function rect() {
+        return this.classList?.contains('bd__frame')
+          ? { top: 575, bottom: 990, left: 22, right: 368, width: 346, height: 415 }
+          : { top: 0, bottom: 0, left: 0, right: 0, width: 0, height: 0 };
+      };
+      global.fetch = jest.fn(() => Promise.reject(new Error('offline')));
+      const view = render(<Build />);
+      fireEvent.change(screen.getByLabelText('Describe the game you want to play'), { target: { value: 'a bunny that catches carrots at night' } });
+      fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
+      // eslint-disable-next-line no-await-in-loop
+      await waitFor(() => expect(frameDoc()).toContain("let gameKind   = 'catch';"), { timeout: 5000 });
+      // eslint-disable-next-line no-await-in-loop
+      await act(async () => { await new Promise((r) => setTimeout(r, 150)); });
+      if (moves) expect(window.scrollTo).toHaveBeenCalledWith(expect.objectContaining({ top: 563 }));
+      else expect(window.scrollTo).not.toHaveBeenCalled();
+      view.unmount();
+    }
+  } finally {
+    window.innerWidth = realWidth;
+    Element.prototype.getBoundingClientRect = realRect;
+    window.scrollTo = realScrollTo;
+  }
+});

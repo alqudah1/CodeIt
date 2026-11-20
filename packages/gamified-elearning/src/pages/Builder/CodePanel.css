@@ -154,6 +154,14 @@
   gap: 10px;
 }
 
+/* The card may not be wider than the panel. A long line of code inside it
+   used to push it to 400px and more in a 302px space on a phone, and the
+   sentence a stuck child has to read was cut off at the edge. The code
+   scrolls sideways inside its own box; the words wrap. */
+.cp__errors, .cp__errors-list, .cp-error { min-width: 0; max-width: 100%; }
+.cp-error__title, .cp-error__fix { overflow-wrap: anywhere; }
+.cp-error__lines { max-width: calc(100% - 28px); }
+
 .cp-error {
   background: #fff;
   border: 1px solid #f3d3c6;

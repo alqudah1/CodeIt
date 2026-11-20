@@ -6411,6 +6411,11 @@ details.bldr-device-sizes .bldr-device-sizes__options {
   border: 2px solid var(--ink);
   box-shadow: 1px 1px 0 rgba(53, 34, 14, 0.25);
 }
+.bldr-success-banner__check--stopped {
+  background: #B4401A;
+  box-shadow: 1px 1px 0 rgba(53, 34, 14, 0.25);
+  animation: none;
+}
 .bldr-success-banner__copy {
   display: flex;
   align-items: center;

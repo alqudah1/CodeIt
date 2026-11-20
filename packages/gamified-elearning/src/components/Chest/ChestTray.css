@@ -161,3 +161,14 @@
 .chest__go { background: var(--arc-sun, #FED340); box-shadow: var(--pop-rest, 3px 3px 0 var(--ink, #35220E)); }
 .chest__later { background: var(--paper, #FFFDF7); }
 .chest__go:focus-visible, .chest__later:focus-visible { outline: 3px solid var(--arc-orange, #F87824); outline-offset: 2px; }
+
+/* Above whatever bar is fixed to the bottom of a phone. At 16px it sat on
+   the Home and Build keys of the tab bar: a tap on Build opened the chest,
+   and until the chest was opened half the bar could not be used (an outside
+   audit, 20 November 2026). The same for the studio's Play, Controls, Save. */
+@media (max-width: 899px) {
+  body:has(.ci-tabs) .chest-tray { bottom: calc(84px + env(safe-area-inset-bottom)); }
+}
+@media (max-width: 700px) {
+  body:has(.bldr-mobile-play-bar) .chest-tray { bottom: calc(84px + env(safe-area-inset-bottom)); }
+}

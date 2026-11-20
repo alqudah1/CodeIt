@@ -491,12 +491,15 @@ export function studioView10(studio) {
 }
 
 export function studioView11(studio) {
-  const { awardXP, buildKey, builtPrompt, callBuilder, coachStage, code, conceptsFound, confettiParticles, deviceView, earnsProjectXp, editCount, editError, editModeOn, editRetrySeconds, editing, editingDesc, handleFullscreen, handleSaveProject, handleTogglePlay, hasPersonalized, hasTestedLatest, iframeRef, isPersonalized, isPlayMode, isSaved, isStarter, onTab, previewDoc, previewKeyRef, projectDesc, projectName, saveStatus, setDeviceView, setEditError, setEditingDesc, setProjectDesc, setPrompt, setWorkspaceTab, shelfIdRef, showEditPanel, starterRetry, token, user } = studio;
+  const { broken, awardXP, buildKey, builtPrompt, callBuilder, coachStage, code, conceptsFound, confettiParticles, deviceView, earnsProjectXp, editCount, editError, editModeOn, editRetrySeconds, editing, editingDesc, handleFullscreen, handleSaveProject, handleTogglePlay, hasPersonalized, hasTestedLatest, iframeRef, isPersonalized, isPlayMode, isSaved, isStarter, onTab, previewDoc, previewKeyRef, projectDesc, projectName, saveStatus, setDeviceView, setEditError, setEditingDesc, setProjectDesc, setPrompt, setWorkspaceTab, shelfIdRef, showEditPanel, starterRetry, token, user } = studio;
   return (
     <div className="bldr-cabinet" key={buildKey}>
             <div className="bldr-success-banner">
               <div className="bldr-success-banner__check-wrap">
-                <div className="bldr-success-banner__check" aria-hidden="true">✓</div>
+                {/* A green tick over a game that has stopped was the screen
+                    congratulating a child for the change that broke it (an
+                    outside audit, 20 November 2026). */}
+                <div className={`bldr-success-banner__check${broken ? ' bldr-success-banner__check--stopped' : ''}`} aria-hidden="true">{broken ? '!' : '✓'}</div>
                 <div className="bldr-confetti-burst" aria-hidden="true">
                   {confettiParticles.map(p => (
                     <span
@@ -525,7 +528,9 @@ export function studioView11(studio) {
                     started a full card lower than it needed to. */}
                 <h2 className="bldr-success-banner__name">{isStarter ? 'A starter to change' : projectName}</h2>
                 <span className="bldr-success-banner__label">
-                  {isStarter
+                  {broken
+                    ? 'It stopped. The code has a mistake'
+                    : isStarter
                     ? 'Not your idea yet'
                     : editCount > 0
                       ? `${editCount} edit${editCount > 1 ? 's' : ''} applied`

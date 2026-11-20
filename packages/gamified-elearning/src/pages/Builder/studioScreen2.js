@@ -13,7 +13,7 @@ import { hasPalette, whoAmI } from '../../utils/chests';
 import { trackEvent } from '../../utils/trackEvent';
 
 export function studioView13(studio) {
-  const { behind, changeHint, code, editModeOn, editRef, editing, handleApplyColors, handleModifier, handleSaveProject, handleTogglePlay, hasPlayedOnce, hasTestedLatest, ideasForThisProject, isPersonalized, isSaved, ladderOffer, moreChanges, openInstantPanel, previewKeyRef, projectType, saveStatus, setLadderOffer, setMoreChanges, setShowEditPanel, setWorkspaceTab, shelfIdRef, toggleEditMode, token, user } = studio;
+  const { broken, behind, changeHint, code, editModeOn, editRef, editing, handleApplyColors, handleModifier, handleSaveProject, handleTogglePlay, hasPlayedOnce, hasTestedLatest, ideasForThisProject, isPersonalized, isSaved, ladderOffer, moreChanges, openInstantPanel, previewKeyRef, projectType, saveStatus, setLadderOffer, setMoreChanges, setShowEditPanel, setWorkspaceTab, shelfIdRef, toggleEditMode, token, user } = studio;
   return (
     !isSaved && (
               <>
@@ -26,7 +26,9 @@ export function studioView13(studio) {
 
                 <section className="bldr-next" aria-labelledby="bldr-next-step-title">
                   <h3 id="bldr-next-step-title" className="bldr-next__title">
-                    {!hasPlayedOnce
+                    {broken
+                      ? 'It stopped. One line of the code has a mistake.'
+                      : !hasPlayedOnce
                       ? 'Play it first.'
                       : !isPersonalized
                         ? 'You played it. Now make it yours.'
@@ -35,8 +37,19 @@ export function studioView13(studio) {
                           : 'It is yours. Save it.'}
                   </h3>
 
+                  {/* Not "You changed it. Play it again." over a game that
+                      cannot run. The way to the mistake, and the way back,
+                      are both on the code page. */}
+                  {broken && (
+                    <div className="bldr-next__actions">
+                      <button type="button" className="bldr-activation-card__primary" onClick={() => setWorkspaceTab('learn')}>
+                        See what went wrong
+                      </button>
+                    </div>
+                  )}
+
                   {/* What is behind the thing they changed, once they have. */}
-                  {behind && (
+                  {behind && !broken && (
                     <p className="bldr-change-hint bldr-change-hint--behind">
                       <Icon name="search" size={18} />
                       <span>{behind.sentence}</span>

@@ -58,13 +58,17 @@ test('the game goes on this browser\'s shelf and the studio opens with it', asyn
   expect(trackEvent).toHaveBeenCalledWith('guest_remix', 'game');
 });
 
-test('if the code cannot be read, the old sign-in road is still there', async () => {
+// It used to be the sign-in page: "Welcome back. Sign in", for a child with no
+// account and no word about why (an outside audit, 20 November 2026). The
+// game's own page can be played, and has its own Remix.
+test('if the code cannot be read, the visitor goes to the game, not to a sign-in page', async () => {
   // A different project: Explore keeps the code it has read for the page's life.
   feed(false, 'fff000fff000');
   render(<Explore />);
   const [remix] = await screen.findAllByRole('button', { name: 'Remix' });
   fireEvent.click(remix);
   await waitFor(() => expect(mockNavigate).toHaveBeenCalled());
-  expect(mockNavigate.mock.calls[0][0]).toBe('/login');
+  expect(mockNavigate.mock.calls[0][0]).toBe('/project/fff000fff000');
+  expect(mockNavigate).not.toHaveBeenCalledWith('/login', expect.anything());
   expect(trackEvent).not.toHaveBeenCalledWith('guest_remix', expect.anything());
 });

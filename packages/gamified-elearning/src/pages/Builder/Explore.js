@@ -354,8 +354,10 @@ export default function Explore() {
         navigate(`/builder?shelf=${entry.id}`);
         return;
       }
-      try { sessionStorage.setItem('codeit_remix_intent', project.publicId); } catch { /* the sign-in still happens */ }
-      navigate('/login', { state: { from: `/project/${project.publicId}` } });
+      // The game's code did not load. The game's own page can still be
+      // played, and has its own Remix. This used to send a child with no
+      // account to "Welcome back. Sign in", with no word about why.
+      navigate(`/project/${project.publicId}`);
       return;
     }
     setRemixingId(project.publicId);

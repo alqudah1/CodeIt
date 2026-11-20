@@ -297,6 +297,20 @@ export default function Build() {
     own.current = { player: next.player, enemy: next.enemy };
     setSaid(sentence);
     applyRecipe(next, 'build');
+    // On a phone the game is under the box the child typed in. It used to
+    // arrive with only its top strip on the screen and the tab bar's pencil
+    // on top of the player (an outside audit, 20 November 2026): the payoff
+    // of the whole page, off screen. One column only; on a wide screen the
+    // game is beside the box and already in view.
+    setTimeout(() => {
+      const frame = frameRef.current;
+      if (!frame || window.innerWidth >= 900) return;
+      const box = frame.getBoundingClientRect();
+      const room = window.innerHeight - 84;
+      if (box.top >= 0 && box.bottom <= room) return;
+      const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo?.({ top: Math.max(0, window.scrollY + box.top - 12), behavior: still ? 'auto' : 'smooth' });
+    }, 80);
   }, [token, applyRecipe]);
 
   // ── A different kind of game, from the same sentence ──

@@ -1663,7 +1663,7 @@ export default function Builder() {
                 an arcade cabinet, not a stack of cards. The wrapper exists
                 because .bldr-result's flex gap was slipping cream between
                 the marquee and its own screen. */}
-            {studioView11({ awardXP, buildKey, builtPrompt, callBuilder, coachStage, code, conceptsFound, confettiParticles, deviceView, earnsProjectXp, editCount, editError, editModeOn, editRetrySeconds, editing, editingDesc, handleFullscreen, handleSaveProject, handleTogglePlay, hasPersonalized, hasTestedLatest, iframeRef, isPersonalized, isPlayMode, isSaved, isStarter, onTab, previewDoc, previewKeyRef, projectDesc, projectName, saveStatus, setDeviceView, setEditError, setEditingDesc, setProjectDesc, setPrompt, setWorkspaceTab, shelfIdRef, showEditPanel, starterRetry, token, user })}
+            {studioView11({ broken: runErrors.length > 0, awardXP, buildKey, builtPrompt, callBuilder, coachStage, code, conceptsFound, confettiParticles, deviceView, earnsProjectXp, editCount, editError, editModeOn, editRetrySeconds, editing, editingDesc, handleFullscreen, handleSaveProject, handleTogglePlay, hasPersonalized, hasTestedLatest, iframeRef, isPersonalized, isPlayMode, isSaved, isStarter, onTab, previewDoc, previewKeyRef, projectDesc, projectName, saveStatus, setDeviceView, setEditError, setEditingDesc, setProjectDesc, setPrompt, setWorkspaceTab, shelfIdRef, showEditPanel, starterRetry, token, user })}
 
             {/* ── Right under the game, at the moment of the score ─────────
                 The friend button lives far down the page, below the change
@@ -1694,7 +1694,7 @@ export default function Builder() {
                 above the card now, with the current step marked. The card is
                 one card: the state, one suggestion named from the child's own
                 game (the ladder), one button, and a way to see the rest. */}
-            {studioView13({ behind, changeHint, code, editModeOn, editRef, editing, handleApplyColors, handleModifier, handleSaveProject, handleTogglePlay, hasPlayedOnce, hasTestedLatest, ideasForThisProject, isPersonalized, isSaved, ladderOffer, moreChanges, openInstantPanel, previewKeyRef, projectType, saveStatus, setLadderOffer, setMoreChanges, setShowEditPanel, setWorkspaceTab, shelfIdRef, toggleEditMode, token, user })}
+            {studioView13({ broken: runErrors.length > 0, behind, changeHint, code, editModeOn, editRef, editing, handleApplyColors, handleModifier, handleSaveProject, handleTogglePlay, hasPlayedOnce, hasTestedLatest, ideasForThisProject, isPersonalized, isSaved, ladderOffer, moreChanges, openInstantPanel, previewKeyRef, projectType, saveStatus, setLadderOffer, setMoreChanges, setShowEditPanel, setWorkspaceTab, shelfIdRef, toggleEditMode, token, user })}
 
             {studioView14({ coachStage, editRef, editing, explaining, handleExplain, handlePublish, isPublished, isSaved, onTab, publishStatus, setShowEditPanel, token, user })}
 

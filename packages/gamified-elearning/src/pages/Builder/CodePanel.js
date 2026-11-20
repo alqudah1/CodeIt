@@ -251,7 +251,9 @@ export default function CodePanel({
           className={`cp__run${dirty ? ' cp__run--waiting' : ''}`}
           onClick={runNow}
         >
-          {dirty ? 'Run it now' : 'Running your latest code'}
+          {/* With a mistake in it the code is not running, and this used to
+              say that it was, directly above the list of what went wrong. */}
+          {dirty ? 'Run it now' : errors.length > 0 ? 'Run it again' : 'Running your latest code'}
         </button>
 
         {restorable && (
