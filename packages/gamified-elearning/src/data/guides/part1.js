@@ -8,7 +8,7 @@ const GUIDES_A = [
     title: "Glitch for Classrooms: What Teachers Use Now",
     description: "Glitch ended hosting in July 2025. A teacher's replacement guide: remixable starters, age gates, Chromebook fit, and what to do with old projects.",
     h1: "My class used Glitch. What do we use now?",
-    lastVerified: "2026-08-25",
+    lastVerified: "2026-11-20",
     targetQueries: ["my class used Glitch for coding projects what should we use now", "glitch alternative for classroom", "glitch shut down what do teachers use", "free coding platform for middle school no installs", "remixable starter project for a class like glitch", "coding site for students under 13 chromebook", "replacement for glitch and replit teams for education", "student web hosting age requirements school"],
     markdown: `**Short answer:** for most classes, the closest working replacements are [CodeHS Free](https://codehs.com/free) if you want a full course and roster in one place, [Pickcode](https://pickcode.io/) if you want a lighter tool with starter code and assignments, and [Neocities](https://neocities.org/) or the [p5.js Web Editor](https://editor.p5js.org/) if you only need students to build and share small web projects. None of them reproduce the exact Glitch loop (one link, thirty remixes, thirty live URLs in a minute), and it is worth knowing that before you plan the unit.
 
@@ -16,10 +16,10 @@ This page is only about classroom use. If you are looking for general hosting fo
 
 ## Two more deadlines land this week
 
-Before anything else, two things that affect teachers right now, in August 2026:
+Two more classroom tools closed at the end of August 2026. Checked again on 20 November 2026:
 
-- **GitHub Classroom's last day is 28 August 2026.** No new classrooms can be created, and classroom-specific data, assignment definitions, autograding tests, submission history, is deleted after 4 September 2026. GitHub accounts, repositories and organizations are unaffected. There is an export utility; use it this week if you have anything in there. ([GitHub community FAQ](https://github.com/orgs/community/discussions/145312))
-- **Trinket's last day is 31 August 2026.** Export before then: Account Settings does a bulk export, the Share button downloads a single trinket, and the Courses menu exports a course. Only saved versions are included, so anything left unsaved in an editor is lost. The code was open-sourced, but as the team put it, open source does not mean the site stays online. A community-run instance exists at [trinket.strivemath.org](https://trinket.strivemath.org/), which Trinket does not guarantee. Download your trinkets from Account Settings before the date. ([Trinket announcement](https://trinket.io/announcement))
+- **[GitHub Classroom closed on 28 August 2026](https://github.blog/changelog/2026-08-27-github-classroom-deprecated).** GitHub took down the Classroom website and its APIs. GitHub accounts, repositories and organizations were not affected, but classroom data such as assignment names, tests defined outside repositories and LTI rosters is deleted. [Classroom 50](https://classroom50.org/), free and open source from the CS50 team, does the same job on top of GitHub and was running on 20 November 2026.
+- **Trinket.io closed on 31 August 2026,** but its founders released the code as open source and [Strive now runs it free at trinket.strivemath.org](https://www.strivemath.com/blog/trinket-free-for-teachers), with Python, HTML, CSS, JavaScript and p5.js in the browser. Trinkets that were not exported before the date are not there; a teacher who exported can carry on.
 
 Add these to Glitch (July 2025) and Replit's Teams for Education (retired 1 August 2024), and four of the browser-based classroom tools teachers relied on have closed inside two years. That is the context you are planning in, and it is a reasonable argument for choosing tools that either charge money or are backed by a foundation, rather than free products from venture-funded startups.
 
@@ -87,7 +87,7 @@ CodeIt is a browser-based studio built for ages 8 to 14. A learner describes a w
 
 ---
 
-*Last verified: 25 August 2026. Age policies and free tiers change; check each platform's own terms before committing a class to it.*
+*Last verified: 25 August 2026, and the closures above again on 20 November 2026. Age policies and free tiers change; check each platform's own terms before committing a class to it.*
 
 ## Questions teachers ask
 
@@ -97,7 +97,7 @@ CodeIt is a browser-based studio built for ages 8 to 14. A learner describes a w
 
 **Can under-13 students publish a website?** Rarely under their own account. Neocities' terms set no account minimum; GitHub and Netlify require 13, Vercel 16, and CodePen's terms are stricter still. The usual workaround is a single teacher-owned host where student work is uploaded under the teacher's account.
 
-**We used Replit Teams for Education before Glitch. Is Replit an option again?** The K-12 classroom management product was retired on 1 August 2024 and has not returned in that form. Replit's current education page is oriented to universities and AI app building; treat any K-12 fit as unverified.`,
+**We used Replit Teams for Education before Glitch. Is Replit an option again?** The K-12 classroom management product was retired on 1 August 2024 and has not returned. On 20 November 2026 replit.com/education was a not-found page, and Replit's education work since has been government deals rather than a product a teacher can sign a class up to.`,
   },
   {
     slug: "after-scratch",

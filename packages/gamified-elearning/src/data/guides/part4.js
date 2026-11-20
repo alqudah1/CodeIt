@@ -211,7 +211,7 @@ Teams for Education was three products in a trenchcoat. Replace them separately.
 |---|---|---|
 | Browser IDE with no installs, works on locked-down school machines | Cloud IDE | [Codeanywhere](https://codeanywhere.com/), [CodeSandbox](https://codesandbox.io/), GitHub Codespaces, Replit's own non-education product |
 | Real-time multiplayer editing and pair programming | Collaborative editor | CodeSandbox, VS Code Live Share, GitHub Codespaces |
-| Class roster, assignments, visibility into student work | Class management layer | [CodeHS](https://codehs.com/), [CodeAI](https://code.org/en-US/codeai) (formerly Code.org), GitHub Classroom |
+| Class roster, assignments, visibility into student work | Class management layer | [CodeHS](https://codehs.com/), [CodeAI](https://code.org/en-US/codeai) (formerly Code.org), [Classroom 50](https://classroom50.org/) |
 
 The mistake to avoid is picking a tool that nails the first column and discovering in week three that you have no way to see thirty students' work.
 
@@ -223,7 +223,7 @@ The mistake to avoid is picking a tool that nails the first column and discoveri
 | [CodeAI](https://code.org/en-US/codeai) (ex-Code.org) | K–12, free | Free, large, established, with a real classroom layer. Note the organisation rebranded in June 2026 and its emphasis has shifted toward AI literacy; the CS curriculum still exists | Emphasis has moved; check the current course catalogue matches what you teach |
 | [Codeanywhere](https://codeanywhere.com/) | Teachers who mainly needed the cloud IDE | Browser-based development environment; published a Replit migration guide | Developer tool first. Thin on class management |
 | [Pickcode](https://pickcode.io/) | Younger or beginner classes | Purpose-built for teaching, published a Replit migration guide | Newer and smaller than what you are leaving; evaluate longevity |
-| GitHub Codespaces + Classroom | High school, students headed toward real software work | Genuinely industry-standard tooling and workflow | Steepest setup cost; account and age requirements need checking for minors; free-tier limits change |
+| GitHub Codespaces + Classroom 50 | High school, students headed toward real software work | Genuinely industry-standard tooling and workflow | Steepest setup cost; account and age requirements need checking for minors; free-tier limits change |
 | [freeCodeCamp](https://www.freecodecamp.org/) | Motivated high-schoolers, zero budget | Free, substantial, well-maintained | Nominally 13+, built for adults, no teacher view at all |
 | [Codecademy](https://www.codecademy.com/) | Older students only | Free Basic tier, $14.99/mo Plus | Its Terms of Service §1.A state "You must be 16 years or older to use the Services", which rules it out for most middle school and much of high school |
 | [Scratch](https://scratch.mit.edu/) (MIT) | Younger classes, ages 8–16 | Free, stable, enormous community, not going anywhere | Block-based; not a substitute if you were teaching typed Python or JavaScript |
@@ -234,7 +234,7 @@ The mistake to avoid is picking a tool that nails the first column and discoveri
 - **Teaching a full CS course and need student visibility:** CodeHS.
 - **Zero budget, need free and stable:** CodeAI or Scratch, depending on age.
 - **You mostly needed the IDE and already handle assignments elsewhere:** Codeanywhere or CodeSandbox.
-- **Older students, want them on real professional tooling:** GitHub Codespaces with Classroom.
+- **Older students, want them on real professional tooling:** GitHub Codespaces with Classroom 50 (GitHub Classroom itself closed on 28 August 2026).
 
 ## Follow-up questions teachers actually ask
 
@@ -254,7 +254,7 @@ This page is published by **CodeIt** (codeitlearn.com), which makes a browser-ba
 
 **CodeIt is not a replacement for Replit Teams for Education, and we are not going to pretend otherwise.** We have no rostering, no LMS integration, no assignment workflow, no gradebook, no standards alignment and no district offering. A teacher can run a free class on CodeIt, with children joining on a class code and a first name and the teacher seeing each child's work, but a teacher who needs graded assignments will be missing the entire third column of the table above by the second week.
 
-For a classroom, the honest recommendations are the ones above: CodeHS for a full secondary CS course, CodeAI for free K–12, Codeanywhere or CodeSandbox if the IDE was the part you needed, GitHub Classroom for older students on professional tooling.
+For a classroom, the honest recommendations are the ones above: CodeHS for a full secondary CS course, CodeAI for free K–12, Codeanywhere or CodeSandbox if the IDE was the part you needed, Classroom 50 on GitHub for older students on professional tooling.
 
 The one place we might be worth a look is well outside a school: a **homeschooling parent or an after-school setting with one or two children**, where you want [kids building websites, games and quizzes](/builder) and then opening up the real HTML, CSS and JavaScript underneath. AI can help generate a project and the result stays editable rather than becoming a locked AI result. The free plan does not expire and needs no card: ten assisted project builds a month and one managed learner profile under a parent view. A paid family plan is available at CA$12 a month, cancellable at any time. There is also a 31-lesson beginner Python sequence. Independent accounts start at 13; a younger child uses a parent-managed, email-verified profile that cannot publish publicly.
 

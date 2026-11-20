@@ -388,7 +388,7 @@ If the project was a static site (HTML, CSS, JavaScript, no server), the files w
 | Publish a browser game | [itch.io](https://itch.io/) | Account required. Users 13+; **publishers must be 18+ or have parental/guardian consent.** |
 | Run a small Node/Express backend for free | No clean answer. See below. | This is the genuine gap. |
 | Remix someone's working example | [CodeSandbox](https://codesandbox.io/), [StackBlitz](https://stackblitz.com/), GitHub template repos | Closest in spirit. Hosting is more limited and the free tiers move around. |
-| Teach a class | GitHub Pages plus [GitHub Classroom](https://classroom.github.com/), if students are 13+ | Under-13 classes are the hardest case. There is no drop-in equivalent. |
+| Teach a class | GitHub Pages plus [Classroom 50](https://classroom50.org/), if students are 13+ ([GitHub Classroom closed on 28 August 2026](https://github.blog/changelog/2026-08-27-github-classroom-deprecated)) | Under-13 classes are the hardest case. There is no drop-in equivalent. |
 
 ## The part with no good answer: free Node backends
 

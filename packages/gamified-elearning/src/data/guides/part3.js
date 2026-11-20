@@ -41,7 +41,7 @@ Every option below needs an account and an email address. None of them asks for 
 | [Vercel](https://vercel.com/) | Usually git or CLI | **16+** | Yes, if you own a domain |
 | [Nekoweb](https://nekoweb.org/) | No, browser editor | Check current terms | No |
 | [Cloudflare Pages](https://pages.cloudflare.com/) | Git or CLI | 13+ (18 to contract) | Yes, if you own a domain |
-| [CodePen](https://codepen.io/) | No | 13+ | No |
+| [CodePen](https://codepen.io/) | No | **18+ to sign up** (its terms, checked 20 November 2026); a younger learner needs a guardian's account | No |
 | [itch.io](https://itch.io/) (games) | No, upload a zip | 13 to use; **18+ or guardian consent to publish** | No |
 
 "Free custom domain" means the host serves a domain you own at no extra charge, you still buy the domain separately. "No card" means the free tier does not ask for one at signup; that can change, so check before relying on it.
