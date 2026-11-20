@@ -21,7 +21,7 @@ Two more classroom tools closed at the end of August 2026. Checked again on 20 N
 - **[GitHub Classroom closed on 28 August 2026](https://github.blog/changelog/2026-08-27-github-classroom-deprecated).** GitHub took down the Classroom website and its APIs. GitHub accounts, repositories and organizations were not affected, but classroom data such as assignment names, tests defined outside repositories and LTI rosters is deleted. [Classroom 50](https://classroom50.org/), free and open source from the CS50 team, does the same job on top of GitHub and was running on 20 November 2026.
 - **Trinket.io closed on 31 August 2026,** but its founders released the code as open source and [Strive now runs it free at trinket.strivemath.org](https://www.strivemath.com/blog/trinket-free-for-teachers), with Python, HTML, CSS, JavaScript and p5.js in the browser. Trinkets that were not exported before the date are not there; a teacher who exported can carry on.
 
-Add these to Glitch (July 2025) and Replit's Teams for Education (retired 1 August 2024), and four of the browser-based classroom tools teachers relied on have closed inside two years. That is the context you are planning in, and it is a reasonable argument for choosing tools that either charge money or are backed by a foundation, rather than free products from venture-funded startups.
+Add these to Glitch (July 2025) and [Replit's Teams for Education](/guide/replit-teams-for-education-shut-down) (retired 1 August 2024), and four of the browser-based classroom tools teachers relied on have closed inside two years. That is the context you are planning in, and it is a reasonable argument for choosing tools that either charge money or are backed by a foundation, rather than free products from venture-funded startups.
 
 ## What Glitch actually gave you
 
@@ -189,7 +189,7 @@ This is worth stating plainly, because it explains why your search returned only
 
 So the best-known platforms for real typed code are age-gated or aimed above exactly the children who just outgrew Scratch. That is a structural gap, not an oversight.
 
-One more note: if you find a 2023 or 2024 article recommending Juni Learning, it is closed. Juni wound down its tutoring business in September 2025, a California WARN notice covering 121 employees, and consolidated onto its test-prep spinout, Acely. Do not sign up.
+One more note: if you find a 2023 or 2024 article recommending Juni Learning, it is closed. Juni wound down its tutoring business in September 2025, a California WARN notice covering 121 employees, and consolidated onto its test-prep spinout, Acely. Do not sign up. [What happened to Juni Learning](/guide/what-happened-to-juni-learning) has the detail, and where families went next.
 
 ## Decision table: pick by your kid's actual signals
 
