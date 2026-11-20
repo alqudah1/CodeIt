@@ -232,7 +232,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio where a learner [d
       "learn to code with ai website builder",
       "ai builder or learn html css javascript"
     ],
-    markdown: `**Short answer:** with the main tools, [Lovable](https://lovable.dev/), [v0](https://v0.app/), [Bolt](https://bolt.new/), yes. All three show you the code, let you edit it, and let you get it out, and Vercel states plainly that it does not own what v0 generates. The lock-in worry that dominated conversation about these tools in 2024 is largely out of date, and it is worth saying so before criticising anything.
+    markdown: `**Short answer:** with the main tools, [Lovable](https://lovable.dev/), [v0](https://v0.app/), [Bolt](https://bolt.new/), yes. All three show you the code, let you edit it, and let you get it out, and [Vercel's AI Product Terms](https://vercel.com/legal/ai-product-terms) give the user Vercel's rights in what v0 generates. The lock-in worry that dominated conversation about these tools in 2024 is largely out of date, and it is worth saying so before criticising anything.
 
 The real problem is narrower and less discussed: **exportable is not the same as readable.** You can download a folder you cannot understand, and if you cannot understand it you still cannot fix it, extend it, or move it without the tool that made it. This page gives a six-point checklist for judging any AI builder, and it separates the answer for someone shipping a product from the answer for someone trying to learn.
 
@@ -241,7 +241,7 @@ The real problem is narrower and less discussed: **exportable is not the same as
 | Tool | See the code | Edit it in place | Get it out | Ownership |
 |---|---|---|---|---|
 | [Lovable](https://lovable.dev/) | Yes | Yes | Two-way GitHub sync; free plan can download code directly | Repos are yours, private by default; disconnect without losing the repo |
-| [v0](https://v0.app/) (Vercel) | Yes | Yes | Export locally; two-way GitHub sync with branches and pull requests | "Vercel doesn't own the code generated based on your queries and prompts" |
+| [v0](https://v0.app/) (Vercel) | Yes | Yes | Export locally; two-way GitHub sync with branches and pull requests | "you own Customer Content and Vercel assigns to you Vercel's rights, if any, in the Output" (terms updated 17 March 2026) |
 | [Bolt](https://bolt.new/) | Yes, code view | Yes | Download as a zip; GitHub sync | Runs locally after \`npm install\` |
 | [Replit Agent](https://replit.com/) | Yes | Yes, full IDE | Git and download | Standard Replit terms |
 | [Base44](https://base44.com/), [Mocha](https://getmocha.com/), [Dyad](https://www.dyad.sh/) | Varies | Varies | Varies, check before depending on it | Varies |
@@ -303,7 +303,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio built for ages 8 t
 
 ## Common questions
 
-**Do I own the code an AI builder writes?** With v0, Vercel states it does not own the generated code. Lovable puts repositories in your own GitHub account, private by default. Read the terms for anything smaller; ownership language varies.
+**Do I own the code an AI builder writes?** With v0, Vercel's AI Product Terms say it assigns you its rights, if any, in the output, and that you own what you put in. Lovable puts repositories in your own GitHub account, private by default. Read the terms for anything smaller; ownership language varies.
 
 **What happens if I stop paying?** Typically your code survives and your hosting does not. Check separately what happens to any database, authentication or storage the builder configured. That is the part that usually does not travel.
 
@@ -313,7 +313,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio built for ages 8 t
 
 **Is "vibe coding" a real problem?** It is a trade, not a sin. For a professional shipping a product, generating code you have not read is often reasonable. For someone whose goal was to learn, it substitutes the artifact for the skill, and the gap shows up later when something breaks.
 
-*Last verified: 23 August 2026.*`,
+*Last verified: 23 August 2026. Vercel's terms re-read on 20 November 2026, after they changed in March.*`,
   },
   {
     slug: "what-happened-to-juni-learning",
