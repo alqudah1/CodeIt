@@ -9,6 +9,7 @@ const {
   loadPricing,
   loadSchoolFacts,
   loadPuzzleConfigs,
+  loadEsmDefault,
   loadPlaygroundPresets,
   loadWebsiteBuilderPage,
   loadBlogPosts,
@@ -1142,6 +1143,23 @@ function puzzlesSection() {
   };
 }
 
+// /journey said what a journey is in 150 words and nothing about this one.
+// This reads the map itself (src/data/journey/world1.js).
+function journeySection() {
+  const mod = loadEsmDefault(path.join(__dirname, '..', 'src', 'data', 'journey', 'world1.js'));
+  const world = mod && (mod.world1 || mod);
+  if (!world || !Array.isArray(world.nodes)) return null;
+  const count = (type) => world.nodes.filter((n) => n.type === type).length;
+  const lessons = world.nodes.filter((n) => n.type === 'lesson');
+  return {
+    heading: `${world.title}, stop by stop`,
+    paragraphs: [
+      `${world.title} holds the first ${count('lesson')} lessons, ${count('quiz')} mini quizzes, ${count('puzzle')} puzzles, ${count('boss')} bosses and ${count('big_quiz')} big quizzes that each cover several lessons at once. For each of the first ten lessons the order is the lesson, its mini quiz, two puzzles, then the boss, and the boss opens the next lesson.`,
+      `The lessons on it, in order: ${lessons.map((n) => n.subtitle).join(', ')}.`,
+    ],
+  };
+}
+
 const SECTIONS_BY_ROUTE = {
   '/ai-website-builder-for-kids': WEBSITE_BUILDER.sections,
   '/build': [
@@ -1224,11 +1242,12 @@ const SECTIONS_BY_ROUTE = {
     },
   ],
   '/journey': [
+    journeySection(),
     {
       heading: 'What the journey includes',
       paragraphs: [
         'The journey sequences the beginner Python lessons with quizzes and puzzle challenges, so every concept is met, practised, and then used before the next one arrives.',
-        'A learner always has one clear next step rather than a menu of options, which is the point at which most self-directed beginners stall.',
+        'A learner always has one clear next step rather than a menu of options.',
       ],
     },
     {
