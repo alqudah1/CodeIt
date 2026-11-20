@@ -67,7 +67,7 @@ export default function pressFacts({
       paragraphs: [
         "The comprehension questions are generated from the learner's own file. The correct answer is the value that learner actually wrote, so the question cannot be answered by recalling a lesson or looking anything up. The wrong options are other real values from the same project where the project has them, and plain numbers where it does not. Only first attempts count.",
         "What a parent reads is a sentence describing something that happened, such as \"worked out how many times a loop repeats\", rather than a score or a percentage. That is a deliberate limit: a percentage invites comparison between children and says nothing about what one child can do.",
-        "Every other product in this category reports progress, meaning lessons completed, time spent, badges earned. Those answer a different question from the one parents are now asking, which is whether the child understood code an assistant produced.",
+        "The other products compared on this site report progress as lessons completed, time spent or badges earned. Those answer a different question from the one parents are now asking, which is whether the child understood code an assistant produced.",
         "The avatar a child builds in the Avatar Lab is the player in the games that child builds. It is the same drawing, handed to every game the studio opens, so changing the outfit changes the character in the game. Scratch has sprites and Tynker has characters; neither takes the character the child made and puts it inside the game the child made. XP comes mostly from those first-attempt answers about the child's own code, and levels unlock things to wear.",
       ],
     },
@@ -97,7 +97,7 @@ export default function pressFacts({
       heading: "What it does not do",
       paragraphs: [
         "No rostering, no LMS integration, no standards alignment, no gradebook. CodeIt is not built for district deployment and is not sold that way. A single teacher can run a free class: children join with a class code and a first name, and the teacher sees each child's work.",
-        "It is not right for a pre-reading child; Kodable and codeSpark are built for that and are better at it. It is not right for a learner who mainly wants to keep making games, where CodeCombat or Roblox Studio fit better.",
+        "It is not right for a pre-reading child; Kodable and codeSpark are built for that and are better at it. It is not right for a learner who wants to learn by playing a game rather than making one, where CodeCombat fits better, or for one who wants to build inside Roblox, where Roblox Studio does.",
       ],
     },
     {

@@ -159,7 +159,7 @@ Things we will not blur:
 - **Under-13 managed profiles cannot publish publicly.** Sharing happens inside the parent-managed account.
 - **A child under 13 needs a parent-managed profile.** This is not a set-and-forget product for young children.
 
-**CodeIt is not for you if:** your household rule is no AI at all, we generate code, so we are the wrong product; your kid wants Minecraft or Roblox mods ([Tynker](https://www.tynker.com/)); your kid mainly wants to keep making games ([CodeCombat](https://codecombat.com/)); your teen wants a professional AI development workflow (they should be using real developer tools); you want a sequenced web-development course; or you are buying for a whole school or district, because there is no rostering, gradebook or district plan. A single teacher can run a free class with a class code.
+**CodeIt is not for you if:** your household rule is no AI at all, we generate code, so we are the wrong product; your kid wants Minecraft or Roblox mods ([Tynker](https://www.tynker.com/)); your kid would rather learn by playing a game than make one ([CodeCombat](https://codecombat.com/)); your teen wants a professional AI development workflow (they should be using real developer tools); you want a sequenced web-development course; or you are buying for a whole school or district, because there is no rostering, gradebook or district plan. A single teacher can run a free class with a class code.
 
 ---
 

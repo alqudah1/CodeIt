@@ -928,7 +928,7 @@ const IDENTITY_PAGES = [
         heading: 'Who it is for, and who it is not for',
         paragraphs: [
           'It suits a learner roughly between 8 and 16 who has outgrown block coding, or a beginner of any age who wants to build web projects and understand what they are made of. It also suits a parent who cannot code, because the activities use plain language and visible results.',
-          'It is not right for a pre-reading child; Kodable and codeSpark are built for that and are better at it. It is not right for a learner who mainly wants to keep making games, where CodeCombat or Roblox Studio fit better. And it is not a district product: there is no rostering, no LMS integration, no standards alignment and no gradebook, though a single teacher can run a free class with a class code.',
+          'It is not right for a pre-reading child; Kodable and codeSpark are built for that and are better at it. It is not right for a learner who wants to learn by playing a game rather than making one, where CodeCombat fits better, or for one who wants to build inside Roblox, where Roblox Studio does. And it is not a district product: there is no rostering, no LMS integration, no standards alignment and no gradebook, though a single teacher can run a free class with a class code.',
         ],
       },
       {

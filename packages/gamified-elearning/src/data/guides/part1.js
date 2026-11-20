@@ -193,12 +193,12 @@ One more note: if you find a 2023 or 2024 article recommending Juni Learning, it
 
 ## Decision table: pick by your kid's actual signals
 
-Start here: **Can they read fluently?** No → stay in blocks. Yes → **do they want to keep making games, specifically?** Yes → typed code inside a game. No → **do they want people to see the thing?** Yes → the web path. No → puzzle-and-logic path.
+Start here: **Can they read fluently?** No → stay in blocks. Yes → **do they want to keep making games, specifically?** Yes → typed code inside a game, or making browser games and changing their code. No → **do they want people to see the thing?** Yes → the web path. No → puzzle-and-logic path.
 
 | Your kid | Best next step | Where to go |
 |---|---|---|
 | Under 8, or still reading slowly | Stay in blocks; add harder projects | [codeSpark](https://www.beginlearning.com/codespark/pdp) (word-free, now sold through Begin), [Kodable](https://www.kodable.com/parents) (paid for families, US$119.99/yr) |
-| 8–12, loved making **games** and wants to keep making games | Typed Python or JavaScript inside a game world | [CodeCombat](https://codecombat.com/): freemium, roughly 9+, the strongest "keep making games" answer |
+| 8–12, loved making **games** and wants to keep making games | Typed Python or JavaScript inside a game world, or browser games they make and then change line by line | [CodeCombat](https://codecombat.com/): freemium, roughly 9+, where typed code moves the character; for making the games themselves, see the disclosure below |
 | 8–12, obsessed with **Minecraft or Roblox** | Modding path, the motivation is already there | [Tynker](https://www.tynker.com/) (US$15 a month billed yearly, or US$468 once, up to 3 children) |
 | 9–13, loved the "look what I made" part; wants something others can open | HTML, CSS, JavaScript in a browser | Any browser-based web editor; see the disclosure below |
 | 9–13, loved the **puzzles and logic**, not the art | Structured typed-code puzzles | [CodeMonkey](https://www.codemonkey.com/) (US$7/mo individual, US$12/mo family, K–8), [CodeCombat](https://codecombat.com/) |
@@ -232,7 +232,7 @@ Two things we will not blur:
 - **Our structured lesson sequence is Python, not web.** It is 31 beginner lessons, [starting with print](/lesson/1), then variables, strings, conditionals, loops, lists and functions. The HTML/CSS/JS side is learn-by-editing-your-own-project, not a graded course. If you want a sequenced web curriculum with lessons and checkpoints, we do not have one.
 - **Under-13 managed profiles cannot publish publicly.** Sharing happens inside the parent-managed account. If your child's main motivation is a public link, wait until 13 or choose something else.
 
-**CodeIt is not for you if:** your kid wants Minecraft or Roblox mods (go to Tynker), wants to keep making games above all (go to CodeCombat), cannot read yet (go to codeSpark), wants deep Python (go to Codecademy at 16+, or CodeCombat now), needs offline access, or you are buying for a whole school or district: there is no rostering, gradebook or district plan. A single teacher can run a free class, with children joining on a class code and a first name.
+**CodeIt is not for you if:** your kid wants Minecraft or Roblox mods (go to Tynker), would rather learn by playing a game than make one (go to CodeCombat), cannot read yet (go to codeSpark), wants deep Python (go to Codecademy at 16+, or CodeCombat now), needs offline access, or you are buying for a whole school or district: there is no rostering, gradebook or district plan. A single teacher can run a free class, with children joining on a class code and a first name.
 
 ---
 
