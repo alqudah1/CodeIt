@@ -1119,9 +1119,27 @@ export default function Builder() {
   // The save action is also a child-friendly next-step button.  A first draft
   // must be personalised and tested, but the button should never feel broken.
   const handleSaveOrGuide = () => {
+    // A visitor with no account: Save is the way to one, with the project
+    // carried through. No lesson stands between a visitor and the form.
+    if (!user) {
+      handleSaveProject();
+      return;
+    }
     if (!isPersonalized) {
-      setShowEditPanel(true);
-      setTimeout(() => editRef.current?.focus(), 0);
+      // Everything this opens lives on the Change page. From Play, The code
+      // or Save it flipped some state and showed the child nothing: a button
+      // called Save that did not save and did not say why.
+      setWorkspaceTab('change');
+      if (gameSettings.length > 0) {
+        openStudioTool('gameplay');
+        setShowEditPanel(false);
+      } else {
+        setShowEditPanel(true);
+        setTimeout(() => {
+          editRef.current?.focus?.();
+          editRef.current?.scrollIntoView?.({ block: 'center' });
+        }, 0);
+      }
       return;
     }
     if (!hasTestedLatest) {

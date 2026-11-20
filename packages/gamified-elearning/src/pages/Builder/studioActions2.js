@@ -332,10 +332,18 @@ export function makeHandleExplain(studio) {
 }
 
 export function makeHandleSaveProject(studio) {
-  const { awardXP, builtPrompt, code, continueAfterAuth, hasTestedLatest, isPersonalized, namedByChildRef, namingRef, popXp, projectName, projectType, promptHistory, saveInFlightRef, savedProjectId, savedProjects, setAiTitle, setIsSaved, setNaming, setPaperBurst, setSaveError, setSaveStatus, setSavedProjectId, setSavedProjects, token, user } = studio;
+  const { awardXP, builtPrompt, code, continueAfterAuth, namedByChildRef, namingRef, popXp, projectName, projectType, promptHistory, saveInFlightRef, savedProjectId, savedProjects, setAiTitle, setIsSaved, setNaming, setPaperBurst, setSaveError, setSaveStatus, setSavedProjectId, setSavedProjects, token, user } = studio;
   return (async ({ name, skipNaming = false } = {}) => {
     if (!code) return;
-    if (!isPersonalized || !hasTestedLatest) return;
+    // Keeping work is never refused. This used to return here, without a
+    // word, unless the project had been changed and played again, and three
+    // buttons call it whatever state the project is in: "Keep it forever,
+    // free" (a visitor's one door from the studio to an account), "Save
+    // first" on the way to a new project, and the save that follows signing
+    // up. On an untouched game each of them did nothing at all (20 November
+    // 2026). The four steps are still the guide, and the main Save button
+    // still walks a signed-in child through them (handleSaveOrGuide); they
+    // are no longer a lock on the door.
     if (!user || !token) {
       continueAfterAuth('save');
       return;

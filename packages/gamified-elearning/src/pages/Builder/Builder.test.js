@@ -591,6 +591,51 @@ describe('studio opening', () => {
     });
   });
 
+  // 20 November 2026: on a game that had not been changed and played again,
+  // "Keep it forever, free" did nothing. No form, no message. It is a
+  // visitor's one door from the studio to an account.
+  test('a visitor can keep a game they have not changed yet', async () => {
+    saveGuestProjectDraft(localStorage, {
+      code: '<!doctype html><html><head><style>body{background:#fffaf4;color:#432c23;padding:2rem}</style></head><body><h1>Untouched idea</h1><p>A complete local project nobody has changed yet, long enough to count.</p></body></html>',
+      prompt: 'an untouched idea',
+      builtPrompt: 'an untouched idea',
+      projectType: 'website',
+      aiTitle: 'Untouched idea',
+      promptHistory: ['an untouched idea'],
+      hasPersonalized: false,
+    });
+
+    render(<Builder />);
+
+    expect(await screen.findByText('Welcome back! Your game is still here.')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Keep it forever, free' }));
+    expect(mockNavigate).toHaveBeenCalledWith('/register?from=builder&action=save', {
+      state: { from: '/builder', resumeBuilderAction: 'save' },
+    });
+    // The game goes with them, marked as it is: not changed yet.
+    expect(JSON.parse(sessionStorage.getItem('codeit_builder_draft'))).toEqual(expect.objectContaining({
+      code: expect.stringContaining('Untouched idea'),
+      hasPersonalized: false,
+    }));
+  });
+
+  test('keeping work is never refused, and the Save key never does nothing', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const read = (file) => fs.readFileSync(path.join(__dirname, file), 'utf8');
+    const save = read('studioActions2.js');
+    const body = save.slice(save.indexOf('export function makeHandleSaveProject'), save.indexOf('export function makeHandleLoadProject'));
+    expect(body).not.toMatch(/if \(!isPersonalized \|\| !hasTestedLatest\) return;/);
+    expect(body).toMatch(/continueAfterAuth\('save'\)/);
+    const builder = read('Builder.js');
+    const guide = builder.slice(builder.indexOf('const handleSaveOrGuide'), builder.indexOf('// ── Load saved project ─'));
+    // A visitor goes to the form; a signed-in child is taken to the page the guide is on.
+    expect(guide).toMatch(/if \(!user\) \{\s*handleSaveProject\(\);/);
+    expect(guide).toMatch(/if \(!isPersonalized\) \{[\s\S]*?setWorkspaceTab\('change'\);/);
+    // Someone who already has an account can always log in to save.
+    expect(read('studioScreen3.js')).not.toMatch(/login-hint" onClick=\{handleSaveProject\} disabled/);
+  });
+
   test('removes an expired guest recovery copy instead of restoring it', () => {
     saveGuestProjectDraft(localStorage, {
       code: '<!doctype html><html><head><style>body{color:#432c23}</style></head><body><h1>Expired idea</h1><p>This should not return after the recovery window.</p></body></html>',

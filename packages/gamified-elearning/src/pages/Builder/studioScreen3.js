@@ -291,7 +291,7 @@ export function studioView21(studio) {
                   {!saveStatus && (isSaved ? 'Saved' : saveActionLabel)}
                 </button>
               ) : (
-                <button className="bldr-action-btn bldr-action-btn--login-hint" onClick={handleSaveProject} disabled={!isPersonalized || !hasTestedLatest}>
+                <button className="bldr-action-btn bldr-action-btn--login-hint" onClick={handleSaveProject}>
                   Log in to save
                 </button>
               ))}
