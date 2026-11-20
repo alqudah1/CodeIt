@@ -266,7 +266,7 @@ Prices are each product's own, in each product's own currency, so convert before
 
 ## Scratch
 
-Free, from MIT, and the reason most children in the world have written any code at all. Blocks snap together, there is nothing to install, and the shared project library is enormous.
+Free, from the Scratch Foundation, and the reason most children in the world have written any code at all. Blocks snap together, there is nothing to install, and the shared project library is enormous.
 
 **Best for:** a first experience, roughly ages 7 to 11. Nothing else is a better on-ramp and nothing else is as safe a first step.
 
@@ -343,7 +343,7 @@ We build CodeIt, which is one of the five options above. A comparison written by
 There is no single one, and a page that names one without asking about your child is selling something. Under 8 and not reading fluently: Scratch, or Tynker if you want icon coding and can pay. A structured course at no cost: Code.org, now CodeAI. A child who likes puzzles and wants text code early: CodeMonkey. A child past blocks who wants to make things rather than take a course is the case we built CodeIt for.
 
 **Scratch vs Tynker: which should we start with?**
-Scratch is free, from MIT, and the best on-ramp there is for roughly 7 to 11. Tynker costs money and earns it in two cases Scratch does not cover: icon coding for children who cannot yet read fluently, and Minecraft and Roblox modding. If neither describes your child, start with Scratch and keep the money.
+Scratch is free, from the Scratch Foundation, and the best on-ramp there is for roughly 7 to 11. Tynker costs money and earns it in two cases Scratch does not cover: icon coding for children who cannot yet read fluently, and Minecraft and Roblox modding. If neither describes your child, start with Scratch and keep the money.
 
 **CodeMonkey vs Tynker: what is the difference?**
 Tynker is a course library advertising 5,000+ lessons, strongest on pre-readers and game modding, covering up to three children for $15 to $18 a month. CodeMonkey is a puzzle progression that moves a child from blocks into text code in CoffeeScript and Python, US$12 a month billed yearly for three children. Tynker is broader. CodeMonkey gets a child typing real syntax sooner, though every challenge has one correct answer, which is exactly what an assistant solves in a second.

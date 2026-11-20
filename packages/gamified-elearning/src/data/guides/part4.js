@@ -59,7 +59,7 @@ Both of those sentences are true at once. Anyone telling you only the first ("no
 
 | Option | Cost | Ages | Notes |
 |---|---|---|---|
-| [Scratch](https://scratch.mit.edu/) (MIT) | Free | 8–16 | Block-based, huge shared project community, no AI repositioning |
+| [Scratch](https://scratch.mit.edu/) (Scratch Foundation) | Free | 8–16 | Block-based, huge shared project community, no AI repositioning |
 | [Khan Academy](https://www.khanacademy.org/computing) | Free | ~10+ | Solid teaching, but the CS content runs on legacy ProcessingJS and is visibly aging |
 | [freeCodeCamp](https://www.freecodecamp.org/) | Free | Nominally 13+ | Excellent and genuinely free, but built for adults; not designed for kids |
 | [Kodable](https://www.kodable.com/parents) | US$119.99/yr for families, four children | 4–10 | K-5 focused. Its free Kickstart plan is a school plan |
@@ -226,7 +226,7 @@ The mistake to avoid is picking a tool that nails the first column and discoveri
 | GitHub Codespaces + Classroom 50 | High school, students headed toward real software work | Genuinely industry-standard tooling and workflow | Steepest setup cost; account and age requirements need checking for minors; free-tier limits change |
 | [freeCodeCamp](https://www.freecodecamp.org/) | Motivated high-schoolers, zero budget | Free, substantial, well-maintained | Nominally 13+, built for adults, no teacher view at all |
 | [Codecademy](https://www.codecademy.com/) | Older students only | Free Basic tier, $14.99/mo Plus | Its Terms of Service §1.A state "You must be 16 years or older to use the Services", which rules it out for most middle school and much of high school |
-| [Scratch](https://scratch.mit.edu/) (MIT) | Younger classes, ages 8–16 | Free, stable, enormous community, not going anywhere | Block-based; not a substitute if you were teaching typed Python or JavaScript |
+| [Scratch](https://scratch.mit.edu/) (Scratch Foundation) | Younger classes, ages 8–16 | Free, stable, enormous community, not going anywhere | Block-based; not a substitute if you were teaching typed Python or JavaScript |
 | [CodeCombat](https://codecombat.com/) | Ages ~9+, engagement problems | Typed Python or JavaScript inside an RPG; freemium | Game framing does not suit every class |
 
 ### If you only have ten minutes to decide

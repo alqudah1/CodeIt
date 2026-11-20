@@ -325,7 +325,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio built for ages 8 t
     title: "What Happened to Juni Learning",
     description: "Juni Learning sunset its 1:1 kids coding tutoring and consolidated onto Acely, its own test-prep spinout. What that means and where families went next.",
     h1: "What Happened to Juni Learning",
-    lastVerified: "2026-08-21",
+    lastVerified: "2026-11-20",
     targetQueries: [
       "what happened to juni learning",
       "is juni learning still open",
@@ -337,7 +337,7 @@ We build **CodeIt** (codeitlearn.com), a browser-based studio built for ages 8 t
 
 That distinction matters, and almost every roundup of "kids coding sites" still gets it wrong. This page states what is actually documented, what is not, and what the practical options are for a family that was using Juni for weekly tutoring.
 
-**Last verified: 21 August 2026.**
+**Last verified: 21 August 2026, and again on 20 November 2026: junilearning.com still redirects to acely.com, and Create & Learn's prices are unchanged.**
 
 ## The documented facts
 
@@ -379,7 +379,7 @@ Group classes cost far less than 1:1 and, for many kids, work just as well. Genu
 
 | Option | Cost | Ages | Style |
 |---|---|---|---|
-| [Scratch](https://scratch.mit.edu/) (MIT) | Free | 8–16 | Block-based, enormous community library |
+| [Scratch](https://scratch.mit.edu/) (Scratch Foundation) | Free | 8–16 | Block-based, enormous community library |
 | [CodeAI](https://code.org/en-US/codeai) (formerly Code.org) | Free | K–12 | Full CS curriculum; emphasis has shifted toward AI literacy |
 | [Tynker](https://www.tynker.com/) | $15/mo billed yearly, or $468 lifetime | 5–18 | Up to 3 children; Minecraft and Roblox modding hooks |
 | [CodeMonkey](https://www.codemonkey.com/) | US$7/mo individual, US$12/mo family (3 kids) | K–8 | Game-based CoffeeScript then Python |
