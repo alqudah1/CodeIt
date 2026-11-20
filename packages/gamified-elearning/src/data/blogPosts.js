@@ -34,7 +34,7 @@ const BLOG_POSTS = [
     readTime: '5 min read',
     category: 'Learning Guide',
     excerpt:
-      'Python is one of the most popular programming languages in the world. And it\'s also the easiest one for kids to start with. Here\'s everything you need to know to get started.',
+      'Python is one of the most widely used programming languages in the world, and it reads close enough to English to be a good first typed language for a child. Here\'s what you need to know to get started.',
     sections: [
       {
         heading: 'Is your child ready for Python?',
@@ -342,7 +342,7 @@ const BLOG_POSTS = [
       {
         heading: 'Where to Start: print() and Variables',
         body: [
-          'Every Python beginner starts with two things: print() and variables. These two concepts unlock 80% of what you can do in a beginner programme.',
+          'Every Python beginner starts with two things: print() and variables. These two come first because almost everything a beginner writes after them builds on them.',
           'print() displays output. Variables store information. Together, they let you write programmes that show meaningful results.',
           'name = "Alex"\nprint("Hello, " + name)',
           'That\'s a real Python programme. It stores a name in a variable and prints a personalised greeting. Understanding these two lines is the foundation everything else builds on.',
@@ -372,7 +372,7 @@ const BLOG_POSTS = [
           'As programmes get longer, it helps to organise code into named blocks that can be reused. These are called functions.',
           'def greet(name):\n    print("Hello, " + name)\n\ngreet("Alex")\ngreet("Jordan")',
           'The function greet() takes a name and prints a greeting. You can call it as many times as you want, with any name, without repeating the print line each time.',
-          'Functions are the building blocks of clean, readable code. Every Python programme is built from functions, from a one-page script to a million-line app.',
+          'Functions are how a program stays readable as it grows: name a job once, then use it as many times as you need.',
         ],
       },
       {
@@ -431,14 +431,14 @@ const BLOG_POSTS = [
         heading: 'Why Python Is the Best First Coding Language for Kids',
         body: [
           'Python consistently ranks as the best first language for children for several reasons:',
-          '• Clean syntax: No semicolons, no curly braces, no boilerplate. The code does what it looks like it does.\n• Immediate feedback: One line of Python can do something visible. Kids don\'t have to learn a lot before seeing results.\n• Real-world relevance: Python is used at Google, Netflix, NASA, and in almost all machine learning research. It\'s not a toy language.\n• Huge ecosystem: More beginner resources, tutorials, and community support than any other language.\n• Scalability: A child who starts with print("Hello") can eventually build web apps, games, and data science projects. All in the same language.',
+          '• Clean syntax: No semicolons, no curly braces, no boilerplate. The code does what it looks like it does.\n• Immediate feedback: One line of Python can do something visible. Kids don\'t have to learn a lot before seeing results.\n• Real-world relevance: adults use Python for real work in data, science and automation. It\'s not a toy language.\n• Plenty of help: beginner lessons, books and free tutorials are easy to find.\n• Scalability: A child who starts with print("Hello") can eventually build web apps, games, and data science projects. All in the same language.',
           'Starting with Python means never having to start over. The skills transfer.',
         ],
       },
       {
         heading: 'What Age Is Right to Start Python?',
         body: [
-          'Most children can start learning Python from around age 9 or 10, when reading comprehension and logical thinking are well developed. Some younger children can start at 7 or 8 with parental support, particularly those already comfortable with reading and basic maths.',
+          'Many children are ready for Python from around age 9 or 10, once reading and typing are comfortable. Some younger children can start at 7 or 8 with parental support, particularly those already comfortable with reading and basic maths.',
           'The key factor isn\'t age. It\'s whether the child is curious and patient enough to follow instructions and observe what happens. A motivated 8-year-old will learn faster than a bored 12-year-old.',
           'CodeIt is built for ages 8 to 14. Younger children can use it alongside an adult and older beginners are welcome. For a learner under 13 a parent or legal guardian creates a private managed profile after confirming the adult account email, which CodeIt supports from age 5. Independent CodeIt learner accounts are for ages 13 and up, including adults learning from scratch.',
         ],
