@@ -172,3 +172,5 @@
 @media (max-width: 700px) {
   body:has(.bldr-mobile-play-bar) .chest-tray { bottom: calc(84px + env(safe-area-inset-bottom)); }
 }
+/* And above a lesson's "Next", which is fixed to the bottom once a step is done. */
+body:has(.sl-nav--ready) .chest-tray { bottom: calc(92px + env(safe-area-inset-bottom)); }

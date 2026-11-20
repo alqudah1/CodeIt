@@ -45,6 +45,27 @@ describe('what the audit found', () => {
     expect(guest).not.toMatch(/navigate\('\/login'/);
   });
 
+  test('once a lesson step is done, the button that moves on is fixed to the bottom of the screen', () => {
+    const js = read('../../components/InteractiveLessonTemplate/InteractiveLessonTemplate.js');
+    expect(js).toMatch(/className=\{`sl-nav\$\{canProceed \? ' sl-nav--ready' : ''\}`\}/);
+    // The page moves up by the button's height at the moment the step is passed.
+    expect(js).toMatch(/<MakeRoomForNext ready=\{canProceed\} step=\{stepIdx\} \/>/);
+    expect(js).toMatch(/if \(before\.step !== step \|\| before\.ready \|\| !ready\) return;/);
+    const css = read('../../components/InteractiveLessonTemplate/InteractiveLessonTemplate.css');
+    const at = css.indexOf('@media (max-width: 640px) {');
+    const wide = css.slice(0, at);
+    const phone = css.slice(at);
+    // Every size: a laptop had the same hunt downwards as a phone.
+    expect(wide).toMatch(/\.sl-nav--ready \.sl-nav__next,\s*\.sl-nav--ready \.sl-nav__continue \{\s*position: fixed;\s*left: max\(16px, calc\(50vw - 380px\)\);/);
+    expect(wide).toMatch(/body:has\(\.sl-nav--ready\) \{ padding-bottom: calc\(96px/);
+    // A phone: the width of the screen.
+    expect(phone).toMatch(/\.sl-nav--ready \.sl-nav__next,\s*\.sl-nav--ready \.sl-nav__continue \{\s*left: 12px;\s*right: 12px;/);
+    // Before the step is done, what to do is a sentence, not a second, dead button.
+    expect(phone).toMatch(/\.sl-nav__next:disabled,\s*\.sl-nav__continue:disabled \{\s*background: none;/);
+    // And the waiting chest does not sit on it.
+    expect(read('../../components/Chest/ChestTray.css')).toMatch(/body:has\(\.sl-nav--ready\) \.chest-tray \{ bottom: calc\(92px/);
+  });
+
   test('on a phone the built game is the tall thing on the screen', () => {
     expect(read('../Build/Build.css')).toMatch(/@media \(max-width: 640px\) \{ \.bd__frame\.is-lit \{ aspect-ratio: 5 \/ 6; \} \}/);
   });

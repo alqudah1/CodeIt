@@ -211,6 +211,26 @@ export function lessonTopic(title) {
   return String(title || '').split('. ')[0].replace(/[.!?]+$/, '').trim();
 }
 
+
+// When a step is finished its "Next" comes up from the bottom of the screen
+// (the stylesheet, .sl-nav--ready) and would sit on the last 80px of what the
+// child was looking at: the output that has just appeared, usually. The page
+// moves up by that much, once, at the moment the step turns from not done to
+// done. Arriving on a step that is already passable moves nothing.
+function MakeRoomForNext({ ready, step }) {
+  const was = useRef({ step: -1, ready: false });
+  useEffect(() => {
+    const before = was.current;
+    was.current = { step, ready };
+    if (before.step !== step || before.ready || !ready) return;
+    const atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+    if (atEnd) return;
+    const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    window.scrollBy?.({ top: 88, behavior: still ? 'auto' : 'smooth' });
+  }, [ready, step]);
+  return null;
+}
+
 const InteractiveLessonTemplate = ({ lessonData }) => {
   // Extract id before hooks so useState / useEffect can reference it correctly
   const lessonId = lessonData?.id ?? null;
@@ -1040,7 +1060,10 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
           )}
 
           {/* ────── Navigation ─────────────────────────── */}
-          <div className="sl-nav">
+          {/* sl-nav--ready: on a phone the button that moves on comes to the
+              bottom of the screen once the step is done (see the stylesheet). */}
+          <div className={`sl-nav${canProceed ? ' sl-nav--ready' : ''}`}>
+            <MakeRoomForNext ready={canProceed} step={stepIdx} />
             <button
               className="sl-nav__back"
               onClick={goPrev}

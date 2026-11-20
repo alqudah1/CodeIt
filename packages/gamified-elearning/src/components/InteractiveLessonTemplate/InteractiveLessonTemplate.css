@@ -843,6 +843,32 @@
 /* ══════════════════════════════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════════════════════════════ */
+/* ── The most pressed button in a lesson, where the child is looking ────────
+   After every success the button that moves on was below the screen. The
+   page stays where the child was working, and "Step Complete. Next" sat 870
+   to 960px down an 844px phone, and about 1017px down an 800px laptop, while
+   the guide in the corner said "Press Next Step to keep going" (an outside
+   audit, and then a laptop, 20 November 2026). Confetti, then a hunt
+   downwards, six times a lesson.
+
+   Once the step is done the button is fixed to the bottom of the screen: at
+   the left edge of the lesson's column on a wide screen, the guide being on
+   the right; the full width on a phone. Before that it stays in the page. */
+.sl-nav--ready .sl-nav__next,
+.sl-nav--ready .sl-nav__continue {
+  position: fixed;
+  left: max(16px, calc(50vw - 380px));
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  min-width: 280px;
+  min-height: 56px;
+  z-index: 800;
+  box-shadow: 0 0 0 3px #FFF6ED, 0 10px 26px rgba(53, 34, 14, 0.38);
+  animation: sl-next-up 0.28s ease-out;
+}
+/* Room for it, so the last thing on the page can be scrolled clear. */
+body:has(.sl-nav--ready) { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+
+
 @media (max-width: 640px) {
   .sl-body {
     padding-top: 122px;
@@ -875,6 +901,33 @@
   .sl-nav__back     { width: 100%; text-align: center; }
   .sl-nav__next     { width: 100%; text-align: center; }
   .sl-nav__continue { width: 100%; text-align: center; }
+
+  /* On a phone the fixed "Next" (above, .sl-nav--ready) is the width of the screen. */
+  .sl-nav--ready .sl-nav__next,
+  .sl-nav--ready .sl-nav__continue {
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    width: auto;
+    min-width: 0;
+  }
+  body:has(.sl-nav--ready) { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+
+  /* Not yet done: what to do next is a sentence, not a second, dead button
+     under the real one ("Run the code to continue" in grey looked like
+     something to press). */
+  .sl-nav__next:disabled,
+  .sl-nav__continue:disabled {
+    background: none;
+    box-shadow: none;
+    color: #5C4A3D;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0.35rem 0;
+    min-height: 0;
+    opacity: 1;
+    cursor: default;
+  }
 
   .sl-jp-label { font-size: 0.8125rem; }
   .sl-jp-dot   { width: 30px; height: 30px; font-size: 0.8125rem; }
@@ -1356,4 +1409,10 @@
 }
 @media (max-width: 520px) {
   .sl-completion-card__btn--studio { font-size: 0.98rem; }
+}
+
+@keyframes sl-next-up { from { transform: translateY(72px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .sl-nav--ready .sl-nav__next,
+  .sl-nav--ready .sl-nav__continue { animation: none; }
 }
