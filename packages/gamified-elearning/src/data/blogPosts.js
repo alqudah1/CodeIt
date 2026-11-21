@@ -203,8 +203,8 @@ const BLOG_POSTS = [
         heading: 'Step 5: Join a Learning Community',
         body: [
           'Learning to code alone is harder than it needs to be. A community gives you answers when you\'re stuck, motivation when you want to quit, and people to share wins with.',
-          'CodeIt includes a leaderboard that shows your progress alongside other learners. A small dose of friendly competition that makes the daily habit easier to maintain.',
-          'Start with the CodeIt lessons, complete the quizzes to earn XP, and climb the leaderboard. Each step forward is visible, which makes continuing feel worthwhile.',
+          'CodeIt has an Arcade where finished games are played and ranked by plays, this week and of all time. Seeing someone play the thing you made is a reason to make the next one.',
+          'Start with the CodeIt lessons and complete the quizzes to earn XP. Each step forward is visible, which makes continuing feel worthwhile.',
         ],
       },
     ],

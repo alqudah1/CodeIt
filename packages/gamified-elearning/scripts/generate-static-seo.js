@@ -934,7 +934,7 @@ const IDENTITY_PAGES = [
       {
         heading: 'Who it is for, and who it is not for',
         paragraphs: [
-          'It suits a learner roughly between 8 and 16 who has outgrown block coding, or a beginner of any age who wants to build web projects and understand what they are made of. It also suits a parent who cannot code, because the activities use plain language and visible results.',
+          `It suits a learner of ${AGES} who has outgrown block coding and wants to make games and change their code, and an older beginner who wants the same. It also suits a teacher running a class, and a parent who cannot code, because the activities use plain language and visible results.`,
           'It is not right for a pre-reading child; Kodable and codeSpark are built for that and are better at it. It is not right for a learner who wants to learn by playing a game rather than making one, where CodeCombat fits better, or for one who wants to build inside Roblox, where Roblox Studio does. And it is not a district product: there is no rostering, no LMS integration, no standards alignment and no gradebook, though a single teacher can run a free class with a class code.',
         ],
       },
@@ -942,7 +942,7 @@ const IDENTITY_PAGES = [
         heading: 'Accounts, ages and safety',
         paragraphs: [
           `A learner aged 13 or over opens their own account. For anyone younger, ${MANAGED_FLOOR}, after confirming the adult account email address.`,
-          'Saved projects are private by default, and eligible independent accounts must actively choose Publish before a project appears publicly. A managed profile cannot publish projects at all. Leaderboards use coder aliases rather than real names.',
+          'Saved projects are private by default, and eligible independent accounts must actively choose Publish before a project appears publicly. A managed profile cannot publish projects at all. A published game is credited to "CodeIt creator", never to the child\'s account name.',
         ],
       },
       {
@@ -1374,7 +1374,7 @@ const SECTIONS_BY_ROUTE = {
       heading: 'Projects and publishing',
       paragraphs: [
         'Saved projects are private until their owner chooses Publish. An unsaved guest project can remain only in that browser for up to seven days and is not uploaded as an account project without an explicit save.',
-        `A managed profile cannot publish projects publicly. Leaderboards use coder aliases rather than real names.`,
+        `A managed profile cannot publish projects publicly. A published game is credited to "CodeIt creator", never to the child's account name.`,
       ],
     },
   ],
