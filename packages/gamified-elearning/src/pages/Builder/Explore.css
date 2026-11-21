@@ -776,6 +776,15 @@
 .exp-today__head--quiet .exp-today__title { margin: 0; font-size: clamp(1.15rem, 3.4vw, 1.5rem); }
 .exp-today__head--quiet .exp-today__go { min-height: 44px; padding: 8px 18px; }
 .exp-today__head--quiet .exp-today__line { font-size: 0.875rem; }
+/* A quest whose words take two lines beside the button ("Dodge the spikes in
+   space.") makes this row 14px taller, and on 21 November 2026 that put the
+   first project 34% of the way down a phone: over the third this page is
+   held to, on that day's quest only. The room comes out of the gap above the
+   projects, so the longest quest there is still starts them inside it. */
+@media (max-width: 640px) {
+  .exp-bar--quiet + .exp-content { padding-top: 6px; }
+  .exp-today__head--quiet { padding: 6px 14px; }
+}
 @media (max-width: 700px) {
   .exp-today__head--quiet .exp-today__line {
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;

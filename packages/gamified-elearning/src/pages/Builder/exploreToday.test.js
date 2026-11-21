@@ -86,3 +86,14 @@ test('on the narrowest phones Play and Remix stand one above the other, so neith
   expect(narrow).toMatch(/\.exp-card__actions \{ flex-direction: column;/);
   expect(narrow).toMatch(/\.exp-btn--remix \{[^}]*width: 100%/);
 });
+
+// 21 November 2026: that day's quest, "Dodge the spikes in space.", takes two
+// lines beside the button on a phone. The row grew 14px and the first project
+// started 34% down the screen, over the third this page is held to.
+test('on a phone the quiet row gives back the gap above the projects, so a two-line quest still starts them in the top third', () => {
+  const css = require('fs').readFileSync(require('path').join(__dirname, 'Explore.css'), 'utf8');
+  expect(css).toMatch(/@media \(max-width: 640px\) \{\s*\.exp-bar--quiet \+ \.exp-content \{ padding-top: 6px; \}\s*\.exp-today__head--quiet \{ padding: 6px 14px; \}\s*\}/);
+  // The bar and the projects are siblings, which is what that rule depends on.
+  const js = require('fs').readFileSync(require('path').join(__dirname, 'Explore.js'), 'utf8');
+  expect(js).toMatch(/<\/div>\s*\n\s*\{\/\* Content \*\/\}\s*\n\s*<div className="exp-content" role="main">/);
+});
