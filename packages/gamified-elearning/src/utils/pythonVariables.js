@@ -34,34 +34,43 @@ export function boxText(type, value) {
 }
 
 /**
- * Ask a running Python what the assigned names hold.
+ * The Python that reports what the assigned names hold, as one JSON string.
+ * Empty when the code assigns nothing. It is run after the child's code, in
+ * the same Python (in the worker: public/py-worker.js).
+ */
+export function variablesSource(code) {
+  const names = assignedNames(code);
+  if (!names.length) return '';
+  // A list comes back with its first few items as well, so the stage can
+  // lay it out as slots with their numbers under them.
+  return [
+    'import json as __codeit_json',
+    'def __codeit_show(v):',
+    '    return v if isinstance(v, str) else repr(v)',
+    'def __codeit_box(k):',
+    '    v = globals()[k]',
+    '    box = {"name": k, "type": type(v).__name__, "value": __codeit_show(v)}',
+    '    if isinstance(v, list):',
+    `        box["items"] = [[type(x).__name__, __codeit_show(x)] for x in v[:${SLOTS}]]`,
+    `        box["more"] = max(0, len(v) - ${SLOTS})`,
+    '    if isinstance(v, dict):',
+    `        box["items"] = [[type(x).__name__, __codeit_show(x)] for x in list(v.values())[:${SLOTS}]]`,
+    `        box["labels"] = [str(k) for k in list(v.keys())[:${SLOTS}]]`,
+    `        box["more"] = max(0, len(v) - ${SLOTS})`,
+    '    return box',
+    `__codeit_json.dumps([__codeit_box(k) for k in ${JSON.stringify(names)} if k in globals()])`,
+  ].join('\n');
+}
+
+/**
+ * The boxes for the stage, from what that Python answered.
  * Returns [{ name, type, text }]; an empty list if anything goes wrong, since
  * a shelf that cannot be read is an empty shelf, never an error for a child.
  */
-export function readVariables(py, code) {
-  const names = assignedNames(code);
-  if (!py || !names.length) return [];
+export function boxesFrom(json) {
+  if (!json) return [];
   try {
-    // A list comes back with its first few items as well, so the stage can
-    // lay it out as slots with their numbers under them.
-    const source = [
-      'import json as __codeit_json',
-      'def __codeit_show(v):',
-      '    return v if isinstance(v, str) else repr(v)',
-      'def __codeit_box(k):',
-      '    v = globals()[k]',
-      '    box = {"name": k, "type": type(v).__name__, "value": __codeit_show(v)}',
-      '    if isinstance(v, list):',
-      `        box["items"] = [[type(x).__name__, __codeit_show(x)] for x in v[:${SLOTS}]]`,
-      `        box["more"] = max(0, len(v) - ${SLOTS})`,
-      '    if isinstance(v, dict):',
-      `        box["items"] = [[type(x).__name__, __codeit_show(x)] for x in list(v.values())[:${SLOTS}]]`,
-      `        box["labels"] = [str(k) for k in list(v.keys())[:${SLOTS}]]`,
-      `        box["more"] = max(0, len(v) - ${SLOTS})`,
-      '    return box',
-      `__codeit_json.dumps([__codeit_box(k) for k in ${JSON.stringify(names)} if k in globals()])`,
-    ].join('\n');
-    const rows = JSON.parse(py.runPython(source));
+    const rows = JSON.parse(json);
     return rows.map((row) => {
       const box = { name: row.name, type: row.type, text: boxText(row.type, row.value) };
       if (Array.isArray(row.items)) { box.items = row.items.map(([type, value]) => boxText(type, value)); box.more = Number(row.more) || 0; }
@@ -69,6 +78,17 @@ export function readVariables(py, code) {
       if (Array.isArray(row.labels)) box.labels = row.labels.map(String);
       return box;
     });
+  } catch (e) {
+    return [];
+  }
+}
+
+/** Ask a Python that is on the page what the assigned names hold. */
+export function readVariables(py, code) {
+  const source = variablesSource(code);
+  if (!py || !source) return [];
+  try {
+    return boxesFrom(py.runPython(source));
   } catch (e) {
     return [];
   }

@@ -21,6 +21,23 @@ const fs = require('fs');
 const path = require('path');
 
 const { PAGES } = require('./generate-static-seo.js');
+const { loadWebsiteBuilderPage } = require('./content-loader');
+
+/**
+ * A component may take its h1 from a shared data file: <h1>{PAGE.h1}</h1>.
+ *
+ * /ai-website-builder-for-kids does, since 21 November 2026: its words are in
+ * src/data/websiteBuilderPage.js, which the generator reads too. The sentence
+ * a person sees is then the data file's, so that is what is compared with the
+ * sentence the crawler is served, and the component must really import the
+ * file it is said to read.
+ */
+const SHARED_WORDS = {
+  '/ai-website-builder-for-kids': {
+    imports: /from '\.\.\/\.\.\/data\/websiteBuilderPage'/,
+    h1: () => loadWebsiteBuilderPage()({ pricePerInterval: 'a price', freeBuilds: 1 }).h1,
+  },
+};
 
 const SEO_DIR = path.resolve(__dirname, '../src/pages/SEO');
 
@@ -47,8 +64,14 @@ test('every SEO page renders the same h1 the static generator writes', () => {
     const file = path.join(SEO_DIR, `${componentNameFor(page.route)}.js`);
     if (!fs.existsSync(file)) continue;
 
-    const rendered = h1Of(fs.readFileSync(file, 'utf8'));
+    const source = fs.readFileSync(file, 'utf8');
+    let rendered = h1Of(source);
     assert.ok(rendered, `${page.route}: the component has no h1 at all`);
+    const shared = SHARED_WORDS[page.route];
+    if (shared && /^\{\w+\.h1\}$/.test(rendered)) {
+      assert.match(source, shared.imports, `${page.route}: renders ${rendered} but does not import the shared words`);
+      rendered = shared.h1();
+    }
     assert.strictEqual(
       rendered,
       page.h1,

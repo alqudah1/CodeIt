@@ -1,4 +1,4 @@
-import { assignedNames, boxText, readVariables } from './pythonVariables';
+import { assignedNames, boxText, boxesFrom, readVariables, variablesSource } from './pythonVariables';
 
 test('the names a program assigns, in order, once each', () => {
   expect(assignedNames('name = "Alex"\nage = 10\nprint(name)\nage = 11')).toEqual(['name', 'age']);
@@ -46,4 +46,17 @@ test('a shelf that cannot be read is an empty shelf', () => {
   expect(readVariables({ runPython: () => { throw new Error('boom'); } }, 'a = 1')).toEqual([]);
   expect(readVariables(null, 'a = 1')).toEqual([]);
   expect(readVariables({ runPython: () => '[]' }, 'print("no names")')).toEqual([]);
+});
+
+// Python runs in a worker now, so the question and the answer travel apart.
+test('the question for the worker and the boxes from its answer', () => {
+  expect(variablesSource('print("no names")')).toBe('');
+  const source = variablesSource('name = "Sam"\nage = 9');
+  expect(source).toContain('__codeit_json.dumps([__codeit_box(k) for k in ["name","age"] if k in globals()])');
+  expect(boxesFrom(JSON.stringify([{ name: 'name', type: 'str', value: 'Sam' }, { name: 'age', type: 'int', value: '9' }]))).toEqual([
+    { name: 'name', type: 'str', text: '"Sam"' },
+    { name: 'age', type: 'int', text: '9' },
+  ]);
+  expect(boxesFrom('')).toEqual([]);
+  expect(boxesFrom('not json')).toEqual([]);
 });

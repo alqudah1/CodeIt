@@ -68,7 +68,9 @@ test('a Run pressed while Python is on its way is kept, and runs when Python lan
   // The first tap on the page is the Run button itself: the tap starts
   // Python, and the same tap is a Run. It must not be lost.
   let land;
-  const python = { runPythonAsync: jest.fn(() => { window.printOutput = 'Hello!'; return Promise.resolve(); }) };
+  // What the loader hands over is a handle with run(), not Pyodide itself:
+  // Python lives in a worker now (utils/pyodideLoader.js).
+  const python = { run: jest.fn(() => Promise.resolve({ output: 'Hello!\n', varsJson: '' })) };
   getPyodideRuntime.mockImplementation(() => new Promise((resolve) => { land = () => { window.pyodide = python; resolve(python); }; }));
   const heard = [];
   render(<CodeRunnerPython starterCode={'print("Hello!")'} onOutput={(out) => heard.push(out)} />);
@@ -77,10 +79,27 @@ test('a Run pressed while Python is on its way is kept, and runs when Python lan
   expect(run).not.toBeDisabled();                      // still pressable while Python starts
   act(() => { fireEvent.click(run); });
   act(() => { fireEvent.click(run); });                // an impatient second press does not queue a second run
-  expect(python.runPythonAsync).not.toHaveBeenCalled();
+  expect(python.run).not.toHaveBeenCalled();
   await act(async () => { land(); await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); });
-  expect(python.runPythonAsync).toHaveBeenCalledTimes(1);
-  expect(python.runPythonAsync).toHaveBeenCalledWith('print("Hello!")');
+  expect(python.run).toHaveBeenCalledTimes(1);
+  expect(python.run).toHaveBeenCalledWith('print("Hello!")', { varsSource: '' });
   expect(heard).toEqual(['Hello!']);
+  delete window.pyodide;
+});
+
+// 21 November 2026: `while True: pass` locked the tab, because the ten-second
+// timer shared a thread with the loop it was meant to stop.
+test('code stopped by the time limit says so, in words about loops, and the button comes back', async () => {
+  const limit = Object.assign(new Error('⏱ Stopped after 10 seconds. A loop that never ends does this. Check that something inside the loop changes, so the loop can finish.'), { timedOut: true });
+  const python = { run: jest.fn(() => Promise.reject(limit)) };
+  window.pyodide = python;
+  getPyodideRuntime.mockImplementation(() => Promise.resolve(python));
+  const heard = [];
+  render(<CodeRunnerPython starterCode={'while True:\n    pass'} onOutput={(out, code, info) => heard.push([out, info])} />);
+  const run = screen.getByTitle(/Python starts the first time you press Run|Run your Python code/);
+  await act(async () => { fireEvent.click(run); await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); });
+  expect(screen.getByText(/Stopped after 10 seconds\. A loop that never ends does this\./)).toBeInTheDocument();
+  expect(heard[0][1]).toEqual({ success: false, say: 'Your code ran for 10 seconds and was stopped. Is there a loop that never ends?' });
+  expect(run).not.toBeDisabled();
   delete window.pyodide;
 });

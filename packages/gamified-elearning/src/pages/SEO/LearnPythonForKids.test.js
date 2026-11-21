@@ -34,3 +34,25 @@ describe('free Python learning landing page', () => {
     expect(trackEvent).toHaveBeenCalledWith('learning_start', 'playground');
   });
 });
+
+// 21 November 2026: two claims on this page had no source, and one of them
+// was in the FAQ that search engines are given.
+describe('claims nobody could point to a source for', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const source = fs.readFileSync(path.join(__dirname, 'LearnPythonForKids.js'), 'utf8');
+  const code = source.split('\n').filter((line) => !line.trim().startsWith('//')).join('\n');
+
+  test('no ranking, no company names, no count of lines in other languages', () => {
+    expect(code).not.toMatch(/consistently ranked/i);
+    expect(code).not.toMatch(/best first programming language/i);
+    expect(code).not.toMatch(/NASA|YouTube|at Google/);
+    expect(code).not.toMatch(/used everywhere/i);
+    expect(code).not.toMatch(/ten\s+lines/i);
+  });
+
+  test('what it says instead can be stood behind', () => {
+    expect(code).toMatch(/Python reads close to English, so a child can focus on the idea rather than the punctuation\./);
+    expect(code).toMatch(/Adults use Python for real work in data, science and automation; it is not a toy/);
+  });
+});

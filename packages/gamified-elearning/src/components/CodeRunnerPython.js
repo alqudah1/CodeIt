@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PlainEditor from './PlainEditor';
 import { editorNow, fetchEditor } from './editorLoader';
 import { getPyodideRuntime } from '../utils/pyodideLoader';
-import { readVariables } from '../utils/pythonVariables';
+import { boxesFrom, variablesSource } from '../utils/pythonVariables';
 import { errorOutput, explainPythonError } from '../utils/pythonErrors';
 import { trackActivityStart } from '../utils/activity';
 import Icon from './Icon/Icon';
@@ -223,18 +223,17 @@ const CodeRunnerPython = ({
     setFailed(false);
 
     try {
-      window.printOutput = '';
-      const timeout = new Promise((_, rej) =>
-        setTimeout(() => rej(new Error('⏱ Execution timed out (10 s limit)')), 10_000)
-      );
-      await Promise.race([window.pyodide.runPythonAsync(code), timeout]);
+      // Python runs in a worker (utils/pyodideLoader.js), so the time limit
+      // is one that works: an endless loop is stopped, and the page stays
+      // usable while it runs.
+      const ran = await window.pyodide.run(code, { varsSource: watchVariables ? variablesSource(code) : '' });
 
-      const result = (window.printOutput || '').trimEnd();
+      const result = (ran.output || '').trimEnd();
       if (mountedRef.current) setOutput(result || '(no output)');
       // The student's code goes with the output: a lesson step needs to check
       // that the idea it taught is actually in there, not just that something
       // printed. Second argument, so existing callers keep working unchanged.
-      if (onOutput) onOutput(result || '', code, watchVariables ? { success: true, vars: readVariables(window.pyodide, code) } : { success: true });
+      if (onOutput) onOutput(result || '', code, watchVariables ? { success: true, vars: boxesFrom(ran.varsJson) } : { success: true });
     } catch (err) {
       const raw = err.message || 'An error occurred';
       // The sentence a child can act on, then Python's own last line. The
@@ -242,7 +241,10 @@ const CodeRunnerPython = ({
       // stage can say it.
       const msg = errorOutput(raw);
       if (mountedRef.current) { setOutput(msg); setFailed(true); }
-      if (onOutput) onOutput(msg, code, { success: false, say: explainPythonError(raw).say });
+      const say = err.timedOut
+        ? 'Your code ran for 10 seconds and was stopped. Is there a loop that never ends?'
+        : explainPythonError(raw).say;
+      if (onOutput) onOutput(msg, code, { success: false, say });
     } finally {
       if (mountedRef.current) setRunning(false);
       if (onBusy) onBusy(false);

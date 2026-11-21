@@ -3,43 +3,27 @@ import Header from '../Header/Header';
 import SiteFooter from '../../components/SiteFooter/SiteFooter';
 import { useSEO } from '../../hooks/useSEO';
 import { useFAQSchema } from '../../hooks/useFAQSchema';
+import { FREE_MONTHLY_AI_BUILDS, PRICE_PER_INTERVAL } from '../../config/pricing';
+import websiteBuilderPage from '../../data/websiteBuilderPage';
 import './SEOPage.css';
 
-const FAQS = [
-  {
-    q: 'What is an AI website builder for kids?',
-    a: 'It is a project tool that helps a young creator turn a plain-language idea into a working website or interactive project. CodeIt keeps the result editable and shows the HTML, CSS, and JavaScript so the learner can understand and change it.',
-  },
-  {
-    q: 'Does CodeIt only generate a finished website?',
-    a: 'No. The first version is a starting point. A learner can change the words, colors, layout, and behavior, inspect the code, save the project, and keep improving it.',
-  },
-  {
-    q: 'What ages can use the CodeIt studio?',
-    a: 'Parents and legal guardians can create private managed profiles for learners under 13, which CodeIt supports from age 5. Independent learner accounts are for ages 13 and up. Anyone can try the studio without creating an account.',
-  },
-  {
-    q: 'Can a child publish a website publicly?',
-    a: 'Managed profiles stay private and cannot publish. Eligible independent accounts save privately by default and must choose Publish before a project receives a public link.',
-  },
-  {
-    q: 'Is the AI website builder free?',
-    a: 'The studio has a free experience. Enhanced AI generation depends on current service availability, and CodeIt also keeps starter projects available so visitors can try the make-edit-learn workflow.',
-  },
-];
-
-const STEPS = [
-  ['1', 'Describe an idea', 'Start with a fan page, portfolio, quiz, game, or school project in ordinary words.'],
-  ['2', 'Open a working version', 'Play with the result immediately instead of setting up files or installing software.'],
-  ['3', 'Make it personal', 'Change the content, colors, layout, and rules so the result no longer feels like a template.'],
-  ['4', 'Learn from the code', 'Inspect and edit the HTML, CSS, and JavaScript that make the project work.'],
-];
+// The words are in src/data/websiteBuilderPage.js, and the crawlable copy the
+// static generator writes is made from the same file. This page used to keep
+// its own: its own five questions, its own four steps, and an answer to "Is
+// it free?" that said generation "depends on current service availability".
+// Two copies had drifted until the page a search engine read and the page a
+// parent read said different things. There is one now, and the price and the
+// free allowance in it come from config/pricing.js.
+const PAGE = websiteBuilderPage({
+  pricePerInterval: PRICE_PER_INTERVAL,
+  freeBuilds: FREE_MONTHLY_AI_BUILDS,
+});
 
 export default function AIWebsiteBuilderForKids() {
   useSEO({
     canonical: '/ai-website-builder-for-kids',
   });
-  useFAQSchema(FAQS);
+  useFAQSchema(PAGE.faqs);
 
   return (
     <>
@@ -49,103 +33,26 @@ export default function AIWebsiteBuilderForKids() {
           <Link to="/" className="seo-back">&larr; Back to Home</Link>
 
           <header className="seo-hero">
-            <span className="seo-eyebrow">Creative coding, built for ages 8 to 14</span>
-            <h1 className="seo-h1">An AI website builder for kids that teaches the code.</h1>
-            <p className="seo-hero-desc">
-              CodeIt helps a young creator turn an idea into a website, game, or quiz, then change
-              the design, inspect the real code, and understand how the project works.
-            </p>
+            <span className="seo-eyebrow">{PAGE.eyebrow}</span>
+            <h1 className="seo-h1">{PAGE.h1}</h1>
+            <p className="seo-hero-desc">{PAGE.intro}</p>
             <Link to="/builder" className="seo-cta-btn">Build a free project →</Link>
           </header>
 
           <article className="seo-body">
-            <section className="seo-section">
-              <h2 className="seo-h2">The first version is the beginning, not the answer.</h2>
-              <p className="seo-p">
-                A general AI website generator can make something quickly and stop there. CodeIt
-                uses that fast result as a reason to learn. The project remains editable, so a
-                learner can test an idea, notice what feels generic, and make deliberate changes.
-              </p>
-              <div className="seo-highlight">
-                <p>CodeIt's learning loop is simple: make it, edit it, understand it, and improve it.</p>
-              </div>
-            </section>
-
-            <section className="seo-section">
-              <h2 className="seo-h2">How a learner builds a website with CodeIt</h2>
-              <ol className="seo-steps" aria-label="How CodeIt works">
-                {STEPS.map(([number, title, body]) => (
-                  <li key={number}>
-                    <span>{number}</span>
-                    <div>
-                      <h3>{title}</h3>
-                      <p>{body}</p>
-                    </div>
-                  </li>
+            {PAGE.sections.map((section) => (
+              <section className="seo-section" key={section.heading}>
+                <h2 className="seo-h2">{section.heading}</h2>
+                {section.paragraphs.map((paragraph) => (
+                  <p className="seo-p" key={paragraph}>{paragraph}</p>
                 ))}
-              </ol>
-            </section>
-
-            <section className="seo-section">
-              <h2 className="seo-h2">What kids can create</h2>
-              <ul className="seo-list">
-                <li><strong>Personal websites:</strong> portfolios, fan pages, club pages, and about-me sites.</li>
-                <li><strong>School projects:</strong> interactive science, history, or book-report pages.</li>
-                <li><strong>Quizzes:</strong> questions, scoring, feedback, and themed results.</li>
-                <li><strong>Small games:</strong> reaction challenges, click targets, and word games.</li>
-              </ul>
-              <p className="seo-p">
-                Visitors can also open selected examples in the <Link to="/explore">CodeIt project
-                gallery</Link> and remix a copy into a different idea.
-              </p>
-            </section>
-
-            <section className="seo-section">
-              <h2 className="seo-h2">What they actually learn</h2>
-              <p className="seo-p">
-                The studio connects visible changes to real web code. HTML gives the page its
-                content and structure. CSS controls the visual design. JavaScript adds decisions,
-                scoring, movement, and other behavior. Learners can compare the preview with the
-                code instead of treating AI like a hidden magic box.
-              </p>
-              <p className="seo-p">
-                When they want a more structured path, CodeIt also includes{' '}
-                <Link to="/lessons">beginner coding lessons</Link>, a{' '}
-                <Link to="/playground">browser Python playground</Link>, and a guided{' '}
-                <Link to="/journey">learning journey</Link>.
-              </p>
-            </section>
-
-            <section className="seo-section">
-              <h2 className="seo-h2">Private by default, with clear age rules</h2>
-              <p className="seo-p">
-                Anyone can try the studio without an account. Parents and legal guardians can
-                create private managed profiles for learners under 13, from age 5. Those profiles cannot
-                publish projects publicly. Independent student accounts begin at age 13, and saved
-                projects remain private unless an eligible owner deliberately chooses Publish.
-              </p>
-              <p className="seo-p">
-                Read the <Link to="/privacy">CodeIt Privacy &amp; Safety notice</Link> or the{' '}
-                <Link to="/coding-for-kids">parent guide to coding for kids</Link> for the complete
-                account and family-control explanation.
-              </p>
-            </section>
-
-            <section className="seo-section">
-              <h2 className="seo-h2">What is available right now</h2>
-              <p className="seo-p">
-                The studio, editable previews, code view, starter projects, saving, and
-                eligible publishing are part of the current product. Enhanced AI generation works
-                when CodeIt's AI service has available credit. Starter mode keeps the core
-                make-edit-learn demonstration available when enhanced generation is temporarily
-                unavailable.
-              </p>
-            </section>
+              </section>
+            ))}
 
             <section className="seo-section">
               <h2 className="seo-h2">Questions parents and educators ask</h2>
               <div className="seo-faq" itemScope itemType="https://schema.org/FAQPage">
-                {FAQS.map(({ q, a }) => (
+                {PAGE.faqs.map(({ q, a }) => (
                   <article
                     className="seo-faq__item"
                     key={q}
@@ -175,6 +82,9 @@ export default function AIWebsiteBuilderForKids() {
               <Link to="/coding-for-kids" className="seo-related__link">Coding for Kids</Link>
               <Link to="/learn-python-for-kids" className="seo-related__link">Learn Python for Kids</Link>
               <Link to="/explore" className="seo-related__link">Project Gallery</Link>
+              <Link to="/lessons" className="seo-related__link">Python lessons</Link>
+              <Link to="/playground" className="seo-related__link">Python playground</Link>
+              <Link to="/privacy" className="seo-related__link">Privacy &amp; Safety</Link>
               <Link to="/pricing" className="seo-related__link">Pricing</Link>
               <Link to="/guide/ai-builder-you-can-edit" className="seo-related__link">Guide: AI builders you can edit</Link>
               <Link to="/guide/what-did-my-kid-learn" className="seo-related__link">Guide: What did my kid actually learn?</Link>

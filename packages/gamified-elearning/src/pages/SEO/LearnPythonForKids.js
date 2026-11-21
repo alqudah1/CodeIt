@@ -9,7 +9,12 @@ import './SEOPage.css';
 const FAQS = [
   {
     q: 'Is Python a good language for kids to learn?',
-    a: 'Yes. Python is consistently ranked the best first programming language for beginners and kids. It uses simple, English-like syntax with no unnecessary punctuation, so kids can focus on thinking like a programmer rather than fighting the language. Python is also used professionally at companies like Google, NASA, and YouTube, so skills learned now remain valuable long-term.',
+    // This said Python is "consistently ranked the best first programming
+    // language" and named three companies that use it. Nobody here could
+    // point to the ranking or the source for the companies, and this answer
+    // is also given to search engines as the page's FAQ. It now says only
+    // what can be stood behind (21 November 2026).
+    a: 'Yes. Python reads close to English, so a child can focus on the idea rather than the punctuation. Adults use Python for real work in data, science and automation; it is not a toy language, so what a child learns in it stays useful.',
   },
   {
     // This answered "what ages" with 5 to 12 and never said 8 to 14, which is
@@ -165,13 +170,12 @@ export default function LearnPythonForKids() {
                 <p>print("Hello, World!")</p>
               </div>
               <p className="seo-p">
-                That's it. One line. Compare that to C++ or Java, where the same thing takes ten
-                lines of boilerplate. Python's simplicity means kids get to the fun part faster.
+                That's it. One line. In Java or C++ the same program needs several more lines
+                around it before it will run. In Python a child gets to the idea sooner.
               </p>
               <p className="seo-p">
-                Python is also used everywhere: at Google, NASA, YouTube, and in data science and
-                machine learning. Learning Python today opens real doors tomorrow. But right now,
-                the most important thing is that it's fun to learn.
+                Adults use Python for real work in data, science and automation; it is not a toy
+                language. But right now, the most important thing is that it's fun to learn.
               </p>
             </section>
 
