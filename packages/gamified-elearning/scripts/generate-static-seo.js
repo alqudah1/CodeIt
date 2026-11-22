@@ -844,7 +844,9 @@ function pricingSections() {
       heading: `The paid family plan: ${PRICING.PRICE_PER_INTERVAL}`,
       paragraphs: [
         `The family plan costs ${PRICING.PRICE_PER_INTERVAL} in ${PRICING.CURRENCY} and can be cancelled at any time. Tax is shown before card details are entered.`,
-        'It adds guided setup, more assisted project building, learner profiles, parent visibility, and a direct feedback channel.',
+        // This said Plus adds "guided setup" and "a direct feedback channel",
+        // which are from the pilot. What Plus adds is what the Terms say.
+        'It adds as many AI-built projects and changes as you want instead of ten a month, and up to four learner profiles on one adult account instead of one.',
         'The free plan does not expire and no card is needed to use it. Nothing starts charging on its own: a subscription begins only when someone chooses to start one.',
       ],
     },
@@ -1368,6 +1370,15 @@ const SECTIONS_BY_ROUTE = {
       heading: 'What CodeIt collects',
       paragraphs: [
         'CodeIt collects the information needed to run accounts, save learning progress, and build projects. It does not sell personal information and does not run behavioural advertising.',
+      ],
+    },
+    {
+      // Class accounts were only described on /schools, so a parent reading
+      // the privacy page could not find out what a class holds about a child.
+      heading: 'Children in a class',
+      paragraphs: [
+        'A child who joins a teacher\'s class gives a first name and nothing else. The class account holds no email address, no parent\'s email address, no date of birth and no surname.',
+        'Work published in a class appears on the class projector and is kept out of the public gallery. The teacher can remove a child from the class, which deletes that child\'s class account and everything saved in it.',
       ],
     },
     {
