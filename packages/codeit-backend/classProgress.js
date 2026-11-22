@@ -111,4 +111,45 @@ function lessonsForChild(doneRows = [], stepRows = [], quizRows = [], titles = n
   };
 }
 
-module.exports = { FIRST_LESSON, LAST_LESSON, NOTHING, lessonsByChild, lessonsForChild };
+/**
+ * The furthest step each child has done in each lesson, read so that one
+ * thing wrong with one table does not take the whole lessons section with it.
+ *
+ * 22 November 2026: a teacher's page for a pupil said "The Python lessons
+ * could not be read just now" every time it was opened, on the live site, for
+ * a class that had been doing the lessons. On a database built from this
+ * repository's own files the same page reads them, so the live database
+ * differs from those files somewhere, and from here it cannot be seen where.
+ * Of the four tables this section reads, three are read the same way by
+ * pages that work on the live site. The fourth is lesson_step_xp, and nothing
+ * else reads its time column: everything else only adds rows to it or sums
+ * them. So that is asked for first, then done without, and if the table
+ * cannot be read at all the page still shows the lessons a child finished.
+ *
+ * `query` is pool.query. Returns rows of { user_id, lesson_id, furthest, at }.
+ * Each failure is said in the server log with the database's own words, so
+ * the next person does not have to guess.
+ */
+async function stepRowsFor(query, ids, log = console.error) {
+  if (!ids || !ids.length) return [];
+  const marks = ids.map(() => '?').join(',');
+  const from = `FROM lesson_step_xp
+      WHERE user_id IN (${marks}) AND lesson_id >= ? AND lesson_id <= ?
+      GROUP BY user_id, lesson_id`;
+  const values = [...ids, FIRST_LESSON, LAST_LESSON];
+  try {
+    const [rows] = await query(`SELECT user_id, lesson_id, MAX(step_index) AS furthest, MAX(completed_at) AS last_step_at ${from}`, values);
+    return rows.map((row) => ({ user_id: row.user_id, lesson_id: row.lesson_id, furthest: row.furthest, at: row.last_step_at }));
+  } catch (err) {
+    log(`class lessons: the steps could not be read with their times (${err.message}). Reading them without.`);
+  }
+  try {
+    const [rows] = await query(`SELECT user_id, lesson_id, MAX(step_index) AS furthest ${from}`, values);
+    return rows.map((row) => ({ user_id: row.user_id, lesson_id: row.lesson_id, furthest: row.furthest, at: null }));
+  } catch (err) {
+    log(`class lessons: the steps could not be read at all (${err.message}). Showing finished lessons only.`);
+    return [];
+  }
+}
+
+module.exports = { FIRST_LESSON, LAST_LESSON, NOTHING, lessonsByChild, lessonsForChild, stepRowsFor };

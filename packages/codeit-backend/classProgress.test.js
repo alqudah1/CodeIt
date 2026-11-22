@@ -76,3 +76,52 @@ test('a row with no time on it is still a finished lesson, with no date invented
   const page = lessonsForChild([{ lesson_id: 1, completed_at: null }], [], [], TITLES);
   assert.deepEqual(page.finished, [{ id: 1, title: 'Hello Python!', completedAt: null }]);
 });
+
+// 22 November 2026: on the live site a teacher's page for a pupil said "The
+// Python lessons could not be read just now" every time. The one table this
+// section reads that nothing else reads the same way is lesson_step_xp.
+const { stepRowsFor } = require('./classProgress');
+
+test('the steps are read with their times when the table has them', async () => {
+  const asked = [];
+  const query = async (sql, values) => { asked.push([sql, values]); return [[{ user_id: 7, lesson_id: 2, furthest: 3, last_step_at: '2026-11-20T10:00:00Z' }]]; };
+  const rows = await stepRowsFor(query, [7, 8], () => {});
+  assert.deepEqual(rows, [{ user_id: 7, lesson_id: 2, furthest: 3, at: '2026-11-20T10:00:00Z' }]);
+  assert.equal(asked.length, 1);
+  assert.match(asked[0][0], /MAX\(completed_at\) AS last_step_at/);
+  assert.deepEqual(asked[0][1], [7, 8, 1, 100]);
+});
+
+test('if the times cannot be read the steps are read without them, and the log says why', async () => {
+  const said = [];
+  const query = async (sql) => {
+    if (/completed_at/.test(sql)) throw new Error('column "completed_at" does not exist');
+    return [[{ user_id: 7, lesson_id: 2, furthest: 3 }]];
+  };
+  const rows = await stepRowsFor(query, [7], (line) => said.push(line));
+  assert.deepEqual(rows, [{ user_id: 7, lesson_id: 2, furthest: 3, at: null }]);
+  assert.equal(said.length, 1);
+  assert.match(said[0], /could not be read with their times \(column "completed_at" does not exist\)/);
+  // And what is made of them still names the lesson and the step, with no time.
+  const made = lessonsForChild([], rows, [], new Map([[2, 'Variables']]));
+  assert.deepEqual(made.now, { id: 2, title: 'Variables', step: 4, at: null });
+});
+
+test('if the table cannot be read at all there are no steps, not no lessons', async () => {
+  const said = [];
+  const query = async () => { throw new Error('relation "lesson_step_xp" does not exist'); };
+  const rows = await stepRowsFor(query, [7], (line) => said.push(line));
+  assert.deepEqual(rows, []);
+  assert.equal(said.length, 2);
+  assert.match(said[1], /could not be read at all \(relation "lesson_step_xp" does not exist\)/);
+  // A finished lesson is still shown.
+  const made = lessonsForChild([{ user_id: 7, lesson_id: 1, completed_at: '2026-11-20T10:00:00Z' }], rows, [], new Map([[1, 'Hello Python!']]));
+  assert.equal(made.finished.length, 1);
+  assert.equal(made.now, null);
+});
+
+test('nobody to ask about means nothing is asked', async () => {
+  let asked = 0;
+  assert.deepEqual(await stepRowsFor(async () => { asked += 1; return [[]]; }, [], () => {}), []);
+  assert.equal(asked, 0);
+});

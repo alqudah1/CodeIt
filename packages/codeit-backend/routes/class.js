@@ -29,7 +29,7 @@ const { cleanClassName, cleanFirstName, isCode, makeCode, normaliseCode, student
 const { LESSON_BASE, POWERS, powerByLessonId, powerStates } = require('../powers');
 const { eraseLearner } = require('./../learnerErasure');
 const { isClassAccountRow } = require('../classAccounts');
-const { FIRST_LESSON, LAST_LESSON, NOTHING, lessonsByChild, lessonsForChild } = require('../classProgress');
+const { FIRST_LESSON, LAST_LESSON, NOTHING, lessonsByChild, lessonsForChild, stepRowsFor } = require('../classProgress');
 
 const router = express.Router();
 
@@ -101,12 +101,9 @@ async function lessonRowsFor(ids) {
       WHERE user_id IN (${marks}) AND lesson_id >= ? AND lesson_id <= ?`,
     [...ids, FIRST_LESSON, LAST_LESSON]
   );
-  const [steps] = await pool.query(
-    `SELECT user_id, lesson_id, MAX(step_index) AS furthest, MAX(completed_at) AS at FROM lesson_step_xp
-      WHERE user_id IN (${marks}) AND lesson_id >= ? AND lesson_id <= ?
-      GROUP BY user_id, lesson_id`,
-    [...ids, FIRST_LESSON, LAST_LESSON]
-  );
+  // The steps are read apart from the finished lessons, and carefully: see
+  // stepRowsFor in classProgress.js for why.
+  const steps = await stepRowsFor((sql, values) => pool.query(sql, values), ids);
   return { done, steps };
 }
 
@@ -242,10 +239,17 @@ router.get('/:code/student/:id', requireAuth, async (req, res) => {
     try {
       const titles = await lessonTitles();
       const rows = await lessonRowsFor([studentId]);
-      const [quizRows] = await pool.query(
-        'SELECT quiz_id, correct_count, total_questions, completed_at FROM Student_Quiz_Attempt WHERE student_id = ? ORDER BY completed_at ASC',
-        [studentId]
-      );
+      // The quizzes on their own as well: a teacher who cannot be shown the
+      // quizzes can still be shown the lessons.
+      let quizRows = [];
+      try {
+        [quizRows] = await pool.query(
+          'SELECT quiz_id, correct_count, total_questions, completed_at FROM Student_Quiz_Attempt WHERE student_id = ? ORDER BY completed_at ASC',
+          [studentId]
+        );
+      } catch (err) {
+        console.error(`class/student lessons: the quizzes could not be read (${err.message}). Showing the lessons without them.`);
+      }
       lessons = { total: titles.size, ...lessonsForChild(rows.done, rows.steps, quizRows, titles) };
     } catch (err) {
       console.error('class/student lessons:', err.message);

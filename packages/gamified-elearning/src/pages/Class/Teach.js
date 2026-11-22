@@ -436,7 +436,7 @@ function Board({ code, token }) {
               </span>
               {m.newest && <span className="cl__tilenew">{m.newest.title}<small>{ago(m.newest.createdAt)}{opens ? ' · open' : playable ? ' · play' : ''}</small></span>}
               {showLessons && m.lessons?.now && (
-                <span className="cl__tilenew cl__tilelesson">On {lessonName(m.lessons.now)}<small>step {m.lessons.now.step} · {ago(m.lessons.now.at)}</small></span>
+                <span className="cl__tilenew cl__tilelesson">On {lessonName(m.lessons.now)}<small>step {m.lessons.now.step}{m.lessons.now.at ? ` · ${ago(m.lessons.now.at)}` : ''}</small></span>
               )}
               {showLessons && !m.lessons?.now && m.lessons?.lastLessonAt && (
                 <span className="cl__tilenew cl__tilelesson">Last lesson finished<small>{ago(m.lessons.lastLessonAt)}</small></span>
@@ -445,6 +445,19 @@ function Board({ code, token }) {
           );
         })}
         </div>
+      {/* How a pupil gets back in. A head of computing asked (22 November
+          2026): "How do they login to their account again as they don't have
+          a password? It seems to use cookies." It does not: the same code and
+          the same first name is the way in, on any computer. That was true
+          and written on /schools, and nowhere a teacher looks during a
+          lesson. Shown to the teacher who made the class, not on the
+          projector. */}
+      {members.length > 0 && !stage && !projector && board?.owner && (
+        <p className="cl__back">
+          <b>Getting back in, on any computer:</b> <strong>{SITE}/join</strong>, the code <strong>{spaceCode(code)}</strong>, and the same first name as before. No password. Their games and lessons are there.
+          {' '}Two pupils with the same first name need different ones here, like Thomas B and Thomas W.
+        </p>
+      )}
       {members.length === 0 && !stage && (
         <div className="ci-blk ci-blk--sun cl__how ci-rise">
           <div className="ci-ey">How to join</div>
@@ -453,7 +466,7 @@ function Board({ code, token }) {
             <li><b>2</b><span>Type <strong>{spaceCode(code)}</strong></span></li>
             <li><b>3</b><span>Type your first name</span></li>
           </ol>
-          <p className="cl__howfine">Tiles appear here as they join. Nothing to install, no email, no password.</p>
+          <p className="cl__howfine">Tiles appear here as they join. Nothing to install, no email, no password. To come back another day, on any computer, a pupil types the same code and the same first name.</p>
         </div>
       )}
     </div>
@@ -590,7 +603,9 @@ function Student({ code, kid, token }) {
           {!lessons && <p className="ci-sub">The Python lessons could not be read just now. Open this page again in a moment.</p>}
           {lessons && lessons.now && (
             <p className="ci-blk ci-blk--sun st__now">
-              <b>Working on {lessonName(lessons.now)}.</b> Up to step {lessons.now.step}, {ago(lessons.now.at)}.
+              {/* When is left out if it is not known (the steps were read
+                  without their times): never "20,000 days ago". */}
+              <b>Working on {lessonName(lessons.now)}.</b> Up to step {lessons.now.step}{lessons.now.at ? `, ${ago(lessons.now.at)}` : ''}.
             </p>
           )}
           {lessons && !startedPython && (

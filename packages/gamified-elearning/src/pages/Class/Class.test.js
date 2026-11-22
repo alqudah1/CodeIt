@@ -132,7 +132,8 @@ test('the board shows the code big, every child, and plays a published game on t
     return Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({}) });
   });
   mount(<Teach />, { user: { name: 'Mr Q' }, token: 't', login });
-  expect(await screen.findByText('ROCKET 42')).toBeInTheDocument();
+  // The code is on the board big, and once more in the teacher's line about getting back in.
+  expect(await screen.findByLabelText('Class code ROCKET42')).toHaveTextContent('ROCKET 42');
   expect(screen.getByText('Maya')).toBeInTheDocument();
   expect(screen.getByText('2 games')).toBeInTheDocument();
   expect(screen.getByText('Joined')).toBeInTheDocument();
@@ -347,5 +348,76 @@ describe('a teacher deletes a child', () => {
     mount(<Teach />, { user: { name: 'Mr Q' }, token: 't', login });
     await screen.findAllByText(/ROCKET/);
     expect(screen.queryByRole('button', { name: /Delete/ })).toBeNull();
+  });
+});
+
+// ── Getting back in (a head of computing asked, 22 November 2026) ────────────
+// "How do they login to their account again as they don't have a password? It
+// seems to use cookies." It does not: the same code and the same first name is
+// the way in on any computer. That was true, and said nowhere a teacher or a
+// pupil would see it during a lesson.
+describe('a pupil getting back in on another computer', () => {
+  const boardWith = (extra = {}) => {
+    mockParams = { code: 'rocket42' };
+    global.fetch = jest.fn((url) => {
+      if (String(url).endsWith('/api/class/ROCKET42')) {
+        return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ready: true, owner: true, class: { code: 'ROCKET42', name: 'Year 9' }, members: [
+          { id: 1, name: 'Thomas', games: 1, plays: 0, joinedAt: new Date(Date.now() - 4 * 86400000).toISOString(), newest: null },
+        ], ...extra }) });
+      }
+      return Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({}) });
+    });
+  };
+
+  test('the join page tells a pupil the same code and name bring their work back, on any computer', () => {
+    mount(<Join />);
+    expect(screen.getByText(/Been here before\?/)).toBeInTheDocument();
+    expect(screen.getByText(/Type the same code and the same first name, on any computer, and your games and lessons are there\./)).toBeInTheDocument();
+  });
+
+  test('on a shared computer, "Not you?" signs the last pupil out here and asks for a name', () => {
+    const logout = jest.fn();
+    mount(<Join />, { user: { name: 'Sam' }, token: 't', login, logout });
+    fireEvent.click(screen.getByRole('button', { name: 'Not you? Join as yourself' }));
+    expect(logout).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).not.toHaveBeenCalledWith('/profile');
+  });
+
+  test('the teacher\'s board says how, with the address, the code, and what to do about two pupils with one name', async () => {
+    boardWith();
+    mount(<Teach />, { user: { name: 'Mr F' }, token: 't', login });
+    expect(await screen.findByText('Thomas')).toBeInTheDocument();
+    const line = screen.getByText('Getting back in, on any computer:').closest('p');
+    expect(line).toHaveTextContent('codeitlearn.com/join');
+    expect(line).toHaveTextContent('ROCKET 42');
+    expect(line).toHaveTextContent('the same first name as before. No password.');
+    expect(line).toHaveTextContent('Two pupils with the same first name need different ones here, like Thomas B and Thomas W.');
+  });
+
+  test('it is for the teacher: not on the projector, and not for anyone who did not make the class', async () => {
+    boardWith();
+    mount(<Teach />, { user: { name: 'Mr F' }, token: 't', login });
+    await screen.findByText('Thomas');
+    fireEvent.click(screen.getByRole('button', { name: 'Projector' }));
+    expect(screen.queryByText('Getting back in, on any computer:')).toBeNull();
+    boardWith({ owner: false });
+    const other = mount(<Teach />, { user: { name: 'Someone' }, token: 't', login });
+    await other.findAllByText('Thomas');
+    expect(other.queryByText('Getting back in, on any computer:')).toBeNull();
+  });
+
+  test('a step read without its time is shown without one, never as thousands of days ago', async () => {
+    mockParams = { code: 'rocket42', kid: '1' };
+    global.fetch = jest.fn((url) => {
+      if (String(url).endsWith('/api/class/ROCKET42/student/1')) {
+        return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ ready: true, class: { code: 'ROCKET42', name: 'Year 9' }, student: { id: 1, name: 'Thomas', joinedAt: new Date().toISOString() }, games: [], newestCode: null, done: [], powers: [],
+          lessons: { total: 31, finished: [], now: { id: 2, title: 'Storing Info with Variables', step: 4, at: null }, quizzes: [] } }) });
+      }
+      return Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({}) });
+    });
+    mount(<Teach />, { user: { name: 'Mr F' }, token: 't', login });
+    const now = (await screen.findByText(/Working on/)).closest('p');
+    expect(now).toHaveTextContent('Up to step 4.');
+    expect(now).not.toHaveTextContent(/d ago/);
   });
 });

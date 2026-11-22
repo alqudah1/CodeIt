@@ -25,7 +25,7 @@ export function tidyCode(raw) {
 
 export default function Join() {
   useSEO({ canonical: '/join', title: 'Join your class | CodeIt', description: 'Type the class code from the board and your first name.', robots: 'noindex,nofollow' });
-  const { user, token, login } = useContext(AuthContext);
+  const { user, token, login, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const preset = new URLSearchParams(location.search || '').get('code');
@@ -91,7 +91,11 @@ export default function Join() {
             />
           </label>
           {user ? (
-            <p className="ci-sub cl__as">You will join as <b>{user.name}</b>. <button type="button" className="cl__link" onClick={() => navigate('/profile')}>Not you?</button></p>
+            // A school computer is shared. The last pupil to sit here may
+            // still be signed in, and "Not you?" used to lead to their
+            // profile page, three steps from being someone else. It signs
+            // them out here and asks for a name.
+            <p className="ci-sub cl__as">You will join as <b>{user.name}</b>. <button type="button" className="cl__link" onClick={() => { if (logout) logout(); else navigate('/profile'); setTimeout(() => nameRef.current?.focus(), 50); }}>Not you? Join as yourself</button></p>
           ) : (
             <label className="cl__field">
               <span>Your first name</span>
@@ -109,6 +113,7 @@ export default function Join() {
           {error && <p className="cl__err" role="alert">{error}</p>}
           <button type="submit" className="ci-btn ci-btn--ink ci-btn--block" disabled={!ready || busy}>{busy ? 'Joining' : 'Join'}</button>
           {!user && <p className="cl__fine">No email, no password. Your teacher made the class, and your games save on this name.</p>}
+          {!user && <p className="cl__fine"><b>Been here before?</b> Type the same code and the same first name, on any computer, and your games and lessons are there.</p>}
           <p className="cl__fine">Teaching? <Link to="/teach">Make a class</Link>.</p>
         </form>
       </main>
