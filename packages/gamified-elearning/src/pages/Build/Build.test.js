@@ -27,6 +27,9 @@ const SENTENCE = 'I want a ship game were you shoot at enemy ships with the butt
 
 beforeEach(() => {
   localStorage.clear();
+  // The build screen remembers itself for the tab (Back from the studio). Each
+  // test is a new tab.
+  sessionStorage.clear();
   mockNavigate.mockClear();
   window.HTMLMediaElement.prototype.play = () => Promise.resolve();
 });
@@ -264,5 +267,90 @@ test('on a phone the built game is brought onto the screen; on a wide screen not
     window.innerWidth = realWidth;
     Element.prototype.getBoundingClientRect = realRect;
     window.scrollTo = realScrollTo;
+  }
+});
+
+// ── Never lose a game (an outside audit, 20 November 2026) ──────────────────
+const shelfNow = () => JSON.parse(localStorage.getItem('codeit.shelf.v1') || '[]');
+const buildIt = async (sentence, marker) => {
+  fireEvent.change(screen.getByLabelText('Describe the game you want to play'), { target: { value: sentence } });
+  fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
+  await waitFor(() => expect(frameDoc()).toContain(marker), { timeout: 5000 });
+  await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
+};
+
+test('a game is on the shelf as soon as it is built, with nothing published and no code opened', async () => {
+  global.fetch = jest.fn(() => Promise.reject(new Error('offline')));
+  render(<Build />);
+  expect(shelfNow()).toHaveLength(0);
+  await buildIt('a bunny that catches carrots at night', "let gameKind   = 'catch';");
+  const shelf = shelfNow();
+  expect(shelf).toHaveLength(1);
+  expect(shelf[0].prompt).toBe('a bunny that catches carrots at night');
+  expect(shelf[0].code).toContain("let treasure   = 'carrot';");
+});
+
+test('a game nobody touched gives its place to the next one; a game somebody changed keeps its own', async () => {
+  global.fetch = jest.fn(() => Promise.reject(new Error('offline')));
+  render(<Build />);
+  await buildIt('a bunny that catches carrots at night', "let gameKind   = 'catch';");
+  await buildIt('dodge the bombs in space', "let gameKind   = 'dodge';");
+  // Two sentences tried, one place used: the shelf holds eight, and ten ideas
+  // tried in a row must not push out eight things a child cared about.
+  expect(shelfNow()).toHaveLength(1);
+  expect(shelfNow()[0].prompt).toBe('dodge the bombs in space');
+  // The child turns a knob: this game is theirs now, and it is the same game.
+  fireEvent.click(screen.getByRole('button', { name: /Lives: 3/ }));
+  await waitFor(() => expect(frameDoc()).toContain('let startLives = 5;'));
+  await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
+  expect(shelfNow()).toHaveLength(1);
+  expect(shelfNow()[0].code).toContain('let startLives = 5;');
+  // The next sentence gets a place of its own beside it.
+  await buildIt('a bunny that catches carrots at night', "let gameKind   = 'catch';");
+  const shelf = shelfNow();
+  expect(shelf).toHaveLength(2);
+  expect(shelf.map((entry) => entry.prompt).sort()).toEqual(['a bunny that catches carrots at night', 'dodge the bombs in space']);
+  expect(shelf.find((entry) => entry.prompt === 'dodge the bombs in space').code).toContain('let startLives = 5;');
+}, 20000);
+
+test('coming back to the screen (Back from the studio, or a reload) finds the sentence and the game', async () => {
+  global.fetch = jest.fn(() => Promise.reject(new Error('offline')));
+  const first = render(<Build />);
+  await buildIt('dodge the bombs in space', "let gameKind   = 'dodge';");
+  fireEvent.click(screen.getByRole('button', { name: /Lives: 3/ }));
+  await waitFor(() => expect(frameDoc()).toContain('let startLives = 5;'));
+  await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
+  first.unmount();
+  // The same place in the tab's history (the test's router gives every visit the same one).
+  global.fetch = jest.fn(() => Promise.reject(new Error('offline')));
+  render(<Build />);
+  await waitFor(() => expect(frameDoc()).toContain("let gameKind   = 'dodge';"));
+  expect(frameDoc()).toContain('let startLives = 5;');
+  expect(screen.getByLabelText('Describe the game you want to play')).toHaveValue('dodge the bombs in space');
+  // Nothing was asked of the server to bring it back, and the shelf still holds one game.
+  expect(global.fetch).not.toHaveBeenCalled();
+  await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
+  expect(shelfNow()).toHaveLength(1);
+});
+
+test('Build it on an empty box builds the example the box is showing, not nothing', async () => {
+  jest.useFakeTimers();
+  try {
+    global.fetch = jest.fn(() => Promise.reject(new Error('offline')));
+    render(<Build />);
+    // The box starts writing its first example to itself.
+    act(() => { jest.advanceTimersByTime(1500); });
+    expect(document.querySelector('.bd__ghost').textContent.length).toBeGreaterThan(3);
+    fireEvent.click(screen.getByRole('button', { name: 'Build it' }));
+    const box = screen.getByLabelText('Describe the game you want to play');
+    expect(box.value.length).toBeGreaterThan(10);
+    expect(box.value.startsWith(document.querySelector('.bd__ghost') ? '' : box.value)).toBe(true);
+    for (let i = 0; i < 40 && !/let gameKind/.test(frameDoc()); i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await act(async () => { jest.advanceTimersByTime(200); await Promise.resolve(); await Promise.resolve(); });
+    }
+    expect(frameDoc()).toMatch(/let gameKind\s+= '\w+';/);
+  } finally {
+    jest.useRealTimers();
   }
 });

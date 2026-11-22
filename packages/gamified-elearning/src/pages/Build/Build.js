@@ -49,6 +49,10 @@ const KIND_LABEL = KIND_SAY;
 const KIND_ICON = { catch: 'coin', dodge: 'bomb', shooter: 'rock', runner: 'carrot', flyer: '🐦', racer: '🏎️', maze: '🧩', pop: '🎈', pet: '🐶' };
 const STEPS = ['Reading your idea', 'Picking the kind of game', 'Choosing who you are', 'Choosing the enemies', 'Setting the speed'];
 const FIRST_PUBLISH_KEY = 'codeit_first_publish_done';
+// The shelf place shared by games nobody touched, and this tab's memory of
+// the build screen (see "Never lose a game" in the component).
+const ROLLING_KEY = 'codeit.build.untouched';
+const LAST_SCREEN_KEY = 'codeit.build.screen';
 
 const WIZARD = [
   { key: 'sky', title: 'Where does it happen?', hint: 'Pick a world. The frame changes as you tap.', options: SKY_NAMES.map((v) => ({ value: v, label: SKY_LABEL[v], sky: true })) },
@@ -168,6 +172,12 @@ export default function Build() {
   const own = useRef({ player: null, enemy: null });
   const ideaRef = useRef(null);
   const frameRef = useRef(null);
+  // The example the box is writing to itself, in full (see the Build button).
+  const ghostFull = useRef('');
+  // Whether the child has done anything to the game on the screen: turned a
+  // knob, published it, opened its code. A game nobody touched is replaced on
+  // the shelf by the next one; a game somebody touched keeps its own place.
+  const touched = useRef(false);
   const toastTimer = useRef(null);
 
   const say = useCallback((text) => {
@@ -184,11 +194,12 @@ export default function Build() {
 
   // ── The input writes ideas to itself until the child types ──
   useEffect(() => {
-    if (idea || mode !== 'say') { setGhost(''); return undefined; }
+    if (idea || mode !== 'say') { setGhost(''); ghostFull.current = ''; return undefined; }
     let word = 0, chars = 0, deleting = false, timer = 0, alive = true;
     const tick = () => {
       if (!alive) return;
       const w = IDEAS[word % IDEAS.length];
+      ghostFull.current = w;
       chars += deleting ? -1 : 1;
       setGhost(w.slice(0, chars));
       if (chars >= w.length) { deleting = true; timer = window.setTimeout(tick, 1400); return; }
@@ -211,15 +222,42 @@ export default function Build() {
     setTray((prev) => { if (found.length > prev.length) tone(700 + found.length * 60, 0.06, 'triangle', 0.04); return found; });
   };
 
+  // ── Never lose a game ──────────────────────────────────────────────────────
+  //
+  // A game built here was kept only if the child published it or opened its
+  // code. One who built a game, played it and wandered off came back to "Your
+  // games: nothing here yet", and Back from the studio returned to an empty
+  // box (an outside audit, 20 November 2026). Now every game on this screen is
+  // on this device's shelf as soon as it exists, and this tab remembers the
+  // screen as it was.
+  //
+  // The shelf holds eight. So that ten sentences tried in a row do not push
+  // out eight things a child cared about, a game nobody touched shares one
+  // place with the next untouched game: its id is remembered here.
+  const rollingShelfId = () => {
+    try { return window.localStorage.getItem(ROLLING_KEY) || null; } catch { return null; }
+  };
+  const touch = () => {
+    touched.current = true;
+    try { if (shelfId.current && window.localStorage.getItem(ROLLING_KEY) === shelfId.current) window.localStorage.removeItem(ROLLING_KEY); } catch { /* storage is off: nothing to forget */ }
+  };
+
   const applyRecipe = useCallback((r, from) => {
     setRecipe(r);
     setDraft((d) => ({ ...d, ...r }));
     setPublished(null);
     madeId.current = null;
-    shelfId.current = null;
-    if (from === 'build') { chord(); setChanged(false); }
-    if (from === 'knob' || from === 'choice') setChanged(true);
-  }, []);
+    // A new game from a new sentence takes the place on the shelf of the last
+    // one if nobody touched that one, and a place of its own if somebody did.
+    // Turning a knob keeps the place: it is the same game, changed.
+    if (from === 'build') {
+      shelfId.current = touched.current ? null : rollingShelfId();
+      touched.current = false;
+      chord();
+      setChanged(false);
+    }
+    if (from === 'knob' || from === 'choice') { setChanged(true); touch(); }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Show it's yours: questions made from this game's own code ──
   const proofKey = recipe ? `build:${recipe.kind}:${recipe.title}:${recipe.player}` : '';
@@ -392,6 +430,7 @@ export default function Build() {
   // ── Publish ──
   const publish = async () => {
     if (!recipe || publishing) return;
+    touch();
     setPublishing(true);
     const first = !localStorage.getItem(FIRST_PUBLISH_KEY);
     const prompt = idea.trim() || `Make it: ${recipe.title}`;
@@ -436,14 +475,73 @@ export default function Build() {
   };
   const seeCode = () => {
     if (!recipe) return;
-    const entry = saveShelfProject(localStorage, { title: recipe.title, prompt: idea.trim() || `Make it: ${recipe.title}`, projectType: 'game', code: gameHtml });
+    touch();
+    const entry = saveShelfProject(localStorage, { id: shelfId.current || undefined, title: recipe.title, prompt: idea.trim() || `Make it: ${recipe.title}`, projectType: 'game', code: gameHtml });
+    if (entry) shelfId.current = entry.id;
+    remember();
     // tab=code: the button says "See the code", so the studio opens on the
     // code, not on Play with the code two taps and a scroll away.
     navigate(entry ? `/builder?shelf=${entry.id}&tab=code` : '/builder');
   };
 
-  // ?prompt=a%20ship%20game from the front page: build it on arrival.
+  // An empty box is not an empty box to a child: it is writing an example to
+  // itself in grey, and that looks like a sentence already there. Build it
+  // pressed then did nothing at all (an outside audit, 20 November 2026). It
+  // builds the example the box is showing.
+  const buildWhatIsThere = () => {
+    const example = !idea.trim() && mode === 'say' ? ghostFull.current : '';
+    if (example) { onIdea(example); build(example); return; }
+    build(idea);
+  };
+
+  // This tab's memory of the screen, tied to this place in the tab's history:
+  // Back from the studio, or a reload, comes back to the sentence and the
+  // game. Arriving at /build afresh is a new place and starts empty.
+  const remember = () => {
+    if (!recipe) return;
+    try {
+      window.sessionStorage.setItem(LAST_SCREEN_KEY, JSON.stringify({
+        at: location?.key || 'default', mode, idea, said, recipe, shelfId: shelfId.current, touched: touched.current, changedByChild: changed,
+      }));
+    } catch { /* nothing to remember with */ }
+  };
+  // Every game on this screen is on the shelf, a moment after it exists or
+  // changes. One place per game: a turned knob updates it.
+  useEffect(() => {
+    if (!recipe || !gameHtml) return undefined;
+    const timer = setTimeout(() => {
+      try {
+        const entry = saveShelfProject(window.localStorage, { id: shelfId.current || undefined, title: recipe.title, prompt: (said || idea).trim() || `Make it: ${recipe.title}`, projectType: 'game', code: gameHtml });
+        if (!entry) return;
+        shelfId.current = entry.id;
+        if (!touched.current) window.localStorage.setItem(ROLLING_KEY, entry.id);
+      } catch { /* a full or switched-off storage loses the shelf, never the game on the screen */ }
+      remember();
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [recipe, gameHtml]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const builtFromUrl = useRef(false);
+  const cameBack = useRef(false);
+  useEffect(() => {
+    if (cameBack.current) return;
+    cameBack.current = true;
+    try {
+      const kept = JSON.parse(window.sessionStorage.getItem(LAST_SCREEN_KEY) || 'null');
+      if (!kept || kept.at !== (location?.key || 'default') || !kept.recipe || !KINDS.includes(kept.recipe.kind)) return;
+      builtFromUrl.current = true;      // the game is here; the address does not build it again
+      if (kept.mode === 'make') setMode('make');
+      if (typeof kept.idea === 'string' && kept.idea) onIdea(kept.idea);
+      setSaid(typeof kept.said === 'string' ? kept.said : '');
+      own.current = { player: kept.recipe.player, enemy: kept.recipe.enemy };
+      shelfId.current = kept.shelfId || null;
+      touched.current = Boolean(kept.touched);
+      applyRecipe(kept.recipe, 'restore');
+      setChanged(Boolean(kept.changedByChild));
+    } catch { /* a memory that cannot be read is no memory */ }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ?prompt=a%20ship%20game from the front page: build it on arrival.
   useEffect(() => {
     if (builtFromUrl.current) return;
     const asked = new URLSearchParams(location?.search || '').get('prompt');
@@ -477,11 +575,11 @@ export default function Build() {
                   maxLength={120}
                   aria-label="Describe the game you want to play"
                   onChange={(e) => onIdea(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); build(idea); } }}
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); buildWhatIsThere(); } }}
                 />
                 <div className="bd__tray" aria-hidden="true">{tray.map((name) => <Look key={name} look={name} className="ci-popin" />)}</div>
                 {idea.length >= 100 && <span className="bd__count">{idea.length} / 120</span>}
-                <button type="button" className="ci-btn bd__go" onClick={() => build(idea)} disabled={thinking >= 0}>Build it</button>
+                <button type="button" className="ci-btn bd__go" onClick={buildWhatIsThere} disabled={thinking >= 0}>Build it</button>
               </div>
               {ownRules && (
                 <div className="bd__own ci-rise" role="status">
