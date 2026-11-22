@@ -154,7 +154,7 @@ const PAGE_META = {
     // pilot, and the title is the one line a person reads in a search result,
     // so the result promised a free spot and the page sold a subscription.
     title: 'CodeIt Pricing: Free to Start, CA$12 a Month | CodeIt',
-    description: 'Start free with no card. The CodeIt family plan is CA$12 a month, cancellable at any time, with guided setup, parent progress and learner profiles.',
+    description: 'Start free with no card. CodeIt Plus is CA$12 a month, cancellable at any time: unlimited AI builds instead of ten a month, and up to four children on one adult account.',
   },
   '/privacy': {
     title: 'Privacy & Safety | CodeIt',
