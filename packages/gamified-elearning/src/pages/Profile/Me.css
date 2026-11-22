@@ -71,3 +71,11 @@ a.me__power:hover { transform: translateY(-2px); }
 
 .me__chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 .me__theme.is-on { background: var(--ci-sun); color: #2A1500; }
+
+/* ── Me, for a visitor (GuestMe.js): the account as the way to keep things ── */
+.me__keep { margin-top: 18px; padding: 16px; border-radius: var(--ci-r); border: var(--ci-line); background: var(--ci-paper); box-shadow: var(--ci-card); }
+.me__keep .ci-h2 { margin: 0 0 6px; }
+.me__keep .ci-sub { margin: 0 0 12px; }
+.me__keepacts { display: flex; flex-wrap: wrap; gap: 10px; }
+.me__keepacts .ci-btn { flex: 1 1 180px; min-height: 48px; justify-content: center; text-align: center; }
+.me__keepnote { margin: 10px 0 0; font: 700 13px var(--ci-body); color: var(--ci-ink-soft); }

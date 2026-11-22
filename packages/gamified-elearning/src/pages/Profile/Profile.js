@@ -17,6 +17,7 @@ import { getXpProgress, getLevelTitle } from '../../data/unlocks';
 import { openedRewards, whoAmI } from '../../utils/chests';
 import { MEDALS, medalsFrom } from './medals';
 import Me from './Me';
+import GuestMe from './GuestMe';
 import ParentGate, { gateOpen } from './ParentGate';
 import { usePublicPlan } from '../../hooks/usePublicPlan';
 import '../../ds/night.css';
@@ -120,11 +121,9 @@ export default function Profile() {
   }, [token, user]);
 
   useEffect(() => {
-    if (!user) {
-      const from = window.location.pathname + window.location.search;
-      navigate('/login', { state: { from } });
-      return;
-    }
+    // A visitor is no longer sent to the sign-in page from here: they get
+    // their own page (GuestMe, below).
+    if (!user) return;
     if (!token) return;
     fetch(`${API_BASE_URL}/api/builder/projects`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -430,7 +429,9 @@ export default function Profile() {
     });
   };
 
-  if (!user) return null;
+  // "Me" for a visitor: what is on this device, and the account as the way
+  // to keep it. It used to be a redirect to "Welcome back. Sign in".
+  if (!user) return <GuestMe />;
 
   // A child's profile is Me: numbers, powers, games, look. The page below,
   // with parent updates and the medal case, is behind its Settings chip.
