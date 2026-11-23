@@ -11,8 +11,9 @@
  * Changed on the way in:
  * - "Most learners complete a lesson in 20 to 30 minutes" had nothing behind
  *   it. What can be counted is the steps: every lesson in lessonData has five
- *   to seven. Resuming is real: InteractiveLessonTemplate saves the step in
- *   the browser.
+ *   to seven. Resuming is real: a signed-in learner's answered steps are on
+ *   the server, so the lesson reopens at their place on any computer, and a
+ *   visitor's place is kept in that browser (stepMemory.js, 23 November).
  * - "Is CodeIt free to use?" is asked as a parent searches it, and now says
  *   what "online" means here: nothing to install, Chromebooks included, and
  *   Lesson 1 with no account.
@@ -40,7 +41,7 @@ export default function learnPythonFaqs({ agesStatement, price, interval }) {
     },
     {
       q: 'How long does each Python lesson take?',
-      a: 'Each lesson is five to seven short steps: run an example, take it apart, then change the code yourself. There is no time limit. A lesson left halfway reopens at the step the learner reached, on the same device.',
+      a: 'Each lesson is five to seven short steps: run an example, take it apart, then change the code yourself. There is no time limit. A lesson left halfway reopens at the step the learner reached: on any computer when they are signed in, and in the same browser when they are not.',
     },
     {
       q: 'How do I know my child understood the code and did not just finish it?',
