@@ -8,7 +8,7 @@ import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import { journeyHeaders } from '../../utils/journey';
 import BrandLogo from '../../components/BrandLogo/BrandLogo';
-import { resolveAuthDestination } from '../../utils/authDestination';
+import { PLUS_PATH, cameForPlus, resolveAuthDestination } from '../../utils/authDestination';
 import LiveFrame from '../Home/LiveFrame';
 import '../../ds/night.css';
 import './Auth.css';
@@ -82,7 +82,10 @@ export default function Register() {
   // was for setting up a private profile for their child.
   const cameFrom = typeof location.state?.from === 'string' ? location.state.from : '';
   const teacherEntry = searchParams.get('for') === 'class' || cameFrom === '/teach' || cameFrom.startsWith('/teach/');
-  const [step, setStep] = useState(familyEntry || teacherEntry ? 'educator' : 'choose');
+  // A parent who pressed the paid plan's button came to pay, not to be asked
+  // whether they are learning to code.
+  const plusEntry = !teacherEntry && (cameForPlus(searchParams) || cameFrom.startsWith('/pricing'));
+  const [step, setStep] = useState(familyEntry || teacherEntry || plusEntry ? 'educator' : 'choose');
   const [error, setError] = useState(null);
   const [showPw, setShowPw] = useState(false);
   const [pendingToken, setPendingToken] = useState(null);
@@ -92,7 +95,7 @@ export default function Register() {
 
   const { login } = useAuth();
   const navigate = useNavigate();
-  const requestedPath = location.state?.from || (searchParams.get('from') === 'builder' ? '/builder' : null);
+  const requestedPath = location.state?.from || (searchParams.get('from') === 'builder' ? '/builder' : null) || (cameForPlus(searchParams) ? PLUS_PATH : null);
   const returnTo = typeof requestedPath === 'string' && requestedPath.startsWith('/') && !requestedPath.startsWith('//')
     ? requestedPath
     : '/';
@@ -479,15 +482,17 @@ export default function Register() {
           <button type="button" className="auth-back" onClick={goBack}>Back</button>
 
           <div className="auth-header">
-            <span className="auth-pill">{teacherEntry ? 'Teacher' : 'Parent / Educator'}</span>
+            <span className="auth-pill">{teacherEntry ? 'Teacher' : plusEntry ? 'Parent' : 'Parent / Educator'}</span>
             <h1>
               {hasBuilderDraft
                 ? `Create an adult account to ${builderActionWord}`
-                : teacherEntry ? 'Make your teacher account' : familyEntry ? 'Create a private learner profile' : 'Create your account'}
+                : teacherEntry ? 'Make your teacher account' : plusEntry ? 'Make your parent account' : familyEntry ? 'Create a private learner profile' : 'Create your account'}
             </h1>
             <p>
               {teacherEntry
                 ? 'Then make a class and read out its code. Children join with the code and a first name. They never type an email or a password.'
+                : plusEntry
+                ? 'CodeIt Plus is bought from an adult account. Make yours here and you come straight back to the plan.'
                 : resumePricingInterest
                 ? 'Create an adult account to finish joining the founding-family waitlist.'
                 : hasBuilderDraft

@@ -20,3 +20,19 @@ describe('authentication destinations', () => {
     expect(resolveAuthDestination(null, 'Educator', { newAccount: true })).toBe('/profile#family-controls');
   });
 });
+
+describe('a parent who came to pay', () => {
+  const { PLUS_PATH, cameForPlus } = require('./authDestination');
+  test('both doors under the paid plan are recognised, and nothing else is', () => {
+    expect(cameForPlus(new URLSearchParams('?for=plus'))).toBe(true);
+    expect(cameForPlus(new URLSearchParams('?from=pricing'))).toBe(true);
+    expect(cameForPlus(new URLSearchParams('?from=builder'))).toBe(false);
+    expect(cameForPlus(new URLSearchParams(''))).toBe(false);
+    expect(cameForPlus(null)).toBe(false);
+  });
+  test('they are brought back to the plan, whatever kind of account they have', () => {
+    expect(PLUS_PATH).toBe('/pricing#codeit-plus');
+    expect(resolveAuthDestination(PLUS_PATH, 'Educator', { newAccount: true })).toBe(PLUS_PATH);
+    expect(resolveAuthDestination(PLUS_PATH, 'Student')).toBe(PLUS_PATH);
+  });
+});

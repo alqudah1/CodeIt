@@ -269,8 +269,16 @@ export default function Pricing() {
                 <p className="pricing-plan-state" role="status">Checking your account…</p>
               ) : !user ? (
                 <>
-                  <Link className="pricing-button pricing-button--primary" to="/login?from=pricing">
-                    Log in to subscribe
+                  {/* A parent reading this for the first time has no account
+                      to log in to. "Log in to subscribe" was the only door,
+                      it led to a sign-in form, and signing in (or making an
+                      account from there) ended on the home page, with the
+                      plan nowhere in sight. Both doors now come back here. */}
+                  <Link className="pricing-button pricing-button--primary" to="/register?for=plus">
+                    Make a parent account to subscribe
+                  </Link>
+                  <Link className="pricing-button pricing-button--quiet pricing-button--second" to="/login?from=pricing">
+                    I already have an account
                   </Link>
                   <p className="pricing-card__note">
                     Renews monthly until you cancel. See{' '}

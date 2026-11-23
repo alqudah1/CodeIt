@@ -252,3 +252,6 @@
 
 /* The 01 / 02 / 03 principle numerals were decorative grey at 3:1. */
 .pricing-principles article > span, .pricing-principle > span { color: var(--ci-ink-soft); }
+
+/* The second door under the paid plan's button, for a parent who has an account. */
+.pricing-button--second { margin-top: .6rem; }

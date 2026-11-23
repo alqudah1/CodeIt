@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
 import { useSEO } from '../../hooks/useSEO';
 import BrandLogo from '../../components/BrandLogo/BrandLogo';
-import { resolveAuthDestination } from '../../utils/authDestination';
+import { PLUS_PATH, cameForPlus, resolveAuthDestination } from '../../utils/authDestination';
 import '../../ds/night.css';
 import './Auth.css';
 
@@ -23,7 +23,7 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search || '');
-  const requestedPath = location.state?.from || (searchParams.get('from') === 'builder' ? '/builder' : null);
+  const requestedPath = location.state?.from || (searchParams.get('from') === 'builder' ? '/builder' : null) || (cameForPlus(searchParams) ? PLUS_PATH : null);
   const returnTo = typeof requestedPath === 'string' && requestedPath.startsWith('/') && !requestedPath.startsWith('//')
     ? requestedPath
     : '/';

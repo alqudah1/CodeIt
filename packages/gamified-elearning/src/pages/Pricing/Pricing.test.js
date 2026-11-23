@@ -213,9 +213,11 @@ describe('Pricing', () => {
 
     expect(await screen.findByRole('heading', { name: 'CodeIt Plus' })).toBeInTheDocument();
     expect(screen.getByText('CA$12')).toBeInTheDocument();
-    // Signed out, the call to action is to sign in — never a checkout they
-    // cannot complete.
-    expect(screen.getByRole('link', { name: /Log in to subscribe/i })).toBeInTheDocument();
+    // Signed out, there are two doors and both come back to this plan: make
+    // a parent account, or sign in to one. Never a checkout they cannot
+    // complete, and never only "log in" for a parent who has no account.
+    expect(screen.getByRole('link', { name: 'Make a parent account to subscribe' })).toHaveAttribute('href', '/register?for=plus');
+    expect(screen.getByRole('link', { name: 'I already have an account' })).toHaveAttribute('href', '/login?from=pricing');
     expect(screen.queryByRole('button', { name: /Subscribe for/i })).not.toBeInTheDocument();
   });
 
