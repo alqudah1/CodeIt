@@ -48,6 +48,7 @@ export const ENDPOINTS = {
     list:     `${API_BASE_URL}/api/lessons`,
     progress: `${API_BASE_URL}/api/lessons/progress`,
     complete: (id) => `${API_BASE_URL}/api/lessons/${id}/complete`,
+    steps:    (id) => `${API_BASE_URL}/api/lessons/${id}/steps`,
   },
   puzzles: {
     list:     `${API_BASE_URL}/api/puzzles`,

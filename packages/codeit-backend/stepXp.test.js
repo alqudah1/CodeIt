@@ -73,3 +73,27 @@ test('the most a lesson can ever pay is bounded by its step count', () => {
   const ceiling = (MAX_STEP_INDEX + 1) * MAX_STEP_XP;
   assert.equal(ceiling, 820);
 });
+
+// ── Where a lesson was left ──────────────────────────────────────────────────
+const { stepsDoneFor } = require('./stepXp');
+
+test('the steps a learner has passed come back lowest first, each once', async () => {
+  const asked = [];
+  const query = async (sql, values) => { asked.push({ sql, values }); return [[{ step_index: 0 }, { step_index: '2' }, { step_index: 2 }, { step_index: 5 }]]; };
+  assert.deepEqual(await stepsDoneFor(query, 7, '4'), [0, 2, 5]);
+  assert.deepEqual(asked[0].values, [7, 4]);
+  assert.match(asked[0].sql, /user_id = \? AND lesson_id = \?/);
+});
+
+test('a row that is not a step index is left out', async () => {
+  const query = async () => [[{ step_index: -1 }, { step_index: 999 }, { step_index: null }, { step_index: 3 }]];
+  assert.deepEqual(await stepsDoneFor(query, 7, 4), [3]);
+});
+
+test('something that is not a lesson is not asked about', async () => {
+  let asked = 0;
+  const query = async () => { asked += 1; return [[]]; };
+  assert.deepEqual(await stepsDoneFor(query, 7, 'abc'), []);
+  assert.deepEqual(await stepsDoneFor(query, 7, 0), []);
+  assert.equal(asked, 0);
+});

@@ -79,6 +79,26 @@ async function awardStepXp(userId, lessonId, stepIndex, requestedXp) {
   return { xpEarned: xp, alreadyEarned: false };
 }
 
+/**
+ * The steps of one lesson this learner has passed, lowest first.
+ *
+ * A lesson remembered its place in the browser only. A pupil who started
+ * Lesson 4 in the computer room and opened it at home, signed in to the same
+ * account, was at step 1 again (a teacher asked on 22 November 2026 whether
+ * a pupil on another computer "does not have any progress"; for a lesson in
+ * hand, that was true). The steps were already here, one row each, so the
+ * lesson can ask where it was.
+ */
+async function stepsDoneFor(query, userId, lessonId) {
+  const lesson = Number(lessonId);
+  if (!Number.isInteger(lesson) || lesson < 1) return [];
+  const [rows] = await query(
+    'SELECT step_index FROM lesson_step_xp WHERE user_id = ? AND lesson_id = ? ORDER BY step_index',
+    [userId, lesson]
+  );
+  return [...new Set((rows || []).map((row) => row.step_index).filter(isValidStepIndex).map(Number))];
+}
+
 module.exports = {
   DEFAULT_STEP_XP,
   MAX_STEP_INDEX,
@@ -87,4 +107,5 @@ module.exports = {
   awardStepXp,
   clampStepXp,
   isValidStepIndex,
+  stepsDoneFor,
 };

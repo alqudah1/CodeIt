@@ -24,6 +24,8 @@ import LessonStage, { stageLines } from './LessonStage';
 import GuessFirst from './GuessFirst';
 import CodeParts from './CodeParts';
 import { firstUseStep, firstPracticeIndex } from './firstUse';
+import { loadStepState, saveStepState, signedInId, placeFromServer } from './stepMemory';
+import { ENDPOINTS } from '../../config/api';
 import { trackActivityComplete, trackGuestLessonComplete } from '../../utils/activity';
 import { rememberGuestLesson } from '../../utils/guestLessons';
 import {
@@ -71,38 +73,7 @@ function xpForStep(step) {
   return step?.type === 'concept' ? 0 : (STEP_XP[step?.type] || 10);
 }
 
-// ── Progress that survives a closed laptop ───────────────────────────────────
-//
-// A lesson used to lose every finished step on refresh. For a child working in
-// twenty-minute slots at school that meant starting Lesson 9 from scratch on
-// Tuesday. Server progress still decides what counts as complete; this is only
-// so the lesson reopens where they left it.
-const stepStateKey = (lessonId) => `codeit.lesson.${lessonId}.steps`;
-
-function loadStepState(lessonId) {
-  try {
-    const raw = window.localStorage.getItem(stepStateKey(lessonId));
-    const saved = raw ? JSON.parse(raw) : null;
-    if (!saved || typeof saved !== 'object') return null;
-    return {
-      stepIdx:   Number(saved.stepIdx) || 0,
-      stepsDone: saved.stepsDone && typeof saved.stepsDone === 'object' ? saved.stepsDone : {},
-      picks:     saved.picks && typeof saved.picks === 'object' ? saved.picks : {},
-    };
-  } catch {
-    // Private browsing, a full quota, a corrupted value — none of which should
-    // stop the lesson from opening.
-    return null;
-  }
-}
-
-function saveStepState(lessonId, state) {
-  try {
-    window.localStorage.setItem(stepStateKey(lessonId), JSON.stringify(state));
-  } catch {
-    // Nothing to do: progress is a convenience here, not the source of truth.
-  }
-}
+// Where the lesson was left, and whose place it is: see stepMemory.js.
 
 function childStepsFor(stepType, isDone) {
   if (isDone) return [
@@ -272,9 +243,11 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
 
   // Restored synchronously on first render so the lesson never flashes step 1
   // before jumping to where the student actually was.
-  const restored = useRef(loadStepState(lessonId)).current;
+  const learnerId = useRef(signedInId()).current;
+  const restored = useRef(loadStepState(lessonId, learnerId)).current;
 
   const [stepIdx,     setStepIdx]     = useState(() => firstUseStep(lessonData, location.search, restored?.stepIdx || 0));
+  const startIdxRef = useRef(stepIdx);
   const [stepsDone,      setStepsDone]      = useState(restored?.stepsDone || {}); // { [idx]: true }
   const [stepHintCounts, setStepHintCounts] = useState({});  // { [idx]: number revealed }
   const [lastOutputs,    setLastOutputs]    = useState({});  // { [idx]: string }. output from last Run
@@ -292,8 +265,36 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   // Keep the saved position in step with what is on screen.
   useEffect(() => {
     if (!lessonId) return;
-    saveStepState(lessonId, { stepIdx, stepsDone, picks });
+    saveStepState(lessonId, { stepIdx, stepsDone, picks }, learnerId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lessonId, stepIdx, stepsDone, picks]);
+
+  // On another computer the browser has no place saved. The server has every
+  // step this learner answered, so the lesson asks, ticks what was done, and
+  // (if the child has not started moving) opens where they stopped. A lesson
+  // opened at a named activity stays there.
+  const touchedRef = useRef(false);
+  useEffect(() => { if (stepIdx !== startIdxRef.current) touchedRef.current = true; }, [stepIdx]);
+  useEffect(() => {
+    if (!lessonId || !learnerId) return undefined;
+    let live = true;
+    const stored = (() => { try { return window.localStorage.getItem('token'); } catch { return null; } })();
+    if (!stored) return undefined;
+    fetch(ENDPOINTS.lessons.steps(lessonId), { headers: { Authorization: `Bearer ${stored}` } })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!live || !data) return;
+        const place = placeFromServer(data.steps, lessonData?.steps?.length || 0);
+        if (!place) return;
+        const hadNothing = !restored || Object.keys(restored.stepsDone || {}).length === 0;
+        setStepsDone((prev) => ({ ...place.stepsDone, ...prev }));
+        const named = new URLSearchParams(location.search).get('activity');
+        if (hadNothing && !touchedRef.current && !named) { startIdxRef.current = place.stepIdx; setStepIdx(place.stepIdx); }
+      })
+      .catch(() => { /* The lesson opens at the start, as it did before. */ });
+    return () => { live = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lessonId, learnerId]);
 
   // ── No gate (message 74) ──────────────────────────────────────────────
   //
@@ -379,6 +380,7 @@ const InteractiveLessonTemplate = ({ lessonData }) => {
   const progressPct          = totalSteps > 0 ? Math.round((stepsCompletedCount / totalSteps) * 100) : 0;
 
   const markStepDone = (idx) => {
+    touchedRef.current = true;
     const step = steps[idx];
     if (step && step.type !== 'concept' && !stepsDone[idx]) {
       trackExerciseCompletion(

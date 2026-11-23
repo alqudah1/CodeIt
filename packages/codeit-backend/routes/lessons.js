@@ -6,6 +6,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
 const { recordMilestoneAndNotify } = require('../progressNotifications');
+const { stepsDoneFor } = require('../stepXp');
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -58,6 +59,21 @@ router.get('/:id', async (req, res) => {
   } catch (err) {
     console.error('❌ Error fetching lesson:', err);
     res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/lessons/:id/steps — the steps of this lesson the learner has passed
+//
+// So a lesson started on one computer opens at the same place on another.
+// A failure here is an empty list, never an error on the child's screen: the
+// lesson then opens at the start, which is what it did before this existed.
+router.get('/:id/steps', authenticateToken, async (req, res) => {
+  try {
+    const steps = await stepsDoneFor((sql, values) => pool.query(sql, values), req.user.user_id, req.params.id);
+    res.json({ steps });
+  } catch (err) {
+    console.error(`lesson steps: could not be read (${err.message})`);
+    res.json({ steps: [], unread: true });
   }
 });
 
