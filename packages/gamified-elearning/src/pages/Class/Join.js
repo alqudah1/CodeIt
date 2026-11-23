@@ -23,6 +23,23 @@ export function tidyCode(raw) {
   return String(raw || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 16);
 }
 
+/** When a name joined, in a child's words. */
+export function whenJoined(iso, now = Date.now()) {
+  const then = new Date(iso).getTime();
+  if (!Number.isFinite(then)) return '';
+  const days = Math.floor((now - then) / 86400000);
+  if (now - then < 3600000) return 'a few minutes ago';
+  if (days < 1) return 'earlier today';
+  if (days === 1) return 'yesterday';
+  return `${days} days ago`;
+}
+
+/** "Thomas" for a second Thomas: what to type so the class can tell them apart. */
+export function nameWithInitial(name) {
+  const first = String(name || '').trim().split(/\s+/)[0] || 'Sam';
+  return `${first} B`;
+}
+
 export default function Join() {
   useSEO({ canonical: '/join', title: 'Join your class | CodeIt', description: 'Type the class code from the board and your first name.', robots: 'noindex,nofollow' });
   const { user, token, login, logout } = useContext(AuthContext);
@@ -35,6 +52,21 @@ export default function Join() {
   const [error, setError] = useState('');
   const [shake, setShake] = useState(false);
   const nameRef = useRef(null);
+  // The class already has this name. Held here, signed in to nothing, until
+  // the child says whether it is them.
+  const [asking, setAsking] = useState(null);
+  const [taken, setTaken] = useState('');
+
+  function thatIsMe() {
+    if (!asking) return;
+    login({ user: asking.user, token: asking.token });
+    navigate('/home', { replace: true, state: { joinedClass: asking.class?.name } });
+  }
+  function notMe() {
+    setTaken(asking?.returning?.name || name.trim());
+    setAsking(null);
+    setTimeout(() => { nameRef.current?.focus(); nameRef.current?.select?.(); }, 50);
+  }
 
   useEffect(() => { if (preset && nameRef.current) nameRef.current.focus(); }, [preset]);
 
@@ -53,6 +85,8 @@ export default function Join() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok && !data.error && res.status >= 500) throw new Error(`join ${res.status}`);
       if (!res.ok) throw new Error(data.error || 'Could not join. Check the code.');
+      // A name the class already has: ask before signing anyone in.
+      if (data.token && data.returning && !user) { setAsking(data); return; }
       if (data.token) login({ user: data.user, token: data.token });
       navigate('/home', { replace: true, state: { joinedClass: data.class?.name } });
     } catch (err) {
@@ -73,7 +107,19 @@ export default function Join() {
     <div className="cl">
       <Header />
       <main className="cl__join">
-        <form className={`ci-blk ci-blk--paper cl__card ci-rise${shake ? ' is-shake' : ''}`} onSubmit={join} noValidate>
+        {asking && (
+          <section className="ci-blk ci-blk--paper cl__card ci-rise" aria-labelledby="cl-ask-title">
+            <div className="ci-ey">{asking.class?.name || 'Your class'}</div>
+            <h1 className="ci-h1 cl__title" id="cl-ask-title">Are you this {asking.returning.name}?</h1>
+            <p className="ci-sub cl__as">
+              {asking.returning.name} joined this class {whenJoined(asking.returning.joinedAt) || 'before'}
+              {asking.returning.games == null ? '' : asking.returning.games === 0 ? ' and has not made a game yet' : ` and has made ${asking.returning.games} ${asking.returning.games === 1 ? 'game' : 'games'}`}.
+            </p>
+            <button type="button" className="ci-btn ci-btn--ink ci-btn--block" onClick={thatIsMe}>Yes, that is me</button>
+            <button type="button" className="ci-btn ci-btn--paper ci-btn--block cl__other" onClick={notMe}>No, that is not me</button>
+          </section>
+        )}
+        {!asking && <form className={`ci-blk ci-blk--paper cl__card ci-rise${shake ? ' is-shake' : ''}`} onSubmit={join} noValidate>
           <div className="ci-ey">Join a class</div>
           <h1 className="ci-h1 cl__title">Type the code on the board.</h1>
           <label className="cl__field">
@@ -110,12 +156,13 @@ export default function Join() {
               />
             </label>
           )}
+          {taken && !error && <p className="cl__taken" role="status">This class already has a {taken}. Type your name with the first letter of your last name, like <b>{nameWithInitial(taken)}</b>.</p>}
           {error && <p className="cl__err" role="alert">{error}</p>}
           <button type="submit" className="ci-btn ci-btn--ink ci-btn--block" disabled={!ready || busy}>{busy ? 'Joining' : 'Join'}</button>
           {!user && <p className="cl__fine">No email, no password. Your teacher made the class, and your games save on this name.</p>}
           {!user && <p className="cl__fine"><b>Been here before?</b> Type the same code and the same first name, on any computer, and your games and lessons are there.</p>}
           <p className="cl__fine">Teaching? <Link to="/teach">Make a class</Link>.</p>
-        </form>
+        </form>}
       </main>
       <TabBar />
     </div>

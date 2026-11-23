@@ -48,6 +48,9 @@ async function fakeQuery(sql, params = []) {
   if (/^SELECT lesson_id FROM Student_Lesson_Progress/.test(s)) {
     return [(state.progress || []).filter((r) => r.user_id === params[0] && r.lesson_id > params[1] && r.lesson_id <= params[2])];
   }
+  if (/^SELECT COUNT\(\*\) AS n FROM ai_projects WHERE user_id = \?/.test(s)) {
+    return [[{ n: state.projects.filter((p) => p.user_id === params[0]).length }]];
+  }
   if (/^SELECT id, code, name, owner_id, created_at FROM classes WHERE code = \?/.test(s)) {
     return [state.classes.filter((c) => c.code === params[0])];
   }
@@ -72,8 +75,8 @@ async function fakeQuery(sql, params = []) {
   if (/^SELECT id FROM class_members WHERE class_id = \? AND user_id = \?/.test(s)) {
     return [state.members.filter((mm) => mm.class_id === params[0] && mm.user_id === params[1]).map((mm) => ({ id: mm.id }))];
   }
-  if (/^SELECT u.user_id, u.name, u.role FROM class_members m JOIN Users u/.test(s)) {
-    const rows = state.members.filter((mm) => mm.class_id === params[0]).map((mm) => state.users.find((x) => x.user_id === mm.user_id)).filter((u) => u.name.toLowerCase() === String(params[1]).toLowerCase());
+  if (/^SELECT u.user_id, u.name, u.role, m.joined_at FROM class_members m JOIN Users u/.test(s)) {
+    const rows = state.members.filter((mm) => mm.class_id === params[0]).map((mm) => ({ ...state.users.find((x) => x.user_id === mm.user_id), joined_at: mm.joined_at })).filter((u) => u.name.toLowerCase() === String(params[1]).toLowerCase());
     return [rows.slice(0, 1)];
   }
   if ((m = /^SELECT user_id FROM Users WHERE username = \?/.exec(s))) {
@@ -183,6 +186,12 @@ test('a child joins with the code and a first name and is signed in on a real ac
   assert.equal(again.body.existing, true);
   assert.equal(again.body.user.id, state.maya);
   assert.equal(state.users.length, 1, 'no second account');
+  // And the join page is told enough to ask "is this you?", because the
+  // second Maya would be given the first one's account otherwise.
+  assert.equal(again.body.returning.name, 'Maya');
+  assert.equal(again.body.returning.games, 0);
+  assert.ok(again.body.returning.joinedAt, 'when that name joined');
+  assert.equal(joined.body.returning, undefined, 'a new name is not asked anything');
 
   // A different child gets a different account.
   const leo = await call('POST', `/api/class/${state.code}/join`, { first_name: 'Leo' });

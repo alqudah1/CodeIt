@@ -7,12 +7,15 @@
 .cl__field { display: block; margin: 0 0 14px; }
 .cl__field span { display: block; font: 800 13px var(--ci-body); letter-spacing: .08em; text-transform: uppercase; color: var(--ci-ink-soft); margin-bottom: 6px; }
 .cl__code, .cl__name { width: 100%; box-sizing: border-box; border: 2px solid var(--ci-ink-line); border-radius: 16px; background: var(--ci-paper); color: var(--ci-ink); font: 800 18px var(--ci-body); padding: 14px 16px; outline: none; transition: border-color .15s, box-shadow .15s; }
-.cl__code { font: 800 34px var(--ci-display); letter-spacing: .14em; text-align: center; text-transform: uppercase; padding: 10px 16px; }
+/* 8vw on a narrow phone: at 34px a nine-letter code (DOLPHIN27) ran out of the box at 320. */
+.cl__code { font: 800 clamp(24px, 8vw, 34px) var(--ci-display); letter-spacing: .14em; text-align: center; text-transform: uppercase; padding: 10px 16px; }
 .cl__code::placeholder { color: rgba(53, 34, 14, .22); letter-spacing: .14em; }
 .cl__code:focus, .cl__name:focus { border-color: var(--ci-orange); box-shadow: 0 0 0 4px rgba(255, 122, 0, .18); }
 .cl__as { margin: 0 0 14px; }
 .cl__link { appearance: none; border: 0; background: none; padding: 0; font: inherit; color: var(--ci-orange-text); cursor: pointer; text-decoration: underline; }
 .cl__err { margin: 0 0 12px; color: #C8362B; font-weight: 800; }
+.cl__taken { margin: 0 0 12px; padding: 10px 12px; border: 2px solid var(--ci-ink); border-radius: 12px; background: var(--ci-sun, #FFC93C); color: var(--ci-ink); font-weight: 700; line-height: 1.4; }
+.cl__other { margin-top: 10px; }
 .cl__fine { margin: 14px 0 0; font-size: 13px; color: var(--ci-ink-soft); line-height: 1.45; }
 .cl__fine a { color: var(--ci-orange-text); }
 .is-shake { animation: cl-shake .45s cubic-bezier(.36, .07, .19, .97) both; }

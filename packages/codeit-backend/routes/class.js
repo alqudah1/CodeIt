@@ -432,12 +432,30 @@ router.post('/:code/join', joinLimiter, optionalAuth, async (req, res) => {
 
     // The same name in the same class is the same child coming back.
     const [back] = await pool.query(
-      `SELECT u.user_id, u.name, u.role FROM class_members m JOIN Users u ON u.user_id = m.user_id
+      `SELECT u.user_id, u.name, u.role, m.joined_at FROM class_members m JOIN Users u ON u.user_id = m.user_id
         WHERE m.class_id = ? AND LOWER(u.name) = LOWER(?) ORDER BY m.joined_at ASC LIMIT 1`,
       [klass.id, firstName]
     );
     if (back[0]) {
-      return res.json({ joined: true, existing: true, class: publicClass(klass), ...signIn(back[0].user_id, back[0].name) });
+      // Or it is the second Thomas. Nothing here can tell the two apart, so
+      // the join page is given what it needs to ask: when that name joined
+      // and how many games it has. A child who says "not me" is not signed
+      // in and picks a name the class does not have. (Until 23 November 2026
+      // the second Thomas was put into the first one's account and told
+      // nothing; a teacher's question about pupils with no password is what
+      // turned it up.)
+      let games = null;
+      try {
+        const [count] = await pool.query('SELECT COUNT(*) AS n FROM ai_projects WHERE user_id = ?', [back[0].user_id]);
+        games = Number(count[0]?.n) || 0;
+      } catch (err) {
+        console.error(`class/join: the games of a returning name could not be counted (${err.message})`);
+      }
+      return res.json({
+        joined: true, existing: true, class: publicClass(klass),
+        returning: { name: back[0].name, joinedAt: back[0].joined_at, games },
+        ...signIn(back[0].user_id, back[0].name),
+      });
     }
 
     connection = await pool.getConnection();

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import Join, { tidyCode } from './Join';
+import Join, { nameWithInitial, tidyCode, whenJoined } from './Join';
 import Teach, { ago, roomNumbers, spaceCode } from './Teach';
 
 // ── Join and Teach ──────────────────────────────────────────────────────────
@@ -419,5 +419,60 @@ describe('a pupil getting back in on another computer', () => {
     const now = (await screen.findByText(/Working on/)).closest('p');
     expect(now).toHaveTextContent('Up to step 4.');
     expect(now).not.toHaveTextContent(/d ago/);
+  });
+});
+
+describe('a name the class already has', () => {
+  const back = (games = 1) => ({ joined: true, existing: true, token: 'tok', user: { id: 9, name: 'Thomas' }, class: { code: 'ROCKET42', name: 'Year 9' }, returning: { name: 'Thomas', joinedAt: new Date(Date.now() - 4 * 86400000).toISOString(), games } });
+  const typeAndJoin = () => {
+    fireEvent.change(screen.getByLabelText('Class code'), { target: { value: 'rocket42' } });
+    fireEvent.change(screen.getByLabelText('Your first name'), { target: { value: 'thomas' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Join' }));
+  };
+
+  test('nobody is signed in until the child says it is them', async () => {
+    global.fetch = jest.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(back()) }));
+    mount(<Join />);
+    typeAndJoin();
+    expect(await screen.findByRole('heading', { name: 'Are you this Thomas?' })).toBeInTheDocument();
+    expect(screen.getByText(/joined this class 4 days ago and has made 1 game\./)).toBeInTheDocument();
+    expect(login).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Yes, that is me' }));
+    expect(login).toHaveBeenCalledWith({ user: { id: 9, name: 'Thomas' }, token: 'tok' });
+    expect(mockNavigate).toHaveBeenCalledWith('/home', expect.objectContaining({ replace: true }));
+  });
+
+  test('the second Thomas is not put in the first one\'s account, and is told what to type', async () => {
+    global.fetch = jest.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(back(0)) }));
+    mount(<Join />);
+    typeAndJoin();
+    await screen.findByRole('heading', { name: 'Are you this Thomas?' });
+    expect(screen.getByText(/has not made a game yet/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'No, that is not me' }));
+    expect(login).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(screen.getByRole('status')).toHaveTextContent('This class already has a Thomas. Type your name with the first letter of your last name, like Thomas B.');
+    expect(screen.getByLabelText('Your first name')).toBeInTheDocument();
+    expect(screen.getByLabelText('Class code')).toHaveValue('ROCKET42');
+  });
+
+  test('a new name goes straight in, with no question', async () => {
+    global.fetch = jest.fn(() => Promise.resolve({ ok: true, status: 201, json: () => Promise.resolve({ joined: true, existing: false, token: 'tok', user: { id: 10, name: 'Thomas B' }, class: { code: 'ROCKET42', name: 'Year 9' } }) }));
+    mount(<Join />);
+    typeAndJoin();
+    await waitFor(() => expect(login).toHaveBeenCalled());
+    expect(screen.queryByRole('heading', { name: /Are you this/ })).not.toBeInTheDocument();
+  });
+
+  test('when a name joined, in a child\'s words', () => {
+    const now = Date.parse('2026-11-23T12:00:00Z');
+    expect(whenJoined('2026-11-23T11:50:00Z', now)).toBe('a few minutes ago');
+    expect(whenJoined('2026-11-23T08:00:00Z', now)).toBe('earlier today');
+    expect(whenJoined('2026-11-22T10:00:00Z', now)).toBe('yesterday');
+    expect(whenJoined('2026-11-19T10:00:00Z', now)).toBe('4 days ago');
+    expect(whenJoined('nonsense', now)).toBe('');
+    expect(nameWithInitial('Thomas')).toBe('Thomas B');
+    expect(nameWithInitial('Thomas W')).toBe('Thomas B');
   });
 });
