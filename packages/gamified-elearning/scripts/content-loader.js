@@ -115,6 +115,15 @@ function loadWebsiteBuilderPage() {
   return build;
 }
 
+/** The /learn-python-for-kids questions, as a function of age and price. */
+function loadLearnPythonFaqs() {
+  const build = loadEsmDefault(path.join(SRC, 'data/learnPythonFaqs.js'));
+  if (typeof build !== 'function') {
+    throw new Error('content-loader: learnPythonFaqs.js did not export a function');
+  }
+  return build;
+}
+
 /** The journey puzzles for lessons 1 to 10, as the app defines them. */
 function loadPuzzleConfigs() {
   const mod = loadEsmDefault(path.join(SRC, 'pages/Journey/puzzleConfigs.js'));
@@ -267,6 +276,7 @@ module.exports = {
   loadPuzzleConfigs,
   loadPlaygroundPresets,
   loadWebsiteBuilderPage,
+  loadLearnPythonFaqs,
   loadPageMeta,
   loadPricing,
   loadBlogPosts,

@@ -12,6 +12,7 @@ const {
   loadEsmDefault,
   loadPlaygroundPresets,
   loadWebsiteBuilderPage,
+  loadLearnPythonFaqs,
   loadBlogPosts,
   loadLessons,
   loadGuidePages,
@@ -230,6 +231,13 @@ const COMPANY = loadCompany();
 // which is how "ages 5 to 18" ended up in fifty-nine places and is the exact
 // drift the constant exists to stop. Read it instead.
 const AGES = COMPANY.AGE_RANGE.short;
+// The questions on /learn-python-for-kids, the same list the React page shows.
+// They were only in the component, so the HTML a crawler gets first had none.
+const LEARN_PYTHON_FAQS = loadLearnPythonFaqs()({
+  agesStatement: COMPANY.AGE_RANGE.statement,
+  price: PRICING.PRICE,
+  interval: PRICING.INTERVAL,
+});
 // The parent-managed range, read from the same file for the same reason. Six
 // published strings spelled one of these two ranges by hand with an en-dash,
 // four of them in this file, while the sentence beside them read the constant.
@@ -1604,6 +1612,7 @@ const PAGES = [
 
   ...BASE_PAGES.map((page) => {
     if (page.route === '/coding-for-kids') return { ...page, faqs: FAQS, sections: SECTIONS_BY_ROUTE[page.route] };
+    if (page.route === '/learn-python-for-kids') return { ...page, faqs: LEARN_PYTHON_FAQS, sections: SECTIONS_BY_ROUTE[page.route].filter(Boolean) };
     if (SECTIONS_BY_ROUTE[page.route]) return { ...page, sections: SECTIONS_BY_ROUTE[page.route].filter(Boolean) };
     if (page.route === '/pricing') return { ...page, sections: pricingSections() };
     if (page.route === '/lessons') return { ...page, sections: lessonsIndexSections() };
