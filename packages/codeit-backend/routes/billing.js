@@ -12,7 +12,7 @@ const {
   userIdFromEvent,
 } = require('../billingEvents');
 const store = require('../billingStore');
-const { studentAgeEligibility } = require('../studentAge');
+const { whoMayBuy } = require('../whoMayBuy');
 const { recordEvent } = require('../analytics');
 
 const router = express.Router();
@@ -147,14 +147,13 @@ router.get('/status', authenticateToken, async (req, res) => {
     // it: the rule is a managed profile never buys, and neither does anyone
     // under 18. The same two conditions the checkout route already enforces,
     // so the page and the endpoint cannot disagree.
+    //
+    // And a third: a learner account with no birthday on record, which is
+    // what a pupil who joined a class has. See whoMayBuy.js.
     let canSubscribe = !req.user.managedProfile;
     if (canSubscribe) {
-      const [rows] = await pool.query('SELECT dob FROM Users WHERE user_id = ?', [req.user.user_id]);
-      const dob = rows[0]?.dob;
-      if (dob) {
-        const age = studentAgeEligibility(String(dob).slice(0, 10)).age;
-        if (age !== null && age < 18) canSubscribe = false;
-      }
+      const [rows] = await pool.query('SELECT role, dob FROM Users WHERE user_id = ?', [req.user.user_id]);
+      canSubscribe = whoMayBuy({ managedProfile: false, role: rows[0]?.role, dob: rows[0]?.dob }).may;
     }
 
     res.json({
@@ -184,20 +183,11 @@ router.post('/checkout', authenticateToken, async (req, res) => {
     const account = rows[0];
     if (!account) return res.status(404).json({ error: 'Account not found.' });
 
-    if (req.user.managedProfile) {
+    if (!whoMayBuy({ managedProfile: req.user.managedProfile, role: account.role, dob: account.dob }).may) {
       return res.status(403).json({
         code: 'ADULT_REQUIRED',
         error: 'Ask a parent or guardian to set up CodeIt Plus from their own account.',
       });
-    }
-    if (account.dob) {
-      const eligibility = studentAgeEligibility(String(account.dob).slice(0, 10));
-      if (eligibility.age !== null && eligibility.age < 18) {
-        return res.status(403).json({
-          code: 'ADULT_REQUIRED',
-          error: 'Ask a parent or guardian to set up CodeIt Plus from their own account.',
-        });
-      }
     }
 
     const client = stripe();

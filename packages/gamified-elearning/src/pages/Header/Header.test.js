@@ -137,6 +137,19 @@ describe('the shortcut to subscribing', () => {
     expect(screen.queryByRole('link', { name: 'Get Plus' })).not.toBeInTheDocument();
   });
 
+  // A pupil who joined a class: a learner account, not a managed profile, and
+  // no birthday on record. The server says they may not be charged, and that
+  // is enough to keep the adults' links out of their menu.
+  test('a class pupil has no Plan, Classes or This week in their menu', async () => {
+    mockBilling = { billingEnabled: true, plan: 'free', canSubscribe: false };
+    renderHeader({ id: 9, name: 'Thomas', role: 'student' }, 'token-abc');
+    fireEvent.click(await screen.findByRole('button', { name: /account menu/i }));
+    expect(screen.queryByRole('menuitem', { name: 'Plan' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('menuitem', { name: 'Classes' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('menuitem', { name: 'This week' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Get Plus' })).not.toBeInTheDocument();
+  });
+
   test('a child is never sold to at all', async () => {
     mockBilling = { billingEnabled: true, plan: 'free', canSubscribe: false };
     renderHeader({ id: 2, name: 'Sara', role: 'student', managedProfile: true }, 'token-abc');

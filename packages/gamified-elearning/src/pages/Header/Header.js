@@ -106,8 +106,7 @@ export default function Header() {
   // the plan link. The page itself refuses them too; this just avoids
   // dangling a price in front of a nine-year-old.
   const isChild = Boolean(user) && String(user.role || "").toLowerCase() === "student";
-  const navLinks = (user ? (isChild ? CHILD_NAV : MEMBER_NAV) : PUBLIC_NAV)
-    .filter(link => !link.adultsOnly || !user?.managedProfile);
+  const navLinksAll = (user ? (isChild ? CHILD_NAV : MEMBER_NAV) : PUBLIC_NAV);
 
   // The first family to pay said it took too many buttons, and they were
   // right: from a signed-in adult's studio, the plan page was two taps behind
@@ -132,8 +131,15 @@ export default function Header() {
   // Two controls with one destination is the mistake this header already made
   // once with Studio. When Get Plus is in the top bar, Plan leaves the menu;
   // when it is not, Plan is how a subscriber manages their billing.
+  //
+  // A pupil who joined a class is not a managed profile, so "Plan", "Classes"
+  // and "This week" were all in their menu, and Plan opened the prices. The
+  // server's answer to "may this account be charged" is the same question as
+  // "is this an adult", so a no hides the adults' links as well.
+  const notAnAdult = Boolean(user?.managedProfile) || billing.canSubscribe === false;
+  const navLinks = navLinksAll.filter(link => !link.adultsOnly || !notAnAdult);
   const accountLinks = (user ? MEMBER_ACCOUNT_NAV : [])
-    .filter(link => !link.adultsOnly || !user?.managedProfile)
+    .filter(link => !link.adultsOnly || !notAnAdult)
     .filter(link => !(showGetPlus && link.to === "/pricing"));
   const progress = stats?.totalXP >= 0 ? getXpProgress(stats.totalXP) : null;
   const level = progress ? progress.level : null;
