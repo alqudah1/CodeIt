@@ -4,57 +4,16 @@ import { AGE_RANGE } from '../../config/company';
 import { useSEO } from '../../hooks/useSEO';
 import { useFAQSchema } from '../../hooks/useFAQSchema';
 import { trackEvent } from '../../utils/trackEvent';
+import learnPythonFaqs from '../../data/learnPythonFaqs';
+import { PRICE, INTERVAL } from '../../config/pricing';
 import './SEOPage.css';
 
-const FAQS = [
-  {
-    q: 'Is Python a good language for kids to learn?',
-    // This said Python is "consistently ranked the best first programming
-    // language" and named three companies that use it. Nobody here could
-    // point to the ranking or the source for the companies, and this answer
-    // is also given to search engines as the page's FAQ. It now says only
-    // what can be stood behind (21 November 2026).
-    a: 'Yes. Python reads close to English, so a child can focus on the idea rather than the punctuation. Adults use Python for real work in data, science and automation; it is not a toy language, so what a child learns in it stays useful.',
-  },
-  {
-    // This answered "what ages" with 5 to 12 and never said 8 to 14, which is
-    // the range the product is actually built for. It is an FAQPage entry, so
-    // it is the sentence a summariser reaches for first, and on 24 October
-    // Google's AI Overview duly described CodeIt as being "for ages 5-12".
-    // Being read as a product for five-year-olds undoes the positioning.
-    // The real range leads, and the managed-profile range is no longer written
-    // as a range beside it. On 7 November Google's AI Overview for "free python
-    // for kids" called CodeIt "gamified Python lessons for kids aged 5 to 12
-    // (with independent accounts for ages 13+)" while citing this page: it had
-    // taken the account sentence, where two ranges sit either side of an "and",
-    // over the audience sentence above it. The floor is stated as a floor now,
-    // and the 13-and-over case comes first so the answer does not end on a 5.
-    q: 'What ages can use CodeIt?',
-    a: `${AGE_RANGE.statement} Adults learning from scratch are welcome too. A learner aged 13 or over opens their own account. For anyone younger, a parent or legal guardian confirms their email and creates a private managed profile, which CodeIt supports from age 5.`,
-  },
-  {
-    q: 'Do kids need prior coding experience to use CodeIt?',
-    a: 'No experience is needed. CodeIt\'s Lesson 1 starts from absolute zero. The very first step is writing a single line of Python. Every concept is introduced before it is used, so there are no assumptions about what a child already knows. Nothing needs to be installed; Python runs directly in the browser.',
-  },
-  {
-    q: 'How long does each Python lesson take?',
-    a: 'Most learners complete a lesson in 20 to 30 minutes, though there is no time limit. Kids can stop mid-lesson and pick up exactly where they left off at any time. Taking an extra 10 minutes to fully understand a concept is always worth more than rushing through to the next one.',
-  },
-  {
-    // Added 2 November. Google's AI Overview had been describing CodeIt as
-    // "story-driven coding puzzles, XP, avatars and quizzes" on every query
-    // that named us, which is what Tynker could also claim. The comprehension
-    // questions had been on the page since 16 October but never as an answer
-    // to a question, and an FAQPage answer is the most quotable thing a page
-    // has. This is the question a parent actually types.
-    q: 'How do I know my child understood the code and did not just finish it?',
-    a: 'CodeIt asks them about their own file. If their project has a variable called score set to 0, the question is what score starts as, and the right answer is whatever that child actually wrote, so it cannot be answered by recalling a lesson or by a sibling who did the last one. Only first attempts count: a wrong answer shows the right one with an explanation and stops counting. What you read back is a sentence describing something that happened, such as "worked out how many times a loop repeats", rather than a score or a percentage, because a percentage invites comparison between children and says nothing about your own.',
-  },
-  {
-    q: 'Is CodeIt free to use?',
-    a: 'Every lesson, the playground and building your own projects are free, and stay free. There is a paid plan, CodeIt Plus, at CA$12 a month plus tax, but you never need it to learn Python here.',
-  },
-];
+// The questions are in src/data/learnPythonFaqs.js, which the crawlable copy
+// of this page reads too, so the two halves cannot say different things. Why
+// each answer is worded as it is (the ages answer, the unsourced "best first
+// language" claim, "20 to 30 minutes") is written there and in this file's
+// history before 24 November 2026.
+const FAQS = learnPythonFaqs({ agesStatement: AGE_RANGE.statement, price: PRICE, interval: INTERVAL });
 
 export default function LearnPythonForKids() {
   useSEO({

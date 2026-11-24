@@ -40,7 +40,10 @@ describe('free Python learning landing page', () => {
 describe('claims nobody could point to a source for', () => {
   const fs = require('fs');
   const path = require('path');
-  const source = fs.readFileSync(path.join(__dirname, 'LearnPythonForKids.js'), 'utf8');
+  // The page and the questions it shows, which since 24 November 2026 are in
+  // the file the crawlable copy reads as well.
+  const source = fs.readFileSync(path.join(__dirname, 'LearnPythonForKids.js'), 'utf8')
+    + '\n' + fs.readFileSync(path.join(__dirname, '../../data/learnPythonFaqs.js'), 'utf8');
   const code = source.split('\n').filter((line) => !line.trim().startsWith('//')).join('\n');
 
   test('no ranking, no company names, no count of lines in other languages', () => {
@@ -54,5 +57,17 @@ describe('claims nobody could point to a source for', () => {
   test('what it says instead can be stood behind', () => {
     expect(code).toMatch(/Python reads close to English, so a child can focus on the idea rather than the punctuation\./);
     expect(code).toMatch(/Adults use Python for real work in data, science and automation; it is not a toy/);
+  });
+});
+
+describe('the questions on the page', () => {
+  test('are the ones in the shared file, all of them, and the same list goes to the FAQ schema', () => {
+    const learnPythonFaqs = require('../../data/learnPythonFaqs').default;
+    const { useFAQSchema } = require('../../hooks/useFAQSchema');
+    const expected = learnPythonFaqs({ agesStatement: 'x', price: 'CA$12', interval: 'month' }).map((f) => f.q);
+    render(<LearnPythonForKids />);
+    expected.forEach((q) => expect(screen.getByText(q)).toBeInTheDocument());
+    expect(useFAQSchema.mock.calls[useFAQSchema.mock.calls.length - 1][0].map((f) => f.q)).toEqual(expected);
+    expect(document.body.textContent).not.toMatch(/20 to 30 minutes/);
   });
 });

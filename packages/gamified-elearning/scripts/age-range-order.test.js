@@ -90,10 +90,11 @@ test('no crawlable page states the managed-profile range at all', () => {
 });
 
 test('the Python landing page answers the age question with the real range', () => {
-  // The FAQ lives in the React component and is emitted as FAQPage schema,
-  // which is the single most quotable thing on the page.
+  // The FAQ is emitted as FAQPage schema, which is the single most quotable
+  // thing on the page. Since 24 November 2026 it lives in the file both the
+  // React page and the crawlable copy read, not in the component.
   const source = fs.readFileSync(
-    path.resolve(__dirname, '../src/pages/SEO/LearnPythonForKids.js'),
+    path.resolve(__dirname, '../src/data/learnPythonFaqs.js'),
     'utf8'
   );
 
@@ -104,7 +105,7 @@ test('the Python landing page answers the age question with the real range', () 
 
   // A literal range, or the constant interpolated. Both are the real range.
   const answer = (entry[1] || entry[2]).replace(
-    /\$\{AGE_RANGE\.statement\}/g,
+    /\$\{(?:AGE_RANGE\.statement|agesStatement)\}/g,
     AGE_RANGE.statement
   );
   assert.match(answer, REAL, `the age answer does not state ${AGE_RANGE.short}`);
