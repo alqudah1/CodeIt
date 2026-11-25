@@ -54,9 +54,18 @@ router.get('/available', async (req, res) => {
   }
 });
 
-router.use(authenticateToken);
-
-
+// ── Open to a visitor: the questions, and whether one answer is right ───────
+//
+// A visitor can do a whole lesson with no account. It ended on "Start Quiz",
+// and the quiz was a page saying it needs an account: the wall arrived at the
+// moment a child wanted more (the interface review of 21 November 2026, and
+// the one thing every study of forced sign-up agrees on). The quiz is now
+// taken first and the account is offered afterwards, to keep the score.
+//
+// What that opens: the questions, which never carry the answer, and the
+// verdict on one answer at a time, which a signed-in child already gets.
+// Nothing is saved and no XP is given by either. Saving a score and paying
+// for it (/submit) still needs an account, below.
 // GET /:quizId/questions — does NOT expose correct answer to client
 router.get('/:quizId/questions', async (req, res) => {
   const { quizId } = req.params;
@@ -127,6 +136,8 @@ router.post('/check', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+router.use(authenticateToken);
 
 // POST /submit — batch submit; validate all answers server-side
 router.post('/submit', async (req, res) => {

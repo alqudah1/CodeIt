@@ -14,6 +14,7 @@ import { setVoiceState, shouldAutoRead, speak } from "../../utils/voice";
 import { effectiveGuideLevel } from "../../utils/guideLevel";
 import { bankGuestLessons } from "../../utils/guestLessons";
 import { trackLessonCompletion } from "../../utils/progressTracker";
+import { forgetGuestQuiz, rememberGuestQuiz, waitingGuestQuiz } from "../../utils/guestQuiz";
 import DeadEnd from "../../components/DeadEnd/DeadEnd";
 import useCountUp from "../../hooks/useCountUp";
 import { builderPromptFor } from "../Lessons/lessonRegistry";
@@ -95,6 +96,7 @@ export default function Quiz() {
   const [done, setDone] = useState(false);
   const [results, setResults] = useState(null);
   const [submitErr, setSubmitErr] = useState("");
+  const [keptFromBefore, setKeptFromBefore] = useState(false);
   // Juice: the earned XP counts up on the results screen. Top-level because
   // hooks cannot live inside the `if (done)` branch that renders it.
   const shownQuizXp = useCountUp(done ? (results?.xpEarned ?? 0) : 0);
@@ -147,11 +149,12 @@ export default function Quiz() {
       setLoading(true);
       setLoadErr("");
       if (authLoading) return;
-      if (!user) { setLoading(false); setLoadErr("Please log in to take the quiz."); return; }
-      if (!token) { setLoading(false); setLoadErr("Missing token. Please logout/login again."); return; }
+      // A visitor takes the quiz too (the questions are open; see the
+      // server's routes/quiz.js). Only somebody half signed in is sent back.
+      if (user && !token) { setLoading(false); setLoadErr("Missing token. Please logout/login again."); return; }
       try {
         const res = await axios.get(quizQuestionsUrl, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         const payload = res.data;
         const list = Array.isArray(payload)
@@ -183,6 +186,30 @@ export default function Quiz() {
     };
     fetchQuestions();
   }, [quizQuestionsUrl, user, authLoading, token]);
+
+  // ── A quiz finished as a visitor, now that there is an account ────────────
+  // The answers waited on this device. They are handed over once, through the
+  // same call a signed-in quiz makes; the server marks them and decides the
+  // XP. If that fails the quiz is simply here to take.
+  const handedOverRef = useRef(false);
+  useEffect(() => {
+    if (authLoading || !user || !token || gateChecking || gateBlocked || handedOverRef.current) return;
+    const waiting = waitingGuestQuiz(quizId);
+    if (!waiting) return;
+    handedOverRef.current = true;
+    forgetGuestQuiz();
+    axios.post(
+      `${API_BASE_URL}/api/quiz/submit`,
+      { quizId: Number(quizId), answers: waiting },
+      { headers: { Authorization: `Bearer ${token}` } }
+    ).then((res) => {
+      setResults(res.data);
+      if (res.data?.xpEarned > 0) awardXP(res.data.xpEarned);
+      setKeptFromBefore(true);
+      setDone(true);
+    }).catch(() => { /* the quiz is on screen, ready to take */ });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quizId, user, token, authLoading, gateChecking, gateBlocked]);
 
   // ── Current question helpers ──────────────────────────────────────────────
   const q = questions[currentIdx];
@@ -229,7 +256,7 @@ export default function Quiz() {
       const res = await axios.post(
         `${API_BASE_URL}/api/quiz/check`,
         { questionId: qId, answer: optVal },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: token ? { Authorization: `Bearer ${token}` } : {} }
       );
       const result = res.data; // { correct, correctAnswerText, explanation }
       setCheckResult(result);
@@ -280,6 +307,17 @@ export default function Quiz() {
       setCheckFailed(false);
     } else {
       const finalAnswers = { ...allAnswers, [String(qId)]: selected };
+      if (!token) {
+        // A visitor: every answer was checked by the server as it was given,
+        // so the score is the real one. There is nowhere to save it yet, so
+        // the answers wait on this device for an account (utils/guestQuiz.js).
+        const right = Object.values(questionResults).filter((r) => r.correct).length;
+        // A nought is not kept: the offer then is about the next try.
+        if (right > 0) rememberGuestQuiz(quizId, finalAnswers); else forgetGuestQuiz();
+        setResults({ correctCount: right, totalQuestions: total, percentage: total > 0 ? Math.round((right / total) * 100) : 0, xpEarned: 0 });
+        setDone(true);
+        return;
+      }
       try {
         const res = await axios.post(
           `${API_BASE_URL}/api/quiz/submit`,
@@ -317,6 +355,7 @@ export default function Quiz() {
     setDone(false);
     setResults(null);
     setSubmitErr("");
+    setKeptFromBefore(false);
   };
 
   const correctAnswerText = checkResult?.correctAnswerText ?? null;
@@ -457,7 +496,23 @@ export default function Quiz() {
             <span className="qz-score-total">{tot}</span>
           </div>
 
-          <div className="qz-xp-pill">+{shownQuizXp} XP earned</div>
+          {/* A visitor has a real score and nowhere to keep it. This is
+              where the account is offered: after the quiz, not instead of it. */}
+          {!token ? (
+            <div className="qz-keep" role="note">
+              {/* Nobody wants to keep a nought. With nothing right the offer is
+                  about the next try, not this one. */}
+              <b>{correct > 0 ? 'Keep this score.' : 'Save your next try.'}</b>
+              <span>{correct > 0
+                ? 'A free account saves it and adds the XP. You come straight back here.'
+                : 'A free account saves your quizzes and adds the XP. You come straight back here.'}</span>
+              <button className="qz-btn-forward" onClick={() => navigate('/register', { state: { from: `/quiz/${quizId}` } })}>Make a free account</button>
+              <button className="qz-keep__login" onClick={() => navigate('/login', { state: { from: `/quiz/${quizId}` } })}>I already have one</button>
+            </div>
+          ) : (
+            <div className="qz-xp-pill">+{shownQuizXp} XP earned</div>
+          )}
+          {keptFromBefore && <p className="qz-keep__saved" role="status">Saved to your account, from the quiz you just took.</p>}
 
           {(() => {
             const newXp = (preQuizXp || 0) + (xp || 0);

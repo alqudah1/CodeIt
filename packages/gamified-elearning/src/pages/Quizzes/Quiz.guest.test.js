@@ -1,18 +1,20 @@
 // A guest who finishes a lesson presses "Start Quiz" and lands here.
 //
 // Until 14 November 2026 the page told them "Time to sign in again. Your
-// sign-in fell asleep", with a Log in button and no way to make an account.
-// They had never signed in. It was the moment a child wanted more, and it
-// read as an error about something they never had.
-import { render, screen } from '@testing-library/react';
+// sign-in fell asleep". Until 25 November it told them the quiz needs an
+// account. Now they take the quiz, see a real score, and are offered an
+// account afterwards to keep it.
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import axios from 'axios';
 import Quiz from './Quiz';
 
 let mockAuth = { user: null, token: null, loading: false };
 jest.mock('axios');
 // The quiz asks this to hand over lessons finished as a guest; it has its own tests.
 jest.mock('../../utils/progressTracker', () => ({ trackLessonCompletion: jest.fn(() => Promise.resolve({})) }));
+const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
-  useNavigate: () => jest.fn(),
+  useNavigate: () => mockNavigate,
   useParams: () => ({ quizId: '3' }),
   useLocation: () => ({ search: '' }),
 }), { virtual: true });
@@ -41,17 +43,73 @@ jest.mock('../../components/DeadEnd/DeadEnd', () => (props) => (
 
 const doors = () => screen.getAllByRole('link').map((a) => `${a.textContent} -> ${a.getAttribute('href')}${a.dataset.back ? ` (back to ${a.dataset.back})` : ''}${a.dataset.primary === 'yes' ? ' [first]' : ''}`);
 
-test('a guest is told what a quiz needs, and can make an account, log in, or keep learning', async () => {
+const QUESTIONS = [
+  { id: 31, question: 'What does print do?', options: ['shows text', 'deletes text'] },
+  { id: 32, question: 'What goes round text?', options: ['quotes', 'spoons'] },
+];
+const RIGHT = { 31: 'shows text', 32: 'quotes' };
+
+function serve() {
+  jest.spyOn(Math, 'random').mockReturnValue(0.5);
+  axios.get.mockResolvedValue({ data: QUESTIONS });
+  axios.post.mockImplementation((url, body) => {
+    if (url.endsWith('/api/quiz/check')) return Promise.resolve({ data: { correct: RIGHT[body.questionId] === body.answer, correctAnswerText: RIGHT[body.questionId], explanation: '' } });
+    if (url.endsWith('/api/quiz/submit')) return Promise.resolve({ data: { correctCount: 1, totalQuestions: 2, percentage: 50, xpEarned: 10 } });
+    return Promise.reject(new Error('unexpected ' + url));
+  });
+  global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: async () => ({ completedLessons: [3] }) }));
+}
+
+beforeEach(() => { localStorage.clear(); mockNavigate.mockClear(); axios.get.mockReset(); axios.post.mockReset(); });
+afterEach(() => { jest.restoreAllMocks(); });
+
+test('a guest takes the quiz, sees their real score, and is offered an account afterwards', async () => {
   mockAuth = { user: null, token: null, loading: false };
+  serve();
   render(<Quiz />);
-  expect(await screen.findByRole('heading', { name: 'Quiz 3 needs an account' })).toBeInTheDocument();
-  expect(screen.getByText(/An account is free, and you come straight back to this quiz\./)).toBeInTheDocument();
-  expect(screen.queryByText(/fell asleep/)).toBeNull();
-  expect(doors()).toEqual([
-    'Make a free account -> /register (back to /quiz/3) [first]',
-    'Log in -> /login (back to /quiz/3)',
-    'Keep learning without one -> /lessons',
-  ]);
+  // The questions are asked for with no sign-in, and nothing says "needs an account".
+  expect(await screen.findByText('What does print do?')).toBeInTheDocument();
+  expect(axios.get.mock.calls[0][1].headers).toEqual({});
+  expect(screen.queryByText(/needs an account/)).toBeNull();
+
+  fireEvent.click(screen.getByRole('button', { name: /shows text/ }));
+  fireEvent.click(await screen.findByRole('button', { name: 'Next Question' }));
+  fireEvent.click(await screen.findByRole('button', { name: /spoons/ }));
+  fireEvent.click(await screen.findByRole('button', { name: /See Results|Finish|Results/i }));
+
+  // One right of two, checked by the server one at a time. Nothing was submitted.
+  expect(await screen.findByText('Keep this score.')).toBeInTheDocument();
+  expect(document.querySelector('.qz-score-big').textContent).toBe('1');
+  expect(document.querySelector('.qz-score-total').textContent).toBe('2');
+  expect(axios.post.mock.calls.some(([url]) => url.endsWith('/api/quiz/submit'))).toBe(false);
+  expect(screen.queryByText(/XP earned/)).toBeNull();
+
+  // The account door comes back to this quiz, and the answers wait for it.
+  fireEvent.click(screen.getByRole('button', { name: 'Make a free account' }));
+  expect(mockNavigate).toHaveBeenCalledWith('/register', { state: { from: '/quiz/3' } });
+  expect(JSON.parse(localStorage.getItem('codeit.guest.quiz'))).toEqual(expect.objectContaining({ quizId: 3, answers: { 31: 'shows text', 32: 'spoons' } }));
+});
+
+test('back with an account, the score is saved without taking the quiz again', async () => {
+  localStorage.setItem('codeit.guest.quiz', JSON.stringify({ quizId: 3, answers: { 31: 'shows text', 32: 'spoons' }, at: Date.now() }));
+  mockAuth = { user: { id: 7, username: 'sam' }, token: 't', loading: false };
+  serve();
+  render(<Quiz />);
+  expect(await screen.findByText('Saved to your account, from the quiz you just took.')).toBeInTheDocument();
+  const submit = axios.post.mock.calls.find(([url]) => url.endsWith('/api/quiz/submit'));
+  expect(submit[1]).toEqual({ quizId: 3, answers: { 31: 'shows text', 32: 'spoons' } });
+  expect(submit[2].headers).toEqual({ Authorization: 'Bearer t' });
+  expect(localStorage.getItem('codeit.guest.quiz')).toBeNull();
+  await waitFor(() => expect(screen.getByText(/XP earned/)).toBeInTheDocument());
+});
+
+test('answers left for another quiz are not handed to this one', async () => {
+  localStorage.setItem('codeit.guest.quiz', JSON.stringify({ quizId: 5, answers: { 1: 'x' }, at: Date.now() }));
+  mockAuth = { user: { id: 7, username: 'sam' }, token: 't', loading: false };
+  serve();
+  render(<Quiz />);
+  expect(await screen.findByText('What does print do?')).toBeInTheDocument();
+  expect(axios.post.mock.calls.some(([url]) => url.endsWith('/api/quiz/submit'))).toBe(false);
 });
 
 test('somebody whose sign-in really did lapse is told that, and the way back to the quiz goes with them', async () => {
