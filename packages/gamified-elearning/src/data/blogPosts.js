@@ -285,7 +285,7 @@ const BLOG_POSTS = [
           'This is us, so weigh it accordingly. Free plan with no card, and CodeIt Plus at CA$12 a month.',
           'Typed Python from the first lesson, from a first print statement to classes and recursion, each lesson with a quiz, and coding puzzles for lessons 1 to 10. Separately, a studio where a child describes a game or website, gets a working first version, and then opens the code and changes it.',
           'Best for: a child who has outgrown blocks and wants to type, and for one who wants to build a thing rather than work through a course. A child aged 13 or over can share it with a public link; a younger child\'s profile stays private.',
-          'Weakest at: everything a large product has and a small one does not. There is no school rostering, no gradebook, no offline mode, no Minecraft or Roblox integration, and the structured lesson sequence is Python only. If your child is five and cannot read fluently, start with Scratch and come back.',
+          'Weakest at: everything a large product has and a small one does not. There is no school rostering, no gradebook, no offline mode, no Minecraft or Roblox integration, and the structured lesson sequence is Python only. A single teacher can run a free class with a class code, but that is not a district product. If your child is five and cannot read fluently, start with Scratch and come back.',
         ],
       },
       {

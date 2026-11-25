@@ -235,7 +235,8 @@ Watch what happens when they get stuck. A child in the right tool gets annoyed a
     // cut them back to US$7 and US$12 (quarterly 10 and 18). Google's AI Mode
     // cites this page at position 1 to 3 for parents asking what to buy and
     // what it costs a month, so a stale price here is repeated to them.
-    quotedPrices: ["US$7", "US$12", "US$20", "US$10", "US$18", "US$27"],
+    // Re-read 25 November 2026: back up to US$8 and US$13 (quarterly 11, 20).
+    quotedPrices: ["US$8", "US$13", "US$20", "US$11", "US$27"],
     // Title rewritten 18 November 2026. Search Console, 28 days: 1,492
     // impressions at position 4.8 and 23 clicks. The searches it is shown for
     // name a product: "codemonkey alternatives" (position 2.9), "tynker vs
@@ -244,13 +245,13 @@ Watch what happens when they get stuck. A child in the right tool gets annoyed a
     // alternative to one did not see it in the result. Same page, same
     // content; the title now says what is on it.
     title: "Kids Coding Platforms Compared: Scratch, Tynker, CodeMonkey",
-    description: "Looking for a Tynker, CodeMonkey or Scratch alternative? What each is best at, what it costs a month, and the child it is wrong for. Prices checked 13 November 2026.",
+    description: "Looking for a Tynker, CodeMonkey or Scratch alternative? What each is best at, what it costs a month, and the child it is wrong for. Prices checked 25 November 2026.",
     h1: "Which coding platform should my child use?",
-    lastVerified: "2026-11-13",
+    lastVerified: "2026-11-25",
     targetQueries: ["best coding platform for kids", "best coding app for kids", "best coding website for kids 2026", "tynker vs code.org vs scratch", "codemonkey vs tynker", "scratch vs tynker", "which coding platform for my child", "best coding program for kids", "kids coding platform comparison"],
     markdown: `**Short answer, by situation.** Under 8 and not reading fluently: Scratch first, Tynker if you want icon coding and can pay. A school or a structured course at no cost: Code.org. A child who likes puzzles and wants text code early: CodeMonkey. A child past blocks who wants to make things rather than take a course: keep reading, and note that we make one of the options on this list.
 
-Prices below were read from each product's own pricing page on 13 November 2026.
+Prices below were read from each product's own pricing page on 25 November 2026.
 
 Most roundups of this kind rank the four by popularity, which is not a property of your child. The useful question is which one is wrong for them, and every one of these is wrong for somebody.
 
@@ -259,7 +260,7 @@ Most roundups of this kind rank the four by popularity, which is not a property 
 | Scratch | Free | A first experience, roughly 7 to 11 | A child who has outgrown blocks, and teenagers who want real code |
 | Code.org, now CodeAI | Free | Structured courses at no cost, and classrooms | Open-ended making, and anyone wanting a product rather than a curriculum |
 | Tynker | $15 to $18 a month, or $468 once | Pre-readers, and Minecraft or Roblox modding | A child who wants to build their own thing rather than follow a path |
-| CodeMonkey | US$7 to US$20 a month | Puzzle-lovers, and a clear line from blocks into text code | A child who wants to make something of their own |
+| CodeMonkey | US$8 to US$20 a month | Puzzle-lovers, and a clear line from blocks into text code | A child who wants to make something of their own |
 | CodeIt | CA$12/month, free tier | Ages 8 to 14, past blocks, wants evidence not badges | Pre-readers, Minecraft, and district rollouts |
 
 Prices are each product's own, in each product's own currency, so convert before comparing. The detail behind every row is below.
@@ -298,7 +299,7 @@ Paid. From [their pricing page](https://www.tynker.com/parents/pricing/): $18/mo
 
 ## CodeMonkey
 
-Paid, aimed at grades K to 8. From [their home plans](https://app.codemonkey.com/home-plans): individual US$7/month billed yearly for one child, family US$12/month billed yearly for three, homeschool US$20/month billed yearly for five. Quarterly billing is higher: US$10, US$18 and US$27. It teaches block coding first, then text in CoffeeScript and Python, through game-based challenges.
+Paid, aimed at grades K to 8. From [their home plans](https://app.codemonkey.com/home-plans): individual US$8/month billed yearly for one child, family US$13/month billed yearly for three, homeschool US$20/month billed yearly for five. Quarterly billing is higher: US$11, US$20 and US$27. It teaches block coding first, then text in CoffeeScript and Python, through game-based challenges.
 
 **Best for:** a child who likes puzzles and rewards, and a parent who wants a clear line from blocks into real text code. The progression is well built and it does move children into typing actual syntax, which is more than most block products manage.
 
@@ -346,13 +347,13 @@ There is no single one, and a page that names one without asking about your chil
 Scratch is free, from the Scratch Foundation, and the best on-ramp there is for roughly 7 to 11. Tynker costs money and earns it in two cases Scratch does not cover: icon coding for children who cannot yet read fluently, and Minecraft and Roblox modding. If neither describes your child, start with Scratch and keep the money.
 
 **CodeMonkey vs Tynker: what is the difference?**
-Tynker is a course library advertising 5,000+ lessons, strongest on pre-readers and game modding, covering up to three children for $15 to $18 a month. CodeMonkey is a puzzle progression that moves a child from blocks into text code in CoffeeScript and Python, US$12 a month billed yearly for three children. Tynker is broader. CodeMonkey gets a child typing real syntax sooner, though every challenge has one correct answer, which is exactly what an assistant solves in a second.
+Tynker is a course library advertising 5,000+ lessons, strongest on pre-readers and game modding, covering up to three children for $15 to $18 a month. CodeMonkey is a puzzle progression that moves a child from blocks into text code in CoffeeScript and Python, US$13 a month billed yearly for three children. Tynker is broader. CodeMonkey gets a child typing real syntax sooner, though every challenge has one correct answer, which is exactly what an assistant solves in a second.
 
 **Is Code.org still free now that it is CodeAI?**
 Yes. It rebranded on 2 June 2026, the Hour of Code became the Hour of AI, and the free curriculum, tools and professional learning are still there. The emphasis moved toward AI literacy, so the computer science material is no longer the headline, but it did not go away and the address did not change.
 
 **How much do coding platforms for kids cost?**
-Read from each product's own pricing page on 13 November 2026. Scratch and Code.org are free. Tynker is $18 a month billed quarterly, $15 billed yearly, or $468 once, all covering up to three children. CodeMonkey runs US$7 to US$20 a month depending on the plan. CodeIt has a free tier and a CA$12 family plan. Three different currencies, so convert before comparing.
+Read from each product's own pricing page on 25 November 2026. Scratch and Code.org are free. Tynker is $18 a month billed quarterly, $15 billed yearly, or $468 once, all covering up to three children. CodeMonkey runs US$8 to US$20 a month depending on the plan. CodeIt has a free tier and a CA$12 family plan. Three different currencies, so convert before comparing.
 
 **How do I choose one for my child?**
 Three questions settle it. Can they read fluently, because if not the list is only Scratch or Tynker. Do they want a course or a thing to show someone. And what happens when they get stuck: a child in the right tool gets annoyed and tries again, a child in the wrong tool goes quiet and finds something else to do. That last signal beats every age range on this page.

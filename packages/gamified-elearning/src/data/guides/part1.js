@@ -103,13 +103,14 @@ CodeIt is a browser-based studio built for ages 8 to 14. A learner describes a w
     slug: "after-scratch",
     relatedLessons: [1, 2, 4],
     // CodeMonkey's own prices, from app.codemonkey.com/home-plans, re-read
-    // 13 November 2026, when they had dropped from 8 and 13 to 7 and 12.
+    // 13 November 2026, when they had dropped from 8 and 13 to 7 and 12, and
+    // again 25 November 2026, when they were back at 8 and 13.
     // They were once written as bare "$8" and "$13", which slipped
     // past the price guards entirely: an unmarked dollar amount is not read as
     // a second currency, so a competitor's US price could sit on the page
     // undeclared. Marking them US$ is what the rest of the site does and what
     // the guard is for.
-    quotedPrices: ["US$7", "US$12", "US$14.99", "US$15", "US$468", "US$24.99", "US$119.99", "US$199.99"],
+    quotedPrices: ["US$8", "US$13", "US$14.99", "US$15", "US$468", "US$24.99", "US$119.99", "US$199.99"],
     title: "What to Use After Scratch, Before Python",
     description: "Your kid outgrew Scratch but isn't ready for Python. Here's how to tell if they're actually ready, why the Python jump fails, and what to pick instead.",
     h1: "What to use after Scratch, before Python",
@@ -201,7 +202,7 @@ Start here: **Can they read fluently?** No → stay in blocks. Yes → **do they
 | 8–12, loved making **games** and wants to keep making games | Typed Python or JavaScript inside a game world, or browser games they make and then change line by line | [CodeCombat](https://codecombat.com/): freemium, roughly 9+, where typed code moves the character; for making the games themselves, see the disclosure below |
 | 8–12, obsessed with **Minecraft or Roblox** | Modding path, the motivation is already there | [Tynker](https://www.tynker.com/) (US$15 a month billed yearly, or US$468 once, up to 3 children) |
 | 9–13, loved the "look what I made" part; wants something others can open | HTML, CSS, JavaScript in a browser | Any browser-based web editor; see the disclosure below |
-| 9–13, loved the **puzzles and logic**, not the art | Structured typed-code puzzles | [CodeMonkey](https://www.codemonkey.com/) (US$7/mo individual, US$12/mo family, K–8), [CodeCombat](https://codecombat.com/) |
+| 9–13, loved the **puzzles and logic**, not the art | Structured typed-code puzzles | [CodeMonkey](https://www.codemonkey.com/) (US$8/mo individual, US$13/mo family, K–8), [CodeCombat](https://codecombat.com/) |
 | 10+, more curious about **AI** than about code | AI literacy alongside coding | [CodeAI](https://code.org/): this is Code.org, which rebranded in June 2026 and shifted emphasis toward AI literacy; free |
 | 11–13, asking for **Python by name** | Python, but inside something with visible output | [CodeCombat](https://codecombat.com/)'s Python path first; a beginner Python sequence second. Note Codecademy's 16+ age gate |
 | 13–15, self-directed, reads well | Real adult-track courses | [Codecademy](https://www.codecademy.com/) (free Basic, Plus from US$14.99 a month billed yearly, and check the 16+ term), [freeCodeCamp](https://www.freecodecamp.org/) |
@@ -255,7 +256,7 @@ Common and usually recoverable. The cause is normally the visible-reward drop de
 
 ---
 
-*Last verified: 15 November 2026. Competitor pricing, age ratings and terms were checked on this date and change often, confirm on the vendor's own site before paying.*
+*Last verified: 15 November 2026, and CodeMonkey's prices again on 25 November 2026. Competitor pricing, age ratings and terms change often, confirm on the vendor's own site before paying.*
 
 ## Try the translation, not just the theory
 

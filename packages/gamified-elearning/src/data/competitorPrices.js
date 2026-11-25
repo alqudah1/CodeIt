@@ -40,9 +40,9 @@
 const COMPETITOR_PRICES = {
   Tynker: {
     source: 'https://www.tynker.com/pricing/',
-    // Read again on 13 November 2026. Same five amounts, same 40% discount
-    // showing, same three-child limit, same 30-day guarantee.
-    checked: '2026-11-13',
+    // Read again on 13 and 25 November 2026. Same five amounts, same 40%
+    // discount showing, same three-child limit, same 30-day guarantee.
+    checked: '2026-11-25',
     note: 'Family plans, up to three children, 30-day money-back guarantee. A 40% discount was applied on the page at the time of checking.',
     prices: [18, 54, 15, 180, 468],
   },
@@ -54,14 +54,20 @@ const COMPETITOR_PRICES = {
     // header above records a guide being wrong for saying 7 and 12 in
     // August. It was wrong then and would be right now, which is the whole
     // case for re-reading the source instead of trusting the last read.
-    checked: '2026-11-13',
-    note: 'US dollars, per month. Billed yearly: individual 7, family 12 for three children, homeschool 20 for five. Billed quarterly: 10, 18, 27.',
-    prices: [7, 12, 20, 10, 18, 27],
+    //
+    // Read again on 25 November 2026 and they had gone back up: yearly
+    // individual 8 and family 13, quarterly 11 and 20. Homeschool unchanged.
+    // Twelve days. The comparison guide that quotes these is what Google's AI
+    // Mode cites for "what does it cost a month".
+    checked: '2026-11-25',
+    note: 'US dollars, per month. Billed yearly: individual 8, family 13 for three children, homeschool 20 for five. Billed quarterly: 11, 20, 27.',
+    prices: [8, 13, 20, 11, 27],
   },
   Kodable: {
     source: 'https://www.kodable.com/parents',
     // Re-read 13 November 2026, parent page and school plans page: unchanged.
-    checked: '2026-11-13',
+    // Parent page re-read 25 November 2026: unchanged.
+    checked: '2026-11-25',
     note: 'Families pay. Three guides said "free tier, 99.99 a year"; the parent page says a seven-day trial and then 24.99 a month, 119.99 a year, or 199.99 once, for up to four children. The free Kickstart plan people remember is on the school plans page (kodable.com/plans), where the paid tiers are 1750 Premium, 2500 Premium+ and 3500 All Access per site per year. A school free tier is not a family free tier.',
     prices: [24.99, 119.99, 199.99, 1750, 2500, 3500],
   },
