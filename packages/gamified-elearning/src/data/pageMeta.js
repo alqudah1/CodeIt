@@ -165,8 +165,14 @@ const PAGE_META = {
     description: 'Your avatar, XP, and level on CodeIt.',
   },
   '/python-games-for-kids': {
-    title: 'Python Games for Kids | Real Coding Puzzles, CodeIt',
-    description: 'Use real Python to solve browser-based games and coding puzzles about variables, loops, decisions, and beginner programming.',
+    // Search Console, 28 days to 25 November 2026: "python games for kids"
+    // at position 5.4 and "python coding games for kids" at 5.7, no clicks
+    // from either. The old snippet listed topics and never said how many
+    // games there are, who they are for, or that they cost nothing. There are
+    // thirty: three for each of lessons 1 to 10 (pages/Journey/puzzleConfigs),
+    // none of them behind the paid plan.
+    title: 'Python Games for Kids: 30 Free Coding Puzzles | CodeIt',
+    description: "Thirty Python puzzles for ages 8 to 14 that run in the browser. Type real Python, run it, and beat each lesson's boss puzzle to open the next one. Free, with nothing to install.",
   },
   '/register': {
     title: 'Create Free Account | CodeIt',

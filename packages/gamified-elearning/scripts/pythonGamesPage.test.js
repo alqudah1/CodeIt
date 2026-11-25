@@ -22,3 +22,14 @@ test('the Python games page shows a real puzzle and its real replies', () => {
   const said = (reply.after || []).join(' ');
   assert.ok(said.includes(boss.validator(reply.output).message), 'the success reply is not the one the puzzle gives');
 });
+
+// The title and description give a number. It is the number of puzzles the
+// journey actually has, counted here so the snippet cannot go stale.
+test('the games page snippet counts the puzzles there are', () => {
+  const { loadPuzzleConfigs, loadPageMeta } = require('./content-loader');
+  const count = Object.keys(loadPuzzleConfigs()).length;
+  const meta = loadPageMeta()['/python-games-for-kids'];
+  const words = { 30: 'Thirty' };
+  assert.ok(meta.title.includes(`${count} Free`), `title should say ${count}`);
+  assert.ok(meta.description.startsWith(`${words[count]} Python puzzles`), `description should say ${count}`);
+});
