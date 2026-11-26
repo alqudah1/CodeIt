@@ -44,9 +44,9 @@ describe('inline links in guide prose', () => {
     expect(inlineLinks(guide)).toEqual([]);
   });
 
-  test('the other thirteen each carry exactly one', () => {
+  test('the other fourteen each carry exactly one', () => {
     const others = GUIDE_PAGES.filter((g) => !NO_INLINE_LINK.includes(g.slug));
-    expect(others).toHaveLength(13);
+    expect(others).toHaveLength(14);
     for (const guide of others) {
       expect({ slug: guide.slug, links: inlineLinks(guide).length })
         .toEqual({ slug: guide.slug, links: 1 });

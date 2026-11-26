@@ -50,6 +50,7 @@ const COPY = [
   '../src/data/guides/part3.js',
   '../src/data/guides/part4.js',
   '../src/data/guides/part5.js',
+  '../src/data/guides/part6.js',
   '../src/pages/Games/gameCatalog.js',
   './generate-static-seo.js',
 ].map(file => {
@@ -227,6 +228,7 @@ test('no page claims the wrong answers are only real values from the project', (
     '../src/data/guides/part3.js',
     '../src/data/guides/part4.js',
     '../src/data/guides/part5.js',
+    '../src/data/guides/part6.js',
     '../src/data/blogPosts.js',
     '../src/pages/SEO/LearnPythonForKids.js',
     '../src/pages/SEO/PythonGamesForKids.js',

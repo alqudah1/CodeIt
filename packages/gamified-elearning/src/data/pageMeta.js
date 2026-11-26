@@ -195,7 +195,8 @@ const PAGE_META = {
   },
   '/terms': {
     title: 'Terms of Use | CodeIt',
-    description: 'The rules for using CodeIt lessons, coding tools, AI-assisted projects, accounts, public sharing, and planned paid features.',
+    // "Planned paid features" outlived the launch of CodeIt Plus by weeks.
+    description: 'The rules for using CodeIt lessons, coding tools, AI-assisted projects, accounts and public sharing, and how CodeIt Plus is billed and cancelled.',
   },
 };
 

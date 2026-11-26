@@ -21,6 +21,7 @@ import { GUIDES_B } from './guides/part2';
 import { GUIDES_C } from './guides/part3';
 import { GUIDES_D } from './guides/part4';
 import { GUIDES_E } from './guides/part5';
+import { GUIDES_F } from './guides/part6';
 
 const GUIDE_PAGES = [
   ...GUIDES_A,
@@ -28,6 +29,7 @@ const GUIDE_PAGES = [
   ...GUIDES_C,
   ...GUIDES_D,
   ...GUIDES_E,
+  ...GUIDES_F,
 ];
 
 export default GUIDE_PAGES;

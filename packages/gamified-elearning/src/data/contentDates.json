@@ -72,7 +72,7 @@
     "date": "2026-11-20"
   },
   "/guide": {
-    "hash": "a9903308e620e8d4",
+    "hash": "f0733c131a870b7c",
     "date": "2026-11-26"
   },
   "/guide/after-scratch": {
@@ -134,6 +134,10 @@
   "/guide/tynker-alternative": {
     "hash": "6d4f0e57118f314e",
     "date": "2026-11-18"
+  },
+  "/guide/website-builders-for-kids": {
+    "hash": "f81526e1de168687",
+    "date": "2026-11-26"
   },
   "/guide/what-did-my-kid-learn": {
     "hash": "9a427887abd31ad8",
@@ -360,7 +364,7 @@
     "date": "2026-11-14"
   },
   "/terms": {
-    "hash": "c6b0d12615e2da22",
-    "date": "2026-11-17"
+    "hash": "8f756833c6782da7",
+    "date": "2026-11-26"
   }
 }
