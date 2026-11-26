@@ -225,22 +225,40 @@ const BLOG_POSTS = [
 
   {
     slug: 'best-coding-games-for-kids',
-    title: 'Best Coding Games for Kids: Six Compared, Honestly',
+    title: 'Best Coding Games for Kids: Ten Compared, by Age',
     description:
-      'Six coding games for kids compared: Scratch, Blockly Games, CodeAI, Tynker, CodeIt and CodeCombat. Ages, prices and what each one is weakest at, checked on each product\'s own site.',
+      'Ten coding games for kids compared by age, from Kodable and Lightbot for the youngest to Scratch, CodeMonkey, Swift Playground and CodeCombat. Ages, prices and what each is weakest at, checked on each product\'s own site.',
     date: '2026-03-27',
-    updated: '2026-11-18',
-    readTime: '8 min read',
+    updated: '2026-11-26',
+    readTime: '11 min read',
     category: 'Games & Puzzles',
     excerpt:
-      'Six coding games, one section each: what it is, who it fits, what it costs, and where it is weakest. Every price, age and quote was read from the product\'s own site on 3 September 2026 and checked again in November 2026.',
+      'Ten coding games, one section each, roughly from the youngest child to the oldest: what it is, who it fits, what it costs, and where it is weakest. Every price, age and quote was read from the product\'s own site or app store page.',
     sections: [
       {
         heading: 'How to judge a coding game',
         body: [
           'Not all coding games are equal. Some are logic puzzles with a coding theme. Others teach programming that carries over to real code. Four questions separate them:',
           '• Does the game require writing real code, or just moving blocks?\n• Does each level teach something new, or repeat the same skill?\n• Is there a clear connection between the challenge and a programming concept?\n• Does finishing it leave the child able to do something they could not do before?',
-          'A game can be excellent and still answer no to the first one. Blocks are the right answer for a child who cannot type fluently yet. What matters is knowing which question a product is answering, and that is what the six sections below are for.',
+          'A game can be excellent and still answer no to the first one. Blocks are the right answer for a child who cannot type fluently yet. What matters is knowing which question a product is answering, and that is what the ten sections below are for.',
+        ],
+      },
+      {
+        heading: 'Kodable',
+        body: [
+          'Its own parent page calls it "a coding, typing, and STEM app suite for kids ages 4-10". Children start with drag-and-drop puzzles and, in its words, "progress to writing real JavaScript".',
+          'Prices read from kodable.com/parents on 25 November 2026: a seven-day free trial, then $24.99 a month, $119.99 a year, or $199.99 once, for up to four children. The free plan people remember is a school plan, not a family one.',
+          'Best for: a child who is not reading fluently yet. Of the ten here, it is the only one whose whole age range sits below 10.',
+          'Weakest at: a family has no free way in beyond the trial, and a ten-year-old is at the top of its range on the first day.',
+        ],
+      },
+      {
+        heading: 'Lightbot',
+        body: [
+          'A puzzle game where a small robot is programmed with icons, not words. Its own site says it "secretly teaches you programming logic as you play", and lists sequencing, procedures, loops and conditionals.',
+          'The free version is Lightbot: Code Hour, an iPad app rated 4+ on the App Store, read on 26 November 2026. lightbot.com itself shows no price, so we are not printing one for the full game.',
+          'Best for: a short first taste of thinking in steps for a young child, with nothing to read.',
+          'Weakest at: the browser version on lightbot.com still needs Flash, which no current browser runs. On 26 November 2026 it showed "This plugin is not supported". So it is an app or nothing.',
         ],
       },
       {
@@ -280,6 +298,24 @@ const BLOG_POSTS = [
         ],
       },
       {
+        heading: 'CodeMonkey',
+        body: [
+          'Game-based, for ages 5 to 14 by its own home page, which says it "teaches kids real coding languages like CoffeeScript and Python". Block coding first, then typed code.',
+          'Prices read from app.codemonkey.com/home-plans on 25 November 2026: $8 a month for one child or $13 for three, billed yearly, and more if billed every three months. It has gone down and back up again since September, so check before paying.',
+          'Best for: a child who likes puzzles with a right answer and is ready to move from blocks to typing.',
+          'Weakest at: much of its typed code is CoffeeScript, a language a child is unlikely to meet outside CodeMonkey. Its Python courses are the part that carries over.',
+        ],
+      },
+      {
+        heading: 'Swift Playground',
+        body: [
+          'Apple\'s free app for iPad and Mac, where a child types real Swift. Apple describes it as an app that "helps you learn to code and build apps using Swift", the language App Store apps are built with.',
+          'Free on the App Store with no in-app purchases and rated 4+, read on 25 November 2026.',
+          'Best for: a child who reads well, has an iPad or a Mac, and wants to type real code from the first lesson.',
+          'Weakest at: it runs only on Apple devices. A Chromebook or a Windows laptop cannot open it, which rules it out for a classroom of Chromebooks.',
+        ],
+      },
+      {
         heading: 'CodeIt',
         body: [
           'This is us, so weigh it accordingly. Free plan with no card, and CodeIt Plus at CA$12 a month.',
@@ -300,14 +336,16 @@ const BLOG_POSTS = [
       {
         heading: 'The comparison, in one table',
         body: [
-          'Ages, prices and features below were read from each product\'s own site on 3 September 2026 and checked again in November 2026. Prices change, discounts appear and vanish, and terms are updated: check before paying.',
-          '• Scratch. Ages 8+ (younger with help). Free. Blocks. Free tier: it is entirely free.\n• Blockly Games. Ages 8+. Free and open source, Apache 2.0. Blocks, with the JavaScript shown. Free tier: entirely free.\n• CodeAI (Code.org). K to 12. Free. Blocks and typed code by course. Free tier: entirely free.\n• Tynker. Ages 5 to 18. $15 a month billed yearly at $180, $18 a month billed quarterly at $54, or $468 once. Blocks, then typed. Free tier: yes.\n• CodeIt. Built for ages 8 to 14, younger with an adult, managed profiles under 13. Free plan, CA$12 a month for Plus. Typed Python, plus the studio. Free tier: yes.\n• CodeCombat. Roughly 9+. Free levels, paid subscription, price not published in the page source. Typed Python, JavaScript and HTML. Free tier: yes.',
+          'Ages, prices and features below were read from each product\'s own site on 3 September 2026 and checked again in November 2026. Kodable, Lightbot, CodeMonkey and Swift Playground were added on 26 November 2026 from their own sites and App Store pages. Prices change, discounts appear and vanish, and terms are updated: check before paying.',
+          '• Kodable. Ages 4 to 10. Seven-day trial, then $24.99 a month, $119.99 a year or $199.99 once, up to four children. Drag-and-drop, then JavaScript. Free tier: schools only.\n• Lightbot. Rated 4+. Code Hour app free on iPad; no price on lightbot.com. Icons, not code. Free tier: the Code Hour app.\n• Scratch. Ages 8+ (younger with help). Free. Blocks. Free tier: it is entirely free.\n• Blockly Games. Ages 8+. Free and open source, Apache 2.0. Blocks, with the JavaScript shown. Free tier: entirely free.\n• CodeAI (Code.org). K to 12. Free. Blocks and typed code by course. Free tier: entirely free.\n• Tynker. Ages 5 to 18. $15 a month billed yearly at $180, $18 a month billed quarterly at $54, or $468 once. Blocks, then typed. Free tier: yes.\n• CodeMonkey. Ages 5 to 14. $8 a month for one child or $13 for three, billed yearly. Blocks, then CoffeeScript and Python. Free tier: a free start.\n• Swift Playground. Rated 4+. Free, no in-app purchases. Typed Swift. iPad and Mac only.\n• CodeIt. Built for ages 8 to 14, younger with an adult, managed profiles under 13. Free plan, CA$12 a month for Plus. Typed Python, plus the studio. Free tier: yes.\n• CodeCombat. Roughly 9+. Free levels, paid subscription, price not published in the page source. Typed Python, JavaScript and HTML. Free tier: yes.',
         ],
       },
       {
         heading: 'Which one to pick',
         body: [
           'If your child is seven and has never coded, use Scratch. It is free, it is the best on-ramp that exists, and there is no reason to pay anyone anything at that age. Come back to this list when they start asking why the blocks are not real code.',
+          'If your child is four to six and not reading yet, Kodable is built for that age, and Lightbot\'s free Code Hour app on an iPad is a first taste that costs nothing.',
+          'If they read well and have an iPad or a Mac, try Swift Playground before paying for anything: it is free and the code is real.',
           'If your child lives in Minecraft or Roblox, Tynker is the one worth paying for, because the modding integrations are the part nothing free replaces.',
           'If your child has outgrown blocks and wants to type, the honest shortlist is CodeCombat if they want a game, and CodeIt if they want to build a thing and understand it. Try the free tier of both before paying for either.',
         ],

@@ -15,25 +15,27 @@ import COMPETITOR_PRICES from './data/competitorPrices';
 // including the parts that are uncomfortable.
 const post = BLOG_POSTS.find((p) => p.slug === 'best-coding-games-for-kids');
 const text = post.sections.map((s) => `${s.heading}\n${s.body.join('\n')}`).join('\n');
-const NAMED = ['Scratch', 'Blockly Games', 'CodeAI', 'Tynker', 'CodeCombat', 'CodeIt'];
+// Ten from 26 November 2026, when Kodable, Lightbot, CodeMonkey and Swift
+// Playground were added: page 1 for the query is lists of ten, ordered by age.
+const NAMED = ['Kodable', 'Lightbot', 'Scratch', 'Blockly Games', 'CodeAI', 'Tynker', 'CodeMonkey', 'Swift Playground', 'CodeIt', 'CodeCombat'];
 
 describe('the coding games comparison', () => {
-  test('it names six products, not one', () => {
+  test('it names ten products, not one', () => {
     for (const name of NAMED) expect(text).toContain(name);
   });
 
-  test('CodeIt is fifth of the six, not first', () => {
+  test('CodeIt is ninth of the ten, not first', () => {
     const productHeadings = post.sections
       .map((s) => s.heading)
       .filter((h) => NAMED.some((n) => h.includes(n)));
-    expect(productHeadings.length).toBe(6);
+    expect(productHeadings.length).toBe(10);
     expect(productHeadings[0]).not.toContain('CodeIt');
-    expect(productHeadings.findIndex((h) => h === 'CodeIt')).toBe(4);
+    expect(productHeadings.findIndex((h) => h === 'CodeIt')).toBe(8);
   });
 
   test('every product gets a sentence on where it is weakest, ours included', () => {
     const weakest = post.sections.filter((s) => s.body.some((b) => b.startsWith('Weakest at:')));
-    expect(weakest.length).toBe(6);
+    expect(weakest.length).toBe(10);
     const ours = post.sections.find((s) => s.heading === 'CodeIt').body.join(' ');
     // A real limitation, not a humblebrag about caring too much.
     expect(ours).toMatch(/no school rostering|no teacher dashboard|Python only/);
@@ -63,6 +65,12 @@ describe('the coding games comparison', () => {
     ]);
     expect(stated.filter((n) => !known.has(n))).toEqual([]);
     expect(stated.length).toBeGreaterThan(0);
+  });
+
+  test('Lightbot carries no price for the full game, because its site shows none', () => {
+    const section = post.sections.find((s) => s.heading === 'Lightbot').body.join(' ');
+    expect(section).not.toMatch(/\$\d/);
+    expect(section).toMatch(/not printing one/);
   });
 
   test('CodeCombat carries no price, because none could be read', () => {
