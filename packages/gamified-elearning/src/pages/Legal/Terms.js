@@ -88,7 +88,11 @@ export default function Terms() {
                   are the document a person quotes back at you; they do not get
                   to be the optimistic version. */}
               <p>The free plan includes {FREE_MONTHLY_AI_BUILDS} AI project builds each month, and publishing a project to a public CodeIt link is free too. <strong>CodeIt Plus</strong> costs {PRICE_PER_INTERVAL} and adds unlimited AI builds and edits, and up to four learner profiles under one adult account. Play counts on published projects are free for every family.</p>
-              <p>Requesting a family pilot spot is free and never starts a subscription. Nothing is charged unless an adult goes through checkout and confirms.</p>
+              {/* This began "Requesting a family pilot spot is free and never
+                  starts a subscription." The pilot closed when CodeIt Plus went
+                  on sale, and terms do not describe an offer that is not being
+                  made (26 November 2026). */}
+              <p>Nothing is charged unless an adult goes through checkout and confirms. Making an account, and everything on the free plan, never starts a subscription.</p>
             </section>
 
             <section id="billing">

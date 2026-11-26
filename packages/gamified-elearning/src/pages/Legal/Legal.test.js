@@ -30,6 +30,8 @@ describe('trust pages', () => {
     expect(screen.getByRole('heading', { name: 'Eligibility and younger learners' })).toBeInTheDocument();
     expect(screen.getByText(/Managed younger profiles cannot publish projects publicly/i)).toBeInTheDocument();
     expect(screen.getByText(/never starts a subscription/i)).toBeInTheDocument();
+    // The pilot closed when Plus went on sale; terms do not describe it.
+    expect(screen.queryByText(/family pilot/i)).toBeNull();
     expect(useSEO).toHaveBeenCalledWith(expect.objectContaining({ canonical: '/terms' }));
   });
 
