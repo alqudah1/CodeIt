@@ -268,11 +268,19 @@ CodeIt's studio has a starter written for exactly this crossing: **Cat and mouse
   {
     slug: "cs-education-week-coding-hour",
     relatedLessons: [1, 2],
-    title: "A Coding Hour for CS Education Week, No Student Logins",
-    description: "One class period for CS Education Week on school Chromebooks: no student emails, no passwords, a game each child changes in code. What it is, what it is not, and the official alternatives.",
+    // Title rewritten 26 November 2026, eleven days before CS Education Week.
+    // Search Console, 28 days: shown for "csforall hour of code" at 7.9 and
+    // "cs for all hour of code" at 9.7, never for "hour of code" itself,
+    // because the title never said it. Teachers still search for the Hour of
+    // Code by that name although CodeAI renamed it the Hour of AI. The title
+    // says "alternative" because CodeIt is not an official activity.
+    title: "Hour of Code 2026 Alternative: One Class, No Student Logins",
+    description: "CS Education Week is 7 to 11 December 2026. One free class period on school Chromebooks: no student emails or passwords, and each child makes a game and changes its code. Plus the official Hour of AI catalog.",
     h1: "A coding hour for CS Education Week, with no student logins",
-    lastVerified: "2026-11-15",
+    lastVerified: "2026-11-26",
     targetQueries: [
+      "hour of code 2026",
+      "hour of code alternative",
       "hour of code activity no login",
       "hour of code activities chromebook",
       "cs education week activity ideas",
@@ -284,9 +292,9 @@ CodeIt's studio has a starter written for exactly this crossing: **Cat and mouse
 
 CodeIt is not an official Hour of Code or Hour of AI activity and is not affiliated with CodeAI or CSforALL. The Hour of AI site says its window for activity submissions is closed. This page is published by CodeIt, so weigh it accordingly.
 
-## When CS Education Week is
+## When CS Education Week 2026 is
 
-The Hour of AI site gives CS Education Week as 7 to 11 December, and says new activities launch on 16 November. Activities there are free and, in its words, "available year-round", so nothing stops you running an hour in January.
+The Hour of AI site gives CS Education Week as 7 to 11 December 2026 (checked again on 26 November), and new activities launched there on 16 November. Activities there are free and, in its words, "available year-round", so nothing stops you running an hour in January.
 
 ## Why the login is usually the hard part
 
@@ -338,7 +346,7 @@ What the hour does show is the difference between a child who got a result from 
 
 **What do I need on the day?** A projector, a device per child or per pair, and codeitlearn.com allowed on the network. Try it on one Chromebook the day before.
 
-*Last verified: 15 November 2026 against hourofai.org and CodeIt's own class and lesson plan code.*`,
+*Last verified: 15 November 2026 against hourofai.org and CodeIt's own class and lesson plan code. The week's dates checked again on 26 November 2026.*`,
   },
 ];
 
