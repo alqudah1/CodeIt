@@ -85,7 +85,12 @@ export default function Register() {
   // A parent who pressed the paid plan's button came to pay, not to be asked
   // whether they are learning to code.
   const plusEntry = !teacherEntry && (cameForPlus(searchParams) || cameFrom.startsWith('/pricing'));
-  const [step, setStep] = useState(familyEntry || teacherEntry || plusEntry ? 'educator' : 'choose');
+  // A child who has just taken a quiz as a visitor pressed "Make a free
+  // account" to keep the score. They were asked how they would like to start,
+  // with "Try CodeIt First" as one of the answers, and the button at the end
+  // said "Create account and build". They came to keep a score.
+  const quizEntry = /^\/quiz\/\d+$/.test(cameFrom);
+  const [step, setStep] = useState(familyEntry || teacherEntry || plusEntry ? 'educator' : quizEntry ? 'student' : 'choose');
   const [error, setError] = useState(null);
   const [showPw, setShowPw] = useState(false);
   const [pendingToken, setPendingToken] = useState(null);
@@ -311,7 +316,9 @@ export default function Register() {
                 ? 'Your project is ready. Give yourself a name and it is saved.'
                 : hasBuilderDraft
                   ? `Create an account to ${builderActionWord}`
-                  : 'Pick a name. Everything you make is saved to it.'}
+                  : quizEntry
+                    ? 'Pick a name. Your quiz score is saved to it.'
+                    : 'Pick a name. Everything you make is saved to it.'}
             </h1>
           </div>
 
@@ -405,7 +412,7 @@ export default function Register() {
             <button type="submit" className="auth-button">
               {hasBuilderDraft
                 ? `Create account and ${builderActionWord} project`
-                : 'Create account and build'}
+                : quizEntry ? 'Create account and keep my score' : 'Create account and build'}
             </button>
           </form>
           )}

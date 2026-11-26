@@ -85,3 +85,29 @@ test('a family sign-up still says what it always said', () => {
   expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Create a private learner profile');
   expect(screen.getByRole('button', { name: 'Create Parent / Educator Account' })).toBeInTheDocument();
 });
+
+// ── Arriving from a quiz taken as a visitor ──────────────────────────────────
+describe('a child who came to keep a quiz score', () => {
+  test('is not asked how they would like to start, and the form is about the score', () => {
+    mockLocation = { state: { from: '/quiz/1' }, search: '' };
+    render(<Register />);
+    expect(screen.queryByRole('heading', { name: 'How would you like to start?' })).toBeNull();
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Pick a name. Your quiz score is saved to it.');
+    expect(screen.getByRole('button', { name: 'Create account and keep my score' })).toBeInTheDocument();
+    expect(screen.getByLabelText('Birthday')).toBeRequired();
+  });
+
+  test('Back still reaches the other kinds of account', () => {
+    mockLocation = { state: { from: '/quiz/1' }, search: '' };
+    render(<Register />);
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+    expect(screen.getByRole('button', { name: /I am a Parent or Educator/ })).toBeInTheDocument();
+  });
+
+  test('anywhere else, the form says what it always said', () => {
+    mockLocation = { state: { from: '/lessons' }, search: '' };
+    render(<Register />);
+    fireEvent.click(screen.getByRole('button', { name: /I am learning to code/ }));
+    expect(screen.getByRole('button', { name: 'Create account and build' })).toBeInTheDocument();
+  });
+});
