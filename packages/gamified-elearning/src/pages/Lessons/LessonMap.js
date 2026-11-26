@@ -14,6 +14,7 @@ import CharacterAvatar from '../../components/CharacterAvatar/CharacterAvatar';
 import { useCharacterDisplay } from '../../context/CharacterContext';
 import { bankGuestLessons, guestLessonsDone } from '../../utils/guestLessons';
 import { trackLessonCompletion } from '../../utils/progressTracker';
+import { loadStepState } from '../../components/InteractiveLessonTemplate/stepMemory';
 
 // ── A map, not a list ────────────────────────────────────────────────────────
 //
@@ -175,6 +176,9 @@ const LessonMap = () => {
   const { character } = useCharacterDisplay();
   const [lessons, setLessons] = useState(FALLBACK_LESSONS);
   const [completedIds, setCompletedIds] = useState([]);
+  // Lessons begun and not finished. The stop the child is standing on said
+  // "Start" even when they were five steps in.
+  const [inHand, setInHand] = useState({});
   const [loading, setLoading] = useState(true);
   const hereRef = useRef(null);
   const scrolledRef = useRef(false);
@@ -205,6 +209,13 @@ const LessonMap = () => {
       // map used to say "0 / 31 done" to a child who did three yesterday and
       // stand them back on Lesson 1.
       setCompletedIds(guestLessonsDone());
+      // A visitor's place in a lesson is on this device (stepMemory.js).
+      const begun = {};
+      FALLBACK_LESSONS.forEach((lesson) => {
+        const place = loadStepState(lesson.id, null);
+        if (place && Object.values(place.stepsDone || {}).some(Boolean)) begun[lesson.id] = place.stepIdx;
+      });
+      setInHand(begun);
       setLoading(false);
       return;
     }
@@ -224,6 +235,7 @@ const LessonMap = () => {
         if (pRes.ok) {
           const d = await pRes.json();
           if (d.completedLessons) setCompletedIds(d.completedLessons);
+          if (d.inHand && typeof d.inHand === 'object') setInHand(d.inHand);
         }
       } catch (_) {
         /* fall back to hardcoded data */
@@ -476,7 +488,7 @@ const LessonMap = () => {
                         <span className="lm-label__title">{stopTitle(lesson)}</span>
                         {isHere ? (
                           <span className={`lm-badge lm-badge--${status}`}>
-                            {status === 'completed' ? 'Play again' : 'Start'}
+                            {status === 'completed' ? 'Play again' : inHand[lesson.id] != null ? 'Carry on' : 'Start'}
                           </span>
                         ) : (
                           <span className="lm-label__next">Up next</span>

@@ -42,7 +42,26 @@ router.get('/progress', authenticateToken, async (req, res) => {
     // When the last of them was finished: the date on the certificate.
     const times = rows.map(r => new Date(r.completed_at).getTime()).filter(Number.isFinite);
     const finishedAt = times.length ? new Date(Math.max(...times)).toISOString() : null;
-    res.json({ success: true, completedLessons, finishedAt });
+    // Lessons begun and not finished, with the furthest step answered, so the
+    // map can say "Carry on" where it used to say "Start" to a child who was
+    // halfway through. Read apart from the rest: if it fails the map still
+    // has every finished lesson, and says "Start", as it did before.
+    const inHand = {};
+    try {
+      const [steps] = await pool.query(
+        'SELECT lesson_id, MAX(step_index) AS furthest FROM lesson_step_xp WHERE user_id = ? AND lesson_id >= 1 GROUP BY lesson_id',
+        [userId]
+      );
+      const done = new Set(completedLessons.map(Number));
+      for (const row of steps || []) {
+        const id = Number(row.lesson_id);
+        const furthest = Number(row.furthest);
+        if (Number.isInteger(id) && Number.isInteger(furthest) && furthest >= 0 && !done.has(id)) inHand[id] = furthest;
+      }
+    } catch (err) {
+      console.error(`lesson progress: the lessons in hand could not be read (${err.message})`);
+    }
+    res.json({ success: true, completedLessons, finishedAt, inHand });
   } catch (err) {
     console.error('❌ Error fetching lesson progress:', err);
     res.status(500).json({ error: err.message });
