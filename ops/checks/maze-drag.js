@@ -1,6 +1,6 @@
 // Does dragging a wall actually change the game?
 //
-// This is the check behind the claim in GOAL.md §3. Every other starter draws
+// This is the check behind the claim in docs/notes/GOAL.md §3. Every other starter draws
 // its world inside a canvas, which is one DOM element, so the studio's editor
 // can only reach the score badge and the tip line. The maze puts the level in
 // the page, so the editor a child already has becomes a level editor.

@@ -1,6 +1,6 @@
 // What can a child actually click on and change?
 //
-// This is the check behind GOAL.md §3. The studio has a real element editor —
+// This is the check behind docs/notes/GOAL.md §3. The studio has a real element editor —
 // select, drag, resize, recolour — and for most of the first year of this
 // product it could not reach anything a child cared about, because every
 // starter drew its world inside a canvas. A canvas is one DOM element, so
