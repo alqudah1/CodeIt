@@ -206,6 +206,7 @@ export default function Quiz() {
       setResults(res.data);
       if (res.data?.xpEarned > 0) awardXP(res.data.xpEarned);
       setKeptFromBefore(true);
+      void trackEvent('guest_quiz', 'kept', token);
       setDone(true);
     }).catch(() => { /* the quiz is on screen, ready to take */ });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -314,6 +315,7 @@ export default function Quiz() {
         const right = Object.values(questionResults).filter((r) => r.correct).length;
         // A nought is not kept: the offer then is about the next try.
         if (right > 0) rememberGuestQuiz(quizId, finalAnswers); else forgetGuestQuiz();
+        void trackEvent('guest_quiz', 'done');
         setResults({ correctCount: right, totalQuestions: total, percentage: total > 0 ? Math.round((right / total) * 100) : 0, xpEarned: 0 });
         setDone(true);
         return;
@@ -506,7 +508,7 @@ export default function Quiz() {
               <span>{correct > 0
                 ? 'A free account saves it and adds the XP. You come straight back here.'
                 : 'A free account saves your quizzes and adds the XP. You come straight back here.'}</span>
-              <button className="qz-btn-forward" onClick={() => navigate('/register', { state: { from: `/quiz/${quizId}` } })}>Make a free account</button>
+              <button className="qz-btn-forward" onClick={() => { void trackEvent('guest_quiz', 'offer'); navigate('/register', { state: { from: `/quiz/${quizId}` } }); }}>Make a free account</button>
               <button className="qz-keep__login" onClick={() => navigate('/login', { state: { from: `/quiz/${quizId}` } })}>I already have one</button>
             </div>
           ) : (

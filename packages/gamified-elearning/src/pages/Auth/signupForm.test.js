@@ -111,3 +111,16 @@ describe('a child who came to keep a quiz score', () => {
     expect(screen.getByRole('button', { name: 'Create account and build' })).toBeInTheDocument();
   });
 });
+
+test('a child under 13 who came from a quiz is pointed back to learning, not to the studio', async () => {
+  mockLocation = { state: { from: '/quiz/1' }, search: '' };
+  render(<Register />);
+  fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'small_coder' } });
+  fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'a-long-Password-1' } });
+  const year = new Date().getFullYear() - 9;
+  fireEvent.change(screen.getByLabelText('Birthday'), { target: { value: `${year}-01-15` } });
+  fireEvent.click(screen.getByRole('button', { name: 'Create account and keep my score' }));
+  expect(await screen.findByText(/Until then you can keep learning without one\./)).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Or keep learning without an account' })).toHaveAttribute('href', '/lessons');
+  expect(screen.queryByText(/your projects will be waiting/)).toBeNull();
+});

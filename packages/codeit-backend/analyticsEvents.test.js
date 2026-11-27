@@ -149,3 +149,9 @@ test('every publish refusal code the server can send is recordable', () => {
     );
   }
 });
+
+test('a quiz taken with no account is counted at its three steps and nothing else', () => {
+  assert.equal(CLIENT_REPORTED_EVENTS.has('guest_quiz'), true);
+  for (const step of ['done', 'offer', 'kept']) assert.equal(normalizeMeta('guest_quiz', step), step);
+  assert.equal(normalizeMeta('guest_quiz', 'quiz-1-score-4'), null);
+});

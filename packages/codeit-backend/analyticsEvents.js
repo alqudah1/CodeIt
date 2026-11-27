@@ -92,6 +92,11 @@ const EVENT_META = Object.freeze({
   score_challenge: new Set(['opened', 'beaten', 'sent']),
   // The daily Python quest: passed as a guest, done (paid), or done again.
   python_quest: new Set(['guest', 'done', 'again']),
+  // A quiz taken with no account (25 November 2026): finished as a visitor,
+  // pressed "Make a free account" on the results, and the score saved to an
+  // account afterwards. The three numbers that say whether asking for the
+  // account after the quiz, not before it, was worth doing.
+  guest_quiz: new Set(['done', 'offer', 'kept']),
   project_explained: new Set(),
   builder_look_inside: new Set(),
   // Why a publish was refused, which was never recorded: the set was empty,
@@ -230,6 +235,7 @@ const CLIENT_REPORTED_EVENTS = new Set([
   'upgrade_prompt_shown', 'upgrade_click', 'learn_the_code_behind', 'page_crash',
   'activity_start', 'activity_complete', 'guest_lesson_complete',
   'boot_failed',
+  'guest_quiz',
 ]);
 const JOURNEY_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const CAMPAIGN_PATTERN = /^[a-z0-9][a-z0-9-]{1,23}$/;

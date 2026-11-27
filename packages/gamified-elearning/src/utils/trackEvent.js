@@ -43,6 +43,7 @@ const CLIENT_EVENTS = new Set([
   "guest_remix",
   "score_challenge",
   "python_quest",
+  "guest_quiz",
   "project_explained",
   "builder_look_inside",
   "publish_refused",

@@ -325,7 +325,11 @@ export default function Register() {
           {needsParent ? (
             <div className="auth-form auth-needs-parent" role="status">
               <p className="auth-needs-parent__lead">Thanks. To set up an account for you, we need a parent or guardian.</p>
-              <p className="auth-needs-parent__sub">They can make you a private profile in about a minute, and your projects will be waiting.</p>
+              {/* A child who came from a quiz has no projects waiting, and the
+                  door back was to the studio. They were learning. */}
+              <p className="auth-needs-parent__sub">{quizEntry
+                ? 'They can make you a private profile in about a minute. Until then you can keep learning without one.'
+                : 'They can make you a private profile in about a minute, and your projects will be waiting.'}</p>
               <button
                 type="button"
                 className="auth-button"
@@ -333,7 +337,9 @@ export default function Register() {
               >
                 Ask a parent to set this up
               </button>
-              <Link to="/builder" className="auth-needs-parent__try">Or keep building without an account</Link>
+              {quizEntry
+                ? <Link to="/lessons" className="auth-needs-parent__try">Or keep learning without an account</Link>
+                : <Link to="/builder" className="auth-needs-parent__try">Or keep building without an account</Link>}
             </div>
           ) : (
           <form className="auth-form" onSubmit={submitS(onStudentSubmit)}>
